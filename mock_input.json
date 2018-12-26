@@ -1,0 +1,48 @@
+{
+  "mapping": [
+    {
+      "source_table": "in1",
+      "target_table": "out1",
+      "source_field": "id",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "out"
+    },
+    {
+      "source_table": "in2",
+      "target_table": "out1",
+      "source_field": "id",
+      "sql_field": "upper(name)",
+      "sql_alias": "good_name",
+      "target_field": "out_name"
+    },
+    {
+      "source_table": "in1",
+      "target_table": "out2",
+      "source_field": "name",
+      "sql_field": "replace(name, ' ', '')",
+      "sql_alias": "filter_name",
+      "target_field": "name_out"
+    }
+  ],
+  "lookup": [
+    {
+      "source_table": "in1",
+      "target_table": "out1",
+      "fields": [{"key": "dx1"}, {"key": "dx2"}],
+      "lookup": "idv"
+    },
+    {
+      "source_table": "in1",
+      "target_table": "out2",
+      "fields": [{"key": "dz1"}, {"key": "dz2"}],
+      "lookup": "idv2"
+    },
+    {
+      "source_table": "in1",
+      "target_table": "out2",
+      "fields": [{"first": "first", "test": " y", "key": "dz", "b": "b", "isNullable": "False", "fouth": "fouth", "a": "a"}],
+      "lookup": "idv3"
+    }
+  ]
+}
