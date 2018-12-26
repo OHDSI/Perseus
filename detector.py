@@ -1,20 +1,9 @@
 from pyspark.sql import SparkSession
 from pyspark import Row
 from pyspark import SparkContext
-import time
 import pandas
 import os
-
-
-def time_it(method):
-    """decorator to measure time of execution"""
-    def timed(*args, **kwargs):
-        start = time.time()
-        result = method(*args, **kwargs)
-        end = time.time()
-        print('method {} est:{}'.format(method.__name__, end - start))
-        return result
-    return timed
+from utils import time_it
 
 
 @time_it
@@ -76,18 +65,7 @@ def find_domain(column_name, table_name):
     :param column_name - source code name column
     :param table_name - table where source code located
     """
-    sql = open('SQL', 'r').read()
-    sc: SparkContext = spark.sparkContext
-    sql_broadcast = sc.broadcast(sql)
-    res = spark.sql(sql_broadcast.value.format(column_name, table_name))
-    res.show()
-
-
-@time_it
-def fd_spark(column_name, table_name):
-    load_vocabulary()
-    load_report()
-    sql = open('SQL', 'r').read()
+    sql = open('sources/SQL', 'r').read()
     sc: SparkContext = spark.sparkContext
     sql_broadcast = sc.broadcast(sql)
     res = spark.sql(sql_broadcast.value.format(column_name, table_name))
@@ -96,6 +74,7 @@ def fd_spark(column_name, table_name):
 
 if __name__ == '__main__':
     #define entri point
+    # TODO: detect configuration of PC and create effective entry point
     cores = os.cpu_count()
     spark = SparkSession \
         .builder \

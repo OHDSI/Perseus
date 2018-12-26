@@ -130,7 +130,7 @@ def get_xml(json):
 
 
 if __name__ == '__main__':
-    with open('mock_input.json') as file:
+    with open('sources/mock_input.json') as file:
         data = json.load(file)
         print(get_xml(data))
 

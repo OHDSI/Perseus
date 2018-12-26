@@ -1,21 +1,7 @@
-from pyspark.sql import SparkSession
-from pyspark import Row
-from pyspark import SparkContext
-import time
 import pandas
 import os
 from sqlalchemy import create_engine
-
-
-def time_it(method):
-    """decorator to measure time of execution"""
-    def timed(*args, **kwargs):
-        start = time.time()
-        result = method(*args, **kwargs)
-        end = time.time()
-        print('method {} est:{}'.format(method.__name__, end - start))
-        return result
-    return timed
+from utils import time_it
 
 
 @time_it
@@ -70,5 +56,4 @@ if __name__ == '__main__':
     load_report()
     load_vocabulary()
     find_domain('dx1', 'facility_header')
-    print('hi5')
     connection.close()

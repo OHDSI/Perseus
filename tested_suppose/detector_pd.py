@@ -1,22 +1,7 @@
-from pyspark.sql import SparkSession
-from pyspark import Row
-from pyspark import SparkContext
-import spark
-import time
 import pandas as pd
 import os
 import pandasql as pds
-
-
-def time_it(method):
-    """decorator to measure time of execution"""
-    def timed(*args, **kwargs):
-        start = time.time()
-        result = method(*args, **kwargs)
-        end = time.time()
-        print('method {} est:{}'.format(method.__name__, end - start))
-        return result
-    return timed
+from utils import time_it
 
 
 @time_it
@@ -64,7 +49,7 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     """
     sql = open('SQL', 'r').read()
-    res = pds.sqldf(sql.format(column_name, table_name), globals(), db_uri='sqlite:///my.db')
+    res = pds.sqldf(sql.format(column_name, table_name), globals())
     res.show()
 
 
