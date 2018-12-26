@@ -1,10 +1,11 @@
 from pyspark.sql import SparkSession
 from pyspark import Row
 from pyspark import SparkContext
+import spark
 import time
-import pandas
+import pandas as pd
 import os
-from sqlalchemy import create_engine
+import pandasql as pds
 
 
 def time_it(method):
@@ -29,10 +30,10 @@ def load_vocabulary(path='D:/vocabulary/'):
         if filename.endswith('.csv'):
             filepath = path + filename
             tablename = filename.replace('.csv', '')
-            df = pandas.read_csv(filepath, sep='\t', dtype=str,
-                                 na_filter=False)
-            print(filepath)
-            df.to_sql(tablename, con=connection, chunksize=5000)
+            code = tablename + " = pd.read_csv('" + filepath + "', sep='\t'," \
+                               " dtype=str, na_filter=False)"
+            print(code)
+            exec(code)
             list.append(tablename)
     return list
 
@@ -44,12 +45,16 @@ def load_report(filepath='D:/mdcr.xlsx'):
     to acts like with a real tables
     :param - path to whiteRabbit report
     """
-    xls = pandas.ExcelFile(filepath)
+    list = []
+    xls = pd.ExcelFile(filepath)
     sheets = xls.sheet_names
     for sheet in sheets:
         tablename = sheet
-        df = pandas.read_excel(filepath, sheet, dtype=str, na_filter=False)
-        df.to_sql(tablename, con=connection)
+        code = "globals()['" + tablename + "'] = pd.read_excel('" + filepath + "', '" + sheet + "', dtype=str, na_filter=False)"
+        print(code)
+        exec(code)
+        list.append(tablename)
+    return list
 
 
 @time_it
@@ -60,20 +65,33 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     """
     sql = open('SQL', 'r').read()
-    res = connection.execute(sql.format(column_name, table_name)).fetchall()
+    res = pysqldf(sql.format(column_name, table_name)).head()
     res.show()
 
 
 if __name__ == '__main__':
-    #define entri point
-    print('hi')
-    engine = create_engine('sqlite:///my.db', echo=False)
-    connection = engine.connect()
-    print('hi2')
-    load_report()
-    print('hi3')
-    load_vocabulary()
-    print('hi4')
-    find_domain('dx1', 'facility_header')
-    print('hi5')
-    connection.close()
+    #pysqldf = lambda q: pds.sqldf(q, globals())
+    #print(globals())
+    lr = load_report()
+    #print(locals())
+    #print(globals())
+    #print(red_book.head(10))
+    #li = load_vocabulary()
+    #print(li)
+    #print(locals())
+    #print(globals())
+    #print(lr)
+    #print(locals())
+    #print(globals())
+    #print(CONCEPT_CPT4.head(10))
+    #print(pds.sqldf('select * from red_book', globals()))
+    #print("----------------------------")
+    #find_domain('dx1', 'facility_header')
+    #print(locals())
+    #print(globals())
+    #exec('a = 47')
+    #print(globals())
+    #exec('Overview = pd.read_excel("D:/mdcr.xlsx", "Overview", dtype=str, na_filter=False)')
+    print(pds.sqldf('select * from Overview', globals()))
+    #print(globals())
+    #print(a)
