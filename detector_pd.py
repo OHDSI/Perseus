@@ -30,8 +30,7 @@ def load_vocabulary(path='D:/vocabulary/'):
         if filename.endswith('.csv'):
             filepath = path + filename
             tablename = filename.replace('.csv', '')
-            code = tablename + " = pd.read_csv('" + filepath + "', sep='\t'," \
-                               " dtype=str, na_filter=False)"
+            code = "globals()['" + tablename + "'] = pd.read_csv('" + filepath + "', sep='\t', dtype=str, na_filter=False)"
             print(code)
             exec(code)
             list.append(tablename)
@@ -65,33 +64,11 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     """
     sql = open('SQL', 'r').read()
-    res = pysqldf(sql.format(column_name, table_name)).head()
+    res = pds.sqldf(sql.format(column_name, table_name), globals(), db_uri='sqlite:///my.db')
     res.show()
 
 
 if __name__ == '__main__':
-    #pysqldf = lambda q: pds.sqldf(q, globals())
-    #print(globals())
     lr = load_report()
-    #print(locals())
-    #print(globals())
-    #print(red_book.head(10))
-    #li = load_vocabulary()
-    #print(li)
-    #print(locals())
-    #print(globals())
-    #print(lr)
-    #print(locals())
-    #print(globals())
-    #print(CONCEPT_CPT4.head(10))
-    #print(pds.sqldf('select * from red_book', globals()))
-    #print("----------------------------")
-    #find_domain('dx1', 'facility_header')
-    #print(locals())
-    #print(globals())
-    #exec('a = 47')
-    #print(globals())
-    #exec('Overview = pd.read_excel("D:/mdcr.xlsx", "Overview", dtype=str, na_filter=False)')
-    print(pds.sqldf('select * from Overview', globals()))
-    #print(globals())
-    #print(a)
+    li = load_vocabulary()
+    find_domain('dx1', 'facility_header')

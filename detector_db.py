@@ -65,15 +65,10 @@ def find_domain(column_name, table_name):
 
 
 if __name__ == '__main__':
-    #define entri point
-    print('hi')
     engine = create_engine('sqlite:///my.db', echo=False)
     connection = engine.connect()
-    print('hi2')
     load_report()
-    print('hi3')
     load_vocabulary()
-    print('hi4')
     find_domain('dx1', 'facility_header')
     print('hi5')
     connection.close()
