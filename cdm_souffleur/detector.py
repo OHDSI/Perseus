@@ -1,9 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark import Row
-from pyspark import SparkContext
 import pandas
 import os
-from utils import time_it
+from cdm_souffleur.utils import time_it
 
 
 @time_it
@@ -70,7 +69,7 @@ def find_domain(column_name, table_name):
     # TODO: is it client-server or task cluster App?
     # sc: SparkContext = spark.sparkContext
     # sql_broadcast = sc.broadcast(sql)
-    res = spark.sql(sql.value.format(column_name, table_name))
+    res = spark.sql(sql.format(column_name, table_name))
     res.show()
 
 

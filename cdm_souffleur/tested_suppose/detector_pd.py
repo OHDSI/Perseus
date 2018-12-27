@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import pandasql as pds
-from utils import time_it
+from cdm_souffleur.utils import time_it
 
 
 @time_it

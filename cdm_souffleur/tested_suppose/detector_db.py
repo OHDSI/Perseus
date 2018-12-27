@@ -1,7 +1,7 @@
 import pandas
 import os
 from sqlalchemy import create_engine
-from utils import time_it
+from cdm_souffleur.utils import time_it
 
 
 @time_it

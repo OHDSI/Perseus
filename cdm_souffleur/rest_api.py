@@ -1,5 +1,5 @@
 from flask import Flask, request
-from xml_writer import get_xml
+from cdm_souffleur.xml_writer import get_xml
 app = Flask(__name__)
 
 
