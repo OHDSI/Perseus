@@ -1,0 +1,1 @@
+Prepare xml for CDMBuilder based on json (format based in model/sources/mock_input.json) through POST service

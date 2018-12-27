@@ -6,24 +6,20 @@
 
 import io
 import os
-import sys
-from shutil import rmtree
-
-from setuptools import find_packages, setup, Command
+from setuptools import find_packages, setup
 
 # Package meta-data.
-NAME = 'mypackage'
-DESCRIPTION = 'My short description for my project.'
-URL = 'https://github.com/me/myproject'
-EMAIL = 'me@example.com'
-AUTHOR = 'Awesome Soul'
-REQUIRES_PYTHON = '>=3.6.0'
+NAME = 'cdm_souffleur'
+DESCRIPTION = 'integrate CDM builder with your mapping'
+URL = 'https://github.com/alexanderlopoukhov/CDMSouffleur'
+EMAIL = 'alexander.lopoukhov@arcadia.spb.ru'
+AUTHOR = 'Alexander Lopoukhov'
+REQUIRES_PYTHON = '>=3.7.0'
 VERSION = None
 
-# What packages are required for this module to be executed?
-REQUIRED = [
-    # 'requests', 'maya', 'records',
-]
+# parse_requirements() returns generator of pip.req.InstallRequirement objects
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
 
 # What packages are optional?
 EXTRAS = {
@@ -33,7 +29,8 @@ EXTRAS = {
 # The rest you shouldn't have to touch too much :)
 # ------------------------------------------------
 # Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier for that!
+# If you do change the License, remember to change the Trove Classifier for
+# that!
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -53,45 +50,6 @@ if not VERSION:
 else:
     about['__version__'] = VERSION
 
-
-class UploadCommand(Command):
-    """Support setup.py upload."""
-
-    description = 'Build and publish the package.'
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        try:
-            self.status('Removing previous builds…')
-            rmtree(os.path.join(here, 'dist'))
-        except OSError:
-            pass
-
-        self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(
-            sys.executable))
-
-        self.status('Uploading the package to PyPI via Twine…')
-        os.system('twine upload dist/*')
-
-        self.status('Pushing git tags…')
-        os.system('git tag v{0}'.format(about['__version__']))
-        os.system('git push --tags')
-
-        sys.exit()
-
-
 # Where the magic happens:
 setup(
     name=NAME,
@@ -110,10 +68,10 @@ setup(
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
-    install_requires=REQUIRED,
+    install_requires=required,
     extras_require=EXTRAS,
     include_package_data=True,
-    license='MIT',
+    license='---',
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -124,8 +82,4 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
-    # $ setup.py publish support.
-    cmdclass={
-        'upload': UploadCommand,
-    },
 )
