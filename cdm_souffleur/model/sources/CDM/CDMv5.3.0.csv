@@ -1,4 +1,4 @@
-"field","required","type","description","table"
+COLUMN_NAME,"required","type","description",TABLE_NAME
 "condition_occurrence_id","Yes","INTEGER","A unique identifier for each Condition Occurrence event.","condition_occurrence"
 "person_id","Yes","INTEGER","A foreign key identifier to the Person who is experiencing the condition. The demographic details of that Person are stored in the PERSON table.","condition_occurrence"
 "condition_concept_id","Yes","INTEGER","A foreign key that refers to a Standard Condition Concept identifier in the Standardized Vocabularies.","condition_occurrence"

@@ -12,11 +12,11 @@ def load_schema(cdm_version):
     if cdm_version in cdm_version_list:
         path = cdm_schema_path / ('CDMv' + cdm_version + '.csv')
     else:
-        raise ValueError('Version {} is not in {}'.format(cdm_version, cdm_version_list))
+        raise ValueError('Version {} is not in {}'.format(cdm_version,
+                                                          cdm_version_list))
     with open(path) as file:
         schema = pd.read_csv(file)
-    return schema
-
+    return schema[['TABLE_NAME', 'COLUMN_NAME']]
 
 def return_exist_version():
     """
@@ -27,5 +27,5 @@ def return_exist_version():
 
 
 if __name__ == '__main__':
-    print(load_schema('5.0.'))
+    print(load_schema('5.0.1'))
 
