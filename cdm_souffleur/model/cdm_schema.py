@@ -18,10 +18,10 @@ def load_schema(cdm_version):
         schema = pd.read_csv(file)
     return schema[['TABLE_NAME', 'COLUMN_NAME']]
 
-def return_exist_version():
+
+def get_exist_version():
     """
-    return existins vesrions of CDM schema
-    :return:
+    return existing versions of CDM schema
     """
     return cdm_version_list
 

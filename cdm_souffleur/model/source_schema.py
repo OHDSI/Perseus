@@ -1,17 +1,14 @@
-import pandas as pd
 import spark
 from pyspark.sql import SparkSession
 from pyspark import Row
-from pyspark import SparkContext
 import pandas
+
 
 def flatten_pd_df(pd_df: pandas.DataFrame):
     """
     Given a Pandas DF that has appropriately named columns, this function will
     iterate the rows and generate Spark Row
     objects.  It's recommended that this method be invoked via Spark's flatMap
-    :param pd_df:
-    :return:
     """
     rows = []
     for index, series in pd_df.iterrows():
@@ -22,7 +19,7 @@ def flatten_pd_df(pd_df: pandas.DataFrame):
     return rows
 
 
-def load_report(filepath = 'D:/mdcr.xlsx'):
+def load_report(filepath='D:/mdcr.xlsx'):
     """
     Load report from whiteRabbit to Dataframe, separate table for each sheet
     to acts like with a real tables
@@ -38,10 +35,24 @@ def load_report(filepath = 'D:/mdcr.xlsx'):
         spark_df.createOrReplaceTempView(tablename)
 
 
+def get_source_schema():
+    pass
+
+
 if __name__ == '__main__':
     spark = SparkSession \
         .builder \
         .appName("Detect dictionary and vocabulary") \
         .getOrCreate()
-    print(load_report())
+    # TODO move below code to get_source schema method
+    # TODO think about one entry point for spark methods
+    schema = {}
+    load_report()
+    for table in spark.sql("""show tables""").collect():
+        columns = [column.col_name for column in spark.sql("""
+        show columns from {}""".format(table.tableName)).collect()]
+        schema[table.tableName] = columns
+    print(schema)
+
+
 
