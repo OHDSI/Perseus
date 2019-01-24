@@ -5,7 +5,7 @@ cdm_version_list = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5']
 cdm_schema_path = Path('sources/CDM/')
 
 
-def load_schema(cdm_version):
+def get_schema(cdm_version):
     """
     load CDM schema from csv
     """
@@ -16,7 +16,8 @@ def load_schema(cdm_version):
                                                           cdm_version_list))
     with open(path) as file:
         schema = pd.read_csv(file)
-    return schema[['TABLE_NAME', 'COLUMN_NAME']]
+    return schema.groupby(['TABLE_NAME'])['COLUMN_NAME'].apply(list).to_dict()
+    #return schema[['TABLE_NAME', 'COLUMN_NAME']]
 
 
 def get_exist_version():
@@ -27,5 +28,6 @@ def get_exist_version():
 
 
 if __name__ == '__main__':
-    print(load_schema('5.0.1'))
+    print(get_schema('5.0.1'))
+    print(type(get_schema('5.0.1')))
 

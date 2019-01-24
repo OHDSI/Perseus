@@ -50,7 +50,7 @@ if __name__ == '__main__':
     load_report()
     for table in spark.sql("""show tables""").collect():
         columns = [column.col_name for column in spark.sql("""
-        show columns from {}""".format(table.tableName)).collect()]
+            show columns from {}""".format(table.tableName)).collect()]
         schema[table.tableName] = columns
     print(schema)
 
