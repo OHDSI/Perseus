@@ -29,19 +29,41 @@
     {
       "source_table": "in1",
       "target_table": "out1",
-      "fields": [{"key": "dx1"}, {"key": "dx2"}],
+      "fields": [
+        {
+          "key": "dx1"
+        },
+        {
+          "key": "dx2"
+        }
+      ],
       "lookup": "idv"
     },
     {
       "source_table": "in1",
       "target_table": "out2",
-      "fields": [{"key": "dz1"}, {"key": "dz2"}],
+      "fields": [
+        {
+          "key": "dz1"
+        },
+        {
+          "key": "dz2"
+        }
+      ],
       "lookup": "idv2"
     },
     {
       "source_table": "in1",
       "target_table": "out2",
-      "fields": [{"key": "dx3", "default_value": " y", "default_type": "dz", "b": "b", "isNullable": "False"}],
+      "fields": [
+        {
+          "key": "dx3",
+          "default_value": " y",
+          "default_type": "dz",
+          "b": "b",
+          "isNullable": "False"
+        }
+      ],
       "lookup": "idv3"
     }
   ]

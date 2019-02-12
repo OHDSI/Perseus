@@ -115,11 +115,9 @@ def get_xml(json):
                 concepts_tag = SubElement(domain_definition_tag, 'Concepts')
                 concept_tag = SubElement(concepts_tag, 'Concept')
                 vocabulary = row['lookup']
-                # print(vocabulary)
-                # print(type(row))
-                # print(vocabulary is None)
                 if vocabulary:
-                    concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
+                    concept_id_mapper = SubElement(concept_tag,
+                                                   'ConceptIdMapper')
                     mapper = SubElement(concept_id_mapper, 'Mapper')
                     lookup = SubElement(mapper, 'Lookup')
                     lookup.text = vocabulary

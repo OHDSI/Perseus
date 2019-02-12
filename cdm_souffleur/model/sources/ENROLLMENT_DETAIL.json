@@ -159,6 +159,22 @@
       "sql_field": "",
       "sql_alias": "",
       "target_field": "StartDate"
+    },
+    {
+      "source_table": "ENROLLMENT_DETAIL",
+      "target_table": "Observation",
+      "source_field": "",
+      "sql_field": "CASE WHEN MHSACOVG IS NULL THEN '0' ELSE MHSACOVG END",
+      "sql_alias": "VALUE_AS_NUMBER",
+      "target_field": "ValuesAsNumber"
+    },
+    {
+      "source_table": "ENROLLMENT_DETAIL",
+      "target_table": "Observation",
+      "source_field": "",
+      "sql_field": "true",
+      "sql_alias": "IsUnique",
+      "target_field": "IsUnique"
     }
   ],
   "lookup": [
