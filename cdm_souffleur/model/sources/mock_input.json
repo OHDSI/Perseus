@@ -11,18 +11,18 @@
     {
       "source_table": "in2",
       "target_table": "out1",
-      "source_field": "id",
+      "source_field": "name",
       "sql_field": "upper(name)",
-      "sql_alias": "good_name",
+      "sql_alias": "out_name",
       "target_field": "out_name"
     },
     {
       "source_table": "in1",
       "target_table": "out2",
-      "source_field": "name",
-      "sql_field": "replace(name, ' ', '')",
-      "sql_alias": "filter_name",
-      "target_field": "name_out"
+      "source_field": "race",
+      "sql_field": "replace(race, ' ', '')",
+      "sql_alias": "filtered_race",
+      "target_field": "race_id"
     }
   ],
   "lookup": [
@@ -41,7 +41,7 @@
     {
       "source_table": "in1",
       "target_table": "out2",
-      "fields": [{"first": "first", "test": " y", "key": "dz", "b": "b", "isNullable": "False", "fouth": "fouth", "a": "a"}],
+      "fields": [{"key": "dx3", "default_value": " y", "default_type": "dz", "b": "b", "isNullable": "False"}],
       "lookup": "idv3"
     }
   ]

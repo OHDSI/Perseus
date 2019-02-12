@@ -60,14 +60,15 @@ def prepare_sql(data, source_table):
         else:
             sql += row['sql_field'] + ' as ' + row['sql_alias'] + ',\n'
     sql = sql[:-2] + '\n'
-    sql += 'from ' + source_table
+    sql += 'from ' + source_table + \
+           ' join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID ' \
+           ' order by ENROLID'
     return sql
 
 
 def get_xml(json):
     """
     prepare XML for CDM
-    :return:
     """
     result = ''
     # mapping_data = get_mapping(path)
@@ -88,7 +89,7 @@ def get_xml(json):
 
         for target_table in target_tables:
             lookups = lookup_data.loc[(lookup_data['source_table'] == source_table) &
-                                      (lookup_data['target_table'] == target_table), ['fields', 'lookup']]
+                                          (lookup_data['target_table'] == target_table), ['fields', 'lookup']]
             fields = mapping_data.loc[(mapping_data['source_table'] == source_table) &
                                       (mapping_data['target_table'] == target_table),
                                       ['source_field', 'target_field', 'sql_alias']]
@@ -107,12 +108,17 @@ def get_xml(json):
             for index, row in lookups.iterrows():
                 concept_tag = SubElement(concepts_tag, 'Concept')
                 concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
-                mapper = SubElement(concept_id_mapper, 'Mapper')
-                lookup = SubElement(mapper, 'Lookup')
                 vocabulary = row['lookup']
-                lookup.text = vocabulary
-                fields_tag = SubElement(concept_tag, 'Fields')
+                # print(vocabulary)
+                # print(type(row))
+                # print(vocabulary is None)
+                if not vocabulary:
+                    mapper = SubElement(concept_id_mapper, 'Mapper')
+                    lookup = SubElement(mapper, 'Lookup')
+                    lookup.text = vocabulary
                 fields = row['fields']
+                if not fields:
+                    fields_tag = SubElement(concept_tag, 'Fields')
                 # TODO: field is dict with default value and other optional parameters and add validation
                 # typeId - значение пойдет в ConceptTypeId
                 # conceptId - значение пойдет в ConceptId
@@ -121,8 +127,8 @@ def get_xml(json):
                 # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
                 # defaultSource - занечение пойдет в SourceValue
                 # isNullable - запись создасться, даже если в raw был NULL
-                for field in fields:
-                    field_tag = SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
+                    for field in fields:
+                        field_tag = SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
         # xml = ElementTree(query_definition_tag)
         # xml.write(source_table)
         result += '{} table xml \r\n {} + \r\n'.format(source_table, prettify(query_definition_tag))
@@ -130,7 +136,7 @@ def get_xml(json):
 
 
 if __name__ == '__main__':
-    with open('sources/mock_input.json') as file:
+    with open('sources/ENROLLMENT_DETAIL.json') as file:
         data = json.load(file)
         print(get_xml(data))
 

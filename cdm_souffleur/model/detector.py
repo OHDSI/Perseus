@@ -3,10 +3,11 @@ from pyspark import Row
 import pandas
 import os
 from cdm_souffleur.utils import time_it
+from pathlib import Path
 
 
 @time_it
-def load_vocabulary(path='D:/vocabulary/'):
+def load_vocabulary(path=Path(r'D:\vocabulary\\')):
     """
     Load ATHENA vocabulary into Dataframe structure
     :param path - path to directory loaded from ATHENA
@@ -14,7 +15,7 @@ def load_vocabulary(path='D:/vocabulary/'):
     list = []
     for filename in os.listdir(path):
         if filename.endswith('.csv'):
-            filepath = path + filename
+            filepath = str(path / filename)
             tablename = filename.replace('.csv', '')
             df = spark.read.csv(filepath, sep='\t', header=True,
                                 inferSchema=True)
@@ -41,7 +42,7 @@ def flatten_pd_df(pd_df: pandas.DataFrame):
 
 
 @time_it
-def load_report(filepath='D:/mdcr.xlsx'):
+def load_report(filepath=Path('D:/mdcr.xlsx')):
     """
     Load report from whiteRabbit to Dataframe, separate table for each sheet
     to acts like with a real tables

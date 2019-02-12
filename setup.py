@@ -71,6 +71,7 @@ setup(
     install_requires=required,
     extras_require=EXTRAS,
     include_package_data=True,
+    test_suite='tests',
     license='---',
     classifiers=[
         # Trove classifiers

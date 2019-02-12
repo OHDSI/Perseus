@@ -17,7 +17,6 @@ def get_schema(cdm_version):
     with open(path) as file:
         schema = pd.read_csv(file)
     return schema.groupby(['TABLE_NAME'])['COLUMN_NAME'].apply(list).to_dict()
-    #return schema[['TABLE_NAME', 'COLUMN_NAME']]
 
 
 def get_exist_version():
