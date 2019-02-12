@@ -60,9 +60,9 @@ def prepare_sql(data, source_table):
         else:
             sql += row['sql_field'] + ' as ' + row['sql_alias'] + ',\n'
     sql = sql[:-2] + '\n'
-    sql += 'from ' + source_table + \
-           ' join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID ' \
-           ' order by ENROLID'
+    sql += 'from ' + source_table + '\r\n' + \
+           'join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID' + \
+           '\r\norder by ENROLID'
     return sql
 
 
@@ -84,18 +84,25 @@ def get_xml(json):
         query_tag = SubElement(query_definition_tag, 'Query')
         sql = prepare_sql(mapping_data, source_table)
         query_tag.text = sql
-        target_tables = pd.unique(mapping_data.loc[mapping_data['source_table'] == source_table,
-                                                   ['target_table']]['target_table'].tolist())
+        target_tables = pd.unique(mapping_data.loc[mapping_data['source_table']
+                                                   == source_table,
+                                                   ['target_table']]
+                                  ['target_table'].tolist())
 
         for target_table in target_tables:
-            lookups = lookup_data.loc[(lookup_data['source_table'] == source_table) &
-                                          (lookup_data['target_table'] == target_table), ['fields', 'lookup']]
-            fields = mapping_data.loc[(mapping_data['source_table'] == source_table) &
-                                      (mapping_data['target_table'] == target_table),
-                                      ['source_field', 'target_field', 'sql_alias']]
+            lookups = lookup_data.loc[(lookup_data['source_table']
+                                       == source_table) &
+                                      (lookup_data['target_table']
+                                       == target_table), ['fields',
+                                                          'lookup']]
+            fields = mapping_data.loc[
+                (mapping_data['source_table'] == source_table) &
+                (mapping_data['target_table'] == target_table),
+                ['source_field', 'target_field', 'sql_alias']]
             tag_name = convert_underscore_to_camel(target_table)
             domain_tag = SubElement(query_definition_tag, tag_name)
-            domain_definition_tag = SubElement(domain_tag, tag_name + 'Definition')
+            domain_definition_tag = SubElement(domain_tag,
+                                               tag_name + 'Definition')
 
             for index, row in fields.iterrows():
                 source_field = row['source_field']
@@ -104,34 +111,38 @@ def get_xml(json):
                 v = SubElement(domain_definition_tag, target_field)
                 v.text = sql_alias if sql_alias else source_field
 
-            concepts_tag = SubElement(domain_definition_tag, 'Concepts')
             for index, row in lookups.iterrows():
+                concepts_tag = SubElement(domain_definition_tag, 'Concepts')
                 concept_tag = SubElement(concepts_tag, 'Concept')
-                concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
                 vocabulary = row['lookup']
                 # print(vocabulary)
                 # print(type(row))
                 # print(vocabulary is None)
-                if not vocabulary:
+                if vocabulary:
+                    concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
                     mapper = SubElement(concept_id_mapper, 'Mapper')
                     lookup = SubElement(mapper, 'Lookup')
                     lookup.text = vocabulary
                 fields = row['fields']
-                if not fields:
+                if fields:
                     fields_tag = SubElement(concept_tag, 'Fields')
-                # TODO: field is dict with default value and other optional parameters and add validation
-                # typeId - значение пойдет в ConceptTypeId
-                # conceptId - значение пойдет в ConceptId
-                # eventDate - дата из поля будет влиять на маппинг(у концептов есть валидные даты в словаре)
-                # defaultTypeId - если не смапилось, будет использовано это значение в ConceptTypeId
-                # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
-                # defaultSource - занечение пойдет в SourceValue
-                # isNullable - запись создасться, даже если в raw был NULL
+                    # TODO: field is dict with default value and other optional parameters and add validation
+                    # typeId - значение пойдет в ConceptTypeId
+                    # conceptId - значение пойдет в ConceptId
+                    # eventDate - дата из поля будет влиять на маппинг(у концептов есть валидные даты в словаре)
+                    # defaultTypeId - если не смапилось, будет использовано это значение в ConceptTypeId
+                    # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
+                    # defaultSource - занечение пойдет в SourceValue
+                    # isNullable - запись создасться, даже если в raw был NULL
                     for field in fields:
-                        field_tag = SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
+                        field_tag = SubElement(fields_tag, 'Field',
+                                               attrib={key: value for
+                                                       key, value in
+                                                       field.items()})
         # xml = ElementTree(query_definition_tag)
         # xml.write(source_table)
-        result += '{} table xml \r\n {} + \r\n'.format(source_table, prettify(query_definition_tag))
+        result += '{} table xml \r\n {} + \r\n'.format(source_table, prettify(
+            query_definition_tag))
     return result
 
 
@@ -139,4 +150,3 @@ if __name__ == '__main__':
     with open('sources/ENROLLMENT_DETAIL.json') as file:
         data = json.load(file)
         print(get_xml(data))
-

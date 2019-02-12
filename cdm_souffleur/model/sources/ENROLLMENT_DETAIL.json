@@ -124,7 +124,7 @@
       "source_table": "ENROLLMENT_DETAIL",
       "target_table": "PayerPlanPeriods",
       "source_field": "PLANTYP",
-      "sql_field": "CASE      WHEN DATATYP IN (2,4) THEN 'C '      ELSE 'N '      END      + CASE PLANTYP      WHEN 1 THEN '{prefix} Basic/Major Medical'      WHEN 2 THEN '{prefix} Comprehensive'      WHEN 3 THEN '{prefix} EPO'      WHEN 4 THEN '{prefix} HMO'      WHEN 5 THEN '{prefix} POS'      WHEN 6 THEN '{prefix} PPO'      WHEN 7 THEN '{prefix} POS with Capitation'      WHEN 8 THEN '{prefix} CDHP'      WHEN 9 THEN '{prefix} HDHP'      ELSE '{prefix} Other'      END",
+      "sql_field": "CASE\r\nWHEN DATATYP IN (2,4) THEN 'C '\r\nELSE 'N '\r\nEND\r\n+\r\nCASE\r\nPLANTYP\r\nWHEN 1 THEN '{prefix} Basic/Major Medical'\r\nWHEN 2 THEN '{prefix} Comprehensive'\r\nWHEN 3 THEN '{prefix} EPO'\r\nWHEN 4 THEN '{prefix} HMO'\r\nWHEN 5 THEN '{prefix} POS'\r\nWHEN 6 THEN '{prefix} PPO'\r\nWHEN 7 THEN '{prefix} POS with Capitation'\r\nWHEN 8 THEN '{prefix} CDHP'\r\nWHEN 9 THEN '{prefix} HDHP'\r\nELSE '{prefix} Other'\r\nEND",
       "sql_alias": "PayerSource",
       "target_field": "PayerSource"
     },
@@ -141,7 +141,7 @@
       "target_table": "PayerPlanPeriods",
       "source_field": "ENROLID",
       "sql_field": "SUBSTRING(RIGHT('00000000000' + cast(ENROLID as VARCHAR), 11), 1,9)",
-      "sql_alias": "FamilySource",
+      "sql_alias": "Family",
       "target_field": "FamilySource"
     },
     {
