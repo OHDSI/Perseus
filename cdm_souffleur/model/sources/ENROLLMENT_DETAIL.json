@@ -190,5 +190,12 @@
       ],
       "lookup": ""
     }
+  ],
+  "option": [
+    {
+      "source_table": "",
+      "target_table": "Observation",
+      "options": {"IsUnique": "true"}
+    }
   ]
 }

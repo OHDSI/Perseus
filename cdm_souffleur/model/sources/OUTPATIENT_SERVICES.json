@@ -1,0 +1,243 @@
+{
+  "mapping": [
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "ConditionOccurrence",
+      "source_field": "ENROLID",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "PersonId"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "ConditionOccurrence",
+      "source_field": "SVCDATE",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "StartDate"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "ConditionOccurrence",
+      "source_field": "ProviderIdKey",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "ProviderIdKey"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "DTEND",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "EndDate"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "SEX",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "Gender"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "DOBYR",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "YearOfBirth"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "EGEOLOC",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "Location"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "RACE_SOURCE_VALUE",
+      "sql_field": "null",
+      "sql_alias": "RACE_SOURCE_VALUE",
+      "target_field": "Race"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "RACE_CONCEPT_ID",
+      "sql_field": "null",
+      "sql_alias": "RACE_CONCEPT_ID",
+      "target_field": "RaceConceptId"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "ETHNICITY_SOURCE_VALUE",
+      "sql_field": "null",
+      "sql_alias": "ETHNICITY_SOURCE_VALUE",
+      "target_field": "Ethnicity"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "ETHNICITY_CONCEPT_ID",
+      "sql_field": "null",
+      "sql_alias": "ETHNICITY_CONCEPT_ID",
+      "target_field": "EthnicityConceptId"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Persons",
+      "source_field": "PeriodTypeConceptId",
+      "sql_field": "44814722",
+      "sql_alias": "PeriodTypeConceptId",
+      "target_field": "PeriodTypeConceptId"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "PayerPlanPeriods",
+      "source_field": "ENROLID",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "PersonId"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "PayerPlanPeriods",
+      "source_field": "DTSTART",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "StartDate"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "PayerPlanPeriods",
+      "source_field": "DTEND",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "EndDate"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "PayerPlanPeriods",
+      "source_field": "PLANTYP",
+      "sql_field": "CASE\r\nWHEN DATATYP IN (2,4) THEN 'C '\r\nELSE 'N '\r\nEND\r\n+\r\nCASE\r\nPLANTYP\r\nWHEN 1 THEN '{prefix} Basic/Major Medical'\r\nWHEN 2 THEN '{prefix} Comprehensive'\r\nWHEN 3 THEN '{prefix} EPO'\r\nWHEN 4 THEN '{prefix} HMO'\r\nWHEN 5 THEN '{prefix} POS'\r\nWHEN 6 THEN '{prefix} PPO'\r\nWHEN 7 THEN '{prefix} POS with Capitation'\r\nWHEN 8 THEN '{prefix} CDHP'\r\nWHEN 9 THEN '{prefix} HDHP'\r\nELSE '{prefix} Other'\r\nEND",
+      "sql_alias": "PayerSource",
+      "target_field": "PayerSource"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "PayerPlanPeriods",
+      "source_field": "PLANKEY",
+      "sql_field": "null",
+      "sql_alias": "PLANKEY",
+      "target_field": "PlanSource"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "PayerPlanPeriods",
+      "source_field": "ENROLID",
+      "sql_field": "SUBSTRING(RIGHT('00000000000' + cast(ENROLID as VARCHAR), 11), 1,9)",
+      "sql_alias": "Family",
+      "target_field": "FamilySource"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Observation",
+      "source_field": "ENROLID",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "PersonId"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Observation",
+      "source_field": "DTEND",
+      "sql_field": "",
+      "sql_alias": "",
+      "target_field": "StartDate"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Observation",
+      "source_field": "",
+      "sql_field": "CASE WHEN MHSACOVG IS NULL THEN '0' ELSE MHSACOVG END",
+      "sql_alias": "VALUE_AS_NUMBER",
+      "target_field": "ValuesAsNumber"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Observation",
+      "source_field": "",
+      "sql_field": "true",
+      "sql_alias": "IsUnique",
+      "target_field": "IsUnique"
+    }
+  ],
+  "lookup": [
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "ConditionOccurrence",
+      "fields": [
+        {
+          "key": "DX1",
+          "defaultTypeId": "1"
+        },
+        {
+          "key": "DX2",
+          "defaultTypeId": "2"
+        },
+        {
+          "key": "DX3",
+          "defaultTypeId": "3"
+        },
+        {
+          "key": "DX4",
+          "defaultTypeId": "4"
+        },
+        {
+          "key": "DX5",
+          "defaultTypeId": "5"
+        }
+      ],
+      "lookup": "Condition"
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "ConditionOccurrence",
+      "fields": [
+        {
+          "key": "DX1",
+          "defaultTypeId": "1"
+        },
+        {
+          "key": "DX2",
+          "defaultTypeId": "2"
+        },
+        {
+          "key": "DX3",
+          "defaultTypeId": "3"
+        },
+        {
+          "key": "DX4",
+          "defaultTypeId": "4"
+        },
+        {
+          "key": "DX5",
+          "defaultTypeId": "5"
+        }
+      ],
+      "lookup": "Condition_icd10"
+    }
+  ],
+  "option": [
+    {
+      "source_table": "",
+      "target_table": "Observation",
+      "options": {"IsUnique": "true"}
+    }
+  ]
+}
