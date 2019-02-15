@@ -1,8 +1,8 @@
 {
   "mapping_items": [
     {
-      "source_table": "ENROLLMENT_DETAIL",
-      "target_table": "Persons",
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Condition_Occurrence",
       "mapping": [
         {
           "source_field": "ENROLID",
@@ -11,154 +11,351 @@
           "target_field": "PersonId"
         },
         {
-          "source_field": "ENROLID",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "PersonSourceValue"
-        },
-        {
-          "source_field": "DTSTART",
+          "source_field": "SVCDATE",
           "sql_field": "",
           "sql_alias": "",
           "target_field": "StartDate"
         },
         {
-          "source_field": "DTEND",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "EndDate"
-        },
-        {
-          "source_field": "SEX",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "Gender"
-        },
-        {
-          "source_field": "DOBYR",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "YearOfBirth"
-        },
-        {
-          "source_field": "EGEOLOC",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "Location"
-        },
-        {
-          "source_field": "RACE_SOURCE_VALUE",
-          "sql_field": "null",
-          "sql_alias": "RACE_SOURCE_VALUE",
-          "target_field": "Race"
-        },
-        {
-          "source_field": "RACE_CONCEPT_ID",
-          "sql_field": "null",
-          "sql_alias": "RACE_CONCEPT_ID",
-          "target_field": "RaceConceptId"
-        },
-        {
-          "source_field": "ETHNICITY_SOURCE_VALUE",
-          "sql_field": "null",
-          "sql_alias": "ETHNICITY_SOURCE_VALUE",
-          "target_field": "Ethnicity"
-        },
-        {
-          "source_field": "ETHNICITY_CONCEPT_ID",
-          "sql_field": "null",
-          "sql_alias": "ETHNICITY_CONCEPT_ID",
-          "target_field": "EthnicityConceptId"
-        },
-        {
-          "source_field": "PeriodTypeConceptId",
-          "sql_field": "44814722",
-          "sql_alias": "PeriodTypeConceptId",
-          "target_field": "PeriodTypeConceptId"
-        }
-      ]
-    },
-    {
-      "source_table": "ENROLLMENT_DETAIL",
-      "target_table": "PayerPlanPeriods",
-      "mapping": [
-        {
-          "source_field": "ENROLID",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "PersonId"
-        },
-        {
-          "source_field": "DTSTART",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "StartDate"
-        },
-        {
-          "source_field": "DTEND",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "EndDate"
-        },
-        {
-          "source_field": "PLANTYP",
-          "sql_field": "CASE\r\nWHEN DATATYP IN (2,4) THEN 'C '\r\nELSE 'N '\r\nEND\r\n+\r\nCASE\r\nPLANTYP\r\nWHEN 1 THEN '{prefix} Basic/Major Medical'\r\nWHEN 2 THEN '{prefix} Comprehensive'\r\nWHEN 3 THEN '{prefix} EPO'\r\nWHEN 4 THEN '{prefix} HMO'\r\nWHEN 5 THEN '{prefix} POS'\r\nWHEN 6 THEN '{prefix} PPO'\r\nWHEN 7 THEN '{prefix} POS with Capitation'\r\nWHEN 8 THEN '{prefix} CDHP'\r\nWHEN 9 THEN '{prefix} HDHP'\r\nELSE '{prefix} Other'\r\nEND",
-          "sql_alias": "PayerSource",
-          "target_field": "PayerSource"
-        },
-        {
-          "source_field": "PLANKEY",
-          "sql_field": "null",
-          "sql_alias": "PLANKEY",
-          "target_field": "PlanSource"
-        },
-        {
-          "source_field": "ENROLID",
-          "sql_field": "SUBSTRING(RIGHT('00000000000' + cast(ENROLID as VARCHAR), 11), 1,9)",
-          "sql_alias": "Family",
-          "target_field": "FamilySource"
-        }
-      ]
-    },
-    {
-      "source_table": "ENROLLMENT_DETAIL",
-      "target_table": "Observation",
-      "mapping": [
-        {
-          "source_field": "ENROLID",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "PersonId"
-        },
-        {
-          "source_field": "DTEND",
-          "sql_field": "",
-          "sql_alias": "",
-          "target_field": "StartDate"
-        },
-        {
-          "source_field": "",
-          "sql_field": "CASE WHEN MHSACOVG IS NULL THEN '0' ELSE MHSACOVG END",
-          "sql_alias": "VALUE_AS_NUMBER",
-          "target_field": "ValuesAsNumber"
+          "source_field": "providField, STDPROV",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_alias": "ProviderIdKey",
+          "target_field": "ProviderIdKey"
         }
       ],
-      "lookup": {
-        "source_table": "ENROLLMENT_DETAIL",
-        "target_table": "Observation",
-        "fields": {
-          "conceptId": "OBSERVATION_CONCEPT_ID",
-          "sourceKey": "OBSERVATION_SOURCE_VALUE",
-          "defaultTypeId": "900000009"
+      "lookup": [
+        {
+          "source_table": "OUTPATIENT_SERVICES",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "4"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "5"
+            }
+          ],
+          "lookup": "Condition"
         }
-      },
-      "option": {
-        "source_table": "",
-        "target_table": "Observation",
-        "options": {
-          "IsUnique": "true"
+      ],
+      "condition": [
+        {
+          "condition": "{DXVER} = 9",
+          "source_field": "DXVER, SVCDATE",
+          "sql_field": "CASE WHEN DXVER NOT IN ('0', '9') THEN CASE WHEN SVCDATE &lt; '10/01/2015' THEN '9' ELSE '0' END ELSE DXVER END",
+          "sql_alias": "DXVER"
         }
-      }
+      ]
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Condition_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "providField, STDPROV",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_alias": "ProviderIdKey",
+          "target_field": "ProviderIdKey"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "OUTPATIENT_SERVICES",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "4"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "5"
+            }
+          ],
+          "lookup": "Condition_icd10"
+        }
+      ],
+      "condition": [
+        {
+          "condition": "{DXVER} = 0",
+          "source_field": "DXVER, SVCDATE",
+          "sql_field": "CASE WHEN DXVER NOT IN ('0', '9') THEN CASE WHEN SVCDATE &lt; '10/01/2015' THEN '9' ELSE '0' END ELSE DXVER END",
+          "sql_alias": "DXVER"
+        }
+      ]
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Drug_Exposure",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "EndDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "OUTPATIENT_SERVICES",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "PROC1",
+              "defaultTypeId": "1"
+            }
+          ],
+          "lookup": "Drug"
+        }
+      ]
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Procedure_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "TSVCDAT",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "EndDate"
+        },
+        {
+          "source_field": "TSVCDAT",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_alias": "ProviderIdKey",
+          "target_field": "ProviderIdKey"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "ENROLLMENT_DETAIL",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "PROC1",
+              "defaultTypeId": "1",
+              "isNullable": "true"
+            }
+          ],
+          "lookup": "Procedure"
+        },
+        {
+          "source_table": "ENROLLMENT_DETAIL",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "PROCMOD"
+            }
+          ],
+          "lookup": "Modifier"
+        }
+      ]
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Procedure_Cost",
+      "mapping": [
+        {
+          "source_field": "COPAY",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidCopay"
+        },
+        {
+          "source_field": "COINS",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidCoinsurance"
+        },
+        {
+          "source_field": "DEDUCT",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidTowardDeductible"
+        },
+        {
+          "source_field": "NETPAY",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidByPayer"
+        },
+        {
+          "source_field": "COB",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidByCoordinationBenefits"
+        },
+        {
+          "source_field": "CurrencyConceptId",
+          "sql_field": "44818668",
+          "sql_alias": "CurrencyConceptId",
+          "target_field": "CurrencyConceptId"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "ENROLLMENT_DETAIL",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "REVCODE"
+            }
+          ],
+          "lookup": "Revenue"
+        }
+      ]
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Visit_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "TSVCDAT",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "EndDate"
+        },
+        {
+          "source_field": "TSVCDAT",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_alias": "ProviderIdKey",
+          "target_field": "ProviderIdKey"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "ENROLLMENT_DETAIL",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "CLAIM_TYPE",
+              "defaultTypeId": "44818517"
+            }
+          ],
+          "lookup": "Visits"
+        }
+      ]
+    },
+    {
+      "source_table": "OUTPATIENT_SERVICES",
+      "target_table": "Death",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "ENROLLMENT_DETAIL",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "38003567"
+            }
+          ],
+          "lookup": "Death"
+        }
+      ]
     }
   ]
 }

@@ -143,22 +143,28 @@
           "target_field": "ValuesAsNumber"
         }
       ],
-      "lookup": {
-        "source_table": "ENROLLMENT_DETAIL",
-        "target_table": "Observation",
-        "fields": {
-          "conceptId": "OBSERVATION_CONCEPT_ID",
-          "sourceKey": "OBSERVATION_SOURCE_VALUE",
-          "defaultTypeId": "900000009"
+      "lookup": [
+        {
+          "source_table": "ENROLLMENT_DETAIL",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "conceptId": "OBSERVATION_CONCEPT_ID",
+              "sourceKey": "OBSERVATION_SOURCE_VALUE",
+              "defaultTypeId": "900000009"
+            }
+          ]
         }
-      },
-      "option": {
-        "source_table": "",
-        "target_table": "Observation",
-        "options": {
-          "IsUnique": "true"
+      ],
+      "option": [
+        {
+          "source_table": "",
+          "target_table": "Observation",
+          "options": {
+            "IsUnique": "true"
+          }
         }
-      }
+      ]
     }
   ]
 }
