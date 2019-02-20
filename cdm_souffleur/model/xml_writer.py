@@ -73,9 +73,9 @@ def get_sql_data(mapping_items):
     """
     all_fields = []
     required_fields = ['source_field', 'sql_field', 'sql_alias']
-    mapping_data = mapping_items.get('mapping', [])
-    condition_data = mapping_items.get('condition', [])
-    lookup = mapping_items.get('lookup', [])
+    mapping_data = mapping_items.get('mapping', pd.Series())
+    condition_data = mapping_items.get('condition', pd.Series())
+    lookup = mapping_items.get('lookup', pd.Series())
 
     lookup_data = lookup.fillna('').map(
         lambda el_list: list(
@@ -84,7 +84,8 @@ def get_sql_data(mapping_items):
                     sublist]) if isinstance(
         lookup, pd.Series) else lookup
 
-    result_data = (mapping_data + condition_data + lookup_data).fillna('')
+    result_data = pd.concat(
+        [mapping_data, condition_data, lookup_data]).fillna('')
 
     for index, row in result_data.iteritems():
         all_fields += [{k: dic[k] for k in required_fields} for dic in row]

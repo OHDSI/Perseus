@@ -83,7 +83,7 @@
       "target_table": "PayerPlanPeriods",
       "mapping": [
         {
-          "source_field": "ENROLID2",
+          "source_field": "ENROLID",
           "sql_field": "",
           "sql_alias": "",
           "target_field": "PersonId"
@@ -125,7 +125,7 @@
       "target_table": "Observation",
       "mapping": [
         {
-          "source_field": "ENROLID3",
+          "source_field": "ENROLID",
           "sql_field": "",
           "sql_alias": "",
           "target_field": "PersonId"

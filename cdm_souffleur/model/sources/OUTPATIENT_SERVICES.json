@@ -51,11 +51,31 @@
           ],
           "lookup": "Condition",
           "sql_field": [
-            {"source_field": "DX1", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX2", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX3", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX4", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX5", "sql_field": "", "sql_alias": ""}
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            }
           ]
         }
       ],
@@ -119,11 +139,31 @@
           ],
           "lookup": "Condition_icd10",
           "sql_field": [
-            {"source_field": "DX1", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX2", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX3", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX4", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX5", "sql_field": "", "sql_alias": ""}
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            }
           ]
         }
       ],
@@ -171,7 +211,11 @@
           ],
           "lookup": "Drug",
           "sql_field": [
-            {"source_field": "PROC1", "sql_field": "", "sql_alias": ""}
+            {
+              "source_field": "PROC1",
+              "sql_field": "",
+              "sql_alias": ""
+            }
           ]
         }
       ]
@@ -218,7 +262,11 @@
           ],
           "lookup": "Procedure",
           "sql_field": [
-            {"source_field": "PROC1", "sql_field": "", "sql_alias": ""}
+            {
+              "source_field": "PROC1",
+              "sql_field": "",
+              "sql_alias": ""
+            }
           ]
         },
         {
@@ -284,7 +332,13 @@
             }
           ],
           "lookup": "Revenue",
-          "sql_field": {"source_field": "REVCODE", "sql_field": "", "sql_alias": ""}
+          "sql_field": [
+            {
+              "source_field": "REVCODE",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
         }
       ]
     },
@@ -329,7 +383,11 @@
           ],
           "lookup": "Visits",
           "sql_field": [
-            {"source_field": "REVCODE", "sql_field": "CASE\r\nWHEN((REVCODE &gt;= '0100' AND REVCODE &lt;='0219') OR (REVCODE &gt;= '0720' AND REVCODE &lt;='0729') OR (REVCODE &gt;= '0800' AND REVCODE &lt;='0809')) THEN 'IP'\r\nWHEN (STDPLAC = 23 OR (REVCODE &gt;= '0450' AND REVCODE &lt;= '0459') OR REVCODE = '0981' OR PROC1 IN ('99281','99282','99283','99284','99285')) THEN 'ER'\r\nELSE 'OP'\r\nEND", "sql_alias": "CLAIM_TYPE"}
+            {
+              "source_field": "REVCODE",
+              "sql_field": "CASE\r\nWHEN((REVCODE &gt;= '0100' AND REVCODE &lt;='0219') OR (REVCODE &gt;= '0720' AND REVCODE &lt;='0729') OR (REVCODE &gt;= '0800' AND REVCODE &lt;='0809')) THEN 'IP'\r\nWHEN (STDPLAC = 23 OR (REVCODE &gt;= '0450' AND REVCODE &lt;= '0459') OR REVCODE = '0981' OR PROC1 IN ('99281','99282','99283','99284','99285')) THEN 'ER'\r\nELSE 'OP'\r\nEND",
+              "sql_alias": "CLAIM_TYPE"
+            }
           ]
         }
       ]
@@ -379,11 +437,31 @@
           ],
           "lookup": "Death",
           "sql_field": [
-            {"source_field": "DX1", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX2", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX3", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX4", "sql_field": "", "sql_alias": ""},
-            {"source_field": "DX5", "sql_field": "", "sql_alias": ""}
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            }
           ]
         }
       ]
