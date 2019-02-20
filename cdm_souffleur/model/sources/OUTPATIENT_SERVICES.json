@@ -49,14 +49,21 @@
               "defaultTypeId": "5"
             }
           ],
-          "lookup": "Condition"
+          "lookup": "Condition",
+          "sql_field": [
+            {"source_field": "DX1", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX2", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX3", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX4", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX5", "sql_field": "", "sql_alias": ""}
+          ]
         }
       ],
       "condition": [
         {
           "condition": "{DXVER} = 9",
           "source_field": "DXVER, SVCDATE",
-          "sql_field": "CASE WHEN DXVER NOT IN ('0', '9') THEN CASE WHEN SVCDATE &lt; '10/01/2015' THEN '9' ELSE '0' END ELSE DXVER END",
+          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN SVCDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
           "sql_alias": "DXVER"
         }
       ]
@@ -110,14 +117,21 @@
               "defaultTypeId": "5"
             }
           ],
-          "lookup": "Condition_icd10"
+          "lookup": "Condition_icd10",
+          "sql_field": [
+            {"source_field": "DX1", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX2", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX3", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX4", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX5", "sql_field": "", "sql_alias": ""}
+          ]
         }
       ],
       "condition": [
         {
           "condition": "{DXVER} = 0",
           "source_field": "DXVER, SVCDATE",
-          "sql_field": "CASE WHEN DXVER NOT IN ('0', '9') THEN CASE WHEN SVCDATE &lt; '10/01/2015' THEN '9' ELSE '0' END ELSE DXVER END",
+          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE\r\nWHEN SVCDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
           "sql_alias": "DXVER"
         }
       ]
@@ -155,7 +169,10 @@
               "defaultTypeId": "1"
             }
           ],
-          "lookup": "Drug"
+          "lookup": "Drug",
+          "sql_field": [
+            {"source_field": "PROC1", "sql_field": "", "sql_alias": ""}
+          ]
         }
       ]
     },
@@ -199,7 +216,10 @@
               "isNullable": "true"
             }
           ],
-          "lookup": "Procedure"
+          "lookup": "Procedure",
+          "sql_field": [
+            {"source_field": "PROC1", "sql_field": "", "sql_alias": ""}
+          ]
         },
         {
           "source_table": "ENROLLMENT_DETAIL",
@@ -263,7 +283,8 @@
               "key": "REVCODE"
             }
           ],
-          "lookup": "Revenue"
+          "lookup": "Revenue",
+          "sql_field": {"source_field": "REVCODE", "sql_field": "", "sql_alias": ""}
         }
       ]
     },
@@ -306,7 +327,10 @@
               "defaultTypeId": "44818517"
             }
           ],
-          "lookup": "Visits"
+          "lookup": "Visits",
+          "sql_field": [
+            {"source_field": "REVCODE", "sql_field": "CASE\r\nWHEN((REVCODE &gt;= '0100' AND REVCODE &lt;='0219') OR (REVCODE &gt;= '0720' AND REVCODE &lt;='0729') OR (REVCODE &gt;= '0800' AND REVCODE &lt;='0809')) THEN 'IP'\r\nWHEN (STDPLAC = 23 OR (REVCODE &gt;= '0450' AND REVCODE &lt;= '0459') OR REVCODE = '0981' OR PROC1 IN ('99281','99282','99283','99284','99285')) THEN 'ER'\r\nELSE 'OP'\r\nEND", "sql_alias": "CLAIM_TYPE"}
+          ]
         }
       ]
     },
@@ -353,7 +377,14 @@
               "defaultTypeId": "38003567"
             }
           ],
-          "lookup": "Death"
+          "lookup": "Death",
+          "sql_field": [
+            {"source_field": "DX1", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX2", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX3", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX4", "sql_field": "", "sql_alias": ""},
+            {"source_field": "DX5", "sql_field": "", "sql_alias": ""}
+          ]
         }
       ]
     }

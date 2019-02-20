@@ -83,7 +83,7 @@
       "target_table": "PayerPlanPeriods",
       "mapping": [
         {
-          "source_field": "ENROLID",
+          "source_field": "ENROLID2",
           "sql_field": "",
           "sql_alias": "",
           "target_field": "PersonId"
@@ -125,7 +125,7 @@
       "target_table": "Observation",
       "mapping": [
         {
-          "source_field": "ENROLID",
+          "source_field": "ENROLID3",
           "sql_field": "",
           "sql_alias": "",
           "target_field": "PersonId"
@@ -138,7 +138,7 @@
         },
         {
           "source_field": "",
-          "sql_field": "CASE WHEN MHSACOVG IS NULL THEN '0' ELSE MHSACOVG END",
+          "sql_field": "CASE\r\nWHEN\r\nMHSACOVG IS NULL THEN '0'\r\nELSE MHSACOVG\r\nEND",
           "sql_alias": "VALUE_AS_NUMBER",
           "target_field": "ValuesAsNumber"
         }

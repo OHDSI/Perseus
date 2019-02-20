@@ -75,9 +75,16 @@ def get_sql_data(mapping_items):
     required_fields = ['source_field', 'sql_field', 'sql_alias']
     mapping_data = mapping_items.get('mapping', [])
     condition_data = mapping_items.get('condition', [])
+    lookup = mapping_items.get('lookup', [])
 
-    result_data = (mapping_data + condition_data).fillna('')
-    print(result_data)
+    lookup_data = lookup.fillna('').map(
+        lambda el_list: list(
+            map(lambda el: el.get('sql_field', ''), el_list))).map(
+        lambda li: [item for sublist in li for item in
+                    sublist]) if isinstance(
+        lookup, pd.Series) else lookup
+
+    result_data = (mapping_data + condition_data + lookup_data).fillna('')
 
     for index, row in result_data.iteritems():
         all_fields += [{k: dic[k] for k in required_fields} for dic in row]
