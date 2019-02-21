@@ -18,7 +18,7 @@
         },
         {
           "source_field": "providField, STDPROV",
-          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(CAST(PROVID AS VARCHAR), '')))",
           "sql_alias": "ProviderIdKey",
           "target_field": "ProviderIdKey"
         }
@@ -106,7 +106,7 @@
         },
         {
           "source_field": "providField, STDPROV",
-          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(CAST(PROVID AS VARCHAR), '')))",
           "sql_alias": "ProviderIdKey",
           "target_field": "ProviderIdKey"
         }
@@ -244,7 +244,7 @@
         },
         {
           "source_field": "TSVCDAT",
-          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(CAST(PROVID AS VARCHAR), '')))",
           "sql_alias": "ProviderIdKey",
           "target_field": "ProviderIdKey"
         }
@@ -366,7 +366,7 @@
         },
         {
           "source_field": "TSVCDAT",
-          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL({providField}, '')))",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(CAST(PROVID AS VARCHAR), '')))",
           "sql_alias": "ProviderIdKey",
           "target_field": "ProviderIdKey"
         }

@@ -148,12 +148,17 @@ def get_xml(json):
                     target_field = row['target_field']
                     v = SubElement(domain_definition_tag, target_field)
                     v.text = sql_alias if sql_alias else source_field
+
             if lookup is not None:
                 for row in lookup:
                     if row:
                         concepts_tag = SubElement(domain_definition_tag,
                                                   'Concepts')
                         concept_tag = SubElement(concepts_tag, 'Concept')
+                        options = row.get('options')
+                        if options is not None:
+                            for key, value in options.items():
+                                SubElement(concept_tag, key).text = value
                         vocabulary = row.get('lookup')
                         if vocabulary:
                             concept_id_mapper = SubElement(concept_tag,
@@ -187,9 +192,24 @@ def get_xml(json):
 
 
 if __name__ == '__main__':
-    with open('sources/ENROLLMENT_DETAIL.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
+    # with open('sources/ENROLLMENT_DETAIL.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/OUTPATIENT_SERVICES.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
+    # with open('sources/DRUG_CLAIMS.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/FACILITY_HEADER.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/HEALTH_RISK_ASSESSMENT.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/INPATIENT_ADMISSIONS.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    with open('sources/INPATIENT_SERVICES.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
