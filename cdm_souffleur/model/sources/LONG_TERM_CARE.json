@@ -1,0 +1,343 @@
+{
+  "mapping_items": [
+    {
+      "source_table": "LONG_TERM_CARE",
+      "target_table": "Condition_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SCVDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "LONG_TERM_CARE",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "4"
+            }
+          ],
+          "lookup": "Condition",
+          "sql_field": [
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "LONG_TERM_CARE",
+      "target_table": "Procedure_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "TSVCDAT",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "EndDate"
+        },
+        {
+          "source_field": "STDPROV, PROVID",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(AST(PROVID AS VARCHAR), '')))",
+          "sql_alias": "ProviderIdKey",
+          "target_field": "ProviderIdKey"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "LONG_TERM_CARE",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "PROC1",
+              "defaultTypeId": "1",
+              "isNullable": "true"
+            }
+          ],
+          "lookup": "Procedure",
+          "sql_field": [
+            {
+              "source_field": "PROC1",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "LONG_TERM_CARE",
+      "target_table": "Procedure_Cost",
+      "mapping": [
+        {
+          "source_field": "COPAY",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidCopay"
+        },
+        {
+          "source_field": "COINS",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidCoinsurance"
+        },
+        {
+          "source_field": "DEDUCT",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidTowardDeductible"
+        },
+        {
+          "source_field": "NETPAY",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidByPayer"
+        },
+        {
+          "source_field": "COB",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidByCoordinationBenefits"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "LONG_TERM_CARE",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "REVCODE"
+            }
+          ],
+          "lookup": "Revenue",
+          "sql_field": [
+            {
+              "source_field": "REVCODE",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "LONG_TERM_CARE",
+      "target_table": "Visit_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "TSVCDAT",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "EndDate"
+        },
+        {
+          "source_field": "STDPROV, PROVID",
+          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(AST(PROVID AS VARCHAR), '')))",
+          "sql_alias": "ProviderIdKey",
+          "target_field": "ProviderIdKey"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "LONG_TERM_CARE",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "CLAIM_TYPE",
+              "defaultTypeId": "44818517"
+            }
+          ],
+          "lookup": "Visits",
+          "sql_field": [
+            {
+              "source_field": "DRG",
+              "sql_field": "'LTCP'",
+              "sql_alias": "CLAIM_TYPE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "LONG_TERM_CARE",
+      "target_table": "Death",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "SVCDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "LONG_TERM_CARE",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "38003567"
+            }
+          ],
+          "lookup": "Death",
+          "sql_field": [
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },{
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        },
+        {
+          "source_table": "LONG_TERM_CARE",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "38003567"
+            }
+          ],
+          "lookup": "Death",
+          "sql_field": [
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

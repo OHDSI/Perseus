@@ -210,6 +210,18 @@ if __name__ == '__main__':
     # with open('sources/INPATIENT_ADMISSIONS.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    with open('sources/INPATIENT_SERVICES.json') as file:
+    # with open('sources/INPATIENT_SERVICES.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/L_LOCATION.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/L_PROVIDER.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/LAB.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    with open('sources/LONG_TERM_CARE.json') as file:
         data = json.load(file)
         print(get_xml(data))
