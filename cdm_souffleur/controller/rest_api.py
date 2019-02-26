@@ -1,5 +1,7 @@
 from flask import Flask, request
 from cdm_souffleur.model.xml_writer import get_xml
+from _thread import start_new_thread
+from cdm_souffleur.model.detector import find_domain, load_report, load_vocabulary
 
 
 app = Flask(__name__)
@@ -66,6 +68,37 @@ def xml():
     return '''
     This is answer {}
     '''.format(xml)
+
+
+@app.route('/find_domain')
+def find_domain_call():
+    column_name = request.args.get('column_name')
+    table_name = request.args.get('table_name')
+    start_new_thread(find_domain, (column_name, table_name))
+    return 'OK'
+
+
+@app.route('/load_report')
+def load_report_call():
+    """
+    load report about source schema
+    :return:
+    """
+    path = request.args.get('path')
+    start_new_thread(load_report, (path, ))
+    return 'OK'
+
+
+@app.route('/load_vocabulary')
+def load_vocabulary_call():
+    """
+    load vocabulary
+    :return:
+    """
+    #TODO rewrite to threading instead _thread?
+    path = request.args.get('path')
+    start_new_thread(load_vocabulary, (path, ))
+    return 'OK'
 
 
 if __name__ == '__main__':
