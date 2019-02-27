@@ -22,7 +22,7 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
     :param path - path to directory loaded from ATHENA
     """
     init_spark()
-    list = []
+    vocabulary_list = []
     for filename in os.listdir(path):
         if filename.endswith('.csv'):
             filepath = str(Path(path) / filename)
@@ -30,8 +30,8 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
             df = spark.read.csv(filepath, sep='\t', header=True,
                                 inferSchema=True)
             df.createOrReplaceTempView(tablename)
-            list.append(tablename)
-    return list
+            vocabulary_list.append(tablename)
+    return vocabulary_list
 
 
 def flatten_pd_df(pd_df: pandas.DataFrame):
@@ -59,6 +59,7 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
     :param - path to whiteRabbit report
     """
     init_spark()
+    report_list = []
     xls = pandas.ExcelFile(Path(filepath))
     sheets = xls.sheet_names
     for sheet in sheets:
@@ -67,7 +68,8 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
         rdd_of_rows = flatten_pd_df(df)
         spark_df = spark.createDataFrame(rdd_of_rows)
         spark_df.createOrReplaceTempView(tablename)
-    return "suc report"
+        report_list.append(tablename)
+    return report_list
 
 
 @time_it
@@ -85,18 +87,18 @@ def find_domain(column_name, table_name):
     # sql_broadcast = sc.broadcast(sql)
     try:
         res = spark.sql(sql.format(column_name, table_name))
-    except AnalysisException:
-        #TODO how handle exception
+    except AnalysisException as error:
+        # TODO what return if exception (no such table exsits)
         res = 'error'
-        print('hello')
+        print(error)
     return res
 
 
 if __name__ == '__main__':
-    #define entri point
     # TODO: detect configuration of PC and create effective entry point
     # cores = os.cpu_count()
-    init_spark()
-    load_report()
-    load_vocabulary()
-    find_domain('dx1', 'facility_header').show()
+    # init_spark()
+    # load_report()
+    # load_vocabulary()
+    # find_domain('dx1', 'facility_header').show()
+    print(find_domain.__doc__)

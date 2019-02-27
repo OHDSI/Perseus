@@ -1,8 +1,8 @@
 from flask import Flask, request
 from cdm_souffleur.model.xml_writer import get_xml
 from _thread import start_new_thread
-from cdm_souffleur.model.detector import find_domain, load_report, load_vocabulary
-
+from cdm_souffleur.model.detector import find_domain, load_report, \
+    load_vocabulary
 
 app = Flask(__name__)
 
@@ -85,7 +85,7 @@ def load_report_call():
     :return:
     """
     path = request.args.get('path')
-    start_new_thread(load_report, (path, ))
+    start_new_thread(load_report, (path,))
     return 'OK'
 
 
@@ -95,12 +95,11 @@ def load_vocabulary_call():
     load vocabulary
     :return:
     """
-    #TODO rewrite to threading instead _thread?
+    # TODO rewrite to threading instead _thread?
     path = request.args.get('path')
-    start_new_thread(load_vocabulary, (path, ))
+    start_new_thread(load_vocabulary, (path,))
     return 'OK'
 
 
 if __name__ == '__main__':
     app.run()
-
