@@ -13,7 +13,6 @@ def init_spark():
         .getOrCreate()
 
 
-@time_it
 def load_vocabulary(path=r'D:\vocabulary\\'):
     """
     Load ATHENA vocabulary into Dataframe structure
@@ -32,7 +31,6 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
     return vocabulary_list
 
 
-@time_it
 def find_domain(column_name, table_name):
     """
     find target information by source code

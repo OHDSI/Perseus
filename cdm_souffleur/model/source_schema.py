@@ -13,7 +13,6 @@ def get_source_schema():
     pass
 
 
-@time_it
 def load_report(filepath=Path('D:/mdcr.xlsx')):
     """
     Load report from whiteRabbit to Dataframe, separate table for each sheet
