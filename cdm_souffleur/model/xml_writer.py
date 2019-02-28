@@ -8,26 +8,26 @@ def get_mapping(path):
     """
     read mapping
     """
-    with open(path) as file:
-        data = json.load(file)
-        return pd.DataFrame(data['mapping'])
+    with open(path) as file_:
+        data_ = json.load(file_)
+        return pd.DataFrame(data_['mapping'])
 
 
 def get_lookup(path):
     """
     read lookup
     """
-    with open(path) as file:
-        data = json.load(file)
-        return pd.DataFrame(data['lookup'])
+    with open(path) as file_:
+        data_ = json.load(file_)
+        return pd.DataFrame(data_['lookup'])
 
 
-def get_source_tables(data):
+def get_source_tables(data_):
     """
     return distinct source tables
     :param data: loaded mapping json
     """
-    return pd.unique(data['source_table'])
+    return pd.unique(data_['source_table'])
 
 
 def convert_underscore_to_camel(word: str):
@@ -46,13 +46,13 @@ def prettify(elem):
     return reparsed.toprettyxml(indent="  ")
 
 
-def prepare_sql(data, source_table):
+def prepare_sql(data_, source_table):
     """
     prepare sql from mapping json
     """
-    fields = data.loc[:, ['source_field',
-                          'sql_field',
-                          'sql_alias']]
+    fields = data_.loc[:, ['source_field',
+                           'sql_field',
+                           'sql_alias']]
     sql = 'select '
     for index, row in fields.iterrows():
         if not row['sql_field']:
@@ -94,7 +94,7 @@ def get_sql_data(mapping_items):
     return pd.DataFrame(all_fields_unique)
 
 
-def get_xml(json):
+def get_xml(json_):
     """
     prepare XML for CDM
     """
@@ -103,7 +103,7 @@ def get_xml(json):
     # mapping_data = get_mapping(path)
     # lookup_data = get_lookup(path)
     # source_tables = get_source_tables(mapping_data)
-    mapping_items = pd.DataFrame(json['mapping_items'])
+    mapping_items = pd.DataFrame(json_['mapping_items'])
     source_tables = pd.unique(mapping_items['source_table'])
     mapping_data = get_sql_data(mapping_items)
 

@@ -1,8 +1,8 @@
 from flask import Flask, request
 from cdm_souffleur.model.xml_writer import get_xml
 from _thread import start_new_thread
-from cdm_souffleur.model.detector import find_domain, load_report, \
-    load_vocabulary
+from cdm_souffleur.model.detector import find_domain, load_vocabulary
+from cdm_souffleur.model.source_schema import load_report
 
 app = Flask(__name__)
 
