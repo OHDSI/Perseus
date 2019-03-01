@@ -72,6 +72,9 @@ def get_sql_data(mapping_items):
     """
     # TODO look to possibility use sets
     all_fields = []
+    print(type(mapping_items))
+    # TODO BUG use to filter sql items by sorce table
+    print(mapping_items[mapping_items.source_table == 'OUTPATIENT_SERVICES'])
     required_fields = ['source_field', 'sql_field', 'sql_alias']
     mapping_data = mapping_items.get('mapping', pd.Series())
     condition_data = mapping_items.get('condition', pd.Series())

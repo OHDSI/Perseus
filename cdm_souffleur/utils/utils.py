@@ -1,6 +1,8 @@
 import time
 from functools import wraps
 
+from pyspark.sql import SparkSession
+
 
 def time_it(method):
     """decorator to measure time of execution"""
@@ -12,3 +14,11 @@ def time_it(method):
         print('method {} est: {}'.format(method.__name__, end - start))
         return result
     return _timed
+
+
+def spark():
+    spark_ = SparkSession \
+        .builder \
+        .appName("Detect dictionary and vocabulary") \
+        .getOrCreate()
+    return spark_
