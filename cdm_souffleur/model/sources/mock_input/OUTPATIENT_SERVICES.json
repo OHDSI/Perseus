@@ -393,7 +393,7 @@
       ]
     },
     {
-      "source_table": "OUTPATIENT_SERVICES2",
+      "source_table": "OUTPATIENT_SERVICES",
       "target_table": "Death",
       "mapping": [
         {

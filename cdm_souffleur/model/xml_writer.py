@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 import json
 import pandas as pd
@@ -25,7 +25,7 @@ def get_lookup(path):
 def get_source_tables(data_):
     """
     return distinct source tables
-    :param data: loaded mapping json
+    :param data_: loaded mapping json
     """
     return pd.unique(data_['source_table'])
 
@@ -46,10 +46,43 @@ def prettify(elem):
     return reparsed.toprettyxml(indent="  ")
 
 
-def prepare_sql(data_, source_table):
+def prepare_sql(mapping_items, source_table):
     """
     prepare sql from mapping json
     """
+
+    def get_sql_data_items(mapping_items_, source_table_):
+        """
+        return unique all required fields to prepare sql
+        """
+        all_fields = []
+        mapping_items_for_table = mapping_items_[
+            mapping_items_.source_table == source_table_]
+        required_fields = ['source_field', 'sql_field', 'sql_alias']
+        mapping_data = mapping_items_for_table.get('mapping', pd.Series())
+        condition_data = mapping_items_for_table.get('condition', pd.Series())
+        lookup = mapping_items_for_table.get('lookup', pd.Series())
+
+        lookup_data = lookup.fillna('').map(
+            lambda el_list: list(
+                map(lambda el: el.get('sql_field', ''), el_list))).map(
+            lambda li: [item for sublist in li for item in
+                        sublist]) if isinstance(
+            lookup, pd.Series) else lookup
+
+        result_data = pd.concat(
+            [mapping_data, condition_data, lookup_data]).fillna('')
+
+        for index_, row_ in result_data.iteritems():
+            all_fields += [{k: dic[k] for k in required_fields} for dic in
+                           row_]
+        all_fields_unique = [dict(tuple_map_item) for tuple_map_item in
+                             {tuple(map_item.items()) for map_item in
+                              all_fields}]
+
+        return pd.DataFrame(all_fields_unique)
+
+    data_ = get_sql_data_items(mapping_items, source_table)
     fields = data_.loc[:, ['source_field',
                            'sql_field',
                            'sql_alias']]
@@ -66,37 +99,6 @@ def prepare_sql(data_, source_table):
     return sql
 
 
-def get_sql_data(mapping_items):
-    """
-    return unique all required fields to prepare sql
-    """
-    # TODO look to possibility use sets
-    all_fields = []
-    print(type(mapping_items))
-    # TODO BUG use to filter sql items by sorce table
-    print(mapping_items[mapping_items.source_table == 'OUTPATIENT_SERVICES'])
-    required_fields = ['source_field', 'sql_field', 'sql_alias']
-    mapping_data = mapping_items.get('mapping', pd.Series())
-    condition_data = mapping_items.get('condition', pd.Series())
-    lookup = mapping_items.get('lookup', pd.Series())
-
-    lookup_data = lookup.fillna('').map(
-        lambda el_list: list(
-            map(lambda el: el.get('sql_field', ''), el_list))).map(
-        lambda li: [item for sublist in li for item in
-                    sublist]) if isinstance(
-        lookup, pd.Series) else lookup
-
-    result_data = pd.concat(
-        [mapping_data, condition_data, lookup_data]).fillna('')
-
-    for index, row in result_data.iteritems():
-        all_fields += [{k: dic[k] for k in required_fields} for dic in row]
-    all_fields_unique = [dict(tuple_map_item) for tuple_map_item in
-                         {tuple(map_item.items()) for map_item in all_fields}]
-    return pd.DataFrame(all_fields_unique)
-
-
 def get_xml(json_):
     """
     prepare XML for CDM
@@ -107,13 +109,12 @@ def get_xml(json_):
     # lookup_data = get_lookup(path)
     # source_tables = get_source_tables(mapping_data)
     mapping_items = pd.DataFrame(json_['mapping_items'])
-    source_tables = pd.unique(mapping_items['source_table'])
-    mapping_data = get_sql_data(mapping_items)
+    source_tables = pd.unique(mapping_items.get('source_table'))
 
     for source_table in source_tables:
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
-        sql = prepare_sql(mapping_data, source_table)
+        sql = prepare_sql(mapping_items, source_table)
         query_tag.text = sql
         target_tables = mapping_items.loc[
             mapping_items['source_table'] == source_table].fillna('')
@@ -195,12 +196,12 @@ def get_xml(json_):
 
 
 if __name__ == '__main__':
-    # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
+    with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
         data = json.load(file)
         print(get_xml(data))
+    # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/DRUG_CLAIMS.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
@@ -226,5 +227,8 @@ if __name__ == '__main__':
     #     data = json.load(file)
     #     print(get_xml(data))
     # with open('sources/mock_input/LONG_TERM_CARE.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
