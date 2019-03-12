@@ -17,6 +17,7 @@ def time_it(method):
 
 
 def spark():
+    """spark Session factory"""
     spark_ = SparkSession \
         .builder \
         .appName("Detect dictionary and vocabulary") \
