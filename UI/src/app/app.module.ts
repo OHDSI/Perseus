@@ -11,10 +11,16 @@ import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import { MappingComponent } from './components/layout/mapping/mapping.component';
+import { OverviewComponent } from './components/layout/overview/overview.component';
+import { VocabularyComponent } from './components/layout/vocabulary/vocabulary.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MappingComponent,
+    OverviewComponent,
+    VocabularyComponent
   ],
   imports: [
     BrowserModule,

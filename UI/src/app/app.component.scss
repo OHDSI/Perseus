@@ -1,3 +1,5 @@
+@import 'theme/variables.scss';
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -29,4 +31,24 @@ h1.app-name {
     /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
        `<body>` to be our scrolling element for mobile layouts. */
     flex: 1 0 auto;
+}
+
+.app-route-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    a {
+        text-decoration: none;
+        color: $black;
+        font-weight: bold;
+    }
+
+    .active {
+        color: $main-blue;
+    }
+
+    mat-list-item {
+        width: inherit;
+    }
 }

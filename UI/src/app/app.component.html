@@ -19,6 +19,33 @@
 		</mat-nav-list>
 	</mat-sidenav>
 	<mat-sidenav-content>
+			<mat-list class="app-route-links">
+				<mat-list-item>
+					<a 
+						routerLink="/mapping"
+						routerLinkActive="active"
+					>
+						Mapping
+					</a>
+				</mat-list-item>
+				<mat-list-item>
+					<a 
+						routerLink="/overview"
+						routerLinkActive="active"
+					>
+						Overview
+					</a>
+				</mat-list-item>
+				<mat-list-item>
+					<a 
+						routerLink="/vocabulary"
+						routerLinkActive="active"
+					>
+						Vocabulary
+					</a>
+				</mat-list-item>
+			</mat-list>
+
 			<router-outlet></router-outlet>
 	</mat-sidenav-content>
 </mat-sidenav-container>
