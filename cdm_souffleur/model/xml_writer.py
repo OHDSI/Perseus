@@ -87,6 +87,7 @@ def prepare_sql(mapping_items, source_table):
         else:
             sql += row['sql_field'] + ' as ' + row['sql_alias'] + ',\n'
     sql = sql[:-2] + '\n'
+    #TODO remove extra blank lines from sql -> amove to contants <- in formating also used
     sql += 'from ' + source_table + '\r\n' + \
            'join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID' + \
            '\r\norder by ENROLID'
