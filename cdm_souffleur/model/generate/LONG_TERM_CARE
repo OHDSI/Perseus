@@ -1,0 +1,21 @@
+<QueryDefinition><Query>select COPAY,
+COB,
+RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(AST(PROVID AS VARCHAR), ''))) as ProviderIdKey,
+ENROLID,
+PROC1,
+TSVCDAT,
+DEDUCT,
+DX5,
+SVCDATE,
+NETPAY,
+DX1,
+REVCODE,
+'LTCP' as CLAIM_TYPE,
+DX2,
+DX4,
+SCVDATE,
+DX3,
+COINS
+from LONG_TERM_CARE
+join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID
+order by ENROLID</Query><ConditionOccurrence><ConditionOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SCVDATE</StartDate><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" key="DX1" /><Field defaultTypeId="2" key="DX2" /><Field defaultTypeId="3" key="DX3" /><Field defaultTypeId="4" key="DX4" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition></ConditionOccurrence><ProcedureOccurrence><ProcedureOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>TSVCDAT</EndDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Procedure</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" isNullable="true" key="PROC1" /></Fields></Concept></Concepts></ProcedureOccurrenceDefinition></ProcedureOccurrence><ProcedureCost><ProcedureCostDefinition><PaidCopay>COPAY</PaidCopay><PaidCoinsurance>COINS</PaidCoinsurance><PaidTowardDeductible>DEDUCT</PaidTowardDeductible><PaidByPayer>NETPAY</PaidByPayer><PaidByCoordinationBenefits>COB</PaidByCoordinationBenefits><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Revenue</Lookup></Mapper></ConceptIdMapper><Fields><Field key="REVCODE" /></Fields></Concept></Concepts></ProcedureCostDefinition></ProcedureCost><VisitOccurrence><VisitOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>TSVCDAT</EndDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Visits</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="44818517" key="CLAIM_TYPE" /></Fields></Concept></Concepts></VisitOccurrenceDefinition></VisitOccurrence><Death><DeathDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Death</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="38003567" key="DX1" /><Field defaultTypeId="38003567" key="DX2" /><Field defaultTypeId="38003567" key="DX3" /><Field defaultTypeId="38003567" key="DX4" /></Fields></Concept></Concepts><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Death</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="38003567" key="DX1" /><Field defaultTypeId="38003567" key="DX2" /><Field defaultTypeId="38003567" key="DX3" /><Field defaultTypeId="38003567" key="DX4" /><Field defaultTypeId="38003567" key="DX5" /></Fields></Concept></Concepts></DeathDefinition></Death></QueryDefinition>

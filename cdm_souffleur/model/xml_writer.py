@@ -2,6 +2,8 @@ from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 import json
 import pandas as pd
+from pathlib import Path
+import os
 
 
 def get_mapping(path):
@@ -188,8 +190,8 @@ def get_xml(json_):
                                                    key, value in
                                                    field.items()})
             previous_target_table_name = target_table_name
-        # xml = ElementTree(query_definition_tag)
-        # xml.write(source_table)
+        xml = ElementTree(query_definition_tag)
+        xml.write(Path('generate') / source_table)
         result += '{} table xml \r\n {} + \r\n'.format(source_table, prettify(
             query_definition_tag))
     return result
@@ -199,36 +201,36 @@ if __name__ == '__main__':
     with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
         data = json.load(file)
         print(get_xml(data))
-    # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/DRUG_CLAIMS.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/FACILITY_HEADER.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/HEALTH_RISK_ASSESSMENT.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/L_LOCATION.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/L_PROVIDER.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/LAB.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/LONG_TERM_CARE.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
+    with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/DRUG_CLAIMS.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/FACILITY_HEADER.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/HEALTH_RISK_ASSESSMENT.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/L_LOCATION.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/L_PROVIDER.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/LAB.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
+    with open('sources/mock_input/LONG_TERM_CARE.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
     # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
