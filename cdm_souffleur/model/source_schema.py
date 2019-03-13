@@ -56,14 +56,16 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
     for root_dir, dirs, files in os.walk(Path('generate/CDM_xml')):
         for filename in files:
             file_tree = ElementTree.parse(Path(root_dir) / filename)
+            print(Path(root_dir) / filename)
             # TODO move all from replace to dict -> format query to run inside spark sql
             query = file_tree.find('Query').text.replace("""
 join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID
 """, '').replace("VARCHAR", "STRING").replace('&lt;', '<').replace(
-                '&gt;', '>')
+                '&gt;', '>').replace('null as', '"" as')
             filtered_data = spark_.sql(query)
-            print(filtered_data)
-            # filtered_data.write.csv(Path('generate/CDM_source_data') / filename)
+            print(filtered_data.printSchema)
+
+            filtered_data.write.csv(str(Path('generate/CDM_source_data') / filename), compression='gzip', quote='`', nullValue='\0', dateFormat='yyyy-MM-dd')
 
 
 if __name__ == '__main__':

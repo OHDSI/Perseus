@@ -15,6 +15,8 @@ SUM(NETPAY) OVER (PARTITION BY ENROLID, NDCNUM,NDCNUM, SVCDATE) as PAID_BY_PAYER
 SVCDATE as DRUG_EXPOSURE_START_DATE,
 SUM(COB) OVER (PARTITION BY ENROLID, NDCNUM,NDCNUM, SVCDATE) as PAID_BY_COORDINATION_BENEFITS,
 NDCNUM as DRUG_SOURCE_VALUE
-from DRUG_CLAIMS
-join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID
+from DRUG_CLAIMS
+
+join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID
+
 order by ENROLID</Query><DrugExposure><DrugExposureDefinition><PersonId>PERSON_ID</PersonId><StartDate>DRUG_EXPOSURE_START_DATE</StartDate><EndDate>DRUG_EXPOSURE_START_DATE</EndDate><DaysSupply>DAYS_SUPPLY</DaysSupply><Refill>REFILLS</Refill><Quantity>QUANTITY</Quantity><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Drug</Lookup></Mapper></ConceptIdMapper><Fields><Field eventDate="DRUG_EXPOSURE_START_DATE" key="DRUG_SOURCE_VALUE" typeId="DRUG_TYPE_CONCEPT_ID" /><Field eventDate="DRUG_EXPOSURE_START_DATE" key="DRUG_SOURCE_VALUE_9" sourceKey="DRUG_SOURCE_VALUE" typeId="DRUG_TYPE_CONCEPT_ID" /></Fields></Concept></Concepts></DrugExposureDefinition></DrugExposure><DrugCost><DrugCostDefinition><PaidCopay>PAID_COPAY</PaidCopay><PaidCoinsurance>PAID_COINSURANCE</PaidCoinsurance><PaidTowardDeductible>PAID_TOWARD_DEDUCTIBLE</PaidTowardDeductible><PaidByPayer>PAID_BY_PAYER</PaidByPayer><PaidByCoordinationBenefits>PAID_BY_COORDINATION_BENEFITS</PaidByCoordinationBenefits><TotalPaid>TOTAL_PAID</TotalPaid><IngredientCost>INGREDIENT_COST</IngredientCost><DispensingFee>DISPENSING_FEE</DispensingFee><AverageWholesalePrice>AVERAGE_WHOLESALE_PRICE</AverageWholesalePrice><CurrencyConceptId>CurrencyConceptId</CurrencyConceptId></DrugCostDefinition></DrugCost></QueryDefinition>

@@ -193,26 +193,26 @@ if __name__ == '__main__':
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
+    with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
     # with open('sources/mock_input/DRUG_CLAIMS.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    with open('sources/mock_input/FACILITY_HEADER.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
+    # with open('sources/mock_input/FACILITY_HEADER.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
     # with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
     #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/LAB.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
     # with open('sources/mock_input/LONG_TERM_CARE.json') as file:
     #     data = json.load(file)
-    #     print(get_xml(data))
     #     print(get_xml(data))
         # SQL for near written manually in output cause of specific
     # with open('sources/mock_input/HEALTH_RISK_ASSESSMENT.json') as file:
