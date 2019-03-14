@@ -6,8 +6,8 @@
       "mapping": [
         {
           "source_field": "ENROLID",
-          "sql_field": "",
-          "sql_alias": "",
+          "sql_field": "ENROLID",
+          "sql_alias": "PERSON_ID",
           "target_field": "PersonId"
         },
         {

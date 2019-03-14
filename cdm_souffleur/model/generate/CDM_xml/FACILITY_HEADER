@@ -1,18 +1,4 @@
 <QueryDefinition><Query>select CASE
-WHEN DXVER NOT IN ('0', '9') THEN
-CASE WHEN SVCDATE &amp;lt; '10/01/2015' THEN '9'
-ELSE '0'
-END
-ELSE DXVER
-END as DXVER,
-DX3,
-DX5,
-DX7,
-PROC3,
-DX8,
-DX1,
-PROC5,
-CASE
 WHEN DSTATUS = '01' THEN '1'
 WHEN DSTATUS = '02' THEN '1'
 WHEN DSTATUS = '03' THEN '1'
@@ -40,21 +26,6 @@ WHEN DSTATUS = '72' THEN '1'
 WHEN DSTATUS = '99' THEN '1'
 ELSE '0'
 END as toObservation,
-PROC2,
-DX9,
-CASE
-WHEN DSTATUS IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '40', '41', '42') THEN 1
-ELSE 0
-END as DIED,
-DX4,
-DSTATUS,
-DX2,
-ENROLID,
-PROC1,
-DX6,
-PROC4,
-PROC6,
-SVCDATE,
 CASE
 WHEN DSTATUS = '01' THEN 'Discharged to home self care'
 WHEN DSTATUS = '02' THEN 'Transfer to short term hospital'
@@ -83,7 +54,35 @@ WHEN DSTATUS = '72' THEN 'Transfer/referred to this facility for outpt svcs'
 WHEN DSTATUS = '99' THEN 'Transfer (Hospital ID MDST change)'
 ELSE NULL
 END as VALUE_AS_STRING,
-RTRIM(LTRIM(COALESCE(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(COALESCE(CAST(PROVID AS VARCHAR), ''))) as ProviderIdKey
-from FACILITY_HEADER
-join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID
-order by ENROLID</Query><ConditionOccurrence><ConditionOccurrenceDefinition><Condition>{DXVER} = 9</Condition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="2" key="DX1" /><Field defaultTypeId="3" key="DX2" /><Field defaultTypeId="4" key="DX3" /><Field defaultTypeId="5" key="DX4" /><Field defaultTypeId="6" key="DX5" /><Field defaultTypeId="7" key="DX6" /><Field defaultTypeId="8" key="DX7" /><Field defaultTypeId="9" key="DX8" /><Field defaultTypeId="10" key="DX9" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition><ConditionOccurrenceDefinition><Condition>{DXVER} = 0</Condition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition_icd10</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="2" key="DX1" /><Field defaultTypeId="3" key="DX2" /><Field defaultTypeId="4" key="DX3" /><Field defaultTypeId="5" key="DX4" /><Field defaultTypeId="6" key="DX5" /><Field defaultTypeId="7" key="DX6" /><Field defaultTypeId="8" key="DX7" /><Field defaultTypeId="9" key="DX8" /><Field defaultTypeId="10" key="DX9" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition><ConditionOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><IdRequired>true</IdRequired><ConceptIdMapper><Mapper><Lookup>Procedure</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="102" key="DX1" /><Field defaultTypeId="103" key="DX2" /><Field defaultTypeId="104" key="DX3" /><Field defaultTypeId="105" key="DX4" /><Field defaultTypeId="106" key="DX5" /><Field defaultTypeId="107" key="DX6" /><Field defaultTypeId="108" key="DX7" /><Field defaultTypeId="109" key="DX8" /><Field defaultTypeId="110" key="DX9" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition></ConditionOccurrence><DrugExposure><DrugExposureDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>SVCDATE</EndDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Drug</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" key="PROC1" /><Field defaultTypeId="2" key="PROC2" /><Field defaultTypeId="3" key="PROC3" /><Field defaultTypeId="4" key="PROC4" /><Field defaultTypeId="5" key="PROC5" /><Field defaultTypeId="6" key="PROC6" /></Fields></Concept></Concepts></DrugExposureDefinition></DrugExposure><ProcedureOccurrence><ProcedureOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Procedure</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="2" key="PROC1" /><Field defaultTypeId="3" key="PROC2" /><Field defaultTypeId="4" key="PROC3" /><Field defaultTypeId="5" key="PROC4" /><Field defaultTypeId="6" key="PROC5" /><Field defaultTypeId="7" key="PROC6" /></Fields></Concept></Concepts></ProcedureOccurrenceDefinition></ProcedureOccurrence><Death><DeathDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><Died>DIED</Died><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Death</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="38003567" key="DX1" /><Field defaultTypeId="38003567" key="DX2" /><Field defaultTypeId="38003567" key="DX3" /><Field defaultTypeId="38003567" key="DX4" /><Field defaultTypeId="38003567" key="DX5" /><Field defaultTypeId="38003567" key="DX6" /><Field defaultTypeId="38003567" key="DX7" /><Field defaultTypeId="38003567" key="DX8" /><Field defaultTypeId="38003567" key="DX9" /></Fields></Concept></Concepts><Concepts><Concept><Fields><Field defaultTypeId="38003566" defsultConceptId="1" key="DSTATUS" /></Fields></Concept></Concepts></DeathDefinition></Death><Observation><ObservationDefinition><Condition>{toObservation} = 1</Condition><IsUnique>true</IsUnique><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ValuesAsString>VALUE_AS_STRING</ValuesAsString><Concepts><Concept><Fields><Field defaultConceptId="4202605" defaultTypeId="38000280" key="DSTATUS" /></Fields></Concept></Concepts></ObservationDefinition></Observation></QueryDefinition>
+PROC4,
+DX9,
+PROC6,
+ENROLID as PERSON_ID,
+DX8,
+DX6,
+CASE
+WHEN DSTATUS IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '40', '41', '42') THEN 1
+ELSE 0
+END as DIED,
+RTRIM(LTRIM(COALESCE(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(COALESCE(CAST(PROVID AS VARCHAR), ''))) as ProviderIdKey,
+DX3,
+PROC3,
+ENROLID,
+DX7,
+CASE
+WHEN DXVER NOT IN ('0', '9') THEN
+CASE WHEN SVCDATE &amp;lt; '10/01/2015' THEN '9'
+ELSE '0'
+END
+ELSE DXVER
+END as DXVER,
+DX1,
+DSTATUS,
+PROC2,
+PROC1,
+PROC5,
+DX5,
+DX2,
+SVCDATE,
+DX4
+from FACILITY_HEADER  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID</Query><ConditionOccurrence><ConditionOccurrenceDefinition><Condition>{DXVER} = 9</Condition><PersonId>PERSON_ID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="2" key="DX1" /><Field defaultTypeId="3" key="DX2" /><Field defaultTypeId="4" key="DX3" /><Field defaultTypeId="5" key="DX4" /><Field defaultTypeId="6" key="DX5" /><Field defaultTypeId="7" key="DX6" /><Field defaultTypeId="8" key="DX7" /><Field defaultTypeId="9" key="DX8" /><Field defaultTypeId="10" key="DX9" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition><ConditionOccurrenceDefinition><Condition>{DXVER} = 0</Condition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition_icd10</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="2" key="DX1" /><Field defaultTypeId="3" key="DX2" /><Field defaultTypeId="4" key="DX3" /><Field defaultTypeId="5" key="DX4" /><Field defaultTypeId="6" key="DX5" /><Field defaultTypeId="7" key="DX6" /><Field defaultTypeId="8" key="DX7" /><Field defaultTypeId="9" key="DX8" /><Field defaultTypeId="10" key="DX9" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition><ConditionOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><IdRequired>true</IdRequired><ConceptIdMapper><Mapper><Lookup>Procedure</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="102" key="DX1" /><Field defaultTypeId="103" key="DX2" /><Field defaultTypeId="104" key="DX3" /><Field defaultTypeId="105" key="DX4" /><Field defaultTypeId="106" key="DX5" /><Field defaultTypeId="107" key="DX6" /><Field defaultTypeId="108" key="DX7" /><Field defaultTypeId="109" key="DX8" /><Field defaultTypeId="110" key="DX9" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition></ConditionOccurrence><DrugExposure><DrugExposureDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>SVCDATE</EndDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Drug</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" key="PROC1" /><Field defaultTypeId="2" key="PROC2" /><Field defaultTypeId="3" key="PROC3" /><Field defaultTypeId="4" key="PROC4" /><Field defaultTypeId="5" key="PROC5" /><Field defaultTypeId="6" key="PROC6" /></Fields></Concept></Concepts></DrugExposureDefinition></DrugExposure><ProcedureOccurrence><ProcedureOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Procedure</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="2" key="PROC1" /><Field defaultTypeId="3" key="PROC2" /><Field defaultTypeId="4" key="PROC3" /><Field defaultTypeId="5" key="PROC4" /><Field defaultTypeId="6" key="PROC5" /><Field defaultTypeId="7" key="PROC6" /></Fields></Concept></Concepts></ProcedureOccurrenceDefinition></ProcedureOccurrence><Death><DeathDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><Died>DIED</Died><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Death</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="38003567" key="DX1" /><Field defaultTypeId="38003567" key="DX2" /><Field defaultTypeId="38003567" key="DX3" /><Field defaultTypeId="38003567" key="DX4" /><Field defaultTypeId="38003567" key="DX5" /><Field defaultTypeId="38003567" key="DX6" /><Field defaultTypeId="38003567" key="DX7" /><Field defaultTypeId="38003567" key="DX8" /><Field defaultTypeId="38003567" key="DX9" /></Fields></Concept></Concepts><Concepts><Concept><Fields><Field defaultTypeId="38003566" defsultConceptId="1" key="DSTATUS" /></Fields></Concept></Concepts></DeathDefinition></Death><Observation><ObservationDefinition><Condition>{toObservation} = 1</Condition><IsUnique>true</IsUnique><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ValuesAsString>VALUE_AS_STRING</ValuesAsString><Concepts><Concept><Fields><Field defaultConceptId="4202605" defaultTypeId="38000280" key="DSTATUS" /></Fields></Concept></Concepts></ObservationDefinition></Observation></QueryDefinition>
