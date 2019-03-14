@@ -4,6 +4,9 @@ import pandas
 from cdm_souffleur.utils.utils import spark
 import xml.etree.ElementTree as ElementTree
 import os
+import csv
+import glob
+import shutil
 
 
 def get_source_schema():
@@ -64,9 +67,29 @@ join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID
                 '&gt;', '>').replace('null as', '"" as')
             filtered_data = spark_.sql(query)
             print(filtered_data.printSchema)
-
-            filtered_data.write.csv(str(Path('generate/CDM_source_data') / filename), compression='gzip', quote='`', nullValue='\0', dateFormat='yyyy-MM-dd')
+            # TODO move write metadata to separete def
+            with open(Path('generate/CDM_source_data/metadata') / (
+                    filename + '.txt'), mode='x') as metadata_file:
+                csv_writer = csv.writer(metadata_file, delimiter=',',
+                                        quotechar='"')
+                header = filtered_data.columns
+                csv_writer.writerow(header)
+            filtered_data.collect
+            filtered_data.write.csv(
+                str(Path('generate/CDM_source_data') / filename),
+                compression='gzip', quote='`', nullValue='\0',
+                dateFormat='yyyy-MM-dd')
+            # TODO move rename to separate def
+            old_filename = glob.glob(
+                str(Path('generate/CDM_source_data') / filename / '*.gz'))
+            print(str(Path('generate/CDM_source_data') / filename / '*.gz'))
+            print(old_filename)
+            new_filename = str(
+                Path('generate/CDM_source_data') / (filename + '.gz'))
+            os.rename(old_filename[0], new_filename)
+            shutil.rmtree(str(Path('generate/CDM_source_data') / filename))
 
 
 if __name__ == '__main__':
+    # get_source_schema()
     prepare_source_data()
