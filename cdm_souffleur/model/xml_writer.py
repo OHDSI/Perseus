@@ -42,12 +42,10 @@ def prettify(elem):
 
 
 def prepare_sql(mapping_items, source_table):
-    """prepare sql from mapping json
-    """
+    """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
-        """return unique all required fields to prepare sql
-        """
+        """return unique all required fields to prepare sql"""
         all_fields = []
         mapping_items_for_table = mapping_items_[
             mapping_items_.source_table == source_table_]
@@ -72,8 +70,6 @@ def prepare_sql(mapping_items, source_table):
         all_fields_unique = [dict(tuple_map_item) for tuple_map_item in
                              {tuple(map_item.items()) for map_item in
                               all_fields}]
-        print(all_fields_unique)
-
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
@@ -189,27 +185,28 @@ def get_xml(json_):
 
 
 if __name__ == '__main__':
-    with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
-    with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
+    pass
+    # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     with open('sources/mock_input/DRUG_CLAIMS.json') as file:
         data = json.load(file)
         print(get_xml(data))
-    with open('sources/mock_input/FACILITY_HEADER.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
-    with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
-    with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
-    with open('sources/mock_input/LAB.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
+    # with open('sources/mock_input/FACILITY_HEADER.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/LAB.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/LONG_TERM_CARE.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
@@ -226,3 +223,4 @@ if __name__ == '__main__':
     # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
+

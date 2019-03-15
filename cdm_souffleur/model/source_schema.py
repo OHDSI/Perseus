@@ -9,24 +9,40 @@ import os
 import csv
 import glob
 import shutil
+from cdm_souffleur.view.Table import Table, Column
 
 
 def get_source_schema():
     """return tables and columns of source schema based on WR report"""
     spark_ = spark()
-    schema = {}
-    load_report()
-    for table in spark_.sql("""show tables""").collect():
-        columns = [column.col_name for column in spark_.sql("""
-            show columns from {}""".format(table.tableName)).collect()]
-        schema[table.tableName] = columns
-    print(schema)
+    schema = []
+    # load_report()
+    # for table in spark_.sql("""show tables""").collect():
+    #     columns = [column.col_name for column in spark_.sql("""
+    #         show columns from {}""".format(table.tableName)).collect()]
+    #     schema[table.tableName] = columns
+    # return schema
+    tables = spark_.sql("""select table, collect_list(concat(field, ':', type)) as fields from overview group by table""")
+    tables.collect()
+    tables_pd = tables.toPandas()
+    for index, row in tables_pd.iterrows():
+        table_name = row['table']
+        fields = row['fields']
+        table = Table(table_name)
+        for field in fields:
+            column_name = field.split(':')[0]
+            column_type = field.split(':')[1]
+            column = Column(column_name, column_type)
+            table.column_list.append(column)
+        schema.append(table)
+    return schema
 
 
 def load_report(filepath=Path('D:/mdcr.xlsx')):
     """Load report from whiteRabbit to Dataframe, separate table for each sheet
     to acts like with a real tables"""
-    report_list = []
+    # TODO optimization!!!
+    report_tables = []
     filepath_path = Path(filepath)
     xls = pandas.ExcelFile(filepath_path)
     sheets = xls.sheet_names
@@ -36,8 +52,8 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
         rdd_of_rows = _flatten_pd_df(df)
         spark_df = spark().createDataFrame(rdd_of_rows)
         spark_df.createOrReplaceTempView(tablename)
-        report_list.append(tablename)
-    return report_list
+        report_tables.append(tablename)
+    return report_tables
 
 
 def _flatten_pd_df(pd_df: pandas.DataFrame):
@@ -87,5 +103,6 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
 
 
 if __name__ == '__main__':
-    # get_source_schema()
-    prepare_source_data()
+    load_report()
+    get_source_schema()
+    # prepare_source_data()

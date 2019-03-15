@@ -1,8 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from cdm_souffleur.model.xml_writer import get_xml
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary
-from cdm_souffleur.model.source_schema import load_report
+from cdm_souffleur.model.source_schema import load_report, get_source_schema
+from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 
 app = Flask(__name__)
 
@@ -17,7 +18,7 @@ def call_in_line():
 @app.route('/user/<username>')
 def show_user_profile(username):
     # показать профиль данного пользователя
-    return 'User %s' % username
+    return 'User name is a %s' % username
 
 
 # allow both GET and POST requests
@@ -64,10 +65,10 @@ def json_example():
 @app.route('/get_xml', methods=['POST'])
 def xml():
     json = request.get_json()
-    xml = get_xml(json)
+    xml_ = get_xml(json)
     return '''
     This is answer {}
-    '''.format(xml)
+    '''.format(xml_)
 
 
 @app.route('/find_domain')
@@ -80,10 +81,7 @@ def find_domain_call():
 
 @app.route('/load_report')
 def load_report_call():
-    """
-    load report about source schema
-    :return:
-    """
+    """load report about source schema"""
     path = request.args.get('path')
     start_new_thread(load_report, (path,))
     return 'OK'
@@ -91,15 +89,30 @@ def load_report_call():
 
 @app.route('/load_vocabulary')
 def load_vocabulary_call():
-    """
-    load vocabulary
-    :return:
-    """
+    """load vocabulary"""
     # TODO rewrite to threading instead _thread?
     path = request.args.get('path')
     start_new_thread(load_vocabulary, (path,))
     return 'OK'
 
 
+@app.route('/get_source_schema')
+def get_source_schema_call():
+    source_schema = get_source_schema()
+    return jsonify([s.to_json() for s in source_schema])
+
+
+@app.route('/get_cdm_versions')
+def get_cdm_versions_call():
+    return jsonify(get_exist_version())
+
+
+@app.route('/get_cdm_schema')
+def get_cdm_schema_call():
+    cdm_version = request.args.get('cdm_version')
+    cdm_schema = get_schema(cdm_version)
+    return jsonify([s.to_json() for s in cdm_schema])
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
