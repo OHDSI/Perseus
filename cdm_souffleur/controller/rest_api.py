@@ -98,17 +98,20 @@ def load_vocabulary_call():
 
 @app.route('/get_source_schema')
 def get_source_schema_call():
+    """return dict with source schema based on WR report"""
     source_schema = get_source_schema()
     return jsonify([s.to_json() for s in source_schema])
 
 
 @app.route('/get_cdm_versions')
 def get_cdm_versions_call():
+    """return aviable CDM versions schema list"""
     return jsonify(get_exist_version())
 
 
 @app.route('/get_cdm_schema')
 def get_cdm_schema_call():
+    """return dict with CDM schema for target version"""
     cdm_version = request.args.get('cdm_version')
     cdm_schema = get_schema(cdm_version)
     return jsonify([s.to_json() for s in cdm_schema])
