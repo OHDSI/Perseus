@@ -29,9 +29,9 @@
           "target_field": "DaysSupply"
         },
         {
-          "source_field": "REFILLS",
-          "sql_field": "",
-          "sql_alias": "",
+          "source_field": "",
+          "sql_field": "MAX(REFILL) OVER (PARTITION BY ENROLID, NDCNUM,NDCNUM, SVCDATE)",
+          "sql_alias": "REFILLS",
           "target_field": "Refill"
         },
         {

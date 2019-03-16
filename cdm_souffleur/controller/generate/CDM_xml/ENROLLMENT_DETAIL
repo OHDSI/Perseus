@@ -1,0 +1,38 @@
+<QueryDefinition><Query>select null as ETHNICITY_SOURCE_VALUE,
+null as PLANKEY,
+CASE
+WHEN
+MHSACOVG IS NULL THEN '0'
+ELSE MHSACOVG
+END as VALUE_AS_NUMBER,
+DOBYR,
+SEX,
+EGEOLOC,
+SUBSTRING(RIGHT('00000000000' + cast(ENROLID as VARCHAR), 11), 1,9) as Family,
+null as ETHNICITY_CONCEPT_ID,
+44814722 as PeriodTypeConceptId,
+CASE
+WHEN DATATYP IN (2,4) THEN 'C '
+ELSE 'N '
+END
++
+CASE
+PLANTYP
+WHEN 1 THEN '{prefix} Basic/Major Medical'
+WHEN 2 THEN '{prefix} Comprehensive'
+WHEN 3 THEN '{prefix} EPO'
+WHEN 4 THEN '{prefix} HMO'
+WHEN 5 THEN '{prefix} POS'
+WHEN 6 THEN '{prefix} PPO'
+WHEN 7 THEN '{prefix} POS with Capitation'
+WHEN 8 THEN '{prefix} CDHP'
+WHEN 9 THEN '{prefix} HDHP'
+ELSE '{prefix} Other'
+END as PayerSource,
+ENROLID as PERSON_ID,
+ENROLID,
+null as RACE_SOURCE_VALUE,
+null as RACE_CONCEPT_ID,
+DTSTART,
+DTEND
+from ENROLLMENT_DETAIL  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID</Query><Persons><PersonsDefinition><PersonId>PERSON_ID</PersonId><PersonSourceValue>ENROLID</PersonSourceValue><StartDate>DTSTART</StartDate><EndDate>DTEND</EndDate><Gender>SEX</Gender><YearOfBirth>DOBYR</YearOfBirth><Location>EGEOLOC</Location><Race>RACE_SOURCE_VALUE</Race><RaceConceptId>RACE_CONCEPT_ID</RaceConceptId><Ethnicity>ETHNICITY_SOURCE_VALUE</Ethnicity><EthnicityConceptId>ETHNICITY_CONCEPT_ID</EthnicityConceptId><PeriodTypeConceptId>PeriodTypeConceptId</PeriodTypeConceptId></PersonsDefinition></Persons><Payerplanperiods><PayerplanperiodsDefinition><PersonId>ENROLID</PersonId><StartDate>DTSTART</StartDate><EndDate>DTEND</EndDate><PayerSource>PayerSource</PayerSource><PlanSource>PLANKEY</PlanSource><FamilySource>Family</FamilySource></PayerplanperiodsDefinition></Payerplanperiods><Observation><ObservationDefinition><IsUnique>true</IsUnique><PersonId>ENROLID</PersonId><StartDate>DTEND</StartDate><ValuesAsNumber>VALUE_AS_NUMBER</ValuesAsNumber><Concepts><Concept><Fields><Field conceptId="OBSERVATION_CONCEPT_ID" defaultTypeId="900000009" sourceKey="OBSERVATION_SOURCE_VALUE" /></Fields></Concept></Concepts></ObservationDefinition></Observation></QueryDefinition>

@@ -2,20 +2,18 @@ from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 import json
 import pandas as pd
+from pathlib import Path
 
 
 def get_mapping(path):
-    """
-    read mapping
-    """
+    """read mapping"""
     with open(path) as file_:
         data_ = json.load(file_)
         return pd.DataFrame(data_['mapping'])
 
 
 def get_lookup(path):
-    """
-    read lookup
+    """read lookup
     """
     with open(path) as file_:
         data_ = json.load(file_)
@@ -23,23 +21,20 @@ def get_lookup(path):
 
 
 def get_source_tables(data_):
-    """
-    return distinct source tables
+    """return distinct source tables
     :param data_: loaded mapping json
     """
     return pd.unique(data_['source_table'])
 
 
 def convert_underscore_to_camel(word: str):
-    """
-    get tag name from target table names
+    """get tag name from target table names
     """
     return ''.join(x.capitalize() for x in word.split('_'))
 
 
 def prettify(elem):
-    """
-    Return a pretty-printed XML string for the Element.
+    """Return a pretty-printed XML string for the Element.
     """
     raw_string = tostring(elem, 'utf-8')
     reparsed = minidom.parseString(raw_string)
@@ -47,14 +42,10 @@ def prettify(elem):
 
 
 def prepare_sql(mapping_items, source_table):
-    """
-    prepare sql from mapping json
-    """
+    """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
-        """
-        return unique all required fields to prepare sql
-        """
+        """return unique all required fields to prepare sql"""
         all_fields = []
         mapping_items_for_table = mapping_items_[
             mapping_items_.source_table == source_table_]
@@ -79,7 +70,6 @@ def prepare_sql(mapping_items, source_table):
         all_fields_unique = [dict(tuple_map_item) for tuple_map_item in
                              {tuple(map_item.items()) for map_item in
                               all_fields}]
-
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
@@ -93,15 +83,14 @@ def prepare_sql(mapping_items, source_table):
         else:
             sql += row['sql_field'] + ' as ' + row['sql_alias'] + ',\n'
     sql = sql[:-2] + '\n'
-    sql += 'from ' + source_table + '\r\n' + \
-           'join _chunks ch on ch.ChunkId = {0} and ENROLID = ch.PERSON_ID' + \
-           '\r\norder by ENROLID'
+    sql += 'from ' + source_table + \
+           '  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
+           'ORDER BY PERSON_ID'
     return sql
 
 
 def get_xml(json_):
-    """
-    prepare XML for CDM
+    """prepare XML for CDM
     """
     result = ''
     previous_target_table_name = ''
@@ -188,27 +177,25 @@ def get_xml(json_):
                                                    key, value in
                                                    field.items()})
             previous_target_table_name = target_table_name
-        # xml = ElementTree(query_definition_tag)
-        # xml.write(source_table)
+        xml = ElementTree(query_definition_tag)
+        xml.write(Path('generate/CDM_xml') / source_table)
         result += '{} table xml \r\n {} + \r\n'.format(source_table, prettify(
             query_definition_tag))
     return result
 
 
 if __name__ == '__main__':
-    with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
+    pass
+    # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    # with open('sources/mock_input/DRUG_CLAIMS.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
+    with open('sources/mock_input/DRUG_CLAIMS.json') as file:
+        data = json.load(file)
+        print(get_xml(data))
     # with open('sources/mock_input/FACILITY_HEADER.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/HEALTH_RISK_ASSESSMENT.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
     # with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
@@ -217,18 +204,23 @@ if __name__ == '__main__':
     # with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    # with open('sources/mock_input/L_LOCATION.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/L_PROVIDER.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
     # with open('sources/mock_input/LAB.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
     # with open('sources/mock_input/LONG_TERM_CARE.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
+    # SQL for near written manually in output cause of specific
+    # with open('sources/mock_input/HEALTH_RISK_ASSESSMENT.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/L_LOCATION.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
+    # with open('sources/mock_input/L_PROVIDER.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
+

@@ -1,3 +1,6 @@
-from .utils import time_it
+from .utils import time_it, spark
+from .constants import GENERATE_CDM_SOURCE_DATA_PATH, \
+    GENERATE_CDM_SOURCE_METADATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
 
-__all__ = ['time_it', ]
+__all__ = ['time_it', 'spark', 'GENERATE_CDM_SOURCE_DATA_PATH',
+           'GENERATE_CDM_SOURCE_METADATA_PATH', 'FORMAT_SQL_FOR_SPARK_PARAMS']

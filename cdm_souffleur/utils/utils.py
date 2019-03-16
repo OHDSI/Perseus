@@ -1,6 +1,5 @@
 import time
 from functools import wraps
-
 from pyspark.sql import SparkSession
 
 
@@ -17,6 +16,7 @@ def time_it(method):
 
 
 def spark():
+    """spark Session factory"""
     spark_ = SparkSession \
         .builder \
         .appName("Detect dictionary and vocabulary") \

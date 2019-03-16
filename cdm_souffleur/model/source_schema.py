@@ -1,22 +1,48 @@
 from pathlib import Path
-
-import spark
 from pyspark import Row
 import pandas
 from cdm_souffleur.utils.utils import spark
+from cdm_souffleur.utils.constants import GENERATE_CDM_SOURCE_METADATA_PATH,\
+    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
+import xml.etree.ElementTree as ElementTree
+import os
+import csv
+import glob
+import shutil
+from cdm_souffleur.view.Table import Table, Column
 
 
 def get_source_schema():
-    pass
+    """return tables and columns of source schema based on WR report"""
+    spark_ = spark()
+    schema = []
+    # load_report()
+    # for table in spark_.sql("""show tables""").collect():
+    #     columns = [column.col_name for column in spark_.sql("""
+    #         show columns from {}""".format(table.tableName)).collect()]
+    #     schema[table.tableName] = columns
+    # return schema
+    tables = spark_.sql("""select table, collect_list(concat(field, ':', type)) as fields from overview group by table""")
+    tables.collect()
+    tables_pd = tables.toPandas()
+    for index, row in tables_pd.iterrows():
+        table_name = row['table']
+        fields = row['fields']
+        table = Table(table_name)
+        for field in fields:
+            column_name = field.split(':')[0]
+            column_type = field.split(':')[1]
+            column = Column(column_name, column_type)
+            table.column_list.append(column)
+        schema.append(table)
+    return schema
 
 
 def load_report(filepath=Path('D:/mdcr.xlsx')):
-    """
-    Load report from whiteRabbit to Dataframe, separate table for each sheet
-    to acts like with a real tables
-    :param - path to whiteRabbit report
-    """
-    report_list = []
+    """Load report from whiteRabbit to Dataframe, separate table for each sheet
+    to acts like with a real tables"""
+    # TODO optimization!!!
+    report_tables = []
     filepath_path = Path(filepath)
     xls = pandas.ExcelFile(filepath_path)
     sheets = xls.sheet_names
@@ -26,17 +52,14 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
         rdd_of_rows = _flatten_pd_df(df)
         spark_df = spark().createDataFrame(rdd_of_rows)
         spark_df.createOrReplaceTempView(tablename)
-        report_list.append(tablename)
-    return report_list
+        report_tables.append(tablename)
+    return report_tables
 
 
 def _flatten_pd_df(pd_df: pandas.DataFrame):
-    """
-    Given a Pandas DF that has appropriately named columns, this function will
-    iterate the rows and generate Spark Row
+    """Given a Pandas DF that has appropriately named columns, this function
+    will iterate the rows and generate Spark Row
     objects.  It's recommended that this method be invoked via Spark's flatMap
-    :param pd_df:
-    :return:
     """
     rows = []
     for index, series in pd_df.iterrows():
@@ -47,31 +70,39 @@ def _flatten_pd_df(pd_df: pandas.DataFrame):
     return rows
 
 
+def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
+    """prepare files for CDM builder - only needed columns"""
+    spark_ = spark()
+    load_report(filepath)
+    for root_dir, dirs, files in os.walk(Path('generate/CDM_xml')):
+        for filename in files:
+            file_tree = ElementTree.parse(Path(root_dir) / filename)
+            query = file_tree.find('Query').text.upper()
+            for k, v in FORMAT_SQL_FOR_SPARK_PARAMS.items():
+                query = query.replace(k, v)
+            filtered_data = spark_.sql(query)
+            # TODO move write metadata to separete def
+            with open(GENERATE_CDM_SOURCE_METADATA_PATH / (
+                    filename + '.txt'), mode='x') as metadata_file:
+                csv_writer = csv.writer(metadata_file, delimiter=',',
+                                        quotechar='"')
+                header = filtered_data.columns
+                csv_writer.writerow(header)
+            filtered_data.collect
+            filtered_data.write.csv(
+                str(GENERATE_CDM_SOURCE_DATA_PATH / filename),
+                compression='gzip', quote='`', nullValue='\0',
+                dateFormat='yyyy-MM-dd')
+            # TODO move rename to separate def
+            old_filename = glob.glob(
+                str(GENERATE_CDM_SOURCE_DATA_PATH / filename / '*.gz'))
+            new_filename = str(
+                GENERATE_CDM_SOURCE_DATA_PATH / (filename + '.gz'))
+            os.rename(old_filename[0], new_filename)
+            shutil.rmtree(str(GENERATE_CDM_SOURCE_DATA_PATH / filename))
+
+
 if __name__ == '__main__':
-    print('hello i')
-    # spark = SparkSession \
-    #     .builder \
-    #     .appName("Detect dictionary and vocabulary") \
-    #     .getOrCreate()
-    # TODO move below code to get_source schema method
-    # TODO think about one entry point for spark methods
-    # schema = {}
-    # load_report()
-    # for table in spark.sql("""show tables""").collect():
-    #     columns = [column.col_name for column in spark.sql("""
-    #         show columns from {}""".format(table.tableName)).collect()]
-    #     schema[table.tableName] = columns
-    # print(schema)
-
-
-
-
-
-
-
-
-
-
-
-
-
+    load_report()
+    get_source_schema()
+    # prepare_source_data()

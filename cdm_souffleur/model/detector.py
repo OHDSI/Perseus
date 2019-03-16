@@ -5,8 +5,7 @@ from cdm_souffleur.utils.utils import spark
 
 
 def load_vocabulary(path=r'D:\vocabulary\\'):
-    """
-    Load ATHENA vocabulary into Dataframe structure
+    """Load ATHENA vocabulary into Dataframe structure
     :param path - path to directory loaded from ATHENA
     """
     vocabulary_list = []
@@ -22,8 +21,7 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
 
 
 def find_domain(column_name, table_name):
-    """
-    find target information by source code
+    """find target information by source code
     :param column_name - source code name column
     :param table_name - table where source code located
     """

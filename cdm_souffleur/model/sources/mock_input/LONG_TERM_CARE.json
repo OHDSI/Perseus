@@ -89,7 +89,7 @@
         },
         {
           "source_field": "STDPROV, PROVID",
-          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(AST(PROVID AS VARCHAR), '')))",
+          "sql_field": "RTRIM(LTRIM(COALESCE(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(COALESCE(CAST(PROVID AS VARCHAR), '')))",
           "sql_alias": "ProviderIdKey",
           "target_field": "ProviderIdKey"
         }
@@ -195,7 +195,7 @@
         },
         {
           "source_field": "STDPROV, PROVID",
-          "sql_field": "RTRIM(LTRIM(ISNULL(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(ISNULL(AST(PROVID AS VARCHAR), '')))",
+          "sql_field": "RTRIM(LTRIM(COALESCE(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(COALESCE(CAST(PROVID AS VARCHAR), '')))",
           "sql_alias": "ProviderIdKey",
           "target_field": "ProviderIdKey"
         }

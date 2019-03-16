@@ -6,8 +6,8 @@
       "mapping": [
         {
           "source_field": "ENROLID",
-          "sql_field": "",
-          "sql_alias": "",
+          "sql_field": "ENROLID",
+          "sql_alias": "PERSON_ID",
           "target_field": "PersonId"
         },
         {
@@ -174,8 +174,8 @@
       "condition": [
         {
           "condition": "{DXVER} = 9",
-          "source_field": "DXVER, SVCDATE",
-          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN SVCDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
+          "source_field": "DXVER, ADMDATE",
+          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN ADMDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
           "sql_alias": "DXVER"
         }
       ]
@@ -354,8 +354,8 @@
       "condition": [
         {
           "condition": "{DXVER} = 0",
-          "source_field": "DXVER, SVCDATE",
-          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN SVCDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
+          "source_field": "DXVER, ADMDATE",
+          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN ADMDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
           "sql_alias": "DXVER"
         }
       ]
@@ -1109,14 +1109,14 @@
           "target_table": "Observation",
           "fields": [
             {
-              "key": "DXG",
+              "key": "DRG",
               "defaultTypeId": "38003568"
             }
           ],
           "lookup": "DeathDRG",
           "sql_field": [
             {
-              "source_field": "DXG",
+              "source_field": "DRG",
               "sql_field": "",
               "sql_alias": ""
             }
@@ -1246,7 +1246,7 @@
           "target_field": "PersonId"
         },
         {
-          "source_field": "SVCDATE",
+          "source_field": "ADMDATE",
           "sql_field": "",
           "sql_alias": "",
           "target_field": "StartDate"
@@ -1289,9 +1289,9 @@
       ],
       "condition": [
         {
-          "condition": "{toObservation} = 0",
+          "condition": "{toObservation} = 1",
           "source_field": "DSTATUS",
-          "sql_field": "CASE\r\nWHEN DSTATUS NOT IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20, '21', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '50', '51', '61', '62', '63', '64', '65', '66', '70', '71', '72', '99') THEN\r\n0\r\nELSE 1\r\nEND",
+          "sql_field": "CASE\r\nWHEN DSTATUS = '01' THEN '1'\r\nWHEN DSTATUS = '02' THEN '1'\r\nWHEN DSTATUS = '03' THEN '1'\r\nWHEN DSTATUS = '04' THEN '1'\r\nWHEN DSTATUS = '05' THEN '1'\r\nWHEN DSTATUS = '06' THEN '1'\r\nWHEN DSTATUS = '07' THEN '1'\r\nWHEN DSTATUS IN ('08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19') THEN '1'\r\nWHEN DSTATUS = '20' THEN '1'\r\nWHEN DSTATUS = '21' THEN '1'\r\nWHEN DSTATUS IN ('30', '31', '32', '33', '34', '35', '36', '37', '38', '39') THEN '1'\r\nWHEN DSTATUS IN ('40', '41', '42') THEN '1'\r\nWHEN DSTATUS = '43' THEN '1'\r\nWHEN DSTATUS = '50' THEN '1'\r\nWHEN DSTATUS = '51' THEN '1'\r\nWHEN DSTATUS = '61' THEN '1'\r\nWHEN DSTATUS = '62' THEN '1'\r\nWHEN DSTATUS = '63' THEN '1'\r\nWHEN DSTATUS = '64' THEN '1'\r\nWHEN DSTATUS = '65' THEN '1'\r\nWHEN DSTATUS = '66' THEN '1'\r\nWHEN DSTATUS = '70' THEN '1'\r\nWHEN DSTATUS = '71' THEN '1'\r\nWHEN DSTATUS = '72' THEN '1'\r\nWHEN DSTATUS = '99' THEN '1'\r\nELSE '0'\r\nEND",
           "sql_alias": "toObservation"
         }
       ]

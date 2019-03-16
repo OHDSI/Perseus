@@ -1,0 +1,32 @@
+<QueryDefinition><Query>select COB,
+ENROLID as PERSON_ID,
+RTRIM(LTRIM(COALESCE(CAST(STDPROV AS VARCHAR), ''))) + ';' + RTRIM(LTRIM(COALESCE(CAST(PROVID AS VARCHAR), ''))) as ProviderIdKey,
+DX3,
+ENROLID,
+CASE
+WHEN DXVER NOT IN ('0', '9') THEN
+CASE
+WHEN SVCDATE &amp;lt; '10/01/2015' THEN '9'
+ELSE '0'
+END
+ELSE DXVER
+END as DXVER,
+NETPAY,
+COPAY,
+DX1,
+PROC1,
+44818668 as CurrencyConceptId,
+COINS,
+DX5,
+CASE
+WHEN((REVCODE &amp;gt;= '0100' AND REVCODE &amp;lt;='0219') OR (REVCODE &amp;gt;= '0720' AND REVCODE &amp;lt;='0729') OR (REVCODE &amp;gt;= '0800' AND REVCODE &amp;lt;='0809')) THEN 'IP'
+WHEN (STDPLAC = 23 OR (REVCODE &amp;gt;= '0450' AND REVCODE &amp;lt;= '0459') OR REVCODE = '0981' OR PROC1 IN ('99281','99282','99283','99284','99285')) THEN 'ER'
+ELSE 'OP'
+END as CLAIM_TYPE,
+DEDUCT,
+TSVCDAT,
+DX2,
+SVCDATE,
+DX4,
+REVCODE
+from OUTPATIENT_SERVICES  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID</Query><ConditionOccurrence><ConditionOccurrenceDefinition><Condition>{DXVER} = 9</Condition><PersonId>PERSON_ID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" key="DX1" /><Field defaultTypeId="2" key="DX2" /><Field defaultTypeId="3" key="DX3" /><Field defaultTypeId="4" key="DX4" /><Field defaultTypeId="5" key="DX5" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition><ConditionOccurrenceDefinition><Condition>{DXVER} = 0</Condition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Condition_icd10</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" key="DX1" /><Field defaultTypeId="2" key="DX2" /><Field defaultTypeId="3" key="DX3" /><Field defaultTypeId="4" key="DX4" /><Field defaultTypeId="5" key="DX5" /></Fields></Concept></Concepts></ConditionOccurrenceDefinition></ConditionOccurrence><DrugExposure><DrugExposureDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>SVCDATE</EndDate><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Drug</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" key="PROC1" /></Fields></Concept></Concepts></DrugExposureDefinition></DrugExposure><ProcedureOccurrence><ProcedureOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>TSVCDAT</EndDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Procedure</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="1" isNullable="true" key="PROC1" /></Fields></Concept></Concepts><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Modifier</Lookup></Mapper></ConceptIdMapper><Fields><Field key="PROCMOD" /></Fields></Concept></Concepts></ProcedureOccurrenceDefinition></ProcedureOccurrence><ProcedureCost><ProcedureCostDefinition><PaidCopay>COPAY</PaidCopay><PaidCoinsurance>COINS</PaidCoinsurance><PaidTowardDeductible>DEDUCT</PaidTowardDeductible><PaidByPayer>NETPAY</PaidByPayer><PaidByCoordinationBenefits>COB</PaidByCoordinationBenefits><CurrencyConceptId>CurrencyConceptId</CurrencyConceptId><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Revenue</Lookup></Mapper></ConceptIdMapper><Fields><Field key="REVCODE" /></Fields></Concept></Concepts></ProcedureCostDefinition></ProcedureCost><VisitOccurrence><VisitOccurrenceDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><EndDate>TSVCDAT</EndDate><ProviderIdKey>ProviderIdKey</ProviderIdKey><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Visits</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="44818517" key="CLAIM_TYPE" /></Fields></Concept></Concepts></VisitOccurrenceDefinition></VisitOccurrence><Death><DeathDefinition><PersonId>ENROLID</PersonId><StartDate>SVCDATE</StartDate><Concepts><Concept><ConceptIdMapper><Mapper><Lookup>Death</Lookup></Mapper></ConceptIdMapper><Fields><Field defaultTypeId="38003567" key="DX1" /><Field defaultTypeId="38003567" key="DX2" /><Field defaultTypeId="38003567" key="DX3" /><Field defaultTypeId="38003567" key="DX4" /><Field defaultTypeId="38003567" key="DX5" /></Fields></Concept></Concepts></DeathDefinition></Death></QueryDefinition>
