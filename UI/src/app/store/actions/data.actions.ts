@@ -1,26 +1,27 @@
 import { Action } from '@ngrx/store';
-import { SourceTable } from './../../models/sourceTable';
+import { Table } from 'src/app/models/table';
+import { Data } from 'src/app/models/data';
 
 export enum DataActionTypes {
-  LOAD_DATA = '[Data] Load Data',
-  LOAD_DATA_SUCCESS = '[Data] Load Data Success',
-  LOAD_DATA_FAIL = '[Data] Load Data Fail',
+  FETCH_DATA = '[Data] Fetch Data',
+  FETCH_DATA_SUCCESS = '[Data] Fetch Data Success',
+  FETCH_DATA_FAIL = '[Data] Fetch Data Fail',
 }
 
-export class LoadData implements Action {
-  readonly type = DataActionTypes.LOAD_DATA;
+export class FetchData implements Action {
+  readonly type = DataActionTypes.FETCH_DATA;
 }
 
-export class LoadDataSuccess implements Action {
-    readonly type = DataActionTypes.LOAD_DATA_SUCCESS;
+export class FetchDataSuccess implements Action {
+    readonly type = DataActionTypes.FETCH_DATA_SUCCESS;
 
-    constructor(public payload: { sourceTable: SourceTable }) {}
+    constructor(public payload: Data) {}
 }
 
-export class LoadDataFail implements Action {
-    readonly type = DataActionTypes.LOAD_DATA_FAIL;
+export class FetchDataFail implements Action {
+    readonly type = DataActionTypes.FETCH_DATA_FAIL;
 
     constructor(public payload: string) {}
 }
 
-export type DataAction = LoadData | LoadDataSuccess | LoadDataFail;
+export type DataAction = FetchData | FetchDataSuccess | FetchDataFail;

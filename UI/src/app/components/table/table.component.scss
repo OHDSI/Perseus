@@ -1,2 +1,6 @@
-@import 'src/app/theme/variables.scss';
+@import 'src/app/styles/variables.scss';
 
+.title {
+    text-transform: capitalize;
+    color: $main-blue;
+}

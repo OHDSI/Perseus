@@ -5,6 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { HttpClientModule } from '@angular/common/http';
+import { EffectsModule, Actions } from '@ngrx/effects';
 
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -22,6 +24,10 @@ import { commonReducer } from './store/reducers/common.reducer';
 import { environment } from '../environments/environment';
 import { PanelComponent } from './components/panel/panel.component';
 import { dataReducer } from './store/reducers/data.reducer';
+import { DataService } from 'src/app/services/data.service';
+import { DataEffect } from 'src/app/store/effects/data.effect';
+import { PanelContentComponent } from 'src/app/components/panel-content/panel-content.component';
+import { PanelContentColumnComponent } from 'src/app/components/panel-content-column/panel-content-column.component';
 
 @NgModule({
   declarations: [
@@ -30,11 +36,14 @@ import { dataReducer } from './store/reducers/data.reducer';
     OverviewComponent,
     VocabularyComponent,
     TableComponent,
-    PanelComponent
+    PanelComponent,
+    PanelContentComponent,
+    PanelContentColumnComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     AppRoutingModule,
     MatSidenavModule,
     MatToolbarModule,
@@ -51,9 +60,10 @@ import { dataReducer } from './store/reducers/data.reducer';
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
-    })
+    }),
+    EffectsModule.forRoot([DataEffect])
   ],
-  providers: [],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

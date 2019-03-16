@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "concurrently \"ng serve\" \"json-server --watch --db.json\" ",
+    "start": "concurrently \"ng serve\" \"json-server --watch db.json\" ",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -34,6 +34,7 @@
     "@angular-devkit/core": "^7.3.5",
     "@angular/cli": "~7.3.5",
     "@angular/compiler-cli": "~7.2.0",
+    "@angular/http": "^7.2.9",
     "@angular/language-service": "~7.2.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",

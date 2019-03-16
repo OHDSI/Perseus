@@ -1,1 +1,358 @@
-// Describe fake data here
+{
+    "data": {
+        "source": [
+            {
+                "column_list": [
+                    {
+                        "column_name": "loinc_num",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "component",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "property",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "time_aspct",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "system",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "scale_typ",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "method_typ",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "relat_nms",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "class",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "source",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "dt_last_ch",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "chng_type",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "comments",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "answerlist",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "status",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "map_to",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "scope",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "consumer_name",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "ipcc_units",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "reference",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "exact_cmp_sy",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "molar_mass",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "classtype",
+                        "column_type": "integer"
+                    },
+                    {
+                        "column_name": "formula",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "species",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "exmpl_answers",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "acssym",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "base_name",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "final",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "naaccr_id",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "code_table",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "setroot",
+                        "column_type": "boolean"
+                    },
+                    {
+                        "column_name": "panelelements",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "survey_quest_text",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "survey_quest_src",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "unitsrequired",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "submitted_units",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "relatednames2",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "shortname",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "order_obs",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "cdisc_common_tests",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "hl7_field_subfield_id",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "external_copyright_notice",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "example_units",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "inpc_percentage",
+                        "column_type": "real"
+                    },
+                    {
+                        "column_name": "long_common_name",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "hl7_v2_datatype",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "hl7_v3_datatype",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "curated_range_and_units",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "document_section",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "definition_description_help",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "example_ucum_units",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "example_si_ucum_units",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "status_reason",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "status_text",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "change_reason_public",
+                        "column_type": "character varying"
+                    },
+                    {
+                        "column_name": "common_test_rank",
+                        "column_type": "integer"
+                    }
+                ],
+                "table_name": "loinc"
+            }
+        ],
+        "target": [
+            {
+                "column_list": [
+                    {
+                        "column_name": "_flag",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "age",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "agegrp",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "datatyp",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "dobyr",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "dtend",
+                        "column_type": "date"
+                    },
+                    {
+                        "column_name": "dtstart",
+                        "column_type": "date"
+                    },
+                    {
+                        "column_name": "eeclass",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "eestatu",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "efamid",
+                        "column_type": "integer"
+                    },
+                    {
+                        "column_name": "egeoloc",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "emprel",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "enrolid",
+                        "column_type": "bigint"
+                    },
+                    {
+                        "column_name": "hlthplan",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "indstry",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "memdays",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "mhsacovg",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "msa",
+                        "column_type": "integer"
+                    },
+                    {
+                        "column_name": "phyflag",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "plankey",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "plantyp",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "region",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "rx",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "seqnum",
+                        "column_type": "bigint"
+                    },
+                    {
+                        "column_name": "sex",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "version",
+                        "column_type": "character"
+                    },
+                    {
+                        "column_name": "wgtkey",
+                        "column_type": "smallint"
+                    },
+                    {
+                        "column_name": "year",
+                        "column_type": "smallint"
+                    }
+                ],
+                "table_name": "enrollment_detail"
+            }
+        ]
+    }
+}

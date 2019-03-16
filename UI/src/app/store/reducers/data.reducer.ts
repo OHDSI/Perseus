@@ -1,40 +1,37 @@
-
 import { DataActionTypes, DataAction } from 'src/app/store/actions/data.actions';
-import { SourceTable } from 'src/app/models/sourceTable';
+import { Table } from 'src/app/models/table';
 
 export interface State {
-    sourceTable: SourceTable;
+    source: Table[];
+    target: Table[];
+    error: string;
 }
 
-export const initialState: State = {
-    sourceTable: {
-        domain_id: '',
-        person_id: '',
-        visit_occurence_id: '',
-        provider_id: '',
-        id: '',
-        concept_id: '',
-        source_value: '',
-        source_concept_id: '',
-        type_concept_id: '',
-        start_date: '',
-        start_datetime: ''
-    }
-
-}
-
-export function dataReducer(state = initialState, action: DataAction) {
+export function dataReducer(state = {}, action: DataAction) {
     switch (action.type) {
-        case DataActionTypes.LOAD_DATA: {
+        case DataActionTypes.FETCH_DATA: {
             return {
                 ...state
              };
         }
 
-        case DataActionTypes.LOAD_DATA_SUCCESS: {
+        case DataActionTypes.FETCH_DATA_SUCCESS: {
             return {
                 ...state,
-                sourceTable: action.payload
+                ...action.payload
+             };
+        }
+
+        case DataActionTypes.FETCH_DATA: {
+            return {
+                ...state
+             };
+        }
+
+        case DataActionTypes.FETCH_DATA_FAIL: {
+            return {
+                ...state,
+                error: action.payload
              };
         }
 

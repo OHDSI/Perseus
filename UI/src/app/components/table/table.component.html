@@ -1,9 +1,2 @@
-<div>
-  <p></p>
-  <ng-container *ngFor="let item of items">
-      <app-panel
-        [title]="item"
-      >
-      </app-panel>
-  </ng-container>
-</div>
+<h4 class="title">{{title}}</h4>
+<ng-content></ng-content>

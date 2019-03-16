@@ -1,15 +1,41 @@
 <div class="main">
-    <app-table>
 
+    <app-table [title]="'source'">
+        <ng-container *ngFor="let item of (data$ | async).source">
+            <app-panel [title]="item.table_name">
+                <app-panel-content>
+                    <ng-container *ngFor="let column of item.column_list">
+                        <app-panel-content-column
+                            [columnName]="column.column_name"
+                            [columnType]="column.column_type"
+                        >
+                        </app-panel-content-column>
+                    </ng-container>
+                </app-panel-content>
+            </app-panel>
+        </ng-container>
     </app-table>
 
     <div class="hint-title">
-        <p>{{ (hint$ | async).hint }}</p>
+        <p>{{ (common$ | async).hint }}</p>
     </div>
 
-    <app-table>
-
+    <app-table [title]="'target'">
+        <ng-container *ngFor="let item of (data$ | async).target">
+            <app-panel [title]="item.table_name">
+                <app-panel-content>
+                    <ng-container *ngFor="let column of item.column_list">
+                        <app-panel-content-column
+                            [columnName]="column.column_name"
+                            [columnType]="column.column_type"
+                        >
+                        </app-panel-content-column>
+                    </ng-container>
+                </app-panel-content>
+            </app-panel>
+        </ng-container>
     </app-table>
+
 </div>
 
 

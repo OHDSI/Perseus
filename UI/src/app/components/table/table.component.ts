@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Collapsed, Expanded, Linked } from 'src/app/store/actions/common.actions';
 
@@ -8,7 +8,7 @@ import { Collapsed, Expanded, Linked } from 'src/app/store/actions/common.action
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
-  items = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6'];
+  @Input() title: string;
 
   ngOnInit() {}
 }
