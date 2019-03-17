@@ -15,6 +15,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { MatTableModule } from '@angular/material/table';
 
 import { MappingComponent } from './components/pages/mapping/mapping.component';
 import { OverviewComponent } from './components/pages/overview/overview.component';
@@ -26,8 +27,9 @@ import { PanelComponent } from './components/panel/panel.component';
 import { dataReducer } from './store/reducers/data.reducer';
 import { DataService } from 'src/app/services/data.service';
 import { DataEffect } from 'src/app/store/effects/data.effect';
-import { PanelContentComponent } from 'src/app/components/panel-content/panel-content.component';
-import { PanelContentColumnComponent } from 'src/app/components/panel-content-column/panel-content-column.component';
+import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
+import { PanelModule } from 'src/app/components/panel/panel.module';
+import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
 
 @NgModule({
   declarations: [
@@ -37,11 +39,11 @@ import { PanelContentColumnComponent } from 'src/app/components/panel-content-co
     VocabularyComponent,
     TableComponent,
     PanelComponent,
-    PanelContentComponent,
-    PanelContentColumnComponent
+    PanelTableComponent,
+    TypeToIconPipe
   ],
   imports: [
-    BrowserModule,
+  BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
@@ -52,6 +54,7 @@ import { PanelContentColumnComponent } from 'src/app/components/panel-content-co
     MatButtonModule,
     MatCardModule,
     MatExpansionModule,
+    MatTableModule,
 
     StoreModule.forRoot({
       common: commonReducer,

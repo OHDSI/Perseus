@@ -10,12 +10,11 @@ import { Expanded } from 'src/app/store/actions/common.actions';
 })
 export class PanelComponent implements OnInit {
   @Input() title: string;
+  @Input() columnList: any[];
+  
+  constructor(private store: Store<{ hint: string }>) {}
 
-  constructor(private store: Store<{ hint: string }>) {
-    
-  }
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   onClickMe() {
     this.store.dispatch(new Expanded());
