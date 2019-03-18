@@ -1,4 +1,4 @@
-@import 'theme/variables.scss';
+@import 'styles/variables.scss';
 
 .app-container {
     display: flex;
@@ -24,7 +24,7 @@ h1.app-name {
     /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
        causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
     flex: 1;
-    height: calc(100% - 56px);
+    height: calc(100% - 70px);
 }
 
 .app-is-mobile .app-sidenav-container {
@@ -51,4 +51,8 @@ h1.app-name {
     mat-list-item {
         width: inherit;
     }
+}
+
+.app-sidenav-content {
+    background-color: $white;
 }

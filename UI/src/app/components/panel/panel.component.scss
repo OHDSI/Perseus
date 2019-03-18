@@ -1,0 +1,24 @@
+@import 'src/app/styles/variables.scss';
+
+.expansion-panel {
+    background-color: $yellowish;
+    margin-bottom: 5px;
+    border-radius: 1px;
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.02), 0px 0px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 0px 0px rgba(0, 0, 0, 0.12);
+}
+
+.panel-title {
+    p {
+        font-weight: bold;
+    }
+
+    .icon-list {
+        align-self: center;
+        color: $grey;
+    }
+
+    &-inner {
+        width: 25vw;
+        margin-left: 10px;
+    }
+}

@@ -1,0 +1,18 @@
+<mat-expansion-panel class="expansion-panel" (click)="onClickMe()">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="panel-title">
+        <mat-icon class="icon-list">list</mat-icon>
+        <div class="panel-title-inner">
+          <p>
+            {{title}}
+          </p>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <app-panel-table
+      [columnList]="columnList"
+    >
+    </app-panel-table>
+
+  </mat-expansion-panel>
