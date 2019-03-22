@@ -16,20 +16,18 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
-
-import { MappingComponent } from './components/pages/mapping/mapping.component';
-import { OverviewComponent } from './components/pages/overview/overview.component';
-import { VocabularyComponent } from './components/pages/vocabulary/vocabulary.component';
-import { TableComponent } from './components/table/table.component';
-import { commonReducer } from './store/reducers/common.reducer';
 import { environment } from '../environments/environment';
-import { PanelComponent } from './components/panel/panel.component';
-import { dataReducer } from './store/reducers/data.reducer';
-import { DataService } from 'src/app/services/data.service';
-import { DataEffect } from 'src/app/store/effects/data.effect';
-import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
-import { PanelModule } from 'src/app/components/panel/panel.module';
-import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
+
+import {OverlayModule} from '@angular/cdk/overlay';
+import { MappingComponent } from './pages/mapping/mapping.component';
+import { OverviewComponent } from './pages/overview/overview.component';
+import { VocabularyComponent } from './pages/vocabulary/vocabulary.component';
+import { AreaComponent } from './pages/mapping/components/area/area.component';
+import { PanelModule } from './pages/mapping/components/panel/panel.module';
+import { commonReducer } from './pages/mapping/store/reducers/common.reducer';
+import { dataReducer } from './pages/mapping/store/reducers/data.reducer';
+import { DataEffect } from './pages/mapping/store/effects/data.effect';
+import { DataService } from './pages/mapping/services/data.service';
 
 @NgModule({
   declarations: [
@@ -37,10 +35,7 @@ import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
     MappingComponent,
     OverviewComponent,
     VocabularyComponent,
-    TableComponent,
-    PanelComponent,
-    PanelTableComponent,
-    TypeToIconPipe
+    AreaComponent
   ],
   imports: [
   BrowserModule,
@@ -55,6 +50,8 @@ import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
     MatCardModule,
     MatExpansionModule,
     MatTableModule,
+    PanelModule,
+    OverlayModule,
 
     StoreModule.forRoot({
       common: commonReducer,

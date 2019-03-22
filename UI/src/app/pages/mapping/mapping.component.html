@@ -1,0 +1,39 @@
+<div class="main">
+    
+    <app-area [area]="'source'">
+        <app-panel *ngFor="let item of (data$ | async).source"
+            [title]="item.table_name">
+            <app-panel-table
+                [area]="'source'"
+                [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']"
+                [tableName]="item.table_name"
+                [columns]="item.column_list">
+            </app-panel-table>
+        </app-panel>
+    </app-area>
+
+    <!-- <div class="hint-title">
+        <p>{{ (common$ | async).hint }}</p>
+    </div> -->
+    <svg 
+        [attr.width]="document.body.clientWidth" 
+        [attr.height]="document.body.clientHeight">
+    </svg>
+
+    <app-area [area]="'target'">
+        <app-panel *ngFor="let item of (data$ | async).source"
+            [title]="item.table_name">
+            <app-panel-table 
+                [area]="'target'"
+                [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']"
+                [tableName]="item.table_name"
+                [columns]="item.column_list">
+            </app-panel-table>
+        </app-panel>
+    </app-area>
+
+</div>
+
+
+
+

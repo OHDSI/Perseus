@@ -8,3 +8,24 @@ body {
     margin: 0;
 }
 
+.dialog-arrow {
+    border-color: transparent;
+    border-bottom-color: white;
+    border-style: dashed dashed solid;
+    border-width: 0 8.5px 8.5px;
+    position: absolute;
+    top: 37px;
+    z-index: 1001;
+    height: 0;
+    width: 0;
+    -webkit-animation: gb__a 100ms;
+    animation: gb__a 100ms;
+    filter: drop-shadow( 0 -2px 1px rgba(0,0,0,.05));
+}
+
+@-webkit-keyframes gb__a{0%{opacity:0}50%{opacity:1}}
+@keyframes gb__a{0%{opacity:0}50%{opacity:1}}
+
+.mat-expansion-panel-body {
+    padding: 0 !important;
+}

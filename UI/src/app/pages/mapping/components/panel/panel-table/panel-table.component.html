@@ -1,0 +1,69 @@
+<table mat-table [dataSource]="columns" class="mat-elevation-z8" #table
+>
+    <ng-container matColumnDef="column_indicator">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let column" class="drag_indicator">
+            <mat-icon>
+                drag_indicator
+            </mat-icon>
+        </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="column_name">
+        <th mat-header-cell *matHeaderCellDef class="caption-item"> Item. </th>
+        <td mat-cell *matCellDef="let column"> 
+            {{column.column_name}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="column_type">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let column"> {{column.column_type | typeToIcon }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="values">
+        <th mat-header-cell *matHeaderCellDef> Top 10 values </th>
+        <td mat-cell *matCellDef="let column">  </td>
+    </ng-container>
+
+    <ng-container matColumnDef="comments">
+        <th mat-header-cell *matHeaderCellDef> Comments </th>
+        <td mat-cell *matCellDef="let column">
+            <div>
+                <button mat-icon-button #buttonMenu 
+
+                appCommentPopup
+                [popup-trigger]="menuTrigger"
+
+                (mouseup)="prepareForCommenting(tableTitle)"
+                (menuOpened)="onMenuOpen(buttonMenu, $event)"
+                [matMenuTriggerFor]="appMenu"
+                [matMenuTriggerData]="{comments: ''}"
+                [disableRipple]="true"
+            >
+                <mat-icon class="icon-comment">comment</mat-icon>
+            </button>
+            <div #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="appMenu">
+                <mat-menu #appMenu="matMenu" class="popup">
+                <ng-template matMenuContent let-name="name">
+                    <div style="margin: 40px">
+                        123
+                        {{comments}}
+                    </div>
+                </ng-template>
+            </mat-menu>
+            </div>
+            </div>
+        </td>
+    </ng-container>
+
+    <tr #test mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr 
+        appDraggable
+        [drag-data]="row"
+        [area]="area"
+        mat-row *matRowDef="let row; columns: displayedColumns;" 
+        (mousedown)="handleRowClick(row)" 
+        class="draggable">
+    </tr>
+</table>

@@ -233,9 +233,7 @@
                     }
                 ],
                 "table_name": "loinc"
-            }
-        ],
-        "target": [
+            },
             {
                 "column_list": [
                     {
