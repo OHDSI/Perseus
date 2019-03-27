@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Injector } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { CommentsService } from 'src/app/pages/mapping/services/comments.service';
@@ -16,7 +16,8 @@ export interface Column {
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
-  styleUrls: ['./panel-table.component.scss']
+  styleUrls: ['./panel-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class PanelTableComponent {
@@ -32,7 +33,11 @@ export class PanelTableComponent {
     private commonService: CommonService,
     private commentsService: CommentsService,
     private overlay: Overlay,
-    private injector: Injector ) {};
+    private injector: Injector,
+    private cdRef: ChangeDetectorRef
+    ) {
+
+    };
 
   setActiveRow(area, table, row) {
     this.commonService.activeRow = {area, table, row};
@@ -52,6 +57,7 @@ export class PanelTableComponent {
     )
 
     overlayRef.attach(new ComponentPortal(DialogComponent, null, injector));
+    overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
   hasComment(area, table, row) {
