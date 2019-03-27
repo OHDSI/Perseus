@@ -29,30 +29,15 @@
     <ng-container matColumnDef="comments">
         <th mat-header-cell *matHeaderCellDef> Comments </th>
         <td mat-cell *matCellDef="let column">
-            <div>
-                <button mat-icon-button #buttonMenu 
-
-                appCommentPopup
-                [popup-trigger]="menuTrigger"
-
-                (mouseup)="prepareForCommenting(tableTitle)"
-                (menuOpened)="onMenuOpen(buttonMenu, $event)"
-                [matMenuTriggerFor]="appMenu"
-                [matMenuTriggerData]="{comments: ''}"
+            <div #anchor style="width: 40px">
+                <button mat-icon-button
+                (click)="showDialog(anchor)"
                 [disableRipple]="true"
             >
-                <mat-icon class="icon-comment">comment</mat-icon>
+                <mat-icon class="icon-comment" [ngClass]="{'icon-comment-blue': hasComment(area, tableName, column.column_name)}">
+                    comment
+                </mat-icon>
             </button>
-            <div #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="appMenu">
-                <mat-menu #appMenu="matMenu" class="popup">
-                <ng-template matMenuContent let-name="name">
-                    <div style="margin: 40px">
-                        123
-                        {{comments}}
-                    </div>
-                </ng-template>
-            </mat-menu>
-            </div>
             </div>
         </td>
     </ng-container>
@@ -63,7 +48,7 @@
         [drag-data]="row"
         [area]="area"
         mat-row *matRowDef="let row; columns: displayedColumns;" 
-        (mousedown)="handleRowClick(row)" 
+        (mousedown)="setActiveRow(area, tableName, row.column_name)" 
         class="draggable">
     </tr>
 </table>

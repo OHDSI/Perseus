@@ -12,8 +12,12 @@ export class Collapsed implements Action {
 
 export class Expanded implements Action {
   readonly type = ActionTypes.Expanded;
+
+  constructor(public payload: any) {}
 }
 
 export class Linked implements Action {
   readonly type = ActionTypes.Linked;
 }
+
+export type CommonAction = Collapsed | Expanded | Linked;

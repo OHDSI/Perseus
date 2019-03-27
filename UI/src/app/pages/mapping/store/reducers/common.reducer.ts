@@ -1,15 +1,15 @@
 import { Action } from '@ngrx/store';
-import { ActionTypes } from 'src/app/pages/mapping/store/actions/common.actions';
+import { ActionTypes, CommonAction } from 'src/app/pages/mapping/store/actions/common.actions';
 
 export interface State {
-    hint: string;
+    convasHeight: number;
 }
 
 export const initialState: State = {
-    hint: 'Expand tables to make links'
+    convasHeight: 0
 }
 
-export function commonReducer(state = initialState, action: Action) {
+export function commonReducer(state = initialState, action: CommonAction) {
     switch (action.type) {
         case ActionTypes.Collapsed: {
             return {
@@ -20,7 +20,7 @@ export function commonReducer(state = initialState, action: Action) {
         case ActionTypes.Expanded: {
             return {
                 ...state,
-                hint: 'Drag and drop source item to target item'
+                convasHeight: action.payload
              };
         }
         case ActionTypes.Linked: {

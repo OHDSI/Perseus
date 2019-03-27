@@ -16,9 +16,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
-import { environment } from '../environments/environment';
-
+import {MatInputModule, MatFormFieldModule} from '@angular/material';
+import { FormsModule } from '@angular/forms';
 import {OverlayModule} from '@angular/cdk/overlay';
+
+import { environment } from '../environments/environment';
 import { MappingComponent } from './pages/mapping/mapping.component';
 import { OverviewComponent } from './pages/overview/overview.component';
 import { VocabularyComponent } from './pages/vocabulary/vocabulary.component';
@@ -28,6 +30,9 @@ import { commonReducer } from './pages/mapping/store/reducers/common.reducer';
 import { dataReducer } from './pages/mapping/store/reducers/data.reducer';
 import { DataEffect } from './pages/mapping/store/effects/data.effect';
 import { DataService } from './pages/mapping/services/data.service';
+import { DialogComponent } from './pages/mapping/components/dialog/dialog.component';
+import { commentsReducer } from './pages/mapping/store/reducers/comments.reducer';
+import { CommonService } from './pages/mapping/services/common.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +40,8 @@ import { DataService } from './pages/mapping/services/data.service';
     MappingComponent,
     OverviewComponent,
     VocabularyComponent,
-    AreaComponent
+    AreaComponent,
+    DialogComponent
   ],
   imports: [
   BrowserModule,
@@ -48,14 +54,18 @@ import { DataService } from './pages/mapping/services/data.service';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatFormFieldModule,
     MatExpansionModule,
     MatTableModule,
     PanelModule,
     OverlayModule,
+    MatInputModule,
+    FormsModule,
 
     StoreModule.forRoot({
       common: commonReducer,
-      data: dataReducer
+      data: dataReducer,
+      comments: commentsReducer
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
@@ -63,7 +73,7 @@ import { DataService } from './pages/mapping/services/data.service';
     }),
     EffectsModule.forRoot([DataEffect])
   ],
-  providers: [DataService],
+  providers: [DataService, CommonService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
