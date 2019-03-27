@@ -1,17 +1,5 @@
 @import 'src/app/styles/variables.scss';
 
-// .dialog:before {
-//     content: "";
-//     position: absolute;
-//     top: 27px;
-//     margin-top: -15px;
-//     left: -20px;
-//     border: solid 10px transparent;
-//     border-right-color: #FFF;
-//     z-index: 1;
-//     box-shadow: 1px;
-// }
-
 .dialog:after {
     content: "";
     position: absolute;

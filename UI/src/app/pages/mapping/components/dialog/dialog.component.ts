@@ -1,10 +1,8 @@
-import { Component, OnInit, ViewChild, Renderer2, AfterViewInit, OnDestroy, ViewEncapsulation, TemplateRef, ChangeDetectorRef, ApplicationRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Renderer2, AfterViewInit, OnDestroy, ViewEncapsulation, TemplateRef } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { CommentsService } from 'src/app/pages/mapping/services/comments.service';
 import { CommonService } from 'src/app/pages/mapping/services/common.service';
-import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { PortalInjector } from '@angular/cdk/portal';
 
 export interface IComment {
   id: number;
