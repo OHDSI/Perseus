@@ -1,0 +1,44 @@
+@import 'src/app/styles/variables.scss';
+
+table {
+    width: 100%;
+    box-shadow: none;
+    background-color: $yellowish;
+    border-collapse: collapse;
+    padding: 0;
+    th {
+        font-size: 13px;
+    }
+}
+
+.caption-item {
+    color: $blue;
+}
+
+.icon-comment {
+    font-size: 14px;
+
+    &-blue {
+        color: #066BBB;
+    }
+}
+
+.comment-box-arrow {
+    width: 15px;
+    height: 15px;
+    background: white;
+    position: absolute;
+    top: 21px;
+    left: -8px;
+    transform: rotate(-45deg);
+    box-shadow: -3px -3px 8px -4px rgba(0, 0, 0, 0.5);
+}
+
+.drag_indicator {
+    padding: 0 !important;
+}
+
+.draggable {
+    cursor: move;
+   
+}

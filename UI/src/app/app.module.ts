@@ -1,38 +1,39 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
-import { EffectsModule, Actions } from '@ngrx/effects';
+import { EffectsModule } from '@ngrx/effects';
 
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatListModule} from '@angular/material/list';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
-import {MatInputModule, MatFormFieldModule} from '@angular/material';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import {OverlayModule} from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 
-import { environment } from '../environments/environment';
-import { MappingComponent } from './pages/mapping/mapping.component';
-import { OverviewComponent } from './pages/overview/overview.component';
-import { VocabularyComponent } from './pages/vocabulary/vocabulary.component';
-import { AreaComponent } from './pages/mapping/components/area/area.component';
-import { PanelModule } from './pages/mapping/components/panel/panel.module';
-import { commonReducer } from './pages/mapping/store/reducers/common.reducer';
-import { dataReducer } from './pages/mapping/store/reducers/data.reducer';
-import { DataEffect } from './pages/mapping/store/effects/data.effect';
-import { DataService } from './pages/mapping/services/data.service';
-import { DialogComponent } from './pages/mapping/components/dialog/dialog.component';
-import { commentsReducer } from './pages/mapping/store/reducers/comments.reducer';
-import { CommonService } from './pages/mapping/services/common.service';
+import { AppComponent } from 'src/app/app.component';
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { environment } from 'src/environments/environment';
+import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
+import { OverviewComponent } from 'src/app/components/pages/overview/overview.component';
+import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabulary.component';
+import { AreaComponent } from 'src/app/components/area/area.component';
+import { PanelModule } from 'src/app/components/panel/panel.module';
+import { commonReducer } from 'src/app/store/reducers/common.reducer';
+import { dataReducer } from 'src/app/store/reducers/data.reducer';
+import { DataEffect } from 'src/app/store/effects/data.effect';
+import { DataService } from 'src/app/services/data.service';
+import { DialogComponent } from 'src/app/components/dialog/dialog.component';
+import { commentsReducer } from 'src/app/store/reducers/comments.reducer';
+import { CommonService } from 'src/app/services/common.service';
 
 @NgModule({
   declarations: [

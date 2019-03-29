@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MappingComponent } from 'src/app/pages/mapping/mapping.component';
-import { OverviewComponent } from 'src/app/pages/overview/overview.component';
-import { VocabularyComponent } from 'src/app/pages/vocabulary/vocabulary.component';
+import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
+import { OverviewComponent } from 'src/app/components/pages/overview/overview.component';
+import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabulary.component';
 
 const routes: Routes = [
   { path: '',
