@@ -5,19 +5,20 @@
     margin-bottom: 5px;
     border-radius: 1px;
     box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.02), 0px 0px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 0px 0px rgba(0, 0, 0, 0.12);
-
-    p {
-        font-weight: bold;
+   
+    mat-expansion-panel-header {
+         font-weight: bold !important;
     }
 
-    .mat-icon {
-        align-self: center;
-        color: $grey;
-    }
-
-    div {
-        width: 25vw;
-        margin-left: 10px;
+    mat-panel-title {
         font-size: 13px;
+        display: flex;
+        align-items: center;
+
+        mat-icon {
+            margin-right: 10px;
+            align-self: center;
+            color: $grey;
+        }
     }
 }

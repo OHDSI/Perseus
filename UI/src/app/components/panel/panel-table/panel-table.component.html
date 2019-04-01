@@ -1,54 +1,51 @@
-<table mat-table [dataSource]='columns' #table
+<table mat-table [dataSource]="columns" #table
 >
-    <ng-container matColumnDef='column_indicator'>
+    <ng-container matColumnDef="column_indicator">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef='let column' class="drag_indicator">
+        <td mat-cell *matCellDef="let column" class="drag_indicator">
             <mat-icon>
                 drag_indicator
             </mat-icon>
         </td>
     </ng-container>
     
-    <ng-container matColumnDef='column_name'>
+    <ng-container matColumnDef="column_name">
         <th mat-header-cell *matHeaderCellDef class="caption-item"> Item. </th>
-        <td mat-cell *matCellDef='let column'> 
+        <td mat-cell *matCellDef="let column"> 
             {{column.column_name}} 
         </td>
     </ng-container>
 
-    <ng-container matColumnDef='column_type'>
+    <ng-container matColumnDef="column_type">
         <th mat-header-cell *matHeaderCellDef> Type </th>
-        <td mat-cell *matCellDef='let column'> {{column.column_type | typeToIcon }} </td>
+        <td mat-cell *matCellDef="let column"> {{column.column_type | typeToIcon }} </td>
     </ng-container>
 
-    <ng-container matColumnDef='values'>
+    <ng-container matColumnDef="values">
         <th mat-header-cell *matHeaderCellDef> Top 10 values </th>
-        <td mat-cell *matCellDef='let column'>  </td>
+        <td mat-cell *matCellDef="let column">  </td>
     </ng-container>
 
-    <ng-container matColumnDef='comments'>
+    <ng-container matColumnDef="comments">
         <th mat-header-cell *matHeaderCellDef> Comments </th>
-        <td mat-cell *matCellDef='let column'>
-            <div #anchor>
-                <button mat-icon-button
-                (click)='showDialog(anchor)'
-                [disableRipple]='true'
-            >
-                <mat-icon class="icon-comment" [ngClass]="{'active': hasComment(area, tableName, column.column_name)}">
-                    comment
-                </mat-icon>
-            </button>
+        <td mat-cell *matCellDef="let column">
+            <div #anchor class="anchor">
+                <button mat-icon-button (click)="showDialog(anchor)" [disableRipple]="true">
+                    <mat-icon class="icon-comment" [ngClass]="{'active': hasComment(area, tableName, column.column_name)}">
+                        comment
+                    </mat-icon>
+                </button>
             </div>
         </td>
     </ng-container>
 
-    <tr #test mat-header-row *matHeaderRowDef='displayedColumns'></tr>
+    <tr #test mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr 
         appDraggable
-        [drag-data]='row'
-        [area]='area'
-        mat-row *matRowDef='let row; columns: displayedColumns;'
-        (mousedown)='setActiveRow(area, tableName, row.column_name)' 
+        [drag-data]="row"
+        [area]="area"
+        mat-row *matRowDef="let row; columns: displayedColumns;"
+        (mousedown)="setActiveRow(area, tableName, row.column_name)"
         class="draggable">
     </tr>
 </table>

@@ -1,6 +1,6 @@
 
 import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Overlay, CdkOverlayOrigin, OverlayRef, OverlayConfig } from '@angular/cdk/overlay';
+import { Overlay, OverlayRef, OverlayConfig } from '@angular/cdk/overlay';
 import { Observable } from 'rxjs';
 
 import { CommentsService } from 'src/app/services/comments.service';

@@ -22,10 +22,6 @@
     align-items: flex-end;
     padding: 10px !important;
 
-    mat-icon {
-        font-size: 13px;
-    }
-
     .input {
         border-radius: 2px;
         border: 0.75px solid $light-grey;
@@ -50,12 +46,6 @@
     .mat-list {
         width: 100%;
 
-        .list-item-read {
-            &:hover {
-                background-color: $light-blue;
-            }
-        }
-
         .list-item-edit {
             .mat-list-item-content {
                 height: 81px;
@@ -74,18 +64,25 @@
     }
 }
 
-
 .comment {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+
+    .date {
+        font-size: 12px;
+    }
+
+    mat-icon {
+        font-size: 13px;
+    }
 }
 
 .read {
     @extend .comment;
 
-    .head {
+    header {
         width: 100%;
         display: flex;
         align-items: center;
@@ -93,17 +90,13 @@
         color: #808080;
     }
 
-    .body {
+    main {
         width: 100%;
         word-break: break-word;
-    }
 
-    .date {
-        font-size: 12px;
-    }
-
-    .text {
-        font-size: 13px;
+        p {
+            font-size: 13px;
+        }
     }
 
     button {
@@ -114,20 +107,16 @@
 .edit {
     @extend .comment;
 
-    .head {
+    header {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
         color: #808080;
         margin: 4px 0;
-
-        button {
-            width: 20px;
-        }
     }
 
-    .body {
+    footer {
         position: relative;
         width: 100%;
         display: flex;
@@ -140,14 +129,10 @@
             justify-content: flex-end;
             position: relative;
             top: -4px;
-
-            button {
-                width: 20px;
-            }
         }
     }
 
-    .date {
-        font-size: 12px;
+    button {
+        width: 20px;
     }
 }
