@@ -15,7 +15,7 @@ export class Comment {
   hasBeenEdited: boolean;
 
   constructor(
-    public text: string
+    private text: string
   ) {
     this.id = Math.floor(Math.random() * 1000000);
     this.date = new Date(Date.now());
