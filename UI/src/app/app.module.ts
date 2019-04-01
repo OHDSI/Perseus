@@ -27,12 +27,10 @@ import { OverviewComponent } from 'src/app/components/pages/overview/overview.co
 import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabulary.component';
 import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
-import { commonReducer } from 'src/app/store/reducers/common.reducer';
 import { dataReducer } from 'src/app/store/reducers/data.reducer';
 import { DataEffect } from 'src/app/store/effects/data.effect';
 import { DataService } from 'src/app/services/data.service';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
-import { commentsReducer } from 'src/app/store/reducers/comments.reducer';
 import { CommonService } from 'src/app/services/common.service';
 
 @NgModule({
@@ -64,9 +62,7 @@ import { CommonService } from 'src/app/services/common.service';
     FormsModule,
 
     StoreModule.forRoot({
-      common: commonReducer,
       data: dataReducer,
-      comments: commentsReducer
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

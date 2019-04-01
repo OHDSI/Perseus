@@ -1,4 +1,4 @@
-import { Directive, HostListener, ElementRef, Input, Renderer2 } from '@angular/core';
+import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit } from '@angular/core';
 
 import { DragService } from 'src/app/services/drag.service';
 import { DrawService } from 'src/app/services/draw.service';
@@ -7,11 +7,16 @@ import { elementFromCoords } from 'src/app/utility/kit';
 @Directive({
   selector: '[appDraggable]'
 })
-export class DraggableDirective {
+export class DraggableDirective implements OnInit {
   @Input('drag-data') data: any;
-  @Input('area') area: string;
+  @Input() area: string;
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer2, private dragService: DragService, private drawService: DrawService) { }
+  constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
+    private dragService: DragService,
+    private drawService: DrawService
+  ) { }
 
   ngOnInit() {
     this.renderer.setAttribute(this.elementRef.nativeElement, 'draggable', 'true');

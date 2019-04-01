@@ -6,7 +6,6 @@ import { map, mergeMap, catchError } from 'rxjs/operators';
 
 import * as dataActions from 'src/app/store/actions/data.actions';
 import { DataService } from 'src/app/services/data.service';
-import { Data } from 'src/app/models/data';
 
 @Injectable()
 export class DataEffect {
@@ -22,7 +21,7 @@ export class DataEffect {
     ),
     mergeMap((action: dataActions.FetchData) =>
       this.dataService.retrieveData().pipe(
-        map((data: any) =>
+        map((data) =>
           new dataActions.FetchDataSuccess(data)
         ),
         catchError(err => of(new dataActions.FetchDataFail(err)))

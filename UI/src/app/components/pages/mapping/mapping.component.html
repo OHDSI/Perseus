@@ -1,36 +1,31 @@
 <div class="main">
-    
     <app-area 
         area='source'>
-        <app-panel *ngFor="let item of (data$ | async).source"
+        <app-panel *ngFor='let item of (data$ | async).source'
             [title]="item.table_name">
             <app-panel-table
                 area='source'
-                tableName='item.table_name'
+                [tableName]='item.table_name'
                 [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']"
-                [columns]="item.column_list">
-            </app-panel-table>
-        </app-panel>
-    </app-area>
-
-    <!-- <div class="hint-title">
-        <p>{{ (common$ | async).hint }}</p>
-    </div> -->
-    <svg [attr.width]="document.body.clientWidth"></svg>
-
-    <app-area 
-        area='target'>
-        <app-panel *ngFor="let item of (data$ | async).source"
-            title='item.table_name'>
-            <app-panel-table #panelTable
-                area='target'
-                tableName='item.table_name'
-                [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']"
                 [columns]='item.column_list'>
             </app-panel-table>
         </app-panel>
     </app-area>
 
+    <svg [attr.width]='document.body.clientWidth'></svg>
+
+    <app-area 
+        area='target'>
+        <app-panel *ngFor="let item of (data$ | async).source"
+            [title]='item.table_name'>
+            <app-panel-table
+                area='target'
+                [tableName]='item.table_name'
+                [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']"
+                [columns]='item.column_list'>
+            </app-panel-table>
+        </app-panel>
+    </app-area>
 </div>
 
 

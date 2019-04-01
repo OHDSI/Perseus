@@ -36,12 +36,16 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
     this.listener = this.renderer.listen(this.overlay.backdropElement, 'click', () => this.close());
   }
 
+  ngOnDestroy() {
+    this.listener();
+  }
+
   loadTemplate(comment: IComment): TemplateRef<any> {
     if (this.editedComment && this.editedComment.id === comment.id) {
       return this.editTemplate;
-    } else {
-      return this.readOnlyTemplate;
     }
+
+    return this.readOnlyTemplate;
   }
 
   edit(comment: IComment) {
@@ -61,6 +65,8 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
   delete(comment: IComment) {
     const idx = this.comments.indexOf(comment);
     this.comments.splice(idx, 1);
+
+    this.editedComment = null;
   }
 
   applyChanges(comment: IComment, value: string) {
@@ -86,9 +92,4 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
   isDisabled() {
     return !!this.editedComment;
   }
-
-  ngOnDestroy() {
-    this.listener();
-  }
-
 }

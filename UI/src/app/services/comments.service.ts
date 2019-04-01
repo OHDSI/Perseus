@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store, select } from '@ngrx/store';
 
-import * as commentsActions from 'src/app/store/actions/comments.actions';
 import { CommonService } from 'src/app/services/common.service';
 import { IComment } from 'src/app/models/comment';
 
@@ -14,9 +12,7 @@ export class CommentsService {
 
   constructor(
     private commonService: CommonService
-  ) 
-  {
-  }
+  ) {}
 
   prepareForCommenting() {
     const {area, table, row} = this.commonService.activeRow;
@@ -24,7 +20,7 @@ export class CommentsService {
 
     if (!(table in comments[area])) {
       comments[area][table] = {};
-    };
+    }
 
     const panelTable = comments[area][table];
     if (!(row in panelTable)) {

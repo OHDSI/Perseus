@@ -1,45 +1,42 @@
 <mat-card class="dialog">
   <mat-list>
-    <ng-container *ngFor="let comment of comments">
-      <ng-template 
-      [ngTemplateOutlet]="loadTemplate(comment)" 
-      [ngTemplateOutletContext]="{ $implicit: comment}">
+    <ng-container *ngFor='let comment of comments'>
+      <ng-template [ngTemplateOutlet]='loadTemplate(comment)' [ngTemplateOutletContext]='{ $implicit: comment}'>
       </ng-template>
     </ng-container>
   </mat-list>
-
-  <input [(ngModel)]="value" [disabled]="isDisabled()" placeholder="Input comment" class="input input-add" (keyup.enter)="add()">
-
-  <button mat-button (click)="add()" [disabled]="isDisabled()" class="button-add" disableRipple="true">
+  <input [(ngModel)]='value' [disabled]='isDisabled()' placeholder='Input comment' class='input input-add'
+    (keyup.enter)='add()'>
+  <button mat-button (click)='add()' [disabled]='isDisabled()' disableRipple='true'>
     Add
   </button>
 </mat-card>
 
 <ng-template #readOnlyTemplate let-comment>
-  <mat-list-item class="list-item-read">
-    <div class="comment-read">
-      <div class="comment-read-head">
-        <span class="comment-read-date">
+  <mat-list-item>
+    <div class="read">
+      <div class="head">
+        <span class="date">
           {{comment.date | date:'MMM d'}}
-          <ng-container *ngIf="comment.hasBeenEdited">
+          <ng-container *ngIf='comment.hasBeenEdited'>
             <span>(edited)</span>
           </ng-container>
         </span>
-        <div class="comment-read-head-buttons">
-          <button mat-icon-button disableRipple="true" (click)="edit(comment)">
+        <div>
+          <button mat-icon-button disableRipple='true' (click)='edit(comment)'>
             <mat-icon>
               edit
             </mat-icon>
           </button>
-          <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+          <button mat-icon-button disableRipple='true' (click)='delete(comment)'>
             <mat-icon>
               delete
             </mat-icon>
           </button>
         </div>
       </div>
-      <div class="comment-read-body">
-        <p class="comment-read-text">
+      <div class="body">
+        <p class="text">
           {{comment.text}}
         </p>
       </div>
@@ -48,37 +45,36 @@
 </ng-template>
 
 <ng-template #editTemplate let-comment>
-  <mat-list-item class="list-item-edit">
-    <div class="comment-edit">
-      <div class="comment-edit-head">
-        <span class="comment-edit-date">
+  <mat-list-item>
+    <div class="edit">
+      <div class="head">
+        <span class="date">
           {{comment.date | date:'MMM d'}}
         </span>
-        <div class="comment-edit-head-buttons">
-          <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+        <div class="buttons">
+          <button mat-icon-button disableRipple='true' (click)='delete(comment)'>
             <mat-icon>
               delete
             </mat-icon>
           </button>
         </div>
       </div>
-
-      <div class="comment-edit-body">
-        <input type="text" placeholder="Edit comment" [value]="comment.text" #input class="input input-edit" (keyup.enter)="applyChanges(comment, input.value)">
-        <div class="comment-edit-foot-buttons">
-          <button mat-icon-button disableRipple="true">
-            <mat-icon (click)="discardChanges()">
+      <div class="body">
+        <input type='text' placeholder='Edit comment' [value]='comment.text' #input class="input input-edit"
+          (keyup.enter)='applyChanges(comment, input.value)'>
+        <div class="buttons">
+          <button mat-icon-button disableRipple='true'>
+            <mat-icon (click)='discardChanges()'>
               close
             </mat-icon>
           </button>
-          <button mat-icon-button disableRipple="true">
-            <mat-icon (click)="applyChanges(comment, input.value)">
+          <button mat-icon-button disableRipple='true'>
+            <mat-icon (click)='applyChanges(comment, input.value)'>
               check
             </mat-icon>
           </button>
         </div>
       </div>
-
     </div>
   </mat-list-item>
 </ng-template>

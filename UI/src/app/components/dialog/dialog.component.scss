@@ -22,8 +22,8 @@
     align-items: flex-end;
     padding: 10px !important;
 
-    mat-icon {   
-         font-size: 13px;
+    mat-icon {
+        font-size: 13px;
     }
 
     .input {
@@ -42,7 +42,7 @@
         width: 208px;
     }
 
-    .button-add {
+    button {
         padding: 0;
         min-width: 0;
     }
@@ -74,6 +74,7 @@
     }
 }
 
+
 .comment {
     width: 100%;
     display: flex;
@@ -81,10 +82,10 @@
     align-items: flex-end;
 }
 
-.comment-read {
+.read {
     @extend .comment;
 
-    &-head {
+    .head {
         width: 100%;
         display: flex;
         align-items: center;
@@ -92,62 +93,61 @@
         color: #808080;
     }
 
-    &-body {
+    .body {
         width: 100%;
         word-break: break-word;
     }
 
-    &-date {
+    .date {
         font-size: 12px;
     }
 
-    &-text {
+    .text {
         font-size: 13px;
     }
 
-    &-head-buttons button {
+    button {
         width: 20px;
     }
 }
 
-.comment-edit {
+.edit {
     @extend .comment;
-    
-    &-head {
+
+    .head {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
         color: #808080;
         margin: 4px 0;
-    }
-
-    &-body {
-        position: relative;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    &-date {
-        font-size: 12px;
-    }
-
-    &-head-buttons button {
-        width: 20px;
-    }
-
-    &-foot-buttons {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-        position: relative;
-        top: -4px;
 
         button {
             width: 20px;
         }
     }
-}
 
+    .body {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .buttons {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+            top: -4px;
+
+            button {
+                width: 20px;
+            }
+        }
+    }
+
+    .date {
+        font-size: 12px;
+    }
+}

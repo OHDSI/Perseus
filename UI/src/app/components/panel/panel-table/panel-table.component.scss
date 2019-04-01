@@ -15,12 +15,12 @@ table {
     color: $blue;
 }
 
+mat-icon.active {
+    color: #066BBB;
+}
+
 .icon-comment {
     font-size: 14px;
-
-    &-blue {
-        color: #066BBB;
-    }
 }
 
 .comment-box-arrow {
