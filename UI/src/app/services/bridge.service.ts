@@ -78,12 +78,13 @@ export class BridgeService {
   }
 
   private _middleHeightOfLine(line) {
-    return ( +line.attributes.y1.nodeValue + +line.attributes.y2.nodeValue) / 2;
+    const {y1, y2} = line.attributes;
+
+    return ( +y1.nodeValue + +y2.nodeValue) / 2;
   }
 
   private _areaOffset() {
-    const source = this.commonService.sourceAreaWidth;
-    const target = this.commonService.targetAreaWidth;
+    const {sourceAreaWidth: source, targetAreaWidth: target} = this.commonService;
 
     return (Math.max(source, target) - Math.min(source, target)) / 2;
   }
