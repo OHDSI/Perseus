@@ -3,8 +3,10 @@ import {
   Injector,
   ComponentFactoryResolver,
   EmbeddedViewRef,
-  ApplicationRef
+  ApplicationRef,
+  Inject
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { CommonService } from 'src/app/services/common.service';
@@ -16,6 +18,7 @@ export class BridgeService {
   private _target;
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private componentFactoryResolver: ComponentFactoryResolver,
     private appRef: ApplicationRef,
     private injector: Injector,
@@ -42,6 +45,10 @@ export class BridgeService {
     this._appendButton(line);
   }
 
+  setAreaWidth(area: string, width: number) {
+    this[`${area}AreaWidth`] = width;
+  }
+
   private _appendButton(line) {
     const componentRef = this.componentFactoryResolver
       .resolveComponentFactory(BridgeButtonComponent)
@@ -52,7 +59,7 @@ export class BridgeService {
     const button = (componentRef.hostView as EmbeddedViewRef<any>)
       .rootNodes[0] as HTMLElement;
 
-    const canvas = document.querySelector('.main');
+    const canvas = this.document.querySelector('.main');
     canvas.appendChild(button);
 
     const {top, left} = this._calculateButtonPosition(button, canvas, line);

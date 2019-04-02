@@ -33,7 +33,7 @@ import { DataService } from 'src/app/services/data.service';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
-import { BridgeService } from './services/bridge.service';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @NgModule({
   declarations: [

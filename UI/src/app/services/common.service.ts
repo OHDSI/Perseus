@@ -9,9 +9,8 @@ export interface Row {
 @Injectable()
 export class CommonService {
   private _activeRow: Row;
-
-  sourceAreaWidth: number;
-  targetAreaWidth: number;
+  private _sourceAreaWidth: number;
+  private _targetAreaWidth: number;
 
   constructor() {}
 
@@ -22,8 +21,15 @@ export class CommonService {
       return this._activeRow;
   }
 
+  get sourceAreaWidth() {
+    return this._sourceAreaWidth;
+  }
+  get targetAreaWidth() {
+    return this._targetAreaWidth;
+  }
+
   setAreaWidth(area: string, width: number) {
-    this[`${area}AreaWidth`] = width;
+    this[`_${area}AreaWidth`] = width;
   }
 
 }
