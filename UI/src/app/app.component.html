@@ -7,7 +7,7 @@
 	<span></span>
 </mat-toolbar>
 
-<mat-sidenav-container class="app-sidenav-container">
+<mat-sidenav-container>
 	<mat-sidenav #snav
 	             [mode]="mobileQuery.matches ? 'over' : 'side'"
 	             [fixedInViewport]="mobileQuery.matches"
@@ -18,8 +18,8 @@
       <a mat-list-item href="#">Link 3</a>
 		</mat-nav-list>
 	</mat-sidenav>
-	<mat-sidenav-content class="app-sidenav-content">
-			<mat-list class="app-route-links">
+	<mat-sidenav-content>
+			<mat-list>
 				<mat-list-item>
 					<a 
 						routerLink="/mapping"
@@ -45,9 +45,7 @@
 					</a>
 				</mat-list-item>
 			</mat-list>
-
 			<router-outlet></router-outlet>
-			
 	</mat-sidenav-content>
 </mat-sidenav-container>
 

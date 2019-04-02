@@ -1,5 +1,4 @@
 import { Action } from '@ngrx/store';
-import { Table } from 'src/app/models/table';
 import { Data } from 'src/app/models/data';
 
 export enum DataActionTypes {

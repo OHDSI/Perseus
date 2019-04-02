@@ -1,23 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Store } from '@ngrx/store';
-
-import { Expanded } from 'src/app/store/actions/common.actions';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss']
 })
-export class PanelComponent implements OnInit {
+export class PanelComponent {
   @Input() title: string;
   @Input() columnList: any[];
-  
-  constructor(private store: Store<{ hint: string }>) {}
 
-  ngOnInit() { }
-
-  onClickMe() {
-    this.store.dispatch(new Expanded());
-  }
-
+  constructor() {}
 }

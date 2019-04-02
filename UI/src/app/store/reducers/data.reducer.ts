@@ -1,9 +1,8 @@
 import { DataActionTypes, DataAction } from 'src/app/store/actions/data.actions';
-import { Table } from 'src/app/models/table';
 
 export interface State {
-    source: Table[];
-    target: Table[];
+    source: any[];
+    target: any[];
     error: string;
 }
 

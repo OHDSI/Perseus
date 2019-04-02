@@ -1,9 +1,5 @@
-import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Table } from 'src/app/models/table';
-import { Data } from 'src/app/models/data';
 
 @Injectable()
 export class DataService {
@@ -12,6 +8,6 @@ export class DataService {
   constructor(private httpClient: HttpClient) {}
 
   retrieveData() {
-    return this.httpClient.get<Data>(`${this.API_PATH}/data`);
+    return this.httpClient.get<any>(`${this.API_PATH}/data`);
   }
 }

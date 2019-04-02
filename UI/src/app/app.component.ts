@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
-import { Routes } from '@angular/router';
 import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({

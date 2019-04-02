@@ -1,0 +1,80 @@
+<mat-card class="dialog">
+  <mat-list>
+    <ng-container *ngFor="let comment of comments">
+      <ng-template [ngTemplateOutlet]="loadTemplate(comment)" [ngTemplateOutletContext]="{ $implicit: comment}">
+      </ng-template>
+    </ng-container>
+  </mat-list>
+  <input [(ngModel)]="value" [disabled]="isDisabled()" placeholder="Input comment" class="input-add"
+    (keyup.enter)="add()">
+  <button mat-button (click)="add()" [disabled]="isDisabled()" disableRipple="true">
+    Add
+  </button>
+</mat-card>
+
+<ng-template #readOnlyTemplate let-comment>
+  <mat-list-item>
+    <section class="read">
+      <header>
+        <span class="date">
+          {{comment.date | date:'MMM d'}}
+          <span *ngIf="comment.hasBeenEdited">(edited)</span>
+        </span>
+        <div>
+          <button mat-icon-button disableRipple="true" (click)="edit(comment)">
+            <mat-icon>
+              edit
+            </mat-icon>
+          </button>
+          <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
+        </div>
+      </header>
+      <main>
+        <p>
+          {{comment.text}}
+        </p>
+      </main>
+    </section>
+  </mat-list-item>
+</ng-template>
+
+<ng-template #editTemplate let-comment>
+  <mat-list-item>
+    <section class="edit">
+      <header>
+        <span class="date">
+          {{comment.date | date:'MMM d'}}
+        </span>
+        <div class="buttons">
+          <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
+        </div>
+      </header>
+      <main>
+        <input type="text" placeholder="Edit comment" [value]="comment.text" #input class="input-edit"
+          (keyup.enter)="applyChanges(comment, input.value)">
+      </main>
+      <footer>
+        <div class="buttons">
+          <button mat-icon-button disableRipple="true">
+            <mat-icon (click)="discardChanges()">
+              close
+            </mat-icon>
+          </button>
+          <button mat-icon-button disableRipple="true">
+            <mat-icon (click)="applyChanges(comment, input.value)">
+              check
+            </mat-icon>
+          </button>
+        </div>
+      </footer>
+    </section>
+  </mat-list-item>
+</ng-template>

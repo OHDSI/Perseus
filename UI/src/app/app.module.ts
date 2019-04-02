@@ -1,35 +1,37 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
-import { EffectsModule, Actions } from '@ngrx/effects';
+import { EffectsModule } from '@ngrx/effects';
 
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatListModule} from '@angular/material/list';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { OverlayModule } from '@angular/cdk/overlay';
 
-import { MappingComponent } from './components/pages/mapping/mapping.component';
-import { OverviewComponent } from './components/pages/overview/overview.component';
-import { VocabularyComponent } from './components/pages/vocabulary/vocabulary.component';
-import { TableComponent } from './components/table/table.component';
-import { commonReducer } from './store/reducers/common.reducer';
-import { environment } from '../environments/environment';
-import { PanelComponent } from './components/panel/panel.component';
-import { dataReducer } from './store/reducers/data.reducer';
-import { DataService } from 'src/app/services/data.service';
-import { DataEffect } from 'src/app/store/effects/data.effect';
-import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
+import { AppComponent } from 'src/app/app.component';
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { environment } from 'src/environments/environment';
+import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
+import { OverviewComponent } from 'src/app/components/pages/overview/overview.component';
+import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabulary.component';
+import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
-import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
+import { dataReducer } from 'src/app/store/reducers/data.reducer';
+import { DataEffect } from 'src/app/store/effects/data.effect';
+import { DataService } from 'src/app/services/data.service';
+import { DialogComponent } from 'src/app/components/dialog/dialog.component';
+import { CommonService } from 'src/app/services/common.service';
 
 @NgModule({
   declarations: [
@@ -37,10 +39,8 @@ import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
     MappingComponent,
     OverviewComponent,
     VocabularyComponent,
-    TableComponent,
-    PanelComponent,
-    PanelTableComponent,
-    TypeToIconPipe
+    AreaComponent,
+    DialogComponent
   ],
   imports: [
   BrowserModule,
@@ -53,12 +53,16 @@ import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatFormFieldModule,
     MatExpansionModule,
     MatTableModule,
+    PanelModule,
+    OverlayModule,
+    MatInputModule,
+    FormsModule,
 
     StoreModule.forRoot({
-      common: commonReducer,
-      data: dataReducer
+      data: dataReducer,
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
@@ -66,7 +70,7 @@ import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
     }),
     EffectsModule.forRoot([DataEffect])
   ],
-  providers: [DataService],
+  providers: [DataService, CommonService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

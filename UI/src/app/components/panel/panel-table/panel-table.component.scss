@@ -3,13 +3,36 @@
 table {
     width: 100%;
     box-shadow: none;
+    background-color: $yellowish;
+    border-collapse: collapse;
+    padding: 0;
 
-    thead tr {
-        color: $grey;
+    th {
+        font-size: 13px;
     }
 
-    tbody tr {
-        border-bottom: 1px solid #000;
+    .anchor {
+        width: 40px;
+
+        mat-icon {
+            font-size: 14px;
+        }
+    }
+
+    .caption-item {
+        color: $blue;
+    }
+
+    mat-icon.active {
+        color: #066BBB;
+    }
+
+    .drag_indicator {
+        padding: 0 !important;
+    }
+
+    .draggable {
+        cursor: move;
     }
 }
 
