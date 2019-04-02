@@ -52,12 +52,11 @@ export class DrawService {
     return svgPoint;
   }
 
-  private _drawPoint(x = '10', y = '100', radius = '0', color = 'blue') {
+  private _drawPoint(x, y, radius = '0') {
     const shape = this.document.createElementNS("http://www.w3.org/2000/svg", "circle");
     shape.setAttributeNS(null, "cx", x + '');
     shape.setAttributeNS(null, "cy", y + '');
     shape.setAttributeNS(null, "r", radius + '');
-    shape.setAttributeNS(null, "fill", color);
     this._svg.appendChild(shape);
   }
 
@@ -67,7 +66,6 @@ export class DrawService {
     line.setAttribute('y1', y1 + '');
     line.setAttribute('x2', x2 + '');
     line.setAttribute('y2', y2 + '');
-    line.setAttribute("stroke", "#066BBB");
     this._svg.appendChild(line);
 
     return line;
