@@ -1,8 +1,8 @@
 import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit } from '@angular/core';
 
 import { DragService } from 'src/app/services/drag.service';
-import { DrawService } from 'src/app/services/draw.service';
 import { elementFromCoords } from 'src/app/utility/kit';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Directive({
   selector: '[appDraggable]'
@@ -15,7 +15,7 @@ export class DraggableDirective implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private dragService: DragService,
-    private drawService: DrawService
+    private bridgeService: BridgeService
   ) { }
 
   ngOnInit() {
@@ -28,7 +28,7 @@ export class DraggableDirective implements OnInit {
 
     const row = elementFromCoords('TR', e);
     if (row) {
-      this.drawService.source = row;
+      this.bridgeService.source = row;
     }
   }
 
@@ -40,8 +40,8 @@ export class DraggableDirective implements OnInit {
 
     const row = elementFromCoords('TR', e);
     if (row) {
-      this.drawService.target = row;
-      this.drawService.connectPoints();
+      this.bridgeService.target = row;
+      this.bridgeService.connect();
     }
   }
 

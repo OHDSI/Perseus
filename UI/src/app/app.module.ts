@@ -32,6 +32,8 @@ import { DataEffect } from 'src/app/store/effects/data.effect';
 import { DataService } from 'src/app/services/data.service';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
+import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
+import { BridgeService } from './services/bridge.service';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,11 @@ import { CommonService } from 'src/app/services/common.service';
     OverviewComponent,
     VocabularyComponent,
     AreaComponent,
-    DialogComponent
+    DialogComponent,
+    BridgeButtonComponent
+  ],
+  entryComponents: [
+    BridgeButtonComponent
   ],
   imports: [
   BrowserModule,
@@ -70,7 +76,7 @@ import { CommonService } from 'src/app/services/common.service';
     }),
     EffectsModule.forRoot([DataEffect])
   ],
-  providers: [DataService, CommonService],
+  providers: [DataService, CommonService, BridgeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

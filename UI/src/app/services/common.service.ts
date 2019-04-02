@@ -10,6 +10,9 @@ export interface Row {
 export class CommonService {
   private _activeRow: Row;
 
+  sourceAreaWidth: number;
+  targetAreaWidth: number;
+
   constructor() {}
 
   set activeRow(row: Row) {
@@ -17,6 +20,10 @@ export class CommonService {
   }
   get activeRow() {
       return this._activeRow;
+  }
+
+  setAreaWidth(area: string, width: number) {
+    this[`${area}AreaWidth`] = width;
   }
 
 }
