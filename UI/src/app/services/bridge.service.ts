@@ -45,10 +45,6 @@ export class BridgeService {
     this._appendButton(line);
   }
 
-  setAreaWidth(area: string, width: number) {
-    this[`${area}AreaWidth`] = width;
-  }
-
   private _appendButton(line) {
     const componentRef = this.componentFactoryResolver
       .resolveComponentFactory(BridgeButtonComponent)
