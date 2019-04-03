@@ -1,4 +1,3 @@
-
 import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Observable } from 'rxjs';
@@ -7,6 +6,7 @@ import { CommentsService } from 'src/app/services/comments.service';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
+import { FilterComponent } from 'src/app/components/filter/filter.component';
 
 @Component({
   selector: 'app-panel-table',
@@ -34,6 +34,24 @@ export class PanelTableComponent {
 
   setActiveRow(area, table, row) {
     this.commonService.activeRow = { area, table, row };
+  }
+
+  showRowFilter(anchor) {
+    const strategy = this._getStartegy(anchor);
+    const config = new OverlayConfig({
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      positionStrategy: strategy
+    });
+    const overlayRef = this.overlay.create(config);
+    const injector = new PortalInjector(
+      this.injector,
+      new WeakMap<any, any>([[OverlayRef, overlayRef]])
+    );
+
+    overlayRef.attach(new ComponentPortal(FilterComponent, null, injector));
+    // due to ngClass directive triggers change detection too often,
+    // we have to use onPush strategy here and detect changes after clicking on a backdrop
   }
 
   showDialog(anchor) {

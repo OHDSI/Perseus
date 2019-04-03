@@ -1,6 +1,5 @@
 export interface IComment {
   id: number;
-  text: string;
   date: Date;
   hasBeenEdited: boolean;
 

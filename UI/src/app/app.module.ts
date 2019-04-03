@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
@@ -34,6 +35,7 @@ import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { FilterComponent } from 'src/app/components/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,8 @@ import { BridgeService } from 'src/app/services/bridge.service';
     VocabularyComponent,
     AreaComponent,
     DialogComponent,
-    BridgeButtonComponent
+    BridgeButtonComponent,
+    FilterComponent
   ],
   entryComponents: [
     BridgeButtonComponent
@@ -66,6 +69,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
     OverlayModule,
     MatInputModule,
     FormsModule,
+    MatCheckboxModule,
 
     StoreModule.forRoot({
       data: dataReducer,

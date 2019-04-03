@@ -17,6 +17,7 @@ import { CommentsService } from 'src/app/services/comments.service';
 import { DragService } from 'src/app/services/drag.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
+import { FilterComponent } from 'src/app/components/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { DialogComponent } from 'src/app/components/dialog/dialog.component';
     PanelTableComponent,
   ],
   entryComponents: [
-    DialogComponent
+    DialogComponent,
+    FilterComponent
   ],
   imports: [
     MatExpansionModule,
@@ -40,7 +42,7 @@ import { DialogComponent } from 'src/app/components/dialog/dialog.component';
     MatInputModule,
     CommonModule,
     MatIconModule,
-    MatButtonModule,
+    MatButtonModule
   ],
   providers: [CommentsService, DragService, DrawService]
 

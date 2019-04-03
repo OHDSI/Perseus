@@ -1,2 +1,16 @@
-<h4>{{title}}</h4>
-<ng-content></ng-content>
+<div class="caption">
+    <mat-icon>
+        flash_on
+    </mat-icon>
+    <p>
+        {{area}}:
+    </p>
+</div>
+
+<div class="scrollable" 
+    [ngClass]="{
+        'scrollbarLeft': areaIsSource,
+        'scrollbarRight': !areaIsSource
+    }">
+    <ng-content></ng-content>
+</div>

@@ -5,6 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import * as dataActions from 'src/app/store/actions/data.actions';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-mapping',
@@ -13,17 +14,22 @@ import * as dataActions from 'src/app/store/actions/data.actions';
 })
 export class MappingComponent implements OnInit {
   common$: Observable<any>;
-  data$: Observable<any>;
+
+  dataSource$: Observable<any>;
+  dataTarget$: Observable<any>;
 
   constructor(
     private store: Store<any>,
     @Inject(DOCUMENT) private document: Document,
+    private httpClient: HttpClient
   ) {
-    this.data$ = store.pipe(select('data'));
+    //this.dataSource$ = store.pipe(select('data'));
+    //this.store.dispatch(new dataActions.FetchData());
   }
 
   ngOnInit() {
-    this.store.dispatch(new dataActions.FetchData());
+    this.dataTarget$ = this.httpClient
+      .get<any>(`http://127.0.0.1:5000/get_cdm_schema?cdm_version=5.0.1`, {responseType: 'json'});
   }
   
 }

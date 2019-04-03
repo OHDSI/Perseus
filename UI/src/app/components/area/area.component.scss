@@ -1,6 +1,62 @@
 @import 'src/app/styles/variables.scss';
 
-h4 {
-    text-transform: capitalize;
-    color: $blue;
+
+.caption {
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+
+    mat-icon {
+        font-size: 14px;
+        height: 14px;
+        width: 14px;
+        color: $blue;
+    }
+
+    p {
+        text-transform: capitalize;
+        color: $blue;
+        font-size: 14px;
+    }
+}
+
+.scrollable {
+    overflow-y: scroll;
+    height: 70vh;
+}
+
+.scrollbarLeft {
+    direction: rtl;
+
+    /deep/.mat-expansion-panel {
+        direction: ltr;
+        margin-left: 5px;
+    }
+}
+
+.scrollbarRight {
+
+    /deep/.mat-expansion-panel {
+        margin-right: 5px;
+    }
+}
+
+.scrollable::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.scrollable::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: #F5F5F5;
+}
+
+.scrollable::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: rgba(128, 128, 128, 0.5);
 }

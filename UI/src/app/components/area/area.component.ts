@@ -5,7 +5,8 @@ import { CommonService } from 'src/app/services/common.service';
 @Component({
   selector: 'app-area',
   templateUrl: './area.component.html',
-  styleUrls: ['./area.component.scss']
+  styleUrls: ['./area.component.scss'],
+
 })
 
 export class AreaComponent implements AfterViewChecked {
@@ -22,5 +23,9 @@ export class AreaComponent implements AfterViewChecked {
     if (element.offsetWidth) {
       this.commonService.setAreaWidth(this.area, element.offsetWidth);
     }
+  }
+
+  get areaIsSource() {
+    return this.area === 'source';
   }
 }

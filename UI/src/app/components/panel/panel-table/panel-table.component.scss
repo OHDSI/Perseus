@@ -7,14 +7,24 @@ table {
     border-collapse: collapse;
     padding: 0;
 
-    th {
-        font-size: 13px;
+    .indicator {
+        margin-left: 20px;
+        cursor: move;
     }
 
-    .anchor {
-        mat-icon {
-            font-size: 14px;
-        }
+    .filter-row {
+        color: #066BBB;
+    }
+
+    mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+    }
+
+    th {
+        font-size: 13px;
     }
 
     .caption-item {
