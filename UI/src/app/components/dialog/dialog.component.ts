@@ -40,7 +40,7 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
     this.listener();
   }
 
-  overSourceArea() {
+  get overSourceArea() {
     return this.commonService.activeRow.area === 'source';
   }
 

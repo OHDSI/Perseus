@@ -1,6 +1,6 @@
 <mat-card [ngClass]="{
-  'dialog-source': overSourceArea(),
-  'dialog-target': !overSourceArea()
+  'dialog-source': overSourceArea,
+  'dialog-target': !overSourceArea
 }">
   <mat-list>
     <ng-container *ngFor="let comment of comments">
