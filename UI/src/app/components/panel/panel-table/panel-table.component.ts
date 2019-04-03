@@ -24,16 +24,16 @@ export class PanelTableComponent {
   activeRow = null;
   data$: Observable<any>;
 
-  constructor( 
+  constructor(
     private commonService: CommonService,
     private commentsService: CommentsService,
     private overlay: Overlay,
     private injector: Injector,
     private cdRef: ChangeDetectorRef
-    ) {};
+  ) { };
 
   setActiveRow(area, table, row) {
-    this.commonService.activeRow = {area, table, row};
+    this.commonService.activeRow = { area, table, row };
   }
 
   showDialog(anchor) {
@@ -81,10 +81,22 @@ export class PanelTableComponent {
     }
 
     const positions = [
-      new ConnectionPositionPair({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'bottom' }, offsetX, offsetY)
+      new ConnectionPositionPair(
+        {
+          originX: 'start',
+          originY: 'bottom'
+        },
+        {
+          overlayX: 'start',
+          overlayY: 'bottom'
+        },
+        offsetX, offsetY)
     ];
 
-    return this.overlay.position().flexibleConnectedTo(anchor).withPositions(positions);
+    return this.overlay
+      .position()
+      .flexibleConnectedTo(anchor)
+      .withPositions(positions);
 
   }
 }
