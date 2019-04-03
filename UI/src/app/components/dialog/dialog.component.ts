@@ -40,6 +40,10 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
     this.listener();
   }
 
+  overSourceArea() {
+    return this.commonService.activeRow.area === 'source';
+  }
+
   loadTemplate(comment: IComment): TemplateRef<any> {
     if (this.editedComment && this.editedComment.id === comment.id) {
       return this.editTemplate;

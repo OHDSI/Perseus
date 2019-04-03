@@ -1,4 +1,7 @@
-<mat-card class="dialog">
+<mat-card [ngClass]="{
+  'dialog-source': overSourceArea(),
+  'dialog-target': !overSourceArea()
+}">
   <mat-list>
     <ng-container *ngFor="let comment of comments">
       <ng-template [ngTemplateOutlet]="loadTemplate(comment)" [ngTemplateOutletContext]="{ $implicit: comment}">

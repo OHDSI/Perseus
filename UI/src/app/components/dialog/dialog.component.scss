@@ -1,20 +1,5 @@
 @import 'src/app/styles/variables.scss';
 
-.dialog:after {
-    content: "";
-    position: absolute;
-    top: 12px;
-    left: 1px;
-    width: 0;
-    height: 0;
-    box-sizing: border-box;
-    border: 7px solid $black;
-    border-color: transparent transparent $white $white;
-    transform-origin: 0 0;
-    transform: rotate(45deg);
-    box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
-}
-
 .dialog {
     width: 224px;
     display: flex !important;
@@ -61,6 +46,44 @@
         .mat-list-item-content {
             padding: 0 10px;
         }
+    }
+}
+
+.dialog-source {
+    @extend .dialog;
+
+    &:after {
+        content: "";
+        position: absolute;
+        bottom: 58px;
+        left: 1px;
+        width: 0;
+        height: 0;
+        box-sizing: border-box;
+        border: 7px solid $black;
+        border-color: transparent transparent white white;
+        transform-origin: 0 0;
+        transform: rotate(45deg);
+        box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+    }
+}
+
+.dialog-target {
+    @extend .dialog;
+
+    &:after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        right: 10px;
+        width: 0;
+        height: 0;
+        box-sizing: border-box;
+        border: 7px solid $black;
+        border-color: transparent white white transparent;
+        transform-origin: 0 0;
+        transform: rotate(45deg);
+        box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.15);
     }
 }
 

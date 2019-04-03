@@ -1,6 +1,6 @@
 
 import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Overlay, OverlayRef, OverlayConfig } from '@angular/cdk/overlay';
+import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Observable } from 'rxjs';
 
 import { CommentsService } from 'src/app/services/comments.service';
@@ -37,7 +37,7 @@ export class PanelTableComponent {
   }
 
   showDialog(anchor) {
-    const strategy = this.overlay.position().connectedTo(anchor, {originX: 'end', originY: 'top'}, {overlayX: 'start', overlayY: 'top'});
+    const strategy = this._getStartegy(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
@@ -47,7 +47,7 @@ export class PanelTableComponent {
     const injector = new PortalInjector(
       this.injector,
       new WeakMap<any, any>([[OverlayRef, overlayRef]])
-    )
+    );
 
     overlayRef.attach(new ComponentPortal(DialogComponent, null, injector));
     // due to ngClass directive triggers change detection too often,
@@ -57,5 +57,34 @@ export class PanelTableComponent {
 
   hasComment(area, table, row) {
     return this.commentsService.hasComment(area, table, row);
+  }
+
+  private _getStartegy(anchor) {
+    let offsetX: number;
+    let offsetY: number;
+
+    switch (this.area) {
+      case 'source': {
+        offsetX = 40;
+        offsetY = 44;
+
+        break;
+      }
+      case 'target': {
+        offsetX = -200;
+        offsetY = -40;
+
+        break;
+      }
+      default:
+        return null;
+    }
+
+    const positions = [
+      new ConnectionPositionPair({ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'bottom' }, offsetX, offsetY)
+    ];
+
+    return this.overlay.position().flexibleConnectedTo(anchor).withPositions(positions);
+
   }
 }
