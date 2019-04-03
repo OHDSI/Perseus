@@ -23,7 +23,11 @@
 
     <ng-container matColumnDef="values">
         <th mat-header-cell *matHeaderCellDef> Top 10 values </th>
-        <td mat-cell *matCellDef="let column">  </td>
+        <td mat-cell *matCellDef="let column">
+            <mat-icon>
+                sort
+            </mat-icon>
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="comments">

@@ -60,8 +60,8 @@ export class PanelTableComponent {
   }
 
   private _getStartegy(anchor) {
-    let offsetX: number;
-    let offsetY: number;
+    let offsetX = 0;
+    let offsetY = 0;
 
     switch (this.area) {
       case 'source': {
