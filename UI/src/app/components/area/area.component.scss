@@ -4,13 +4,13 @@
 .caption {
     display: flex;
     align-items: center;
-    margin-left: 40px;
+    margin-left: 28px;
 
     mat-icon {
         font-size: 14px;
-        height: 14px;
-        width: 14px;
+        width: 10px;
         color: $blue;
+
     }
 
     p {
@@ -44,19 +44,19 @@
 .scrollable::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
+	border-radius: 100px;
 	background-color: #F5F5F5;
 }
 
 .scrollable::-webkit-scrollbar
 {
 	width: 5px;
-	background-color: #F5F5F5;
 }
 
 .scrollable::-webkit-scrollbar-thumb
 {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: rgba(128, 128, 128, 0.5);
+    width: 5px;
+	border-radius: 100px;
+	-webkit-box-shadow: #E5E5E5;
+	background-color: #B3B3B3;
 }

@@ -2,12 +2,9 @@
 >
     <ng-container matColumnDef="column_indicator">
         <th mat-header-cell *matHeaderCellDef>
-            <mat-icon #anchor
-                class="filter-row"
-                (click)="showRowFilter(anchor)"
-            >
-                flash_on 
-            </mat-icon>
+            <button mat-icon-button disableRipple="true" #anchor (click)="openFilterDialog(anchor)" class="button-filter">
+                <mat-icon svgIcon="filter" class="filter"></mat-icon>
+            </button>
         </th>
         <td mat-cell *matCellDef="let column" class="drag_indicator">
             <mat-icon class="indicator">
@@ -41,7 +38,7 @@
         <th mat-header-cell *matHeaderCellDef> Comments </th>
         <td mat-cell *matCellDef="let column">
             <div #anchor class="anchor">
-                <button mat-icon-button (click)="showDialog(anchor)" [disableRipple]="true">
+                <button mat-icon-button (click)="openCommentDialog(anchor)" [disableRipple]="true">
                     <mat-icon class="icon-comment" [ngClass]="{'active': hasComment(area, tableName, column.column_name)}">
                         comment
                     </mat-icon>

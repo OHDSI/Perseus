@@ -12,9 +12,17 @@ table {
         cursor: move;
     }
 
-    .filter-row {
-        color: #066BBB;
+    .button-filter {
+    width: 0;
+
+    mat-icon {
+        font-size: 14px;
+        width: 10px;
+        color: $blue;
     }
+ }
+
+    
 
     mat-icon {
         font-size: 14px;

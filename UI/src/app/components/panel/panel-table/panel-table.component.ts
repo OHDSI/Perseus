@@ -1,12 +1,14 @@
-import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 
 import { CommentsService } from 'src/app/services/comments.service';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
+import * as columnsActions from 'src/app/store/actions/columns.actions';
 
 @Component({
   selector: 'app-panel-table',
@@ -15,7 +17,7 @@ import { FilterComponent } from 'src/app/components/filter/filter.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class PanelTableComponent {
+export class PanelTableComponent implements OnInit {
   @Input() area: string;
   @Input() columns: any[];
   @Input() tableName: string;
@@ -23,20 +25,28 @@ export class PanelTableComponent {
 
   activeRow = null;
   data$: Observable<any>;
+  tables$: Observable<any>;
+  columns$: Observable<any>;
 
   constructor(
     private commonService: CommonService,
     private commentsService: CommentsService,
     private overlay: Overlay,
     private injector: Injector,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private store: Store<any>
   ) { };
+
+  ngOnInit() {
+    this.columns$ = this.store.pipe(select('columns'));
+    this.store.dispatch(new columnsActions.InitializeColumns({area: this.area, table: this.tableName, columns: this.columns}));
+  }
 
   setActiveRow(area, table, row) {
     this.commonService.activeRow = { area, table, row };
   }
 
-  showRowFilter(anchor) {
+  openFilterDialog(anchor) {
     const strategy = this._getStartegy(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,
@@ -50,11 +60,9 @@ export class PanelTableComponent {
     );
 
     overlayRef.attach(new ComponentPortal(FilterComponent, null, injector));
-    // due to ngClass directive triggers change detection too often,
-    // we have to use onPush strategy here and detect changes after clicking on a backdrop
   }
 
-  showDialog(anchor) {
+  openCommentDialog(anchor) {
     const strategy = this._getStartegy(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,

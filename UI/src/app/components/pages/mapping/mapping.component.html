@@ -2,20 +2,24 @@
     <main class="main">
         <app-area area="source">
             <app-panel *ngFor="let item of (dataTarget$ | async)" [title]="item.table_name">
-                <app-panel-table area="source" [tableName]="item.table_name"
-                    [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']"
-                    [columns]="item.column_list">
+                <app-panel-table 
+                    area="source" 
+                    [tableName]="item.table_name"
+                    [columns]="item.column_list"
+                    [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']">
                 </app-panel-table>
             </app-panel>
         </app-area>
 
-        <svg [attr.width]="document.body.clientWidth"></svg>
+        <svg class="canvas" [attr.width]="document.body.clientWidth"></svg>
 
         <app-area area="target">
             <app-panel *ngFor="let item of (dataTarget$ | async)" [title]="item.table_name">
-                <app-panel-table area="target" [tableName]="item.table_name"
-                    [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']"
-                    [columns]="item.column_list">
+                <app-panel-table 
+                    area="target" 
+                    [tableName]="item.table_name"
+                    [columns]="item.column_list"
+                    [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']">
                 </app-panel-table>
             </app-panel>
         </app-area>

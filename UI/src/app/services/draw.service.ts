@@ -11,7 +11,7 @@ export class DrawService {
     @Inject(DOCUMENT) private document: Document,
     private dragService: DragService,
   ) { 
-      this._svg = document.querySelector('svg');
+      this._svg = document.querySelector('.canvas');
   }
 
   drawLine(source, target) {

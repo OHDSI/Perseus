@@ -1,0 +1,38 @@
+mat-card {
+    padding: 18px 16px;
+    width: 212px;
+    height: 391px;
+    background: #F9F9F9;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 0;
+
+    header {
+        font-size: 13px;
+        width: 100%;
+
+        .mat-radio-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+
+
+
+            .mat-radio-label-content {
+                padding-left: 4px;
+            }
+        }
+
+        label {
+            color: #808080;
+            line-height: normal;
+            font-style: italic;
+            margin-top: 8px;
+        }
+    }
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

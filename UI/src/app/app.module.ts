@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
@@ -36,6 +37,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
+import { columnsReducer } from './store/reducers/columns.reducer';
 
 @NgModule({
   declarations: [
@@ -70,9 +72,11 @@ import { FilterComponent } from 'src/app/components/filter/filter.component';
     MatInputModule,
     FormsModule,
     MatCheckboxModule,
+    MatRadioModule,
 
     StoreModule.forRoot({
       data: dataReducer,
+      columns: columnsReducer
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

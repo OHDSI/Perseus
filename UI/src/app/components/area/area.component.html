@@ -1,7 +1,7 @@
 <div class="caption">
-    <mat-icon>
-        flash_on
-    </mat-icon>
+    <button mat-icon-button disableRipple="true" #anchor (click)="openFilterDialog(anchor)">
+        <mat-icon svgIcon="filter"></mat-icon>
+    </button>
     <p>
         {{area}}:
     </p>
