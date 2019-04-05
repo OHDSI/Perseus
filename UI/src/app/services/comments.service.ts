@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 
 import { CommonService } from 'src/app/services/common.service';
 import { IComment } from 'src/app/models/comment';
+import * as dataActions from 'src/app/store/actions/data.actions';
 
 @Injectable()
 export class CommentsService {
@@ -11,7 +13,8 @@ export class CommentsService {
   }
 
   constructor(
-    private commonService: CommonService
+    private commonService: CommonService,
+    private store: Store<any>,
   ) {}
 
   prepareForCommenting() {
@@ -29,8 +32,10 @@ export class CommentsService {
     }
   }
 
-  addComment({area, table, row}, comment: IComment) {
-    this.comments[area][table][row].comments.push(comment);
+  addComment(destination: {area: string, table: any, row: any}, comment: IComment) {
+    this.store.dispatch(new dataActions.AddComment({destination, comment}));
+    
+    //this.comments[area][table][row].comments.push(comment);
   }
 
   hasComment(area: string, table: string, row: string): boolean {

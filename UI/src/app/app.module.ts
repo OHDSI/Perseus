@@ -37,7 +37,6 @@ import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
-import { columnsReducer } from './store/reducers/columns.reducer';
 
 @NgModule({
   declarations: [
@@ -75,8 +74,7 @@ import { columnsReducer } from './store/reducers/columns.reducer';
     MatRadioModule,
 
     StoreModule.forRoot({
-      data: dataReducer,
-      columns: columnsReducer
+      data: dataReducer
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

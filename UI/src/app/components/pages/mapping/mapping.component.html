@@ -1,28 +1,30 @@
 <section>
     <main class="main">
         <app-area area="source">
-            <app-panel *ngFor="let item of (dataTarget$ | async)" [title]="item.table_name">
-                <app-panel-table 
+            <app-panel *ngFor="let table of (tables$ | async)" [title]="table.name">
+                <!-- <app-panel-table 
                     area="source" 
-                    [tableName]="item.table_name"
-                    [columns]="item.column_list"
+                    [table]="table"
+                    [tableName]="table.name"
+                    [columns]="table.rows"
                     [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']">
-                </app-panel-table>
+                </app-panel-table> -->
             </app-panel>
         </app-area>
 
         <svg class="canvas" [attr.width]="document.body.clientWidth"></svg>
 
-        <app-area area="target">
-            <app-panel *ngFor="let item of (dataTarget$ | async)" [title]="item.table_name">
+        <!-- <app-area area="target">
+            <app-panel *ngFor="let table of (data$ | async).target.tables" [title]="table.name">
                 <app-panel-table 
                     area="target" 
-                    [tableName]="item.table_name"
-                    [columns]="item.column_list"
+                    [table]="table"
+                    [tableName]="table.name"
+                    [columns]="table.rows"
                     [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']">
                 </app-panel-table>
             </app-panel>
-        </app-area>
+        </app-area> -->
     </main>
     <footer>
         <div>

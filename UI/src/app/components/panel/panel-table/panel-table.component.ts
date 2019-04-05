@@ -8,7 +8,6 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
-import * as columnsActions from 'src/app/store/actions/columns.actions';
 
 @Component({
   selector: 'app-panel-table',
@@ -17,8 +16,9 @@ import * as columnsActions from 'src/app/store/actions/columns.actions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class PanelTableComponent implements OnInit {
+export class PanelTableComponent {
   @Input() area: string;
+  @Input() table: any;
   @Input() columns: any[];
   @Input() tableName: string;
   @Input() displayedColumns: string[];
@@ -37,13 +37,8 @@ export class PanelTableComponent implements OnInit {
     private store: Store<any>
   ) { };
 
-  ngOnInit() {
-    this.columns$ = this.store.pipe(select('columns'));
-    this.store.dispatch(new columnsActions.InitializeColumns({area: this.area, table: this.tableName, columns: this.columns}));
-  }
-
-  setActiveRow(area, table, row) {
-    this.commonService.activeRow = { area, table, row };
+  setActiveRow(area, row) {
+    this.commonService.activeRow = { area, table: this.table, row };
   }
 
   openFilterDialog(anchor) {

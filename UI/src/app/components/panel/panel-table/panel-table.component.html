@@ -53,7 +53,7 @@
         [drag-data]="row"
         [area]="area"
         mat-row *matRowDef="let row; columns: displayedColumns;"
-        (mousedown)="setActiveRow(area, tableName, row.column_name)"
+        (mousedown)="setActiveRow(area, tableName, row)"
         class="draggable">
     </tr>
 </table>

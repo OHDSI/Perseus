@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 export interface Row {
     area: string;
-    table: string;
+    table: any;
     row: string;
 }
 
