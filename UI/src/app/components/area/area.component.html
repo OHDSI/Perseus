@@ -1,14 +1,18 @@
 <div class="caption">
-    <button mat-icon-button disableRipple="true" #anchor (click)="openFilterDialog(anchor)">
-        <mat-icon svgIcon="filter"></mat-icon>
-    </button>
+    <div #anchor>
+        <button mat-icon-button disableRipple="true" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="filter" (click)="openFilterDialog(anchor)">
+            <mat-icon svgIcon="filter"></mat-icon>
+            <mat-menu #filter="matMenu">
+                <app-filter [menuTrigger]="menuTrigger" [data]="tables"></app-filter>
+            </mat-menu>
+        </button>
+    </div>
     <p>
-        {{area}}:
+        {{area}}: {{visibleColumnsNumber}}/{{totalColumnsNumber}}
     </p>
 </div>
 
-<div class="scrollable" 
-    [ngClass]="{
+<div class="scrollable" [ngClass]="{
         'scrollbarLeft': areaIsSource,
         'scrollbarRight': !areaIsSource
     }">

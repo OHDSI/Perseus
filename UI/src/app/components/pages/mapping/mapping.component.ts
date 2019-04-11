@@ -1,13 +1,50 @@
 import { Component, OnInit } from '@angular/core';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-
-import * as dataActions from 'src/app/store/actions/data.actions';
-import * as sourceActions from 'src/app/store/actions/source.actions';
 import { HttpClient } from '@angular/common/http';
-import * as fromStore from 'src/app/store/reducers/data.reducer';
+
+import { IComment } from 'src/app/models/comment';
+import { StateService } from 'src/app/services/state.service';
+
+export interface ITable {
+  id: number;
+  area: string;
+  name: string;
+  rows: IRow[];
+  visible: boolean;
+  expanded: boolean;
+}
+export class Table {
+  constructor(
+    public id,
+    public area,
+    public name,
+    public rows,
+    public visible = true,
+    public expanded = false
+  ) {}
+}
+
+export interface IRow {
+  id: number;
+  name: string;
+  type: string;
+  area: string;
+  comments: IComment[];
+  visible: boolean;
+  connetions?: {};
+}
+export class Row {
+  constructor(
+    public id,
+    public name,
+    public type,
+    public area,
+    public comments,
+    public visible = true,
+    public connections = {}
+    ) {}
+}
 
 @Component({
   selector: 'app-mapping',
@@ -15,99 +52,82 @@ import * as fromStore from 'src/app/store/reducers/data.reducer';
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent implements OnInit {
-  data$: Observable<any> = null;
-  tables$: Observable<any> = null;
-
   constructor(
-    private store: Store<any>,
     @Inject(DOCUMENT) private document: Document,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private stateService: StateService
   ) {
-    this.data$ = store.pipe(select('data'));
-    this.data$.subscribe(val => console.log(val));
   }
 
   ngOnInit() {
     this.httpClient
-      .get<any>(`http://127.0.0.1:5000/get_cdm_schema?cdm_version=5.0.1`, {responseType: 'json'}).subscribe(val => this.initialize(val));
-
-    this.tables$ = this.store.select(fromStore.getSourceTables);
+      .get<any>(`http://127.0.0.1:5000/get_cdm_schema?cdm_version=5.0.1`, {responseType: 'json'})
+      .subscribe(data => this.initialize(data));
   }
 
   initialize(data) {
     const state = {
       source: {
-        tables: [],
-        rows: [],
-        comments: []
+        tables: []
       },
       target: {
-        tables: [],
-        rows: [],
-        comments: []
+        tables: []
       }
     };
 
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
-
-      state.source.tables.push(
-        {
-          id: i,
-          area: 'source',
-          name: item.table_name,
-          rows: item.column_list,
-      });
+      const id = i;
+      const area = 'source';
+      const name = item.table_name;
+      const rows = [];
 
       for (let j = 0; j < item.column_list.length; j++) {
-        state.source.rows.push({
-          tableId: i,
-          rowId: j,
-          area: 'source',
-          tableName: item.table_name,
-          row: item.column_list[j]
-        });
+        const id = j;
+        const name = item.column_list[j].column_name;
+        const type = item.column_list[j].column_type;
+        const comments = [];
+        const row = new Row(id, name, type, area, comments);
 
-        state.source.comments.push({
-          tableId: i,
-          rowId: j,
-          area: 'source',
-          tableName: item.table_name,
-          row: item.column_list[j]
-        });
+        rows.push(row);
       }
+
+       state.source.tables.push(new Table(id, area, name, rows));
     }
 
-    // for (let i = 0; i < data.length; i++) {
-    //   const item = data[i];
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      const id = i;
+      const area = 'target';
+      const name = item.table_name;
+      const rows = [];
 
-    //   state.target.tables.push(
-    //     {
-    //       id: i,
-    //       area: 'target',
-    //       name: item.table_name,
-    //       rows: item.column_list,
-    //   });
+      for (let j = 0; j < item.column_list.length; j++) {
+        const id = j;
+        const name = item.column_list[j].column_name;
+        const type = item.column_list[j].column_type;
+        const comments = [];
+        const row = new Row(id, name, type, area, comments);
 
-    //   for (let j = 0; j < item.column_list.length; j++) {
-    //     state.target.rows.push({
-    //       tableId: i,
-    //       rowId: j,
-    //       area: 'target',
-    //       tableName: item.table_name,
-    //       row: item.column_list[j]
-    //     });
+        rows.push(row);
+      }
 
-    //     state.target.comments.push({
-    //       tableId: i,
-    //       rowId: j,
-    //       area: 'target',
-    //       tableName: item.table_name,
-    //       row: item.column_list[j]
-    //     });
-    //   }
-    // }
+       state.target.tables.push(new Table(id, area, name, rows));
+    }
 
-    this.store.dispatch(new sourceActions.Initialize(state.source.tables));
+    this.stateService.initialize(state);
+  }
+
+  get hint() {
+    const sourceExpandedStatus = this.stateService.state &&
+      this.stateService.state.source.tables.some(table => table.expanded);
+    const targetExpandedStatus = this.stateService.state &&
+      this.stateService.state.target.tables.some(table => table.expanded);
+
+    return sourceExpandedStatus && targetExpandedStatus;
+  }
+
+  get state() {
+    return this.stateService.state;
   }
 }

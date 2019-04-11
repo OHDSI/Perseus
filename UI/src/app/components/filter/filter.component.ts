@@ -1,26 +1,72 @@
-import { Component, Renderer2, AfterViewInit, OnDestroy } from '@angular/core';
-import { OverlayRef } from '@angular/cdk/overlay';
+import { Component, OnInit, Input } from '@angular/core';
+import { MatRadioChange } from '@angular/material/radio';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatMenuTrigger } from '@angular/material';
+
+import { ITable, IRow } from 'src/app/components/pages/mapping/mapping.component';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class FilterComponent implements AfterViewInit, OnDestroy {
-  private listener: () => void;
 
-  constructor(private overlay: OverlayRef, private renderer: Renderer2) { }
+export class FilterComponent implements OnInit {
+  @Input() data: ITable[] | IRow[];
+  @Input() menuTrigger: MatMenuTrigger;
 
-  ngAfterViewInit() {
-    this.listener = this.renderer.listen(this.overlay.backdropElement, 'click', () => this.close());
+  items = [];
+  checkboxes: {
+    [key: number]: boolean;
+  } = {};
+
+  constructor() {}
+
+  ngOnInit() {
+    if (this.data) {
+      for (let i = 0; i < this.data.length; i++) {
+        this.checkboxes[i] = this.data[i].visible;
+      }
+    }
   }
 
-  ngOnDestroy() {
-    this.listener();
+  preventOnClick(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  isChecked(item: ITable | IRow) {
+    const {id} = item;
+    return this.checkboxes[id];
+  }
+
+  onCheckboxChange(e: MatCheckboxChange, item: ITable | IRow) {
+    const {id} = item;
+    this.checkboxes[id] = e.checked;
+  }
+
+  selectAll() {
+    for (let id in this.checkboxes) {
+      this.checkboxes[id] = true;
+    }
+  }
+  deselectAll() {
+    for (let id in this.checkboxes) {
+      this.checkboxes[id] = false;
+    }
+  }
+
+  apply() {
+    const length = Object.keys(this.checkboxes).length;
+    if (length) {
+      for (const key in this.checkboxes) {
+        this.data[key].visible = this.checkboxes[key];
+      }
+    }
+
+    this.close();
   }
 
   close() {
-    this.overlay.detach();
+    this.menuTrigger.closeMenu();
   }
-
 }

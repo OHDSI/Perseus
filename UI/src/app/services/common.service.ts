@@ -1,23 +1,18 @@
 import { Injectable } from '@angular/core';
-
-export interface Row {
-    area: string;
-    table: any;
-    row: string;
-}
+import { IRow } from '../components/pages/mapping/mapping.component';
 
 @Injectable()
 export class CommonService {
-  private _activeRow: Row;
+  private _activeRow: IRow;
   private _sourceAreaWidth: number;
   private _targetAreaWidth: number;
 
   constructor() {}
 
-  set activeRow(row: Row) {
+  set activeRow(row: IRow) {
       this._activeRow = row;
   }
-  get activeRow() {
+  get activeRow(): IRow {
       return this._activeRow;
   }
 
@@ -31,5 +26,4 @@ export class CommonService {
   setAreaWidth(area: string, width: number) {
     this[`_${area}AreaWidth`] = width;
   }
-
 }

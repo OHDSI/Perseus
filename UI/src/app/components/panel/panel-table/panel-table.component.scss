@@ -13,16 +13,14 @@ table {
     }
 
     .button-filter {
-    width: 0;
+        width: 0;
 
-    mat-icon {
-        font-size: 14px;
-        width: 10px;
-        color: $blue;
+        mat-icon {
+            font-size: 14px;
+            width: 10px;
+            color: $blue;
+        }
     }
- }
-
-    
 
     mat-icon {
         font-size: 14px;
@@ -51,4 +49,3 @@ table {
         cursor: move;
     }
 }
-

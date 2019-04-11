@@ -1,13 +1,11 @@
-import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
+import { ComponentPortal, PortalInjector, DomPortalHost } from '@angular/cdk/portal';
 
-import { CommentsService } from 'src/app/services/comments.service';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
-import { FilterComponent } from 'src/app/components/filter/filter.component';
+import { IRow } from 'src/app/components/pages/mapping/mapping.component';
+import { ValuesPopapComponent } from '../../popaps/values-popap/values-popap.component';
 
 @Component({
   selector: 'app-panel-table',
@@ -17,32 +15,41 @@ import { FilterComponent } from 'src/app/components/filter/filter.component';
 })
 
 export class PanelTableComponent {
-  @Input() area: string;
   @Input() table: any;
-  @Input() columns: any[];
-  @Input() tableName: string;
   @Input() displayedColumns: string[];
-
-  activeRow = null;
-  data$: Observable<any>;
-  tables$: Observable<any>;
-  columns$: Observable<any>;
 
   constructor(
     private commonService: CommonService,
-    private commentsService: CommentsService,
     private overlay: Overlay,
     private injector: Injector,
-    private cdRef: ChangeDetectorRef,
-    private store: Store<any>
-  ) { };
-
-  setActiveRow(area, row) {
-    this.commonService.activeRow = { area, table: this.table, row };
+    private cdRef: ChangeDetectorRef
+  ) {};
+ 
+  get visibleRows() {
+    return this.rows.filter(row => row.visible);
   }
 
-  openFilterDialog(anchor) {
-    const strategy = this._getStartegy(anchor);
+  get rows() {
+    return this.table.rows;
+  }
+
+  get area() {
+    return this.table.area;
+  }
+
+  get totalRowsNumber() {
+    return this.table.rows.length;
+  }
+  get visibleRowsNumber() {
+    return this.table.rows.filter(row => row.visible).length;
+  }
+
+  setActiveRow(row: IRow) {
+    this.commonService.activeRow = row;
+  }
+
+  openTopValuesDialog(anchor) {
+    const strategy = this._getStartegyForValues(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
@@ -54,7 +61,7 @@ export class PanelTableComponent {
       new WeakMap<any, any>([[OverlayRef, overlayRef]])
     );
 
-    overlayRef.attach(new ComponentPortal(FilterComponent, null, injector));
+    overlayRef.attach(new ComponentPortal(ValuesPopapComponent, null, injector));
   }
 
   openCommentDialog(anchor) {
@@ -76,15 +83,15 @@ export class PanelTableComponent {
     overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
-  hasComment(area, table, row) {
-    return this.commentsService.hasComment(area, table, row);
+  hasComment(row) {
+    return row.comments.length;
   }
 
   private _getStartegy(anchor) {
     let offsetX = 0;
     let offsetY = 0;
 
-    switch (this.area) {
+    switch (this._getArea()) {
       case 'source': {
         offsetX = 40;
         offsetY = 44;
@@ -118,6 +125,31 @@ export class PanelTableComponent {
       .position()
       .flexibleConnectedTo(anchor)
       .withPositions(positions);
+  }
 
+  private _getStartegyForValues(anchor) {
+    let offsetX = 40;
+
+    const positions = [
+      new ConnectionPositionPair(
+        {
+          originX: 'start',
+          originY: 'top'
+        },
+        {
+          overlayX: 'start',
+          overlayY: 'top'
+        },
+        offsetX, null)
+    ];
+
+    return this.overlay
+      .position()
+      .flexibleConnectedTo(anchor)
+      .withPositions(positions);
+  }
+
+  private _getArea() {
+    return this.table.area;
   }
 }

@@ -9,6 +9,12 @@ section {
         position: relative;
     }
 
+    .hint {
+        position: absolute;
+        top: 20%;
+        color: #404040;
+    }
+
     footer {
         display: flex;
         justify-content: space-between;

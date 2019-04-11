@@ -2,10 +2,10 @@
 
 .dialog {
     width: 224px;
-    display: flex !important;
+    display: flex;
     flex-direction: column;
     align-items: flex-end;
-    padding: 10px !important;
+    padding: 10px;
 
     .input {
         border-radius: 2px;
@@ -39,7 +39,7 @@
     }
 
     .mat-list-item {
-        height: 100% !important;
+        height: 100%;
         background-color: #EEEEEE;
         margin-bottom: 5px;
 

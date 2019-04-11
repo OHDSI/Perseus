@@ -3,7 +3,7 @@
   'dialog-target': !overSourceArea
 }">
   <mat-list>
-    <ng-container *ngFor="let comment of comments">
+    <ng-container *ngFor="let comment of row.comments">
       <ng-template [ngTemplateOutlet]="loadTemplate(comment)" [ngTemplateOutletContext]="{ $implicit: comment}">
       </ng-template>
     </ng-container>

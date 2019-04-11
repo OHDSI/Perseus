@@ -1,30 +1,33 @@
 <section>
     <main class="main">
         <app-area area="source">
-            <app-panel *ngFor="let table of (tables$ | async)" [title]="table.name">
-                <!-- <app-panel-table 
-                    area="source" 
-                    [table]="table"
-                    [tableName]="table.name"
-                    [columns]="table.rows"
-                    [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']">
-                </app-panel-table> -->
-            </app-panel>
+            <ng-container *ngFor="let table of state?.source.tables" >
+                <ng-container *ngIf="table.visible">
+                    <app-panel [title]="table.name" [table]="table">
+                        <app-panel-table [table]="table"
+                            [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']">
+                        </app-panel-table>
+                    </app-panel>
+                </ng-container>
+            </ng-container>
         </app-area>
 
         <svg class="canvas" [attr.width]="document.body.clientWidth"></svg>
+        <div class="hint">
+            {{hint ? 'Drag and drop source item to target item' : 'Expand tables to make links'}}
+        </div>
 
-        <!-- <app-area area="target">
-            <app-panel *ngFor="let table of (data$ | async).target.tables" [title]="table.name">
-                <app-panel-table 
-                    area="target" 
-                    [table]="table"
-                    [tableName]="table.name"
-                    [columns]="table.rows"
-                    [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']">
-                </app-panel-table>
-            </app-panel>
-        </app-area> -->
+        <app-area area="target">
+            <ng-container *ngFor="let table of state?.target.tables" >
+                <ng-container *ngIf="table.visible">
+                    <app-panel [title]="table.name" [table]="table">
+                        <app-panel-table [table]="table"
+                            [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']">
+                        </app-panel-table>
+                    </app-panel>
+                </ng-container>
+            </ng-container>
+        </app-area>
     </main>
     <footer>
         <div>

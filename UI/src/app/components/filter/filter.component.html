@@ -1,17 +1,27 @@
 <mat-card>
-  <section>
+  <section (keyup.enter)="apply()" (click)="preventOnClick($event)">
     <header>
-        <section>
-            <mat-radio-group [(ngModel)]="labelPosition">
-              <mat-radio-button class="example-margin" value="after">Select all</mat-radio-button>
-              <mat-radio-button class="example-margin" value="before">Deselect all</mat-radio-button>
-            </mat-radio-group>
-            <label>Deselect items you want to hide</label>
-          </section>
+      <section>
+        <mat-radio-group (change)="onRadioChange($event, t)">
+          <mat-radio-button (click)="selectAll()" value="select">Select all</mat-radio-button>
+          <mat-radio-button (click)="deselectAll()" value="deselect">Deselect all</mat-radio-button>
+        </mat-radio-group>
+        <label>Deselect items you want to hide</label>
+      </section>
     </header>
 
     <main>
-
+      <mat-list role="list">
+        <mat-list-item role="listitem" *ngFor="let item of data">
+          <mat-checkbox [checked]="isChecked(item)" (change)="onCheckboxChange($event, item)">
+          </mat-checkbox>
+          {{item.name}}
+        </mat-list-item>
+      </mat-list>
     </main>
+
+    <footer>
+      <button mat-button (click)="apply()">Apply</button>
+    </footer>
   </section>
 </mat-card>

@@ -1,13 +1,9 @@
 import { Component, Input, ElementRef, AfterViewChecked, Injector } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
 
 import { CommonService } from 'src/app/services/common.service';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ConnectionPositionPair, OverlayRef, OverlayConfig, Overlay } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
-import { FilterComponent } from '../filter/filter.component';
-
-declare var require: any;
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-area',
@@ -23,8 +19,7 @@ export class AreaComponent implements AfterViewChecked {
     private elementRef: ElementRef,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private overlay: Overlay,
-    private injector: Injector,
+    private stateService: StateService
   ) {
     this.matIconRegistry
       .addSvgIcon(
@@ -45,66 +40,21 @@ export class AreaComponent implements AfterViewChecked {
     return this.area === 'source';
   }
 
+  get tables() {
+    return this.stateService.state && this.stateService.state[this.area].tables;
+  }
+
   getSanitizedUrl(iconName) {
-    const t = require(`src/assets/icons/${iconName}.svg`);
     return this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/icons/${iconName}.svg`);
   }
 
-  openFilterDialog(anchor) {
-    const strategy = this._getStartegy(anchor);
-    const config = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      positionStrategy: strategy
-    });
-    const overlayRef = this.overlay.create(config);
-    const injector = new PortalInjector(
-      this.injector,
-      new WeakMap<any, any>([[OverlayRef, overlayRef]])
-    );
-
-    overlayRef.attach(new ComponentPortal(FilterComponent, null, injector));
+  get totalColumnsNumber() {
+    return this.stateService.state &&
+     this.stateService.state[this.area].tables.length;
   }
 
-  private _getStartegy(anchor) {
-    let offsetX = 0;
-    let offsetY = 0;
-
-    switch (this.area) {
-      case 'source': {
-        offsetX = 0;
-        offsetY = 0;
-
-        break;
-      }
-      case 'target': {
-        offsetX = 0;
-        offsetY = 0;
-
-        break;
-      }
-      default:
-        return null;
-    }
-
-    const positions = [
-      new ConnectionPositionPair(
-        {
-          originX: 'start',
-          originY: 'bottom'
-        },
-        {
-          overlayX: 'start',
-          overlayY: 'bottom'
-        },
-        100, 100)
-    ];
-
-    return this.overlay
-      .position()
-      .flexibleConnectedTo(anchor)
-      .withPositions(positions);
-
+  get visibleColumnsNumber() {
+    return this.stateService.state &&
+     this.stateService.state[this.area].tables.filter(table => table.visible).length;
   }
-
 }
