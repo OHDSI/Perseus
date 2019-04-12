@@ -34,6 +34,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { StateService } from 'src/app/services/state.service';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
+import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 
 @NgModule({
   declarations: [
@@ -45,11 +46,13 @@ import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-
     DialogComponent,
     BridgeButtonComponent,
     ValuesPopapComponent,
-    SampleDataPopupComponent
+    SampleDataPopupComponent,
+    RulesPopupComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
-    SampleDataPopupComponent
+    SampleDataPopupComponent,
+    RulesPopupComponent
   ],
   imports: [
   BrowserModule,

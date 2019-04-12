@@ -6,7 +6,9 @@
                 <mat-icon svgIcon="filter" class="filter">
                 </mat-icon>
                 <mat-menu #filter="matMenu">
-                    <app-filter [menuTrigger]="menuTrigger" [data]="rows"></app-filter>
+                    <ng-template matMenuContent>
+                        <app-filter [menuTrigger]="menuTrigger" [data]="rows"></app-filter>
+                    </ng-template>
                 </mat-menu>
             </button>
         </th>
@@ -63,6 +65,7 @@
 
     <tr #test mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr appDraggable [drag-data]="row" [area]="area" mat-row *matRowDef="let row; columns: displayedColumns;"
-        (mousedown)="setActiveRow(row)" class="draggable">
+        (mousedown)="setActiveRow(row)"
+         class="draggable">
     </tr>
 </table>

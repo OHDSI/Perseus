@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { IComment } from 'src/app/models/comment';
 import { StateService } from 'src/app/services/state.service';
+import { DataService } from 'src/app/services/data.service';
 
 export interface ITable {
   id: number;
@@ -32,7 +33,7 @@ export interface IRow {
   area: string;
   comments: IComment[];
   visible: boolean;
-  connetions?: {};
+  connections?: any[];
 }
 export class Row {
   constructor(
@@ -42,7 +43,7 @@ export class Row {
     public area,
     public comments,
     public visible = true,
-    public connections = {}
+    public connections = []
     ) {}
 }
 
@@ -53,76 +54,22 @@ export class Row {
 })
 export class MappingComponent implements OnInit {
   constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private httpClient: HttpClient,
-    private stateService: StateService
+    private stateService: StateService,
+    private dataService: DataService
   ) {
   }
 
   ngOnInit() {
-    this.httpClient
-      .get<any>(`http://127.0.0.1:5000/get_cdm_schema?cdm_version=5.0.1`, {responseType: 'json'})
-      .subscribe(data => this.initialize(data));
-  }
-
-  initialize(data) {
-    const state = {
-      source: {
-        tables: []
-      },
-      target: {
-        tables: []
-      }
-    };
-
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      const id = i;
-      const area = 'source';
-      const name = item.table_name;
-      const rows = [];
-
-      for (let j = 0; j < item.column_list.length; j++) {
-        const id = j;
-        const name = item.column_list[j].column_name;
-        const type = item.column_list[j].column_type;
-        const comments = [];
-        const row = new Row(id, name, type, area, comments);
-
-        rows.push(row);
-      }
-
-       state.source.tables.push(new Table(id, area, name, rows));
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      const id = i;
-      const area = 'target';
-      const name = item.table_name;
-      const rows = [];
-
-      for (let j = 0; j < item.column_list.length; j++) {
-        const id = j;
-        const name = item.column_list[j].column_name;
-        const type = item.column_list[j].column_type;
-        const comments = [];
-        const row = new Row(id, name, type, area, comments);
-
-        rows.push(row);
-      }
-
-       state.target.tables.push(new Table(id, area, name, rows));
-    }
-
-    this.stateService.initialize(state);
+    this.dataService.initialize();
   }
 
   get hint() {
-    const sourceExpandedStatus = this.stateService.state &&
-      this.stateService.state.source.tables.some(table => table.expanded);
-    const targetExpandedStatus = this.stateService.state &&
-      this.stateService.state.target.tables.some(table => table.expanded);
+    if (!this.stateService.state) {
+      return;
+    }
+
+    const sourceExpandedStatus = this.stateService.state.source.tables.some(table => table.expanded);
+    const targetExpandedStatus = this.stateService.state.target.tables.some(table => table.expanded);
 
     return sourceExpandedStatus && targetExpandedStatus;
   }

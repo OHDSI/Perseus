@@ -2,7 +2,7 @@
   <section (keyup.enter)="apply()" (click)="preventOnClick($event)">
     <header>
       <section>
-        <mat-radio-group (change)="onRadioChange($event, t)">
+        <mat-radio-group>
           <mat-radio-button (click)="selectAll()" value="select">Select all</mat-radio-button>
           <mat-radio-button (click)="deselectAll()" value="deselect">Deselect all</mat-radio-button>
         </mat-radio-group>

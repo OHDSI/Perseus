@@ -73,7 +73,7 @@ export class BridgeService {
 
     return {
       top: middleHeightOfLine - buttonOffsetY,
-      left: (canvas.clientWidth / 2) - buttonOffsetX + this._areaOffset()
+      left: (canvas.clientWidth / 2) - buttonOffsetX - this._areaOffset()
     };
   }
 
@@ -85,7 +85,7 @@ export class BridgeService {
 
   private _areaOffset() {
     const {sourceAreaWidth: source, targetAreaWidth: target} = this.commonService;
-
-    return (Math.max(source, target) - Math.min(source, target)) / 2;
+    const offset = (Math.max(source, target) - Math.min(source, target)) / 2;
+    return source > target ? -offset : offset;
   }
 }

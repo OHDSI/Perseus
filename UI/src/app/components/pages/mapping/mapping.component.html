@@ -12,9 +12,11 @@
             </ng-container>
         </app-area>
 
-        <svg class="canvas" [attr.width]="document.body.clientWidth"></svg>
         <div class="hint">
-            {{hint ? 'Drag and drop source item to target item' : 'Expand tables to make links'}}
+            <svg class="canvas"></svg>
+            <p>
+                {{hint ? 'Drag and drop source item to target item' : 'Expand tables to make links'}}
+            </p>
         </div>
 
         <app-area area="target">

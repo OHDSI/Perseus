@@ -3,6 +3,8 @@ import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit } from '@
 import { DragService } from 'src/app/services/drag.service';
 import { elementFromCoords } from 'src/app/utility/kit';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { CommentsService } from './../services/comments.service';
+import { CommonService } from './../services/common.service';
 
 @Directive({
   selector: '[appDraggable]'
@@ -15,7 +17,8 @@ export class DraggableDirective implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private dragService: DragService,
-    private bridgeService: BridgeService
+    private bridgeService: BridgeService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -24,6 +27,10 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('dragstart', ['$event'])
   onDragStart(e: DragEvent) {
+    if (this.area === 'target') {
+      return;
+    }
+
     this.dragService.sourceTitle = this.area;
 
     const row = elementFromCoords('TR', e);
@@ -34,14 +41,17 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('dragend', ['$event'])
   onDragEnd(e: DragEvent) {
-    if (this.dragService.sourceEqualsTarget()) {
+    if (!this.bridgeService.source) {
       return;
     }
+
+    console.log('drop');
 
     const row = elementFromCoords('TR', e);
     if (row) {
       this.bridgeService.target = row;
       this.bridgeService.connect();
+      this.bridgeService.source = null;
     }
   }
 
@@ -53,6 +63,7 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('drop', ['$event'])
   onDrop(e: DragEvent) {
+    this.commonService.activeRow.connections.push(this.data);
     this.dragService.targetTitle = this.area;
   }
 }

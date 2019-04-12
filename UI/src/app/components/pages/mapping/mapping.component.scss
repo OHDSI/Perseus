@@ -10,9 +10,22 @@ section {
     }
 
     .hint {
-        position: absolute;
-        top: 20%;
         color: #404040;
+        position: relative;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        width: 100%;
+
+        p {
+            top: 20%;
+            position: absolute;
+        }
+    }
+
+    .canvas {
+        height: 100%;
+        width: 100%;
     }
 
     footer {
@@ -35,6 +48,3 @@ section {
         }
     }
 }
-
-
-
