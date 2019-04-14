@@ -10,9 +10,10 @@ import { CommonService } from './../services/common.service';
   selector: '[appDraggable]'
 })
 export class DraggableDirective implements OnInit {
-  @Input('drag-data') data: any;
   @Input() area: string;
-
+  @Input() table: any;
+  @Input() row: any;
+  
   constructor(
     private elementRef: ElementRef,
     private renderer: Renderer2,
@@ -33,26 +34,29 @@ export class DraggableDirective implements OnInit {
 
     this.dragService.sourceTitle = this.area;
 
-    const row = elementFromCoords('TR', e);
-    if (row) {
-      this.bridgeService.source = row;
+    const element = elementFromCoords('TR', e);
+    if (element) {
+      const row = this.row;
+      row.htmlElement = element;
+      this.bridgeService.sourceRow = row;
     }
   }
 
   @HostListener('dragend', ['$event'])
   onDragEnd(e: DragEvent) {
-    if (!this.bridgeService.source) {
-      return;
-    }
 
-    console.log('drop');
+  //   if (!this.bridgeService.sourceRow) {
+  //     return;
+  //   }
 
-    const row = elementFromCoords('TR', e);
-    if (row) {
-      this.bridgeService.target = row;
-      this.bridgeService.connect();
-      this.bridgeService.source = null;
-    }
+  // //   console.log('drop');
+
+  //   const row = elementFromCoords('TR', e);
+  //   if (row) {
+  //     this.bridgeService.sourceRow.htmlElement = row;
+  //     this.bridgeService.connect();
+  //     this.bridgeService.sourceRow = null;
+  //   }
   }
 
   @HostListener('dragover', ['$event'])
@@ -63,7 +67,21 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('drop', ['$event'])
   onDrop(e: DragEvent) {
-    this.commonService.activeRow.connections.push(this.data);
-    this.dragService.targetTitle = this.area;
+    if (!this.bridgeService.sourceRow) {
+      return;
+    }
+
+    const element = elementFromCoords('TR', e);
+    if (element) {
+      const row = this.row;
+      row.htmlElement = element;
+      this.bridgeService.targetRow = row;
+      this.bridgeService.connect();
+      this.bridgeService.sourceRow = null;
+
+      this.commonService.activeRow.connections.push(this.row);
+      this.dragService.targetTitle = this.area;
+    }
+    
   }
 }

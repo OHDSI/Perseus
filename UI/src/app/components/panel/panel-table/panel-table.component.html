@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="visibleRows" #table>
+<table mat-table [dataSource]="visibleRows">
     <ng-container matColumnDef="column_indicator">
         <th mat-header-cell *matHeaderCellDef>
             <button mat-icon-button disableRipple="true" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="filter"
@@ -63,8 +63,13 @@
         </td>
     </ng-container>
 
-    <tr #test mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr appDraggable [drag-data]="row" [area]="area" mat-row *matRowDef="let row; columns: displayedColumns;"
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr appDraggable 
+        #htmlElement
+        [area]="area" 
+        [table]="table" 
+        [row]="row"   
+        mat-row *matRowDef="let row; columns: displayedColumns;"
         (mousedown)="setActiveRow(row)"
          class="draggable">
     </tr>

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { IComment } from 'src/app/models/comment';
 import { StateService } from 'src/app/services/state.service';
 import { DataService } from 'src/app/services/data.service';
+import { CommonService } from 'src/app/services/common.service';
 
 export interface ITable {
   id: number;
@@ -28,22 +29,26 @@ export class Table {
 
 export interface IRow {
   id: number;
+  tableId: number;
   name: string;
   type: string;
   area: string;
   comments: IComment[];
   visible: boolean;
   connections?: any[];
+  htmlElement: any;
 }
 export class Row {
   constructor(
     public id,
+    public tableId,
     public name,
     public type,
     public area,
     public comments,
     public visible = true,
-    public connections = []
+    public connections = [],
+    public htmlElement = null
     ) {}
 }
 
@@ -55,7 +60,8 @@ export class Row {
 export class MappingComponent implements OnInit {
   constructor(
     private stateService: StateService,
-    private dataService: DataService
+    private dataService: DataService,
+    private commonService: CommonService
   ) {
   }
 
@@ -64,16 +70,9 @@ export class MappingComponent implements OnInit {
   }
 
   get hint() {
-    if (!this.stateService.state) {
-      return;
-    }
-
-    const sourceExpandedStatus = this.stateService.state.source.tables.some(table => table.expanded);
-    const targetExpandedStatus = this.stateService.state.target.tables.some(table => table.expanded);
-
-    return sourceExpandedStatus && targetExpandedStatus;
+    return this.commonService.hintStatus;
   }
-
+    
   get state() {
     return this.stateService.state;
   }

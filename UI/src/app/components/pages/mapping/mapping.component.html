@@ -3,7 +3,7 @@
         <app-area area="source">
             <ng-container *ngFor="let table of state?.source.tables" >
                 <ng-container *ngIf="table.visible">
-                    <app-panel [title]="table.name" [table]="table">
+                    <app-panel area="source" [title]="table.name" [table]="table" >
                         <app-panel-table [table]="table"
                             [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']">
                         </app-panel-table>
@@ -21,14 +21,14 @@
                 </defs>
             </svg>
             <p>
-                {{hint ? 'Drag and drop source item to target item' : 'Expand tables to make links'}}
+                {{hint}}
             </p>
         </div>
 
         <app-area area="target">
             <ng-container *ngFor="let table of state?.target.tables" >
                 <ng-container *ngIf="table.visible">
-                    <app-panel [title]="table.name" [table]="table">
+                    <app-panel area="target" [title]="table.name" [table]="table">
                         <app-panel-table [table]="table"
                             [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']">
                         </app-panel-table>

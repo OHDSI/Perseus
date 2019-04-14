@@ -42,10 +42,11 @@ export class DataService {
 
       for (let j = 0; j < item.column_list.length; j++) {
         const id = j;
+        const tableId = i;
         const name = item.column_list[j].column_name;
         const type = item.column_list[j].column_type;
         const comments = [];
-        const row = new Row(id, name, type, area, comments);
+        const row = new Row(id, tableId, name, type, area, comments);
 
         rows.push(row);
       }

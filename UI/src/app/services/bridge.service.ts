@@ -11,11 +11,12 @@ import { DOCUMENT } from '@angular/common';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
+import { IRow } from '../components/pages/mapping/mapping.component';
 
 @Injectable()
 export class BridgeService {
-  private _source;
-  private _target;
+  private _sourceRow;
+  private _targetRow;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -26,23 +27,24 @@ export class BridgeService {
     private drawService: DrawService
   ) { }
 
-  set source(row: any) {
-    this._source = row;
+  set sourceRow(row: IRow) {
+    this._sourceRow = row;
   }
-  get source() {
-    return this._source;
+  get sourceRow() {
+    return this._sourceRow;
   }
 
-  set target(row: any) {
-    this._target = row;
+  set targetRow(row: IRow) {
+    this._targetRow = row;
   }
-  get target() {
-    return this._target;
+  get targetRow() {
+    return this._targetRow;
   }
 
   connect() {
-    const line = this.drawService.drawLine(this.source, this.target);
-    this._appendButton(line);
+    const line = this.drawService.drawLine(this.sourceRow, this.targetRow);
+    //this._appendButton(line);
+    this.commonService.linked = true;
   }
 
   private _appendButton(line) {

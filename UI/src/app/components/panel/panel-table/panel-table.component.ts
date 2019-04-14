@@ -1,4 +1,4 @@
-import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector, DomPortalHost } from '@angular/cdk/portal';
 
@@ -17,6 +17,7 @@ import { ValuesPopapComponent } from '../../popaps/values-popap/values-popap.com
 export class PanelTableComponent {
   @Input() table: any;
   @Input() displayedColumns: string[];
+  @ViewChild('htmlElement', {read: ElementRef}) element: any;
 
   constructor(
     private commonService: CommonService,

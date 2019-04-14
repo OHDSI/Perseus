@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { Row, Table } from '../components/pages/mapping/mapping.component';
 
 export interface IState {
     source: any;
@@ -12,7 +9,7 @@ export interface IState {
 export class StateService {
   private _state: IState = {
     source: {
-      tables: []
+      tables: [],
     },
     target: {
       tables: []

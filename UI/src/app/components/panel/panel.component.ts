@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material';
 import { StateService } from 'src/app/services/state.service';
 import { ITable } from 'src/app/components/pages/mapping/mapping.component';
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-panel',
@@ -11,18 +12,19 @@ import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-
   styleUrls: ['./panel.component.scss']
 })
 export class PanelComponent {
+  @Input() area: string;
   @Input() title: string;
   @Input() table: ITable;
   @Input() columnList: any[];
 
-  constructor(private stateService: StateService, public dialog: MatDialog) {}
+  constructor(private stateService: StateService, public dialog: MatDialog, private commonService: CommonService) {}
 
-  onOpen(e) {
-    this.table.expanded = true;
+  onOpen() {
+    this.commonService.expanded(this.area);
   }
 
   onClose() {
-    this.table.expanded = false;
+    this.commonService.collapsed(this.area);
   }
 
   openSamleDataDialog(e) {
