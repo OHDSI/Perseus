@@ -26,8 +26,8 @@ export class RulesPopupComponent {
     if (this.selectedRule) {
       switch (this.selectedRule) {
         case 'log-values': {
-          const sourceRowValue = this.commonService._activeConnector.source.name;
-          const connections = this.commonService._activeConnector.source.connections;
+          const sourceRowValue = this.commonService.activeConnector.source.name;
+          const connections = this.commonService.activeConnector.source.connections;
           connections.forEach(row => {
             console.log(sourceRowValue , '--->', row.name);
           });
@@ -35,7 +35,7 @@ export class RulesPopupComponent {
           break;
         }
         case 'log-comments': {
-          const connections = this.commonService._activeConnector.source.connections;
+          const connections = this.commonService.activeConnector.source.connections;
           if (connections.length) {
             connections.forEach((row: IRow) => {
               if (row.comments) {
@@ -54,7 +54,7 @@ export class RulesPopupComponent {
 
   deleteLink() {
     const drawService = this.injector.get(DrawService);
-    const connector = this.commonService._activeConnector;
+    const connector = this.commonService.activeConnector;
 
     drawService.removeConnector(connector.id);
     this.close();
@@ -62,6 +62,7 @@ export class RulesPopupComponent {
 
   close() {
     this.overlay.detach();
+    this.commonService.activeConnector = null;
   }
 
 }

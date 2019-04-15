@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector } from '@angular/core';
+import { Component, OnInit, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { ConnectionPositionPair, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 
@@ -14,13 +14,23 @@ export class BridgeButtonComponent implements OnInit {
   text = '?';
   drawEntity;
 
-  constructor(private overlay: Overlay, private injector: Injector, private commonService: CommonService) { }
+  constructor(
+    private overlay: Overlay,
+    private injector: Injector,
+    private commonService: CommonService
+    ) { }
 
   ngOnInit() {
   }
 
+  get active() {
+    if (this.commonService.activeConnector) {
+      return this.drawEntity.id === this.commonService.activeConnector.id;
+    }
+  }
+
   openRulesDialog(anchor) {
-    this.commonService._activeConnector = this.drawEntity;
+    this.commonService.activeConnector = this.drawEntity;
 
     const strategy = this._getStartegyForValues(anchor);
     const config = new OverlayConfig({

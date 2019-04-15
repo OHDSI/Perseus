@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
+import { IConnector } from 'src/app/models/connector';
 
 @Injectable()
 export class CommonService {
@@ -12,7 +13,7 @@ export class CommonService {
   private _targetExpanded = false;
   private _linked = false;
 
-  _activeConnector = null;
+  private _activeConnector: IConnector = null;
 
   constructor() {}
 
@@ -28,6 +29,13 @@ export class CommonService {
   }
   get targetAreaWidth() {
     return this._targetAreaWidth;
+  }
+
+  set activeConnector(connector: IConnector) {
+    this._activeConnector = connector;
+  }
+  get activeConnector() {
+    return this._activeConnector;
   }
 
   expanded(area: string) {

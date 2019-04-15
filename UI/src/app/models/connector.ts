@@ -1,5 +1,18 @@
 import { IRow } from 'src/app/models/row';
 
+export interface IConnector {
+  id: string;
+  canvas: any;
+  line: Element;
+  button: Element;
+  source: IRow;
+  target: IRow;
+
+  drawLine(): void;
+  remove(): void;
+  fixPosition(): void;
+}
+
 export class Connector {
   public canvas: any;
   public line: Element;
