@@ -6,7 +6,7 @@
     background-color: #F9F9F9;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    justify-content: space-around;
 
     &:after {
         content: "";
@@ -22,4 +22,24 @@
         transform: rotate(45deg);
         box-shadow: -1px -1px 2px 0 rgba(0, 0, 0, 0.1);
     }
+
+    mat-radio-group {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 35%;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+
+        .delete {
+            color: #FF4646;
+        }
+        .apply {
+            color: #066BBB;
+        }
+    }
+    
 }

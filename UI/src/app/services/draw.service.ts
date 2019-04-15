@@ -1,136 +1,99 @@
 import { Injectable, Inject, EmbeddedViewRef, ApplicationRef, Injector, ComponentFactoryResolver } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-import { DragService } from 'src/app/services/drag.service';
-import { IRow } from '../components/pages/mapping/mapping.component';
-import { BridgeButtonComponent } from '../components/bridge-button/bridge-button.component';
-import { CommonService } from './common.service';
-
-export class DrawEntity {
-  constructor(public id, public source, public target){};
-}
+import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
+import { CommonService } from 'src/app/services/common.service';
+import { Connector } from 'src/app/models/connector';
+import { ITable } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 
 @Injectable()
 export class DrawService {
   private _svg: any;
-  private list = {};
+  list = {};
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private dragService: DragService,
     private appRef: ApplicationRef,
     private injector: Injector,
     private commonService: CommonService
-  ) { 
-     
-  }
+  ) { }
 
-  render() {
-    this._removeAllLineNodes();
-    this._removeAllButtons();
-   
-    for(let key in this.list) {
-      const item = this.list[key];
-      this._drawLine(item)
-    }
-  
-  }
-
-  drawLine(source, target) {
-    this._svg = document.querySelector('.canvas');
-    // const sourceSVGPoint = this._getSVGPoint(source, this.dragService.sourceTitle);
-    // const targetSVGPoint = this._getSVGPoint(target, this.dragService.targetTitle);
+  drawLine(source: IRow, target: IRow) {
+    this._svg = this.document.querySelector('.canvas');
     const sourceRowId = source.id;
     const targetRowId = target.id;
     const sourceTableId = source.tableId;
     const targetTableId = target.tableId;
 
     const entityId = sourceTableId + '-' + sourceRowId + '/' + targetTableId + '-' + targetRowId;
-    const ent = new DrawEntity(entityId, source, target);
-    //this.list[entityId] = ent;
-   
-    this._drawLine(ent);
+    const drawEntity = new Connector(entityId, source, target);
 
-    //this.render();
-    
-    
-    //return this._drawLine(sourceSVGPoint.x, sourceSVGPoint.y, targetSVGPoint.x, targetSVGPoint.y);
-  }
+    if (!this.list[entityId]) {
+      this.list[entityId] = drawEntity;
+      drawEntity.drawLine();
 
-  private _getSVGPoint(row: IRow) {
-    const clientRect = row.htmlElement.getBoundingClientRect();
-    const { height } = clientRect;
-
-    let x: number;
-    switch (row.area) {
-      case 'source': {
-        x = clientRect.right;
-        break;
-      }
-      case 'target': {
-        x = clientRect.left;
-        break;
-      }
-      default: {
-        return null;
-      }
-    }
-
-    const y = clientRect.bottom - height / 2;
-    const pt = this._svg.createSVGPoint();
-    pt.x = x;
-    pt.y = y;
-    const svgPoint = pt.matrixTransform(this._svg.getScreenCTM().inverse());
-
-    return svgPoint;
-  }
-
-  private _drawLine(ent) {
-    const sourceSVGPoint = this._getSVGPoint(ent.source);
-    const targetSVGPoint = this._getSVGPoint(ent.target);
-
-    const id = ent.id;
-
-    const {x: x1, y: y1} = sourceSVGPoint;
-    const {x: x2, y: y2} = targetSVGPoint;
-    const line = this.document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', x1 + '');
-    line.setAttribute('y1', y1 + '');
-    line.setAttribute('x2', (x2 - 6) + '');
-    line.setAttribute('y2', y2 + '');
-    line.setAttribute('id', id);
-    line.setAttribute('marker-end', 'url(#arrow)');
-
-    this._svg.appendChild(line);
-    if(!this.list[id]) {
-      this.list[id] = ent;
-    }
-
-    this._appendButton(line);
-  }
-
-  private _removeAllLineNodes() {
-    const lngth = this._svg.childNodes.length - 1;
-    for(let i = 0; i < lngth; i++) {
-      const line = this._svg.childNodes[1];
-      line.remove()
+      const button = this._appendButton(drawEntity);
+      drawEntity.button = button;
     }
   }
 
-  private _removeAllButtons() {
-    const canvas = this.document.querySelector('.main');
-    const lngth = canvas.childNodes.length - 1;
-    Array.prototype.slice.call(canvas.childNodes)
-    .filter(n => n.nodeName === 'APP-BRIDGE-BUTTON')
-    .map(n => n.remove());
-    
+  fixConnectorsPosition() {
+    for (let key in this.list) {
+      const drawEntity = this.list[key];
+      drawEntity.fixPosition();
+      
+      this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
+    }
   }
 
-  private _appendButton(line) {
+  removeConnector(id: string) {
+    this.list[id].remove();
+    delete this.list[id];
+  }
+
+  removeAllConnectors() {
+    for (const key in this.list) {
+      if (key) {
+        this.removeConnector(key);
+      }
+    }
+  }
+
+  removeConnectorsBoundToTable(table: ITable) {
+    const { area } = table;
+// tslint:disable-next-line: forin
+    for (const key in this.list) {
+      const ids = key.split('/');
+      const sourceTableRowIds = ids[0];
+      const targetTableRowIds = ids[1];
+      const sourceTableId = sourceTableRowIds.split('-')[0];
+      const targetTableId = targetTableRowIds.split('-')[0];
+
+      switch (area) {
+        case 'source': {
+          if (table.id === +sourceTableId) {
+            this.removeConnector(key);
+          }
+          break;
+        }
+        case 'target': {
+          if (table.id === +targetTableId) {
+            this.removeConnector(key);
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  private _appendButton(drawEntity) {
+    const line = drawEntity.line;
     const componentRef = this.componentFactoryResolver
       .resolveComponentFactory(BridgeButtonComponent)
       .create(this.injector);
+    componentRef.instance.drawEntity = drawEntity;
 
     this.appRef.attachView(componentRef.hostView);
 
@@ -140,13 +103,23 @@ export class DrawService {
     const canvas = this.document.querySelector('.main');
     canvas.appendChild(button);
 
-    const {top, left} = this._calculateButtonPosition(button, canvas, line);
+    const {top, left} = this._calculateButtonPosition(button, line);
+
+    button.style.top = top + 'px';
+    button.style.left = left + 'px';
+
+    return button;
+  }
+
+  private _recalculateButtonPosition(button, line) {
+    const {top, left} = this._calculateButtonPosition(button, line);
 
     button.style.top = top + 'px';
     button.style.left = left + 'px';
   }
   
-  private _calculateButtonPosition(button, canvas, line) {
+  private _calculateButtonPosition(button, line) {
+    const canvas = this.document.querySelector('.main');
     const buttonClientRect = button.getBoundingClientRect();
     const buttonOffsetX = buttonClientRect.width / 2;
     const buttonOffsetY = buttonClientRect.height / 2;

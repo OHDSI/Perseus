@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatRadioChange } from '@angular/material/radio';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatMenuTrigger } from '@angular/material';
 
-import { ITable, IRow } from 'src/app/components/pages/mapping/mapping.component';
+import { DrawService } from 'src/app/services/draw.service';
+import { ITable } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-filter',
@@ -20,7 +21,7 @@ export class FilterComponent implements OnInit {
     [key: number]: boolean;
   } = {};
 
-  constructor() {}
+  constructor(private drawService: DrawService) {}
 
   ngOnInit() {
     if (this.data) {
@@ -63,6 +64,8 @@ export class FilterComponent implements OnInit {
       }
     }
 
+
+    this.drawService.removeAllConnectors();
     this.close();
   }
 

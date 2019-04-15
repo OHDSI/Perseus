@@ -9,7 +9,7 @@ export class TypeToIconPipe implements PipeTransform {
     switch(value.toLowerCase()) {
       case 'numeric':
       case 'integer': {
-        return '«»';
+        return '“”';
       }
       case 'date': {
         return 'date_range';

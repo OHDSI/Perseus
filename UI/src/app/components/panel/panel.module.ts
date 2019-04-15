@@ -19,7 +19,6 @@ import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-
 import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
 import { CommentsService } from 'src/app/services/comments.service';
-import { DragService } from 'src/app/services/drag.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
@@ -57,7 +56,7 @@ import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/val
     MatCheckboxModule,
     MatListModule
   ],
-  providers: [CommentsService, DragService, DrawService]
+  providers: [CommentsService, DrawService]
 
 })
 export class PanelModule { }

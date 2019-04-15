@@ -1,11 +1,12 @@
 import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector, DomPortalHost } from '@angular/cdk/portal';
+import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
-import { IRow } from 'src/app/components/pages/mapping/mapping.component';
 import { ValuesPopapComponent } from '../../popaps/values-popap/values-popap.component';
+import { ITable } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-panel-table',
@@ -15,9 +16,9 @@ import { ValuesPopapComponent } from '../../popaps/values-popap/values-popap.com
 })
 
 export class PanelTableComponent {
-  @Input() table: any;
+  @Input() table: ITable;
   @Input() displayedColumns: string[];
-  @ViewChild('htmlElement', {read: ElementRef}) element: any;
+  @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
 
   constructor(
     private commonService: CommonService,
@@ -25,9 +26,9 @@ export class PanelTableComponent {
     private injector: Injector,
     private cdRef: ChangeDetectorRef
   ) {};
- 
+
   get visibleRows() {
-    return this.rows.filter(row => row.visible);
+    return this.rows.filter((row: IRow) => row.visible);
   }
 
   get rows() {
@@ -42,14 +43,14 @@ export class PanelTableComponent {
     return this.table.rows.length;
   }
   get visibleRowsNumber() {
-    return this.table.rows.filter(row => row.visible).length;
+    return this.table.rows.filter((row: IRow) => row.visible).length;
   }
 
   setActiveRow(row: IRow) {
     this.commonService.activeRow = row;
   }
 
-  openTopValuesDialog(anchor) {
+  openTopValuesDialog(anchor: HTMLElement) {
     const strategy = this._getStartegyForValues(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,
@@ -65,7 +66,7 @@ export class PanelTableComponent {
     overlayRef.attach(new ComponentPortal(ValuesPopapComponent, null, injector));
   }
 
-  openCommentDialog(anchor) {
+  openCommentDialog(anchor: HTMLElement) {
     const strategy = this._getStartegy(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,
@@ -84,11 +85,11 @@ export class PanelTableComponent {
     overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
-  hasComment(row) {
+  hasComment(row: IRow) {
     return row.comments.length;
   }
 
-  private _getStartegy(anchor) {
+  private _getStartegy(anchor: HTMLElement) {
     let offsetX = 0;
     let offsetY = 0;
 

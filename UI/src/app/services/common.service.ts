@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IRow } from '../components/pages/mapping/mapping.component';
+
+import { IRow } from 'src/app/models/row';
 
 @Injectable()
 export class CommonService {
@@ -10,6 +11,8 @@ export class CommonService {
   private _sourceExpanded = false;
   private _targetExpanded = false;
   private _linked = false;
+
+  _activeConnector = null;
 
   constructor() {}
 

@@ -3,6 +3,7 @@ import { ConnectionPositionPair, Overlay, OverlayConfig, OverlayRef } from '@ang
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-bridge-button',
@@ -11,13 +12,16 @@ import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules
 })
 export class BridgeButtonComponent implements OnInit {
   text = '?';
+  drawEntity;
 
-  constructor(private overlay: Overlay, private injector: Injector) { }
+  constructor(private overlay: Overlay, private injector: Injector, private commonService: CommonService) { }
 
   ngOnInit() {
   }
 
   openRulesDialog(anchor) {
+    this.commonService._activeConnector = this.drawEntity;
+
     const strategy = this._getStartegyForValues(anchor);
     const config = new OverlayConfig({
       hasBackdrop: true,

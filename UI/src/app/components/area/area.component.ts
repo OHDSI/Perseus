@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, AfterViewChecked, Injector, Renderer, ViewChild } from '@angular/core';
+import { Component, Input, ElementRef, AfterViewChecked, Renderer, ViewChild, AfterViewInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -6,15 +6,16 @@ import { CommonService } from 'src/app/services/common.service';
 import { StateService } from 'src/app/services/state.service';
 import { DrawService } from 'src/app/services/draw.service';
 
+export type Area = 'source' | 'target';
+
 @Component({
   selector: 'app-area',
   templateUrl: './area.component.html',
-  styleUrls: ['./area.component.scss'],
-
+  styleUrls: ['./area.component.scss']
 })
 
-export class AreaComponent implements AfterViewChecked {
-  @Input() area: string;
+export class AreaComponent implements AfterViewInit, AfterViewChecked {
+  @Input() area: Area;
   @ViewChild('scrollabale') scrollableContent;
 
   constructor(
@@ -31,13 +32,11 @@ export class AreaComponent implements AfterViewChecked {
         'filter',
         this.getSanitizedUrl('filter')
       )
-
-     
   }
 
   ngAfterViewInit() {
      this.renderer.listen(this.scrollableContent.nativeElement, 'scroll', (event) => {
-        this.drawService.render();
+        this.drawService.fixConnectorsPosition();
       })
   }
 

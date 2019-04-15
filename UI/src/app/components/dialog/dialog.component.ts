@@ -3,7 +3,7 @@ import { OverlayRef } from '@angular/cdk/overlay';
 
 import { CommonService } from 'src/app/services/common.service';
 import { IComment, Comment } from 'src/app/models/comment';
-import { IRow } from 'src/app/components/pages/mapping/mapping.component';
+import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-dialog',

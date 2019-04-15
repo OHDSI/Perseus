@@ -1,3 +1,18 @@
 <mat-card class="dialog">
-    Rules
+    <mat-radio-group [(ngModel)]="selectedRule">
+        <mat-radio-button value="log-values">
+            Console.log values
+        </mat-radio-button>
+        <mat-radio-button value="log-comments">
+            Console.log comments
+        </mat-radio-button>
+    </mat-radio-group>
+    <div class="button-group">
+        <button class="delete" mat-button (click)="deleteLink()">
+            Delete link
+        </button>
+        <button class="apply" mat-button (click)="apply()">
+            Apply
+        </button>
+    </div>
 </mat-card>

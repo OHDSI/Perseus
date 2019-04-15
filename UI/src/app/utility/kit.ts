@@ -1,4 +1,4 @@
-function elementFromCoords(element: string, { clientX, clientY }): HTMLElement | Node {
+function elementFromCoords(element: string, { clientX, clientY }): any {
     const elementFromPoint = document.elementFromPoint(clientX, clientY);
 
     if (elementFromPoint.nodeName === element) {

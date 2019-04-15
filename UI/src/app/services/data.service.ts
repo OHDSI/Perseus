@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 import { StateService } from './state.service';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
-import { Row, Table } from '../components/pages/mapping/mapping.component';
+import { Row } from 'src/app/models/row';
+import { Table } from 'src/app/models/table';
 
 @Injectable()
 export class DataService {
