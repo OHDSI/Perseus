@@ -18,11 +18,10 @@ import { PanelComponent } from 'src/app/components/panel/panel.component';
 import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
 import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
-import { CommentsService } from 'src/app/services/comments.service';
 import { DrawService } from 'src/app/services/draw.service';
-import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,7 @@ import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/val
     FilterComponent
   ],
   entryComponents: [
-    DialogComponent,
+    CommentPopupComponent,
     ValuesPopapComponent
   ],
   imports: [
@@ -56,7 +55,7 @@ import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/val
     MatCheckboxModule,
     MatListModule
   ],
-  providers: [CommentsService, DrawService]
+  providers: [DrawService]
 
 })
 export class PanelModule { }

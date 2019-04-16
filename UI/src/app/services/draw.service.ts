@@ -51,6 +51,10 @@ export class DrawService {
   removeConnector(id: string) {
     this.list[id].remove();
     delete this.list[id];
+
+    if (this.listIsEmpty()) {
+      this.commonService.linked = false;
+    }
   }
 
   removeAllConnectors() {
@@ -86,6 +90,10 @@ export class DrawService {
         }
       }
     }
+  }
+
+  listIsEmpty() {
+    return Object.keys(this.list).length === 0;
   }
 
   private _appendButton(drawEntity) {

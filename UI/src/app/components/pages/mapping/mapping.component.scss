@@ -20,23 +20,16 @@ section {
         p {
             top: 20%;
             position: absolute;
+            font-size: 14px;
         }
 
         .patch-top {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            z-index: 1000;
-            background-color: white;
+            @extend .patch;
             top: -94%
         }
         .patch-bottom {
-            width: 100%;
-            height: 100%;
-            position: absolute;
+            @extend .patch;
             bottom: -100%;  
-            z-index: 1000;
-            background-color: white;
         }      
     }
 
@@ -64,4 +57,12 @@ section {
             }
         }
     }
+}
+
+.patch {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
 }

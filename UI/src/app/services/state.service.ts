@@ -16,9 +16,7 @@ export class StateService {
     }
   };
 
-  constructor() {
-    
-  }
+  constructor() {}
 
   initialize(tables: any[], area: string) {
     this._state[area].tables = tables;

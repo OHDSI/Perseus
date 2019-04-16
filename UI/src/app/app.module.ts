@@ -27,7 +27,6 @@ import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabul
 import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { DataService } from 'src/app/services/data.service';
-import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -35,6 +34,7 @@ import { StateService } from 'src/app/services/state.service';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
+import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +43,7 @@ import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules
     OverviewComponent,
     VocabularyComponent,
     AreaComponent,
-    DialogComponent,
+    CommentPopupComponent,
     BridgeButtonComponent,
     ValuesPopapComponent,
     SampleDataPopupComponent,

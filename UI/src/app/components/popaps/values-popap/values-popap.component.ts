@@ -9,44 +9,18 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./values-popap.component.scss']
 })
 export class ValuesPopapComponent  {
-  items = [
-    {
-      value: 100
-    },
-    {
-      value: 90
-    },
-    {
-      value: 80
-    },
-    {
-      value: 70
-    },
-    {
-      value: 60
-    },
-    {
-      value: 50
-    },
-    {
-      value: 40
-    },
-    {
-      value: 30
-    },
-    {
-      value: 20
-    },
-    {
-      value: 10
-    }
-  ]
+  items;
 
   constructor(
     private overlay: OverlayRef,
     private commonService: CommonService
-  ) { 
+  ) {
     this.overlay.backdropClick().subscribe(() => this.close());
+    this.items = this.firstTenValues(this.commonService.activeRow.values);
+  }
+
+  firstTenValues(items) {
+    return items.slice(0, 10);
   }
 
   close() {

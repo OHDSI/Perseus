@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material';
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
-import { Area } from 'src/app/components/area/area.component';
 import { ITable } from 'src/app/models/table';
 
 @Component({
@@ -13,15 +12,27 @@ import { ITable } from 'src/app/models/table';
   styleUrls: ['./panel.component.scss']
 })
 export class PanelComponent {
-  @Input() area: Area;
-  @Input() title: string;
   @Input() table: ITable;
 
-  constructor(public dialog: MatDialog, private commonService: CommonService, private drawService: DrawService) {}
+  constructor(
+    public dialog: MatDialog,
+    private commonService: CommonService,
+    private drawService: DrawService
+  ) {}
+
+  get title() {
+    return this.table.name;
+  }
+
+  get area() {
+    return this.table.area;
+  }
 
   onOpen() {
     this.commonService.expanded(this.area);
-    this.drawService.fixConnectorsPosition();
+    if (!this.drawService.listIsEmpty()) {
+      this.drawService.fixConnectorsPosition();
+    }
   }
 
   onClose() {
@@ -29,11 +40,11 @@ export class PanelComponent {
     this.drawService.removeConnectorsBoundToTable(this.table);
   }
 
-  openSamleDataDialog(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    
-    const dialogRef = this.dialog.open(SampleDataPopupComponent, {
+  openSampleDataDialog(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.dialog.open(SampleDataPopupComponent, {
       width: '1021px',
       height: '696px',
       data: this.table

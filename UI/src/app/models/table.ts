@@ -1,8 +1,9 @@
 import { IRow } from 'src/app/models/row';
+import { Area } from 'src/app/components/area/area.component';
 
 export interface ITable {
     id: number;
-    area: string;
+    area: Area;
     name: string;
     rows: IRow[];
     visible: boolean;

@@ -27,17 +27,17 @@ export class SampleDataPopupComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SampleDataPopupComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ITable
+    @Inject(MAT_DIALOG_DATA) public table: ITable
     ) { }
 
   ngOnInit() {}
 
   get title() {
-    return this.data.name;
+    return this.table.name;
   }
 
   get subtitle() {
-    const str = this.data.area;
+    const str = this.table.area;
     return str.charAt(0).toUpperCase() + str.slice(1) + ' table';
   }
 

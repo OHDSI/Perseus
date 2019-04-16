@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
 import { IConnector } from 'src/app/models/connector';
+import { Area } from 'src/app/components/area/area.component';
 
 @Injectable()
 export class CommonService {
-  private _activeRow: IRow;
+  private _activeRow: IRow = null;
+  private _activeConnector: IConnector = null;
   private _sourceAreaWidth: number;
   private _targetAreaWidth: number;
 
   private _sourceExpanded = false;
   private _targetExpanded = false;
   private _linked = false;
-
-  private _activeConnector: IConnector = null;
 
   constructor() {}
 
@@ -38,7 +38,7 @@ export class CommonService {
     return this._activeConnector;
   }
 
-  expanded(area: string) {
+  expanded(area: Area) {
     switch (area) {
       case 'source': {
         this._sourceExpanded = true;
@@ -50,7 +50,7 @@ export class CommonService {
       }
     }
   }
-  collapsed(area: string) {
+  collapsed(area: Area) {
     switch (area) {
       case 'source': {
         this._sourceExpanded = false;
@@ -62,7 +62,7 @@ export class CommonService {
       }
     }
   }
-  set linked(status) {
+  set linked(status: boolean) {
     this._linked = status;
   }
 

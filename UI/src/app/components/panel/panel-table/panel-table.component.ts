@@ -1,18 +1,19 @@
-import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { Overlay, OverlayRef, OverlayConfig, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { OverlayRef } from '@angular/cdk/overlay';
 
-import { DialogComponent } from 'src/app/components/dialog/dialog.component';
-import { CommonService } from 'src/app/services/common.service';
-import { ValuesPopapComponent } from '../../popaps/values-popap/values-popap.component';
-import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
+import { ITable } from 'src/app/models/table';
+import { CommonService } from 'src/app/services/common.service';
+import { OverlayService } from 'src/app/services/overlay.service';
+import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
   styleUrls: ['./panel-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OverlayService]
 })
 
 export class PanelTableComponent {
@@ -22,8 +23,7 @@ export class PanelTableComponent {
 
   constructor(
     private commonService: CommonService,
-    private overlay: Overlay,
-    private injector: Injector,
+    private overlayService: OverlayService,
     private cdRef: ChangeDetectorRef
   ) {};
 
@@ -51,104 +51,19 @@ export class PanelTableComponent {
   }
 
   openTopValuesDialog(anchor: HTMLElement) {
-    const strategy = this._getStartegyForValues(anchor);
-    const config = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      positionStrategy: strategy
-    });
-    const overlayRef = this.overlay.create(config);
-    const injector = new PortalInjector(
-      this.injector,
-      new WeakMap<any, any>([[OverlayRef, overlayRef]])
-    );
-
-    overlayRef.attach(new ComponentPortal(ValuesPopapComponent, null, injector));
+    const component = ValuesPopapComponent;
+    this.overlayService.openDialog(anchor, component, 'values');
   }
 
   openCommentDialog(anchor: HTMLElement) {
-    const strategy = this._getStartegy(anchor);
-    const config = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      positionStrategy: strategy
-    });
-    const overlayRef = this.overlay.create(config);
-    const injector = new PortalInjector(
-      this.injector,
-      new WeakMap<any, any>([[OverlayRef, overlayRef]])
-    );
-
-    overlayRef.attach(new ComponentPortal(DialogComponent, null, injector));
-    // due to ngClass directive triggers change detection too often,
-    // we have to use onPush strategy here and detect changes after clicking on a backdrop
+    const component = CommentPopupComponent;
+    const strategyFor = `comments-${this._getArea()}`;
+    const overlayRef: OverlayRef = this.overlayService.openDialog(anchor, component, strategyFor);
     overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
   hasComment(row: IRow) {
     return row.comments.length;
-  }
-
-  private _getStartegy(anchor: HTMLElement) {
-    let offsetX = 0;
-    let offsetY = 0;
-
-    switch (this._getArea()) {
-      case 'source': {
-        offsetX = 40;
-        offsetY = 44;
-
-        break;
-      }
-      case 'target': {
-        offsetX = -200;
-        offsetY = -40;
-
-        break;
-      }
-      default:
-        return null;
-    }
-
-    const positions = [
-      new ConnectionPositionPair(
-        {
-          originX: 'start',
-          originY: 'bottom'
-        },
-        {
-          overlayX: 'start',
-          overlayY: 'bottom'
-        },
-        offsetX, offsetY)
-    ];
-
-    return this.overlay
-      .position()
-      .flexibleConnectedTo(anchor)
-      .withPositions(positions);
-  }
-
-  private _getStartegyForValues(anchor) {
-    let offsetX = 40;
-
-    const positions = [
-      new ConnectionPositionPair(
-        {
-          originX: 'start',
-          originY: 'top'
-        },
-        {
-          overlayX: 'start',
-          overlayY: 'top'
-        },
-        offsetX, null)
-    ];
-
-    return this.overlay
-      .position()
-      .flexibleConnectedTo(anchor)
-      .withPositions(positions);
   }
 
   private _getArea() {

@@ -1,6 +1,5 @@
 import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit } from '@angular/core';
 
-import { elementFromCoords } from 'src/app/utility/kit';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Area } from 'src/app/components/area/area.component';
@@ -28,42 +27,76 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('dragstart', ['$event'])
   onDragStart(e: DragEvent) {
-    if (this.area === 'target') {
+    if (this.area !== 'source') {
       return;
     }
 
-    const element = elementFromCoords('TR', e);
+    const element: any = e.currentTarget;
     if (element) {
       const row = this.row;
       row.htmlElement = element;
       this.bridgeService.sourceRow = row;
+      this.bridgeService.sourceRow.htmlElement.classList.add('drag-start');
     }
   }
 
   @HostListener('dragover', ['$event'])
-  onDragOver(e: DragEvent) {
-    event.stopPropagation();
-    event.preventDefault();
+  onDragOver(e: any) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (this.area === 'target') {
+      if (e.currentTarget.nodeName === 'TR') {
+        const row = e.currentTarget;
+
+        if (!this.bridgeService.tarRow) {
+          this.bridgeService.tarRow = row;
+          this.bridgeService.tarRow.classList.add('drag-over');
+          return;
+        }
+
+        if (this.bridgeService.tarRow !== row) {
+          this.bridgeService.tarRow.classList.remove('drag-over');
+          this.bridgeService.tarRow = row;
+          this.bridgeService.tarRow.classList.add('drag-over');
+        }
+      }
+    }
   }
 
   @HostListener('drop', ['$event'])
   onDrop(e: DragEvent) {
-    if (!this.bridgeService.sourceRow || this.area === 'source') {
+    if (this.bridgeService.sourceRow) {
+      this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
+    }
+
+    if (this.area !== 'target' || !this.bridgeService.sourceRow) {
       return;
     }
 
-    const element = elementFromCoords('TR', e);
+    const element = e.currentTarget;
     if (element) {
       const row = this.row;
       row.htmlElement = element;
       this.bridgeService.targetRow = row;
       this.bridgeService.connect();
-      this.bridgeService.sourceRow = null;
+      this.bridgeService.invalidate();
 
       this.commonService.activeRow.connections.push(this.row);
     }
-
   }
+
+  @HostListener('dragend', ['$event'])
+  onDragEnd(e: DragEvent) {
+    if (this.bridgeService.sourceRow) {
+      this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
+    }
+
+    if (this.bridgeService.tarRow) {
+      this.bridgeService.tarRow.classList.remove('drag-over');
+    }
+  }
+
 }
 
 

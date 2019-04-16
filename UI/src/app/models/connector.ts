@@ -11,11 +11,13 @@ export interface IConnector {
   drawLine(): void;
   remove(): void;
   fixPosition(): void;
+  active(): void;
+  inactive(): void;
 }
 
 export class Connector {
   public canvas: any;
-  public line: Element;
+  public line: SVGLineElement;
   public button: Element;
 
   constructor(
@@ -64,6 +66,22 @@ export class Connector {
     this.line.setAttribute('y1', y1 + '');
     this.line.setAttribute('x2', (x2 - 6) + '');
     this.line.setAttribute('y2', y2 + '');
+  }
+
+  active() {
+    this.line.classList.add('line-active');
+    this.line.removeAttribute('marker-end');
+    this.line.setAttribute('marker-end', 'url(#arrow-active)');
+    this.source.htmlElement.classList.add('row-active');
+    this.target.htmlElement.classList.add('row-active');
+  }
+
+  inactive() {
+    this.line.classList.remove('line-active');
+    this.line.removeAttribute('marker-end');
+    this.line.setAttribute('marker-end', 'url(#arrow)');
+    this.source.htmlElement.classList.remove('row-active');
+    this.target.htmlElement.classList.remove('row-active');
   }
 
   private _getSVGPoint(row: IRow) {

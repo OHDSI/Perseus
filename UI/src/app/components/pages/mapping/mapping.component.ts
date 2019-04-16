@@ -14,8 +14,7 @@ export class MappingComponent implements OnInit {
     private stateService: StateService,
     private dataService: DataService,
     private commonService: CommonService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.dataService.initialize();
@@ -27,5 +26,9 @@ export class MappingComponent implements OnInit {
 
   get state() {
     return this.stateService.state;
+  }
+
+  trackByFn(index) {
+    return index;
   }
 }

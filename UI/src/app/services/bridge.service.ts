@@ -10,6 +10,8 @@ export class BridgeService {
   private _sourceRow: IRow;
   private _targetRow: IRow;
 
+  tarRow = null;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
@@ -33,5 +35,17 @@ export class BridgeService {
   connect() {
     this.drawService.drawLine(this.sourceRow, this.targetRow);
     this.commonService.linked = true;
+  }
+
+  invalidate() {
+    this.sourceRow = null;
+    this.targetRow = null;
+  }
+
+  getStyledAsDragStartElement() {
+    this.sourceRow.htmlElement.classList.add('drag-start');
+  }
+  getStyledAsDragEndElement() {
+    this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 }

@@ -35,7 +35,14 @@ export class RulesPopupComponent {
           break;
         }
         case 'log-comments': {
-          const connections = this.commonService.activeConnector.source.connections;
+          const connector = this.commonService.activeConnector;
+          const connections = connector.source.connections;
+          if (connector.source.comments) {
+            connector.source.comments.forEach((comment: IComment) => {
+              console.log(comment);
+            })
+          }
+
           if (connections.length) {
             connections.forEach((row: IRow) => {
               if (row.comments) {
@@ -62,6 +69,7 @@ export class RulesPopupComponent {
 
   close() {
     this.overlay.detach();
+    this.commonService.activeConnector.inactive();
     this.commonService.activeConnector = null;
   }
 

@@ -1,15 +1,17 @@
 import { IComment } from 'src/app/models/comment';
+import { Area } from 'src/app/components/area/area.component';
 
 export interface IRow {
     id: number;
     tableId: number;
     name: string;
     type: string;
-    area: string;
+    area: Area;
+    values: any[];
     comments: IComment[];
-    visible: boolean;
+    visible?: boolean;
     connections?: IRow[];
-    htmlElement: HTMLElement;
+    htmlElement: any;
 
     removeConnections(): void;
 }
@@ -20,6 +22,7 @@ export class Row {
         public name,
         public type,
         public area,
+        public values,
         public comments,
         public visible = true,
         public connections = [],

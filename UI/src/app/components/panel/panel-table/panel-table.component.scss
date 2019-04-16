@@ -4,7 +4,6 @@ table {
     width: 100%;
     box-shadow: none;
     background-color: $yellowish;
-    border-collapse: collapse;
     padding: 0;
 
     .indicator {
@@ -25,6 +24,11 @@ table {
         width: 14px;
         height: 14px;
         cursor: pointer;
+        color: #808080;
+    }
+
+    .icon-type {
+        color: #2C2C2C;
     }
 
     th {

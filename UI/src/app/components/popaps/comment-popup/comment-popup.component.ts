@@ -1,4 +1,4 @@
-import { Component, ViewChild, Renderer2, AfterViewInit, OnDestroy, ViewEncapsulation, TemplateRef } from '@angular/core';
+import { Component, ViewChild, TemplateRef } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
 import { CommonService } from 'src/app/services/common.service';
@@ -7,10 +7,10 @@ import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: './dialog.component.html',
-  styleUrls: ['./dialog.component.scss']
+  templateUrl: './comment-popup.component.html',
+  styleUrls: ['./comment-popup.component.scss']
 })
-export class DialogComponent {
+export class CommentPopupComponent {
   @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
   @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
 

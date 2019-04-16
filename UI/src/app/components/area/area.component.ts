@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, AfterViewChecked, Renderer, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, AfterViewChecked, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -25,7 +25,7 @@ export class AreaComponent implements AfterViewInit, AfterViewChecked {
     private domSanitizer: DomSanitizer,
     private stateService: StateService,
     private drawService: DrawService,
-    private renderer: Renderer
+    private renderer: Renderer2
   ) {
     this.matIconRegistry
       .addSvgIcon(
@@ -35,9 +35,11 @@ export class AreaComponent implements AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewInit() {
-     this.renderer.listen(this.scrollableContent.nativeElement, 'scroll', (event) => {
+    this.renderer.listen(this.scrollableContent.nativeElement, 'scroll', (event) => {
+      if (!this.drawService.listIsEmpty()) {
         this.drawService.fixConnectorsPosition();
-      })
+      }
+    });
   }
 
   ngAfterViewChecked() {

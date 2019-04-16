@@ -46,7 +46,8 @@ export class DataService {
         const name = item.column_list[j].column_name;
         const type = item.column_list[j].column_type;
         const comments = [];
-        const row = new Row(id, tableId, name, type, area, comments);
+        const values = Array(20).fill(1).map(n =>  Math.floor(Math.random() * 100) + 1 );
+        const row = new Row(id, tableId, name, type, area, values, comments);
 
         rows.push(row);
       }

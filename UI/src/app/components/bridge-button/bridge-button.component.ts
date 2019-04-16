@@ -1,27 +1,24 @@
-import { Component, OnInit, Injector, ChangeDetectionStrategy } from '@angular/core';
-import { ConnectionPositionPair, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
+import { Component } from '@angular/core';
 
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 import { CommonService } from 'src/app/services/common.service';
+import { IConnector } from 'src/app/models/connector';
+import { OverlayService } from 'src/app/services/overlay.service';
 
 @Component({
   selector: 'app-bridge-button',
   templateUrl: './bridge-button.component.html',
-  styleUrls: ['./bridge-button.component.scss']
+  styleUrls: ['./bridge-button.component.scss'],
+  providers: [OverlayService]
 })
-export class BridgeButtonComponent implements OnInit {
+export class BridgeButtonComponent {
   text = '?';
-  drawEntity;
+  drawEntity: IConnector;
 
   constructor(
-    private overlay: Overlay,
-    private injector: Injector,
+    private overlayService: OverlayService,
     private commonService: CommonService
     ) { }
-
-  ngOnInit() {
-  }
 
   get active() {
     if (this.commonService.activeConnector) {
@@ -30,43 +27,11 @@ export class BridgeButtonComponent implements OnInit {
   }
 
   openRulesDialog(anchor) {
+    this.drawEntity.active();
     this.commonService.activeConnector = this.drawEntity;
 
-    const strategy = this._getStartegyForValues(anchor);
-    const config = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      positionStrategy: strategy
-    });
-    const overlayRef = this.overlay.create(config);
-    const injector = new PortalInjector(
-      this.injector,
-      new WeakMap<any, any>([[OverlayRef, overlayRef]])
-    );
 
-    overlayRef.attach(new ComponentPortal(RulesPopupComponent, null, injector));
+    const component = RulesPopupComponent;
+    this.overlayService.openDialog(anchor, component, 'bridge-button');
   }
-
-  private _getStartegyForValues(anchor) {
-    let offsetX = 225;
-    let offsetY = 50;
-    const positions = [
-      new ConnectionPositionPair(
-        {
-          originX: 'end',
-          originY: 'top'
-        },
-        {
-          overlayX: 'end',
-          overlayY: 'top'
-        },
-        offsetX, offsetY)
-    ];
-
-    return this.overlay
-      .position()
-      .flexibleConnectedTo(anchor)
-      .withPositions(positions);
-  }
-
 }
