@@ -1,16 +1,18 @@
 @import 'src/app/styles/variables.scss';
 
 
+:host {
+    width: 130%;
+}
+
 .caption {
     display: flex;
     align-items: center;
-    margin-left: 28px;
 
     mat-icon {
         font-size: 14px;
         width: 10px;
         color: $blue;
-
     }
 
     p {

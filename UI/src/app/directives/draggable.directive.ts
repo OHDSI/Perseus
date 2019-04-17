@@ -90,11 +90,14 @@ export class DraggableDirective implements OnInit {
   onDragEnd(e: DragEvent) {
     if (this.bridgeService.sourceRow) {
       this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
+      this.bridgeService.sourceRow = null;
     }
 
     if (this.bridgeService.tarRow) {
       this.bridgeService.tarRow.classList.remove('drag-over');
     }
+
+
   }
 
 }

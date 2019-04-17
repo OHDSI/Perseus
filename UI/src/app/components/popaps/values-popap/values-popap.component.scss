@@ -12,10 +12,11 @@
         content: "";
         position: absolute;
         left: 1px;
+        top: 14px;
         width: 0;
         height: 0;
         box-sizing: border-box;
-        border: 7px solid $black;
+        border: 5px solid $black;
         border-color: transparent transparent #F9F9F9 #F9F9F9;
         transform-origin: 0 0;
         transform: rotate(45deg);

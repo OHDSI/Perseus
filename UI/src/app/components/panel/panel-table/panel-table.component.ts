@@ -55,10 +55,11 @@ export class PanelTableComponent {
     this.overlayService.openDialog(anchor, component, 'values');
   }
 
-  openCommentDialog(anchor: HTMLElement) {
+  openCommentDialog(anchor) {
+    const elementRef = anchor._elementRef;
     const component = CommentPopupComponent;
     const strategyFor = `comments-${this._getArea()}`;
-    const overlayRef: OverlayRef = this.overlayService.openDialog(anchor, component, strategyFor);
+    const overlayRef: OverlayRef = this.overlayService.openDialog(elementRef, component, strategyFor);
     overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 

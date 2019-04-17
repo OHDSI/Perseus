@@ -50,7 +50,7 @@ export class OverlayService {
         break;
       }
       case 'values': {
-        offsetX = 40;
+        offsetX = 67;
         offsetY = 0;
         originX = 'start';
         originY = 'top';
@@ -59,8 +59,8 @@ export class OverlayService {
         break;
       }
       case 'comments-source': {
-        offsetX = 40;
-        offsetY = 47;
+        offsetX = 60;
+        offsetY = 44;
         originX = 'start';
         originY = 'bottom';
         overlayX = 'start';
@@ -68,7 +68,7 @@ export class OverlayService {
         break;
       }
       case 'comments-target': {
-        offsetX = -200;
+        offsetX = -179;
         offsetY = -40;
         originX = 'start';
         originY = 'bottom';

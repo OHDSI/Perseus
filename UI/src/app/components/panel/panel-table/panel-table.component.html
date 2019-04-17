@@ -13,7 +13,7 @@
             </button>
         </th>
         <td mat-cell *matCellDef="let column" class="drag_indicator">
-            <mat-icon class="indicator">
+            <mat-icon class="icon-indicator">
                 drag_indicator
             </mat-icon>
         </td>
@@ -42,7 +42,7 @@
         <td mat-cell *matCellDef="let row">
             <div #anchor>
                 <button mat-icon-button (click)="openTopValuesDialog(anchor)">
-                    <mat-icon>
+                    <mat-icon class="icon-values">
                         sort
                     </mat-icon>
                 </button>
@@ -53,8 +53,8 @@
     <ng-container matColumnDef="comments">
         <th mat-header-cell *matHeaderCellDef> Comments </th>
         <td mat-cell *matCellDef="let row">
-            <div #anchor class="anchor">
-                <button mat-icon-button (click)="openCommentDialog(anchor)" [disableRipple]="true">
+            <div>
+                <button #anchor mat-icon-button (click)="openCommentDialog(anchor)" [disableRipple]="true">
                     <mat-icon class="icon-comment" [ngClass]="{'active': hasComment(row)}">
                         comment
                     </mat-icon>

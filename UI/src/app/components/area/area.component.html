@@ -1,6 +1,7 @@
-<div class="caption">
+<div class="caption" [ngStyle]="{'margin-left': areaIsSource ? '28px' : '17px'}">
     <div #anchor>
-        <button mat-icon-button disableRipple="true" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="filter">
+        <button 
+        mat-icon-button disableRipple="true" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="filter">
             <mat-icon svgIcon="filter"></mat-icon>
             
             <mat-menu #filter="matMenu">

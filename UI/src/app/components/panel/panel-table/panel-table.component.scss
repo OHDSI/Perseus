@@ -6,9 +6,44 @@ table {
     background-color: $yellowish;
     padding: 0;
 
-    .indicator {
+    th {
+        font-size: 13px;
+    }
+
+    .mat-header-cell {
+        padding-left: 10px;  
+    }
+
+    .caption-item {
+        color: $blue;
+        font-style: italic;
+        padding-left: 0;
+    }
+
+    & .cdk-column-comments {
+        text-align: center;
+    }
+    & .cdk-column-values {
+        text-align: center;
+    }
+    & .cdk-column-column_type {
+        text-align: center;
+    }
+
+    .icon-indicator {
         margin-left: 20px;
+        padding-top: 11px;
         cursor: move;
+    }
+    .icon-type {
+        color: #2C2C2C;
+        padding-top: 9px;
+    }
+    .icon-values {
+        padding-top: 2px;
+    }
+    .icon-comment {
+        padding-top: 4px;
     }
 
     .button-filter {
@@ -22,21 +57,8 @@ table {
     mat-icon {
         font-size: 14px;
         width: 14px;
-        height: 14px;
         cursor: pointer;
         color: #808080;
-    }
-
-    .icon-type {
-        color: #2C2C2C;
-    }
-
-    th {
-        font-size: 13px;
-    }
-
-    .caption-item {
-        color: $blue;
     }
 
     mat-icon.active {

@@ -11,6 +11,7 @@
         border-radius: 2px;
         border: 0.75px solid $light-grey;
         height: 25px;
+        background-color: #F9F9F9;
     }
 
     .input-add {
@@ -60,8 +61,8 @@
         width: 0;
         height: 0;
         box-sizing: border-box;
-        border: 7px solid $black;
-        border-color: transparent transparent white white;
+        border: 5px solid $black;
+        border-color: transparent transparent #F9F9F9 #F9F9F9;
         transform-origin: 0 0;
         transform: rotate(45deg);
         box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
@@ -74,12 +75,12 @@
     &:after {
         content: "";
         position: absolute;
-        bottom: -4px;
+        bottom: -2px;
         right: 10px;
         width: 0;
         height: 0;
         box-sizing: border-box;
-        border: 7px solid $black;
+        border: 5px solid $black;
         border-color: transparent white white transparent;
         transform-origin: 0 0;
         transform: rotate(45deg);
