@@ -40,9 +40,9 @@
     <ng-container matColumnDef="values">
         <th mat-header-cell *matHeaderCellDef> Top 10 values </th>
         <td mat-cell *matCellDef="let row">
-            <div #anchor>
-                <button mat-icon-button (click)="openTopValuesDialog(anchor)">
-                    <mat-icon class="icon-values">
+            <div #anchor class="anchor">
+                <button mat-icon-button>
+                    <mat-icon class="icon-values" (click)="openTopValuesDialog(anchor)">
                         sort
                     </mat-icon>
                 </button>
@@ -53,8 +53,8 @@
     <ng-container matColumnDef="comments">
         <th mat-header-cell *matHeaderCellDef> Comments </th>
         <td mat-cell *matCellDef="let row">
-            <div>
-                <button #anchor mat-icon-button (click)="openCommentDialog(anchor)" [disableRipple]="true">
+            <div #anchor class="anchor">
+                <button mat-icon-button (click)="openCommentDialog(anchor)" [disableRipple]="true">
                     <mat-icon class="icon-comment" [ngClass]="{'active': hasComment(row)}">
                         comment
                     </mat-icon>
