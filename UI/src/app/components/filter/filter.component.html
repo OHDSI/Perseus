@@ -15,7 +15,9 @@
         <mat-list-item role="listitem" *ngFor="let item of data">
           <mat-checkbox [checked]="isChecked(item)" (change)="onCheckboxChange($event, item)">
           </mat-checkbox>
-          {{item.name}}
+          <span>
+            {{item.name}}
+          </span>
         </mat-list-item>
       </mat-list>
     </main>
