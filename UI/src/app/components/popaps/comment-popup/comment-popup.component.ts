@@ -38,11 +38,25 @@ export class CommentPopupComponent {
     return this.commonService.activeRow.area === 'source';
   }
 
+  onCommentClick(comment: IComment) {
+    this.invalidateSelection();
+    comment.active = true;
+  }
+
+  invalidateSelection(e?: Event) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.row.comments.map((c: IComment) => c.active = false);
+  }
+
   edit(comment: IComment) {
     this.editedComment = comment;
   }
 
   add() {
+    this.invalidateSelection();
     if (!this.value) {
       return;
     }
@@ -60,6 +74,7 @@ export class CommentPopupComponent {
   }
 
   applyChanges(comment: IComment, value: string) {
+    this.invalidateSelection();
     comment.newValue(value);
     comment.setAsEdited();
     comment.updateDate();
@@ -68,6 +83,7 @@ export class CommentPopupComponent {
   }
 
   discardChanges() {
+    this.invalidateSelection();
     this.editedComment = null;
   }
 
@@ -76,6 +92,7 @@ export class CommentPopupComponent {
   }
 
   close() {
+    this.invalidateSelection();
     this.overlay.detach();
   }
 

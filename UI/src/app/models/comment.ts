@@ -2,6 +2,7 @@ export interface IComment {
   id: number;
   date: Date;
   hasBeenEdited: boolean;
+  active: boolean;
 
   updateDate(): void;
   setAsEdited(): void;
@@ -12,6 +13,7 @@ export class Comment {
   id: number;
   date: Date;
   hasBeenEdited: boolean;
+  active: boolean;
 
   constructor(
     private text: string
@@ -19,6 +21,7 @@ export class Comment {
     this.id = Math.floor(Math.random() * 1000000);
     this.date = new Date(Date.now());
     this.hasBeenEdited = false;
+    this.active = false;
   }
 
   updateDate() {

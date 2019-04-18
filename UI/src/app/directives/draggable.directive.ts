@@ -49,16 +49,16 @@ export class DraggableDirective implements OnInit {
       if (e.currentTarget.nodeName === 'TR') {
         const row = e.currentTarget;
 
-        if (!this.bridgeService.tarRow) {
-          this.bridgeService.tarRow = row;
-          this.bridgeService.tarRow.classList.add('drag-over');
+        if (!this.bridgeService.targetRowElement) {
+          this.bridgeService.targetRowElement = row;
+          this.bridgeService.targetRowElement.classList.add('drag-over');
           return;
         }
 
-        if (this.bridgeService.tarRow !== row) {
-          this.bridgeService.tarRow.classList.remove('drag-over');
-          this.bridgeService.tarRow = row;
-          this.bridgeService.tarRow.classList.add('drag-over');
+        if (this.bridgeService.targetRowElement !== row) {
+          this.bridgeService.targetRowElement.classList.remove('drag-over');
+          this.bridgeService.targetRowElement = row;
+          this.bridgeService.targetRowElement.classList.add('drag-over');
         }
       }
     }
@@ -93,8 +93,8 @@ export class DraggableDirective implements OnInit {
       this.bridgeService.sourceRow = null;
     }
 
-    if (this.bridgeService.tarRow) {
-      this.bridgeService.tarRow.classList.remove('drag-over');
+    if (this.bridgeService.targetRowElement) {
+      this.bridgeService.targetRowElement.classList.remove('drag-over');
     }
 
 

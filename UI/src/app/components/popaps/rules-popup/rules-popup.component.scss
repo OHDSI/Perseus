@@ -28,11 +28,26 @@
         flex-direction: column;
         justify-content: space-between;
         height: 35%;
+        font-size: 13px;
+
+        .mat-radio-container,
+        .mat-radio-outer-circle,
+        .mat-radio-inner-circle {
+            width: 15px;
+            height: 15px;
+        }
     }
+    
 
     .button-group {
         display: flex;
         justify-content: space-between;
+        position: relative;
+        top: 32px;
+
+        button {
+            font-size: 13px;
+        }
 
         .delete {
             color: #FF4646;

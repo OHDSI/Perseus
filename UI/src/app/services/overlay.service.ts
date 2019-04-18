@@ -60,7 +60,7 @@ export class OverlayService {
       }
       case 'comments-source': {
         offsetX = 40;
-        offsetY = 44;
+        offsetY = 32;
         originX = 'start';
         originY = 'bottom';
         overlayX = 'start';

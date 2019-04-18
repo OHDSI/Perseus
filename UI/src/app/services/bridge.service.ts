@@ -9,8 +9,7 @@ import { IRow } from 'src/app/models/row';
 export class BridgeService {
   private _sourceRow: IRow;
   private _targetRow: IRow;
-
-  tarRow = null;
+  private _targetRowElement = null;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -30,6 +29,13 @@ export class BridgeService {
   }
   get targetRow() {
     return this._targetRow;
+  }
+
+  get targetRowElement() {
+    return this._targetRowElement;
+  }
+  set targetRowElement(element: HTMLElement) {
+    this._targetRowElement = element;
   }
 
   connect() {

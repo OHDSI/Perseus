@@ -6,6 +6,7 @@
     flex-direction: column;
     align-items: flex-end;
     padding: 10px;
+    
 
     .input {
         border-radius: 2px;
@@ -24,13 +25,23 @@
         width: 208px;
     }
 
-    button {
-        padding: 0;
+    .button-add {
+        position: relative;
+        bottom: -6px;
+        right: -6px;
+        font-size: 13px;
         min-width: 0;
+        line-height: 23px;
+        padding: 0 6px;
+
+        &:active {
+            color: #066BBB;
+        }
     }
 
     .mat-list {
         width: 100%;
+        padding-top: 0;
 
         .list-item-edit {
             .mat-list-item-content {
@@ -43,10 +54,16 @@
         height: 100%;
         background-color: #EEEEEE;
         margin-bottom: 5px;
+        min-height: 75px;
+        cursor: pointer;
 
         .mat-list-item-content {
             padding: 0 10px;
         }
+    }
+
+    .active {
+        background-color: #DCECF9;
     }
 }
 
@@ -56,7 +73,7 @@
     &:after {
         content: "";
         position: absolute;
-        bottom: 58px;
+        bottom: 47px;
         left: 1px;
         width: 0;
         height: 0;
@@ -112,6 +129,7 @@
         align-items: center;
         justify-content: space-between;
         color: #808080;
+        height: 30px;
     }
 
     main {
@@ -125,6 +143,10 @@
 
     button {
         width: 20px;
+        height: 20px;
+        &:active {
+            color: #066BBB;
+        }
     }
 }
 
@@ -132,17 +154,34 @@
     @extend .comment;
 
     header {
-        width: 100%;
+        width: 108%;
         display: flex;
         align-items: center;
         justify-content: space-between;
         color: #808080;
         margin: 4px 0;
+        height: 25px;
+
+
+        button {
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            &:active {
+                color: #066BBB;
+            }
+        }
+    }
+
+    main {
+        input {
+            background-color: white;
+        }
     }
 
     footer {
         position: relative;
-        width: 100%;
+        width: 108%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -152,11 +191,15 @@
             display: flex;
             justify-content: flex-end;
             position: relative;
-            top: -4px;
         }
     }
 
     button {
         width: 20px;
+        height: 30px;
+        line-height: 30px;
+        &:active {
+            color: #066BBB;
+        }
     }
 }
