@@ -1,4 +1,4 @@
-import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit } from '@angular/core';
+import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit, NgZone } from '@angular/core';
 
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -18,11 +18,18 @@ export class DraggableDirective implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private bridgeService: BridgeService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private zone: NgZone
   ) { }
 
   ngOnInit() {
     this.renderer.setAttribute(this.elementRef.nativeElement, 'draggable', 'true');
+    this.zone.runOutsideAngular(() => {
+      this.elementRef.nativeElement.addEventListener(
+        'dragover', this.onDragOver.bind(this)
+      );
+
+    });
   }
 
   @HostListener('dragstart', ['$event'])
@@ -40,7 +47,7 @@ export class DraggableDirective implements OnInit {
     }
   }
 
-  @HostListener('dragover', ['$event'])
+  // @HostListener('dragover', ['$event'])
   onDragOver(e: any) {
     e.stopPropagation();
     e.preventDefault();
