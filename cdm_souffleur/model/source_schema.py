@@ -1,6 +1,6 @@
 from pathlib import Path
 from pyspark import Row
-import pandas
+import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils.constants import GENERATE_CDM_SOURCE_METADATA_PATH,\
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
@@ -10,24 +10,19 @@ import csv
 import glob
 import shutil
 from cdm_souffleur.view.Table import Table, Column
+from pandasql import sqldf
 
 
-def get_source_schema():
+def get_source_schema(filepath='D:/mdcr.xlsx'):
     """return tables and columns of source schema based on WR report"""
-    spark_ = spark()
     schema = []
-    # load_report()
-    # for table in spark_.sql("""show tables""").collect():
-    #     columns = [column.col_name for column in spark_.sql("""
-    #         show columns from {}""".format(table.tableName)).collect()]
-    #     schema[table.tableName] = columns
-    # return schema
-    tables = spark_.sql("""select table, collect_list(concat(field, ':', type)) as fields from overview group by table""")
-    tables.collect()
-    tables_pd = tables.toPandas()
+    pysqldf = lambda q: sqldf(q, globals())
+    overview = pd.read_excel(filepath, 'Overview', dtype=str, na_filter=False)
+    tables_pd = sqldf("""select `table`, group_concat(field || ':' || type, ',') as fields from overview group by `table`;""")
+    tables_pd = tables_pd[tables_pd.Table != '']
     for index, row in tables_pd.iterrows():
-        table_name = row['table']
-        fields = row['fields']
+        table_name = row['Table']
+        fields = row['fields'].split(',')
         table = Table(table_name)
         for field in fields:
             column_name = field.split(':')[0]
@@ -44,11 +39,11 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
     # TODO optimization!!!
     report_tables = []
     filepath_path = Path(filepath)
-    xls = pandas.ExcelFile(filepath_path)
+    xls = pd.ExcelFile(filepath_path)
     sheets = xls.sheet_names
     for sheet in sheets:
         tablename = sheet
-        df = pandas.read_excel(filepath_path, sheet)
+        df = pd.read_excel(filepath_path, sheet)
         rdd_of_rows = _flatten_pd_df(df)
         spark_df = spark().createDataFrame(rdd_of_rows)
         spark_df.createOrReplaceTempView(tablename)
@@ -56,7 +51,7 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
     return report_tables
 
 
-def _flatten_pd_df(pd_df: pandas.DataFrame):
+def _flatten_pd_df(pd_df: pd.DataFrame):
     """Given a Pandas DF that has appropriately named columns, this function
     will iterate the rows and generate Spark Row
     objects.  It's recommended that this method be invoked via Spark's flatMap
