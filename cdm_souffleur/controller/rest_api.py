@@ -8,6 +8,28 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 app = Flask(__name__)
 
 
+@app.route('/get_cdm_versions')
+def get_cdm_versions_call():
+    """return available CDM versions schema list"""
+    return jsonify(get_exist_version())
+
+
+@app.route('/get_cdm_schema')
+def get_cdm_schema_call():
+    """return CDM schema for target version"""
+    cdm_version = request.args.get('cdm_version')
+    cdm_schema = get_schema(cdm_version)
+    return jsonify([s.to_json() for s in cdm_schema])
+
+
+@app.route('/get_source_schema')
+def get_source_schema_call():
+    """return with source schema based on White Rabbit report"""
+    path = request.args.get('path')
+    source_schema = get_source_schema(path)
+    return jsonify([s.to_json() for s in source_schema])
+
+
 @app.route('/get_xml', methods=['POST'])
 def xml():
     json = request.get_json()
@@ -19,6 +41,7 @@ def xml():
 
 @app.route('/find_domain')
 def find_domain_call():
+    # TODO what return how to run when init spark?
     column_name = request.args.get('column_name')
     table_name = request.args.get('table_name')
     start_new_thread(find_domain, (column_name, table_name))
@@ -40,28 +63,6 @@ def load_vocabulary_call():
     path = request.args.get('path')
     start_new_thread(load_vocabulary, (path,))
     return 'OK'
-
-
-@app.route('/get_source_schema')
-def get_source_schema_call():
-    """return dict with source schema based on WR report"""
-    path = request.args.get('path')
-    source_schema = get_source_schema(path)
-    return jsonify([s.to_json() for s in source_schema])
-
-
-@app.route('/get_cdm_versions')
-def get_cdm_versions_call():
-    """return aviable CDM versions schema list"""
-    return jsonify(get_exist_version())
-
-
-@app.route('/get_cdm_schema')
-def get_cdm_schema_call():
-    """return dict with CDM schema for target version"""
-    cdm_version = request.args.get('cdm_version')
-    cdm_schema = get_schema(cdm_version)
-    return jsonify([s.to_json() for s in cdm_schema])
 
 
 if __name__ == '__main__':

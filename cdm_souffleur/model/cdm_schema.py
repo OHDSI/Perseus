@@ -3,6 +3,11 @@ from cdm_souffleur.utils.constants import CDM_SCHEMA_PATH, CDM_VERSION_LIST
 from cdm_souffleur.view.Table import Table, Column
 
 
+def get_exist_version():
+    """return existing versions of CDM schema"""
+    return CDM_VERSION_LIST
+
+
 def get_schema(cdm_version):
     """load CDM schema from csv"""
     schema = []
@@ -29,11 +34,5 @@ def get_schema(cdm_version):
     return schema
 
 
-def get_exist_version():
-    """return existing versions of CDM schema"""
-    return CDM_VERSION_LIST
-
-
 if __name__ == '__main__':
     print(get_schema('5.0.1'))
-    print(type(get_schema('5.0.1')))

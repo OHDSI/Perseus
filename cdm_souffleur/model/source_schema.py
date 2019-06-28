@@ -17,7 +17,8 @@ def get_source_schema(filepath='D:/mdcr.xlsx'):
     """return tables and columns of source schema based on WR report"""
     schema = []
     overview = pd.read_excel(filepath, 'Overview', dtype=str, na_filter=False)
-    tables_pd = sqldf("""select `table`, group_concat(field || ':' || type, ',') as fields from overview group by `table`;""")
+    tables_pd = sqldf(
+        """select `table`, group_concat(field || ':' || type, ',') as fields from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
     for index, row in tables_pd.iterrows():
         table_name = row['Table']
