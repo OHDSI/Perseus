@@ -1,0 +1,25 @@
+:host {
+    position: absolute;
+    z-index: 100;
+    height: 16px;
+}
+
+button {
+    background-color: #808080;
+    color: white;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    font-size: 13px;
+
+    span {
+        position: relative !important;
+        top: -9px;
+    }
+}
+
+.active {
+    background-color: #066BBB;
+}
+

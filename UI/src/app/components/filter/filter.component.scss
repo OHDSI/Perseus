@@ -1,0 +1,97 @@
+mat-card {
+    padding: 18px 16px;
+    height: 424px;
+    width: 212px;
+    background: #F9F9F9;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 0;
+
+    header {
+        font-size: 13px;
+        width: 100%;
+
+        .mat-radio-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+
+            .mat-radio-label-content {
+                padding-left: 4px;
+            }
+        }
+
+        label {
+            color: #808080;
+            line-height: normal;
+            font-style: italic;
+            margin-top: 15px;
+        }
+    }
+
+    main {
+        mat-list {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 350px;
+            width: 240px;
+
+            mat-list-item {
+                font-size: 13px;
+
+                span {
+                    margin-left: 10px;
+                }
+            }
+        }
+
+    }
+
+    footer {
+        button {
+            color: #066BBB;
+            width: 34px;
+            align-self: flex-end;
+            font-size: 13px;
+            position: absolute;
+            right: 10px;
+            bottom: 5px;
+        }
+    }
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+// mat-checkbox {
+//     color: rgb(0,178,0);
+//     /deep/ .mat-checkbox-background {
+//         background-color: rgb(0,178,0);
+//     }
+
+//     /deep/ &.mat-checkbox-focused{
+//         .mat-ink-ripple{
+//             background-color: rgba(0, 178, 0, .26);
+//         }
+//     }
+// }
+
+mat-card ::-webkit-scrollbar-track
+{
+	border-radius: 100px;
+}
+
+mat-card ::-webkit-scrollbar
+{
+	width: 5px;
+}
+
+mat-card ::-webkit-scrollbar-thumb
+{
+    width: 5px;
+	border-radius: 100px;
+	-webkit-box-shadow: #E5E5E5;
+	background-color: #C6C6C6;
+}

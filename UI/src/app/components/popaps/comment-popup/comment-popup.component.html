@@ -1,19 +1,22 @@
-<mat-card class="dialog">
+<mat-card [ngClass]="{
+  'dialog-source': overSourceArea,
+  'dialog-target': !overSourceArea
+}">
   <mat-list>
-    <ng-container *ngFor="let comment of comments">
+    <ng-container *ngFor="let comment of row.comments">
       <ng-template [ngTemplateOutlet]="loadTemplate(comment)" [ngTemplateOutletContext]="{ $implicit: comment}">
       </ng-template>
     </ng-container>
   </mat-list>
-  <input [(ngModel)]="value" [disabled]="isDisabled()" placeholder="Input comment" class="input-add"
+  <input [(ngModel)]="value" (click)="invalidateSelection()" [disabled]="isDisabled()" placeholder="Input comment" class="input-add"
     (keyup.enter)="add()">
-  <button mat-button (click)="add()" [disabled]="isDisabled()" disableRipple="true">
+  <button mat-button (click)="add()" [disabled]="isDisabled()" disableRipple="true" class="button-add">
     Add
   </button>
 </mat-card>
 
 <ng-template #readOnlyTemplate let-comment>
-  <mat-list-item>
+  <mat-list-item (click)="onCommentClick(comment)" [ngClass]="{'active': comment.active}">
     <section class="read">
       <header>
         <span class="date">
@@ -21,16 +24,18 @@
           <span *ngIf="comment.hasBeenEdited">(edited)</span>
         </span>
         <div>
-          <button mat-icon-button disableRipple="true" (click)="edit(comment)">
-            <mat-icon>
-              edit
-            </mat-icon>
-          </button>
-          <button mat-icon-button disableRipple="true" (click)="delete(comment)">
-            <mat-icon>
-              delete
-            </mat-icon>
-          </button>
+          <ng-container *ngIf="comment.active">
+            <button mat-icon-button disableRipple="true" (click)="edit(comment)">
+              <mat-icon>
+                edit
+              </mat-icon>
+            </button>
+            <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+              <mat-icon>
+                delete
+              </mat-icon>
+            </button>
+          </ng-container>
         </div>
       </header>
       <main>

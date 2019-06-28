@@ -1,58 +1,112 @@
-import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit } from '@angular/core';
+import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit, NgZone } from '@angular/core';
 
-import { DragService } from 'src/app/services/drag.service';
-import { DrawService } from 'src/app/services/draw.service';
-import { elementFromCoords } from 'src/app/utility/kit';
+import { BridgeService } from 'src/app/services/bridge.service';
+import { CommonService } from 'src/app/services/common.service';
+import { Area } from 'src/app/components/area/area.component';
+import { ITable } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 
 @Directive({
   selector: '[appDraggable]'
 })
 export class DraggableDirective implements OnInit {
-  @Input('drag-data') data: any;
-  @Input() area: string;
+  @Input() area: Area;
+  @Input() table: ITable;
+  @Input() row: IRow;
 
   constructor(
     private elementRef: ElementRef,
     private renderer: Renderer2,
-    private dragService: DragService,
-    private drawService: DrawService
+    private bridgeService: BridgeService,
+    private commonService: CommonService,
+    private zone: NgZone
   ) { }
 
   ngOnInit() {
     this.renderer.setAttribute(this.elementRef.nativeElement, 'draggable', 'true');
+    this.zone.runOutsideAngular(() => {
+      this.elementRef.nativeElement.addEventListener(
+        'dragover', this.onDragOver.bind(this)
+      );
+
+    });
   }
 
   @HostListener('dragstart', ['$event'])
   onDragStart(e: DragEvent) {
-    this.dragService.sourceTitle = this.area;
+    if (this.area !== 'source') {
+      return;
+    }
 
-    const row = elementFromCoords('TR', e);
-    if (row) {
-      this.drawService.source = row;
+    const element: any = e.currentTarget;
+    if (element) {
+      const row = this.row;
+      row.htmlElement = element;
+      this.bridgeService.sourceRow = row;
+      this.bridgeService.sourceRow.htmlElement.classList.add('drag-start');
+    }
+  }
+
+  // @HostListener('dragover', ['$event'])
+  onDragOver(e: any) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (this.area === 'target') {
+      if (e.currentTarget.nodeName === 'TR') {
+        const row = e.currentTarget;
+
+        if (!this.bridgeService.targetRowElement) {
+          this.bridgeService.targetRowElement = row;
+          this.bridgeService.targetRowElement.classList.add('drag-over');
+          return;
+        }
+
+        if (this.bridgeService.targetRowElement !== row) {
+          this.bridgeService.targetRowElement.classList.remove('drag-over');
+          this.bridgeService.targetRowElement = row;
+          this.bridgeService.targetRowElement.classList.add('drag-over');
+        }
+      }
+    }
+  }
+
+  @HostListener('drop', ['$event'])
+  onDrop(e: DragEvent) {
+    if (this.bridgeService.sourceRow) {
+      this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
+    }
+
+    if (this.area !== 'target' || !this.bridgeService.sourceRow) {
+      return;
+    }
+
+    const element = e.currentTarget;
+    if (element) {
+      const row = this.row;
+      row.htmlElement = element;
+      this.bridgeService.targetRow = row;
+      this.bridgeService.connect();
+      this.bridgeService.invalidate();
+
+      this.commonService.activeRow.connections.push(this.row);
     }
   }
 
   @HostListener('dragend', ['$event'])
   onDragEnd(e: DragEvent) {
-    if (this.dragService.sourceEqualsTarget()) {
-      return;
+    if (this.bridgeService.sourceRow) {
+      this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
+      this.bridgeService.sourceRow = null;
     }
 
-    const row = elementFromCoords('TR', e);
-    if (row) {
-      this.drawService.target = row;
-      this.drawService.connectPoints();
+    if (this.bridgeService.targetRowElement) {
+      this.bridgeService.targetRowElement.classList.remove('drag-over');
     }
+
+
   }
 
-  @HostListener('dragover', ['$event'])
-  onDragOver(e: DragEvent) {
-    event.stopPropagation();
-    event.preventDefault();
-  }
-
-  @HostListener('drop', ['$event'])
-  onDrop(e: DragEvent) {
-    this.dragService.targetTitle = this.area;
-  }
 }
+
+

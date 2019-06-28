@@ -1,7 +1,14 @@
-<mat-expansion-panel>
+<mat-expansion-panel
+  (opened)="onOpen()"
+  (closed)="onClose()"
+>
   <mat-expansion-panel-header>
     <mat-panel-title>
-      <mat-icon>list</mat-icon>
+      <mat-icon 
+        (click)="openSampleDataDialog($event)"
+        matTooltip="Open sample data">
+        list
+      </mat-icon>
       {{title}}
     </mat-panel-title>
   </mat-expansion-panel-header>

@@ -1,0 +1,29 @@
+<mat-card>
+  <section (keyup.enter)="apply()" (click)="preventOnClick($event)">
+    <header>
+      <section>
+        <mat-radio-group>
+          <mat-radio-button (click)="selectAll()" value="select">Select all</mat-radio-button>
+          <mat-radio-button (click)="deselectAll()" value="deselect">Deselect all</mat-radio-button>
+        </mat-radio-group>
+        <label>Deselect items you want to hide</label>
+      </section>
+    </header>
+
+    <main>
+      <mat-list role="list">
+        <mat-list-item role="listitem" *ngFor="let item of data">
+          <mat-checkbox [checked]="isChecked(item)" (change)="onCheckboxChange($event, item)">
+          </mat-checkbox>
+          <span>
+            {{item.name}}
+          </span>
+        </mat-list-item>
+      </mat-list>
+    </main>
+
+    <footer>
+      <button mat-button (click)="apply()">Apply</button>
+    </footer>
+  </section>
+</mat-card>

@@ -1,43 +1,29 @@
-import { Component, ViewChild, Renderer2, AfterViewInit, OnDestroy, ViewEncapsulation, TemplateRef } from '@angular/core';
+import { Component, ViewChild, TemplateRef } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
-import { CommentsService } from 'src/app/services/comments.service';
 import { CommonService } from 'src/app/services/common.service';
 import { IComment, Comment } from 'src/app/models/comment';
+import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: './dialog.component.html',
-  styleUrls: ['./dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  templateUrl: './comment-popup.component.html',
+  styleUrls: ['./comment-popup.component.scss']
 })
-export class DialogComponent implements AfterViewInit, OnDestroy {
+export class CommentPopupComponent {
   @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
   @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
 
-  private listener: () => void;
   private value: string;
-  private comments: IComment[] = [];
   private editedComment: IComment;
+  private row: IRow;
 
   constructor(
     private overlay: OverlayRef,
-    private renderer: Renderer2,
-    private commentsService: CommentsService,
     private commonService: CommonService
-    ) {
-      commentsService.prepareForCommenting();
-
-      const activeRow = commonService.activeRow;
-      this.comments = commentsService.comments[activeRow.area][activeRow.table][activeRow.row].comments;
-    }
-
-  ngAfterViewInit() {
-    this.listener = this.renderer.listen(this.overlay.backdropElement, 'click', () => this.close());
-  }
-
-  ngOnDestroy() {
-    this.listener();
+  ) {
+    this.row = this.commonService.activeRow;
+    this.overlay.backdropClick().subscribe(() => this.close());
   }
 
   loadTemplate(comment: IComment): TemplateRef<any> {
@@ -48,28 +34,47 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
     return this.readOnlyTemplate;
   }
 
+  get overSourceArea() {
+    return this.commonService.activeRow.area === 'source';
+  }
+
+  onCommentClick(comment: IComment) {
+    this.invalidateSelection();
+    comment.active = true;
+  }
+
+  invalidateSelection(e?: Event) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.row.comments.map((c: IComment) => c.active = false);
+  }
+
   edit(comment: IComment) {
     this.editedComment = comment;
   }
 
   add() {
+    this.invalidateSelection();
     if (!this.value) {
       return;
     }
 
     const comment = new Comment(this.value);
-    this.commentsService.addComment(this.commonService.activeRow, comment);
+    this.row.comments.push(comment);
     this.reset();
   }
 
   delete(comment: IComment) {
-    const idx = this.comments.indexOf(comment);
-    this.comments.splice(idx, 1);
+    const idx = this.row.comments.indexOf(comment);
+    this.row.comments.splice(idx, 1);
 
     this.editedComment = null;
   }
 
   applyChanges(comment: IComment, value: string) {
+    this.invalidateSelection();
     comment.newValue(value);
     comment.setAsEdited();
     comment.updateDate();
@@ -78,6 +83,7 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
   }
 
   discardChanges() {
+    this.invalidateSelection();
     this.editedComment = null;
   }
 
@@ -86,6 +92,7 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
   }
 
   close() {
+    this.invalidateSelection();
     this.overlay.detach();
   }
 

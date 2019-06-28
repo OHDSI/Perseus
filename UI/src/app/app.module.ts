@@ -1,10 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
-import { EffectsModule } from '@ngrx/effects';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -18,20 +15,26 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
-import { environment } from 'src/environments/environment';
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
 import { OverviewComponent } from 'src/app/components/pages/overview/overview.component';
 import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabulary.component';
 import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
-import { dataReducer } from 'src/app/store/reducers/data.reducer';
-import { DataEffect } from 'src/app/store/effects/data.effect';
 import { DataService } from 'src/app/services/data.service';
-import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { CommonService } from 'src/app/services/common.service';
+import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
+import { BridgeService } from 'src/app/services/bridge.service';
+import { StateService } from 'src/app/services/state.service';
+import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
+import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
+import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,16 @@ import { CommonService } from 'src/app/services/common.service';
     OverviewComponent,
     VocabularyComponent,
     AreaComponent,
-    DialogComponent
+    CommentPopupComponent,
+    BridgeButtonComponent,
+    ValuesPopapComponent,
+    SampleDataPopupComponent,
+    RulesPopupComponent
+  ],
+  entryComponents: [
+    BridgeButtonComponent,
+    SampleDataPopupComponent,
+    RulesPopupComponent
   ],
   imports: [
   BrowserModule,
@@ -60,17 +72,11 @@ import { CommonService } from 'src/app/services/common.service';
     OverlayModule,
     MatInputModule,
     FormsModule,
-
-    StoreModule.forRoot({
-      data: dataReducer,
-    }),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      logOnly: environment.production,
-    }),
-    EffectsModule.forRoot([DataEffect])
+    MatCheckboxModule,
+    MatRadioModule,
+    MatMenuModule
   ],
-  providers: [DataService, CommonService],
+  providers: [DataService, CommonService, BridgeService, StateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

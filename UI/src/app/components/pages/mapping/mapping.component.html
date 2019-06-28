@@ -1,33 +1,56 @@
-<div class="main">
-    <app-area 
-        area="source">
-        <app-panel *ngFor="let item of (data$ | async).source"
-            [title]="item.table_name">
-            <app-panel-table
-                area="source"
-                [tableName]="item.table_name"
-                [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']"
-                [columns]="item.column_list">
-            </app-panel-table>
-        </app-panel>
-    </app-area>
+<section>
+    <main class="main">
+        <app-area area="source">
+            <ng-container *ngFor="let table of state?.source.tables; trackBy: trackByFn" >
+                <ng-container *ngIf="table.visible">
+                    <app-panel [table]="table" >
+                        <app-panel-table 
+                            [table]="table"
+                            [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'values', 'comments']">
+                        </app-panel-table>
+                    </app-panel>
+                </ng-container>
+            </ng-container>
+        </app-area>
 
-    <svg [attr.width]="document.body.clientWidth"></svg>
+        <div class="hint">
+            <div class="patch-top"></div>
+            <svg class="canvas">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 l5,5 l-5,5" fill="none" stroke="#808080" stroke-width="1" />
+                    </marker>
+                    <marker id="arrow-active" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 l5,5 l-5,5" fill="none" stroke="#066BBB" stroke-width="1" />
+                    </marker>
+                </defs>
+            </svg>
+            <p>
+                {{hint}}
+            </p>
+            <div class="patch-bottom"></div>
+        </div>
 
-    <app-area 
-        area="target">
-        <app-panel *ngFor="let item of (data$ | async).source"
-            [title]="item.table_name">
-            <app-panel-table
-                area="target"
-                [tableName]="item.table_name"
-                [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']"
-                [columns]="item.column_list">
-            </app-panel-table>
-        </app-panel>
-    </app-area>
-</div>
-
-
-
-
+        <app-area area="target">
+            <ng-container *ngFor="let table of state?.target.tables; trackBy: trackByFn" >
+                <ng-container *ngIf="table.visible">
+                    <app-panel [table]="table">
+                        <app-panel-table 
+                            [table]="table"
+                            [displayedColumns]="['column_indicator', 'column_name', 'column_type', 'comments']">
+                        </app-panel-table>
+                    </app-panel>
+                </ng-container>
+            </ng-container>
+        </app-area>
+    </main>
+    <footer>
+        <div>
+            <mat-checkbox>Link similar items from other source tables</mat-checkbox>
+        </div>
+        <div>
+            <button>Generate ETL</button>
+            <button>Generate XML</button>
+        </div>
+    </footer>
+</section>

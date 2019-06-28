@@ -49,4 +49,9 @@ h1.app-name {
 
 .mat-sidenav-content {
     background-color: $white;
+    overflow-y: hidden;
+
+    mat-list {
+        margin: 0 20px;
+    }
 }

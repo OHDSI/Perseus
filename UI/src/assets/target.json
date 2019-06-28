@@ -1,0 +1,1204 @@
+[
+    {
+        "column_list": [
+            {
+                "column_name": "ATTRIBUTE_DEFINITION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ATTRIBUTE_NAME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "ATTRIBUTE_DESCRIPTION",
+                "column_type": "TEXT"
+            },
+            {
+                "column_name": "ATTRIBUTE_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ATTRIBUTE_SYNTAX",
+                "column_type": "TEXT"
+            }
+        ],
+        "table_name": "ATTRIBUTE_DEFINITION"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "CARE_SITE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CARE_SITE_NAME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "PLACE_OF_SERVICE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "LOCATION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CARE_SITE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "PLACE_OF_SERVICE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "CARE_SITE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "CDM_SOURCE_NAME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "CDM_SOURCE_ABBREVIATION",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "CDM_HOLDER",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "SOURCE_DESCRIPTION",
+                "column_type": "TEXT"
+            },
+            {
+                "column_name": "SOURCE_DOCUMENTATION_REFERENCE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "CDM_ETL_REFERENCE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "SOURCE_RELEASE_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "CDM_RELEASE_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "CDM_VERSION",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "VOCABULARY_VERSION",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "CDM_SOURCE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "COHORT_DEFINITION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "SUBJECT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COHORT_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "COHORT_END_DATE",
+                "column_type": "DATE"
+            }
+        ],
+        "table_name": "COHORT"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "COHORT_DEFINITION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COHORT_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "COHORT_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "SUBJECT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ATTRIBUTE_DEFINITION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VALUE_AS_NUMBER",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "VALUE_AS_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "COHORT_ATTRIBUTE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "COHORT_DEFINITION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COHORT_DEFINITION_NAME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "COHORT_DEFINITION_DESCRIPTION",
+                "column_type": "TEXT"
+            },
+            {
+                "column_name": "DEFINITION_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COHORT_DEFINITION_SYNTAX",
+                "column_type": "TEXT"
+            },
+            {
+                "column_name": "SUBJECT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COHORT_INSTANTIATION_DATE",
+                "column_type": "DATE"
+            }
+        ],
+        "table_name": "COHORT_DEFINITION"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "CONDITION_ERA_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CONDITION_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CONDITION_ERA_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "CONDITION_ERA_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "CONDITION_OCCURRENCE_COUNT",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "CONDITION_ERA"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "CONDITION_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CONDITION_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CONDITION_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "CONDITION_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "CONDITION_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "STOP_REASON",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CONDITION_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "CONDITION_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "CONDITION_OCCURRENCE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "COST_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COST_EVENT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "COST_DOMAIN_ID",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "COST_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CURRENCY_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "TOTAL_CHARGE",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "TOTAL_COST",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "TOTAL_PAID",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_BY_PAYER",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_BY_PATIENT",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_PATIENT_COPAY",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_PATIENT_COINSURANCE",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_PATIENT_DEDUCTIBLE",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_BY_PRIMARY",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_INGREDIENT_COST",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAID_DISPENSING_FEE",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PAYER_PLAN_PERIOD_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "AMOUNT_ALLOWED",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "REVENUE_CODE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "REVENUE_CODE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "COST"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DEATH_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DEATH_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CAUSE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CAUSE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "CAUSE_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "DEATH"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "DEVICE_EXPOSURE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DEVICE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DEVICE_EXPOSURE_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DEVICE_EXPOSURE_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DEVICE_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "UNIQUE_DEVICE_ID",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "QUANTITY",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DEVICE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "DEVICE_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "DEVICE_EXPOSURE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "DOSE_ERA_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DRUG_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "UNIT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DOSE_VALUE",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "DOSE_ERA_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DOSE_ERA_END_DATE",
+                "column_type": "DATE"
+            }
+        ],
+        "table_name": "DOSE_ERA"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "DRUG_ERA_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DRUG_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DRUG_ERA_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DRUG_ERA_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DRUG_EXPOSURE_COUNT",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "GAP_DAYS",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "DRUG_ERA"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "DRUG_EXPOSURE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DRUG_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DRUG_EXPOSURE_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DRUG_EXPOSURE_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "DRUG_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "STOP_REASON",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "REFILLS",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "QUANTITY",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "DAYS_SUPPLY",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "SIG",
+                "column_type": "TEXT"
+            },
+            {
+                "column_name": "ROUTE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "EFFECTIVE_DRUG_DOSE",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "DOSE_UNIT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "LOT_NUMBER",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DRUG_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "DRUG_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ROUTE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "DOSE_UNIT_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "DRUG_EXPOSURE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "DOMAIN_CONCEPT_ID_1",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "FACT_ID_1",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DOMAIN_CONCEPT_ID_2",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "FACT_ID_2",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "RELATIONSHIP_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "FACT_RELATIONSHIP"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "LOCATION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ADDRESS_1",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "ADDRESS_2",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "CITY",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "STATE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "ZIP",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "COUNTY",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "LOCATION_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "LOCATION"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "MEASUREMENT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "MEASUREMENT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "MEASUREMENT_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "MEASUREMENT_TIME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "MEASUREMENT_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "OPERATOR_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VALUE_AS_NUMBER",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "VALUE_AS_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "UNIT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "RANGE_LOW",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "RANGE_HIGH",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "MEASUREMENT_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "MEASUREMENT_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "UNIT_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "VALUE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "MEASUREMENT"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "NOTE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "NOTE_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "NOTE_TIME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "NOTE_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "NOTE_TEXT",
+                "column_type": "TEXT"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "NOTE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "NOTE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "OBSERVATION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "OBSERVATION_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "OBSERVATION_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "OBSERVATION_TIME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "OBSERVATION_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VALUE_AS_NUMBER",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "VALUE_AS_STRING",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "VALUE_AS_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "QUALIFIER_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "UNIT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "OBSERVATION_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "OBSERVATION_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "UNIT_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "QUALIFIER_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "OBSERVATION"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "OBSERVATION_PERIOD_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "OBSERVATION_PERIOD_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "OBSERVATION_PERIOD_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "PERIOD_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "OBSERVATION_PERIOD"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "PAYER_PLAN_PERIOD_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PAYER_PLAN_PERIOD_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "PAYER_PLAN_PERIOD_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "PAYER_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "PLAN_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "FAMILY_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "PAYER_PLAN_PERIOD"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "GENDER_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "YEAR_OF_BIRTH",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "MONTH_OF_BIRTH",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DAY_OF_BIRTH",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "TIME_OF_BIRTH",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "RACE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ETHNICITY_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "LOCATION_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CARE_SITE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "GENDER_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "GENDER_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "RACE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "RACE_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ETHNICITY_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "ETHNICITY_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "PERSON"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "PROCEDURE_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROCEDURE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROCEDURE_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "PROCEDURE_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "MODIFIER_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "QUANTITY",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROCEDURE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "PROCEDURE_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "QUALIFIER_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "PROCEDURE_OCCURRENCE"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_NAME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "NPI",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "DEA",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "SPECIALTY_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CARE_SITE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "YEAR_OF_BIRTH",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "GENDER_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "SPECIALTY_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "SPECIALTY_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "GENDER_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "GENDER_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "PROVIDER"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "SPECIMEN_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "SPECIMEN_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "SPECIMEN_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "SPECIMEN_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "SPECIMEN_TIME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "QUANTITY",
+                "column_type": "NUMERIC"
+            },
+            {
+                "column_name": "UNIT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "ANATOMIC_SITE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "DISEASE_STATUS_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "SPECIMEN_SOURCE_ID",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "SPECIMEN_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "UNIT_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "ANATOMIC_SITE_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "DISEASE_STATUS_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            }
+        ],
+        "table_name": "SPECIMEN"
+    },
+    {
+        "column_list": [
+            {
+                "column_name": "VISIT_OCCURRENCE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PERSON_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_START_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "VISIT_START_TIME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "VISIT_END_DATE",
+                "column_type": "DATE"
+            },
+            {
+                "column_name": "VISIT_END_TIME",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "VISIT_TYPE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "PROVIDER_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "CARE_SITE_ID",
+                "column_type": "INTEGER"
+            },
+            {
+                "column_name": "VISIT_SOURCE_VALUE",
+                "column_type": "CHARACTER VARYING"
+            },
+            {
+                "column_name": "VISIT_SOURCE_CONCEPT_ID",
+                "column_type": "INTEGER"
+            }
+        ],
+        "table_name": "VISIT_OCCURRENCE"
+    }
+]

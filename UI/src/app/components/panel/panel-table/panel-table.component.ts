@@ -1,61 +1,72 @@
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { OverlayRef } from '@angular/cdk/overlay';
 
-import { Component, Input, Injector, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Overlay, OverlayRef, OverlayConfig } from '@angular/cdk/overlay';
-import { Observable } from 'rxjs';
-
-import { CommentsService } from 'src/app/services/comments.service';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
-import { DialogComponent } from 'src/app/components/dialog/dialog.component';
+import { IRow } from 'src/app/models/row';
+import { ITable } from 'src/app/models/table';
 import { CommonService } from 'src/app/services/common.service';
+import { OverlayService } from 'src/app/services/overlay.service';
+import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
   styleUrls: ['./panel-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OverlayService]
 })
 
 export class PanelTableComponent {
-  @Input() area: string;
-  @Input() columns: any[];
-  @Input() tableName: string;
+  @Input() table: ITable;
   @Input() displayedColumns: string[];
+  @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
 
-  activeRow = null;
-  data$: Observable<any>;
-
-  constructor( 
+  constructor(
     private commonService: CommonService,
-    private commentsService: CommentsService,
-    private overlay: Overlay,
-    private injector: Injector,
+    private overlayService: OverlayService,
     private cdRef: ChangeDetectorRef
-    ) {};
+  ) {};
 
-  setActiveRow(area, table, row) {
-    this.commonService.activeRow = {area, table, row};
+  get visibleRows() {
+    return this.rows.filter((row: IRow) => row.visible);
   }
 
-  showDialog(anchor) {
-    const strategy = this.overlay.position().connectedTo(anchor, {originX: 'end', originY: 'top'}, {overlayX: 'start', overlayY: 'top'});
-    const config = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      positionStrategy: strategy
-    });
-    const overlayRef = this.overlay.create(config);
-    const injector = new PortalInjector(
-      this.injector,
-      new WeakMap<any, any>([[OverlayRef, overlayRef]])
-    )
+  get rows() {
+    return this.table.rows;
+  }
 
-    overlayRef.attach(new ComponentPortal(DialogComponent, null, injector));
-    // due to ngClass directive triggers change detection too often,
-    // we have to use onPush strategy here and detect changes after clicking on a backdrop
+  get area() {
+    return this.table.area;
+  }
+
+  get totalRowsNumber() {
+    return this.table.rows.length;
+  }
+  get visibleRowsNumber() {
+    return this.table.rows.filter((row: IRow) => row.visible).length;
+  }
+
+  setActiveRow(row: IRow) {
+    this.commonService.activeRow = row;
+  }
+
+  openTopValuesDialog(anchor: HTMLElement) {
+    const component = ValuesPopapComponent;
+    this.overlayService.openDialog(anchor, component, 'values');
+  }
+
+  openCommentDialog(anchor: HTMLElement) {
+    const component = CommentPopupComponent;
+    const strategyFor = `comments-${this._getArea()}`;
+    const overlayRef: OverlayRef = this.overlayService.openDialog(anchor, component, strategyFor);
     overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
-  hasComment(area, table, row) {
-    return this.commentsService.hasComment(area, table, row);
+  hasComment(row: IRow) {
+    return row.comments.length;
+  }
+
+  private _getArea() {
+    return this.table.area;
   }
 }

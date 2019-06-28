@@ -1,89 +1,154 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, EmbeddedViewRef, ApplicationRef, Injector, ComponentFactoryResolver } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-import { DragService } from 'src/app/services/drag.service';
+import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
+import { CommonService } from 'src/app/services/common.service';
+import { Connector } from 'src/app/models/connector';
+import { ITable } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 
 @Injectable()
 export class DrawService {
-  private _source: any;
-  private _target: any;
   private _svg: any;
+  list = {};
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private dragService: DragService
-  ) { 
-      this._svg = document.querySelector('svg');
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector,
+    private commonService: CommonService
+  ) { }
+
+  drawLine(source: IRow, target: IRow) {
+    this._svg = this.document.querySelector('.canvas');
+    const sourceRowId = source.id;
+    const targetRowId = target.id;
+    const sourceTableId = source.tableId;
+    const targetTableId = target.tableId;
+
+    const entityId = sourceTableId + '-' + sourceRowId + '/' + targetTableId + '-' + targetRowId;
+    const drawEntity = new Connector(entityId, source, target);
+
+    if (!this.list[entityId]) {
+      this.list[entityId] = drawEntity;
+      drawEntity.drawLine();
+
+      const button = this._appendButton(drawEntity);
+      drawEntity.button = button;
+    }
   }
 
-  set source(row: any) {
-    this._source = row;
-  }
-  get source() {
-    return this._source;
-  }
-
-  set target(row: any) {
-    this._target = row;
-  }
-  get target() {
-    return this._target;
+  fixConnectorsPosition() {
+    for (let key in this.list) {
+      const drawEntity = this.list[key];
+      drawEntity.fixPosition();
+      
+      this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
+    }
   }
 
-  connectPoints() {
-    const sourceSVGPoint = this.getSVGPoint(this.source, this.dragService.sourceTitle);
-    this.drawPoint(sourceSVGPoint.x, sourceSVGPoint.y);
+  removeConnector(id: string) {
+    this.list[id].remove();
+    delete this.list[id];
 
-    const targetSVGPoint = this.getSVGPoint(this.target, this.dragService.targetTitle);
-    this.drawPoint(targetSVGPoint.x, targetSVGPoint.y);
-
-    this.drawLine(sourceSVGPoint.x, sourceSVGPoint.y, targetSVGPoint.x, targetSVGPoint.y);
+    if (this.listIsEmpty()) {
+      this.commonService.linked = false;
+    }
   }
 
-  getSVGPoint(element: HTMLElement, area: string) {
-    const clientRect = element.getBoundingClientRect();
-    const { height } = clientRect;
-    
-    let x: number;
-    switch (area) {
-      case 'source': {
-        x = clientRect.right;
-        break;
-      }
-      case 'target': {
-        x = clientRect.left;
-        break;
-      }
-      default: {
-        return null;
+  removeAllConnectors() {
+    for (const key in this.list) {
+      if (key) {
+        this.removeConnector(key);
       }
     }
-    const y = clientRect.bottom - height / 2;
-
-    const pt = this._svg.createSVGPoint();
-    pt.x = x;
-    pt.y = y;
-    const svgPoint = pt.matrixTransform(this._svg.getScreenCTM().inverse());
-
-    return svgPoint;
   }
 
-  private drawPoint(x = '10', y = '100', radius = '0', color = 'blue') {
-	  const shape = this.document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    shape.setAttributeNS(null, "cx", x + '');
-    shape.setAttributeNS(null, "cy", y + '');
-    shape.setAttributeNS(null, "r",  radius + '');
-    shape.setAttributeNS(null, "fill", color);
-    this._svg.appendChild(shape);
+  removeConnectorsBoundToTable(table: ITable) {
+    const { area } = table;
+// tslint:disable-next-line: forin
+    for (const key in this.list) {
+      const ids = key.split('/');
+      const sourceTableRowIds = ids[0];
+      const targetTableRowIds = ids[1];
+      const sourceTableId = sourceTableRowIds.split('-')[0];
+      const targetTableId = targetTableRowIds.split('-')[0];
+
+      switch (area) {
+        case 'source': {
+          if (table.id === +sourceTableId) {
+            this.removeConnector(key);
+          }
+          break;
+        }
+        case 'target': {
+          if (table.id === +targetTableId) {
+            this.removeConnector(key);
+          }
+          break;
+        }
+      }
+    }
   }
 
-  private drawLine(x1, y1, x2, y2) {
-    const line = this.document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', x1 + '');
-    line.setAttribute('y1', y1 + '');
-    line.setAttribute('x2', x2 + '');
-    line.setAttribute('y2', y2 + '');
-    line.setAttribute("stroke", "#066BBB");
-    this._svg.appendChild(line);
+  listIsEmpty() {
+    return Object.keys(this.list).length === 0;
+  }
+
+  private _appendButton(drawEntity) {
+    const line = drawEntity.line;
+    const componentRef = this.componentFactoryResolver
+      .resolveComponentFactory(BridgeButtonComponent)
+      .create(this.injector);
+    componentRef.instance.drawEntity = drawEntity;
+
+    this.appRef.attachView(componentRef.hostView);
+
+    const button = (componentRef.hostView as EmbeddedViewRef<any>)
+      .rootNodes[0] as HTMLElement;
+
+    const canvas = this.document.querySelector('.main');
+    canvas.appendChild(button);
+
+    const {top, left} = this._calculateButtonPosition(button, line);
+
+    button.style.top = top + 'px';
+    button.style.left = left + 'px';
+
+    return button;
+  }
+
+  private _recalculateButtonPosition(button, line) {
+    const {top, left} = this._calculateButtonPosition(button, line);
+
+    button.style.top = top + 'px';
+    button.style.left = left + 'px';
+  }
+  
+  private _calculateButtonPosition(button, line) {
+    const canvas = this.document.querySelector('.main');
+    const buttonClientRect = button.getBoundingClientRect();
+    const buttonOffsetX = buttonClientRect.width / 2;
+    const buttonOffsetY = buttonClientRect.height / 2;
+
+    const middleHeightOfLine = this._middleHeightOfLine(line);
+
+    return {
+      top: middleHeightOfLine - buttonOffsetY,
+      left: (canvas.clientWidth / 2) - buttonOffsetX - this._areaOffset()
+    };
+  }
+
+  private _middleHeightOfLine(line) {
+    const {y1, y2} = line.attributes;
+
+    return ( +y1.nodeValue + +y2.nodeValue) / 2;
+  }
+
+  private _areaOffset() {
+    const {sourceAreaWidth: source, targetAreaWidth: target} = this.commonService;
+    const offset = (Math.max(source, target) - Math.min(source, target)) / 2;
+    return source > target ? -offset : offset;
   }
 }
