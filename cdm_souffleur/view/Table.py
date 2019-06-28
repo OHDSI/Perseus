@@ -20,3 +20,4 @@ class Column:
     def to_json(self):
         return {'column_name': self.column_name,
                 'column_type': self.column_type}
+

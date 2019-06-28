@@ -35,4 +35,5 @@ def get_schema(cdm_version):
 
 
 if __name__ == '__main__':
-    print(get_schema('5.0.1'))
+    for table in get_schema('5.0.1'):
+        print(table.to_json())

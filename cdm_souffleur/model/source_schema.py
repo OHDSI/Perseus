@@ -11,12 +11,18 @@ import glob
 import shutil
 from cdm_souffleur.view.Table import Table, Column
 from pandasql import sqldf
+import xlrd
+
+
+book = xlrd.biffh
 
 
 def get_source_schema(filepath='D:/mdcr.xlsx'):
     """return tables and columns of source schema based on WR report"""
     schema = []
-    overview = pd.read_excel(filepath, 'Overview', dtype=str, na_filter=False)
+    global book
+    book = xlrd.open_workbook(filepath)
+    overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False, engine='xlrd')
     tables_pd = sqldf(
         """select `table`, group_concat(field || ':' || type, ',') as fields from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
@@ -33,13 +39,21 @@ def get_source_schema(filepath='D:/mdcr.xlsx'):
     return schema
 
 
+def get_top_values(table_name, column_name):
+    table_overview = pd.read_excel(book, table_name, dtype=str, na_filter=False, engine='xlrd')
+    top_values = []
+    if column_name != '_flag':
+        top_values = sqldf("select " + column_name + " from table_overview limit 10")[column_name].values.tolist()
+    return top_values
+
+
 def load_report(filepath=Path('D:/mdcr.xlsx')):
     """Load report from whiteRabbit to Dataframe, separate table for each sheet
     to acts like with a real tables"""
     # TODO optimization!!!
     report_tables = []
     filepath_path = Path(filepath)
-    xls = pd.ExcelFile(filepath_path)
+    xls = pd.ExcelFile(book)
     sheets = xls.sheet_names
     for sheet in sheets:
         tablename = sheet
@@ -98,6 +112,8 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
 
 
 if __name__ == '__main__':
-    load_report()
-    # get_source_schema()
+    # for i in get_source_schema():
+    #     print(i.to_json())
     # prepare_source_data()
+    get_source_schema()
+    load_report()
