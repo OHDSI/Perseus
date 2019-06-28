@@ -5,28 +5,6 @@ import pandas as pd
 from pathlib import Path
 
 
-def get_mapping(path):
-    """read mapping"""
-    with open(path) as file_:
-        data_ = json.load(file_)
-        return pd.DataFrame(data_['mapping'])
-
-
-def get_lookup(path):
-    """read lookup
-    """
-    with open(path) as file_:
-        data_ = json.load(file_)
-        return pd.DataFrame(data_['lookup'])
-
-
-def get_source_tables(data_):
-    """return distinct source tables
-    :param data_: loaded mapping json
-    """
-    return pd.unique(data_['source_table'])
-
-
 def convert_underscore_to_camel(word: str):
     """get tag name from target table names
     """
@@ -94,9 +72,6 @@ def get_xml(json_):
     """
     result = ''
     previous_target_table_name = ''
-    # mapping_data = get_mapping(path)
-    # lookup_data = get_lookup(path)
-    # source_tables = get_source_tables(mapping_data)
     mapping_items = pd.DataFrame(json_['mapping_items'])
     source_tables = pd.unique(mapping_items.get('source_table'))
 
@@ -192,9 +167,9 @@ if __name__ == '__main__':
     # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    with open('sources/mock_input/DRUG_CLAIMS.json') as file:
-        data = json.load(file)
-        print(get_xml(data))
+    # with open('sources/mock_input/DRUG_CLAIMS.json') as file:
+    #     data = json.load(file)
+    #     print(get_xml(data))
     # with open('sources/mock_input/FACILITY_HEADER.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))

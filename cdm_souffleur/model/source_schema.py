@@ -99,5 +99,5 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
 
 if __name__ == '__main__':
     load_report()
-    get_source_schema()
+    # get_source_schema()
     # prepare_source_data()
