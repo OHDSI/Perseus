@@ -99,7 +99,8 @@ def load_vocabulary_call():
 @app.route('/get_source_schema')
 def get_source_schema_call():
     """return dict with source schema based on WR report"""
-    source_schema = get_source_schema()
+    path = request.args.get('path')
+    source_schema = get_source_schema(path)
     return jsonify([s.to_json() for s in source_schema])
 
 
