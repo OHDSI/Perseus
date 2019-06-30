@@ -35,6 +35,7 @@ import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/val
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
+import { CommentService } from './services/comment.service';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,7 @@ import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/c
     MatRadioModule,
     MatMenuModule
   ],
-  providers: [DataService, CommonService, BridgeService, StateService],
+  providers: [DataService, CommonService, BridgeService, StateService, CommentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

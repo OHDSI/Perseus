@@ -2,6 +2,7 @@ import { Component, ViewChild, TemplateRef } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
 import { CommonService } from 'src/app/services/common.service';
+import { CommentService } from 'src/app/services/comment.service';
 import { IComment, Comment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
 
@@ -20,7 +21,8 @@ export class CommentPopupComponent {
 
   constructor(
     private overlay: OverlayRef,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private commentService: CommentService
   ) {
     this.row = this.commonService.activeRow;
     this.overlay.backdropClick().subscribe(() => this.close());
@@ -52,6 +54,7 @@ export class CommentPopupComponent {
   }
 
   edit(comment: IComment) {
+
     this.editedComment = comment;
   }
 
@@ -61,24 +64,18 @@ export class CommentPopupComponent {
       return;
     }
 
-    const comment = new Comment(this.value);
-    this.row.comments.push(comment);
+    this.commentService.addComment(this.row, this.value)
     this.reset();
   }
 
   delete(comment: IComment) {
-    const idx = this.row.comments.indexOf(comment);
-    this.row.comments.splice(idx, 1);
-
+    this.commentService.deleteComment(this.row, comment);
     this.editedComment = null;
   }
 
   applyChanges(comment: IComment, value: string) {
+    this.commentService.editComment(comment, value);
     this.invalidateSelection();
-    comment.newValue(value);
-    comment.setAsEdited();
-    comment.updateDate();
-
     this.editedComment = null;
   }
 

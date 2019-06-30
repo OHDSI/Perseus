@@ -10,7 +10,7 @@ export class OverlayService {
   ) { }
 
   openDialog(anchor, component, strategyFor) {
-    const strategy = this._startegyFactory(anchor, strategyFor);
+    const strategy = this._strategyFactory(anchor, strategyFor);
     const config = new OverlayConfig({
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
@@ -31,7 +31,7 @@ export class OverlayService {
 
   }
 
-  private _startegyFactory(anchor, strategyFor) {
+  private _strategyFactory(anchor, strategyFor) {
     let offsetX = 0;
     let offsetY = 0;
     let originX = null;

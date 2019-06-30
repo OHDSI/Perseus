@@ -47,7 +47,6 @@ export class DraggableDirective implements OnInit {
     }
   }
 
-  // @HostListener('dragover', ['$event'])
   onDragOver(e: any) {
     e.stopPropagation();
     e.preventDefault();
