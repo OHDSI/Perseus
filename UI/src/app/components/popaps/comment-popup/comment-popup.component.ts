@@ -54,7 +54,6 @@ export class CommentPopupComponent {
   }
 
   edit(comment: IComment) {
-
     this.editedComment = comment;
   }
 
