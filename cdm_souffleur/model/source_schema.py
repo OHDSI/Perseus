@@ -23,9 +23,11 @@ def get_source_schema(filepath=r'D:/mdcr.xlsx'):
     print(filepath)
     global book
     book = xlrd.open_workbook(Path(filepath))
-    overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False, engine='xlrd')
+    overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,
+                             engine='xlrd')
     tables_pd = sqldf(
-        """select `table`, group_concat(field || ':' || type, ',') as fields from overview group by `table`;""")
+        """select `table`, group_concat(field || ':' || type, ',') as fields
+         from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
     for index, row in tables_pd.iterrows():
         table_name = row['Table']
@@ -41,10 +43,13 @@ def get_source_schema(filepath=r'D:/mdcr.xlsx'):
 
 
 def get_top_values(table_name, column_name):
-    table_overview = pd.read_excel(book, table_name, dtype=str, na_filter=False, engine='xlrd')
+    table_overview = pd.read_excel(book, table_name, dtype=str, na_filter=False,
+                                   engine='xlrd')
     top_values = []
     if column_name != '_flag':
-        top_values = sqldf("select " + column_name + " from table_overview limit 10")[column_name].values.tolist()
+        top_values = sqldf("select " + column_name +
+                           " from table_overview limit 10")[column_name]\
+            .values.tolist()
     return top_values
 
 
