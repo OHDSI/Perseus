@@ -1,6 +1,7 @@
 import pandas as pd
 from cdm_souffleur.utils.constants import CDM_SCHEMA_PATH, CDM_VERSION_LIST
 from cdm_souffleur.view.Table import Table, Column
+from pathlib import Path
 
 
 def get_exist_version():
@@ -12,7 +13,7 @@ def get_schema(cdm_version):
     """load CDM schema from csv"""
     schema = []
     if cdm_version in CDM_VERSION_LIST:
-        path = CDM_SCHEMA_PATH / ('CDMv' + cdm_version + '.csv')
+        path = Path(CDM_SCHEMA_PATH / ('CDMv' + cdm_version + '.csv'))
     else:
         raise ValueError('Version {} is not in {}'.format(cdm_version,
                                                           CDM_VERSION_LIST))

@@ -17,11 +17,12 @@ import xlrd
 book = xlrd.biffh
 
 
-def get_source_schema(filepath='D:/mdcr.xlsx'):
+def get_source_schema(filepath=r'D:/mdcr.xlsx'):
     """return tables and columns of source schema based on WR report"""
     schema = []
+    print(filepath)
     global book
-    book = xlrd.open_workbook(filepath)
+    book = xlrd.open_workbook(Path(filepath))
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False, engine='xlrd')
     tables_pd = sqldf(
         """select `table`, group_concat(field || ':' || type, ',') as fields from overview group by `table`;""")
@@ -53,7 +54,7 @@ def load_report(filepath=Path('D:/mdcr.xlsx')):
     # TODO optimization!!!
     report_tables = []
     filepath_path = Path(filepath)
-    xls = pd.ExcelFile(book)
+    xls = pd.ExcelFile(filepath_path)
     sheets = xls.sheet_names
     for sheet in sheets:
         tablename = sheet
