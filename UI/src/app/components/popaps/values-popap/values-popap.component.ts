@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
 import { CommonService } from 'src/app/services/common.service';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-values-popap',
@@ -9,18 +10,19 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./values-popap.component.scss']
 })
 export class ValuesPopapComponent  {
-  items;
+  items = [];
 
   constructor(
     private overlay: OverlayRef,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private dataService: DataService
   ) {
     this.overlay.backdropClick().subscribe(() => this.close());
-    this.items = this.firstTenValues(this.commonService.activeRow.values);
+    this.getTopValues()
   }
 
-  firstTenValues(items) {
-    return items.slice(0, 10);
+  getTopValues() {
+    this.dataService.getTopValues(this.commonService.activeRow).subscribe(data => this.items = data)
   }
 
   close() {

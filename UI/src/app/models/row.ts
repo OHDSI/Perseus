@@ -4,6 +4,7 @@ import { Area } from 'src/app/components/area/area.component';
 export interface IRow {
     id: number;
     tableId: number;
+    tableName: string;
     name: string;
     type: string;
     area: Area;
@@ -19,10 +20,10 @@ export class Row {
     constructor(
         public id,
         public tableId,
+        public tableName,
         public name,
         public type,
         public area,
-        public values,
         public comments,
         public visible = true,
         public connections = [],
