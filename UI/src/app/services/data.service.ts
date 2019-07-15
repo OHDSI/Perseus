@@ -6,7 +6,7 @@ import { StateService } from './state.service';
 import { Row } from 'src/app/models/row';
 import { Table } from 'src/app/models/table';
 
-const URL = 'http://127.0.0.1:5000'
+const URL = 'http://127.0.0.1:5000';
 
 @Injectable()
 export class DataService {
@@ -21,7 +21,7 @@ export class DataService {
   }
 
   _initSourceData() {
-    const path = `${URL}/get_source_schema?path=D:/mdcr.xlsx`;
+    const path = `${URL}/get_source_schema?path=default`;
     this.httpClient.get<any>(path)
       .subscribe(data => this._normalize(data, 'source')
         .subscribe(tables => this.stateService.initialize(tables, 'source')));

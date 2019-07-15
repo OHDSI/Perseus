@@ -17,10 +17,17 @@ import xlrd
 book = xlrd.biffh
 
 
-def get_source_schema(filepath=r'D:/mdcr.xlsx'):
+def get_source_schema(schemaname):
     """return tables and columns of source schema based on WR report"""
+    print("schema name: "+schemaname)
+
+    if (schemaname == "default"):
+        filepath = "C:\_WorkProjects\CDMSouffleur\source_schema\mdcr.xlsx";
+    else:
+        filepath = "";
+
     schema = []
-    print(filepath)
+
     global book
     book = xlrd.open_workbook(Path(filepath))
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,
