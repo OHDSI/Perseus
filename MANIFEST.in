@@ -1,2 +1,3 @@
-include cdm_souffleur/model/sources/mock_input.json cdm_souffleur/model/sources/SQL requirements.txt README.md
+include cdm_souffleur/model/sources/SQL requirements.txt README.md
 recursive-include cdm_souffleur/model/sources/CDM *
+recursive-include cdm_souffleur/model/sources/mock_input *
