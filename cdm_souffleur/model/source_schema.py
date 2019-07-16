@@ -20,7 +20,6 @@ book = xlrd.biffh
 def get_source_schema(filepath=r'D:/mdcr.xlsx'):
     """return tables and columns of source schema based on WR report"""
     schema = []
-    print(filepath)
     global book
     book = xlrd.open_workbook(Path(filepath))
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,

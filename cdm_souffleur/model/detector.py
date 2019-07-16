@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from pathlib import Path
 from pyspark.sql.utils import AnalysisException
 from cdm_souffleur.utils.utils import spark
@@ -18,6 +19,16 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
             df.createOrReplaceTempView(tablename)
             vocabulary_list.append(tablename)
     return vocabulary_list
+
+
+def return_lookup_list(path=r'D:\vocabulary\\'):
+    """Return ATHENA vocabulary lookup list
+    :param path - path to directory loaded from ATHENA
+    """
+    vocabulary_description = pd.read_csv(Path(path) / 'VOCABULARY.csv',
+                                         sep='\t')
+    lookup_list = vocabulary_description['vocabulary_id']
+    return lookup_list.values.tolist()
 
 
 def find_domain(column_name, table_name):
@@ -45,7 +56,7 @@ if __name__ == '__main__':
     # init_spark()
     from cdm_souffleur.model.source_schema import load_report
 
-    load_report()
-    load_vocabulary()
-    find_domain('dx1', 'facility_header').show()
+    #load_report()
+    print(return_lookup_list())
+    #find_domain('dx1', 'facility_header').show()
     # print(find_domain.__doc__)

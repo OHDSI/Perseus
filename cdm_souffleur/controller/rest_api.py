@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from cdm_souffleur.model.xml_writer import get_xml
 from _thread import start_new_thread
-from cdm_souffleur.model.detector import find_domain, load_vocabulary
+from cdm_souffleur.model.detector import find_domain, load_vocabulary, return_lookup_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 
@@ -36,6 +36,13 @@ def get_top_values_call():
     column_name = request.args.get('column_name')
     top_values = get_top_values(table_name, column_name)
     return jsonify(top_values)
+
+
+@app.route('/get_lookup_list')
+def get_lookups_call():
+    path = request.args.get('path')
+    lookups = return_lookup_list(path)
+    return jsonify(lookups)
 
 
 @app.route('/get_xml', methods=['POST'])
