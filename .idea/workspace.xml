@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0c0bce17-4c4a-4170-8061-3241e95fb48f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cdm_souffleur/model/source_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/cdm_souffleur/model/source_schema.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,8 +45,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
+            <state relative-caret-position="420">
+              <caret line="35" selection-start-line="35" selection-end-line="35" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -211,15 +210,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="530" y="0" width="1400" height="1000" extended-state="1" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6652221" visible="true" weight="0.12961012" />
-      <window_info id="Structure" order="1" sideWeight="0.3347779" side_tool="true" visible="true" weight="0.12961012" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6640159" visible="true" weight="0.18061674" />
+      <window_info id="Structure" order="1" sideWeight="0.33598408" side_tool="true" visible="true" weight="0.18061674" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3943662" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.41983852" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.52437705" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -243,13 +242,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py</url>
-          <line>101</line>
+          <line>100</line>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py</url>
-          <line>26</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -388,10 +382,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/pathlib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1083">
+          <caret line="1016" column="19" lean-forward="true" selection-start-line="1016" selection-start-column="19" selection-end-line="1016" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
+        <state relative-caret-position="420">
+          <caret line="35" selection-start-line="35" selection-end-line="35" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>
