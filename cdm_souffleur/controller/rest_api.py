@@ -9,6 +9,9 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 app = Flask(__name__)
 CORS(app)
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
+
 @app.route('/get_cdm_versions')
 def get_cdm_versions_call():
     """return available CDM versions schema list"""
