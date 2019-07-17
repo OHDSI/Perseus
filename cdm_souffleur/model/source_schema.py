@@ -13,18 +13,22 @@ from cdm_souffleur.view.Table import Table, Column
 from pandasql import sqldf
 import xlrd
 
+import json
 
 book = xlrd.biffh
 
+with open('../configuration/default.json', 'r') as configuration_file:
+	configuration = json.load(configuration_file)
+	print(configuration)
 
 def get_source_schema(schemaname):
     """return tables and columns of source schema based on WR report"""
     print("schema name: "+schemaname)
 
-    if (schemaname == "default"):
-        filepath = "C:\_WorkProjects\CDMSouffleur\source_schema\mdcr.xlsx";
+    if (schemaname == configuration['schema']['name']):
+        filepath = configuration['schema']['path']
     else:
-        filepath = "";
+        filepath = ""
 
     schema = []
 
