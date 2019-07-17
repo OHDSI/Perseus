@@ -12,14 +12,20 @@ const URL = environment.url;
 
 @Injectable()
 export class DataService {
+  batch = [];
+
   constructor(
     private httpClient: HttpClient,
     private stateService: StateService
   ) {}
 
   initialize(): Observable<any> {
-    const batch = [this._initSourceData(), this._initTargetData()];
-    return forkJoin(batch);
+    if (!this.stateService.initialized) {
+      this.batch = [this._initSourceData(), this._initTargetData()];
+      return forkJoin(this.batch);
+    }
+
+    return of(true);
   }
 
   _initSourceData(): Observable<any> {
