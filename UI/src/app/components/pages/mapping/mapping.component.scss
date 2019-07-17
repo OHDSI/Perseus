@@ -29,8 +29,8 @@ section {
         }
         .patch-bottom {
             @extend .patch;
-            bottom: -100%;  
-        }      
+            bottom: -100%;
+        }
     }
 
     .canvas {
@@ -65,4 +65,13 @@ section {
     position: absolute;
     z-index: 1000;
     background-color: white;
+}
+
+.mapping-component-progress {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
 }

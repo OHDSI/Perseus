@@ -2,23 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatMenuModule } from '@angular/material/menu';
-
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
@@ -36,6 +19,7 @@ import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { CommentService } from './services/comment.service';
+import { CdmCustomMaterialModule } from './common/cdm-custom-material.module';
 
 @NgModule({
   declarations: [
@@ -60,22 +44,8 @@ import { CommentService } from './services/comment.service';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatListModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatExpansionModule,
-    MatTableModule,
     PanelModule,
-    OverlayModule,
-    MatInputModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatRadioModule,
-    MatMenuModule
+    CdmCustomMaterialModule
   ],
   providers: [DataService, CommonService, BridgeService, StateService, CommentService],
   bootstrap: [AppComponent]
