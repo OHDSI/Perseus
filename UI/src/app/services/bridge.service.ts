@@ -4,6 +4,9 @@ import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
+import { fromEvent } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
+import { generateString } from '../infrastructure/utility';
 
 @Injectable()
 export class BridgeService {
@@ -11,11 +14,15 @@ export class BridgeService {
   private _targetRow: IRow;
   private _targetRowElement = null;
 
+  arrows = {};
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private drawService: DrawService
-  ) { }
+  ) {
+
+  }
 
   set sourceRow(row: IRow) {
     this._sourceRow = row;
@@ -39,6 +46,8 @@ export class BridgeService {
   }
 
   connect() {
+    this.arrows[generateString(10)] = {source: this.sourceRow, destination: this.targetRow};
+
     this.drawService.drawLine(this.sourceRow, this.targetRow);
     this.commonService.linked = true;
   }
@@ -53,5 +62,13 @@ export class BridgeService {
   }
   getStyledAsDragEndElement() {
     this.sourceRow.htmlElement.classList.remove('drag-start');
+  }
+
+  refresh(): void {
+    this.drawService.removeAllConnectors();
+
+    Object.values(this.arrows).forEach((arrow: any) => {
+      this.drawService.drawLine(arrow.source, arrow.destination);
+    });
   }
 }

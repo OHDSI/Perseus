@@ -43,7 +43,7 @@ export class DrawService {
     for (let key in this.list) {
       const drawEntity = this.list[key];
       drawEntity.fixPosition();
-      
+
       this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
     }
   }
@@ -125,7 +125,7 @@ export class DrawService {
     button.style.top = top + 'px';
     button.style.left = left + 'px';
   }
-  
+
   private _calculateButtonPosition(button, line) {
     const canvas = this.document.querySelector('.main');
     const buttonClientRect = button.getBoundingClientRect();
