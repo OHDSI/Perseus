@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0c0bce17-4c4a-4170-8061-3241e95fb48f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,11 +22,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="29" selection-start-line="29" selection-end-line="29" />
+            <state relative-caret-position="108">
+              <caret line="72" column="22" selection-start-line="72" selection-start-column="22" selection-end-line="72" selection-end-column="22" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -36,13 +37,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/flask/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
+            <state relative-caret-position="5044">
               <caret line="1812" selection-start-line="1812" selection-end-line="1812" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="420">
@@ -71,9 +72,9 @@
       <list>
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/build/lib/cdm_souffleur/controller/rest_api.py" />
-        <option value="$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py" />
         <option value="$PROJECT_DIR$/cdm_souffleur/configuration/default.json" />
         <option value="$PROJECT_DIR$/cdm_souffleur/model/source_schema.py" />
+        <option value="$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py" />
       </list>
     </option>
   </component>
@@ -89,7 +90,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="530" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
@@ -117,6 +118,12 @@
               <item name="CDMSouffleur" type="462c0819:PsiDirectoryNode" />
               <item name="cdm_souffleur" type="462c0819:PsiDirectoryNode" />
               <item name="configuration" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CDMSouffleur" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CDMSouffleur" type="462c0819:PsiDirectoryNode" />
+              <item name="cdm_souffleur" type="462c0819:PsiDirectoryNode" />
+              <item name="controller" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -210,11 +217,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="530" y="0" width="1400" height="1000" extended-state="1" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6640159" visible="true" weight="0.18061674" />
-      <window_info id="Structure" order="1" sideWeight="0.33598408" side_tool="true" visible="true" weight="0.18061674" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.66287017" visible="true" weight="0.12961012" />
+      <window_info id="Structure" order="1" sideWeight="0.33712983" side_tool="true" visible="true" weight="0.12961012" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -244,6 +251,11 @@
           <url>file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py</url>
           <line>100</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -367,15 +379,15 @@
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/flask/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
+        <state relative-caret-position="5044">
           <caret line="1812" selection-start-line="1812" selection-end-line="1812" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        <state relative-caret-position="108">
+          <caret line="72" column="22" selection-start-line="72" selection-start-column="22" selection-end-line="72" selection-end-column="22" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
