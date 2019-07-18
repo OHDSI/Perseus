@@ -13,11 +13,17 @@ class Table:
 
 
 class Column:
-    def __init__(self, column_name: str, column_type: str):
+    def __init__(self, column_name: str, column_type: str,
+                 is_column_nullable: str = None):
         self.column_name = column_name
         self.column_type = column_type
+        self.is_column_nullable = is_column_nullable
 
     def to_json(self):
-        return {'column_name': self.column_name,
-                'column_type': self.column_type}
-
+        if self.is_column_nullable is not None:
+            return {'column_name': self.column_name,
+                    'column_type': self.column_type,
+                    'is_column_nullable': self.is_column_nullable}
+        else:
+            return {'column_name': self.column_name,
+                    'column_type': self.column_type}
