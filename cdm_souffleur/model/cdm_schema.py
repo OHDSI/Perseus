@@ -21,15 +21,18 @@ def get_schema(cdm_version):
         cdm_schema_description = pd.read_csv(file)
         cdm_schema_description['COLUMN_NAME_AND_TYPE'] = \
             cdm_schema_description['COLUMN_NAME'] + ':' + \
-            cdm_schema_description['DATA_TYPE']
+            cdm_schema_description['DATA_TYPE'] + ':' +\
+            cdm_schema_description['IS_NULLABLE']
         tables_pd = cdm_schema_description.groupby(['TABLE_NAME'])[
             'COLUMN_NAME_AND_TYPE'].apply(list)
     for table_name, fields in tables_pd.items():
         table = Table(table_name)
         for field in fields:
-            column_name = field.split(':')[0]
-            column_type = field.split(':')[1]
-            column = Column(column_name, column_type)
+            column_description = field.split(':')
+            column_name = column_description[0]
+            column_type = column_description[1]
+            is_column_nullable = column_description[2]
+            column = Column(column_name, column_type, is_column_nullable)
             table.column_list.append(column)
         schema.append(table)
     return schema

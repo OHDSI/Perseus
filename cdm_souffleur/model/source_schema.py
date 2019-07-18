@@ -31,7 +31,7 @@ def get_source_schema(schemaname):
         filepath = ""
 
     schema = []
-
+    print(filepath)
     global book
     book = xlrd.open_workbook(Path(filepath))
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,
@@ -132,5 +132,6 @@ if __name__ == '__main__':
     # for i in get_source_schema():
     #     print(i.to_json())
     # prepare_source_data()
-    get_source_schema()
-    load_report()
+    for table in get_source_schema():
+        print(table.to_json())
+    #load_report()

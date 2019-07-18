@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from cdm_souffleur.model.xml_writer import get_xml
 from _thread import start_new_thread
-from cdm_souffleur.model.detector import find_domain, load_vocabulary
-from cdm_souffleur.model.source_schema import load_report, get_source_schema, get_top_values
+from cdm_souffleur.model.detector import find_domain, load_vocabulary,\
+    return_lookup_list
+from cdm_souffleur.model.source_schema import load_report, get_source_schema,\
+    get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 
 app = Flask(__name__)
@@ -33,10 +35,19 @@ def get_source_schema_call():
 
 @app.route('/get_top_values')
 def get_top_values_call():
+    """return top 10 values by freq for table and row based on WR report"""
     table_name = request.args.get('table_name')
     column_name = request.args.get('column_name')
     top_values = get_top_values(table_name, column_name)
     return jsonify(top_values)
+
+
+@app.route('/get_lookup_list')
+def get_lookups_call():
+    """return lookups list of ATHENA vocabulary"""
+    path = request.args.get('path')
+    lookups = return_lookup_list(path)
+    return jsonify(lookups)
 
 
 @app.route('/get_xml', methods=['POST'])
