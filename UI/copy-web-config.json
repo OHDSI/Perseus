@@ -1,0 +1,8 @@
+{
+  "copyFiles": [
+    {
+        "from": "iis-spa-config/web.config",
+        "to": "dist/web.config"
+    }
+  ]
+}
