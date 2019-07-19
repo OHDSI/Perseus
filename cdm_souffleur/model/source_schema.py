@@ -2,7 +2,7 @@ from pathlib import Path
 from pyspark import Row
 import pandas as pd
 from cdm_souffleur.utils.utils import spark
-from cdm_souffleur.utils.constants import GENERATE_CDM_SOURCE_METADATA_PATH,\
+from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH,\
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
 import xml.etree.ElementTree as ElementTree
 import os
@@ -47,9 +47,13 @@ def _open_book(filepath=None):
     global book
     if book is None and filepath is not None:
         book = xlrd.open_workbook(Path(filepath))
+        return book
+    else:
+        return book
 
 
 def get_top_values(table_name, column_name):
+    """return top 10 values be freq for target table and column"""
     table_overview = pd.read_excel(book, table_name, dtype=str, na_filter=False,
                                    engine='xlrd')
     top_values = []
@@ -132,4 +136,5 @@ if __name__ == '__main__':
         print(table.to_json())
     for table in get_source_schema():
         print(table.to_json())
-    #load_report()
+    # get_top_values('test', 'test')
+    # load_report()

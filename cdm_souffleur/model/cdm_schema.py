@@ -1,5 +1,5 @@
 import pandas as pd
-from cdm_souffleur.utils.constants import CDM_SCHEMA_PATH, CDM_VERSION_LIST
+from cdm_souffleur.utils import CDM_SCHEMA_PATH, CDM_VERSION_LIST
 from cdm_souffleur.view.Table import Table, Column
 from pathlib import Path
 
