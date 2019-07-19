@@ -17,13 +17,12 @@ from cdm_souffleur.utils import time_it
 
 book = None
 
+
 @time_it
 def get_source_schema(filepath=r'D:/mdcr.xlsx'):
     """return tables and columns of source schema based on WR report"""
     schema = []
-    global book
-    if book is None:
-        book = xlrd.open_workbook(Path(filepath))
+    _open_book(filepath)
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,
                              engine='xlrd')
     tables_pd = sqldf(
@@ -42,6 +41,12 @@ def get_source_schema(filepath=r'D:/mdcr.xlsx'):
             table.column_list.append(column)
         schema.append(table)
     return schema
+
+
+def _open_book(filepath=None):
+    global book
+    if book is None and filepath is not None:
+        book = xlrd.open_workbook(Path(filepath))
 
 
 def get_top_values(table_name, column_name):
