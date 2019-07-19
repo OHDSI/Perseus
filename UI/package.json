@@ -7,7 +7,7 @@
     "build:demo": "ng build --stats-json --configuration=production",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "tslint \"src/**/*.ts\"",
     "e2e": "ng e2e"
   },
   "private": true,
