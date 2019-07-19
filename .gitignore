@@ -4,4 +4,4 @@ cdm_souffleur/view/__pycache__/
 **.xml
 **.iml
 .idea
-
+**/__pycache__/
