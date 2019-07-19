@@ -18,11 +18,11 @@ export class ValuesPopapComponent  {
     private dataService: DataService
   ) {
     this.overlay.backdropClick().subscribe(() => this.close());
-    this.getTopValues()
+    this.getTopValues();
   }
 
   getTopValues() {
-    this.dataService.getTopValues(this.commonService.activeRow).subscribe(data => this.items = data)
+    this.dataService.getTopValues(this.commonService.activeRow).subscribe(data => this.items = data);
   }
 
   close() {

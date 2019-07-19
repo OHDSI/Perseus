@@ -44,3 +44,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+**.pyc
+**.xlsx
+**.xml
+**.iml
+.idea

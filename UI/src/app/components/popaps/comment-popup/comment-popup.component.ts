@@ -15,9 +15,9 @@ export class CommentPopupComponent {
   @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
   @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
 
-  private value: string;
-  private editedComment: IComment;
-  private row: IRow;
+  value: string;
+  editedComment: IComment;
+  row: IRow;
 
   constructor(
     private overlay: OverlayRef,

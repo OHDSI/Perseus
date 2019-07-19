@@ -7,6 +7,10 @@ export interface IState {
 
 @Injectable()
 export class StateService {
+  get initialized(): boolean {
+    return this._state.source.tables.length > 0 && this._state.target.tables.length > 0;
+  }
+
   private _state: IState = {
     source: {
       tables: [],

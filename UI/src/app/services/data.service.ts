@@ -1,44 +1,58 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { of, Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { StateService } from './state.service';
 import { Row } from 'src/app/models/row';
 import { Table } from 'src/app/models/table';
+import { environment } from 'src/environments/environment';
 
-const URL = 'http://127.0.0.1:5000'
+const URL = environment.url;
 
 @Injectable()
 export class DataService {
+  batch = [];
+
   constructor(
     private httpClient: HttpClient,
     private stateService: StateService
   ) {}
 
-  initialize() {
-    this._initSourceData();
-    this._initTargetData();
+  initialize(): Observable<any> {
+    if (!this.stateService.initialized) {
+      this.batch = [this._initSourceData(), this._initTargetData()];
+      return forkJoin(this.batch);
+    }
+
+    return of(true);
   }
 
-  _initSourceData() {
-    const path = `${URL}/get_source_schema?path=D:/mdcr.xlsx`;
-    this.httpClient.get<any>(path)
-      .subscribe(data => this._normalize(data, 'source')
-        .subscribe(tables => this.stateService.initialize(tables, 'source')));
+  _initSourceData(): Observable<any> {
+    const path = `${URL}/get_source_schema?path=default`;
+    return this.httpClient.get<any>(path).pipe(
+      map(data => {
+        const tables = this._normalize(data, 'source');
+        this.stateService.initialize(tables, 'source');
+      })
+    );
   }
 
-  _initTargetData() {
+  _initTargetData(): Observable<any> {
     const path = `${URL}/get_cdm_schema?cdm_version=5.0.1`;
-    this.httpClient.get<any>(path)
-      .subscribe(data => this._normalize(data, 'target')
-        .subscribe(tables => this.stateService.initialize(tables, 'target')));
+    return this.httpClient.get<any>(path).pipe(
+      map(data => {
+        const tables = this._normalize(data, 'target');
+        this.stateService.initialize(tables, 'target');
+      })
+    );
   }
 
-  getTopValues (row) {
+  getTopValues(row) {
     const { tableName, name } = row;
     const path = `${URL}/get_top_values?table_name=${tableName}&column_name=${name}`;
 
-    return this.httpClient.get<any>(path)
+    return this.httpClient.get<any>(path);
   }
 
   _normalize(data, area) {
@@ -61,10 +75,8 @@ export class DataService {
         rows.push(row);
       }
 
-       tables.push(new Table(id, area, name, rows));
+      tables.push(new Table(id, area, name, rows));
     }
-    return of(tables);
+    return tables;
   }
-
-
 }

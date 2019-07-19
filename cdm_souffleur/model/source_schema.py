@@ -14,13 +14,25 @@ from pandasql import sqldf
 import xlrd
 from cdm_souffleur.utils import time_it
 
+import json
 
 book = None
 
+with open('../configuration/default.json', 'r') as configuration_file:
+	configuration = json.load(configuration_file)
+	print(configuration)
 
 @time_it
-def get_source_schema(filepath=r'D:/mdcr.xlsx'):
+def get_source_schema(schemaname):
+
     """return tables and columns of source schema based on WR report"""
+    print("schema name: "+schemaname)
+
+    if (schemaname == configuration['schema']['name']):
+        filepath = configuration['schema']['path']
+    else:
+        filepath = ""
+
     schema = []
     _open_book(filepath)
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,

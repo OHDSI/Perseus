@@ -102,10 +102,5 @@ export class DraggableDirective implements OnInit {
     if (this.bridgeService.targetRowElement) {
       this.bridgeService.targetRowElement.classList.remove('drag-over');
     }
-
-
   }
-
 }
-
-

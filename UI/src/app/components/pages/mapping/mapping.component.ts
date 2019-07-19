@@ -10,6 +10,8 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent implements OnInit {
+  busy = true;
+
   constructor(
     private stateService: StateService,
     private dataService: DataService,
@@ -17,7 +19,9 @@ export class MappingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.dataService.initialize();
+    this.dataService.initialize().subscribe(_ => {
+      this.busy = false;
+    });
   }
 
   get hint() {

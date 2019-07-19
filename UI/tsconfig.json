@@ -18,5 +18,14 @@
       "es2018",
       "dom"
     ]
+  },
+  "exclude": ["node_modules"],
+  "linterOptions": {
+      "exclude": [
+          "node_modules/**",
+          "node_modules/rxjs/**",
+          "node_modules/@angular/**"
+      ]
   }
+
 }

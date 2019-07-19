@@ -37,7 +37,7 @@ export class Connector {
     const {x: x1, y: y1} = sourceSVGPoint;
     const {x: x2, y: y2} = targetSVGPoint;
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    
+
     line.setAttribute('x1', x1 + '');
     line.setAttribute('y1', y1 + '');
     line.setAttribute('x2', (x2 - 6) + '');
@@ -50,9 +50,9 @@ export class Connector {
   }
 
   remove() {
-    this.source.removeConnections();
-    this.line.remove();
-    this.button.remove();
+    if (this.source) {this.source.removeConnections();}
+    if (this.line) {this.line.remove();}
+    if (this.button) {this.button.remove();}
   }
 
   fixPosition() {
