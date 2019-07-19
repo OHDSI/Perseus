@@ -4,15 +4,13 @@ import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
-import { fromEvent } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
 import { generateString } from '../infrastructure/utility';
 
 @Injectable()
 export class BridgeService {
-  private _sourceRow: IRow;
-  private _targetRow: IRow;
-  private _targetRowElement = null;
+  private sourcerow: IRow;
+  private targetrow: IRow;
+  private targetrowrlement = null;
 
   arrows = {};
 
@@ -25,24 +23,24 @@ export class BridgeService {
   }
 
   set sourceRow(row: IRow) {
-    this._sourceRow = row;
+    this.sourcerow = row;
   }
   get sourceRow() {
-    return this._sourceRow;
+    return this.sourcerow;
   }
 
   set targetRow(row: IRow) {
-    this._targetRow = row;
+    this.targetrow = row;
   }
   get targetRow() {
-    return this._targetRow;
+    return this.targetrow;
   }
 
   get targetRowElement() {
-    return this._targetRowElement;
+    return this.targetrowrlement;
   }
   set targetRowElement(element: HTMLElement) {
-    this._targetRowElement = element;
+    this.targetrowrlement = element;
   }
 
   connect() {

@@ -7,9 +7,12 @@ import { Connector } from 'src/app/models/connector';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 
+import { middleHeightOfLine, areaOffset } from './draw-utilites/utilites';
+
 @Injectable()
 export class DrawService {
-  private _svg: any;
+  private svg: any;
+
   list = {};
 
   constructor(
@@ -21,7 +24,7 @@ export class DrawService {
   ) { }
 
   drawLine(source: IRow, target: IRow) {
-    this._svg = this.document.querySelector('.canvas');
+    this.svg = this.document.querySelector('.canvas');
     const sourceRowId = source.id;
     const targetRowId = target.id;
     const sourceTableId = source.tableId;
@@ -40,7 +43,9 @@ export class DrawService {
   }
 
   fixConnectorsPosition() {
-    for (let key in this.list) {
+
+    // tslint:disable-next-line:forin
+    for (const key in this.list) {
       const drawEntity = this.list[key];
       drawEntity.fixPosition();
 
@@ -67,7 +72,8 @@ export class DrawService {
 
   removeConnectorsBoundToTable(table: ITable) {
     const { area } = table;
-// tslint:disable-next-line: forin
+
+    // tslint:disable-next-line:forin
     for (const key in this.list) {
       const ids = key.split('/');
       const sourceTableRowIds = ids[0];
@@ -96,7 +102,7 @@ export class DrawService {
     return Object.keys(this.list).length === 0;
   }
 
-  private _appendButton(drawEntity) {
+  private _appendButton(drawEntity: Connector) {
     const line = drawEntity.line;
     const componentRef = this.componentFactoryResolver
       .resolveComponentFactory(BridgeButtonComponent)
@@ -132,23 +138,9 @@ export class DrawService {
     const buttonOffsetX = buttonClientRect.width / 2;
     const buttonOffsetY = buttonClientRect.height / 2;
 
-    const middleHeightOfLine = this._middleHeightOfLine(line);
-
     return {
-      top: middleHeightOfLine - buttonOffsetY,
-      left: (canvas.clientWidth / 2) - buttonOffsetX - this._areaOffset()
+      top: middleHeightOfLine(line) - buttonOffsetY,
+      left: (canvas.clientWidth / 2) - buttonOffsetX - areaOffset()
     };
-  }
-
-  private _middleHeightOfLine(line) {
-    const {y1, y2} = line.attributes;
-
-    return ( +y1.nodeValue + +y2.nodeValue) / 2;
-  }
-
-  private _areaOffset() {
-    const {sourceAreaWidth: source, targetAreaWidth: target} = this.commonService;
-    const offset = (Math.max(source, target) - Math.min(source, target)) / 2;
-    return source > target ? -offset : offset;
   }
 }
