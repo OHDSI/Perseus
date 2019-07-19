@@ -12,16 +12,19 @@ import shutil
 from cdm_souffleur.view.Table import Table, Column
 from pandasql import sqldf
 import xlrd
+from cdm_souffleur.utils import time_it
 
 import json
 
-book = xlrd.biffh
+book = None
 
 with open('../configuration/default.json', 'r') as configuration_file:
 	configuration = json.load(configuration_file)
 	print(configuration)
 
+@time_it
 def get_source_schema(schemaname):
+
     """return tables and columns of source schema based on WR report"""
     print("schema name: "+schemaname)
 
@@ -31,9 +34,7 @@ def get_source_schema(schemaname):
         filepath = ""
 
     schema = []
-    print(filepath)
-    global book
-    book = xlrd.open_workbook(Path(filepath))
+    _open_book(filepath)
     overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,
                              engine='xlrd')
     tables_pd = sqldf(
@@ -45,12 +46,19 @@ def get_source_schema(schemaname):
         fields = row['fields'].split(',')
         table = Table(table_name)
         for field in fields:
-            column_name = field.split(':')[0]
-            column_type = field.split(':')[1]
+            column_description = field.split(':')
+            column_name = column_description[0]
+            column_type = column_description[1]
             column = Column(column_name, column_type)
             table.column_list.append(column)
         schema.append(table)
     return schema
+
+
+def _open_book(filepath=None):
+    global book
+    if book is None and filepath is not None:
+        book = xlrd.open_workbook(Path(filepath))
 
 
 def get_top_values(table_name, column_name):
@@ -132,6 +140,8 @@ if __name__ == '__main__':
     # for i in get_source_schema():
     #     print(i.to_json())
     # prepare_source_data()
+    for table in get_source_schema():
+        print(table.to_json())
     for table in get_source_schema():
         print(table.to_json())
     #load_report()
