@@ -4,7 +4,6 @@ import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
-import { generateString } from '../infrastructure/utility';
 
 @Injectable()
 export class BridgeService {
@@ -12,7 +11,7 @@ export class BridgeService {
   private targetrow: IRow;
   private targetrowrlement = null;
 
-  arrows = {};
+  arrowsCache = {};
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -44,9 +43,8 @@ export class BridgeService {
   }
 
   connect() {
-    this.arrows[generateString(10)] = {source: this.sourceRow, destination: this.targetRow};
-
-    this.drawService.drawLine(this.sourceRow, this.targetRow);
+    const arrowId = this.drawService.drawLine(this.sourceRow, this.targetRow);
+    this.arrowsCache[arrowId] = {source: this.sourceRow, destination: this.targetRow};
     this.commonService.linked = true;
   }
 
@@ -65,8 +63,25 @@ export class BridgeService {
   refresh(): void {
     this.drawService.removeAllConnectors();
 
-    Object.values(this.arrows).forEach((arrow: any) => {
+    Object.values(this.arrowsCache).forEach((arrow: any) => {
       this.drawService.drawLine(arrow.source, arrow.destination);
     });
+
+    // For what?
+    if (!this.drawService.listIsEmpty) {
+      this.drawService.fixConnectorsPosition();
+    }
+  }
+
+  deleteArrow(key: string) {
+    this.drawService.removeConnector(key);
+
+    if (this.arrowsCache[key]) {
+      delete this.arrowsCache[key];
+    }
+  }
+
+  hideArrows({id, area}) {
+    this.drawService.removeConnectorsBoundToTable({id, area});
   }
 }

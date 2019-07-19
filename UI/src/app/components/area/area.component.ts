@@ -36,7 +36,7 @@ export class AreaComponent implements AfterViewInit, AfterViewChecked {
 
   ngAfterViewInit() {
     this.renderer.listen(this.scrollableContent.nativeElement, 'scroll', (event) => {
-      if (!this.drawService.listIsEmpty()) {
+      if (!this.drawService.listIsEmpty) {
         this.drawService.fixConnectorsPosition();
       }
     });

@@ -5,6 +5,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-rules-popup',
@@ -22,6 +23,7 @@ export class RulesPopupComponent {
     overlay.backdropClick().subscribe(() => this.close());
   }
 
+  // ???
   apply() {
     if (this.selectedRule) {
       switch (this.selectedRule) {
@@ -40,7 +42,7 @@ export class RulesPopupComponent {
           if (connector.source.comments) {
             connector.source.comments.forEach((comment: IComment) => {
               console.log(comment);
-            })
+            });
           }
 
           if (connections.length) {
@@ -60,10 +62,10 @@ export class RulesPopupComponent {
   }
 
   deleteLink() {
-    const drawService = this.injector.get(DrawService);
+    const bridgeService = this.injector.get(BridgeService);
     const connector = this.commonService.activeConnector;
 
-    drawService.removeConnector(connector.id);
+    bridgeService.deleteArrow(connector.id);
     this.close();
   }
 

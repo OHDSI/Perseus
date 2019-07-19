@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c0bce17-4c4a-4170-8061-3241e95fb48f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py" afterDir="false" />
-    </list>
+    <list default="true" id="0c0bce17-4c4a-4170-8061-3241e95fb48f" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,20 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/flask/app.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5044">
-              <caret line="1812" selection-start-line="1812" selection-end-line="1812" />
+            <state relative-caret-position="21">
+              <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -45,8 +31,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
+            <state>
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -89,8 +74,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="530" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="117" />
+    <option name="y" value="22" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -100,34 +86,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="CDMSouffleur" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDMSouffleur" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="CDMSouffleur" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDMSouffleur" type="462c0819:PsiDirectoryNode" />
-              <item name="cdm_souffleur" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="CDMSouffleur" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDMSouffleur" type="462c0819:PsiDirectoryNode" />
-              <item name="cdm_souffleur" type="462c0819:PsiDirectoryNode" />
-              <item name="configuration" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="CDMSouffleur" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDMSouffleur" type="462c0819:PsiDirectoryNode" />
-              <item name="cdm_souffleur" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -225,11 +184,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="117" y="22" width="1400" height="1000" extended-state="1" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.66397417" visible="true" weight="0.12961012" />
-      <window_info id="Structure" order="1" sideWeight="0.33602583" side_tool="true" visible="true" weight="0.12961012" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6625" visible="true" weight="0.18061674" />
+      <window_info id="Structure" order="1" sideWeight="0.3375" side_tool="true" visible="true" weight="0.18061674" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -389,11 +348,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cdm_souffleur/controller/rest_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="21">
+          <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -406,8 +362,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cdm_souffleur/model/source_schema.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
+        <state>
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>
