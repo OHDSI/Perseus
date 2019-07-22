@@ -6,14 +6,12 @@ from pathlib import Path
 
 
 def convert_underscore_to_camel(word: str):
-    """get tag name from target table names
-    """
+    """get tag name from target table names"""
     return ''.join(x.capitalize() for x in word.split('_'))
 
 
 def prettify(elem):
-    """Return a pretty-printed XML string for the Element.
-    """
+    """Return a pretty-printed XML string for the Element."""
     raw_string = tostring(elem, 'utf-8')
     reparsed = minidom.parseString(raw_string)
     return reparsed.toprettyxml(indent="  ")
@@ -68,8 +66,7 @@ def prepare_sql(mapping_items, source_table):
 
 
 def get_xml(json_):
-    """prepare XML for CDM
-    """
+    """prepare XML for CDM"""
     result = ''
     previous_target_table_name = ''
     mapping_items = pd.DataFrame(json_['mapping_items'])
