@@ -78,7 +78,8 @@ def get_top_values(table_name, column_name):
 
 def load_report(filepath=Path('D:/mdcr.xlsx')):
     """Load report from whiteRabbit to Dataframe, separate table for each sheet
-    to acts like with a real tables"""
+    to acts like with a real tables
+    """
     # TODO optimization!!!
     report_tables = []
     filepath_path = Path(filepath)
