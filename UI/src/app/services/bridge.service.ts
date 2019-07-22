@@ -4,6 +4,9 @@ import { DOCUMENT } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
+import { ITable } from '../models/table';
+import { ArrowCache, Arrow } from '../models/arrow-cache';
+import { MappingService } from '../models/mapping-service';
 
 @Injectable()
 export class BridgeService {
@@ -11,15 +14,13 @@ export class BridgeService {
   private targetrow: IRow;
   private targetrowrlement = null;
 
-  arrowsCache = {};
+  arrowsCache: ArrowCache = {};
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private drawService: DrawService
-  ) {
-
-  }
+  ) {}
 
   set sourceRow(row: IRow) {
     this.sourcerow = row;
@@ -44,7 +45,10 @@ export class BridgeService {
 
   connect() {
     const arrowId = this.drawService.drawLine(this.sourceRow, this.targetRow);
-    this.arrowsCache[arrowId] = {source: this.sourceRow, destination: this.targetRow};
+    this.arrowsCache[arrowId] = {
+      source: this.sourceRow,
+      target: this.targetRow
+    };
     this.commonService.linked = true;
   }
 
@@ -60,16 +64,28 @@ export class BridgeService {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
-  refresh(): void {
+  refreshAll() {
     this.drawService.removeAllConnectors();
 
-    Object.values(this.arrowsCache).forEach((arrow: any) => {
-      this.drawService.drawLine(arrow.source, arrow.destination);
+    Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+      this.drawService.drawLine(arrow.source, arrow.target);
     });
 
     // For what?
-    if (!this.drawService.listIsEmpty) {
-      this.drawService.fixConnectorsPosition();
+    // if (!this.drawService.listIsEmpty) {
+    //   this.drawService.fixConnectorsPosition();
+    // }
+  }
+
+  refresh(table: ITable): void {
+    if (table.area === 'source' || table.area === 'target') {
+      Object.values(this.arrowsCache)
+        .filter(arrow => arrow[table.area].tableId === table.id)
+        .map((arrow: Arrow) => {
+          this.drawService.drawLine(arrow.source, arrow.target);
+        });
+    } else {
+      throw new Error('table area should be "source" or" "target"');
     }
   }
 
@@ -81,7 +97,12 @@ export class BridgeService {
     }
   }
 
-  hideArrows({id, area}) {
-    this.drawService.removeConnectorsBoundToTable({id, area});
+  hideArrows({ id, area }) {
+    this.drawService.removeConnectorsBoundToTable({ id, area });
+  }
+
+  generateMapping() {
+    const mappingService = new MappingService(this.arrowsCache);
+    console.log(mappingService.generate());
   }
 }

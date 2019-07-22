@@ -43,19 +43,6 @@ section {
         justify-content: space-between;
         align-items: center;
         margin-top: 60px;
-
-        button {
-            background: #066BBB;
-            color: white;
-            height: 33px;
-            width: 111px;
-            border: none;
-            cursor: pointer;
-
-            &:last-child {
-                margin-left: 33px;
-            }
-        }
     }
 }
 
@@ -74,4 +61,9 @@ section {
   height: 100%;
   width: 100%;
   justify-content: center;
+}
+
+.export-actions {
+  display: flex;
+  flex-direction: row;
 }

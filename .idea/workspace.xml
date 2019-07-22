@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c0bce17-4c4a-4170-8061-3241e95fb48f" name="Default Changelist" comment="" />
+    <list default="true" id="0c0bce17-4c4a-4170-8061-3241e95fb48f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/UI/src/app/components/pages/mapping/mapping.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/app/components/pages/mapping/mapping.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/app/components/pages/mapping/mapping.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/app/components/pages/mapping/mapping.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/app/models/row.ts" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/app/models/row.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/app/services/bridge.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/app/services/bridge.service.ts" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,8 +80,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="117" />
-    <option name="y" value="22" />
+    <option name="x" value="156" />
+    <option name="y" value="4" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -184,7 +189,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="117" y="22" width="1400" height="1000" extended-state="1" />
+    <frame x="117" y="22" width="1400" height="1000" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6625" visible="true" weight="0.18061674" />
@@ -192,12 +197,12 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.41983852" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4463668" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.52437705" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32936078" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="7" visible="true" weight="0.32936078" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32936078" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.35211268" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32936078" />

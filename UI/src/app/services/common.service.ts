@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
 import { IConnector } from 'src/app/models/connector';
-import { Area } from 'src/app/components/area/area.component';
+import { Area } from '../models/area';
 
 @Injectable()
 export class CommonService {

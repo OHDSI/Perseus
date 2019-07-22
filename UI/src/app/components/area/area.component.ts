@@ -5,8 +5,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { CommonService } from 'src/app/services/common.service';
 import { StateService } from 'src/app/services/state.service';
 import { DrawService } from 'src/app/services/draw.service';
-
-export type Area = 'source' | 'target';
+import { Area } from 'src/app/models/area';
 
 @Component({
   selector: 'app-area',
@@ -31,7 +30,7 @@ export class AreaComponent implements AfterViewInit, AfterViewChecked {
       .addSvgIcon(
         'filter',
         this.getSanitizedUrl('filter')
-      )
+      );
   }
 
   ngAfterViewInit() {

@@ -30,7 +30,7 @@ export class PanelComponent {
 
   onOpen() {
     this.commonService.expanded(this.area);
-    this.bridgeService.refresh();
+    this.bridgeService.refresh(this.table);
   }
 
   onClose() {
