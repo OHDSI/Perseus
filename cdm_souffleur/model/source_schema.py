@@ -43,14 +43,14 @@ def get_source_schema(schemaname):
     for index, row in tables_pd.iterrows():
         table_name = row['Table']
         fields = row['fields'].split(',')
-        table = Table(table_name)
+        table_ = Table(table_name)
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
             column_type = column_description[1]
             column = Column(column_name, column_type)
-            table.column_list.append(column)
-        schema.append(table)
+            table_.column_list.append(column)
+        schema.append(table_)
     return schema
 
 

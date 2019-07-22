@@ -1,14 +1,13 @@
 class Table:
-    def __init__(self, table_name: str, column_list: list):
-        self.table_name = table_name
-        self.column_list = column_list
-
-    def __init__(self, table_name: str):
-        self.table_name = table_name
-        self.column_list = []
+    def __init__(self, name: str, column_list: list = None):
+        self.name = name
+        if column_list is None:
+            self.column_list = []
+        else:
+            self.column_list = column_list
 
     def to_json(self):
-        return {'table_name': self.table_name,
+        return {'table_name': self.name,
                 'column_list': [e.to_json() for e in self.column_list]}
 
 
@@ -21,9 +20,8 @@ class Column:
 
     def to_json(self):
         if self.is_nullable is not None:
-            return {'column_name': self.name,
-                    'column_type': self.type,
-                    'is_column_nullable': self.is_nullable}
+            description = {'column_name': self.name, 'column_type': self.type,
+                           'is_column_nullable': self.is_nullable}
         else:
-            return {'column_name': self.name,
-                    'column_type': self.type}
+            description = {'column_name': self.name, 'column_type': self.type}
+        return description
