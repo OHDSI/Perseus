@@ -23,7 +23,6 @@ with open('../configuration/default.json', 'r') as configuration_file:
     print(configuration)
 
 
-@time_it
 def get_source_schema(schemaname):
     """return tables and columns of source schema based on WR report"""
     print("schema name: " + schemaname)
