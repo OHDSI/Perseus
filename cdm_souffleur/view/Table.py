@@ -12,8 +12,7 @@ class Table:
 
 
 class Column:
-    def __init__(self, name: str, type_: str,
-                 is_nullable: str = None):
+    def __init__(self, name: str, type_: str, is_nullable: str = None):
         self.name = name
         self.type = type_
         self.is_nullable = is_nullable
