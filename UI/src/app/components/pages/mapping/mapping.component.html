@@ -99,9 +99,10 @@
     <div>
       <mat-checkbox>Link similar items from other source tables</mat-checkbox>
     </div>
-    <div>
-      <button>Generate ETL</button>
-      <button>Generate XML</button>
+    <div class="export-actions">
+      <button mat-button color="primary" (click)="generateMappingJson()">Generate Mapping</button>
+      <button mat-button color="primary">Generate ETL</button>
+      <button mat-button color="primary">Generate XML</button>
     </div>
   </footer>
 </section>

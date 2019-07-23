@@ -1,5 +1,5 @@
 import { IRow } from 'src/app/models/row';
-import { Area } from 'src/app/components/area/area.component';
+import { Area } from './area';
 
 export interface ITable {
     id: number;

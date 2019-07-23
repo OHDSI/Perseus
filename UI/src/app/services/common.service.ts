@@ -2,66 +2,68 @@ import { Injectable } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
 import { IConnector } from 'src/app/models/connector';
-import { Area } from 'src/app/components/area/area.component';
+import { Area } from '../models/area';
 
 @Injectable()
 export class CommonService {
-  private _activeRow: IRow = null;
-  private _activeConnector: IConnector = null;
-  private _sourceAreaWidth: number;
-  private _targetAreaWidth: number;
+  private activerow: IRow = null;
+  private activeconnector: IConnector = null;
+  private sourceareawidth: number;
+  private targetareawidth: number;
 
-  private _sourceExpanded = false;
-  private _targetExpanded = false;
+  private sourceexpanded = false;
+  private targetexpanded = false;
   private _linked = false;
 
   constructor() {}
 
   set activeRow(row: IRow) {
-      this._activeRow = row;
+      this.activerow = row;
   }
   get activeRow(): IRow {
-      return this._activeRow;
+      return this.activerow;
   }
 
   get sourceAreaWidth() {
-    return this._sourceAreaWidth;
+    return this.sourceareawidth;
   }
   get targetAreaWidth() {
-    return this._targetAreaWidth;
+    return this.targetareawidth;
   }
 
   set activeConnector(connector: IConnector) {
-    this._activeConnector = connector;
+    this.activeconnector = connector;
   }
   get activeConnector() {
-    return this._activeConnector;
+    return this.activeconnector;
   }
 
   expanded(area: Area) {
     switch (area) {
       case 'source': {
-        this._sourceExpanded = true;
+        this.sourceexpanded = true;
         break;
       }
       case 'target': {
-        this._targetExpanded = true;
+        this.targetexpanded = true;
         break;
       }
     }
   }
+
   collapsed(area: Area) {
     switch (area) {
       case 'source': {
-        this._sourceExpanded = false;
+        this.sourceexpanded = false;
         break;
       }
       case 'target': {
-        this._targetExpanded = false;
+        this.targetexpanded = false;
         break;
       }
     }
   }
+
   set linked(status: boolean) {
     this._linked = status;
   }
@@ -69,7 +71,7 @@ export class CommonService {
   get hintStatus() {
     if (this._linked) {
       return '';
-    } else if (this._sourceExpanded && this._targetExpanded) {
+    } else if (this.sourceexpanded && this.targetexpanded) {
       return 'Drag and drop source item to target item';
     } else {
       return 'Expand tables to make links';
@@ -79,5 +81,4 @@ export class CommonService {
   setAreaWidth(area: string, width: number) {
     this[`_${area}AreaWidth`] = width;
   }
-
 }

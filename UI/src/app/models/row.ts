@@ -1,5 +1,5 @@
 import { IComment } from 'src/app/models/comment';
-import { Area } from 'src/app/components/area/area.component';
+import { Area } from './area';
 
 export interface IRow {
     id: number;
@@ -32,5 +32,10 @@ export class Row {
 
     removeConnections() {
         this.connections = [];
+    }
+
+    toString(): string {
+      return `id:${this.id} table:${this.tableId} tablename:${this.tableName}
+       name:${this.name} type:${this.type} area:${this.area} comments:${this.comments} visible:${this.visible}`;
     }
 }

@@ -26,7 +26,7 @@ export class AppComponent implements OnDestroy {
       map((event: any) => event.target)
     ).subscribe(window => {
         console.log('Window height changed', window.innerHeight);
-        bridge.refresh();
+        bridge.refreshAll();
      });
   }
 

@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material';
 
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
 import { CommonService } from 'src/app/services/common.service';
-import { DrawService } from 'src/app/services/draw.service';
 import { ITable } from 'src/app/models/table';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-panel',
@@ -17,7 +17,7 @@ export class PanelComponent {
   constructor(
     public dialog: MatDialog,
     private commonService: CommonService,
-    private drawService: DrawService
+    private bridgeService: BridgeService,
   ) {}
 
   get title() {
@@ -30,14 +30,12 @@ export class PanelComponent {
 
   onOpen() {
     this.commonService.expanded(this.area);
-    if (!this.drawService.listIsEmpty()) {
-      this.drawService.fixConnectorsPosition();
-    }
+    this.bridgeService.refresh(this.table);
   }
 
   onClose() {
     this.commonService.collapsed(this.area);
-    this.drawService.removeConnectorsBoundToTable(this.table);
+    this.bridgeService.hideArrows(this.table);
   }
 
   openSampleDataDialog(e) {

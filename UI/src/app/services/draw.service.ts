@@ -1,4 +1,11 @@
-import { Injectable, Inject, EmbeddedViewRef, ApplicationRef, Injector, ComponentFactoryResolver } from '@angular/core';
+import {
+  Injectable,
+  Inject,
+  EmbeddedViewRef,
+  ApplicationRef,
+  Injector,
+  ComponentFactoryResolver
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
@@ -7,13 +14,17 @@ import { Connector } from 'src/app/models/connector';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 
-import { middleHeightOfLine, areaOffset } from './draw-utilites/utilites';
+import { middleHeightOfLine, areaOffset } from './utilites/draw-utilites';
+import { parseArrowKey } from './business/rules';
 
 @Injectable()
 export class DrawService {
-  private svg: any;
+  get listIsEmpty(): boolean {
+    return Object.keys(this.list).length === 0;
+  }
 
-  list = {};
+  private svg: any;
+  private list = {};
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -21,16 +32,16 @@ export class DrawService {
     private appRef: ApplicationRef,
     private injector: Injector,
     private commonService: CommonService
-  ) { }
+  ) {}
 
-  drawLine(source: IRow, target: IRow) {
+  drawLine(source: IRow, target: IRow): string {
     this.svg = this.document.querySelector('.canvas');
     const sourceRowId = source.id;
     const targetRowId = target.id;
     const sourceTableId = source.tableId;
     const targetTableId = target.tableId;
 
-    const entityId = sourceTableId + '-' + sourceRowId + '/' + targetTableId + '-' + targetRowId;
+    const entityId = `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
     const drawEntity = new Connector(entityId, source, target);
 
     if (!this.list[entityId]) {
@@ -40,66 +51,52 @@ export class DrawService {
       const button = this._appendButton(drawEntity);
       drawEntity.button = button;
     }
+
+    return entityId;
   }
 
   fixConnectorsPosition() {
-
-    // tslint:disable-next-line:forin
-    for (const key in this.list) {
-      const drawEntity = this.list[key];
-      drawEntity.fixPosition();
-
-      this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
-    }
+    Object.keys(this.list)
+      .forEach(key => {
+        const drawEntity = this.list[key];
+        drawEntity.fixPosition();
+        this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
+      });
   }
 
   removeConnector(id: string) {
     this.list[id].remove();
     delete this.list[id];
 
-    if (this.listIsEmpty()) {
+    if (this.listIsEmpty) {
       this.commonService.linked = false;
     }
   }
 
   removeAllConnectors() {
-    for (const key in this.list) {
-      if (key) {
-        this.removeConnector(key);
-      }
-    }
+    Object.keys(this.list)
+      .forEach(key => this.removeConnector(key));
   }
 
-  removeConnectorsBoundToTable(table: ITable) {
-    const { area } = table;
-
-    // tslint:disable-next-line:forin
-    for (const key in this.list) {
-      const ids = key.split('/');
-      const sourceTableRowIds = ids[0];
-      const targetTableRowIds = ids[1];
-      const sourceTableId = sourceTableRowIds.split('-')[0];
-      const targetTableId = targetTableRowIds.split('-')[0];
+  removeConnectorsBoundToTable({id, area}) {
+    Object.keys(this.list).forEach(key => {
+      const {ids, sourceTableRowIds, targetTableRowIds, sourceTableId, targetTableId } = parseArrowKey(key);
 
       switch (area) {
         case 'source': {
-          if (table.id === +sourceTableId) {
+          if (id === +sourceTableId) {
             this.removeConnector(key);
           }
           break;
         }
         case 'target': {
-          if (table.id === +targetTableId) {
+          if (id === +targetTableId) {
             this.removeConnector(key);
           }
           break;
         }
       }
-    }
-  }
-
-  listIsEmpty() {
-    return Object.keys(this.list).length === 0;
+    });
   }
 
   private _appendButton(drawEntity: Connector) {
@@ -117,7 +114,7 @@ export class DrawService {
     const canvas = this.document.querySelector('.main');
     canvas.appendChild(button);
 
-    const {top, left} = this._calculateButtonPosition(button, line);
+    const { top, left } = this._calculateButtonPosition(button, line);
 
     button.style.top = top + 'px';
     button.style.left = left + 'px';
@@ -126,7 +123,7 @@ export class DrawService {
   }
 
   private _recalculateButtonPosition(button, line) {
-    const {top, left} = this._calculateButtonPosition(button, line);
+    const { top, left } = this._calculateButtonPosition(button, line);
 
     button.style.top = top + 'px';
     button.style.left = left + 'px';
@@ -140,7 +137,8 @@ export class DrawService {
 
     return {
       top: middleHeightOfLine(line) - buttonOffsetY,
-      left: (canvas.clientWidth / 2) - buttonOffsetX - areaOffset()
+      left:
+        canvas.clientWidth / 2 - buttonOffsetX - areaOffset(this.commonService)
     };
   }
 }

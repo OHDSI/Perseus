@@ -2,9 +2,9 @@ import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit, NgZone }
 
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
-import { Area } from 'src/app/components/area/area.component';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
+import { Area } from '../models/area';
 
 @Directive({
   selector: '[appDraggable]'
