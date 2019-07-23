@@ -5,3 +5,4 @@ cdm_souffleur/view/__pycache__/
 **.iml
 .idea
 **/__pycache__/
+.idea/workspace.xml
