@@ -41,8 +41,8 @@ export class MappingService {
         const node: MappingNode = {
           source_field: arrow.sourceColumn,
           target_field: arrow.targetColumn,
-          sql_field: '',
-          sql_alias: ''
+          sql_field: arrow.sourceColumn,
+          sql_alias: arrow.targetColumn
         }
         pair.mapping.push(node);
       });
