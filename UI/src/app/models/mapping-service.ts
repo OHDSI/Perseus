@@ -40,7 +40,9 @@ export class MappingService {
       bySourceBytable[targetTable].map(arrow => {
         const node: MappingNode = {
           source_field: arrow.sourceColumn,
-          target_field: arrow.targetColumn
+          target_field: arrow.targetColumn,
+          sql_field: '',
+          sql_alias: ''
         }
         pair.mapping.push(node);
       });
@@ -50,9 +52,9 @@ export class MappingService {
     return pair;
 	});
 
-    const mapping: Mapping = {
-      mapping_items: mapPairs
-    };
+    const mapping: Mapping = Object.create(null);
+    mapping.mapping_items=mapPairs;
+
     return mapping;
   }
 }

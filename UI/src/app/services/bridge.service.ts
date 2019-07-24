@@ -103,6 +103,6 @@ export class BridgeService {
 
   generateMapping() {
     const mappingService = new MappingService(this.arrowsCache);
-    console.log(mappingService.generate());
+    return mappingService.generate();
   }
 }

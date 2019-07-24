@@ -20,8 +20,8 @@ export interface MappingLookup {
 export interface MappingNode {
   source_field: string;
   target_field: string;
-  sql_field?: string;
-  sql_alias?: string;
+  sql_field: string;
+  sql_alias: string;
 }
 
 export interface MappingPair {
