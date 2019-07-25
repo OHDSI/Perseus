@@ -5,12 +5,12 @@ import pandas as pd
 from pathlib import Path
 
 
-def convert_underscore_to_camel(word: str):
+def _convert_underscore_to_camel(word: str):
     """get tag name from target table names"""
     return ''.join(x.capitalize() for x in word.split('_'))
 
 
-def prettify(elem):
+def _prettify(elem):
     """Return a pretty-printed XML string for the Element."""
     raw_string = tostring(elem, 'utf-8')
     reparsed = minidom.parseString(raw_string)
@@ -67,7 +67,7 @@ def prepare_sql(mapping_items, source_table):
 
 def get_xml(json_):
     """prepare XML for CDM"""
-    result = ''
+    result = {}
     previous_target_table_name = ''
     mapping_items = pd.DataFrame(json_['mapping_items'])
     source_tables = pd.unique(mapping_items.get('source_table'))
@@ -86,7 +86,7 @@ def get_xml(json_):
             mapping = record_data.get('mapping')
             condition = record_data.get('condition')
             target_table_name = record_data.get('target_table')
-            tag_name = convert_underscore_to_camel(target_table_name)
+            tag_name = _convert_underscore_to_camel(target_table_name)
             domain_tag = SubElement(query_definition_tag, tag_name) if \
                 previous_target_table_name != target_table_name else domain_tag
             domain_definition_tag = SubElement(domain_tag,
@@ -151,8 +151,9 @@ def get_xml(json_):
             previous_target_table_name = target_table_name
         xml = ElementTree(query_definition_tag)
         xml.write(Path('generate/CDM_xml') / source_table)
-        result += '{} table xml \r\n {} + \r\n'.format(source_table, prettify(
-            query_definition_tag))
+        # result += '{}: \n {} + \n'.format(source_table, prettify(
+        #     query_definition_tag))
+        result.update({source_table: _prettify(query_definition_tag)})
     return result
 
 
