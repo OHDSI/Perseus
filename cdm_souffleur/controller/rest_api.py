@@ -55,9 +55,7 @@ def get_lookups_call():
 def xml():
     json = request.get_json()
     xml_ = get_xml(json)
-    return '''
-    This is answer {}
-    '''.format(xml_)
+    return jsonify(xml_)
 
 
 @app.route('/find_domain')
