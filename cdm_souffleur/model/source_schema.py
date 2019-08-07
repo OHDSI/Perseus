@@ -23,6 +23,7 @@ with open('../configuration/default.json', 'r') as configuration_file:
     print(configuration)
 
 
+@time_it
 def get_source_schema(schemaname):
     """return tables and columns of source schema based on WR report"""
     print("schema name: " + schemaname)
@@ -54,6 +55,7 @@ def get_source_schema(schemaname):
     return schema
 
 
+@time_it
 def _open_book(filepath=None):
     global book
     if book is None and filepath is not None:
@@ -144,9 +146,9 @@ if __name__ == '__main__':
     # for i in get_source_schema():
     #     print(i.to_json())
     # prepare_source_data()
-    for table in get_source_schema():
+    for table in get_source_schema('D:/mdcr.xlsx'):
         print(table.to_json())
-    for table in get_source_schema():
+    for table in get_source_schema('D:/mdcr.xlsx'):
         print(table.to_json())
     # get_top_values('test', 'test')
     # load_report()

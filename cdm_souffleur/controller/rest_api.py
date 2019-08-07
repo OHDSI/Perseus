@@ -1,12 +1,15 @@
-from flask import Flask, request, jsonify
+from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
+    GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from cdm_souffleur.model.xml_writer import get_xml
+from cdm_souffleur.model.xml_writer import get_xml, zip_xml
 from _thread import start_new_thread
-from cdm_souffleur.model.detector import find_domain, load_vocabulary,\
+from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list
-from cdm_souffleur.model.source_schema import load_report, get_source_schema,\
+from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
+
 
 app = Flask(__name__)
 CORS(app)
@@ -56,6 +59,16 @@ def xml():
     json = request.get_json()
     xml_ = get_xml(json)
     return jsonify(xml_)
+
+
+@app.route('/get_zip_xml')
+def zip_xml_call():
+    zip_xml()
+    return send_from_directory(GENERATE_CDM_XML_ARCHIVE_PATH,
+                               filename='.'.join((
+                                            GENERATE_CDM_XML_ARCHIVE_FILENAME,
+                                            GENERATE_CDM_XML_ARCHIVE_FORMAT)),
+                               as_attachment=True)
 
 
 @app.route('/find_domain')

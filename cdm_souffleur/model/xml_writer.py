@@ -1,8 +1,9 @@
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
-import json
+from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
+    GENERATE_CDM_XML_ARCHIVE_PATH, GENERATE_CDM_XML_ARCHIVE_FILENAME, \
+    GENERATE_CDM_XML_ARCHIVE_FORMAT
 import pandas as pd
-from pathlib import Path
 
 
 def _convert_underscore_to_camel(word: str):
@@ -150,15 +151,23 @@ def get_xml(json_):
                                                    field.items()})
             previous_target_table_name = target_table_name
         xml = ElementTree(query_definition_tag)
-        xml.write(Path('generate/CDM_xml') / source_table)
+        xml.write(GENERATE_CDM_XML_PATH / source_table)
         # result += '{}: \n {} + \n'.format(source_table, prettify(
         #     query_definition_tag))
         result.update({source_table: _prettify(query_definition_tag)})
     return result
 
 
+def zip_xml():
+    import shutil
+    shutil.make_archive(
+        GENERATE_CDM_XML_ARCHIVE_PATH / GENERATE_CDM_XML_ARCHIVE_FILENAME,
+        GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_XML_PATH)
+
+
 if __name__ == '__main__':
-    pass
+    zip_xml()
+    # pass
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))

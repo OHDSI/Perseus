@@ -2,6 +2,7 @@ import pandas as pd
 from cdm_souffleur.utils import CDM_SCHEMA_PATH, CDM_VERSION_LIST
 from cdm_souffleur.view.Table import Table, Column
 from pathlib import Path
+from cdm_souffleur.utils import time_it
 
 
 def get_exist_version():
@@ -9,6 +10,7 @@ def get_exist_version():
     return CDM_VERSION_LIST
 
 
+@time_it
 def get_schema(cdm_version):
     """load CDM schema from csv"""
     schema = []
