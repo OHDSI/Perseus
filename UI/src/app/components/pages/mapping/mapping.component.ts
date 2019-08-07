@@ -39,6 +39,9 @@ export class MappingComponent implements OnInit {
   }
 
   generateMappingJson() {
-    this.bridgeService.generateMapping();
+    const mappingJSON = this.bridgeService.generateMapping();
+    this.dataService.getXml(mappingJSON).subscribe(result => {
+      console.log(result);
+    });
   }
 }

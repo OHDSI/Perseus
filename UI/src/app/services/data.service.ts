@@ -7,6 +7,7 @@ import { StateService } from './state.service';
 import { Row } from 'src/app/models/row';
 import { Table } from 'src/app/models/table';
 import { environment } from 'src/environments/environment';
+import { Mapping } from '../models/mapping';
 
 const URL = environment.url;
 
@@ -78,5 +79,10 @@ export class DataService {
       tables.push(new Table(id, area, name, rows));
     }
     return tables;
+  }
+
+  getXml(mapping: Mapping): Observable<any> {
+    const path = `${URL}/get_xml`;
+    return this.httpClient.post(path, mapping);
   }
 }
