@@ -1,6 +1,6 @@
 <mat-expansion-panel #matpanel (opened)="onOpen()" (closed)="onClose()">
-  <mat-expansion-panel-header>
-    <mat-panel-title id="{{ table.name }}">
+  <mat-expansion-panel-header class="mat-expansion-panel-header panel-header-{{table.name}}">
+    <mat-panel-title>
       <mat-icon
         (click)="openSampleDataDialog($event)"
         matTooltip="Open sample data"
