@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { OverlayService } from 'src/app/services/overlay.service';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
+import { MatExpansionPanel } from '@angular/material';
 
 @Component({
   selector: 'app-panel-table',

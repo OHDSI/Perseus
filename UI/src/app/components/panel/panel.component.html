@@ -1,16 +1,24 @@
-<mat-expansion-panel
-  (opened)="onOpen()"
-  (closed)="onClose()"
->
+<mat-expansion-panel #matpanel (opened)="onOpen()" (closed)="onClose()">
   <mat-expansion-panel-header>
     <mat-panel-title>
-      <mat-icon 
+      <mat-icon
         (click)="openSampleDataDialog($event)"
-        matTooltip="Open sample data">
+        matTooltip="Open sample data"
+      >
         list
       </mat-icon>
-      {{title}}
+      {{ title }}
     </mat-panel-title>
   </mat-expansion-panel-header>
-  <ng-content></ng-content>
+  <span *ngIf="!matpanel.expanded" id="{{table.name}}"></span>
+  <app-panel-table *ngIf="matpanel.expanded"
+    [table]="table"
+    [displayedColumns]="[
+      'column_indicator',
+      'column_name',
+      'column_type',
+      'comments'
+    ]"
+  >
+  </app-panel-table>
 </mat-expansion-panel>

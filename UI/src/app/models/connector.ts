@@ -1,5 +1,6 @@
 import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
+import { DomAnalyzer } from '../services/dom-analyzer.service';
 
 export interface IConnector {
   id: string;
@@ -16,18 +17,25 @@ export interface IConnector {
   inactive(): void;
 }
 
+// What is Connector?
 export class Connector implements IConnector {
   public canvas: any;
   public line: SVGLineElement;
   public button: Element;
+
+
+  private domanalizer = new DomAnalyzer();
 
   constructor(public id: string, public source: IRow, public target: IRow) {
     this.canvas = document.querySelector('.canvas');
   }
 
   drawLine() {
-    const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
-    const targetSVGPoint = getSVGPoint(this.target, this.canvas);
+    const source = this.domanalizer.checkAndChangeHtmlElement(this.source);
+    const target = this.domanalizer.checkAndChangeHtmlElement(this.target);
+    // TODO Check htmlElement for existance
+    const sourceSVGPoint = getSVGPoint(source, this.canvas);
+    const targetSVGPoint = getSVGPoint(target, this.canvas);
 
     const id = this.id;
 
@@ -71,6 +79,7 @@ export class Connector implements IConnector {
     this.line.setAttribute('y2', y2 + '');
   }
 
+  // TODO Move
   active() {
     this.line.classList.add('line-active');
     this.line.removeAttribute('marker-end');
@@ -79,6 +88,7 @@ export class Connector implements IConnector {
     this.target.htmlElement.classList.add('row-active');
   }
 
+  // TODO Move
   inactive() {
     this.line.classList.remove('line-active');
     this.line.removeAttribute('marker-end');

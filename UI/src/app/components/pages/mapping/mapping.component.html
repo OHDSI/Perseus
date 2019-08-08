@@ -1,8 +1,5 @@
 <div class="mapping-component-progress" *ngIf="busy">
-  <mat-progress-spinner
-    [mode]="'indeterminate'"
-    [color]="'accent'"
-  >
+  <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
   </mat-progress-spinner>
 </div>
 
@@ -79,18 +76,7 @@
         *ngFor="let table of state?.target.tables; trackBy: trackByFn"
       >
         <ng-container *ngIf="table.visible">
-          <app-panel [table]="table">
-            <app-panel-table
-              [table]="table"
-              [displayedColumns]="[
-                'column_indicator',
-                'column_name',
-                'column_type',
-                'comments'
-              ]"
-            >
-            </app-panel-table>
-          </app-panel>
+          <app-panel [table]="table"></app-panel>
         </ng-container>
       </ng-container>
     </app-area>
@@ -100,7 +86,9 @@
       <mat-checkbox>Link similar items from other source tables</mat-checkbox>
     </div>
     <div class="export-actions">
-      <button mat-button color="primary" (click)="generateMappingJson()">Generate Mapping</button>
+      <button mat-button color="primary" (click)="generateMappingJson()">
+        Generate Mapping
+      </button>
       <button mat-button color="primary">Generate ETL</button>
       <button mat-button color="primary">Generate XML</button>
     </div>

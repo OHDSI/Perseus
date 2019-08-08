@@ -70,6 +70,7 @@ export class DraggableDirective implements OnInit {
     }
   }
 
+  // TODO Dont manipulate htmlElement directly
   @HostListener('drop', ['$event'])
   onDrop(e: DragEvent) {
     if (this.bridgeService.sourceRow) {

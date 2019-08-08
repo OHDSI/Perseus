@@ -1,3 +1,5 @@
+import { IRow } from 'src/app/models/row';
+
 function middleHeightOfLine(line: any) {
   const {y1, y2} = line.attributes;
 
@@ -9,7 +11,7 @@ function areaOffset({sourceAreaWidth: source, targetAreaWidth: target}) {
   return source > target ? -offset : offset;
 }
 
-function getSVGPoint(row, canvas) {
+function getSVGPoint(row: IRow, canvas: any) {
   const clientRect = row.htmlElement.getBoundingClientRect();
   const { height } = clientRect;
 

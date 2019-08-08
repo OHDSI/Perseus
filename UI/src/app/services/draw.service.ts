@@ -11,7 +11,6 @@ import { DOCUMENT } from '@angular/common';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { CommonService } from 'src/app/services/common.service';
 import { Connector } from 'src/app/models/connector';
-import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 
 import { middleHeightOfLine, areaOffset } from './utilites/draw-utilites';
@@ -36,6 +35,7 @@ export class DrawService {
 
   drawLine(source: IRow, target: IRow): string {
     this.svg = this.document.querySelector('.canvas');
+
     const sourceRowId = source.id;
     const targetRowId = target.id;
     const sourceTableId = source.tableId;
@@ -99,6 +99,7 @@ export class DrawService {
     });
   }
 
+  // TODO Move
   private _appendButton(drawEntity: Connector) {
     const line = drawEntity.line;
     const componentRef = this.componentFactoryResolver
@@ -122,6 +123,7 @@ export class DrawService {
     return button;
   }
 
+  // TODO Move
   private _recalculateButtonPosition(button, line) {
     const { top, left } = this._calculateButtonPosition(button, line);
 
@@ -129,6 +131,7 @@ export class DrawService {
     button.style.left = left + 'px';
   }
 
+  // TODO Move
   private _calculateButtonPosition(button, line) {
     const canvas = this.document.querySelector('.main');
     const buttonClientRect = button.getBoundingClientRect();
