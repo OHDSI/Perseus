@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { CommonService } from 'src/app/services/common.service';
 import { Connector } from 'src/app/models/connector';
 import { IRow } from 'src/app/models/row';
@@ -48,8 +47,8 @@ export class DrawService {
       this.list[entityId] = drawEntity;
       drawEntity.drawLine();
 
-      const button = this._appendButton(drawEntity);
-      drawEntity.button = button;
+      //const button = this._appendButton(drawEntity);
+      //drawEntity.button = button;
     }
 
     return entityId;
@@ -60,7 +59,7 @@ export class DrawService {
       .forEach(key => {
         const drawEntity = this.list[key];
         drawEntity.fixPosition();
-        this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
+        //this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
       });
   }
 
@@ -80,7 +79,7 @@ export class DrawService {
 
   removeConnectorsBoundToTable({id, area}) {
     Object.keys(this.list).forEach(key => {
-      const {ids, sourceTableRowIds, targetTableRowIds, sourceTableId, targetTableId } = parseArrowKey(key);
+      const {sourceTableId, targetTableId } = parseArrowKey(key);
 
       switch (area) {
         case 'source': {
@@ -99,49 +98,49 @@ export class DrawService {
     });
   }
 
-  // TODO Move
-  private _appendButton(drawEntity: Connector) {
-    const line = drawEntity.line;
-    const componentRef = this.componentFactoryResolver
-      .resolveComponentFactory(BridgeButtonComponent)
-      .create(this.injector);
-    componentRef.instance.drawEntity = drawEntity;
+  // // TODO Move
+  // private _appendButton(drawEntity: Connector) {
+  //   const line = drawEntity.line;
+  //   const componentRef = this.componentFactoryResolver
+  //     .resolveComponentFactory(BridgeButtonComponent)
+  //     .create(this.injector);
+  //   componentRef.instance.drawEntity = drawEntity;
 
-    this.appRef.attachView(componentRef.hostView);
+  //   this.appRef.attachView(componentRef.hostView);
 
-    const button = (componentRef.hostView as EmbeddedViewRef<any>)
-      .rootNodes[0] as HTMLElement;
+  //   const button = (componentRef.hostView as EmbeddedViewRef<any>)
+  //     .rootNodes[0] as HTMLElement;
 
-    const canvas = this.document.querySelector('.main');
-    canvas.appendChild(button);
+  //   const canvas = this.document.querySelector('.main');
+  //   canvas.appendChild(button);
 
-    const { top, left } = this._calculateButtonPosition(button, line);
+  //   const { top, left } = this._calculateButtonPosition(button, line);
 
-    button.style.top = top + 'px';
-    button.style.left = left + 'px';
+  //   button.style.top = top + 'px';
+  //   button.style.left = left + 'px';
 
-    return button;
-  }
+  //   return button;
+  // }
 
-  // TODO Move
-  private _recalculateButtonPosition(button, line) {
-    const { top, left } = this._calculateButtonPosition(button, line);
+  // // TODO Move
+  // private _recalculateButtonPosition(button, line) {
+  //   const { top, left } = this._calculateButtonPosition(button, line);
 
-    button.style.top = top + 'px';
-    button.style.left = left + 'px';
-  }
+  //   button.style.top = top + 'px';
+  //   button.style.left = left + 'px';
+  // }
 
-  // TODO Move
-  private _calculateButtonPosition(button, line) {
-    const canvas = this.document.querySelector('.main');
-    const buttonClientRect = button.getBoundingClientRect();
-    const buttonOffsetX = buttonClientRect.width / 2;
-    const buttonOffsetY = buttonClientRect.height / 2;
+  // // TODO Move
+  // private _calculateButtonPosition(button, line) {
+  //   const canvas = this.document.querySelector('.main');
+  //   const buttonClientRect = button.getBoundingClientRect();
+  //   const buttonOffsetX = buttonClientRect.width / 2;
+  //   const buttonOffsetY = buttonClientRect.height / 2;
 
-    return {
-      top: middleHeightOfLine(line) - buttonOffsetY,
-      left:
-        canvas.clientWidth / 2 - buttonOffsetX - areaOffset(this.commonService)
-    };
-  }
+  //   return {
+  //     top: middleHeightOfLine(line) - buttonOffsetY,
+  //     left:
+  //       canvas.clientWidth / 2 - buttonOffsetX - areaOffset(this.commonService)
+  //   };
+  // }
 }

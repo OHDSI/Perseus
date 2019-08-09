@@ -1,8 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
-
 import { CommonService } from 'src/app/services/common.service';
-import { DrawService } from 'src/app/services/draw.service';
 import { IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';

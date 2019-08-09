@@ -1,10 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
 
 import { CommonService } from 'src/app/services/common.service';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
-import { ITable } from '../models/table';
 import { ArrowCache, Arrow } from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
 
@@ -17,7 +15,6 @@ export class BridgeService {
   arrowsCache: ArrowCache = {};
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
     private drawService: DrawService
   ) {}
@@ -70,23 +67,6 @@ export class BridgeService {
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
       this.drawService.drawLine(arrow.source, arrow.target);
     });
-
-    // For what?
-    // if (!this.drawService.listIsEmpty) {
-    //   this.drawService.fixConnectorsPosition();
-    // }
-  }
-
-  refresh(table: ITable): void {
-    if (table.area === 'source' || table.area === 'target') {
-      Object.values(this.arrowsCache)
-        .filter(arrow => arrow[table.area].tableId === table.id)
-        .map((arrow: Arrow) => {
-          this.drawService.drawLine(arrow.source, arrow.target);
-        });
-    } else {
-      throw new Error('table area should be "source" or" "target"');
-    }
   }
 
   deleteArrow(key: string) {

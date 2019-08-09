@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-
-import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
+//import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 import { CommonService } from 'src/app/services/common.service';
 import { IConnector } from 'src/app/models/connector';
 import { OverlayService } from 'src/app/services/overlay.service';
@@ -31,7 +30,7 @@ export class BridgeButtonComponent {
     this.commonService.activeConnector = this.drawEntity;
 
 
-    const component = RulesPopupComponent;
-    this.overlayService.openDialog(anchor, component, 'bridge-button');
+    //const component = RulesPopupComponent;
+    //this.overlayService.openDialog(anchor, component, 'bridge-button');
   }
 }
