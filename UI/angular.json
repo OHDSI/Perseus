@@ -29,7 +29,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/hammerjs/hammer.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
@@ -86,7 +88,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
