@@ -30,12 +30,20 @@ export class PanelComponent {
 
   onOpen() {
     this.commonService.expanded(this.area);
-    this.bridgeService.refresh(this.table);
+
+    setTimeout(() => {
+      this.bridgeService.refreshAll();
+    });
   }
 
   onClose() {
     this.commonService.collapsed(this.area);
     this.bridgeService.hideArrows(this.table);
+
+    setTimeout(() => {
+      this.bridgeService.refreshAll();
+    });
+
   }
 
   openSampleDataDialog(e) {
