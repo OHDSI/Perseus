@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
@@ -11,14 +11,8 @@ import { BridgeService } from 'src/app/services/bridge.service';
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss']
 })
-export class PanelComponent {
+export class PanelComponent implements OnInit {
   @Input() table: ITable;
-
-  constructor(
-    public dialog: MatDialog,
-    private commonService: CommonService,
-    private bridgeService: BridgeService,
-  ) {}
 
   get title() {
     return this.table.name;
@@ -26,6 +20,23 @@ export class PanelComponent {
 
   get area() {
     return this.table.area;
+  }
+
+  get isPanelHasALink(): boolean {
+    return this._isPanelHasALink;
+  }
+  private _isPanelHasALink: boolean;
+
+  constructor(
+    public dialog: MatDialog,
+    private commonService: CommonService,
+    private bridgeService: BridgeService) {
+  }
+
+  ngOnInit() {
+    this.bridgeService.connection.subscribe(_ => {
+      this._isPanelHasALink = this.bridgeService.hasConnection(this.table);
+    });
   }
 
   onOpen() {
@@ -38,7 +49,7 @@ export class PanelComponent {
 
   onClose() {
     this.commonService.collapsed(this.area);
-    this.bridgeService.hideArrows(this.table);
+    this.bridgeService.removeArrows(this.table);
 
     setTimeout(() => {
       this.bridgeService.refreshAll();

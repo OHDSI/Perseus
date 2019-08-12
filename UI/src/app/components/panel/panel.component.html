@@ -1,5 +1,5 @@
 <mat-expansion-panel #matpanel (opened)="onOpen()" (closed)="onClose()">
-  <mat-expansion-panel-header class="mat-expansion-panel-header panel-header-{{table.name}}">
+  <mat-expansion-panel-header class="mat-expansion-panel-header panel-header-{{table.name}} panel-has-a-link-{{isPanelHasALink}}">
     <mat-panel-title>
       <mat-icon
         (click)="openSampleDataDialog($event)"

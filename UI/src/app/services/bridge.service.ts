@@ -5,6 +5,8 @@ import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
 import { ArrowCache, Arrow } from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
+import { ITable } from '../models/table';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class BridgeService {
@@ -13,6 +15,8 @@ export class BridgeService {
   private targetrowrlement = null;
 
   arrowsCache: ArrowCache = {};
+
+  connection = new Subject();
 
   constructor(
     private commonService: CommonService,
@@ -40,16 +44,24 @@ export class BridgeService {
     this.targetrowrlement = element;
   }
 
+  //private sourceRow: IRow;
+  //private targetRow: IRow;
+
   connect() {
     const arrowId = this.drawService.drawLine(this.sourceRow, this.targetRow);
     this.arrowsCache[arrowId] = {
       source: this.sourceRow,
       target: this.targetRow
     };
+
+    // ???
     this.commonService.linked = true;
+
+    //
+    this.connection.next();
   }
 
-  invalidate() {
+  reset() {
     this.sourceRow = null;
     this.targetRow = null;
   }
@@ -77,12 +89,19 @@ export class BridgeService {
     }
   }
 
-  hideArrows({ id, area }) {
+  removeArrows({ id, area }) {
     this.drawService.removeConnectorsBoundToTable({ id, area });
   }
 
   generateMapping() {
     const mappingService = new MappingService(this.arrowsCache);
     return mappingService.generate();
+  }
+
+  hasConnection(table: ITable): boolean {
+    return Object.values(this.arrowsCache).filter(connection => {
+      return connection.source.tableName == table.name ||
+      connection.target.tableName === table.name
+    }).length > 0;
   }
 }

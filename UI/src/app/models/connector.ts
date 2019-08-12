@@ -7,12 +7,12 @@ export interface IConnector {
   canvas: any;
   line: Element;
   button: Element;
-  source: IRow;
-  target: IRow;
+  //source: IRow;
+  //target: IRow;
 
   drawLine(): void;
   remove(): void;
-  fixPosition(): void;
+  //fixPosition(): void;
   active(): void;
   inactive(): void;
 }
@@ -23,7 +23,7 @@ export class Connector implements IConnector {
   public line: SVGLineElement;
   public button: Element;
 
-  constructor(public id: string, public source: IRow, public target: IRow) {
+  constructor(public id: string, private source: IRow, private target: IRow) {
     this.canvas = document.querySelector('.canvas');
   }
 
@@ -64,24 +64,25 @@ export class Connector implements IConnector {
     }
   }
 
-  fixPosition() {
-    const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
-    const targetSVGPoint = getSVGPoint(this.target, this.canvas);
+  // fixPosition() {
+  //   const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
+  //   const targetSVGPoint = getSVGPoint(this.target, this.canvas);
 
-    const { x: x1, y: y1 } = sourceSVGPoint;
-    const { x: x2, y: y2 } = targetSVGPoint;
+  //   const { x: x1, y: y1 } = sourceSVGPoint;
+  //   const { x: x2, y: y2 } = targetSVGPoint;
 
-    this.line.setAttribute('x1', x1 + '');
-    this.line.setAttribute('y1', y1 + '');
-    this.line.setAttribute('x2', x2 - 6 + '');
-    this.line.setAttribute('y2', y2 + '');
-  }
+  //   this.line.setAttribute('x1', x1 + '');
+  //   this.line.setAttribute('y1', y1 + '');
+  //   this.line.setAttribute('x2', x2 - 6 + '');
+  //   this.line.setAttribute('y2', y2 + '');
+  // }
 
   // TODO Move
   active() {
     this.line.classList.add('line-active');
     this.line.removeAttribute('marker-end');
     this.line.setAttribute('marker-end', 'url(#arrow-active)');
+
     this.source.htmlElement.classList.add('row-active');
     this.target.htmlElement.classList.add('row-active');
   }
@@ -91,6 +92,7 @@ export class Connector implements IConnector {
     this.line.classList.remove('line-active');
     this.line.removeAttribute('marker-end');
     this.line.setAttribute('marker-end', 'url(#arrow)');
+
     this.source.htmlElement.classList.remove('row-active');
     this.target.htmlElement.classList.remove('row-active');
   }

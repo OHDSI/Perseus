@@ -25,36 +25,36 @@ export class RulesPopupComponent {
   apply() {
     if (this.selectedRule) {
       switch (this.selectedRule) {
-        case 'log-values': {
-          const sourceRowValue = this.commonService.activeConnector.source.name;
-          const connections = this.commonService.activeConnector.source.connections;
-          connections.forEach(row => {
-            console.log(sourceRowValue , '--->', row.name);
-          });
-          this.close();
-          break;
-        }
-        case 'log-comments': {
-          const connector = this.commonService.activeConnector;
-          const connections = connector.source.connections;
-          if (connector.source.comments) {
-            connector.source.comments.forEach((comment: IComment) => {
-              console.log(comment);
-            });
-          }
+        // case 'log-values': {
+        //   const sourceRowValue = this.commonService.activeConnector.source.name;
+        //   const connections = this.commonService.activeConnector.source.connections;
+        //   connections.forEach(row => {
+        //     console.log(sourceRowValue , '--->', row.name);
+        //   });
+        //   this.close();
+        //   break;
+        // }
+        // case 'log-comments': {
+        //   const connector = this.commonService.activeConnector;
+        //   const connections = connector.source.connections;
+        //   if (connector.source.comments) {
+        //     connector.source.comments.forEach((comment: IComment) => {
+        //       console.log(comment);
+        //     });
+        //   }
 
-          if (connections.length) {
-            connections.forEach((row: IRow) => {
-              if (row.comments) {
-                row.comments.forEach((comment: IComment) => {
-                  console.log(comment);
-                });
-              }
-            });
-          }
-          this.close();
-          break;
-        }
+        //   if (connections.length) {
+        //     connections.forEach((row: IRow) => {
+        //       if (row.comments) {
+        //         row.comments.forEach((comment: IComment) => {
+        //           console.log(comment);
+        //         });
+        //       }
+        //     });
+        //   }
+        //   this.close();
+        //   break;
+        // }
       }
     }
   }
