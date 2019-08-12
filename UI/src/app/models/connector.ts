@@ -1,6 +1,6 @@
 import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
-import { DomAnalyzer } from '../services/dom-analyzer.service';
+import { extractHtmlElement } from '../services/utilites/html-utilities';
 
 export interface IConnector {
   id: string;
@@ -23,16 +23,14 @@ export class Connector implements IConnector {
   public line: SVGLineElement;
   public button: Element;
 
-
-  private domanalizer = new DomAnalyzer();
-
   constructor(public id: string, public source: IRow, public target: IRow) {
     this.canvas = document.querySelector('.canvas');
   }
 
   drawLine() {
-    const source = this.domanalizer.checkAndChangeHtmlElement(this.source);
-    const target = this.domanalizer.checkAndChangeHtmlElement(this.target);
+    const source = this.checkAndChangeHtmlElement(this.source);
+    const target = this.checkAndChangeHtmlElement(this.target);
+
     // TODO Check htmlElement for existance
     const sourceSVGPoint = getSVGPoint(source, this.canvas);
     const targetSVGPoint = getSVGPoint(target, this.canvas);
@@ -97,5 +95,17 @@ export class Connector implements IConnector {
     this.target.htmlElement.classList.remove('row-active');
   }
 
+  private checkAndChangeHtmlElement(row: IRow): IRow {
+    const foundElements = document.getElementsByClassName(`item-${row.tableName}-${row.name}`);
+    const foundElement = extractHtmlElement(foundElements, null);
 
+    if (foundElement) {
+      row.htmlElement = foundElement;
+    } else {
+      const tableElements = document.getElementsByClassName(`panel-header-${row.tableName}`);
+      row.htmlElement = extractHtmlElement(tableElements, row.htmlElement);
+    }
+
+    return row;
+  }
 }
