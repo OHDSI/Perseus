@@ -36,4 +36,16 @@ export class StateService {
       return this._state;
     }
   }
+
+  findTable(name: string): ITable {
+    const index1 = this.state.target.tables.findIndex(t => t.name === name);
+    const index2 = this.state.source.tables.findIndex(t => t.name === name);
+    if (index1 > -1) {
+      return this.state.target.tables[index1];
+    } else if (index2 > -1) {
+      return this.state.source.tables[index2];
+    }
+
+    return null;
+  }
 }

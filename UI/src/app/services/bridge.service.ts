@@ -7,6 +7,7 @@ import { ArrowCache, Arrow } from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
+import { uniqBy } from '../infrastructure/utility';
 
 @Injectable()
 export class BridgeService {
@@ -99,5 +100,19 @@ export class BridgeService {
       return connection.source.tableName == table.name ||
       connection.target.tableName === table.name
     }).length > 0;
+  }
+
+  removeTableArrows(table: ITable): void {
+    this.drawService.removeConnectorsBoundToTable(table);
+  }
+
+  findCorrespondingTables(table: ITable): string[] {
+    const source = table.area === 'source' ? 'target' : 'source';
+    const data = Object.values(this.arrowsCache).filter(connection => {
+      return connection[table.area].tableName == table.name
+    })
+    .map(arrow => arrow[source]);
+
+    return uniqBy(data, 'tableName').map(row => row.tableName);
   }
 }

@@ -43,26 +43,21 @@ export class PanelComponent implements OnInit {
 
   onOpen() {
     this.commonService.expanded(this.area);
-
-    this.stateService.state.source.tables
-    .filter(table => table.id === this.table.id)
-    .forEach(table => table.expanded = true);
+    this.setExpandedFlagOnSourceAndTargetTables(this.table, true);
 
     setTimeout(() => {
       this.bridgeService.refreshAll();
-    });
+    }, 200);
   }
 
   onClose() {
     this.commonService.collapsed(this.area);
-
-    this.stateService.state.source.tables
-    .filter(table => table.id === this.table.id)
-    .forEach(table => table.expanded = false);
+    this.setExpandedFlagOnSourceAndTargetTables(this.table, false);
 
     setTimeout(() => {
       this.bridgeService.refreshAll();
-    });
+      this.hideArrowsIfCorespondingTableasAreClosed(this.table);
+    }, 200);
 
   }
 
@@ -74,6 +69,23 @@ export class PanelComponent implements OnInit {
       width: '1021px',
       height: '696px',
       data: this.table
+    });
+  }
+
+  setExpandedFlagOnSourceAndTargetTables(table: ITable, expanded: boolean) {
+    this.stateService.state[table.area].tables
+    .filter(t => t.id === table.id)
+    .forEach(t => t.expanded = expanded);
+  }
+
+  hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
+    const corespondingTableNames = this.bridgeService.findCorrespondingTables(table);
+
+    corespondingTableNames.forEach(name => {
+      const correspondentTable = this.stateService.findTable(name);
+      if (!correspondentTable.expanded && !table.expanded) {
+        this.bridgeService.removeTableArrows(table);
+      }
     });
   }
 }
