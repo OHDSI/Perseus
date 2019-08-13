@@ -5,6 +5,7 @@ import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-
 import { CommonService } from 'src/app/services/common.service';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-panel',
@@ -30,7 +31,8 @@ export class PanelComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private commonService: CommonService,
-    private bridgeService: BridgeService) {
+    private bridgeService: BridgeService,
+    private stateService: StateService) {
   }
 
   ngOnInit() {
@@ -42,6 +44,10 @@ export class PanelComponent implements OnInit {
   onOpen() {
     this.commonService.expanded(this.area);
 
+    this.stateService.state.source.tables
+    .filter(table => table.id === this.table.id)
+    .forEach(table => table.expanded = true);
+
     setTimeout(() => {
       this.bridgeService.refreshAll();
     });
@@ -49,7 +55,10 @@ export class PanelComponent implements OnInit {
 
   onClose() {
     this.commonService.collapsed(this.area);
-    this.bridgeService.removeArrows(this.table);
+
+    this.stateService.state.source.tables
+    .filter(table => table.id === this.table.id)
+    .forEach(table => table.expanded = false);
 
     setTimeout(() => {
       this.bridgeService.refreshAll();

@@ -77,27 +77,6 @@ export class DrawService {
       .forEach(key => this.removeConnector(key));
   }
 
-  removeConnectorsBoundToTable({id, area}) {
-    Object.keys(this.list).forEach(key => {
-      const {sourceTableId, targetTableId } = parseArrowKey(key);
-
-      switch (area) {
-        case 'source': {
-          if (id === +sourceTableId) {
-            this.removeConnector(key);
-          }
-          break;
-        }
-        case 'target': {
-          if (id === +targetTableId) {
-            this.removeConnector(key);
-          }
-          break;
-        }
-      }
-    });
-  }
-
   // // TODO Move
   // private _appendButton(drawEntity: Connector) {
   //   const line = drawEntity.line;

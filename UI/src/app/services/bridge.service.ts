@@ -89,10 +89,6 @@ export class BridgeService {
     }
   }
 
-  removeArrows({ id, area }) {
-    this.drawService.removeConnectorsBoundToTable({ id, area });
-  }
-
   generateMapping() {
     const mappingService = new MappingService(this.arrowsCache);
     return mappingService.generate();

@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
+import { ITable } from '../models/table';
 
 export interface IState {
-    source: any;
-    target: any;
+    source: StateItem;
+    target: StateItem;
+}
+
+export interface StateItem {
+  tables: ITable[];
 }
 
 @Injectable()
