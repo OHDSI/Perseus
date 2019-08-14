@@ -22,7 +22,7 @@ if __name__ == '__main__':
 ```
 and run via CMD/BASH from path where rest_api.py located
 ```
-$ export/set FLASK_APP=hello.py
+$ export/set FLASK_APP=rest_api.py
 $ flask run --host=0.0.0.0 --port=5000
 ```
 	
