@@ -84,7 +84,7 @@ export class PanelComponent implements OnInit {
     corespondingTableNames.forEach(name => {
       const correspondentTable = this.stateService.findTable(name);
       if (!correspondentTable.expanded && !table.expanded) {
-        this.bridgeService.removeTableArrows(table);
+        this.bridgeService.deleteTableArrows(table);
       }
     });
   }

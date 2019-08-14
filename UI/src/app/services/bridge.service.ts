@@ -78,6 +78,7 @@ export class BridgeService {
   getStyledAsDragStartElement() {
     this.sourceRow.htmlElement.classList.add('drag-start');
   }
+
   getStyledAsDragEndElement() {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
@@ -98,6 +99,15 @@ export class BridgeService {
     }
   }
 
+  deleteTableArrows(table: ITable): void {
+    this.drawService.removeConnectorsBoundToTable(table);
+  }
+
+  deleteAllArrows() {
+    this.arrowsCache = {};
+    this.drawService.removeAllConnectors();
+  }
+
   generateMapping() {
     const mappingService = new MappingService(this.arrowsCache);
     return mappingService.generate();
@@ -110,9 +120,7 @@ export class BridgeService {
     }).length > 0;
   }
 
-  removeTableArrows(table: ITable): void {
-    this.drawService.removeConnectorsBoundToTable(table);
-  }
+
 
   findCorrespondingTables(table: ITable): string[] {
     const source = table.area === 'source' ? 'target' : 'source';
