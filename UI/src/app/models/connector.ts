@@ -12,7 +12,7 @@ export interface IConnector {
 
   drawLine(): void;
   remove(): void;
-  //fixPosition(): void;
+  adjustPosition(): void;
   active(): void;
   inactive(): void;
 }
@@ -64,18 +64,18 @@ export class Connector implements IConnector {
     }
   }
 
-  // fixPosition() {
-  //   const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
-  //   const targetSVGPoint = getSVGPoint(this.target, this.canvas);
+  adjustPosition() {
+    const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
+    const targetSVGPoint = getSVGPoint(this.target, this.canvas);
 
-  //   const { x: x1, y: y1 } = sourceSVGPoint;
-  //   const { x: x2, y: y2 } = targetSVGPoint;
+    const { x: x1, y: y1 } = sourceSVGPoint;
+    const { x: x2, y: y2 } = targetSVGPoint;
 
-  //   this.line.setAttribute('x1', x1 + '');
-  //   this.line.setAttribute('y1', y1 + '');
-  //   this.line.setAttribute('x2', x2 - 6 + '');
-  //   this.line.setAttribute('y2', y2 + '');
-  // }
+    this.line.setAttribute('x1', x1 + '');
+    this.line.setAttribute('y1', y1 + '');
+    this.line.setAttribute('x2', x2 - 6 + '');
+    this.line.setAttribute('y2', y2 + '');
+  }
 
   // TODO Move
   active() {

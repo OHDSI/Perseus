@@ -62,6 +62,14 @@ export class BridgeService {
     this.connection.next();
   }
 
+  recalculateConnectorsPositions() {
+    if (!this.drawService.listIsEmpty) {
+      this.drawService.adjustArrowsPositions();
+
+      //this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
+    }
+  }
+
   reset() {
     this.sourceRow = null;
     this.targetRow = null;
@@ -115,4 +123,58 @@ export class BridgeService {
 
     return uniqBy(data, 'tableName').map(row => row.tableName);
   }
+
+  // Injectors
+  // private componentFactoryResolver: ComponentFactoryResolver,
+  // private appRef: ApplicationRef,
+  // private injector: Injector,
+  // // TODO Move
+  // private _appendButton(drawEntity: Connector) {
+  //   const line = drawEntity.line;
+  //   const componentRef = this.componentFactoryResolver
+  //     .resolveComponentFactory(BridgeButtonComponent)
+  //     .create(this.injector);
+  //   componentRef.instance.drawEntity = drawEntity;
+
+  //   this.appRef.attachView(componentRef.hostView);
+
+  //   const button = (componentRef.hostView as EmbeddedViewRef<any>)
+  //     .rootNodes[0] as HTMLElement;
+
+  //   const canvas = this.document.querySelector('.main');
+  //   canvas.appendChild(button);
+
+  //   const { top, left } = this._calculateButtonPosition(button, line);
+
+  //   button.style.top = top + 'px';
+  //   button.style.left = left + 'px';
+
+  //   return button;
+  // }
+
+  // // TODO Move
+  // private _recalculateButtonPosition(button, line) {
+  //   const { top, left } = this._calculateButtonPosition(button, line);
+
+  //   button.style.top = top + 'px';
+  //   button.style.left = left + 'px';
+  // }
+
+  // // TODO Move
+  // private _calculateButtonPosition(button, line) {
+  //   const canvas = this.document.querySelector('.main');
+  //   const buttonClientRect = button.getBoundingClientRect();
+  //   const buttonOffsetX = buttonClientRect.width / 2;
+  //   const buttonOffsetY = buttonClientRect.height / 2;
+
+  //   return {
+  //     top: middleHeightOfLine(line) - buttonOffsetY,
+  //     left:
+  //       canvas.clientWidth / 2 - buttonOffsetX - areaOffset(this.commonService)
+  //   };
+  // }
 }
+
+
+
+
