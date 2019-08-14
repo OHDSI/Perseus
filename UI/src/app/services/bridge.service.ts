@@ -45,9 +45,6 @@ export class BridgeService {
     this.targetrowrlement = element;
   }
 
-  //private sourceRow: IRow;
-  //private targetRow: IRow;
-
   connect() {
     const arrowId = this.drawService.drawLine(this.sourceRow, this.targetRow);
     this.arrowsCache[arrowId] = {
@@ -66,7 +63,7 @@ export class BridgeService {
     if (!this.drawService.listIsEmpty) {
       this.drawService.adjustArrowsPositions();
 
-      //this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
+      // this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
     }
   }
 
@@ -114,20 +111,23 @@ export class BridgeService {
   }
 
   hasConnection(table: ITable): boolean {
-    return Object.values(this.arrowsCache).filter(connection => {
-      return connection.source.tableName == table.name ||
-      connection.target.tableName === table.name
-    }).length > 0;
+    return (
+      Object.values(this.arrowsCache).filter(connection => {
+        return (
+          connection.source.tableName === table.name ||
+          connection.target.tableName === table.name
+        );
+      }).length > 0
+    );
   }
-
-
 
   findCorrespondingTables(table: ITable): string[] {
     const source = table.area === 'source' ? 'target' : 'source';
-    const data = Object.values(this.arrowsCache).filter(connection => {
-      return connection[table.area].tableName == table.name
-    })
-    .map(arrow => arrow[source]);
+    const data = Object.values(this.arrowsCache)
+      .filter(connection => {
+        return connection[table.area].tableName === table.name;
+      })
+      .map(arrow => arrow[source]);
 
     return uniqBy(data, 'tableName').map(row => row.tableName);
   }
@@ -182,7 +182,3 @@ export class BridgeService {
   //   };
   // }
 }
-
-
-
-

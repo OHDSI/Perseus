@@ -4,6 +4,7 @@ import { StateService } from 'src/app/services/state.service';
 import { DataService } from 'src/app/services/data.service';
 import { CommonService } from 'src/app/services/common.service';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-mapping',
@@ -40,8 +41,8 @@ export class MappingComponent implements OnInit {
 
   generateMappingJson() {
     const mappingJSON = this.bridgeService.generateMapping();
-    this.dataService.getXml(mappingJSON).subscribe(result => {
-      console.log(result);
+    this.dataService.getZippedXml(mappingJSON).subscribe(file => {
+      saveAs(file);
     });
   }
 

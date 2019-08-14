@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { of, Observable, forkJoin, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { StateService } from './state.service';
 import { Row } from 'src/app/models/row';
@@ -81,7 +81,59 @@ export class DataService {
     return tables;
   }
 
-  getXml(mapping: Mapping): Observable<any> {
+  getZippedXml(mapping: Mapping): Observable<any> {
+    return this._getXml(mapping).pipe(
+      switchMap(jsonMapping => {
+        const headers = new Headers();
+        headers.set('Content-type', 'application/json; charset=UTF-8');
+
+        const init = {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(mapping)
+        };
+
+        const url = `${URL}/get_zip_xml`;
+        const request = new Request(url, init);
+
+        return from(
+          new Promise((resolve, reject) => {
+            fetch(request)
+              .then(responce => responce.blob())
+              .then(blob => {
+                const file = new File([blob], 'mapping-xml.zip');
+                resolve(file);
+              });
+          })
+        );
+      })
+    );
+  }
+
+  // getXml(mapping: Mapping): Promise<any> {
+  //   const headers = new Headers();
+  //   headers.set('Content-type', 'application/json; charset=UTF-8');
+
+  //   const init = {
+  //     method: 'POST',
+  //     headers: headers,
+  //     body: JSON.stringify(mapping)
+  //   };
+
+  //   const url = `${URL}/get_xml`;
+  //   const request = new Request(url, init);
+
+  //   return new Promise((resolve, reject) => {
+  //     fetch(request)
+  //     .then(responce => responce.blob())
+  //     .then(blob => {
+  //       const file = new File([blob], 'mappings.json');
+  //       resolve(file);
+  //     });
+  //   });
+  // }
+
+  private _getXml(mapping: Mapping) {
     const path = `${URL}/get_xml`;
     return this.httpClient.post(path, mapping);
   }
