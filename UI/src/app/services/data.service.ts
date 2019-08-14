@@ -88,9 +88,8 @@ export class DataService {
         headers.set('Content-type', 'application/json; charset=UTF-8');
 
         const init = {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(mapping)
+          method: 'GET',
+          headers
         };
 
         const url = `${URL}/get_zip_xml`;
