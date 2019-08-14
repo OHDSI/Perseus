@@ -13,7 +13,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0')
 ```
 and run simple where rest_api.py located
-> pythom rest_api.py
+> python rest_api.py
 
 or
 ```python
