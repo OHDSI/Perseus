@@ -46,7 +46,11 @@ export class MappingComponent implements OnInit {
     const mapping = this.bridgeService.generateMapping();
 
     this.dataService.getXml(mapping).subscribe(json => {
-      const previewDialog = this.matDialog.open(PreviewPopupComponent, { data: json});
+      const previewDialog = this.matDialog.open(PreviewPopupComponent, {
+        data: json,
+        width: '80vh',
+        height: '80vh'
+      });
 
       // previewDialog.afterClosed().subscribe(save => {
       // });

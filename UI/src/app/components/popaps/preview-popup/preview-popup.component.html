@@ -1,1 +1,4 @@
-{{mappingJson}}
+<div class="xmls" *ngFor="let tablename of tables">
+  <div class="table-name">{{tablename | prettyName}}</div>
+  <div class="table-xml">{{data[tablename] | prettyXml}}</div>
+</div>

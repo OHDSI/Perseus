@@ -7,16 +7,14 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
   styleUrls: ['./preview-popup.component.scss']
 })
 export class PreviewPopupComponent implements OnInit {
-  get mappingJson(): string {
-    return this.json;
+
+  get tables(): string[] {
+    return Object.keys(this.data);
   }
-  private json: string;
 
   constructor(
     public dialogRef: MatDialogRef<PreviewPopupComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.json = JSON.stringify(data);
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
 

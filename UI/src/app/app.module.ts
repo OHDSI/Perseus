@@ -21,6 +21,7 @@ import { CommentService } from './services/comment.service';
 import { CdmCustomMaterialModule } from './common/cdm-custom-material.module';
 import { SampleDataPopupComponent } from './components/popaps/sample-data-popup/sample-data-popup.component';
 import { PreviewPopupComponent } from './components/popaps/preview-popup/preview-popup.component';
+import { CdmCommonModule } from './common/cdm-common.module';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { PreviewPopupComponent } from './components/popaps/preview-popup/preview
     HttpClientModule,
     AppRoutingModule,
     PanelModule,
-    CdmCustomMaterialModule
+    CdmCustomMaterialModule,
+    CdmCommonModule
   ],
   providers: [DataService, CommonService, BridgeService, StateService, CommentService],
   bootstrap: [AppComponent]

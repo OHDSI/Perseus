@@ -16,20 +16,20 @@ import { MatListModule } from '@angular/material/list';
 
 import { PanelComponent } from 'src/app/components/panel/panel.component';
 import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
-import { TypeToIconPipe } from 'src/app/pipes/type-to-icon.pipe';
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
 import { DrawService } from 'src/app/services/draw.service';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
+import { CdmCustomMaterialModule } from 'src/app/common/cdm-custom-material.module';
+import { CdmCommonModule } from 'src/app/common/cdm-common.module';
 
 @NgModule({
   declarations: [
     PanelComponent,
     PanelTableComponent,
-    TypeToIconPipe,
     DraggableDirective,
-    FilterComponent
+    FilterComponent,
   ],
   exports: [
     PanelComponent,
@@ -42,18 +42,9 @@ import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/c
   ],
   imports: [
   MatExpansionModule,
-    MatTableModule,
-    MatMenuModule,
-    MatCardModule,
-    MatInputModule,
     CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatRadioModule,
-    MatCheckboxModule,
-    MatListModule
+    CdmCustomMaterialModule,
+    CdmCommonModule
   ],
   providers: [DrawService]
 
