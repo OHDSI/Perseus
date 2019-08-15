@@ -15,11 +15,12 @@ import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-b
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StateService } from 'src/app/services/state.service';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
-import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { CommentService } from './services/comment.service';
 import { CdmCustomMaterialModule } from './common/cdm-custom-material.module';
+import { SampleDataPopupComponent } from './components/popaps/sample-data-popup/sample-data-popup.component';
+import { PreviewPopupComponent } from './components/popaps/preview-popup/preview-popup.component';
 
 @NgModule({
   declarations: [
@@ -32,12 +33,14 @@ import { CdmCustomMaterialModule } from './common/cdm-custom-material.module';
     BridgeButtonComponent,
     ValuesPopapComponent,
     SampleDataPopupComponent,
-    RulesPopupComponent
+    RulesPopupComponent,
+    PreviewPopupComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
     SampleDataPopupComponent,
-    RulesPopupComponent
+    RulesPopupComponent,
+    PreviewPopupComponent
   ],
   imports: [
   BrowserModule,

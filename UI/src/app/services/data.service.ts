@@ -82,7 +82,7 @@ export class DataService {
   }
 
   getZippedXml(mapping: Mapping): Observable<any> {
-    return this._getXml(mapping).pipe(
+    return this.getXml(mapping).pipe(
       switchMap(jsonMapping => {
         const headers = new Headers();
         headers.set('Content-type', 'application/json; charset=UTF-8');
@@ -109,30 +109,7 @@ export class DataService {
     );
   }
 
-  // getXml(mapping: Mapping): Promise<any> {
-  //   const headers = new Headers();
-  //   headers.set('Content-type', 'application/json; charset=UTF-8');
-
-  //   const init = {
-  //     method: 'POST',
-  //     headers: headers,
-  //     body: JSON.stringify(mapping)
-  //   };
-
-  //   const url = `${URL}/get_xml`;
-  //   const request = new Request(url, init);
-
-  //   return new Promise((resolve, reject) => {
-  //     fetch(request)
-  //     .then(responce => responce.blob())
-  //     .then(blob => {
-  //       const file = new File([blob], 'mappings.json');
-  //       resolve(file);
-  //     });
-  //   });
-  // }
-
-  private _getXml(mapping: Mapping) {
+  getXml(mapping: Mapping): Observable<any> {
     const path = `${URL}/get_xml`;
     return this.httpClient.post(path, mapping);
   }

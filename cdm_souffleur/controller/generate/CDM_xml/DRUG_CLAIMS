@@ -1,4 +1,2 @@
-<QueryDefinition><Query>select age,
-agegrp,
-awp
-from drug_claims  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID</Query></QueryDefinition>
+<QueryDefinition><Query>select age as ATTRIBUTE_DEFINITION_ID
+from drug_claims  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID</Query><AttributeDefinition><AttributeDefinitionDefinition><ATTRIBUTE_DEFINITION_ID>ATTRIBUTE_DEFINITION_ID</ATTRIBUTE_DEFINITION_ID></AttributeDefinitionDefinition></AttributeDefinition></QueryDefinition>

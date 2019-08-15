@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { SampleDataPopupComponent } from 'src/app/components/popaps/sample-data-popup/sample-data-popup.component';
 import { CommonService } from 'src/app/services/common.service';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StateService } from 'src/app/services/state.service';
+import { SampleDataPopupComponent } from '../popaps/sample-data-popup/sample-data-popup.component';
 
 @Component({
   selector: 'app-panel',

@@ -5,6 +5,8 @@ import { DataService } from 'src/app/services/data.service';
 import { CommonService } from 'src/app/services/common.service';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { saveAs } from 'file-saver';
+import { MatDialog } from '@angular/material';
+import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.component';
 
 @Component({
   selector: 'app-mapping',
@@ -18,7 +20,8 @@ export class MappingComponent implements OnInit {
     private stateService: StateService,
     private dataService: DataService,
     private commonService: CommonService,
-    private bridgeService: BridgeService
+    private bridgeService: BridgeService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -37,6 +40,17 @@ export class MappingComponent implements OnInit {
 
   trackByFn(index) {
     return index;
+  }
+
+  previewMapping() {
+    const mapping = this.bridgeService.generateMapping();
+
+    this.dataService.getXml(mapping).subscribe(json => {
+      const previewDialog = this.matDialog.open(PreviewPopupComponent, { data: json});
+
+      // previewDialog.afterClosed().subscribe(save => {
+      // });
+    });
   }
 
   generateMappingJson() {
