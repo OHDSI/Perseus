@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { CommonService } from 'src/app/services/common.service';
@@ -15,6 +15,8 @@ import { SampleDataPopupComponent } from '../popaps/sample-data-popup/sample-dat
 export class PanelComponent implements OnInit {
   @Input() table: ITable;
 
+  @ViewChild('exppanelheader') panel: any;
+
   get title() {
     return this.table.name;
   }
@@ -23,25 +25,22 @@ export class PanelComponent implements OnInit {
     return this.table.area;
   }
 
-  get isTablelHasALink(): boolean {
-    return this._isPanelHasALink;
-  }
-  private _isPanelHasALink: boolean;
-
   constructor(
     public dialog: MatDialog,
     private commonService: CommonService,
     private bridgeService: BridgeService,
-    private stateService: StateService) {
-  }
+    private stateService: StateService
+  ) {}
 
   ngOnInit() {
-    // this.bridgeService.deleteAll.subscribe(_ => {
-    //   this.rowConnections = {};
-    // });
+    this.bridgeService.deleteAll.subscribe(_ => {
+      this.panel._element.nativeElement.classList.remove('table-has-a-link-true');
+    });
 
     this.bridgeService.connection.subscribe(_ => {
-      this._isPanelHasALink = this.bridgeService.hasConnection(this.table);
+      if (this.bridgeService.hasConnection(this.table)) {
+        this.panel._element.nativeElement.classList.add('table-has-a-link-true');
+      }
     });
   }
 
@@ -62,7 +61,6 @@ export class PanelComponent implements OnInit {
       this.bridgeService.refreshAll();
       this.hideArrowsIfCorespondingTableasAreClosed(this.table);
     }, 200);
-
   }
 
   openSampleDataDialog(e) {
@@ -78,12 +76,14 @@ export class PanelComponent implements OnInit {
 
   setExpandedFlagOnSourceAndTargetTables(table: ITable, expanded: boolean) {
     this.stateService.state[table.area].tables
-    .filter(t => t.id === table.id)
-    .forEach(t => t.expanded = expanded);
+      .filter(t => t.id === table.id)
+      .forEach(t => (t.expanded = expanded));
   }
 
   hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
-    const corespondingTableNames = this.bridgeService.findCorrespondingTables(table);
+    const corespondingTableNames = this.bridgeService.findCorrespondingTables(
+      table
+    );
 
     corespondingTableNames.forEach(name => {
       const correspondentTable = this.stateService.findTable(name);
