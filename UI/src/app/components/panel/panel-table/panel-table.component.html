@@ -86,6 +86,6 @@
     mat-row
     *matRowDef="let row; columns: displayedColumns"
     (mousedown)="setActiveRow(row)"
-    class="draggable item-{{row.tableName}}-{{row.name}}"
+    class="draggable item-{{row.tableName}}-{{row.name}} row-has-a-link-{{isRowHasALink(row)}}"
   ></tr>
 </table>

@@ -11,7 +11,7 @@ table {
     }
 
     .mat-header-cell {
-        padding-left: 10px;  
+        padding-left: 10px;
     }
 
     .caption-item {
@@ -77,4 +77,9 @@ table {
     .draggable {
         cursor: move;
     }
+}
+
+.row-has-a-link-true {
+  border-right: 2px solid #80808033;
+  background-color: #0000000d;
 }

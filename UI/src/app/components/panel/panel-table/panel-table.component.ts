@@ -1,4 +1,12 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
+  OnInit
+} from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
 import { IRow } from 'src/app/models/row';
@@ -8,6 +16,7 @@ import { OverlayService } from 'src/app/services/overlay.service';
 import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { MatExpansionPanel } from '@angular/material';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-panel-table',
@@ -16,21 +25,12 @@ import { MatExpansionPanel } from '@angular/material';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [OverlayService]
 })
-
-export class PanelTableComponent {
+export class PanelTableComponent implements OnInit {
   @Input() table: ITable;
   @Input() displayedColumns: string[];
-  @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
+  @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
 
-  constructor(
-    private commonService: CommonService,
-    private overlayService: OverlayService,
-    private cdRef: ChangeDetectorRef
-  ) {};
-
-  get visibleRows() {
-    return this.rows.filter((row: IRow) => row.visible);
-  }
+  private rowConnections = {};
 
   get rows() {
     return this.table.rows;
@@ -47,6 +47,40 @@ export class PanelTableComponent {
     return this.table.rows.filter((row: IRow) => row.visible).length;
   }
 
+  constructor(
+    private commonService: CommonService,
+    private bridgeService: BridgeService,
+    private overlayService: OverlayService,
+    private cdRef: ChangeDetectorRef
+  ) {}
+
+  get visibleRows() {
+    return this.rows.filter((row: IRow) => row.visible);
+  }
+
+  ngOnInit(): void {
+    this.bridgeService.connection.subscribe(connection => {
+      if (this.table.area === 'source') {
+        this.rows.forEach(row => {
+          if (
+            row.tableId === connection.source.tableId &&
+            row.id === connection.source.id
+          ) {
+            this.rowConnections[row.key] = true;
+          }
+        });
+      }
+    });
+  }
+
+  isRowHasALink(row: IRow): boolean {
+    if (typeof this.rowConnections[row.key] === 'undefined') {
+      return false;
+    } else {
+      return this.rowConnections[row.key];
+    }
+  }
+
   setActiveRow(row: IRow) {
     this.commonService.activeRow = row;
   }
@@ -59,7 +93,11 @@ export class PanelTableComponent {
   openCommentDialog(anchor: HTMLElement) {
     const component = CommentPopupComponent;
     const strategyFor = `comments-${this._getArea()}`;
-    const overlayRef: OverlayRef = this.overlayService.openDialog(anchor, component, strategyFor);
+    const overlayRef: OverlayRef = this.overlayService.openDialog(
+      anchor,
+      component,
+      strategyFor
+    );
     overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 

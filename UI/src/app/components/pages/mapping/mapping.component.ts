@@ -64,7 +64,7 @@ export class MappingComponent implements OnInit {
     });
   }
 
-  swipeAllMappings() {
+  wipeAllMappings() {
     this.bridgeService.deleteAllArrows();
   }
 }

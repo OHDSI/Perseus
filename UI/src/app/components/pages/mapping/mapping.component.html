@@ -19,7 +19,7 @@
     mat-icon-button
     matTooltip="Delete all mappings"
     aria-label="delete all mappings"
-    (click)="swipeAllMappings()"
+    (click)="wipeAllMappings()"
   >
     <mat-icon>delete</mat-icon>
   </button>
@@ -53,7 +53,7 @@
         </ng-container>
       </ng-container>
     </app-area>
-
+    <!--Bridge-->
     <div class="hint">
       <div class="patch-top"></div>
       <svg class="canvas">
@@ -97,7 +97,7 @@
       </p>
       <div class="patch-bottom"></div>
     </div>
-
+    <!--End-of-the-Bridge-->
     <app-area area="target">
       <ng-container
         *ngFor="let table of state?.target.tables; trackBy: trackByFn"

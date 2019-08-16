@@ -23,7 +23,7 @@ export class PanelComponent implements OnInit {
     return this.table.area;
   }
 
-  get isPanelHasALink(): boolean {
+  get isTablelHasALink(): boolean {
     return this._isPanelHasALink;
   }
   private _isPanelHasALink: boolean;

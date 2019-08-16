@@ -9,6 +9,11 @@ import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
 
+export interface IConnection {
+  source: IRow;
+  target: IRow;
+}
+
 @Injectable()
 export class BridgeService {
   private sourcerow: IRow;
@@ -17,7 +22,7 @@ export class BridgeService {
 
   arrowsCache: ArrowCache = {};
 
-  connection = new Subject();
+  connection = new Subject<IConnection>();
 
   constructor(
     private commonService: CommonService,
@@ -47,16 +52,18 @@ export class BridgeService {
 
   connect() {
     const arrowId = this.drawService.drawLine(this.sourceRow, this.targetRow);
-    this.arrowsCache[arrowId] = {
+    const connection: IConnection = {
       source: this.sourceRow,
       target: this.targetRow
     };
+
+    this.arrowsCache[arrowId] = connection;
 
     // ???
     this.commonService.linked = true;
 
     //
-    this.connection.next();
+    this.connection.next(connection);
   }
 
   recalculateConnectorsPositions() {
@@ -117,6 +124,14 @@ export class BridgeService {
           connection.source.tableName === table.name ||
           connection.target.tableName === table.name
         );
+      }).length > 0
+    );
+  }
+
+  hasRowConnection(row: IRow): boolean {
+    return (
+      Object.values(this.arrowsCache).filter(connection => {
+        return connection.source.id === row.id;
       }).length > 0
     );
   }
