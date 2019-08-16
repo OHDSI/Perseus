@@ -59,6 +59,16 @@ export class PanelTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.bridgeService.deleteAll.subscribe(_ => {
+      Object.keys(this.bridgeService.arrowsCache).forEach(key => {
+        this.bridgeService.arrowsCache[key].source.htmlElement.classList.remove(
+          'row-has-a-link-true'
+        );
+      });
+
+      this.rowConnections = {};
+    });
+
     this.bridgeService.connection.subscribe(connection => {
       if (this.table.area === 'source') {
         this.rows.forEach(row => {

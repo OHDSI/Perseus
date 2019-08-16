@@ -21,8 +21,9 @@ export class BridgeService {
   private targetrowrlement = null;
 
   arrowsCache: ArrowCache = {};
-
   connection = new Subject<IConnection>();
+
+  deleteAll = new Subject();
 
   constructor(
     private commonService: CommonService,
@@ -108,8 +109,9 @@ export class BridgeService {
   }
 
   deleteAllArrows() {
-    this.arrowsCache = {};
     this.drawService.removeAllConnectors();
+    this.deleteAll.next();
+    this.arrowsCache = {};
   }
 
   generateMapping() {

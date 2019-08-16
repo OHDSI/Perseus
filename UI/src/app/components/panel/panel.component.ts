@@ -36,6 +36,10 @@ export class PanelComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.bridgeService.deleteAll.subscribe(_ => {
+    //   this.rowConnections = {};
+    // });
+
     this.bridgeService.connection.subscribe(_ => {
       this._isPanelHasALink = this.bridgeService.hasConnection(this.table);
     });
