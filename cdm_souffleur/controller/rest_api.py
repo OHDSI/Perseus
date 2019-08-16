@@ -56,6 +56,9 @@ def get_lookups_call():
 
 @app.route('/get_xml', methods=['POST'])
 def xml():
+    """return XML for CDM builder in map {source_table: XML, } and
+    create file on back-end
+    """
     json = request.get_json()
     xml_ = get_xml(json)
     return jsonify(xml_)
@@ -63,6 +66,9 @@ def xml():
 
 @app.route('/get_zip_xml')
 def zip_xml_call():
+    """return attached ZIP of XML's from back-end folder
+    TODO  - now the folder is not cleared
+    """
     zip_xml()
     return send_from_directory(GENERATE_CDM_XML_ARCHIVE_PATH,
                                filename='.'.join((
