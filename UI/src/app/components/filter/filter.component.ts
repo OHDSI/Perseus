@@ -5,13 +5,13 @@ import { MatMenuTrigger } from '@angular/material';
 import { DrawService } from 'src/app/services/draw.service';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-
 export class FilterComponent implements OnInit {
   @Input() data: ITable[] | IRow[];
   @Input() menuTrigger: MatMenuTrigger;
@@ -21,7 +21,7 @@ export class FilterComponent implements OnInit {
     [key: number]: boolean;
   } = {};
 
-  constructor(private drawService: DrawService) {}
+  constructor(private bridgeService: BridgeService) {}
 
   ngOnInit() {
     if (this.data) {
@@ -36,36 +36,28 @@ export class FilterComponent implements OnInit {
   }
 
   isChecked(item: ITable | IRow) {
-    const {id} = item;
+    const { id } = item;
     return this.checkboxes[id];
   }
 
   onCheckboxChange(e: MatCheckboxChange, item: ITable | IRow) {
-    const {id} = item;
+    const { id } = item;
     this.checkboxes[id] = e.checked;
   }
 
   selectAll() {
-    for (let id in this.checkboxes) {
-      this.checkboxes[id] = true;
-    }
+    Object.values(this.checkboxes).forEach(value => value = true);
   }
+
   deselectAll() {
-    for (let id in this.checkboxes) {
-      this.checkboxes[id] = false;
-    }
+    Object.values(this.checkboxes).forEach(value => value = false);
   }
 
   apply() {
-    const length = Object.keys(this.checkboxes).length;
-    if (length) {
-      for (const key in this.checkboxes) {
-        this.data[key].visible = this.checkboxes[key];
-      }
-    }
+    Object.keys(this.checkboxes).forEach(key => this.data[key].visible = this.checkboxes[key]);
 
+    setTimeout(() => this.bridgeService.refreshAll(), 50);
 
-    this.drawService.removeAllConnectors();
     this.close();
   }
 
