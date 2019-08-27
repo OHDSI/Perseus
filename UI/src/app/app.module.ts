@@ -23,6 +23,9 @@ import { SampleDataPopupComponent } from './components/popaps/sample-data-popup/
 import { PreviewPopupComponent } from './components/popaps/preview-popup/preview-popup.component';
 import { CdmCommonModule } from './common/cdm-common.module';
 
+import { GridModule } from 'ng2-qgrid';
+import { ThemeModule } from 'ng2-qgrid/theme/material';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,7 +53,9 @@ import { CdmCommonModule } from './common/cdm-common.module';
     AppRoutingModule,
     PanelModule,
     CdmCustomMaterialModule,
-    CdmCommonModule
+    CdmCommonModule,
+    GridModule,
+    ThemeModule
   ],
   providers: [DataService, CommonService, BridgeService, StateService, CommentService],
   bootstrap: [AppComponent]
