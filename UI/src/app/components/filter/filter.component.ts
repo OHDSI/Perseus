@@ -3,7 +3,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatMenuTrigger } from '@angular/material';
 
 import { DrawService } from 'src/app/services/draw.service';
-import { ITable } from 'src/app/models/table';
+import { ITable, Table } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 
@@ -51,6 +51,14 @@ export class FilterComponent implements OnInit {
 
   deselectAll() {
     Object.values(this.checkboxes).forEach(value => value = false);
+  }
+
+  canCheck(item): boolean {
+    if (item instanceof Table) {
+      return this.bridgeService.hasConnection(item);
+    } else {
+      return false;
+    }
   }
 
   apply() {
