@@ -4,7 +4,10 @@ import { NgModule } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+
+// CDK imports
 import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import {
   MatAutocompleteModule,
@@ -69,7 +72,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatTableModule,
     MatFormFieldModule,
     FormsModule,
-    OverlayModule
+    OverlayModule,
+    DragDropModule
   ],
   exports: [
     MatMenuModule,
@@ -102,7 +106,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatTableModule,
     MatFormFieldModule,
     FormsModule,
-    OverlayModule
+    OverlayModule,
+    DragDropModule
   ],
 })
 export class CdmCustomMaterialModule { }
