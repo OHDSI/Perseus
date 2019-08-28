@@ -25,6 +25,7 @@ import { CdmCommonModule } from './common/cdm-common.module';
 
 import { GridModule } from 'ng2-qgrid';
 import { ThemeModule } from 'ng2-qgrid/theme/material';
+import { ComfyComponent } from './components/comfy/comfy.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ThemeModule } from 'ng2-qgrid/theme/material';
     ValuesPopapComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
-    PreviewPopupComponent
+    PreviewPopupComponent,
+    ComfyComponent
   ],
   entryComponents: [
     BridgeButtonComponent,

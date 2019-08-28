@@ -14,7 +14,7 @@ import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent implements OnInit {
-  busy = true;
+  busy = false;
 
   constructor(
     private stateService: StateService,
@@ -24,11 +24,7 @@ export class MappingComponent implements OnInit {
     private matDialog: MatDialog
   ) {}
 
-  ngOnInit() {
-    this.dataService.initialize().subscribe(_ => {
-      this.busy = false;
-    });
-  }
+  ngOnInit() {}
 
   get hint() {
     return this.commonService.hintStatus;

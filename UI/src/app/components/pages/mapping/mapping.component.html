@@ -25,11 +25,6 @@
   </button>
 </div>
 
-<div class="mapping-component-progress" *ngIf="busy">
-  <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
-  </mat-progress-spinner>
-</div>
-
 <section *ngIf="!busy">
   <main class="main">
     <app-area area="source">

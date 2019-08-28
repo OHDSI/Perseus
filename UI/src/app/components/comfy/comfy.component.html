@@ -1,0 +1,40 @@
+<div class="comfy">
+  <div class="mapping-component-progress" *ngIf="busy">
+    <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
+    </mat-progress-spinner>
+  </div>
+  <div class="vertical-container">
+    <h2>Source tables</h2>
+
+    <div
+      cdkDropList
+      #sourceList="cdkDropList"
+      [cdkDropListData]="source"
+      [cdkDropListConnectedTo]="sourceConnectedTo"
+      class="vertical-list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="vertical-box" *ngFor="let item of source" cdkDrag>
+        {{ item }}
+      </div>
+    </div>
+  </div>
+
+  <div class="vertical-container" cdkDropListGroup>
+    <h2>Destination</h2>
+
+    <div
+      *ngFor="let destinationTable of destination"
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      id="idx-{{destinationTable[0]}}"
+      [cdkDropListData]="destinationTable"
+      class="horizontal-list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="horizontal-box" *ngFor="let tableName of destinationTable">
+        {{ tableName }}
+      </div>
+    </div>
+  </div>
+</div>
