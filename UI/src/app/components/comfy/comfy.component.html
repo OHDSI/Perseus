@@ -24,15 +24,15 @@
     <h2>Destination</h2>
 
     <div
-      *ngFor="let destinationTable of destination"
+      *ngFor="let targetName of targetTables"
       cdkDropList
       cdkDropListOrientation="horizontal"
-      id="idx-{{destinationTable[0]}}"
-      [cdkDropListData]="destinationTable"
+      id="{{ target[targetName].name }}"
+      [cdkDropListData]="target[targetName].data"
       class="horizontal-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div class="horizontal-box" *ngFor="let tableName of destinationTable">
+      <div class="horizontal-box" *ngFor="let tableName of target[targetName].data">
         {{ tableName }}
       </div>
     </div>
