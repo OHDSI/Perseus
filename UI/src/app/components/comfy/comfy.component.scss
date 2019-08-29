@@ -1,5 +1,5 @@
 .comfy {
-  padding-right: 10px;
+  padding: 10px;
 }
 .vertical-container {
   width: 400px;
@@ -10,26 +10,32 @@
 }
 
 .vertical-list {
-  border: solid 1px #ccc;
+  width: 500px;
+  max-width: 100%;
   min-height: 60px;
+  display: block;
   background: white;
   border-radius: 4px;
   overflow: hidden;
-  display: block;
 }
 
 .vertical-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
+  padding: 5px 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  cursor: move;
   background: white;
   font-size: 14px;
+}
+
+.vertical-placeholder {
+  width: 150px;
+  background: #ccc;
+  border: dotted 3px #999;
+  min-height: 60px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .vertical-box:last-child {
@@ -66,6 +72,7 @@
   background: white;
   border-radius: 4px;
   overflow: hidden;
+  margin-bottom: 5px;
 }
 
 .horizontal-box {
@@ -84,6 +91,10 @@
   flex-basis: 0;
 }
 
+.horizontal-box:first-child {
+  border-left: solid 5px rgba(9, 129, 248, 0.45);;
+}
+
 .horizontal-box:last-child {
   border: none;
 }
@@ -91,3 +102,18 @@
 .horizontal-list.cdk-drop-list-dragging .horizontal-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.source-table {
+    border-radius: 5px;
+    padding: 1.428571428571429rem;
+    background-color: #ffca05;
+    color: #000d37;
+    font-family: Roboto;
+    font-size: 1.142857142857143rem;
+    line-height: 1.357142857142857rem;
+    width: 100%;
+    text-transform: uppercase;
+    cursor: move;
+}
+
+

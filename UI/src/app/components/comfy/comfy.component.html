@@ -14,8 +14,10 @@
       class="vertical-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div class="vertical-box" *ngFor="let item of source" cdkDrag>
-        {{ item }}
+      <div class="vertical-box" *ngFor="let item of source" >
+        <div class="source-table" cdkDrag>
+          {{ item  }}
+        </div>
       </div>
     </div>
   </div>
@@ -32,7 +34,11 @@
       class="horizontal-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div class="horizontal-box" *ngFor="let tableName of target[targetName].data">
+      <div
+        class="horizontal-box"
+        *ngFor="let tableName of target[targetName].data"
+      >
+        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
         {{ tableName }}
       </div>
     </div>
