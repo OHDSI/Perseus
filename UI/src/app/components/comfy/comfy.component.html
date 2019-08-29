@@ -3,7 +3,7 @@
     <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
     </mat-progress-spinner>
   </div>
-  <div class="vertical-container">
+  <div class="vertical-container source">
     <h2>Source tables</h2>
 
     <div
@@ -14,21 +14,22 @@
       class="vertical-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div class="vertical-box" *ngFor="let item of source" >
-        <div class="source-table" cdkDrag>
-          {{ item  }}
+      <div class="vertical-box" *ngFor="let item of source">
+        <div class="table-description source" cdkDrag>
+          {{ item }}
         </div>
       </div>
     </div>
   </div>
 
-  <div class="vertical-container" cdkDropListGroup>
+  <div class="vertical-container destination" cdkDropListGroup>
     <h2>Destination</h2>
 
     <div
       *ngFor="let targetName of targetTables"
       cdkDropList
       cdkDropListOrientation="horizontal"
+      cdkDropListSortingDisabled
       id="{{ target[targetName].name }}"
       [cdkDropListData]="target[targetName].data"
       class="horizontal-list"
@@ -36,10 +37,11 @@
     >
       <div
         class="horizontal-box"
-        *ngFor="let tableName of target[targetName].data"
+        *ngFor="let item of target[targetName].data"
       >
-        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-        {{ tableName }}
+        <div class="table-description target">
+          {{ item }}
+        </div>
       </div>
     </div>
   </div>
