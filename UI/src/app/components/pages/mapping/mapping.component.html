@@ -29,7 +29,7 @@
   <main class="main">
     <app-area area="source">
       <ng-container
-        *ngFor="let table of state?.source.tables; trackBy: trackByFn"
+        *ngFor="let table of source; trackBy: trackByFn"
       >
         <ng-container *ngIf="table.visible">
           <app-panel [table]="table">
@@ -95,7 +95,7 @@
     <!--End-of-the-Bridge-->
     <app-area area="target">
       <ng-container
-        *ngFor="let table of state?.target.tables; trackBy: trackByFn"
+        *ngFor="let table of target; trackBy: trackByFn"
       >
         <ng-container *ngIf="table.visible">
           <app-panel [table]="table"></app-panel>

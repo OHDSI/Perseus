@@ -1,5 +1,8 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  MatDialog,
+  MatExpansionPanel
+} from '@angular/material';
 
 import { CommonService } from 'src/app/services/common.service';
 import { ITable } from 'src/app/models/table';
@@ -15,7 +18,8 @@ import { SampleDataPopupComponent } from '../popaps/sample-data-popup/sample-dat
 export class PanelComponent implements OnInit {
   @Input() table: ITable;
 
-  @ViewChild('exppanelheader') panel: any;
+  @ViewChild('exppanelheader') panelHheader: any;
+  @ViewChild('matpanel') panel: MatExpansionPanel;
 
   get title() {
     return this.table.name;
@@ -34,12 +38,16 @@ export class PanelComponent implements OnInit {
 
   ngOnInit() {
     this.bridgeService.deleteAll.subscribe(_ => {
-      this.panel._element.nativeElement.classList.remove('table-has-a-link-true');
+      this.panelHheader._element.nativeElement.classList.remove(
+        'table-has-a-link-true'
+      );
     });
 
     this.bridgeService.connection.subscribe(_ => {
       if (this.bridgeService.hasConnection(this.table)) {
-        this.panel._element.nativeElement.classList.add('table-has-a-link-true');
+        this.panelHheader._element.nativeElement.classList.add(
+          'table-has-a-link-true'
+        );
       }
     });
   }

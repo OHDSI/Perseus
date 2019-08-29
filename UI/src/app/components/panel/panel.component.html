@@ -1,5 +1,8 @@
-<mat-expansion-panel #matpanel (opened)="onOpen()" (closed)="onClose()">
-  <mat-expansion-panel-header #exppanelheader class="mat-expansion-panel-header panel-header-{{table.name}}">
+<mat-expansion-panel #matpanel (opened)="onOpen()" (closed)="onClose()" expanded="true">
+  <mat-expansion-panel-header
+    #exppanelheader
+    class="mat-expansion-panel-header panel-header-{{ table.name }}"
+  >
     <mat-panel-title>
       <mat-icon
         (click)="openSampleDataDialog($event)"
@@ -11,7 +14,6 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <app-panel-table
-    *ngIf="matpanel.expanded"
     [table]="table"
     [displayedColumns]="[
       'column_indicator',

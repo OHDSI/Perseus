@@ -1,44 +1,53 @@
-<div class="comfy">
-  <div class="mapping-component-progress" *ngIf="busy">
-    <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
-    </mat-progress-spinner>
+<div class="comfy-container">
+  <div class="instruction">
+    In order to make mapping, move source table to the target table
   </div>
-  <div class="vertical-container source">
-    <h2>Source tables</h2>
+  <div class="comfy">
+    <div class="mapping-component-progress" *ngIf="busy">
+      <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
+      </mat-progress-spinner>
+    </div>
+    <div class="vertical-container source">
+      <h2>Source tables</h2>
 
-    <div
-      cdkDropList
-      #sourceList="cdkDropList"
-      [cdkDropListData]="source"
-      [cdkDropListConnectedTo]="sourceConnectedTo"
-      class="vertical-list"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <div class="vertical-box" *ngFor="let item of source">
-        <div class="table-description source caption" cdkDrag>
-          {{ item }}
+      <div
+        cdkDropList
+        #sourceList="cdkDropList"
+        [cdkDropListData]="source"
+        [cdkDropListConnectedTo]="sourceConnectedTo"
+        class="vertical-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div class="vertical-box" *ngFor="let item of source">
+          <div class="table-description source caption" cdkDrag>
+            {{ item }}
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="vertical-container destination" cdkDropListGroup>
-    <h2>Destination</h2>
+    <div class="vertical-container destination" cdkDropListGroup>
+      <h2>Target tables</h2>
 
-    <div
-      *ngFor="let targetName of targetTables"
-      cdkDropList
-      cdkDropListOrientation="horizontal"
-      id="{{ target[targetName].name }}"
-      [cdkDropListData]="target[targetName].data"
-      class="horizontal-list"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <div class="horizontal-box" *ngFor="let item of target[targetName].data">
-        <div class="table-description target caption">
-          {{ item }}
+      <div
+        *ngFor="let targetName of targetTables"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        id="{{ target[targetName].name }}"
+        [cdkDropListData]="target[targetName].data"
+        class="horizontal-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div
+          class="horizontal-box"
+          *ngFor="let tableName of target[targetName].data"
+        >
+          <div class="table-description target caption" (click)="openMapping(tableName)">
+            {{ tableName }}
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+

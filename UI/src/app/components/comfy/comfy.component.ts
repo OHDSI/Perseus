@@ -6,6 +6,8 @@ import {
   moveItemInArray,
   transferArrayItem
 } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material';
+import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
 
 @Component({
   selector: 'app-comfy',
@@ -29,7 +31,8 @@ export class ComfyComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private stateService: StateService
+    private stateService: StateService,
+    private mappingDialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -69,10 +72,6 @@ export class ComfyComponent implements OnInit {
 
       const targetname = event.container.id.split('-')[1];
       this.setFirstElementAlwaysOnTop(targetname);
-
-      // setTimeout(() => {
-
-      // }, 50);
     }
   }
 
@@ -86,5 +85,24 @@ export class ComfyComponent implements OnInit {
     const temp = data[0];
     data[0] = first;
     data[index] = temp;
+  }
+
+  openMapping(targetTableName: string): void {
+    const targettable = this.state.target.tables.filter(table => table.name === targetTableName);
+    const {data} = this.target[targetTableName];
+
+    const sourcetable = this.state.source.tables.filter(table => {
+      const sourceTablesNames = data.slice(1, data.length);
+      const index = sourceTablesNames.findIndex(name => name === table.name);
+      return index > -1;
+    });
+    const dialog = this.mappingDialog.open(MappingPopupComponent, {
+      width: '90vw',
+      height: '90vh',
+      data: {source: sourcetable,  target: targettable}
+    });
+
+    dialog.afterClosed().subscribe(save => {
+    });
   }
 }

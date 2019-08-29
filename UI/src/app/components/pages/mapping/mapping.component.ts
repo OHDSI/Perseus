@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { StateService } from 'src/app/services/state.service';
 import { DataService } from 'src/app/services/data.service';
@@ -7,6 +7,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { saveAs } from 'file-saver';
 import { MatDialog } from '@angular/material';
 import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.component';
+import { ITable } from 'src/app/models/table';
 
 @Component({
   selector: 'app-mapping',
@@ -14,6 +15,9 @@ import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent implements OnInit {
+  @Input() source: ITable[];
+  @Input() target: ITable[];
+
   busy = false;
 
   constructor(
@@ -24,7 +28,9 @@ export class MappingComponent implements OnInit {
     private matDialog: MatDialog
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
 
   get hint() {
     return this.commonService.hintStatus;
@@ -47,9 +53,6 @@ export class MappingComponent implements OnInit {
         width: '80vh',
         height: '80vh'
       });
-
-      // previewDialog.afterClosed().subscribe(save => {
-      // });
     });
   }
 

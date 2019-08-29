@@ -1,13 +1,20 @@
-.comfy {
+.comfy-container {
   padding: 10px;
+}
+
+.comfy {
   overflow: scroll;
   height: 100%;
   width: 100%;
   display: flex;
 }
 
-.vertical-container {
+.instruction{
+  font-size: medium;
+  font-weight: 400;
+}
 
+.vertical-container {
   max-width: 100%;
   margin: 0 25px 25px 0;
   vertical-align: top;
@@ -98,6 +105,10 @@
 
 .horizontal-box:first-child {
   border-left: solid 5px rgba(9, 129, 248, 0.68);
+  .table-description {
+    background-color:#ccc;
+    cursor: pointer;
+  }
 }
 
 .horizontal-box:last-child {
@@ -141,6 +152,8 @@
       overflow: hidden;
     }
 }
+
+
 
 
 

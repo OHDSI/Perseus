@@ -25,11 +25,13 @@ section {
 
         .patch-top {
             @extend .patch;
-            top: -94%
+            top: -94%;
+
         }
         .patch-bottom {
             @extend .patch;
             bottom: -100%;
+            //background-color: #F9F9F9;
         }
     }
 
@@ -51,7 +53,6 @@ section {
     height: 100%;
     position: absolute;
     z-index: 1000;
-    background-color: white;
 }
 
 .mapping-component-progress {
