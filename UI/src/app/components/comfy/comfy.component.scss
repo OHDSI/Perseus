@@ -89,16 +89,11 @@
 .horizontal-box {
   padding-right: 5px;
   color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  display: inline-block;
   box-sizing: border-box;
   cursor: pointer;
   background: white;
   font-size: 14px;
-  flex-grow: 1;
-  flex-basis: 0;
 }
 
 .horizontal-box:first-child {
@@ -137,6 +132,13 @@
       border-bottom-right-radius: 5px;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+    }
+
+    &.caption {
+      width: 150px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 }
 

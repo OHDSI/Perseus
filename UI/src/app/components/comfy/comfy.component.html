@@ -15,7 +15,7 @@
       (cdkDropListDropped)="drop($event)"
     >
       <div class="vertical-box" *ngFor="let item of source">
-        <div class="table-description source" cdkDrag>
+        <div class="table-description source caption" cdkDrag>
           {{ item }}
         </div>
       </div>
@@ -29,17 +29,13 @@
       *ngFor="let targetName of targetTables"
       cdkDropList
       cdkDropListOrientation="horizontal"
-      cdkDropListSortingDisabled
       id="{{ target[targetName].name }}"
       [cdkDropListData]="target[targetName].data"
       class="horizontal-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div
-        class="horizontal-box"
-        *ngFor="let item of target[targetName].data"
-      >
-        <div class="table-description target">
+      <div class="horizontal-box" *ngFor="let item of target[targetName].data">
+        <div class="table-description target caption">
           {{ item }}
         </div>
       </div>
