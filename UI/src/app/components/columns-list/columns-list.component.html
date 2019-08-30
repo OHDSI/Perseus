@@ -5,7 +5,7 @@
     maxBufferPx="400"
   >
     <mat-list-item role="listitem" *cdkVirtualFor="let item of data">
-      <span class="data-item">
+      <span class="data-item" (click)="onSelectColumn(item.name)">
         {{ item.name }}
       </span>
     </mat-list-item>

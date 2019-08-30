@@ -9,7 +9,10 @@
     </div>
     <div class="vertical-container">
       <h2>Source columns</h2>
-      <app-columns-list [data]="allSourceRows"></app-columns-list>
+      <app-columns-list
+        [data]="allSourceRows"
+        (columnsSelected)="findTables($event)"
+      ></app-columns-list>
     </div>
     <div class="vertical-container source">
       <h2>Source tables</h2>
@@ -23,7 +26,13 @@
         (cdkDropListDropped)="drop($event)"
       >
         <div class="vertical-box" *ngFor="let item of source">
-          <div class="table-description source caption" cdkDrag>
+          <div
+            class="table-description source caption"
+            cdkDrag
+            [attr.table]="item"
+            highlight
+            [values]="highlitedTables"
+          >
             {{ item }}
           </div>
         </div>

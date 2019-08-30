@@ -28,6 +28,7 @@ import { ThemeModule } from 'ng2-qgrid/theme/material';
 import { ComfyComponent } from './components/comfy/comfy.component';
 import { MappingPopupComponent } from './components/popaps/mapping-popup/mapping-popup.component';
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
+import { HighlightDirective } from './directives/highlight-table.directive';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ColumnsListComponent } from './components/columns-list/columns-list.com
     PreviewPopupComponent,
     ComfyComponent,
     MappingPopupComponent,
-    ColumnsListComponent
+    ColumnsListComponent,
+    HighlightDirective
   ],
   entryComponents: [
     BridgeButtonComponent,

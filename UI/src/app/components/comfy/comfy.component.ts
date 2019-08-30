@@ -30,6 +30,11 @@ export class ComfyComponent implements OnInit {
     return this.sourceRows;
   }
 
+  get highlitedTables(): string[] {
+    return this.highlitedtables;
+  }
+  private highlitedtables: string[] = [];
+
   source = [];
   target = {};
   sourceConnectedTo = [];
@@ -115,5 +120,18 @@ export class ComfyComponent implements OnInit {
     });
 
     dialog.afterClosed().subscribe(save => {});
+  }
+
+  findTables(selectedSourceColmns: string[]): void {
+    this.highlitedtables = this.state.source.tables
+      .filter(
+        table =>
+          selectedSourceColmns.findIndex(
+            selectedName => table.rows.findIndex(r => r.name === selectedName) > -1
+          ) > -1
+      )
+      .map(table => table.name);
+
+    this.source = Object.assign([], this.source);
   }
 }
