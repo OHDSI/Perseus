@@ -7,6 +7,10 @@
       <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
       </mat-progress-spinner>
     </div>
+    <div class="vertical-container">
+      <h2>Source columns</h2>
+      <app-columns-list [data]="allSourceRows"></app-columns-list>
+    </div>
     <div class="vertical-container source">
       <h2>Source tables</h2>
 
@@ -42,7 +46,10 @@
           class="horizontal-box"
           *ngFor="let tableName of target[targetName].data"
         >
-          <div class="table-description target caption" (click)="openMapping(tableName)">
+          <div
+            class="table-description target caption"
+            (click)="openMapping(tableName)"
+          >
             {{ tableName }}
           </div>
         </div>
@@ -50,4 +57,3 @@
     </div>
   </div>
 </div>
-

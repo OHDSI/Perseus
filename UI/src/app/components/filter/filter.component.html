@@ -11,7 +11,7 @@
     </header>
 
     <main>
-      <mat-list role="list">
+      <mat-list role="list" dense>
         <mat-list-item role="listitem" *ngFor="let item of data">
           <mat-checkbox [checked]="isChecked(item)" [disabled]="canCheck(item)" (change)="onCheckboxChange($event, item)">
           </mat-checkbox>

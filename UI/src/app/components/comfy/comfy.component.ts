@@ -8,6 +8,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
+import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-comfy',
@@ -25,9 +26,14 @@ export class ComfyComponent implements OnInit {
     return Object.keys(this.target);
   }
 
+  get allSourceRows(): IRow[] {
+    return this.sourceRows;
+  }
+
   source = [];
   target = {};
   sourceConnectedTo = [];
+  sourceRows = [];
 
   constructor(
     private dataService: DataService,
@@ -50,6 +56,10 @@ export class ComfyComponent implements OnInit {
       this.sourceConnectedTo = this.state.target.tables.map(
         table => `${prefix}-${table.name}`
       );
+
+      this.sourceRows = this.state.source.tables
+        .map(table => table.rows)
+        .reduce((p, k) => p.concat.apply(p, k));
 
       this.busy = false;
     });
@@ -88,8 +98,10 @@ export class ComfyComponent implements OnInit {
   }
 
   openMapping(targetTableName: string): void {
-    const targettable = this.state.target.tables.filter(table => table.name === targetTableName);
-    const {data} = this.target[targetTableName];
+    const targettable = this.state.target.tables.filter(
+      table => table.name === targetTableName
+    );
+    const { data } = this.target[targetTableName];
 
     const sourcetable = this.state.source.tables.filter(table => {
       const sourceTablesNames = data.slice(1, data.length);
@@ -99,10 +111,9 @@ export class ComfyComponent implements OnInit {
     const dialog = this.mappingDialog.open(MappingPopupComponent, {
       width: '90vw',
       height: '90vh',
-      data: {source: sourcetable,  target: targettable}
+      data: { source: sourcetable, target: targettable }
     });
 
-    dialog.afterClosed().subscribe(save => {
-    });
+    dialog.afterClosed().subscribe(save => {});
   }
 }

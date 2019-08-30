@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatMenuTrigger } from '@angular/material';
-
-import { DrawService } from 'src/app/services/draw.service';
 import { ITable, Table } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -46,11 +44,11 @@ export class FilterComponent implements OnInit {
   }
 
   selectAll() {
-    Object.values(this.checkboxes).forEach(value => value = true);
+    Object.values(this.checkboxes).forEach(value => (value = true));
   }
 
   deselectAll() {
-    Object.values(this.checkboxes).forEach(value => value = false);
+    Object.values(this.checkboxes).forEach(value => (value = false));
   }
 
   canCheck(item): boolean {
@@ -62,7 +60,9 @@ export class FilterComponent implements OnInit {
   }
 
   apply() {
-    Object.keys(this.checkboxes).forEach(key => this.data[key].visible = this.checkboxes[key]);
+    Object.keys(this.checkboxes).forEach(
+      key => (this.data[key].visible = this.checkboxes[key])
+    );
 
     setTimeout(() => this.bridgeService.refreshAll(), 50);
 
@@ -70,6 +70,8 @@ export class FilterComponent implements OnInit {
   }
 
   close() {
-    this.menuTrigger.closeMenu();
+    if (this.menuTrigger) {
+      this.menuTrigger.closeMenu();
+    }
   }
 }
