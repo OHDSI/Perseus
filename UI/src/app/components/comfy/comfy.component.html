@@ -60,6 +60,7 @@
             (click)="openMapping(tableName)"
           >
             {{ tableName }}
+            <mat-icon class="remove-mapping-table" (click)="removeTableMapping($event, tableName, targetName)">close</mat-icon>
           </div>
         </div>
       </div>

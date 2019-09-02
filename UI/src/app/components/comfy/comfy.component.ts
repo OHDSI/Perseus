@@ -134,4 +134,16 @@ export class ComfyComponent implements OnInit {
 
     this.source = Object.assign([], this.source);
   }
+
+  removeTableMapping(event: any, tableName: string, targetTableName: string) {
+    event.stopPropagation();
+
+    const {data} = this.target[targetTableName];
+
+    const index = data.findIndex(tablename => tablename === tableName);
+
+    if (index > -1) {
+      data.splice(index, 1);
+    }
+  }
 }

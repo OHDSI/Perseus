@@ -37,12 +37,6 @@ export class ColumnsListComponent implements OnInit {
 
     const {tableName, name} = item;
     this.dataService.getTopValues(tableName, name).subscribe(result => {
-      // const dialog = this.matDialog.open(ValuesPopupComponent, {
-      //   data: { values: result }
-      // });
-
-      // dialog.afterClosed().subscribe(save => {});
-      //ValuesPopupComponent.data = result;
       const component = ValuesPopupComponent;
       this.overlayService.openDialog(htmlElement, component, 'values', result);
     });
