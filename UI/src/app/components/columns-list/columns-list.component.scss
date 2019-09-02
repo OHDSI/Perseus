@@ -3,6 +3,13 @@
 }
 
 .data-item {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 150px;
+}
+
+.data-item-caption {
   padding: 9px;
   border-radius: 5px;
   background-color: #ffca0596;
@@ -17,4 +24,5 @@
 .virtual-scroll-container {
   height: 90vh;
   width: 200px;
+  overflow-x: hidden;
 }

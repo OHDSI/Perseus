@@ -1,13 +1,13 @@
 <mat-list role="list" dense>
   <cdk-virtual-scroll-viewport class="virtual-scroll-container"
-    itemSize="50"
+    itemSize="36"
     minBufferPx="200"
     maxBufferPx="400"
   >
     <mat-list-item role="listitem" *cdkVirtualFor="let item of data">
-      <span class="data-item" (click)="onSelectColumn(item.name)">
-        {{ item.name }}
-      </span>
+      <div class="data-item-caption" (click)="onSelectColumn(item.name)">
+        <div class="data-item">{{ item.name }} </div>
+      </div>
     </mat-list-item>
   </cdk-virtual-scroll-viewport>
 </mat-list>
