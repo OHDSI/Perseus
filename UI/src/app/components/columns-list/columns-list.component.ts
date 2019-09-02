@@ -11,19 +11,20 @@ export class ColumnsListComponent implements OnInit {
   @Input() data: ITable[] | IRow[];
   @Output() columnsSelected = new EventEmitter<string[]>();
 
-  private conlumnsselected = [];
+  selectedColumns = [];
   constructor() {}
 
   ngOnInit() {}
 
   onSelectColumn(name: string) {
-    const idx = this.conlumnsselected.findIndex(x => x === name);
+    const idx = this.selectedColumns.findIndex(x => x === name);
     if (idx > -1) {
-      this.conlumnsselected.splice(idx, 1);
+      this.selectedColumns.splice(idx, 1);
     } else {
-      this.conlumnsselected.push(name);
+      this.selectedColumns.push(name);
     }
 
-    this.columnsSelected.emit(this.conlumnsselected);
+    this.selectedColumns = Object.assign([], this.selectedColumns);
+    this.columnsSelected.emit(this.selectedColumns);
   }
 }

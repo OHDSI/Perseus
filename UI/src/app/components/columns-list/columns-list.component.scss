@@ -14,7 +14,6 @@
   border-radius: 5px;
   background-color: #ffca0596;
   color: #000d37;
-  font-family: Roboto;
   font-size: 1rem;
   width: 100%;
   text-transform: uppercase;
@@ -25,4 +24,9 @@
   height: 90vh;
   width: 200px;
   overflow-x: hidden;
+}
+
+div[highlighted=true] {
+  background-color: #a7a4a4d1;
+  font-weight: 400;
 }
