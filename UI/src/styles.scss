@@ -6,7 +6,7 @@ html, body {
     * {
         font-family: 'Akzidenz-Grotesk Pro', Arial, Helvetica, sans-serif;
     }
-    
+
 }
 
 body {
@@ -60,7 +60,7 @@ line {
 
     & * {
         color: #C0C0C0 !important;
-    } 
+    }
 }
 
 .drag-over {
@@ -92,4 +92,24 @@ line {
 .mat-radio-inner-circle {
     width: 15px !important;
     height: 15px !important;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: #D6D4D4;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
