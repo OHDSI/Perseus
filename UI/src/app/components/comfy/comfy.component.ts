@@ -122,15 +122,20 @@ export class ComfyComponent implements OnInit {
     dialog.afterClosed().subscribe(save => {});
   }
 
-  findTables(selectedSourceColmns: string[]): void {
-    this.highlitedtables = this.state.source.tables
-      .filter(
-        table =>
-          selectedSourceColmns.findIndex(
-            selectedName => table.rows.findIndex(r => r.name === selectedName) > -1
-          ) > -1
-      )
-      .map(table => table.name);
+  findTables(selectedSourceColumns: string[]): void {
+    const indexes = {};
+
+    this.state.source.tables.forEach(table => {
+      indexes[table.name] = selectedSourceColumns.map(
+        columnname => table.rows.findIndex(r => r.name === columnname)
+      );
+    });
+
+    this.highlitedtables = Object.keys(indexes).filter(
+      tableName => {
+        return indexes[tableName].length > 0 && !(indexes[tableName].findIndex(idx => idx === -1) > -1);
+      }
+    );
 
     this.source = Object.assign([], this.source);
   }
@@ -138,7 +143,7 @@ export class ComfyComponent implements OnInit {
   removeTableMapping(event: any, tableName: string, targetTableName: string) {
     event.stopPropagation();
 
-    const {data} = this.target[targetTableName];
+    const { data } = this.target[targetTableName];
 
     const index = data.findIndex(tablename => tablename === tableName);
 
