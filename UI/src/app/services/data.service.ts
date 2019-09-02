@@ -49,9 +49,8 @@ export class DataService {
     );
   }
 
-  getTopValues(row) {
-    const { tableName, name } = row;
-    const path = `${URL}/get_top_values?table_name=${tableName}&column_name=${name}`;
+  getTopValues(tablename: string, columname: string): Observable<any> {
+    const path = `${URL}/get_top_values?table_name=${tablename}&column_name=${columname}`;
 
     return this.httpClient.get<any>(path);
   }

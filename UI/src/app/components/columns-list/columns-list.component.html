@@ -5,7 +5,11 @@
     minBufferPx="200"
     maxBufferPx="400"
   >
-    <mat-list-item role="listitem" *cdkVirtualFor="let item of data">
+    <mat-list-item
+      role="listitem"
+      *cdkVirtualFor="let item of data"
+      class="list-item"
+    >
       <div
         class="data-item-caption"
         [attr.criteria]="item.name"
@@ -13,8 +17,10 @@
         [values]="selectedColumns"
         (click)="onSelectColumn(item.name)"
       >
-        <div class="data-item">
-          {{ item.name }}
+        <div class="data-item" #ancor>
+          <span>{{ item.name }}</span>
+          <span style="flex: 1 1 auto;"></span>
+          <mat-icon (click)="showTop10Values($event, ancor, item)">trending_up</mat-icon>
         </div>
       </div>
     </mat-list-item>

@@ -14,7 +14,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StateService } from 'src/app/services/state.service';
-import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
 import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { CommentService } from './services/comment.service';
@@ -29,6 +29,7 @@ import { ComfyComponent } from './components/comfy/comfy.component';
 import { MappingPopupComponent } from './components/popaps/mapping-popup/mapping-popup.component';
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
 import { HighlightDirective } from './directives/highlight-table.directive';
+import { OverlayService } from './services/overlay.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import { HighlightDirective } from './directives/highlight-table.directive';
     AreaComponent,
     CommentPopupComponent,
     BridgeButtonComponent,
-    ValuesPopapComponent,
+    ValuesPopupComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,
@@ -53,7 +54,8 @@ import { HighlightDirective } from './directives/highlight-table.directive';
     SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,
-    MappingPopupComponent
+    MappingPopupComponent,
+    ValuesPopupComponent
   ],
   imports: [
   BrowserModule,
@@ -66,7 +68,7 @@ import { HighlightDirective } from './directives/highlight-table.directive';
     GridModule,
     ThemeModule
   ],
-  providers: [DataService, CommonService, BridgeService, StateService, CommentService],
+  providers: [DataService, CommonService, BridgeService, StateService, CommentService, OverlayService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -9,14 +9,19 @@ export class OverlayService {
     private injector: Injector
   ) { }
 
-  openDialog(anchor, component, strategyFor) {
+  openDialog(anchor, component, strategyFor, data?: any) {
     const strategy = this._strategyFactory(anchor, strategyFor);
+
     const config = new OverlayConfig({
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       positionStrategy: strategy
     });
+
+    config['data'] = data;
+
     const overlayRef = this.overlay.create(config);
+
     const injector = new PortalInjector(
       this.injector,
       new WeakMap<any, any>([[OverlayRef, overlayRef]])

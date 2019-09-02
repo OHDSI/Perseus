@@ -13,17 +13,15 @@ import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
 import { CommonService } from 'src/app/services/common.service';
 import { OverlayService } from 'src/app/services/overlay.service';
-import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
-import { MatExpansionPanel } from '@angular/material';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
   styleUrls: ['./panel-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [OverlayService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PanelTableComponent implements OnInit {
   @Input() table: ITable;
@@ -96,7 +94,7 @@ export class PanelTableComponent implements OnInit {
   }
 
   openTopValuesDialog(anchor: HTMLElement) {
-    const component = ValuesPopapComponent;
+    const component = ValuesPopupComponent;
     this.overlayService.openDialog(anchor, component, 'values');
   }
 

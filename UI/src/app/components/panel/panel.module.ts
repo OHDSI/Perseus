@@ -7,11 +7,10 @@ import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
 import { DrawService } from 'src/app/services/draw.service';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
-import { ValuesPopapComponent } from 'src/app/components/popaps/values-popap/values-popap.component';
+import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { CdmCustomMaterialModule } from 'src/app/common/cdm-custom-material.module';
 import { CdmCommonModule } from 'src/app/common/cdm-common.module';
-
 
 @NgModule({
   declarations: [
@@ -27,7 +26,7 @@ import { CdmCommonModule } from 'src/app/common/cdm-common.module';
   ],
   entryComponents: [
     CommentPopupComponent,
-    ValuesPopapComponent
+    ValuesPopupComponent
   ],
   imports: [
   MatExpansionModule,
