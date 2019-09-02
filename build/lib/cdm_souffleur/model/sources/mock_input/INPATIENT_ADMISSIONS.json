@@ -1,0 +1,1300 @@
+{
+  "mapping_items": [
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Condition_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "ENROLID",
+          "sql_alias": "PERSON_ID",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "PDX",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "DX1",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "4"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "5"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "6"
+            },
+            {
+              "key": "DX6",
+              "defaultTypeId": "7"
+            },
+            {
+              "key": "DX7",
+              "defaultTypeId": "8"
+            },
+            {
+              "key": "DX8",
+              "defaultTypeId": "9"
+            },
+            {
+              "key": "DX9",
+              "defaultTypeId": "10"
+            },
+            {
+              "key": "DX10",
+              "defaultTypeId": "11"
+            },{
+              "key": "DX11",
+              "defaultTypeId": "12"
+            },
+            {
+              "key": "DX12",
+              "defaultTypeId": "13"
+            },
+            {
+              "key": "DX13",
+              "defaultTypeId": "14"
+            },
+            {
+              "key": "DX14",
+              "defaultTypeId": "15"
+            },
+            {
+              "key": "DX15",
+              "defaultTypeId": "16"
+            }
+          ],
+          "lookup": "Condition",
+          "sql_field": [
+             {
+              "source_field": "PDX",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX6",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX7",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX8",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX9",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX10",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX11",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX12",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX13",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX14",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX15",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ],
+      "condition": [
+        {
+          "condition": "{DXVER} = 9",
+          "source_field": "DXVER, ADMDATE",
+          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN ADMDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
+          "sql_alias": "DXVER"
+        }
+      ]
+    },
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Condition_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "PDX",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "DX1",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "4"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "5"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "6"
+            },
+            {
+              "key": "DX6",
+              "defaultTypeId": "7"
+            },
+            {
+              "key": "DX7",
+              "defaultTypeId": "8"
+            },
+            {
+              "key": "DX8",
+              "defaultTypeId": "9"
+            },
+            {
+              "key": "DX9",
+              "defaultTypeId": "10"
+            },
+            {
+              "key": "DX10",
+              "defaultTypeId": "11"
+            },{
+              "key": "DX11",
+              "defaultTypeId": "12"
+            },
+            {
+              "key": "DX12",
+              "defaultTypeId": "13"
+            },
+            {
+              "key": "DX13",
+              "defaultTypeId": "14"
+            },
+            {
+              "key": "DX14",
+              "defaultTypeId": "15"
+            },
+            {
+              "key": "DX15",
+              "defaultTypeId": "16"
+            }
+          ],
+          "lookup": "Condition_icd10",
+          "sql_field": [
+             {
+              "source_field": "PDX",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX6",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX7",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX8",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX9",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX10",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX11",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX12",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX13",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX14",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX15",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ],
+      "condition": [
+        {
+          "condition": "{DXVER} = 0",
+          "source_field": "DXVER, ADMDATE",
+          "sql_field": "CASE\r\nWHEN DXVER NOT IN ('0', '9') THEN\r\nCASE WHEN ADMDATE &lt; '10/01/2015' THEN '9'\r\nELSE '0'\r\nEND\r\nELSE DXVER\r\nEND",
+          "sql_alias": "DXVER"
+        }
+      ]
+    },
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Condition_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "PDX",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "DX1",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "4"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "5"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "6"
+            },
+            {
+              "key": "DX6",
+              "defaultTypeId": "7"
+            },
+            {
+              "key": "DX7",
+              "defaultTypeId": "8"
+            },
+            {
+              "key": "DX8",
+              "defaultTypeId": "9"
+            },
+            {
+              "key": "DX9",
+              "defaultTypeId": "10"
+            },
+            {
+              "key": "DX10",
+              "defaultTypeId": "11"
+            },{
+              "key": "DX11",
+              "defaultTypeId": "12"
+            },
+            {
+              "key": "DX12",
+              "defaultTypeId": "13"
+            },
+            {
+              "key": "DX13",
+              "defaultTypeId": "14"
+            },
+            {
+              "key": "DX14",
+              "defaultTypeId": "15"
+            },
+            {
+              "key": "DX15",
+              "defaultTypeId": "16"
+            }
+          ],
+          "lookup": "Procedure",
+          "sql_field": [
+             {
+              "source_field": "PDX",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX6",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX7",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX8",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX9",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX10",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX11",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX12",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX13",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX14",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX15",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ],
+          "options": {
+            "IdRequired": "true"
+          }
+    },
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Drug_Exposure",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "EndDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Condition_Occurrence",
+          "fields": [
+            {
+              "key": "PPROC",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC1",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC2",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC3",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC4",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC5",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC6",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC7",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC8",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC9",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC10",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC11",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC12",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC13",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC14",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC15",
+              "defaultTypeId": "1"
+            }
+          ],
+          "lookup": "Drug",
+          "sql_field": [
+            {
+              "source_field": "PPROC",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC5",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC6",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC7",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC8",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC9",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC10",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC11",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC12",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC13",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC14",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC15",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Procedure_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "PPROC",
+              "defaultTypeId": "1"
+            },
+            {
+              "key": "PROC1",
+              "defaultTypeId": "2"
+            },
+            {
+              "key": "PROC2",
+              "defaultTypeId": "3"
+            },
+            {
+              "key": "PROC3",
+              "defaultTypeId": "4"
+            },
+            {
+              "key": "PROC4",
+              "defaultTypeId": "5"
+            },
+            {
+              "key": "PROC5",
+              "defaultTypeId": "6"
+            },
+            {
+              "key": "PROC6",
+              "defaultTypeId": "7"
+            },
+            {
+              "key": "PROC7",
+              "defaultTypeId": "8"
+            },
+            {
+              "key": "PROC8",
+              "defaultTypeId": "9"
+            },
+            {
+              "key": "PROC9",
+              "defaultTypeId": "10"
+            },
+            {
+              "key": "PROC10",
+              "defaultTypeId": "11"
+            },
+            {
+              "key": "PROC11",
+              "defaultTypeId": "12"
+            },
+            {
+              "key": "PROC12",
+              "defaultTypeId": "13"
+            },
+            {
+              "key": "PROC13",
+              "defaultTypeId": "14"
+            },
+            {
+              "key": "PROC14",
+              "defaultTypeId": "15"
+            },
+            {
+              "key": "PROC15",
+              "defaultTypeId": "16"
+            }
+          ],
+          "lookup": "Procedure",
+          "sql_field": [
+            {
+              "source_field": "PROC1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC5",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC6",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC7",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC8",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC9",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC10",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC11",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC12",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC13",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+             {
+              "source_field": "PROC14",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "PROC15",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Death",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "DISDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "DISDATE",
+          "sql_field": "CASE\r\nWHEN DSTATUS IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '40', '41', '42') THEN 1\r\nELSE 0\r\nEND",
+          "sql_alias": "DIED",
+          "target_field": "Died"
+        }
+      ],
+      "lookup": [
+        {"source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DSTATUS",
+              "defaultTypeId": "38003566",
+              "defaultConceptId": "1"
+            }],
+        "sql_field": [
+            {
+              "source_field": "DSTATUS",
+              "sql_field": "",
+              "sql_alias": ""
+            }]},
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DX1",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX2",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX3",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX4",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX5",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX6",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX7",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX8",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX9",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX10",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX11",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX12",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX13",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX14",
+              "defaultTypeId": "38003567"
+            },
+            {
+              "key": "DX15",
+              "defaultTypeId": "38003567"
+            }
+          ],
+          "lookup": "Death",
+          "sql_field": [
+            {
+              "source_field": "DX1",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX2",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX3",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX4",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX5",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX6",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX7",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX8",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX9",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX10",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX11",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX12",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX13",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX14",
+              "sql_field": "",
+              "sql_alias": ""
+            },
+            {
+              "source_field": "DX15",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Death",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "DISDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "DISDATE",
+          "sql_field": "CASE\r\nWHEN DSTATUS IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '40', '41', '42') THEN 1\r\nELSE 0\r\nEND",
+          "sql_alias": "DIED",
+          "target_field": "Died"
+        }
+      ],
+      "lookup": [
+        {"source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DSTATUS",
+              "defaultTypeId": "38003566",
+              "defaultConceptId": "1"
+            }],
+        "sql_field": [
+            {
+              "source_field": "DSTATUS",
+              "sql_field": "",
+              "sql_alias": ""
+            }]},
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DRG",
+              "defaultTypeId": "38003568"
+            }
+          ],
+          "lookup": "DeathDRG",
+          "sql_field": [
+            {
+              "source_field": "DRG",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Visit_Occurrence",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "defaultConceptId": "1",
+              "defaultTypeId": "44818517"
+            }
+          ]
+        }
+      ]
+    },
+       {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Visit_Cost",
+      "mapping": [
+        {
+          "source_field": "TOTCOPAY",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidCopay"
+        },
+        {
+          "source_field": "TOTCOINS",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidCoinsurance"
+        },
+        {
+          "source_field": "TOTDED",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidTowardDeductible"
+        },
+        {
+          "source_field": "TOTNET",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidByPayer"
+        },
+        {
+          "source_field": "TOTCOB",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PaidByCoordinationBenefits"
+        },
+        {
+          "source_field": "TOTPAY",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "TotalPaid"
+        },
+        {
+          "source_field": "",
+          "sql_field": "44818668",
+          "sql_alias": "CurrencyConceptId",
+          "target_field": "CurrencyConceptId"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "defaultConceptId": "0",
+              "defaultTypeId": "0",
+              "defaultSource": " "
+            }
+          ]
+        },
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DRG_INT",
+              "sourceKey": "DRG",
+              "eventDate": "ADMDATE"
+            }
+          ],
+          "lookup": "Drg",
+          "sql_field": [
+            {
+              "source_field": "DRG",
+              "sql_field": "cast(DRG as int)",
+              "sql_alias": "DRG_INT"
+            }
+          ]
+        }
+      ]
+    },
+        {
+      "source_table": "INPATIENT_ADMISSIONS",
+      "target_table": "Observation",
+      "mapping": [
+        {
+          "source_field": "ENROLID",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "PersonId"
+        },
+        {
+          "source_field": "ADMDATE",
+          "sql_field": "",
+          "sql_alias": "",
+          "target_field": "StartDate"
+        },
+        {
+          "source_field": "DSTATUS",
+          "sql_field": "CASE\r\nWHEN DSTATUS = '01' THEN 'Discharged to home self care'\r\nWHEN DSTATUS = '02' THEN 'Transfer to short term hospital'\r\nWHEN DSTATUS = '03' THEN 'Transfer to SNF'\r\nWHEN DSTATUS = '04' THEN 'Transfer to ICF'\r\nWHEN DSTATUS = '05' THEN 'Transfer to other facility'\r\nWHEN DSTATUS = '06' THEN 'Discharged home under care'\r\nWHEN DSTATUS = '07' THEN 'Left against medical advice'\r\nWHEN DSTATUS IN ('08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19') THEN 'Other alive status'\r\nWHEN DSTATUS = '20' THEN 'Died'\r\nWHEN DSTATUS = '21' THEN 'Discharged/transferred to court/law enforcement'\r\nWHEN DSTATUS IN ('30', '31', '32', '33', '34', '35', '36', '37', '38', '39') THEN 'Still patient'\r\nWHEN DSTATUS IN ('40', '41', '42') THEN 'Other died status'\r\nWHEN DSTATUS = '43' THEN 'Discharged/transferred to federal hospital'\r\nWHEN DSTATUS = '50' THEN 'Discharged to home (from Hospice)'\r\nWHEN DSTATUS = '51' THEN 'Transfer to med fac (from Hospice)'\r\nWHEN DSTATUS = '61' THEN 'Transfer to Medicare approved swing bed'\r\nWHEN DSTATUS = '62' THEN 'Transferred to inpatient rehab facility (IRF)'\r\nWHEN DSTATUS = '63' THEN 'Transferred to long term care hospital (LTCH)'\r\nWHEN DSTATUS = '64' THEN 'Transferred to nursing facility Medicaid certified'\r\nWHEN DSTATUS = '65' THEN 'Transferred to psychiatric hospital or unit'\r\nWHEN DSTATUS = '66' THEN 'Transferred to critical access hospital (CAH)'\r\nWHEN DSTATUS = '70' THEN 'Transfer to another facility NEC'\r\nWHEN DSTATUS = '71' THEN 'Transfer/referred to other facility for outpt svcs'\r\nWHEN DSTATUS = '72' THEN 'Transfer/referred to this facility for outpt svcs'\r\nWHEN DSTATUS = '99' THEN 'Transfer (Hospital ID MDST change)'\r\nELSE NULL\r\nEND",
+          "sql_alias": "VALUE_AS_STRING",
+          "target_field": "ValuesAsString"
+        }
+      ],
+      "lookup": [
+        {
+          "source_table": "INPATIENT_ADMISSIONS",
+          "target_table": "Observation",
+          "fields": [
+            {
+              "key": "DSTATUS",
+              "defaultTypeId": "38000280",
+              "defaultConceptId": "4202605"
+            }
+          ],
+          "sql_field": [
+            {
+              "source_field": "DSTATUS",
+              "sql_field": "",
+              "sql_alias": ""
+            }
+          ]
+        }
+      ],
+      "option": [
+        {
+          "source_table": "",
+          "target_table": "Observation",
+          "options": {
+            "IsUnique": "true"
+          }
+        }
+      ],
+      "condition": [
+        {
+          "condition": "{toObservation} = 1",
+          "source_field": "DSTATUS",
+          "sql_field": "CASE\r\nWHEN DSTATUS = '01' THEN '1'\r\nWHEN DSTATUS = '02' THEN '1'\r\nWHEN DSTATUS = '03' THEN '1'\r\nWHEN DSTATUS = '04' THEN '1'\r\nWHEN DSTATUS = '05' THEN '1'\r\nWHEN DSTATUS = '06' THEN '1'\r\nWHEN DSTATUS = '07' THEN '1'\r\nWHEN DSTATUS IN ('08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19') THEN '1'\r\nWHEN DSTATUS = '20' THEN '1'\r\nWHEN DSTATUS = '21' THEN '1'\r\nWHEN DSTATUS IN ('30', '31', '32', '33', '34', '35', '36', '37', '38', '39') THEN '1'\r\nWHEN DSTATUS IN ('40', '41', '42') THEN '1'\r\nWHEN DSTATUS = '43' THEN '1'\r\nWHEN DSTATUS = '50' THEN '1'\r\nWHEN DSTATUS = '51' THEN '1'\r\nWHEN DSTATUS = '61' THEN '1'\r\nWHEN DSTATUS = '62' THEN '1'\r\nWHEN DSTATUS = '63' THEN '1'\r\nWHEN DSTATUS = '64' THEN '1'\r\nWHEN DSTATUS = '65' THEN '1'\r\nWHEN DSTATUS = '66' THEN '1'\r\nWHEN DSTATUS = '70' THEN '1'\r\nWHEN DSTATUS = '71' THEN '1'\r\nWHEN DSTATUS = '72' THEN '1'\r\nWHEN DSTATUS = '99' THEN '1'\r\nELSE '0'\r\nEND",
+          "sql_alias": "toObservation"
+        }
+      ]
+    }
+  ]
+}

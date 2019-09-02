@@ -1,0 +1,22 @@
+{
+  "mapping_items": [
+    {
+      "source_table": "L_LOCATION",
+      "target_table": "Locations",
+      "mapping": [
+        {
+          "source_field": "",
+          "sql_field": "CASE\r\nWHEN e.STATE IS NOT NULL THEN e.STATE\r\nELSE 'UN'\r\nEND",
+          "sql_alias": "STATE",
+          "target_field": "State"
+        },
+        {
+          "source_field": "",
+          "sql_field": "EGEOLOC",
+          "sql_alias": "LOCATION_SOURCE_VALUE",
+          "target_field": "SourceValue"
+        }
+      ]
+    }
+  ]
+}
