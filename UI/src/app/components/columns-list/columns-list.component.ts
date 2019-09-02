@@ -20,9 +20,10 @@ export class ColumnsListComponent implements OnInit {
     const idx = this.conlumnsselected.findIndex(x => x === name);
     if (idx > -1) {
       this.conlumnsselected.splice(idx, 1);
+    } else {
+      this.conlumnsselected.push(name);
     }
 
-    this.conlumnsselected.push(name);
     this.columnsSelected.emit(this.conlumnsselected);
   }
 }
