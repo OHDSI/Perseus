@@ -16,20 +16,6 @@ export interface IConnection {
 
 @Injectable()
 export class BridgeService {
-  private sourcerow: IRow;
-  private targetrow: IRow;
-  private targetrowrlement = null;
-
-  arrowsCache: ArrowCache = {};
-  connection = new Subject<IConnection>();
-
-  deleteAll = new Subject();
-
-  constructor(
-    private commonService: CommonService,
-    private drawService: DrawService
-  ) {}
-
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
@@ -49,6 +35,26 @@ export class BridgeService {
   }
   set targetRowElement(element: HTMLElement) {
     this.targetrowrlement = element;
+  }
+
+  private sourcerow: IRow;
+  private targetrow: IRow;
+  private targetrowrlement = null;
+
+  arrowsCache: ArrowCache = {};
+  connection = new Subject<IConnection>();
+
+  deleteAll = new Subject();
+
+  constructor(
+    private commonService: CommonService,
+    private drawService: DrawService
+  ) {}
+
+  applyConfiguration(newArrowCache: ArrowCache) {
+    this.reset();
+    this.arrowsCache = this.arrowsCache;
+    this.refreshAll();
   }
 
   connect() {

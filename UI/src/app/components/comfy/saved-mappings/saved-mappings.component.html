@@ -1,10 +1,11 @@
+<button mat-icon-button (click)="saveConfiguration()">
+  <mat-icon>save</mat-icon>
+</button>
 <mat-form-field class="type-filter" [floatLabel]="'never'">
   <mat-select
-    #matselect
     placeholder="select a mapping"
     [formControl]="formControl"
     (openedChange)="openedChangeHandler($event)"
-    multiple
   >
     <mat-select-trigger>
       Hello

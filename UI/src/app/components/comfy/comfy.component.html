@@ -30,7 +30,7 @@
           <div
             class="table-description source caption"
             cdkDrag
-            matTooltip="{{item}}"
+            matTooltip="{{ item }}"
             matTooltipPosition="right"
             [attr.criteria]="item"
             highlight
@@ -63,7 +63,11 @@
             (click)="openMapping(tableName)"
           >
             {{ tableName }}
-            <mat-icon class="remove-mapping-table" (click)="removeTableMapping($event, tableName, targetName)">close</mat-icon>
+            <mat-icon
+              class="remove-mapping-table"
+              (click)="removeTableMapping($event, tableName, targetName)"
+              >close</mat-icon
+            >
           </div>
         </div>
       </div>
