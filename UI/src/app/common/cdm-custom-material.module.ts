@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // CDK imports
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -73,6 +73,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatTableModule,
     MatFormFieldModule,
     FormsModule,
+    ReactiveFormsModule,
     OverlayModule,
     DragDropModule,
     ScrollingModule
@@ -108,6 +109,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatTableModule,
     MatFormFieldModule,
     FormsModule,
+    ReactiveFormsModule,
     OverlayModule,
     DragDropModule,
     ScrollingModule

@@ -1,0 +1,23 @@
+<mat-form-field class="type-filter" [floatLabel]="'never'">
+  <mat-select
+    #matselect
+    placeholder="select a mapping"
+    [formControl]="formControl"
+    (openedChange)="openedChangeHandler($event)"
+    multiple
+  >
+    <mat-select-trigger>
+      Hello
+      <span>
+        Wizard
+      </span>
+    </mat-select-trigger>
+    <mat-option
+      *ngFor="let configuration of configurations"
+      [value]="configuration.name"
+      (onSelectionChange)="onOpenConfiguration($event, configuration)"
+    >
+      {{ configuration.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

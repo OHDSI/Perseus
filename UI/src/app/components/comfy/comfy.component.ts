@@ -87,7 +87,7 @@ export class ComfyComponent implements OnInit {
 
       this.setFirstElementAlwaysOnTop(targetname);
     }
-  }
+}
 
   setFirstElementAlwaysOnTop(targetname: string): void {
     if (!targetname) {

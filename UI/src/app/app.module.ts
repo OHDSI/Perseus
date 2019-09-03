@@ -5,8 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
-import { OverviewComponent } from 'src/app/components/pages/overview/overview.component';
-import { VocabularyComponent } from 'src/app/components/pages/vocabulary/vocabulary.component';
 import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { DataService } from 'src/app/services/data.service';
@@ -30,13 +28,12 @@ import { MappingPopupComponent } from './components/popaps/mapping-popup/mapping
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
 import { HighlightDirective } from './directives/highlight-table.directive';
 import { OverlayService } from './services/overlay.service';
+import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MappingComponent,
-    OverviewComponent,
-    VocabularyComponent,
     AreaComponent,
     CommentPopupComponent,
     BridgeButtonComponent,
@@ -47,7 +44,8 @@ import { OverlayService } from './services/overlay.service';
     ComfyComponent,
     MappingPopupComponent,
     ColumnsListComponent,
-    HighlightDirective
+    HighlightDirective,
+    SavedMappingsComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
