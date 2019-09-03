@@ -4,7 +4,8 @@ import { StateService } from 'src/app/services/state.service';
 import {
   CdkDragDrop,
   moveItemInArray,
-  transferArrayItem
+  transferArrayItem,
+  copyArrayItem
 } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
@@ -75,7 +76,7 @@ export class ComfyComponent implements OnInit {
         event.currentIndex
       );
     } else {
-      transferArrayItem(
+      copyArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
@@ -83,6 +84,7 @@ export class ComfyComponent implements OnInit {
       );
 
       const targetname = event.container.id.split('-')[1];
+
       this.setFirstElementAlwaysOnTop(targetname);
     }
   }
