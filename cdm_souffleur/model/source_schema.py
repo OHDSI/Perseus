@@ -10,9 +10,10 @@ import csv
 import glob
 import shutil
 from cdm_souffleur.view.Table import Table, Column
-from pandasql import sqldf
+from pandasql import sqldf, PandaSQLException
 import xlrd
 from cdm_souffleur.utils import time_it
+from cdm_souffleur.utils.exceptions import InvalidUsage
 
 import json
 
@@ -70,11 +71,14 @@ def get_top_values(table_name, column_name):
     table_overview = pd.read_excel(book, table_name, dtype=str, na_filter=False,
                                    engine='xlrd')
     top_values = []
-    if column_name != '_flag':
-        top_values = sqldf("select " + column_name +
-                           " from table_overview limit 10")[column_name]\
-            .values.tolist()
-    return top_values
+    try:
+        if column_name != '_flag':
+            top_values = sqldf("select " + column_name +
+                               " from table_overview limit 10")[column_name]\
+                .values.tolist()
+        return top_values
+    except PandaSQLException as e:
+        raise InvalidUsage(e.__str__(), 404)
 
 
 def load_report(filepath=Path('D:/mdcr.xlsx')):

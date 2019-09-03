@@ -9,6 +9,8 @@ from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
+from cdm_souffleur.utils.exceptions import InvalidUsage
+import traceback
 
 
 app = Flask(__name__)
@@ -44,6 +46,14 @@ def get_top_values_call():
     column_name = request.args.get('column_name')
     top_values = get_top_values(table_name, column_name)
     return jsonify(top_values)
+
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    traceback.print_tb(error.__traceback__)
+    return response
 
 
 @app.route('/get_lookup_list')
