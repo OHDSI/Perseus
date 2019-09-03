@@ -10,7 +10,7 @@
     <div class="vertical-container">
       <h2>Source columns</h2>
       <app-columns-list
-        [data]="allSourceRows"
+        [tables]="sourceTables"
         (columnsSelected)="findTables($event)"
       ></app-columns-list>
     </div>
@@ -29,6 +29,8 @@
           <div
             class="table-description source caption"
             cdkDrag
+            matTooltip="{{item}}"
+            matTooltipPosition="right"
             [attr.criteria]="item"
             highlight
             [values]="highlitedTables"
@@ -43,7 +45,7 @@
       <h2>Target tables</h2>
 
       <div
-        *ngFor="let targetName of targetTables"
+        *ngFor="let targetName of targetTableNames"
         cdkDropList
         cdkDropListOrientation="horizontal"
         id="{{ target[targetName].name }}"

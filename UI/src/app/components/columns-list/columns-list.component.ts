@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
@@ -11,14 +11,24 @@ import { OverlayService } from 'src/app/services/overlay.service';
   templateUrl: './columns-list.component.html',
   styleUrls: ['./columns-list.component.scss']
 })
-export class ColumnsListComponent implements OnInit {
-  @Input() data: ITable[] | IRow[];
+export class ColumnsListComponent implements OnInit, OnChanges {
+  @Input() tables: ITable[];
   @Output() columnsSelected = new EventEmitter<string[]>();
 
   selectedColumns = [];
+  sourceRows: IRow[];
+
   constructor(private dataService: DataService, private matDialog: MatDialog, private overlayService: OverlayService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
+
+  ngOnChanges() {
+    this.sourceRows = this.tables
+    .map(table => table.rows)
+    .reduce((p, k) => p.concat.apply(p, k), []);
+  }
 
   onSelectColumn(name: string) {
     const idx = this.selectedColumns.findIndex(x => x === name);

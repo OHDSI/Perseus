@@ -9,6 +9,7 @@ import {
 import { MatDialog } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
 import { IRow } from 'src/app/models/row';
+import { ITable } from 'src/app/models/table';
 
 @Component({
   selector: 'app-comfy',
@@ -22,12 +23,12 @@ export class ComfyComponent implements OnInit {
     return this.stateService.state;
   }
 
-  get targetTables(): string[] {
-    return Object.keys(this.target);
+  get sourceTables(): ITable[] {
+    return this.state.source.tables;
   }
 
-  get allSourceRows(): IRow[] {
-    return this.sourceRows;
+  get targetTableNames(): string[] {
+    return Object.keys(this.target);
   }
 
   get highlitedTables(): string[] {
@@ -61,10 +62,6 @@ export class ComfyComponent implements OnInit {
       this.sourceConnectedTo = this.state.target.tables.map(
         table => `${prefix}-${table.name}`
       );
-
-      this.sourceRows = this.state.source.tables
-        .map(table => table.rows)
-        .reduce((p, k) => p.concat.apply(p, k));
 
       this.busy = false;
     });
