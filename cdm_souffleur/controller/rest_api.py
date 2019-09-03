@@ -50,6 +50,7 @@ def get_top_values_call():
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
+    """handle error of wrong usage on functions"""
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     traceback.print_tb(error.__traceback__)
