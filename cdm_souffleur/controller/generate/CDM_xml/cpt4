@@ -1,3 +1,0 @@
-<QueryDefinition><Query>select cpt_code as ATTRIBUTE_DEFINITION_ID,
-cpt_desc as ATTRIBUTE_NAME
-from cpt4  JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID</Query><AttributeDefinition><AttributeDefinitionDefinition><ATTRIBUTE_DEFINITION_ID>ATTRIBUTE_DEFINITION_ID</ATTRIBUTE_DEFINITION_ID><ATTRIBUTE_NAME>ATTRIBUTE_NAME</ATTRIBUTE_NAME></AttributeDefinitionDefinition></AttributeDefinition></QueryDefinition>
