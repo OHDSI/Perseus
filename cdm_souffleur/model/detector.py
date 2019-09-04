@@ -36,7 +36,7 @@ def find_domain(column_name, table_name):
     :param column_name - source code name column
     :param table_name - table where source code located
     """
-    sql = open('sources/SQL', 'r').read()
+    sql = open('model/sources/SQL', 'r').read()
     # TODO: with few PC's should be used sql_broadcast instead sql
     # TODO: is it client-server or task cluster App?
     # sc: SparkContext = spark.sparkContext
