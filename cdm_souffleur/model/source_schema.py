@@ -67,19 +67,28 @@ def _open_book(filepath=None):
         return book
 
 
-def get_top_values(table_name, column_name):
-    """return top 10 values be freq for target table and column"""
-    table_overview = pd.read_excel(book, table_name, dtype=str, na_filter=False,
-                                   engine='xlrd')
-    top_values = []
+def get_top_values(table_name, column_name=None):
+    """return top 10 values be freq for target table and\or column"""
     try:
-        if column_name != '_flag':
-            top_values = sqldf("select " + column_name +
-                               " from table_overview limit 10")[column_name]\
-                .values.tolist()
-        return top_values
-    except PandaSQLException as e:
+        table_overview = pd.read_excel(book, table_name, dtype=str,
+                                       na_filter=False,
+                                       engine='xlrd')
+    except xlrd.biffh.XLRDError as e:
         raise InvalidUsage(e.__str__(), 404)
+    if column_name is None:
+        result = []
+        filtered_column = ((name, values) for name, values in
+                           table_overview.iteritems() if
+                           'Frequency' not in name)
+        for name, values in filtered_column:
+            column_values = {'column': name, 'data': values.head(10).tolist()}
+            result.append(column_values)
+        return result
+    else:
+        try:
+            return table_overview[column_name].head(10).tolist()
+        except KeyError as e:
+            raise InvalidUsage('Column invalid' + e.__str__(), 404)
 
 
 def load_report(filepath=Path('D:/mdcr.xlsx')):

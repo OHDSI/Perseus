@@ -8,7 +8,7 @@ from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
-    get_top_values, get_existing_source_schemas_list
+    get_existing_source_schemas_list, get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
@@ -90,8 +90,11 @@ def get_top_values_call():
     """return top 10 values by freq for table and row based on WR report"""
     table_name = request.args.get('table_name')
     column_name = request.args.get('column_name')
-    top_values = get_top_values(table_name, column_name)
-    return jsonify(top_values)
+    if column_name is not None:
+        top_values = get_top_values(table_name, column_name)
+        return jsonify(top_values)
+    else:
+        return jsonify(get_top_values(table_name))
 
 
 @app.errorhandler(InvalidUsage)
