@@ -23,18 +23,18 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'mdcr'
 
 
-def allowed_file(filename):
+def _allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/put', methods=['GET', 'POST'])
-def upload_file():
+@app.route('/load_schema', methods=['GET', 'POST'])
+def load_schema():
     if request.method == 'POST':
         file = request.files['file']
-        if file and allowed_file(file.filename):
+        if file and _allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(str(Path(app.config['UPLOAD_FOLDER']) / filename))
+            file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
     return '''
     <!doctype html>
@@ -50,6 +50,17 @@ def upload_file():
 @app.route('/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
     return jsonify(get_existing_source_schemas_list())
+
+
+@app.route('/load_saved_source_schema', methods=['GET'])
+def load_saved_source_schema_call():
+    schema_name = request.args.get('schema_name')
+    if schema_name in get_existing_source_schemas_list():
+        source_schema = get_source_schema(
+            app.config['UPLOAD_FOLDER'] / schema_name)
+        return jsonify([s.to_json() for s in source_schema])
+    else:
+        raise InvalidUsage('Schema was not loaded', 404)
 
 
 @app.route('/get_cdm_versions')
