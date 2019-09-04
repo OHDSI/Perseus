@@ -18,8 +18,6 @@ export class MappingComponent implements OnInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
-  busy = false;
-
   constructor(
     private stateService: StateService,
     private dataService: DataService,

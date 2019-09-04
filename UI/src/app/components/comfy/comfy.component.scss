@@ -4,7 +4,7 @@
 
 .comfy {
   overflow: scroll;
-  height: 100%;
+  height: 70vh;
   width: 100%;
   display: flex;
 }
@@ -47,6 +47,7 @@
   box-sizing: border-box;
   background: white;
   font-size: 14px;
+  width: 200px;
 }
 
 .vertical-placeholder {
@@ -174,6 +175,13 @@ div[highlighted=true] {
   font-weight: 600;
 }
 
+.mapping-component-progress {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 
 
