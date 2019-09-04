@@ -90,11 +90,7 @@ def get_top_values_call():
     """return top 10 values by freq for table and row based on WR report"""
     table_name = request.args.get('table_name')
     column_name = request.args.get('column_name')
-    if column_name is not None:
-        top_values = get_top_values(table_name, column_name)
-        return jsonify(top_values)
-    else:
-        return jsonify(get_top_values(table_name))
+    return jsonify(get_top_values(table_name, column_name))
 
 
 @app.errorhandler(InvalidUsage)
