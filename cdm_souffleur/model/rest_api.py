@@ -7,7 +7,7 @@ from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
-    get_top_values
+    get_top_values, get_existing_source_schemas_list
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
@@ -45,6 +45,11 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
+
+
+@app.route('/get_existing_source_schemas_list', methods=['GET'])
+def get_existing_source_schemas_list_call():
+    return jsonify(get_existing_source_schemas_list())
 
 
 @app.route('/get_cdm_versions')
