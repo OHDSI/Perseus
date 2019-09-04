@@ -1,5 +1,6 @@
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
-    GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT
+    GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT, \
+    UPLOAD_SOURCE_SCHEMA_FOLDER
 from flask import Flask, request, jsonify, send_from_directory, flash, redirect, url_for
 from flask_cors import CORS
 from cdm_souffleur.model.xml_writer import get_xml, zip_xml
@@ -12,9 +13,8 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.utils import secure_filename
-from pathlib import Path
 
-UPLOAD_FOLDER = Path('model/generate/income_schema')
+UPLOAD_FOLDER = UPLOAD_SOURCE_SCHEMA_FOLDER
 ALLOWED_EXTENSIONS = {'xlsx'}
 
 app = Flask(__name__)
