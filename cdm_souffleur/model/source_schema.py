@@ -20,7 +20,7 @@ import json
 
 book = None
 
-with open('../configuration/default.json', 'r') as configuration_file:
+with open('configuration/default.json', 'r') as configuration_file:
     configuration = json.load(configuration_file)
     print(configuration)
 

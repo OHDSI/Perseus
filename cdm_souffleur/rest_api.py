@@ -14,7 +14,7 @@ import traceback
 from werkzeug.utils import secure_filename
 from pathlib import Path
 
-UPLOAD_FOLDER = Path('./generate/income_schema')
+UPLOAD_FOLDER = Path('model/generate/income_schema')
 ALLOWED_EXTENSIONS = {'xlsx'}
 
 app = Flask(__name__)
