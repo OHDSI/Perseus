@@ -8,3 +8,4 @@ spark==0.2.1
 xlrd==1.2.0
 pathlib
 sqlalchemy
+Werkzeug==0.14.1

@@ -12,7 +12,6 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.utils import secure_filename
-import os
 from pathlib import Path
 
 UPLOAD_FOLDER = Path('./generate/income_schema')
@@ -32,22 +31,11 @@ def allowed_file(filename):
 @app.route('/put', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        print(request.files.to_dict())
-        print(request.form.to_dict())
-        print(request.args.to_dict())
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            # os.makedirs(app.config['UPLOAD_FOLDER'],
-            #             exist_ok=True)
-            print(Path(app.config['UPLOAD_FOLDER']) / filename)
             file.save(str(Path(app.config['UPLOAD_FOLDER']) / filename))
             file.close()
-            filename = secure_filename(file.filename)
-            # with open(filename, "w") as f:
-            #     f.write(filename)
-            # return redirect(url_for('uploaded_file',
-            #                         filename=filename))
     return '''
     <!doctype html>
     <title>Upload new File</title>
