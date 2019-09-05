@@ -1,8 +1,15 @@
-import { Component, OnInit, assertPlatform, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  assertPlatform,
+  Output,
+  EventEmitter,
+  Input
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { SavedMappingService } from 'src/app/services/saved-mappings.service';
-import { SavedMapping } from 'src/app/models/saved-mapping';
+import { Configuration } from 'src/app/models/configuration';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -11,6 +18,8 @@ import { MatSnackBar } from '@angular/material';
   styleUrls: ['./saved-mappings.component.scss']
 })
 export class SavedMappingsComponent implements OnInit {
+  @Input() tablesconfiguration: any;
+
   @Output() reset = new EventEmitter();
 
   formControl = new FormControl();
@@ -26,9 +35,7 @@ export class SavedMappingsComponent implements OnInit {
     private bridgeService: BridgeService,
     private savedMappinds: SavedMappingService,
     private snakbar: MatSnackBar
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {}
 
@@ -40,25 +47,43 @@ export class SavedMappingsComponent implements OnInit {
     }
   }
 
-  onOpenConfiguration(event: any, config: SavedMapping) {
+  onOpenConfiguration(event: any, config: Configuration) {
     const mapping = this.savedMappinds.open(config.name);
     if (mapping) {
-      const arrowsCache = JSON.parse(mapping.payload);
+      const arrowsCache = JSON.parse(mapping.mappingsConfiguration);
       this.bridgeService.applyConfiguration(arrowsCache);
     } else {
       alert('config not found');
     }
 
-    this.snakbar.open(`Configuration ${config.name} has been applyed`, ' DISMISS ', this.snakbarOptions);
+    this.snakbar.open(
+      `Configuration ${config.name} has been applyed`,
+      ' DISMISS ',
+      this.snakbarOptions
+    );
   }
 
   saveConfiguration(configurationName: string) {
-    const payload = JSON.stringify(this.bridgeService.arrowsCache);
-    const newConfiguration = new SavedMapping({ name: configurationName, payload });
+    if (!configurationName || configurationName.length === 0) {
+      alert('configuration name should be');
+      return;
+    }
+
+    const newConfiguration = new Configuration({
+      name: configurationName,
+      mappingsConfiguration: this.bridgeService.arrowsCache,
+      tablesConfiguration: this.tablesconfiguration
+    });
+
     this.savedMappinds.save(newConfiguration);
     this.configurations = [...this.savedMappinds.mappingConfigurations];
+    this.configurationControl.reset();
 
-    this.snakbar.open(`Configuration ${configurationName} has been saved`, ' DISMISS ', this.snakbarOptions);
+    this.snakbar.open(
+      `Configuration ${configurationName} has been saved`,
+      ' DISMISS ',
+      this.snakbarOptions
+    );
   }
 
   resetAllMappings() {
@@ -66,6 +91,10 @@ export class SavedMappingsComponent implements OnInit {
 
     this.reset.emit();
 
-    this.snakbar.open(`Reset all mappings success`, ' DISMISS ', this.snakbarOptions);
+    this.snakbar.open(
+      `Reset all mappings success`,
+      ' DISMISS ',
+      this.snakbarOptions
+    );
   }
 }

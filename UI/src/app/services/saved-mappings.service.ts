@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { SavedMapping } from '../models/saved-mapping';
+import { Configuration } from '../models/configuration';
 
 @Injectable()
 export class SavedMappingService {
 
   mappingConfigurations = [];
 
-  save(mapping: SavedMapping) {
+  save(mapping: Configuration) {
     this.mappingConfigurations.push(mapping);
   }
 
-  open(name: string): SavedMapping {
+  open(name: string): Configuration {
     const idx = this.mappingConfigurations.findIndex(config => config.name === name);
     if (idx > -1) {
       return this.mappingConfigurations[idx];
