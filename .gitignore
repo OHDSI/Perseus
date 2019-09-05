@@ -8,3 +8,5 @@ cdm_souffleur/view/__pycache__/
 .idea/workspace.xml
 cdm_souffleur/controller/generate/**/*
 cdm_souffleur/controller/generate/CDM_xml/*.xml
+cdm_souffleur/model/generate/CDM_xml/**/*
+
