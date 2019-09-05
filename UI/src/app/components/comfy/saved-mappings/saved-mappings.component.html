@@ -1,20 +1,32 @@
-<button mat-icon-button matTooltip="Reset" matTolltipPosition="right" (click)="resetAllMappings()">
-  <mat-icon>close</mat-icon>
+<button
+  mat-icon-button
+  matTooltip="Reset all mappings"
+  matTolltipPosition="right"
+  (click)="resetAllMappings()"
+>
+  <mat-icon>delete</mat-icon>
 </button>
-<button mat-icon-button (click)="saveConfiguration()">
+<mat-form-field [floatLabel]="'never'">
+  <input
+    matInput
+    placeholder="configuration name"
+    [formControl]="configurationControl"
+    style="width:100%"
+    [type]="'text'"
+  />
+</mat-form-field>
+<button mat-icon-button (click)="saveConfiguration(configurationControl.value)">
   <mat-icon>save</mat-icon>
 </button>
-<mat-form-field class="type-filter" [floatLabel]="'never'">
+<mat-form-field [floatLabel]="'never'">
   <mat-select
     placeholder="select a mapping"
     [formControl]="formControl"
     (openedChange)="openedChangeHandler($event)"
   >
     <mat-select-trigger>
-      {{formControl.value}}
-      <span>
-        (total {{configurations.length}})
-      </span>
+      {{ formControl.value }}
+      <span> (total {{ configurations.length }}) </span>
     </mat-select-trigger>
     <mat-option
       *ngFor="let configuration of configurations"
