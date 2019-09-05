@@ -2,7 +2,11 @@
   <div class="instruction">
     In order to make mapping, move source table to the target table
   </div>
-  <app-saved-mappings [tablesconfiguration]="target" (reset)="resetAllMappings()"></app-saved-mappings>
+  <app-saved-mappings
+    [tablesconfiguration]="target"
+    (reset)="resetAllMappings()"
+    (load)="loadConfiguration($event)"
+  ></app-saved-mappings>
   <div class="comfy">
     <div class="mapping-component-progress" *ngIf="busy">
       <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">

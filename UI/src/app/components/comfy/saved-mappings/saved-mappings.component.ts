@@ -21,6 +21,7 @@ export class SavedMappingsComponent implements OnInit {
   @Input() tablesconfiguration: any;
 
   @Output() reset = new EventEmitter();
+  @Output() load = new EventEmitter<Configuration>();
 
   formControl = new FormControl();
   configurationControl = new FormControl();
@@ -47,17 +48,16 @@ export class SavedMappingsComponent implements OnInit {
     }
   }
 
-  onOpenConfiguration(event: any, config: Configuration) {
-    const mapping = this.savedMappinds.open(config.name);
-    if (mapping) {
-      const arrowsCache = JSON.parse(mapping.mappingsConfiguration);
-      this.bridgeService.applyConfiguration(arrowsCache);
+  onOpenConfiguration(event: any, configuration: Configuration) {
+    const config = this.savedMappinds.open(configuration.name);
+    if (config) {
+      this.load.emit(config);
     } else {
       alert('config not found');
     }
 
     this.snakbar.open(
-      `Configuration ${config.name} has been applyed`,
+      `Configuration ${config.name} has been loaded`,
       ' DISMISS ',
       this.snakbarOptions
     );

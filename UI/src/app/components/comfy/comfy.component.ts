@@ -11,6 +11,8 @@ import { MatDialog } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
 import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
+import { Configuration } from 'src/app/models/configuration';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-comfy',
@@ -45,7 +47,8 @@ export class ComfyComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private stateService: StateService,
-    private mappingDialog: MatDialog
+    private mappingDialog: MatDialog,
+    private bridgeService: BridgeService
   ) {}
 
   ngOnInit() {
@@ -158,5 +161,13 @@ export class ComfyComponent implements OnInit {
 
   resetAllMappings() {
     this.initialize();
+  }
+
+  loadConfiguration(configuration: Configuration) {
+    const arrowsConfiguration = JSON.parse(configuration.mappingsConfiguration);
+    const tablesConfiguration = JSON.parse(configuration.tablesConfiguration);
+
+    this.target = tablesConfiguration;
+    this.bridgeService.applyConfiguration(arrowsConfiguration);
   }
 }
