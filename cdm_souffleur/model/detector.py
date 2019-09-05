@@ -35,6 +35,7 @@ def find_domain(column_name, table_name):
     """find target information by source code
     :param column_name - source code name column
     :param table_name - table where source code located
+    both vocabulary and report should be loaded to spark warehouse
     """
     sql = open('model/sources/SQL', 'r').read()
     # TODO: with few PC's should be used sql_broadcast instead sql
@@ -43,6 +44,7 @@ def find_domain(column_name, table_name):
     # sql_broadcast = sc.broadcast(sql)
     try:
         res = spark().sql(sql.format(column_name, table_name))
+        print(res.show())
     except AnalysisException as error:
         # TODO what return if exception (no such table exsits)
         res = 'error'

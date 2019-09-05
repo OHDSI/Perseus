@@ -172,8 +172,7 @@ def zip_xml():
 
 
 if __name__ == '__main__':
-    zip_xml()
-    # pass
+    pass
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
