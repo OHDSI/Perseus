@@ -13,6 +13,7 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.utils import secure_filename
+import os
 
 UPLOAD_FOLDER = UPLOAD_SOURCE_SCHEMA_FOLDER
 ALLOWED_EXTENSIONS = {'xlsx'}
@@ -34,6 +35,11 @@ def load_schema():
         file = request.files['file']
         if file and _allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            try:
+                os.mkdir(UPLOAD_FOLDER)
+                print("Directory ", UPLOAD_FOLDER, " Created ")
+            except FileExistsError:
+                print("Directory ", UPLOAD_FOLDER, " Already exist ")
             file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
     return '''
