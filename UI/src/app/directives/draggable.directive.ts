@@ -87,7 +87,8 @@ export class DraggableDirective implements OnInit {
       row.htmlElement = element;
       this.bridgeService.targetRow = row;
       this.bridgeService.connect();
-      this.bridgeService.reset();
+      // ??
+      // this.bridgeService.reset();
 
       this.commonService.activeRow.connections.push(this.row);
     }

@@ -49,23 +49,28 @@ export class ComfyComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const prefix = 'target';
-
     this.dataService.initialize().subscribe(_ => {
-      this.source = this.state.source.tables.map(table => table.name);
-      this.state.target.tables.map(table => {
-        this.target[table.name] = {};
-        this.target[table.name].name = `${prefix}-${table.name}`;
-        this.target[table.name].first = table.name;
-        this.target[table.name].data = [table.name];
-      });
-
-      this.sourceConnectedTo = this.state.target.tables.map(
-        table => `${prefix}-${table.name}`
-      );
-
+      this.initialize();
       this.busy = false;
     });
+  }
+
+  initialize() {
+    this.source = [];
+    this.target = {};
+
+    const prefix = 'target';
+    this.source = this.state.source.tables.map(table => table.name);
+    this.state.target.tables.map(table => {
+      this.target[table.name] = {};
+      this.target[table.name].name = `${prefix}-${table.name}`;
+      this.target[table.name].first = table.name;
+      this.target[table.name].data = [table.name];
+    });
+
+    this.sourceConnectedTo = this.state.target.tables.map(
+      table => `${prefix}-${table.name}`
+    );
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -149,5 +154,9 @@ export class ComfyComponent implements OnInit {
     if (index > -1) {
       data.splice(index, 1);
     }
+  }
+
+  resetAllMappings() {
+    this.initialize();
   }
 }

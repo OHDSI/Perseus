@@ -1,4 +1,4 @@
-import { Component, OnInit, assertPlatform } from '@angular/core';
+import { Component, OnInit, assertPlatform, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { SavedMappingService } from 'src/app/services/saved-mappings.service';
@@ -10,6 +10,8 @@ import { SavedMapping } from 'src/app/models/saved-mapping';
   styleUrls: ['./saved-mappings.component.scss']
 })
 export class SavedMappingsComponent implements OnInit {
+  @Output() reset = new EventEmitter();
+
   formControl = new FormControl();
   configurations = [];
 
@@ -44,5 +46,11 @@ export class SavedMappingsComponent implements OnInit {
     const newConfiguration = new SavedMapping({ name: `test ${this.count++}`, payload });
     this.savedMappinds.save(newConfiguration);
     this.configurations = [...this.savedMappinds.mappingConfigurations];
+  }
+
+  resetAllMappings() {
+    this.bridgeService.resetAllArrows();
+
+    this.reset.emit();
   }
 }

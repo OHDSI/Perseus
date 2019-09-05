@@ -52,9 +52,10 @@ export class BridgeService {
   ) {}
 
   applyConfiguration(newArrowCache: ArrowCache) {
-    this.reset();
-    this.arrowsCache = this.arrowsCache;
-    this.refreshAll();
+    this.resetAllArrows();
+
+    this.arrowsCache = Object.assign(newArrowCache);
+
   }
 
   connect() {
@@ -81,10 +82,10 @@ export class BridgeService {
     }
   }
 
-  reset() {
-    this.sourceRow = null;
-    this.targetRow = null;
-  }
+  // reset() {
+  //   this.sourceRow = null;
+  //   this.targetRow = null;
+  // }
 
   getStyledAsDragStartElement() {
     this.sourceRow.htmlElement.classList.add('drag-start');
@@ -114,7 +115,7 @@ export class BridgeService {
     this.drawService.removeConnectorsBoundToTable(table);
   }
 
-  deleteAllArrows() {
+  resetAllArrows() {
     this.drawService.removeAllConnectors();
     this.deleteAll.next();
     this.arrowsCache = {};
