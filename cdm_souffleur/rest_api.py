@@ -13,6 +13,7 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.utils import secure_filename
+import os
 
 UPLOAD_FOLDER = UPLOAD_SOURCE_SCHEMA_FOLDER
 ALLOWED_EXTENSIONS = {'xlsx'}
@@ -24,16 +25,23 @@ app.secret_key = 'mdcr'
 
 
 def _allowed_file(filename):
+    """check allowed extension of file"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/load_schema', methods=['GET', 'POST'])
 def load_schema():
+    """save source schema to server side"""
     if request.method == 'POST':
         file = request.files['file']
         if file and _allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            try:
+                os.mkdir(UPLOAD_FOLDER)
+                print("Directory ", UPLOAD_FOLDER, " Created ")
+            except FileExistsError:
+                print("Directory ", UPLOAD_FOLDER, " Already exist ")
             file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
     return '''
@@ -59,6 +67,16 @@ def load_saved_source_schema_call():
         source_schema = get_source_schema(
             app.config['UPLOAD_FOLDER'] / schema_name)
         return jsonify([s.to_json() for s in source_schema])
+    else:
+        raise InvalidUsage('Schema was not loaded', 404)
+
+
+@app.route('/delete_saved_source_schema', methods=['GET'])
+def delete_saved_source_schema_call():
+    schema_name = request.args.get('schema_name')
+    if schema_name in get_existing_source_schemas_list():
+        os.remove(app.config['UPLOAD_FOLDER'] / schema_name)
+        return 'OK'
     else:
         raise InvalidUsage('Schema was not loaded', 404)
 

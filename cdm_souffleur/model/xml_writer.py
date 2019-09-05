@@ -4,6 +4,7 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_PATH, GENERATE_CDM_XML_ARCHIVE_FILENAME, \
     GENERATE_CDM_XML_ARCHIVE_FORMAT
 import pandas as pd
+import os
 
 
 def _convert_underscore_to_camel(word: str):
@@ -151,6 +152,11 @@ def get_xml(json_):
                                                    field.items()})
             previous_target_table_name = target_table_name
         xml = ElementTree(query_definition_tag)
+        try:
+            os.mkdir(GENERATE_CDM_XML_PATH)
+            print("Directory ", GENERATE_CDM_XML_PATH, " Created ")
+        except FileExistsError:
+            print("Directory ", GENERATE_CDM_XML_PATH, " Already exist ")
         xml.write(GENERATE_CDM_XML_PATH / source_table)
         # result += '{}: \n {} + \n'.format(source_table, prettify(
         #     query_definition_tag))
@@ -166,8 +172,7 @@ def zip_xml():
 
 
 if __name__ == '__main__':
-    zip_xml()
-    # pass
+    pass
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
