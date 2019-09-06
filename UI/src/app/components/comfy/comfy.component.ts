@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import {
@@ -61,6 +61,10 @@ export class ComfyComponent implements OnInit {
       this.initialize();
       this.busy = false;
     });
+
+    this.bridgeService.applyConfiguration$.subscribe(configuration => {
+      this.target = configuration.tables;
+    });
   }
 
   initialize() {
@@ -79,6 +83,8 @@ export class ComfyComponent implements OnInit {
     this.sourceConnectedTo = this.state.target.tables.map(
       table => `${prefix}-${table.name}`
     );
+
+    this.stateService.Target = this.target;
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -173,13 +179,5 @@ export class ComfyComponent implements OnInit {
       ' DISMISS ',
       this.snakbarOptions
     );
-  }
-
-  loadConfiguration(configuration: Configuration) {
-    const arrowsConfiguration = JSON.parse(configuration.mappingsConfiguration);
-    const tablesConfiguration = JSON.parse(configuration.tablesConfiguration);
-
-    this.target = tablesConfiguration;
-    this.bridgeService.applyConfiguration(arrowsConfiguration);
   }
 }

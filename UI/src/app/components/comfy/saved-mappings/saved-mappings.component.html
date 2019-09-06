@@ -1,5 +1,5 @@
 <div class="save-mappings">
-  <div class="save-configuration">
+  <div class="save-configuration" *ngIf="action==='save'">
     <mat-form-field [floatLabel]="'never'">
       <input
         matInput
@@ -7,17 +7,11 @@
         [formControl]="configurationControl"
         style="width:100%"
         [type]="'text'"
+        cdkFocusInitial
       />
     </mat-form-field>
-    <button
-      mat-icon-button
-      matTooltip="Save configuration"
-      (click)="saveConfiguration(configurationControl.value)"
-    >
-      <mat-icon>save</mat-icon>
-    </button>
   </div>
-  <mat-form-field [floatLabel]="'never'" class="mapping-dropdown">
+  <mat-form-field [floatLabel]="'never'" class="mapping-dropdown" *ngIf="action==='open'">
     <mat-select
       placeholder="select a configuration"
       [formControl]="formControl"
@@ -30,7 +24,7 @@
       <mat-option
         *ngFor="let configuration of configurations"
         [value]="configuration.name"
-        (onSelectionChange)="onOpenConfiguration($event, configuration)"
+        (onSelectionChange)="onOpenConfiguration(configuration)"
       >
         {{ configuration.name }}
       </mat-option>

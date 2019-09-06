@@ -18,9 +18,9 @@ import { MatSnackBar } from '@angular/material';
   styleUrls: ['./saved-mappings.component.scss']
 })
 export class SavedMappingsComponent implements OnInit {
+  @Input() action: string;
   @Input() tablesconfiguration: any;
-
-  @Output() load = new EventEmitter<Configuration>();
+  @Output() select = new EventEmitter<Configuration>();
 
   formControl = new FormControl();
   configurationControl = new FormControl();
@@ -37,7 +37,9 @@ export class SavedMappingsComponent implements OnInit {
     private snakbar: MatSnackBar
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.configurations = [...this.savedMappinds.mappingConfigurations];
+  }
 
   openedChangeHandler(open: any) {
     if (open) {
@@ -47,10 +49,9 @@ export class SavedMappingsComponent implements OnInit {
     }
   }
 
-  onOpenConfiguration(event: any, configuration: Configuration) {
+  onOpenConfiguration(configuration: Configuration) {
     const config = this.savedMappinds.open(configuration.name);
     if (config) {
-      this.load.emit(config);
     } else {
       alert('config not found');
     }
@@ -60,6 +61,8 @@ export class SavedMappingsComponent implements OnInit {
       ' DISMISS ',
       this.snakbarOptions
     );
+
+    this.select.emit(configuration);
   }
 
   saveConfiguration(configurationName: string) {

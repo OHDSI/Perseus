@@ -12,11 +12,11 @@
     <button mat-menu-item disabled>
       <mat-icon>folder_open</mat-icon>
       <span>Open new source</span></button
-    ><button mat-menu-item disabled>
+    ><button mat-menu-item (click)="openSaveMappingDialog('open')">
       <mat-icon>description</mat-icon>
       <span>Open mappings</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="openSaveMappingDialog('save')">
       <mat-icon>save</mat-icon>
       <span>Save mappings</span>
     </button>

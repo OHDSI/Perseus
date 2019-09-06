@@ -8,6 +8,7 @@ import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
+import { Configuration } from '../models/configuration';
 
 export interface IConnection {
   source: IRow;
@@ -16,6 +17,8 @@ export interface IConnection {
 
 @Injectable()
 export class BridgeService {
+  applyConfiguration$ = new Subject<Configuration>();
+
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
@@ -51,10 +54,12 @@ export class BridgeService {
     private drawService: DrawService
   ) {}
 
-  applyConfiguration(newArrowCache: ArrowCache) {
+  applyConfiguration(configuration: Configuration) {
     this.resetAllArrows();
 
-    this.arrowsCache = Object.assign(newArrowCache);
+    this.arrowsCache = Object.assign(configuration.arrows);
+
+    this.applyConfiguration$.next(configuration);
 
   }
 

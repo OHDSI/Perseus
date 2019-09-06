@@ -12,8 +12,24 @@ export interface StateItem {
 
 @Injectable()
 export class StateService {
+  get Target(): any {
+    return this.target;
+  }
+
+  set Target(target: any) {
+    this.target = target;
+  }
+
+  private target = {};
+
   get initialized(): boolean {
     return this._state.source.tables.length > 0 && this._state.target.tables.length > 0;
+  }
+
+  get state(): IState {
+    if (this._state) {
+      return this._state;
+    }
   }
 
   private _state: IState = {
@@ -29,12 +45,6 @@ export class StateService {
 
   initialize(tables: any[], area: string) {
     this._state[area].tables = tables;
-  }
-
-  get state(): IState {
-    if (this._state) {
-      return this._state;
-    }
   }
 
   findTable(name: string): ITable {

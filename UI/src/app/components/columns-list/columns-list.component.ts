@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
-import { MatDialog } from '@angular/material';
 import { ValuesPopupComponent } from '../popaps/values-popup/values-popup.component';
 import { OverlayService } from 'src/app/services/overlay.service';
 
@@ -18,7 +17,7 @@ export class ColumnsListComponent implements OnInit, OnChanges {
   selectedColumns = [];
   sourceRows: IRow[];
 
-  constructor(private dataService: DataService, private matDialog: MatDialog, private overlayService: OverlayService) {}
+  constructor(private dataService: DataService, private overlayService: OverlayService) {}
 
   ngOnInit() {
 

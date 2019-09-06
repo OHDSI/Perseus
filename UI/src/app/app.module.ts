@@ -30,6 +30,7 @@ import { HighlightDirective } from './directives/highlight-table.directive';
 import { OverlayService } from './services/overlay.service';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { SavedMappingService } from './services/saved-mappings.service';
+import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { SavedMappingService } from './services/saved-mappings.service';
     MappingPopupComponent,
     ColumnsListComponent,
     HighlightDirective,
-    SavedMappingsComponent
+    SavedMappingsComponent,
+    OpenMappingDialogComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
@@ -54,10 +56,11 @@ import { SavedMappingService } from './services/saved-mappings.service';
     RulesPopupComponent,
     PreviewPopupComponent,
     MappingPopupComponent,
-    ValuesPopupComponent
+    ValuesPopupComponent,
+    OpenMappingDialogComponent
   ],
   imports: [
-  BrowserModule,
+    BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
@@ -67,7 +70,15 @@ import { SavedMappingService } from './services/saved-mappings.service';
     GridModule,
     ThemeModule
   ],
-  providers: [DataService, CommonService, BridgeService, StateService, CommentService, OverlayService, SavedMappingService],
+  providers: [
+    DataService,
+    CommonService,
+    BridgeService,
+    StateService,
+    CommentService,
+    OverlayService,
+    SavedMappingService
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

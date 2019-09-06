@@ -7,6 +7,14 @@ export interface ConfigurationOptions {
 }
 
 export class Configuration {
+  get arrows(): any {
+    return JSON.parse(this.mappingsConfiguration);
+  }
+
+  get tables(): any {
+    return JSON.parse(this.tablesConfiguration);
+  }
+
   name: string;
   mappingsConfiguration: string;
   tablesConfiguration: string;
