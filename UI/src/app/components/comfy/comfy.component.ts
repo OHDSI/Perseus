@@ -7,7 +7,7 @@ import {
   transferArrayItem,
   copyArrayItem
 } from '@angular/cdk/drag-drop';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
 import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
@@ -44,11 +44,16 @@ export class ComfyComponent implements OnInit {
   sourceConnectedTo = [];
   sourceRows = [];
 
+  private snakbarOptions = {
+    duration: 3000
+  };
+
   constructor(
     private dataService: DataService,
     private stateService: StateService,
     private mappingDialog: MatDialog,
-    private bridgeService: BridgeService
+    private bridgeService: BridgeService,
+    private snakbar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -160,7 +165,14 @@ export class ComfyComponent implements OnInit {
   }
 
   resetAllMappings() {
+    this.bridgeService.resetAllArrows();
     this.initialize();
+
+    this.snakbar.open(
+      `Reset all mappings success`,
+      ' DISMISS ',
+      this.snakbarOptions
+    );
   }
 
   loadConfiguration(configuration: Configuration) {

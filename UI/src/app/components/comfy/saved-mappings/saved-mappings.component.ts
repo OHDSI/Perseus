@@ -20,7 +20,6 @@ import { MatSnackBar } from '@angular/material';
 export class SavedMappingsComponent implements OnInit {
   @Input() tablesconfiguration: any;
 
-  @Output() reset = new EventEmitter();
   @Output() load = new EventEmitter<Configuration>();
 
   formControl = new FormControl();
@@ -81,18 +80,6 @@ export class SavedMappingsComponent implements OnInit {
 
     this.snakbar.open(
       `Configuration ${configurationName} has been saved`,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
-  }
-
-  resetAllMappings() {
-    this.bridgeService.resetAllArrows();
-
-    this.reset.emit();
-
-    this.snakbar.open(
-      `Reset all mappings success`,
       ' DISMISS ',
       this.snakbarOptions
     );

@@ -1,39 +1,39 @@
-<button
-  mat-icon-button
-  matTooltip="Reset all mappings"
-  matTolltipPosition="right"
-  (click)="resetAllMappings()"
->
-  <mat-icon>delete</mat-icon>
-</button>
-<mat-form-field [floatLabel]="'never'">
-  <input
-    matInput
-    placeholder="enter configuration name"
-    [formControl]="configurationControl"
-    style="width:100%"
-    [type]="'text'"
-  />
-</mat-form-field>
-<button mat-icon-button (click)="saveConfiguration(configurationControl.value)">
-  <mat-icon>save</mat-icon>
-</button>
-<mat-form-field [floatLabel]="'never'">
-  <mat-select
-    placeholder="select a configuration"
-    [formControl]="formControl"
-    (openedChange)="openedChangeHandler($event)"
-  >
-    <mat-select-trigger>
-      {{ formControl.value }}
-      <span> (total {{ configurations.length }}) </span>
-    </mat-select-trigger>
-    <mat-option
-      *ngFor="let configuration of configurations"
-      [value]="configuration.name"
-      (onSelectionChange)="onOpenConfiguration($event, configuration)"
+<div class="save-mappings">
+  <div class="save-configuration">
+    <mat-form-field [floatLabel]="'never'">
+      <input
+        matInput
+        placeholder="enter configuration name"
+        [formControl]="configurationControl"
+        style="width:100%"
+        [type]="'text'"
+      />
+    </mat-form-field>
+    <button
+      mat-icon-button
+      matTooltip="Save configuration"
+      (click)="saveConfiguration(configurationControl.value)"
     >
-      {{ configuration.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+      <mat-icon>save</mat-icon>
+    </button>
+  </div>
+  <mat-form-field [floatLabel]="'never'" class="mapping-dropdown">
+    <mat-select
+      placeholder="select a configuration"
+      [formControl]="formControl"
+      (openedChange)="openedChangeHandler($event)"
+    >
+      <mat-select-trigger>
+        {{ formControl.value }}
+        <span> (total {{ configurations.length }}) </span>
+      </mat-select-trigger>
+      <mat-option
+        *ngFor="let configuration of configurations"
+        [value]="configuration.name"
+        (onSelectionChange)="onOpenConfiguration($event, configuration)"
+      >
+        {{ configuration.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
