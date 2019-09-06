@@ -65,6 +65,16 @@ export class ComfyComponent implements OnInit {
     this.bridgeService.applyConfiguration$.subscribe(configuration => {
       this.target = configuration.tables;
     });
+
+    this.bridgeService.resetAllMappings$.subscribe(_ => {
+      this.initialize();
+
+      this.snakbar.open(
+        `Reset all mappings success`,
+        ' DISMISS ',
+        this.snakbarOptions
+      );
+    });
   }
 
   initialize() {
@@ -168,16 +178,5 @@ export class ComfyComponent implements OnInit {
     if (index > -1) {
       data.splice(index, 1);
     }
-  }
-
-  resetAllMappings() {
-    this.bridgeService.resetAllArrows();
-    this.initialize();
-
-    this.snakbar.open(
-      `Reset all mappings success`,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
   }
 }

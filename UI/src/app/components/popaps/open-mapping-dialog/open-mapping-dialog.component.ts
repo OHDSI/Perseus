@@ -29,8 +29,6 @@ export class OpenMappingDialogComponent implements OnInit {
 
   ngOnInit() {}
 
-  resetAllMappings() {}
-
   onSelectConfiguration(configuration: Configuration) {
     this.selectedConfiguration = configuration;
   }

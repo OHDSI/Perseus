@@ -18,6 +18,7 @@ export interface IConnection {
 @Injectable()
 export class BridgeService {
   applyConfiguration$ = new Subject<Configuration>();
+  resetAllMappings$ = new Subject<any>();
 
   set sourceRow(row: IRow) {
     this.sourcerow = row;
@@ -159,6 +160,12 @@ export class BridgeService {
       .map(arrow => arrow[source]);
 
     return uniqBy(data, 'tableName').map(row => row.tableName);
+  }
+
+  resetAllMappings() {
+    this.resetAllArrows();
+
+    this.resetAllMappings$.next();
   }
 
   // Injectors

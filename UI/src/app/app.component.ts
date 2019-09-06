@@ -20,7 +20,7 @@ export class AppComponent implements OnDestroy {
   constructor(
     cd: ChangeDetectorRef,
     media: MediaMatcher,
-    bridge: BridgeService,
+    private bridge: BridgeService,
     private matDialog: MatDialog,
     private state: StateService
   ) {
@@ -45,7 +45,7 @@ export class AppComponent implements OnDestroy {
   }
 
   resetAllMappings() {
-    throw new Error('not implemented');
+    this.bridge.resetAllMappings();
   }
 
   openSaveMappingDialog(action: OpenMappingDialog) {
