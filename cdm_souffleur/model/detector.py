@@ -47,7 +47,8 @@ def find_domain(column_name, table_name):
         print(res.show())
     except AnalysisException as error:
         # TODO what return if exception (no such table exsits)
-        res = 'error'
+        from cdm_souffleur.utils.exceptions import InvalidUsage
+        raise InvalidUsage(error.__str__(), 404)
         print(error)
     return res
 
