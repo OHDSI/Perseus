@@ -1,4 +1,6 @@
 import { ArrowCache } from './arrow-cache';
+import { Row } from './row';
+import { Table } from './table';
 
 export interface ConfigurationOptions {
   name?: string;
@@ -8,7 +10,14 @@ export interface ConfigurationOptions {
 
 export class Configuration {
   get arrows(): any {
-    return JSON.parse(this.mappingsConfiguration);
+    const rows =  JSON.parse(this.mappingsConfiguration);
+    Object.values(rows).forEach((row: any) => {
+      const {source, target} = row;
+      row.source = Object.setPrototypeOf(source, Row.prototype);
+      row.target = Object.setPrototypeOf(target, Row.prototype);
+      return row;
+    });
+    return rows;
   }
 
   get tables(): any {
