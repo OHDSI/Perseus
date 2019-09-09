@@ -153,13 +153,13 @@ export class BridgeService {
 
   findCorrespondingTables(table: ITable): string[] {
     const source = table.area === 'source' ? 'target' : 'source';
-    const data = Object.values(this.arrowsCache)
+    const rows = Object.values(this.arrowsCache)
       .filter(connection => {
         return connection[table.area].tableName === table.name;
       })
       .map(arrow => arrow[source]);
 
-    return uniqBy(data, 'tableName').map(row => row.tableName);
+    return uniqBy(rows, 'tableName').map(row => row.tableName);
   }
 
   resetAllMappings() {
