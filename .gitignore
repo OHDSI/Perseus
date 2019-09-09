@@ -10,3 +10,4 @@ cdm_souffleur/controller/generate/**/*
 cdm_souffleur/controller/generate/CDM_xml/*.xml
 cdm_souffleur/model/generate/CDM_xml/**/*
 
+source_schema/**/*
