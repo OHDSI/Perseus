@@ -1,9 +1,17 @@
-import { ChangeDetectorRef, Component, OnDestroy, ViewChild, ElementRef, Renderer, Renderer2 } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  Renderer,
+  Renderer2
+} from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { debounceTime, map } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
 import { BridgeService } from './services/bridge.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { StateService } from './services/state.service';
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
@@ -21,6 +29,10 @@ export class AppComponent implements OnDestroy {
 
   private mobileQueryListener: () => void;
 
+  private snakbarOptions = {
+    duration: 3000
+  };
+
   constructor(
     cd: ChangeDetectorRef,
     media: MediaMatcher,
@@ -28,7 +40,8 @@ export class AppComponent implements OnDestroy {
     private matDialog: MatDialog,
     private state: StateService,
     private renderer: Renderer,
-    private uploadService: UploadService
+    private uploadService: UploadService,
+    private snakbar: MatSnackBar
   ) {
     this.mobileQueryListener = () => cd.detectChanges();
 
@@ -99,8 +112,19 @@ export class AppComponent implements OnDestroy {
 
   onFileUpload(event: any): void {
     const files = event.srcElement.files;
-    const url = environment.url.concat('/put');
-    this.uploadService.putFileOnServer('POST', url, [], files);
+    const url = environment.url.concat('/load_schema');
+    this.uploadService
+      .putFileOnServer('POST', url, [], files)
+      .then(okResponce => {
+        this.snakbar.open(
+          `Success file upload`,
+          ' DISMISS ',
+          this.snakbarOptions
+        );
+      })
+      .catch(errResponce => {
+        console.log(errResponce);
+      });
   }
 }
 

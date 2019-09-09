@@ -12,13 +12,13 @@ export class UploadService {
       const xhr = new XMLHttpRequest();
 
       for (let i = 0; i < files.length; i++) {
-        formData.append('uploads[]', files[i], files[i].name);
+        formData.append('file', files[i], files[i].name);
       }
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            resolve(JSON.parse(xhr.response));
+            resolve(xhr.response);
           } else {
             reject(xhr.response);
           }
@@ -26,7 +26,6 @@ export class UploadService {
       };
 
       xhr.open(method, url, true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
       xhr.send(formData);
     });
