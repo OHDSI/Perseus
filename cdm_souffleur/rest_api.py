@@ -157,8 +157,13 @@ def find_domain_call():
     """load report and vocabulary before, return matched codes"""
     column_name = request.args.get('column_name')
     table_name = request.args.get('table_name')
-    finded_codes = find_domain(column_name, table_name).toPandas().to_json(
-        orient='records')
+    from pyspark.sql.utils import AnalysisException
+    try:
+        finded_codes = find_domain(column_name, table_name).toPandas().to_json(
+            orient='records')
+    except InvalidUsage as error:
+        # TODO what return if exception (no such table exsits)
+        raise error
     return jsonify(finded_codes)
 
 
