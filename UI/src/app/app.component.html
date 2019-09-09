@@ -9,10 +9,17 @@
   <span style="flex: 1 1 auto"></span>
   <h1>CDM ETL</h1>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item disabled>
+    <input
+      #sourceUpload
+      type="file"
+      (change)="onFileUpload($event)"
+      style="display: none"
+    />
+    <button mat-menu-item (click)="onOpenSourceClick()">
       <mat-icon>folder_open</mat-icon>
-      <span>Open new source</span></button
-    ><button mat-menu-item (click)="openSaveMappingDialog('open')">
+      <span>Open new source</span>
+    </button>
+    <button mat-menu-item (click)="openSaveMappingDialog('open')">
       <mat-icon>description</mat-icon>
       <span>Open mappings</span>
     </button>
