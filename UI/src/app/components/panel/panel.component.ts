@@ -93,8 +93,6 @@ export class PanelComponent implements OnInit {
       table
     );
 
-    corespondingTableNames.push(table.name);
-
     corespondingTableNames.forEach(name => {
       const correspondentTable = this.stateService.findTable(name);
       if (!correspondentTable.expanded && !table.expanded) {

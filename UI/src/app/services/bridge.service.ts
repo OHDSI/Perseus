@@ -9,6 +9,7 @@ import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
 import { Configuration } from '../models/configuration';
+import { StateService } from './state.service';
 
 export interface IConnection {
   source: IRow;
@@ -52,7 +53,8 @@ export class BridgeService {
 
   constructor(
     private commonService: CommonService,
-    private drawService: DrawService
+    private drawService: DrawService,
+    private stateService: StateService
   ) {}
 
   applyConfiguration(configuration: Configuration) {
@@ -61,7 +63,6 @@ export class BridgeService {
     this.arrowsCache = Object.assign(configuration.arrows);
 
     this.applyConfiguration$.next(configuration);
-
   }
 
   connect() {
@@ -105,7 +106,11 @@ export class BridgeService {
     this.drawService.removeAllConnectors();
 
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-      this.drawService.drawLine(arrow.source, arrow.target);
+      const source = this.stateService.findTable(arrow.source.tableName);
+      const target = this.stateService.findTable(arrow.source.tableName);
+      if (source.expanded && target.expanded) {
+        this.drawService.drawLine(arrow.source, arrow.target);
+      }
     });
   }
 
