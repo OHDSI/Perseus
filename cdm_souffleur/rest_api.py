@@ -154,10 +154,12 @@ def zip_xml_call():
 @app.route('/find_domain')
 def find_domain_call():
     # TODO what return how to run when init spark?
+    """load report and vocabulary before, return matched codes"""
     column_name = request.args.get('column_name')
     table_name = request.args.get('table_name')
-    start_new_thread(find_domain, (column_name, table_name))
-    return 'OK'
+    finded_codes = find_domain(column_name, table_name).toPandas().to_json(
+        orient='records')
+    return jsonify(finded_codes)
 
 
 @app.route('/load_report')
