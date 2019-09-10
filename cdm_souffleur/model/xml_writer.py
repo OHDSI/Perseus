@@ -5,6 +5,7 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FORMAT
 import pandas as pd
 import os
+from shutil import make_archive,  rmtree
 
 
 def _convert_underscore_to_camel(word: str):
@@ -165,10 +166,19 @@ def get_xml(json_):
 
 
 def zip_xml():
-    import shutil
-    shutil.make_archive(
-        GENERATE_CDM_XML_ARCHIVE_PATH / GENERATE_CDM_XML_ARCHIVE_FILENAME,
-        GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_XML_PATH)
+    try:
+        make_archive(
+            GENERATE_CDM_XML_ARCHIVE_PATH / GENERATE_CDM_XML_ARCHIVE_FILENAME,
+            GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_XML_PATH)
+    except FileNotFoundError:
+        raise
+
+
+def delete_generated_xml():
+    try:
+        rmtree(GENERATE_CDM_XML_PATH)
+    except FileNotFoundError:
+        raise
 
 
 if __name__ == '__main__':
