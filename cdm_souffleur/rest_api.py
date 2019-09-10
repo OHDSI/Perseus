@@ -170,11 +170,11 @@ def find_domain_call():
     column_name = request.args.get('column_name')
     table_name = request.args.get('table_name')
     try:
-        finded_codes = find_domain(column_name, table_name).toPandas().to_json(
+        found_codes = find_domain(column_name, table_name).toPandas().to_json(
             orient='records')
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
-    return jsonify(finded_codes)
+    return jsonify(found_codes)
 
 
 @app.route('/load_report')
