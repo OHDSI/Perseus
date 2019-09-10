@@ -1,7 +1,7 @@
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT, \
     UPLOAD_SOURCE_SCHEMA_FOLDER
-from flask import Flask, request, jsonify, send_from_directory, flash, redirect, url_for
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from cdm_souffleur.model.xml_writer import get_xml, zip_xml
 from _thread import start_new_thread
@@ -153,17 +153,14 @@ def zip_xml_call():
 
 @app.route('/find_domain')
 def find_domain_call():
-    # TODO what return how to run when init spark?
     """load report and vocabulary before, return matched codes"""
     column_name = request.args.get('column_name')
     table_name = request.args.get('table_name')
-    from pyspark.sql.utils import AnalysisException
     try:
         finded_codes = find_domain(column_name, table_name).toPandas().to_json(
             orient='records')
-    except InvalidUsage as error:
-        # TODO what return if exception (no such table exsits)
-        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
     return jsonify(finded_codes)
 
 

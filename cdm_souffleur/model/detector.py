@@ -45,11 +45,8 @@ def find_domain(column_name, table_name):
     try:
         res = spark().sql(sql.format(column_name, table_name))
         print(res.show())
-    except AnalysisException as error:
-        # TODO what return if exception (no such table exsits)
-        from cdm_souffleur.utils.exceptions import InvalidUsage
-        raise InvalidUsage(error.__str__(), 404)
-        print(error)
+    except AnalysisException:
+        raise
     return res
 
 
