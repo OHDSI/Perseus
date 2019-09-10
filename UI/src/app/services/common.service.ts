@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ElementRef } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
-import { IConnector } from 'src/app/models/connector';
 import { Area } from '../models/area';
+import { IConnector } from '../models/interface/connector.interface';
 
 @Injectable()
 export class CommonService {
+  canvas: ElementRef;
+
   private activerow: IRow = null;
   private activeconnector: IConnector = null;
   private sourceareawidth: number;
@@ -18,10 +20,10 @@ export class CommonService {
   constructor() {}
 
   set activeRow(row: IRow) {
-      this.activerow = row;
+    this.activerow = row;
   }
   get activeRow(): IRow {
-      return this.activerow;
+    return this.activerow;
   }
 
   get sourceAreaWidth() {
@@ -80,5 +82,9 @@ export class CommonService {
 
   setAreaWidth(area: string, width: number) {
     this[`_${area}AreaWidth`] = width;
+  }
+
+  setCanvas(canvas: ElementRef) {
+    this.canvas = canvas;
   }
 }

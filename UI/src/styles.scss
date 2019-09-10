@@ -43,25 +43,6 @@ app-dialog {
     width: 240px;
 }
 
-line {
-    stroke: #808080;
-}
-
-.line-active {
-    stroke: #066BBB;
-}
-
-.row-active {
-    background-color: #DCECF9;
-}
-
-.drag-start {
-    background-color: rgba(255, 255, 255, 0.5);
-
-    & * {
-        color: #C0C0C0 !important;
-    }
-}
 
 .drag-over {
     background-color: #DCECF9;
@@ -112,4 +93,37 @@ line {
 
 ::-webkit-scrollbar-corner {
   background-color: transparent;
+}
+
+// line {
+//   stroke: #808080;
+// }
+
+// .line-active {
+//   stroke: #066BBB;
+// }
+
+// .row-active {
+//   background-color: #DCECF9;
+// }
+
+// .drag-start {
+//   background-color: rgba(255, 255, 255, 0.5);
+
+//   & * {
+//       color: #C0C0C0 !important;
+//   }
+// }
+
+
+line {
+  &.arrow {
+    stroke: #808080;
+    stroke-width:2;
+  }
+
+  &.arrow:hover {
+    stroke:#ffca05;
+    stroke-width:3;
+  }
 }

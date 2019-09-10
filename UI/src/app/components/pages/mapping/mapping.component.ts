@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 import { StateService } from 'src/app/services/state.service';
 import { DataService } from 'src/app/services/data.service';
@@ -14,9 +14,11 @@ import { ITable } from 'src/app/models/table';
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss']
 })
-export class MappingComponent implements OnInit {
+export class MappingComponent implements OnInit, AfterViewInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
+
+  @ViewChild('arrowsarea', {read: ElementRef}) canvas: ElementRef;
 
   constructor(
     private stateService: StateService,
@@ -28,6 +30,10 @@ export class MappingComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  ngAfterViewInit() {
+    this.commonService.setCanvas(this.canvas);
   }
 
   get hint() {

@@ -1,11 +1,19 @@
-import { Injectable, Inject } from '@angular/core';
+import {
+  Injectable,
+  Inject,
+  Renderer2,
+  RendererFactory2,
+  RendererType2
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { CommonService } from 'src/app/services/common.service';
-import { Connector } from 'src/app/models/connector';
+import { Connector } from 'src/app/models/Connector';
 import { IRow } from 'src/app/models/row';
 
 import { parseArrowKey } from './business/rules';
+import { Arrow } from '../models/arrow';
+import { Renderer } from 'ng2-qgrid/core/scene/render/render';
 
 @Injectable()
 export class DrawService {
@@ -13,16 +21,18 @@ export class DrawService {
     return Object.keys(this.list).length === 0;
   }
 
-  private svg: any;
   private list = {};
-
+  private renderer: Renderer2;
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private commonService: CommonService
-  ) {}
+    private commonService: CommonService,
+    rendererFactory: RendererFactory2
+  ) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+  }
 
   drawLine(source: IRow, target: IRow): string {
-    this.svg = this.document.querySelector('.canvas');
+    const canvas = this.commonService.canvas;
 
     const sourceRowId = source.id;
     const targetRowId = target.id;
@@ -30,11 +40,24 @@ export class DrawService {
     const targetTableId = target.tableId;
 
     const entityId = `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
-    const drawEntity = new Connector(entityId, source, target);
+
+    const drawEntity = new Arrow(
+      canvas,
+      entityId,
+      source,
+      target,
+      this.renderer
+    );
+
+    // const drawEntity = new Connector(
+    //   entityId,
+    //   source,
+    //   target,
+    // );
 
     if (!this.list[entityId]) {
       this.list[entityId] = drawEntity;
-      drawEntity.drawLine();
+      drawEntity.draw();
 
       // const button = this._appendButton(drawEntity);
       // drawEntity.button = button;
