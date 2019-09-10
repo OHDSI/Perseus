@@ -3,7 +3,8 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     UPLOAD_SOURCE_SCHEMA_FOLDER
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from cdm_souffleur.model.xml_writer import get_xml, zip_xml
+from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
+    delete_generated_xml
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list
@@ -143,12 +144,24 @@ def zip_xml_call():
     """return attached ZIP of XML's from back-end folder
     TODO  - now the folder is not cleared
     """
-    zip_xml()
+    try:
+        zip_xml()
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
     return send_from_directory(GENERATE_CDM_XML_ARCHIVE_PATH,
                                filename='.'.join((
                                             GENERATE_CDM_XML_ARCHIVE_FILENAME,
                                             GENERATE_CDM_XML_ARCHIVE_FORMAT)),
                                as_attachment=True)
+
+
+@app.route('/clear_xml_dir')
+def clear_xml_dir_call():
+    try:
+        delete_generated_xml()
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
+    return 'OK'
 
 
 @app.route('/find_domain')
