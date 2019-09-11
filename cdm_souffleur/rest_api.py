@@ -14,6 +14,7 @@ from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import BadRequestKeyError
 import os
 
 UPLOAD_FOLDER = UPLOAD_SOURCE_SCHEMA_FOLDER
@@ -63,7 +64,7 @@ def get_existing_source_schemas_list_call():
 
 @app.route('/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
-    schema_name = request.args.get('schema_name')
+    schema_name = request.args['schema_name']
     if schema_name in get_existing_source_schemas_list():
         source_schema = get_source_schema(
             app.config['UPLOAD_FOLDER'] / schema_name)
@@ -74,7 +75,7 @@ def load_saved_source_schema_call():
 
 @app.route('/delete_saved_source_schema', methods=['GET'])
 def delete_saved_source_schema_call():
-    schema_name = request.args.get('schema_name')
+    schema_name = request.args['schema_name']
     if schema_name in get_existing_source_schemas_list():
         os.remove(app.config['UPLOAD_FOLDER'] / schema_name)
         return 'OK'
@@ -91,7 +92,7 @@ def get_cdm_versions_call():
 @app.route('/get_cdm_schema')
 def get_cdm_schema_call():
     """return CDM schema for target version"""
-    cdm_version = request.args.get('cdm_version')
+    cdm_version = request.args['cdm_version']
     cdm_schema = get_schema(cdm_version)
     return jsonify([s.to_json() for s in cdm_schema])
 
@@ -99,7 +100,7 @@ def get_cdm_schema_call():
 @app.route('/get_source_schema')
 def get_source_schema_call():
     """return with source schema based on White Rabbit report"""
-    path = request.args.get('path')
+    path = request.args['path']
     source_schema = get_source_schema(path)
     return jsonify([s.to_json() for s in source_schema])
 
@@ -107,7 +108,7 @@ def get_source_schema_call():
 @app.route('/get_top_values')
 def get_top_values_call():
     """return top 10 values by freq for table and row based on WR report"""
-    table_name = request.args.get('table_name')
+    table_name = request.args['table_name']
     column_name = request.args.get('column_name')
     return jsonify(get_top_values(table_name, column_name))
 
@@ -121,10 +122,18 @@ def handle_invalid_usage(error):
     return response
 
 
+@app.errorhandler(BadRequestKeyError)
+def handle_invalid_req_key(error):
+    response = jsonify({'message': error.__str__()})
+    response.status_code = 400
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
 @app.route('/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
-    path = request.args.get('path')
+    path = request.args['path']
     lookups = return_lookup_list(path)
     return jsonify(lookups)
 
@@ -167,8 +176,8 @@ def clear_xml_dir_call():
 @app.route('/find_domain')
 def find_domain_call():
     """load report and vocabulary before, return matched codes"""
-    column_name = request.args.get('column_name')
-    table_name = request.args.get('table_name')
+    column_name = request.args['column_name']
+    table_name = request.args['table_name']
     try:
         found_codes = find_domain(column_name, table_name).toPandas().to_json(
             orient='records')
@@ -180,7 +189,7 @@ def find_domain_call():
 @app.route('/load_report')
 def load_report_call():
     """load report about source schema"""
-    path = request.args.get('path')
+    path = request.args['path']
     start_new_thread(load_report, (path,))
     return 'OK'
 
@@ -189,7 +198,7 @@ def load_report_call():
 def load_vocabulary_call():
     """load vocabulary"""
     # TODO rewrite to threading instead _thread?
-    path = request.args.get('path')
+    path = request.args['path']
     start_new_thread(load_vocabulary, (path,))
     return 'OK'
 
