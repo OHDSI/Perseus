@@ -107,7 +107,9 @@ def get_source_schema_call():
 
 @app.route('/get_top_values')
 def get_top_values_call():
-    """return top 10 values by freq for table and row based on WR report"""
+    """return top 10 values by freq for table and row(optionally)
+    based on WR report
+    """
     table_name = request.args['table_name']
     column_name = request.args.get('column_name')
     return jsonify(get_top_values(table_name, column_name))
