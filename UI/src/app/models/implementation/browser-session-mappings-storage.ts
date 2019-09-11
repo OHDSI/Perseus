@@ -10,8 +10,11 @@ import { Configuration } from '../configuration';
 @Injectable()
 export class BrowserSessionStorage implements IMappingsStorage {
   configuration: any;
+  private storage: any;
 
   constructor() {
+    this.storage = localStorage;
+
     this.configuration = {};
 
     this.get('mappings').then(configuration => {
@@ -39,11 +42,11 @@ export class BrowserSessionStorage implements IMappingsStorage {
           prepareValue = compressObjectToString(value);
         }
 
-        if (sessionStorage.getItem(key)) {
+        if (this.storage.getItem(key)) {
           this.remove(key);
-          sessionStorage.setItem(key, prepareValue); // update
+          this.storage.setItem(key, prepareValue); // update
         } else {
-          sessionStorage.setItem(key, prepareValue);
+          this.storage.setItem(key, prepareValue);
         }
 
         resolve();
@@ -55,7 +58,7 @@ export class BrowserSessionStorage implements IMappingsStorage {
 
   get(key): Promise<any> {
     return new Promise((resolve, reject) => {
-      const value = sessionStorage.getItem(key);
+      const value = this.storage.getItem(key);
 
       if (value) {
         try {
@@ -77,6 +80,6 @@ export class BrowserSessionStorage implements IMappingsStorage {
 
   remove(key: string): void {
     // Check if key exists
-    sessionStorage.removeItem(key);
+    this.storage.removeItem(key);
   }
 }
