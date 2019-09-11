@@ -8,9 +8,10 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
-import { SavedMappingService } from 'src/app/services/saved-mappings.service';
 import { Configuration } from 'src/app/models/configuration';
 import { MatSnackBar } from '@angular/material';
+import { IMappingsStorage } from 'src/app/models/interface/mappings-storage';
+import { BrowserSessionStorage } from 'src/app/models/implementation/browser-session-mappings-storage';
 
 @Component({
   selector: 'app-saved-mappings',
@@ -31,14 +32,17 @@ export class SavedMappingsComponent implements OnInit {
     duration: 3000
   };
 
+  mappingsService: IMappingsStorage;
+
   constructor(
     private bridgeService: BridgeService,
-    private savedMappinds: SavedMappingService,
     private snakbar: MatSnackBar
-  ) {}
+  ) {
+    this.mappingsService = new BrowserSessionStorage();
+  }
 
   ngOnInit() {
-    this.configurations = [...this.savedMappinds.mappingConfigurations];
+    this.configurations = [...Object.values(this.mappingsService.configuration)];
   }
 
   openedChangeHandler(open: any) {
@@ -50,7 +54,7 @@ export class SavedMappingsComponent implements OnInit {
   }
 
   onOpenConfiguration(configuration: Configuration) {
-    const config = this.savedMappinds.open(configuration.name);
+    const config = this.mappingsService.open(configuration.name);
     if (config) {
     } else {
       alert('config not found');
@@ -77,8 +81,8 @@ export class SavedMappingsComponent implements OnInit {
       tablesConfiguration: this.tablesconfiguration
     });
 
-    this.savedMappinds.save(newConfiguration);
-    this.configurations = [...this.savedMappinds.mappingConfigurations];
+    this.mappingsService.save(newConfiguration);
+    this.configurations = [...Object.values(this.mappingsService.configuration)];
     this.configurationControl.reset();
 
     this.snakbar.open(
