@@ -2,45 +2,53 @@ import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
 import { extractHtmlElement } from '../services/utilites/html-utilities';
 import { IConnector } from './interface/connector.interface';
+import { Renderer2, ElementRef } from '@angular/core';
 
-// What is Connector?
-export class Connector implements IConnector {
-  public canvas: any;
+// TODO Hide properties with WeakMap
+
+export class Arrow implements IConnector {
   public line: SVGLineElement;
   public button: Element;
 
-  constructor(public id: string, public source: IRow, public target: IRow) {}
+  private removeClickListener: any;
+
+  constructor(
+    public canvas: ElementRef,
+    public id: string,
+    public source: IRow,
+    public target: IRow,
+    private renderer: Renderer2
+  ) {}
 
   draw() {
-    this.canvas = document.querySelector('.canvas');
-
     const source = this.checkAndChangeHtmlElement(this.source);
     const target = this.checkAndChangeHtmlElement(this.target);
 
     // TODO Check htmlElement for existance
-    const sourceSVGPoint = getSVGPoint(source, this.canvas);
-    const targetSVGPoint = getSVGPoint(target, this.canvas);
+    const sourceSVGPoint = getSVGPoint(source, this.canvas.nativeElement);
+    const targetSVGPoint = getSVGPoint(target, this.canvas.nativeElement);
 
     const id = this.id;
 
     const { x: x1, y: y1 } = sourceSVGPoint;
     const { x: x2, y: y2 } = targetSVGPoint;
 
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const line = this.renderer.createElement('line', 'svg');
 
-    line.classList.add('arrow');
+    this.renderer.addClass(line, 'arrow');
 
-    line.setAttribute('x1', x1 + '');
-    line.setAttribute('y1', y1 + '');
-    line.setAttribute('x2', x2 - 6 + '');
-    line.setAttribute('y2', y2 + '');
-    line.setAttribute('id', id);
-    line.setAttribute('marker-end', 'url(#arrow)');
+    this.renderer.setAttribute(line, 'x1', x1 + '');
+    this.renderer.setAttribute(line, 'y1', y1 + '');
+    this.renderer.setAttribute(line, 'x2', x2 - 6 + '');
+    this.renderer.setAttribute(line, 'y2', y2 + '');
+    this.renderer.setAttribute(line, 'id', id);
+    this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
 
-    line.addEventListener('click', this.clickHandler);
+    this.removeClickListener = this.renderer.listen(line, 'click', this.clickHandler);
 
     this.line = line;
-    this.canvas.appendChild(line);
+
+    this.renderer.appendChild(this.canvas.nativeElement, line);
   }
 
   remove() {
@@ -48,7 +56,7 @@ export class Connector implements IConnector {
       this.source.removeConnections();
     }
     if (this.line) {
-      this.line.removeEventListener('click', this.clickHandler);
+      this.removeClickListener();
       this.line.remove();
     }
     if (this.button) {
@@ -71,26 +79,6 @@ export class Connector implements IConnector {
     this.line.setAttribute('y1', y1 + '');
     this.line.setAttribute('x2', x2 - 6 + '');
     this.line.setAttribute('y2', y2 + '');
-  }
-
-  // TODO Move
-  active() {
-    this.line.classList.add('line-active');
-    this.line.removeAttribute('marker-end');
-    this.line.setAttribute('marker-end', 'url(#arrow-active)');
-
-    this.source.htmlElement.classList.add('row-active');
-    this.target.htmlElement.classList.add('row-active');
-  }
-
-  // TODO Move
-  inactive() {
-    this.line.classList.remove('line-active');
-    this.line.removeAttribute('marker-end');
-    this.line.setAttribute('marker-end', 'url(#arrow)');
-
-    this.source.htmlElement.classList.remove('row-active');
-    this.target.htmlElement.classList.remove('row-active');
   }
 
   private checkAndChangeHtmlElement(row: IRow): IRow {

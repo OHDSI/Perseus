@@ -69,8 +69,8 @@ export class RulesPopupComponent {
 
   close() {
     this.overlay.detach();
-    this.commonService.activeConnector.inactive();
-    this.commonService.activeConnector = null;
+    //this.commonService.activeConnector.inactive();
+    //this.commonService.activeConnector = null;
   }
 
 }
