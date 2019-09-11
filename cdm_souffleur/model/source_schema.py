@@ -11,7 +11,7 @@ import csv
 import glob
 import shutil
 from cdm_souffleur.view.Table import Table, Column
-from pandasql import sqldf, PandaSQLException
+from pandasql import sqldf
 import xlrd
 from cdm_souffleur.utils import time_it
 from cdm_souffleur.utils.exceptions import InvalidUsage
