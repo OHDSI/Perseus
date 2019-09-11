@@ -126,6 +126,7 @@ def handle_invalid_usage(error):
 
 @app.errorhandler(BadRequestKeyError)
 def handle_invalid_req_key(error):
+    """handle error of missed\wrong parameter"""
     response = jsonify({'message': error.__str__()})
     response.status_code = 400
     traceback.print_tb(error.__traceback__)
