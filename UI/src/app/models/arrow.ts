@@ -36,12 +36,12 @@ export class Arrow implements IConnector {
     const line = this.renderer.createElement('line', 'svg');
 
     this.renderer.addClass(line, 'arrow');
-
     this.renderer.setAttribute(line, 'x1', x1 + '');
     this.renderer.setAttribute(line, 'y1', y1 + '');
     this.renderer.setAttribute(line, 'x2', x2 - 6 + '');
     this.renderer.setAttribute(line, 'y2', y2 + '');
     this.renderer.setAttribute(line, 'id', id);
+
     this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
 
     this.removeClickListener = this.renderer.listen(line, 'click', this.clickHandler);
