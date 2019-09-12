@@ -32,6 +32,7 @@ import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
 import { DrawTransformatorService } from './services/draw-transformator.service';
+import { UserSettings } from './services/user-settings.service';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { DrawTransformatorService } from './services/draw-transformator.service'
     CommentService,
     OverlayService,
     UploadService,
-    DrawTransformatorService
+    DrawTransformatorService,
+    UserSettings
   ],
   bootstrap: [AppComponent]
 })

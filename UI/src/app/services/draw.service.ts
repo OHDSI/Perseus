@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Renderer2,
-  RendererFactory2,
-} from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 
 import { CommonService } from 'src/app/services/common.service';
 import { IRow } from 'src/app/models/row';
@@ -11,6 +7,7 @@ import { parseArrowKey } from './business/rules';
 import { Arrow } from '../models/arrow';
 import { IConnector } from '../models/interface/connector.interface';
 import { DrawTransformatorService } from './draw-transformator.service';
+import { UserSettings } from './user-settings.service';
 
 @Injectable()
 export class DrawService {
@@ -23,6 +20,7 @@ export class DrawService {
   constructor(
     private commonService: CommonService,
     private drawTransform: DrawTransformatorService,
+    private userSettings: UserSettings,
     rendererFactory: RendererFactory2
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -51,8 +49,9 @@ export class DrawService {
       drawEntity.draw();
     }
 
-    // hide depend on settings
-    this.drawTransform.appendButton(drawEntity);
+    if (this.userSettings.showQuestionButtons) {
+      this.drawTransform.appendButton(drawEntity);
+    }
 
     return drawEntity;
   }
@@ -62,8 +61,12 @@ export class DrawService {
       const drawEntity: Arrow = this.list[key];
       drawEntity.adjustPosition();
 
-      // hide depend on settings
-      this.drawTransform.recalculateButtonPosition(drawEntity.button, drawEntity.line);
+      if (this.userSettings.showQuestionButtons) {
+        this.drawTransform.recalculateButtonPosition(
+          drawEntity.button,
+          drawEntity.line
+        );
+      }
     });
   }
 
