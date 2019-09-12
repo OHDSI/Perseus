@@ -18,7 +18,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
-  @ViewChild('arrowsarea', {read: ElementRef}) canvas: ElementRef;
+  @ViewChild('arrowsarea', {read: ElementRef}) svgCanvas: ElementRef;
+  @ViewChild('maincanvas', {read: ElementRef}) mainCanvas: ElementRef;
 
   constructor(
     private stateService: StateService,
@@ -33,7 +34,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.commonService.setCanvas(this.canvas);
+    this.commonService.setSvg(this.svgCanvas);
+    this.commonService.setMain(this.mainCanvas);
   }
 
   get hint() {

@@ -9,4 +9,5 @@ export interface IConnector {
   draw(): void;
   remove(): void;
   adjustPosition(): void;
+  attachButton(button): void;
 }

@@ -1,4 +1,5 @@
 import { IRow } from 'src/app/models/row';
+import { ITable } from 'src/app/models/table';
 
 function middleHeightOfLine(line: any) {
   const {y1, y2} = line.attributes;
@@ -6,7 +7,7 @@ function middleHeightOfLine(line: any) {
   return ( +y1.nodeValue + +y2.nodeValue) / 2;
 }
 
-function areaOffset({sourceAreaWidth: source, targetAreaWidth: target}) {
+function areaOffset(source, target) {
   const offset = (Math.max(source, target) - Math.min(source, target)) / 2;
   return source > target ? -offset : offset;
 }

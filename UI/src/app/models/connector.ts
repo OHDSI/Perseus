@@ -11,6 +11,10 @@ export class Connector implements IConnector {
 
   constructor(public id: string, public source: IRow, public target: IRow) {}
 
+  attachButton(button: any): void {
+    throw new Error('Method not implemented.');
+  }
+
   draw() {
     this.canvas = document.querySelector('.canvas');
 

@@ -12,21 +12,25 @@ export class Arrow implements IConnector {
 
   private removeClickListener: any;
 
+  canvas: any;
+
   constructor(
-    public canvas: ElementRef,
+    canvasRef: ElementRef,
     public id: string,
     public source: IRow,
     public target: IRow,
     private renderer: Renderer2
-  ) {}
+  ) {
+    this.canvas = canvasRef.nativeElement;
+  }
 
   draw() {
     const source = this.checkAndChangeHtmlElement(this.source);
     const target = this.checkAndChangeHtmlElement(this.target);
 
     // TODO Check htmlElement for existance
-    const sourceSVGPoint = getSVGPoint(source, this.canvas.nativeElement);
-    const targetSVGPoint = getSVGPoint(target, this.canvas.nativeElement);
+    const sourceSVGPoint = getSVGPoint(source, this.canvas);
+    const targetSVGPoint = getSVGPoint(target, this.canvas);
 
     const id = this.id;
 
@@ -48,7 +52,11 @@ export class Arrow implements IConnector {
 
     this.line = line;
 
-    this.renderer.appendChild(this.canvas.nativeElement, line);
+    this.renderer.appendChild(this.canvas, line);
+  }
+
+  attachButton(button) {
+    this.button = button;
   }
 
   remove() {

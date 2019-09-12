@@ -6,15 +6,17 @@ import { IConnector } from '../models/interface/connector.interface';
 
 @Injectable()
 export class CommonService {
-  canvas: ElementRef;
+  svgCanvas: ElementRef;
+  mainCanvas: ElementRef;
+
+  private areaWidth = {};
 
   private activerow: IRow = null;
   private activeconnector: IConnector = null;
-  private sourceareawidth: number;
-  private targetareawidth: number;
 
   private sourceexpanded = false;
   private targetexpanded = false;
+
   private _linked = false;
 
   constructor() {}
@@ -24,13 +26,6 @@ export class CommonService {
   }
   get activeRow(): IRow {
     return this.activerow;
-  }
-
-  get sourceAreaWidth() {
-    return this.sourceareawidth;
-  }
-  get targetAreaWidth() {
-    return this.targetareawidth;
   }
 
   set activeConnector(connector: IConnector) {
@@ -81,10 +76,18 @@ export class CommonService {
   }
 
   setAreaWidth(area: string, width: number) {
-    this[`_${area}AreaWidth`] = width;
+    this.areaWidth[area] = width;
   }
 
-  setCanvas(canvas: ElementRef) {
-    this.canvas = canvas;
+  getAreaWidth(area: string) {
+    return this.areaWidth[area];
+  }
+
+  setSvg(svg: ElementRef) {
+    this.svgCanvas = svg;
+  }
+
+  setMain(main: ElementRef) {
+    this.mainCanvas = main;
   }
 }

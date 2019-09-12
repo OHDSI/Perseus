@@ -1,19 +1,16 @@
 import {
   Injectable,
-  Inject,
   Renderer2,
   RendererFactory2,
-  RendererType2
 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
 
 import { CommonService } from 'src/app/services/common.service';
-import { Connector } from 'src/app/models/Connector';
 import { IRow } from 'src/app/models/row';
 
 import { parseArrowKey } from './business/rules';
 import { Arrow } from '../models/arrow';
-import { Renderer } from 'ng2-qgrid/core/scene/render/render';
+import { IConnector } from '../models/interface/connector.interface';
+import { DrawTransformatorService } from './draw-transformator.service';
 
 @Injectable()
 export class DrawService {
@@ -24,15 +21,15 @@ export class DrawService {
   private list = {};
   private renderer: Renderer2;
   constructor(
-    @Inject(DOCUMENT) private document: Document,
     private commonService: CommonService,
+    private drawTransform: DrawTransformatorService,
     rendererFactory: RendererFactory2
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  drawLine(source: IRow, target: IRow): string {
-    const canvas = this.commonService.canvas;
+  drawLine(source: IRow, target: IRow): IConnector {
+    const canvas = this.commonService.svgCanvas;
 
     const sourceRowId = source.id;
     const targetRowId = target.id;
@@ -49,27 +46,24 @@ export class DrawService {
       this.renderer
     );
 
-    // const drawEntity = new Connector(
-    //   entityId,
-    //   source,
-    //   target,
-    // );
-
     if (!this.list[entityId]) {
       this.list[entityId] = drawEntity;
       drawEntity.draw();
-
-      // const button = this._appendButton(drawEntity);
-      // drawEntity.button = button;
     }
 
-    return entityId;
+    // hide depend on settings
+    this.drawTransform.appendButton(drawEntity);
+
+    return drawEntity;
   }
 
   adjustArrowsPositions() {
     Object.keys(this.list).forEach(key => {
-      const drawEntity: Connector = this.list[key];
+      const drawEntity: Arrow = this.list[key];
       drawEntity.adjustPosition();
+
+      // hide depend on settings
+      this.drawTransform.recalculateButtonPosition(drawEntity.button, drawEntity.line);
     });
   }
 
