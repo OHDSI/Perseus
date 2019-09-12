@@ -9,8 +9,6 @@ import {
 } from '@angular/core';
 
 import { CommonService } from 'src/app/services/common.service';
-import { Connector } from 'src/app/models/Connector';
-
 import { BridgeButtonComponent } from '../components/bridge-button/bridge-button.component';
 import { middleHeightOfLine, areaOffset } from './utilites/draw-utilites';
 import { IConnector } from '../models/interface/connector.interface';

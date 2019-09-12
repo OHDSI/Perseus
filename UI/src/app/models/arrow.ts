@@ -7,12 +7,12 @@ import { Renderer2, ElementRef } from '@angular/core';
 // TODO Hide properties with WeakMap
 
 export class Arrow implements IConnector {
-  public line: SVGLineElement;
-  public button: Element;
+  canvas: any;
+  line: SVGLineElement;
+  button: Element;
+  selected = false;
 
   private removeClickListener: any;
-
-  canvas: any;
 
   constructor(
     canvasRef: ElementRef,
@@ -48,7 +48,11 @@ export class Arrow implements IConnector {
 
     this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
 
-    this.removeClickListener = this.renderer.listen(line, 'click', this.clickHandler);
+    this.removeClickListener = this.renderer.listen(
+      line,
+      'click',
+      this.clickHandler.bind(this)
+    );
 
     this.line = line;
 
@@ -59,12 +63,29 @@ export class Arrow implements IConnector {
     this.button = button;
   }
 
+  select() {
+    this.renderer.removeAttribute(this.line, 'marker-end');
+    if (this.selected) {
+      this.selected = false;
+      this.renderer.removeClass(this.line, 'selected');
+      this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow)');
+    } else {
+      this.selected = true;
+      this.renderer.addClass(this.line, 'selected');
+
+      this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow-active)');
+    }
+  }
+
   remove() {
     if (this.source) {
       this.source.removeConnections();
     }
     if (this.line) {
-      this.removeClickListener();
+      if (this.removeClickListener) {
+        this.removeClickListener();
+      }
+
       this.line.remove();
     }
     if (this.button) {
@@ -73,7 +94,7 @@ export class Arrow implements IConnector {
   }
 
   clickHandler(event: any) {
-    event.stopPropagation();
+    this.select();
   }
 
   adjustPosition() {

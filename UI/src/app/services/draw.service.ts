@@ -70,7 +70,11 @@ export class DrawService {
     });
   }
 
-  removeConnector(id: string) {
+  removeConnector(id: string, removeSelected: boolean = false) {
+    if (removeSelected && !this.list[id].selected) {
+      return;
+    }
+
     this.list[id].remove();
     delete this.list[id];
 
@@ -79,8 +83,12 @@ export class DrawService {
     }
   }
 
-  removeAllConnectors() {
+  removeConnectors() {
     Object.keys(this.list).forEach(key => this.removeConnector(key));
+  }
+
+  removeSelectedConnectors() {
+    Object.keys(this.list).forEach(key => this.removeConnector(key, true));
   }
 
   removeConnectorsBoundToTable({ id, area }) {

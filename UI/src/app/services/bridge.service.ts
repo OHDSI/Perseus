@@ -59,7 +59,7 @@ export class BridgeService {
   ) {}
 
   applyConfiguration(configuration: Configuration) {
-    this.resetAllArrows();
+    this.removeAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
 
@@ -103,7 +103,7 @@ export class BridgeService {
   }
 
   refreshAll() {
-    this.drawService.removeAllConnectors();
+    this.drawService.removeConnectors();
 
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
       const source = this.stateService.findTable(arrow.source.tableName);
@@ -126,8 +126,14 @@ export class BridgeService {
     this.drawService.removeConnectorsBoundToTable(table);
   }
 
-  resetAllArrows() {
-    this.drawService.removeAllConnectors();
+  removeAllArrows() {
+    this.drawService.removeConnectors();
+    this.deleteAll.next();
+    this.arrowsCache = {};
+  }
+
+  removeSelectedArrows() {
+    this.drawService.removeSelectedConnectors();
     this.deleteAll.next();
     this.arrowsCache = {};
   }
@@ -168,7 +174,7 @@ export class BridgeService {
   }
 
   resetAllMappings() {
-    this.resetAllArrows();
+    this.removeAllArrows();
 
     this.resetAllMappings$.next();
   }
