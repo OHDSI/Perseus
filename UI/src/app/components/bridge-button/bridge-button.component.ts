@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { OverlayService } from 'src/app/services/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
+import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
 
 @Component({
   selector: 'app-bridge-button',
@@ -11,7 +12,7 @@ import { IConnector } from 'src/app/models/interface/connector.interface';
   providers: [OverlayService]
 })
 export class BridgeButtonComponent {
-  text = '?';
+  text = 'T';
   drawEntity: IConnector;
 
   constructor(
@@ -26,11 +27,10 @@ export class BridgeButtonComponent {
   }
 
   openRulesDialog(anchor) {
-    //this.drawEntity.active();
-    //this.commonService.activeConnector = this.drawEntity;
+    this.commonService.activeConnector = this.drawEntity;
 
+    const component = RulesPopupComponent;
 
-    //const component = RulesPopupComponent;
-    //this.overlayService.openDialog(anchor, component, 'bridge-button');
+    this.overlayService.openDialog(anchor, component, 'bridge-button');
   }
 }

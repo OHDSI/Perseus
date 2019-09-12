@@ -34,9 +34,11 @@ export class DrawTransformatorService {
 
   appendButton(drawEntity: IConnector) {
     const line = drawEntity.line;
+
     const componentRef = this.componentFactoryResolver
       .resolveComponentFactory(BridgeButtonComponent)
       .create(this.injector);
+
     componentRef.instance.drawEntity = drawEntity;
 
     this.appRef.attachView(componentRef.hostView);
