@@ -7,26 +7,30 @@ import { Renderer2, ElementRef } from '@angular/core';
 // TODO Hide properties with WeakMap
 
 export class Arrow implements IConnector {
-  public line: SVGLineElement;
-  public button: Element;
+  canvas: any;
+  line: SVGLineElement;
+  button: Element;
+  selected = false;
 
   private removeClickListener: any;
 
   constructor(
-    public canvas: ElementRef,
+    canvasRef: ElementRef,
     public id: string,
     public source: IRow,
     public target: IRow,
     private renderer: Renderer2
-  ) {}
+  ) {
+    this.canvas = canvasRef.nativeElement;
+  }
 
   draw() {
     const source = this.checkAndChangeHtmlElement(this.source);
     const target = this.checkAndChangeHtmlElement(this.target);
 
     // TODO Check htmlElement for existance
-    const sourceSVGPoint = getSVGPoint(source, this.canvas.nativeElement);
-    const targetSVGPoint = getSVGPoint(target, this.canvas.nativeElement);
+    const sourceSVGPoint = getSVGPoint(source, this.canvas);
+    const targetSVGPoint = getSVGPoint(target, this.canvas);
 
     const id = this.id;
 
@@ -36,19 +40,41 @@ export class Arrow implements IConnector {
     const line = this.renderer.createElement('line', 'svg');
 
     this.renderer.addClass(line, 'arrow');
-
     this.renderer.setAttribute(line, 'x1', x1 + '');
     this.renderer.setAttribute(line, 'y1', y1 + '');
     this.renderer.setAttribute(line, 'x2', x2 - 6 + '');
     this.renderer.setAttribute(line, 'y2', y2 + '');
     this.renderer.setAttribute(line, 'id', id);
+
     this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
 
-    this.removeClickListener = this.renderer.listen(line, 'click', this.clickHandler);
+    this.removeClickListener = this.renderer.listen(
+      line,
+      'click',
+      this.clickHandler.bind(this)
+    );
 
     this.line = line;
 
-    this.renderer.appendChild(this.canvas.nativeElement, line);
+    this.renderer.appendChild(this.canvas, line);
+  }
+
+  attachButton(button) {
+    this.button = button;
+  }
+
+  select() {
+    this.renderer.removeAttribute(this.line, 'marker-end');
+    if (this.selected) {
+      this.selected = false;
+      this.renderer.removeClass(this.line, 'selected');
+      this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow)');
+    } else {
+      this.selected = true;
+      this.renderer.addClass(this.line, 'selected');
+
+      this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow-active)');
+    }
   }
 
   remove() {
@@ -56,7 +82,10 @@ export class Arrow implements IConnector {
       this.source.removeConnections();
     }
     if (this.line) {
-      this.removeClickListener();
+      if (this.removeClickListener) {
+        this.removeClickListener();
+      }
+
       this.line.remove();
     }
     if (this.button) {
@@ -65,7 +94,7 @@ export class Arrow implements IConnector {
   }
 
   clickHandler(event: any) {
-    event.stopPropagation();
+    this.select();
   }
 
   adjustPosition() {

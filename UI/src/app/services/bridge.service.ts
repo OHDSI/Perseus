@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
 import { Configuration } from '../models/configuration';
 import { StateService } from './state.service';
+import { DrawTransformatorService } from './draw-transformator.service';
 
 export interface IConnection {
   source: IRow;
@@ -58,7 +59,7 @@ export class BridgeService {
   ) {}
 
   applyConfiguration(configuration: Configuration) {
-    this.resetAllArrows();
+    this.removeAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
 
@@ -66,13 +67,14 @@ export class BridgeService {
   }
 
   connect() {
-    const arrowId = this.drawService.drawLine(this.sourceRow, this.targetRow);
+    const arrow = this.drawService.drawLine(this.sourceRow, this.targetRow);
+
     const connection: IConnection = {
       source: this.sourceRow,
       target: this.targetRow
     };
 
-    this.arrowsCache[arrowId] = connection;
+    this.arrowsCache[arrow.id] = connection;
 
     // ???
     this.commonService.linked = true;
@@ -84,8 +86,6 @@ export class BridgeService {
   recalculateConnectorsPositions() {
     if (!this.drawService.listIsEmpty) {
       this.drawService.adjustArrowsPositions();
-
-      // this._recalculateButtonPosition(drawEntity.button, drawEntity.line);
     }
   }
 
@@ -103,7 +103,7 @@ export class BridgeService {
   }
 
   refreshAll() {
-    this.drawService.removeAllConnectors();
+    this.drawService.removeConnectors();
 
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
       const source = this.stateService.findTable(arrow.source.tableName);
@@ -126,8 +126,14 @@ export class BridgeService {
     this.drawService.removeConnectorsBoundToTable(table);
   }
 
-  resetAllArrows() {
-    this.drawService.removeAllConnectors();
+  removeAllArrows() {
+    this.drawService.removeConnectors();
+    this.deleteAll.next();
+    this.arrowsCache = {};
+  }
+
+  removeSelectedArrows() {
+    this.drawService.removeSelectedConnectors();
     this.deleteAll.next();
     this.arrowsCache = {};
   }
@@ -168,58 +174,8 @@ export class BridgeService {
   }
 
   resetAllMappings() {
-    this.resetAllArrows();
+    this.removeAllArrows();
 
     this.resetAllMappings$.next();
   }
-
-  // Injectors
-  // private componentFactoryResolver: ComponentFactoryResolver,
-  // private appRef: ApplicationRef,
-  // private injector: Injector,
-  // // TODO Move
-  // private _appendButton(drawEntity: Connector) {
-  //   const line = drawEntity.line;
-  //   const componentRef = this.componentFactoryResolver
-  //     .resolveComponentFactory(BridgeButtonComponent)
-  //     .create(this.injector);
-  //   componentRef.instance.drawEntity = drawEntity;
-
-  //   this.appRef.attachView(componentRef.hostView);
-
-  //   const button = (componentRef.hostView as EmbeddedViewRef<any>)
-  //     .rootNodes[0] as HTMLElement;
-
-  //   const canvas = this.document.querySelector('.main');
-  //   canvas.appendChild(button);
-
-  //   const { top, left } = this._calculateButtonPosition(button, line);
-
-  //   button.style.top = top + 'px';
-  //   button.style.left = left + 'px';
-
-  //   return button;
-  // }
-
-  // // TODO Move
-  // private _recalculateButtonPosition(button, line) {
-  //   const { top, left } = this._calculateButtonPosition(button, line);
-
-  //   button.style.top = top + 'px';
-  //   button.style.left = left + 'px';
-  // }
-
-  // // TODO Move
-  // private _calculateButtonPosition(button, line) {
-  //   const canvas = this.document.querySelector('.main');
-  //   const buttonClientRect = button.getBoundingClientRect();
-  //   const buttonOffsetX = buttonClientRect.width / 2;
-  //   const buttonOffsetY = buttonClientRect.height / 2;
-
-  //   return {
-  //     top: middleHeightOfLine(line) - buttonOffsetY,
-  //     left:
-  //       canvas.clientWidth / 2 - buttonOffsetX - areaOffset(this.commonService)
-  //   };
-  // }
 }

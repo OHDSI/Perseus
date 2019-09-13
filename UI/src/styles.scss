@@ -95,35 +95,28 @@ app-dialog {
   background-color: transparent;
 }
 
-// line {
-//   stroke: #808080;
-// }
+.drag-start {
+  background-color: rgba(255, 255, 255, 0.5);
 
-// .line-active {
-//   stroke: #066BBB;
-// }
-
-// .row-active {
-//   background-color: #DCECF9;
-// }
-
-// .drag-start {
-//   background-color: rgba(255, 255, 255, 0.5);
-
-//   & * {
-//       color: #C0C0C0 !important;
-//   }
-// }
+  & * {
+      color: #C0C0C0 !important;
+  }
+}
 
 
 line {
+  stroke-width:2;
+
   &.arrow {
     stroke: #808080;
-    stroke-width:2;
   }
 
   &.arrow:hover {
     stroke:#ffca05;
-    stroke-width:3;
+    stroke-width:5;
+  }
+
+  &.selected {
+    stroke:#066BBB;
   }
 }

@@ -26,7 +26,7 @@
 </div>
 
 <section>
-  <main class="main">
+  <main #maincanvas class="main">
     <app-area area="source">
       <ng-container
         *ngFor="let table of source; trackBy: trackByFn"
@@ -53,6 +53,7 @@
       <div class="patch-top"></div>
       <svg class="canvas" #arrowsarea>
         <defs>
+          <!--markerUnits="strokeWidth" - increase marker proportional to width of line-->
           <marker
             id="arrow"
             markerWidth="10"
@@ -60,7 +61,7 @@
             refX="5"
             refY="5"
             orient="auto"
-            markerUnits="strokeWidth"
+            markerUnits="userSpaceOnUse"
           >
             <path
               d="M0,0 l5,5 l-5,5"
@@ -76,7 +77,7 @@
             refX="5"
             refY="5"
             orient="auto"
-            markerUnits="strokeWidth"
+            markerUnits="userSpaceOnUse"
           >
             <path
               d="M0,0 l5,5 l-5,5"

@@ -1,6 +1,5 @@
 import { ArrowCache } from './arrow-cache';
 import { Row } from './row';
-import { Table } from './table';
 
 export interface ConfigurationOptions {
   name?: string;

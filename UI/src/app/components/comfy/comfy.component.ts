@@ -1,17 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import {
   CdkDragDrop,
   moveItemInArray,
-  transferArrayItem,
   copyArrayItem
 } from '@angular/cdk/drag-drop';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
-import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
-import { Configuration } from 'src/app/models/configuration';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({

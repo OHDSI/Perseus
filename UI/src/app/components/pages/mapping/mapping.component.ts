@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 
 import { StateService } from 'src/app/services/state.service';
 import { DataService } from 'src/app/services/data.service';
@@ -18,7 +18,16 @@ export class MappingComponent implements OnInit, AfterViewInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
-  @ViewChild('arrowsarea', {read: ElementRef}) canvas: ElementRef;
+  get hint() {
+    return this.commonService.hintStatus;
+  }
+
+  get state() {
+    return this.stateService.state;
+  }
+
+  @ViewChild('arrowsarea', {read: ElementRef}) svgCanvas: ElementRef;
+  @ViewChild('maincanvas', {read: ElementRef}) mainCanvas: ElementRef;
 
   constructor(
     private stateService: StateService,
@@ -33,15 +42,15 @@ export class MappingComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.commonService.setCanvas(this.canvas);
+    this.commonService.setSvg(this.svgCanvas);
+    this.commonService.setMain(this.mainCanvas);
   }
 
-  get hint() {
-    return this.commonService.hintStatus;
-  }
-
-  get state() {
-    return this.stateService.state;
+  @HostListener('document:keyup', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Delete') {
+      this.bridgeService.removeSelectedArrows();
+    }
   }
 
   trackByFn(index) {
@@ -68,6 +77,6 @@ export class MappingComponent implements OnInit, AfterViewInit {
   }
 
   wipeAllMappings() {
-    this.bridgeService.resetAllArrows();
+    this.bridgeService.removeAllArrows();
   }
 }
