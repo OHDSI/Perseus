@@ -3,10 +3,10 @@
 }
 
 .comfy {
-  overflow: scroll;
-  height: 70vh;
-  width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 230px 200px 1fr;
+  column-gap: 20px;
+  grid-auto-rows: minmax(200px, auto);
 }
 
 .instruction{
