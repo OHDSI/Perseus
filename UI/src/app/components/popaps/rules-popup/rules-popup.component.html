@@ -1,18 +1,13 @@
+<!-- SHOW SELECTED TRANSFORMAIONS -->
 <mat-card class="dialog">
-    <mat-radio-group [(ngModel)]="selectedRule">
-        <mat-radio-button value="log-values">
-            Console.log values
-        </mat-radio-button>
-        <mat-radio-button value="log-comments">
-            Console.log comments
-        </mat-radio-button>
-    </mat-radio-group>
-    <div class="button-group">
-        <button class="delete" mat-button (click)="deleteLink()">
-            Delete link
-        </button>
-        <button class="apply" mat-button (click)="apply()">
-            Apply
-        </button>
-    </div>
+  <mat-card-header>
+    <mat-card-title>Transformation</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <app-transformation-input (apply)="onTransformSelected($event)"> </app-transformation-input>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button (click)="apply()">APPLY</button>
+    <button mat-button (click)="deleteLink()">DELETE</button>
+  </mat-card-actions>
 </mat-card>

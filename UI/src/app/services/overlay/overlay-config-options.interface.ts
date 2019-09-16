@@ -3,5 +3,5 @@ export interface OverlayConfigOptions {
   hasBackdrop?: boolean;
   backdropClass?: string;
   strategyFor?: string;
-  data?: any;
+  payload?: any;
 }

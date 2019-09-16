@@ -33,6 +33,7 @@ import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dia
 import { UploadService } from './services/upload.service';
 import { DrawTransformatorService } from './services/draw-transformator.service';
 import { UserSettings } from './services/user-settings.service';
+import { TransformationInputComponent } from './components/popaps/rules-popup/transformation-input/transformation-input.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { UserSettings } from './services/user-settings.service';
     ColumnsListComponent,
     HighlightDirective,
     SavedMappingsComponent,
-    OpenMappingDialogComponent
+    OpenMappingDialogComponent,
+    TransformationInputComponent
   ],
   entryComponents: [
     BridgeButtonComponent,

@@ -3,23 +3,11 @@ import {
   ConnectionPositionPair,
   Overlay,
   OverlayConfig,
-  OverlayRef,
-  GlobalPositionStrategy
+  OverlayRef
 } from '@angular/cdk/overlay';
 import { PortalInjector, ComponentPortal } from '@angular/cdk/portal';
 import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
-
-// const config = new OverlayConfig({
-//   hasBackdrop: true,
-//   backdropClass: 'custom-backdrop',
-//   positionStrategy: strategy
-// });
-
-// const injector = new PortalInjector(
-//   this.injector,
-//   new WeakMap<any, any>([[OverlayRef, overlayRef]])
-// );
 
 export class OverlayDialogRef {
   constructor(private overlayRef: OverlayRef) {}
@@ -143,8 +131,8 @@ export class OverlayService {
 
     injectionTokens.set(OverlayDialogRef, dialogRef);
 
-    if (config.data) {
-      injectionTokens.set(OVERLAY_DIALOG_DATA, config.data);
+    if (config.payload) {
+      injectionTokens.set(OVERLAY_DIALOG_DATA, config.payload);
     }
 
     // Instantiate new PortalInjector

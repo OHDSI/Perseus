@@ -5,6 +5,7 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
 
 @Component({
   selector: 'app-bridge-button',
@@ -15,11 +16,16 @@ import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-op
 export class BridgeButtonComponent {
   text = 'T';
   drawEntity: IConnector;
+  private payloadObj: TransformRulesData;
 
   constructor(
     private overlayService: OverlayService,
     private commonService: CommonService
-  ) {}
+  ) {
+    this.payloadObj = {
+      criteria: []
+    };
+  }
 
   get active() {
     if (this.commonService.activeConnector) {
@@ -36,7 +42,7 @@ export class BridgeButtonComponent {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       strategyFor: 'bridge-button',
-      data: { message: 'Hello' }
+      payload: this.payloadObj
     };
 
     const dialogref = this.overlayService.open(
@@ -44,5 +50,7 @@ export class BridgeButtonComponent {
       anchor,
       component
     );
+
+    console.log(this.payloadObj);
   }
 }
