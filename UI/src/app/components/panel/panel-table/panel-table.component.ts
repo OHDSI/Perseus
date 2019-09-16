@@ -49,8 +49,7 @@ export class PanelTableComponent implements OnInit {
   constructor(
     private commonService: CommonService,
     private bridgeService: BridgeService,
-    private overlayService: OverlayService,
-    private cdRef: ChangeDetectorRef
+    private overlayService: OverlayService
   ) {}
 
   get visibleRows() {
@@ -120,8 +119,6 @@ export class PanelTableComponent implements OnInit {
       anchor,
       component
     );
-
-    //overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
   hasComment(row: IRow) {
