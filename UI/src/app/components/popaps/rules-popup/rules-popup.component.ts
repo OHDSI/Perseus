@@ -1,9 +1,11 @@
-import { Component, Injector } from '@angular/core';
+import { Component, Injector, Inject } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { CommonService } from 'src/app/services/common.service';
 import { IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 
 @Component({
   selector: 'app-rules-popup',
@@ -14,17 +16,17 @@ export class RulesPopupComponent {
   selectedRule: string;
 
   constructor(
-    private overlay: OverlayRef,
-    private injector: Injector,
-    private commonService: CommonService
+    public dialogRef: OverlayDialogRef,
+    @Inject(OVERLAY_DIALOG_DATA) public data: any
   ) {
-    overlay.backdropClick().subscribe(() => this.close());
+    console.log(data);
   }
 
   // ???
   apply() {
     if (this.selectedRule) {
-      switch (this.selectedRule) {
+      switch (
+        this.selectedRule
         // case 'log-values': {
         //   const sourceRowValue = this.commonService.activeConnector.source.name;
         //   const connections = this.commonService.activeConnector.source.connections;
@@ -55,22 +57,14 @@ export class RulesPopupComponent {
         //   this.close();
         //   break;
         // }
+      ) {
       }
     }
   }
 
-  deleteLink() {
-    const bridgeService = this.injector.get(BridgeService);
-    const connector = this.commonService.activeConnector;
-
-    bridgeService.deleteArrow(connector.id);
-    this.close();
-  }
+  deleteLink() {}
 
   close() {
-    this.overlay.detach();
-    //this.commonService.activeConnector.inactive();
-    //this.commonService.activeConnector = null;
+    this.dialogRef.close();
   }
-
 }

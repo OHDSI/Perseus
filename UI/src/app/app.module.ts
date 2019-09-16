@@ -27,7 +27,7 @@ import { ComfyComponent } from './components/comfy/comfy.component';
 import { MappingPopupComponent } from './components/popaps/mapping-popup/mapping-popup.component';
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
 import { HighlightDirective } from './directives/highlight-table.directive';
-import { OverlayService } from './services/overlay.service';
+import { OverlayService } from './services/overlay/overlay.service';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';

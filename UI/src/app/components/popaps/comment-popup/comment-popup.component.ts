@@ -5,6 +5,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { CommentService } from 'src/app/services/comment.service';
 import { IComment, Comment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-dialog',
@@ -20,12 +21,11 @@ export class CommentPopupComponent {
   row: IRow;
 
   constructor(
-    private overlay: OverlayRef,
+    private dialogRef: OverlayDialogRef,
     private commonService: CommonService,
     private commentService: CommentService
   ) {
     this.row = this.commonService.activeRow;
-    this.overlay.backdropClick().subscribe(() => this.close());
   }
 
   loadTemplate(comment: IComment): TemplateRef<any> {
@@ -89,7 +89,7 @@ export class CommentPopupComponent {
 
   close() {
     this.invalidateSelection();
-    this.overlay.detach();
+    this.dialogRef.close();
   }
 
   isDisabled() {

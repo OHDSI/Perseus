@@ -3,7 +3,8 @@ import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
 import { ValuesPopupComponent } from '../popaps/values-popup/values-popup.component';
-import { OverlayService } from 'src/app/services/overlay.service';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 
 @Component({
   selector: 'app-columns-list',
@@ -47,7 +48,14 @@ export class ColumnsListComponent implements OnInit, OnChanges {
     const {tableName, name} = item;
     this.dataService.getTopValues(tableName, name).subscribe(result => {
       const component = ValuesPopupComponent;
-      this.overlayService.openDialog(htmlElement, component, 'values', result);
+
+      const dialogOptions: OverlayConfigOptions = {
+        hasBackdrop: true,
+        backdropClass: 'custom-backdrop',
+        strategyFor: 'values'
+      };
+
+      this.overlayService.open(dialogOptions, htmlElement, component);
     });
   }
 }

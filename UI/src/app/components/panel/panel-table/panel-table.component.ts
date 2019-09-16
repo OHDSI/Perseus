@@ -12,10 +12,11 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
 import { CommonService } from 'src/app/services/common.service';
-import { OverlayService } from 'src/app/services/overlay.service';
+import { OverlayService, OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 
 @Component({
   selector: 'app-panel-table',
@@ -95,18 +96,32 @@ export class PanelTableComponent implements OnInit {
 
   openTopValuesDialog(anchor: HTMLElement) {
     const component = ValuesPopupComponent;
-    this.overlayService.openDialog(anchor, component, 'values');
+
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      strategyFor: 'values'
+    };
+
+    this.overlayService.open(dialogOptions, anchor, component);
   }
 
   openCommentDialog(anchor: HTMLElement) {
     const component = CommentPopupComponent;
-    const strategyFor = `comments-${this._getArea()}`;
-    const overlayRef: OverlayRef = this.overlayService.openDialog(
+
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      strategyFor: `comments-${this._getArea()}`
+    };
+
+    const overlayRef = this.overlayService.open(
+      dialogOptions,
       anchor,
-      component,
-      strategyFor
+      component
     );
-    overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
+
+    //overlayRef.backdropClick().subscribe(() => this.cdRef.detectChanges());
   }
 
   hasComment(row: IRow) {
