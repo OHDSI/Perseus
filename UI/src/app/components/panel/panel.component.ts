@@ -1,8 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import {
-  MatDialog,
-  MatExpansionPanel
-} from '@angular/material';
+import { MatDialog, MatExpansionPanel } from '@angular/material';
 
 import { CommonService } from 'src/app/services/common.service';
 import { ITable } from 'src/app/models/table';
@@ -57,7 +54,7 @@ export class PanelComponent implements OnInit {
     this.setExpandedFlagOnSourceAndTargetTables(this.table, true);
 
     setTimeout(() => {
-      this.bridgeService.refreshAll();
+      this.bridgeService.refresh(this.table.name);
     }, 200);
   }
 
@@ -66,7 +63,7 @@ export class PanelComponent implements OnInit {
     this.setExpandedFlagOnSourceAndTargetTables(this.table, false);
 
     setTimeout(() => {
-      this.bridgeService.refreshAll();
+      this.bridgeService.refresh(this.table.name);
       this.hideArrowsIfCorespondingTableasAreClosed(this.table);
     }, 200);
   }
