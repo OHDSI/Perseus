@@ -6,21 +6,22 @@ import { IRow } from 'src/app/models/row';
 import { parseArrowKey } from './business/rules';
 import { Arrow } from '../models/arrow';
 import { IConnector } from '../models/interface/connector.interface';
-import { DrawTransformatorService } from './draw-transformator.service';
-import { UserSettings } from './user-settings.service';
 
 @Injectable()
 export class DrawService {
-  get listIsEmpty(): boolean {
-    return Object.keys(this.list).length === 0;
+  get list(): {[key: string]: IConnector} {
+    return Object.assign({}, this.cache);
   }
 
-  private list = {};
+  private cache: {[key: string]: IConnector} = {};
+
+  get listIsEmpty(): boolean {
+    return Object.keys(this.cache).length === 0;
+  }
+
   private renderer: Renderer2;
   constructor(
     private commonService: CommonService,
-    private drawTransform: DrawTransformatorService,
-    private userSettings: UserSettings,
     rendererFactory: RendererFactory2
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -44,51 +45,33 @@ export class DrawService {
       this.renderer
     );
 
-    if (!this.list[entityId]) {
-      this.list[entityId] = drawEntity;
+    if (!this.cache[entityId]) {
+      this.cache[entityId] = drawEntity;
       drawEntity.draw();
-    }
-
-    if (this.userSettings.showQuestionButtons) {
-      this.drawTransform.createButton(drawEntity);
     }
 
     return drawEntity;
   }
 
-  adjustArrowsPositions() {
-    Object.keys(this.list).forEach(key => {
-      const drawEntity: Arrow = this.list[key];
-      drawEntity.adjustPosition();
-
-      if (this.userSettings.showQuestionButtons) {
-        this.drawTransform.recalculateButtonPosition(
-          drawEntity.button,
-          drawEntity.line
-        );
-      }
-    });
-  }
-
   removeConnector(id: string, removeSelected: boolean = false) {
-    if (removeSelected && !this.list[id].selected) {
+    if (removeSelected && !this.cache[id].selected) {
       return;
     }
 
-    this.list[id].remove();
-    delete this.list[id];
+    this.cache[id].remove();
+    delete this.cache[id];
   }
 
   removeConnectors() {
-    Object.keys(this.list).forEach(key => this.removeConnector(key));
+    Object.keys(this.cache).forEach(key => this.removeConnector(key));
   }
 
   removeSelectedConnectors() {
-    Object.keys(this.list).forEach(key => this.removeConnector(key, true));
+    Object.keys(this.cache).forEach(key => this.removeConnector(key, true));
   }
 
   removeConnectorsBoundToTable({ id, area }) {
-    Object.keys(this.list).forEach(key => {
+    Object.keys(this.cache).forEach(key => {
       const { sourceTableId, targetTableId } = parseArrowKey(key);
 
       switch (area) {

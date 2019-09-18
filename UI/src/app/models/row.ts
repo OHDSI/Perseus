@@ -12,7 +12,6 @@ export interface IRow {
   values: any[];
   comments: IComment[];
   visible?: boolean;
-  connections?: IRow[];
   htmlElement: any;
 
   removeConnections(): void;

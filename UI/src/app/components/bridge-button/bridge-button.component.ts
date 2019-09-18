@@ -5,6 +5,8 @@ import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
 import { BRIDGE_BUTTON_DATA } from './model/bridge-button-injector';
+import { BridgeService } from 'src/app/services/bridge.service';
+import { BridgeButtonData } from './model/bridge-button-data';
 
 @Component({
   selector: 'app-bridge-button',
@@ -15,14 +17,15 @@ import { BRIDGE_BUTTON_DATA } from './model/bridge-button-injector';
 export class BridgeButtonComponent {
   text = 'T';
   drawEntity: IConnector;
-  private payloadObj: TransformRulesData;
+  private payloadObj: BridgeButtonData;
 
   constructor(
     private overlayService: OverlayService,
-    @Inject(BRIDGE_BUTTON_DATA) payload: IConnector
+    @Inject(BRIDGE_BUTTON_DATA) payload: BridgeButtonData
   ) {
     this.payloadObj = {
-      connector: payload,
+      connector: payload.connector,
+      arrowCache: payload.arrowCache
     };
   }
 

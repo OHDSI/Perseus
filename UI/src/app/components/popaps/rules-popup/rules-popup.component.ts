@@ -1,4 +1,4 @@
-import { Component, Injector, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { TransformRulesData } from './model/transform-rules-data';
@@ -19,13 +19,15 @@ export class RulesPopupComponent {
   }
 
   criteria = [];
-  connector: IConnector;
 
   constructor(
     public dialogRef: OverlayDialogRef,
     @Inject(OVERLAY_DIALOG_DATA) public payload: TransformRulesData
   ) {
-    this.connector = payload.connector;
+    const { arrowCache, connector } = this.payload;
+    if (arrowCache[connector.id]) {
+      this.criteria = arrowCache[connector.id].mapping || [];
+    }
   }
 
   onTransformSelected(event: string): void {
@@ -34,6 +36,11 @@ export class RulesPopupComponent {
 
   // TODO use command patter
   apply() {
+    const { arrowCache, connector } = this.payload;
+    if (arrowCache[connector.id]) {
+      arrowCache[connector.id].mapping = this.criteria;
+    }
+
     this.dialogRef.close();
   }
 

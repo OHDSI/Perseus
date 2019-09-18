@@ -7,6 +7,8 @@ export interface IConnector {
   source: IRow;
   target: IRow;
   selected: boolean;
+  button: Element;
+
   draw(): void;
   remove(): void;
   adjustPosition(): void;

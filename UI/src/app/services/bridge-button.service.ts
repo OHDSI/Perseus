@@ -13,9 +13,11 @@ import { BridgeButtonComponent } from '../components/bridge-button/bridge-button
 import { middleHeightOfLine, areaOffset } from './utilites/draw-utilites';
 import { IConnector } from '../models/interface/connector.interface';
 import { BRIDGE_BUTTON_DATA } from '../components/bridge-button/model/bridge-button-injector';
+import { BridgeService } from './bridge.service';
+import { ArrowCache } from '../models/arrow-cache';
 
 @Injectable()
-export class DrawTransformatorService {
+export class BridgeButtonService {
   get listIsEmpty(): boolean {
     return Object.keys(this.list).length === 0;
   }
@@ -32,11 +34,11 @@ export class DrawTransformatorService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  createButton(drawEntity: IConnector) {
+  createButton(drawEntity: IConnector, arrowsCache: ArrowCache) {
     const line = drawEntity.line;
 
     const injector = Injector.create({
-      providers: [{ provide: BRIDGE_BUTTON_DATA, useValue: drawEntity }]
+      providers: [{ provide: BRIDGE_BUTTON_DATA, useValue: {connector: drawEntity, arrowCache: arrowsCache }}]
     });
 
     const componentRef = this.componentFactoryResolver

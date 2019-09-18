@@ -1,4 +1,5 @@
 import { IRow } from './row';
+import { IConnection } from '../services/bridge.service';
 
 export interface Arrow {
   source: IRow;
@@ -6,5 +7,5 @@ export interface Arrow {
 }
 
 export interface ArrowCache {
-  [key: string]: Arrow;
+  [key: string]: IConnection;
 }

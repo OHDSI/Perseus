@@ -8,10 +8,14 @@ import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
 import { Configuration } from '../models/configuration';
 import { StateService } from './state.service';
+import { BridgeButtonService } from './bridge-button.service';
+import { UserSettings } from './user-settings.service';
+import { IConnector } from '../models/interface/connector.interface';
 
 export interface IConnection {
   source: IRow;
   target: IRow;
+  mapping?: any;
 }
 
 @Injectable()
@@ -51,6 +55,8 @@ export class BridgeService {
 
   constructor(
     private drawService: DrawService,
+    private bridgeButtonService: BridgeButtonService,
+    private userSettings: UserSettings,
     private stateService: StateService
   ) {}
 
@@ -63,29 +69,43 @@ export class BridgeService {
   }
 
   connect() {
-    const arrow = this.drawService.drawLine(this.sourceRow, this.targetRow);
+    const connector = this.drawService.drawLine(this.sourceRow, this.targetRow);
+    if (this.userSettings.showQuestionButtons) {
+      this.bridgeButtonService.createButton(connector, this.arrowsCache);
+    }
 
     const connection: IConnection = {
       source: this.sourceRow,
-      target: this.targetRow
+      target: this.targetRow,
+      mapping: []
     };
 
-    this.arrowsCache[arrow.id] = connection;
+    this.arrowsCache[connector.id] = connection;
 
-    //
     this.connection.next(connection);
+  }
+
+  adjustArrowsPositions() {
+    const { list } = this.drawService;
+
+    Object.keys(list).forEach(key => {
+      const drawEntity: IConnector = list[key];
+      drawEntity.adjustPosition();
+
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.recalculateButtonPosition(
+          drawEntity.button,
+          drawEntity.line
+        );
+      }
+    });
   }
 
   recalculateConnectorsPositions() {
     if (!this.drawService.listIsEmpty) {
-      this.drawService.adjustArrowsPositions();
+      this.adjustArrowsPositions();
     }
   }
-
-  // reset() {
-  //   this.sourceRow = null;
-  //   this.targetRow = null;
-  // }
 
   getStyledAsDragStartElement() {
     this.sourceRow.htmlElement.classList.add('drag-start');
@@ -103,7 +123,13 @@ export class BridgeService {
         const source = this.stateService.findTable(arrow.source.tableName);
         const target = this.stateService.findTable(arrow.target.tableName);
         if (source.expanded && target.expanded) {
-          this.drawService.drawLine(arrow.source, arrow.target);
+          const connector = this.drawService.drawLine(
+            arrow.source,
+            arrow.target
+          );
+          if (this.userSettings.showQuestionButtons) {
+            this.bridgeButtonService.createButton(connector, this.arrowsCache);
+          }
         }
       }
     });
@@ -116,12 +142,14 @@ export class BridgeService {
       const source = this.stateService.findTable(arrow.source.tableName);
       const target = this.stateService.findTable(arrow.target.tableName);
       if (source.expanded && target.expanded) {
+        const connector = this.drawService.drawLine(arrow.source, arrow.target);
+        if (this.userSettings.showQuestionButtons) {
+          this.bridgeButtonService.createButton(connector, this.arrowsCache);
+        }
         this.drawService.drawLine(arrow.source, arrow.target);
       }
     });
   }
-
-
 
   deleteArrow(key: string) {
     this.drawService.removeConnector(key);
