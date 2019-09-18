@@ -77,10 +77,6 @@ export class DrawService {
 
     this.list[id].remove();
     delete this.list[id];
-
-    if (this.listIsEmpty) {
-      this.commonService.linked = false;
-    }
   }
 
   removeConnectors() {

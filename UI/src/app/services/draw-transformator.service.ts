@@ -5,8 +5,7 @@ import {
   ComponentFactoryResolver,
   ApplicationRef,
   Injector,
-  EmbeddedViewRef,
-  InjectionToken
+  EmbeddedViewRef
 } from '@angular/core';
 
 import { CommonService } from 'src/app/services/common.service';

@@ -2,17 +2,14 @@ import {
   Component,
   Input,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   ViewChild,
   ElementRef,
   OnInit
 } from '@angular/core';
-import { OverlayRef } from '@angular/cdk/overlay';
 
 import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
-import { CommonService } from 'src/app/services/common.service';
-import { OverlayService, OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -47,7 +44,6 @@ export class PanelTableComponent implements OnInit {
   }
 
   constructor(
-    private commonService: CommonService,
     private bridgeService: BridgeService,
     private overlayService: OverlayService
   ) {}

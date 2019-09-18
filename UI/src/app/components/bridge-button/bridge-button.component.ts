@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { CommonService } from 'src/app/services/common.service';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
@@ -20,23 +19,14 @@ export class BridgeButtonComponent {
 
   constructor(
     private overlayService: OverlayService,
-    private commonService: CommonService,
-    @Inject(BRIDGE_BUTTON_DATA) private payload: IConnector
+    @Inject(BRIDGE_BUTTON_DATA) payload: IConnector
   ) {
     this.payloadObj = {
       connector: payload,
     };
   }
 
-  get active() {
-    if (this.commonService.activeConnector) {
-      return this.drawEntity.id === this.commonService.activeConnector.id;
-    }
-  }
-
   openRulesDialog(anchor) {
-    this.commonService.activeConnector = this.drawEntity;
-
     const component = RulesPopupComponent;
 
     const dialogOptions: OverlayConfigOptions = {
@@ -47,7 +37,7 @@ export class BridgeButtonComponent {
       payload: this.payloadObj
     };
 
-    const dialogref = this.overlayService.open(
+    this.overlayService.open(
       dialogOptions,
       anchor,
       component

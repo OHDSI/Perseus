@@ -1,6 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
-
-import { CommonService } from 'src/app/services/common.service';
+import { Injectable } from '@angular/core';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
 import { ArrowCache, Arrow } from '../models/arrow-cache';
@@ -10,7 +8,6 @@ import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
 import { Configuration } from '../models/configuration';
 import { StateService } from './state.service';
-import { DrawTransformatorService } from './draw-transformator.service';
 
 export interface IConnection {
   source: IRow;
@@ -53,7 +50,6 @@ export class BridgeService {
   deleteAll = new Subject();
 
   constructor(
-    private commonService: CommonService,
     private drawService: DrawService,
     private stateService: StateService
   ) {}
@@ -75,9 +71,6 @@ export class BridgeService {
     };
 
     this.arrowsCache[arrow.id] = connection;
-
-    // ???
-    this.commonService.linked = true;
 
     //
     this.connection.next(connection);

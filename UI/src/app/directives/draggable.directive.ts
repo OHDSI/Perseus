@@ -1,7 +1,5 @@
 import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit, NgZone } from '@angular/core';
-
 import { BridgeService } from 'src/app/services/bridge.service';
-import { CommonService } from 'src/app/services/common.service';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { Area } from '../models/area';

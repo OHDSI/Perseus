@@ -18,8 +18,9 @@ export class MappingComponent implements OnInit, AfterViewInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
-  get hint() {
-    return this.commonService.hintStatus;
+  get hint(): string {
+    return 'no hint';
+    // return this.commonService.hintStatus;
   }
 
   get state() {

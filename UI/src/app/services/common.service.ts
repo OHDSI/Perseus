@@ -1,8 +1,5 @@
 import { Injectable, ElementRef } from '@angular/core';
-
-import { IRow } from 'src/app/models/row';
 import { Area } from '../models/area';
-import { IConnector } from '../models/interface/connector.interface';
 
 @Injectable()
 export class CommonService {
@@ -11,21 +8,10 @@ export class CommonService {
 
   private areaWidth = {};
 
-  private activeconnector: IConnector = null;
-
   private sourceexpanded = false;
   private targetexpanded = false;
 
-  private _linked = false;
-
   constructor() {}
-
-  set activeConnector(connector: IConnector) {
-    this.activeconnector = connector;
-  }
-  get activeConnector() {
-    return this.activeconnector;
-  }
 
   expanded(area: Area) {
     switch (area) {
@@ -53,19 +39,15 @@ export class CommonService {
     }
   }
 
-  set linked(status: boolean) {
-    this._linked = status;
-  }
-
-  get hintStatus() {
-    if (this._linked) {
-      return '';
-    } else if (this.sourceexpanded && this.targetexpanded) {
-      return 'Drag and drop source item to target item';
-    } else {
-      return 'Expand tables to make links';
-    }
-  }
+  // get hintStatus() {
+  //   if (this._linked) {
+  //     return '';
+  //   } else if (this.sourceexpanded && this.targetexpanded) {
+  //     return 'Drag and drop source item to target item';
+  //   } else {
+  //     return 'Expand tables to make links';
+  //   }
+  // }
 
   setAreaWidth(area: string, width: number) {
     this.areaWidth[area] = width;

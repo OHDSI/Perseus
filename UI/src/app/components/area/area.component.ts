@@ -4,7 +4,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 
 import { CommonService } from 'src/app/services/common.service';
 import { StateService } from 'src/app/services/state.service';
-import { DrawService } from 'src/app/services/draw.service';
 import { Area } from 'src/app/models/area';
 import { BridgeService } from 'src/app/services/bridge.service';
 
