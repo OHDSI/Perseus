@@ -41,9 +41,9 @@ def load_schema():
             filename = secure_filename(file.filename)
             try:
                 os.mkdir(UPLOAD_FOLDER)
-                print("Directory ", UPLOAD_FOLDER, " Created ")
+                print(f"Directory {UPLOAD_FOLDER} created")
             except FileExistsError:
-                print("Directory ", UPLOAD_FOLDER, " Already exist ")
+                print(f"Directory {UPLOAD_FOLDER} already exist")
             file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
     return '''
