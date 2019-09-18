@@ -18,7 +18,6 @@ export class DraggableDirective implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private bridgeService: BridgeService,
-    private commonService: CommonService,
     private zone: NgZone
   ) { }
 
@@ -87,10 +86,7 @@ export class DraggableDirective implements OnInit {
       row.htmlElement = element;
       this.bridgeService.targetRow = row;
       this.bridgeService.connect();
-      // ??
-      // this.bridgeService.reset();
-
-      this.commonService.activeRow.connections.push(this.row);
+      this.bridgeService.sourceRow.connections.push(this.row);
     }
   }
 

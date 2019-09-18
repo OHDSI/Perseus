@@ -1,5 +1,26 @@
 @import 'src/app/styles/variables.scss';
 
+.center-content {
+  display: flex;
+  justify-content: center;
+}
+
+.rules-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.applyed-content {
+
+}
+
+.transformation{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .dialog {
     background-color: #F9F9F9;
     display: flex;

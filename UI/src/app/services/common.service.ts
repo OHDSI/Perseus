@@ -11,7 +11,6 @@ export class CommonService {
 
   private areaWidth = {};
 
-  private activerow: IRow = null;
   private activeconnector: IConnector = null;
 
   private sourceexpanded = false;
@@ -20,13 +19,6 @@ export class CommonService {
   private _linked = false;
 
   constructor() {}
-
-  set activeRow(row: IRow) {
-    this.activerow = row;
-  }
-  get activeRow(): IRow {
-    return this.activerow;
-  }
 
   set activeConnector(connector: IConnector) {
     this.activeconnector = connector;

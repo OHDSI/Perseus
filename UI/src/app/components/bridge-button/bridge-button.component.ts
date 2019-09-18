@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-// import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
+import { Component, Inject } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
+import { BRIDGE_BUTTON_DATA } from './model/bridge-button-injector';
 
 @Component({
   selector: 'app-bridge-button',
@@ -20,10 +20,11 @@ export class BridgeButtonComponent {
 
   constructor(
     private overlayService: OverlayService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    @Inject(BRIDGE_BUTTON_DATA) private payload: IConnector
   ) {
     this.payloadObj = {
-      criteria: []
+      connector: payload,
     };
   }
 
@@ -39,6 +40,7 @@ export class BridgeButtonComponent {
     const component = RulesPopupComponent;
 
     const dialogOptions: OverlayConfigOptions = {
+      disableClose: true,
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       strategyFor: 'bridge-button',

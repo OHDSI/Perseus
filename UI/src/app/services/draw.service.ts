@@ -50,7 +50,7 @@ export class DrawService {
     }
 
     if (this.userSettings.showQuestionButtons) {
-      this.drawTransform.appendButton(drawEntity);
+      this.drawTransform.createButton(drawEntity);
     }
 
     return drawEntity;

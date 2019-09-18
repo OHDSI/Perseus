@@ -1,4 +1,4 @@
-import { Component, ViewChild, TemplateRef } from '@angular/core';
+import { Component, ViewChild, TemplateRef, Inject } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
 import { CommonService } from 'src/app/services/common.service';
@@ -6,6 +6,7 @@ import { CommentService } from 'src/app/services/comment.service';
 import { IComment, Comment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 
 @Component({
   selector: 'app-dialog',
@@ -22,10 +23,10 @@ export class CommentPopupComponent {
 
   constructor(
     private dialogRef: OverlayDialogRef,
-    private commonService: CommonService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    @Inject(OVERLAY_DIALOG_DATA) public payload: IRow
   ) {
-    this.row = this.commonService.activeRow;
+    this.row = this.payload;
   }
 
   loadTemplate(comment: IComment): TemplateRef<any> {
@@ -37,7 +38,7 @@ export class CommentPopupComponent {
   }
 
   get overSourceArea() {
-    return this.commonService.activeRow.area === 'source';
+    return this.row.area === 'source';
   }
 
   onCommentClick(comment: IComment) {
@@ -50,6 +51,7 @@ export class CommentPopupComponent {
       e.preventDefault();
       e.stopPropagation();
     }
+
     this.row.comments.map((c: IComment) => c.active = false);
   }
 

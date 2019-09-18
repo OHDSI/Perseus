@@ -13,47 +13,44 @@ export class MappingService {
   }
 
   generate(): Mapping {
-
     const merged = this.data.map(arrow => {
-      const merge = {};
-      merge['sourceTable'] = arrow.source.tableName;
-      merge['sourceColumn'] = arrow.source.name;
-      merge['targetTable'] = arrow.target.tableName;
-      merge['targetColumn'] = arrow.target.name;
+      const merge: any = {};
+      merge.sourceTable = arrow.source.tableName;
+      merge.sourceColumn = arrow.source.name;
+      merge.targetTable = arrow.target.tableName;
+      merge.targetColumn = arrow.target.name;
       return merge;
     });
 
-	const bySource = groupBy(merged, 'sourceTable');
+    const bySource = groupBy(merged, 'sourceTable');
 
+    const mapPairs = Object.keys(bySource).map(sourceTable => {
+      const pair: MappingPair = {
+        source_table: sourceTable,
+        target_table: '',
+        mapping: []
+      };
 
-	const mapPairs = Object.keys(bySource).map(sourceTable => {
-		const pair: MappingPair = {
-      source_table: sourceTable,
-      target_table: '',
-      mapping: []
-		}
+      const bySourceBytable = groupBy(bySource[sourceTable], 'targetTable');
+      Object.keys(bySourceBytable).forEach(targetTable => {
+        pair.target_table = targetTable;
 
-    const bySourceBytable = groupBy(bySource[sourceTable], 'targetTable');
-    Object.keys(bySourceBytable).forEach(targetTable => {
-		  pair.target_table = targetTable;
-
-      bySourceBytable[targetTable].map(arrow => {
-        const node: MappingNode = {
-          source_field: arrow.sourceColumn,
-          target_field: arrow.targetColumn,
-          sql_field: arrow.sourceColumn,
-          sql_alias: arrow.targetColumn
-        }
-        pair.mapping.push(node);
+        bySourceBytable[targetTable].map(arrow => {
+          const node: MappingNode = {
+            source_field: arrow.sourceColumn,
+            target_field: arrow.targetColumn,
+            sql_field: arrow.sourceColumn,
+            sql_alias: arrow.targetColumn
+          };
+          pair.mapping.push(node);
+        });
       });
 
-		});
-
-    return pair;
-	});
+      return pair;
+    });
 
     const mapping: Mapping = Object.create(null);
-    mapping.mapping_items=mapPairs;
+    mapping.mapping_items = mapPairs;
 
     return mapping;
   }

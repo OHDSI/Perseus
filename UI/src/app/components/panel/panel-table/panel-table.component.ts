@@ -90,7 +90,7 @@ export class PanelTableComponent implements OnInit {
   }
 
   setActiveRow(row: IRow) {
-    this.commonService.activeRow = row;
+    //this.commonService.activeRow = row;
   }
 
   openTopValuesDialog(anchor: HTMLElement) {
@@ -105,13 +105,14 @@ export class PanelTableComponent implements OnInit {
     this.overlayService.open(dialogOptions, anchor, component);
   }
 
-  openCommentDialog(anchor: HTMLElement) {
+  openCommentDialog(anchor: HTMLElement, row: IRow) {
     const component = CommentPopupComponent;
 
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
-      strategyFor: `comments-${this._getArea()}`
+      strategyFor: `comments-${this._getArea()}`,
+      payload: row
     };
 
     const overlayRef = this.overlayService.open(
