@@ -11,5 +11,6 @@ FORMAT_SQL_FOR_SPARK_PARAMS = {
     "ORDER BY PERSON_ID": '',
     "VARCHAR": "STRING", '&LT;': '<', '&GT;': '>', 'NULL AS': '"" AS'}
 CDM_SCHEMA_PATH = Path('model/sources/CDM/')
+VOCABULARY_DESCRIPTION_PATH = Path('model/sources/VOCABULARY.csv')
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5', ]
 UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema')
