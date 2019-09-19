@@ -26,7 +26,7 @@ export class RulesPopupComponent {
   ) {
     const { arrowCache, connector } = this.payload;
     if (arrowCache[connector.id]) {
-      this.criteria = arrowCache[connector.id].mapping || [];
+      this.criteria = arrowCache[connector.id].transforms || [];
     }
   }
 
@@ -38,7 +38,7 @@ export class RulesPopupComponent {
   apply() {
     const { arrowCache, connector } = this.payload;
     if (arrowCache[connector.id]) {
-      arrowCache[connector.id].mapping = this.criteria;
+      arrowCache[connector.id].transforms = this.criteria;
     }
 
     this.dialogRef.close();

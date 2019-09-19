@@ -15,7 +15,7 @@ import { IConnector } from '../models/interface/connector.interface';
 export interface IConnection {
   source: IRow;
   target: IRow;
-  mapping?: any;
+  transforms?: any;
 }
 
 @Injectable()
@@ -77,7 +77,7 @@ export class BridgeService {
     const connection: IConnection = {
       source: this.sourceRow,
       target: this.targetRow,
-      mapping: []
+      transforms: []
     };
 
     this.arrowsCache[connector.id] = connection;
