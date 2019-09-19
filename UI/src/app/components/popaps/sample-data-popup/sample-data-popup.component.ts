@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { ITable } from 'src/app/models/table';
-import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-sample-data-popup',

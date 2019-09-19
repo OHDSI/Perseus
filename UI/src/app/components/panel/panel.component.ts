@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { MatDialog, MatExpansionPanel } from '@angular/material';
 
 import { CommonService } from 'src/app/services/common.service';
@@ -14,6 +21,9 @@ import { SampleDataPopupComponent } from '../popaps/sample-data-popup/sample-dat
 })
 export class PanelComponent implements OnInit {
   @Input() table: ITable;
+
+  @Output() open = new EventEmitter();
+  @Output() close = new EventEmitter();
 
   @ViewChild('exppanelheader') panelHheader: any;
   @ViewChild('matpanel') panel: MatExpansionPanel;
@@ -54,8 +64,9 @@ export class PanelComponent implements OnInit {
     this.setExpandedFlagOnSourceAndTargetTables(this.table, true);
 
     setTimeout(() => {
-      this.bridgeService.refresh(this.table.name);
-    }, 200);
+      this.open.emit();
+    }, 50);
+
   }
 
   onClose() {
@@ -63,9 +74,10 @@ export class PanelComponent implements OnInit {
     this.setExpandedFlagOnSourceAndTargetTables(this.table, false);
 
     setTimeout(() => {
-      this.bridgeService.refresh(this.table.name);
-      this.hideArrowsIfCorespondingTableasAreClosed(this.table);
-    }, 200);
+      this.close.emit();
+    }, 50);
+
+
   }
 
   openSampleDataDialog(e) {
@@ -83,18 +95,5 @@ export class PanelComponent implements OnInit {
     this.stateService.state[table.area].tables
       .filter(t => t.id === table.id)
       .forEach(t => (t.expanded = expanded));
-  }
-
-  hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
-    const corespondingTableNames = this.bridgeService.findCorrespondingTables(
-      table
-    );
-
-    corespondingTableNames.forEach(name => {
-      const correspondentTable = this.stateService.findTable(name);
-      if (!correspondentTable.expanded && !table.expanded) {
-        this.bridgeService.deleteTableArrows(table);
-      }
-    });
   }
 }

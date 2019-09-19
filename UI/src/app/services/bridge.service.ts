@@ -115,11 +115,11 @@ export class BridgeService {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
-  refresh(tableName) {
+  refresh(targetTableName) {
     this.drawService.removeConnectors();
 
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-      if (tableName === arrow.target.tableName) {
+      if (targetTableName === arrow.target.tableName) {
         const source = this.stateService.findTable(arrow.source.tableName);
         const target = this.stateService.findTable(arrow.target.tableName);
         if (source.expanded && target.expanded) {

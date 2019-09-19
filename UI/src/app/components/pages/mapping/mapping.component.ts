@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  HostListener
+} from '@angular/core';
 
 import { StateService } from 'src/app/services/state.service';
 import { DataService } from 'src/app/services/data.service';
@@ -27,8 +35,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
     return this.stateService.state;
   }
 
-  @ViewChild('arrowsarea', {read: ElementRef}) svgCanvas: ElementRef;
-  @ViewChild('maincanvas', {read: ElementRef}) mainCanvas: ElementRef;
+  @ViewChild('arrowsarea', { read: ElementRef }) svgCanvas: ElementRef;
+  @ViewChild('maincanvas', { read: ElementRef }) mainCanvas: ElementRef;
 
   constructor(
     private stateService: StateService,
@@ -38,9 +46,7 @@ export class MappingComponent implements OnInit, AfterViewInit {
     private matDialog: MatDialog
   ) {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.commonService.setSvg(this.svgCanvas);
@@ -79,5 +85,29 @@ export class MappingComponent implements OnInit, AfterViewInit {
 
   wipeAllMappings() {
     this.bridgeService.removeAllArrows();
+  }
+
+  onSourcePanelOpen() {
+    this.bridgeService.refresh(this.target[0].name);
+  }
+
+  onSourcePanelClose() {
+    this.bridgeService.refresh(this.target[0].name);
+    this.source.forEach(table =>
+      this.hideArrowsIfCorespondingTableasAreClosed(table)
+    );
+  }
+
+  private hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
+    const corespondingTableNames = this.bridgeService.findCorrespondingTables(
+      table
+    );
+
+    corespondingTableNames.forEach(name => {
+      const correspondentTable = this.stateService.findTable(name);
+      if (!correspondentTable.expanded && !table.expanded) {
+        this.bridgeService.deleteTableArrows(table);
+      }
+    });
   }
 }
