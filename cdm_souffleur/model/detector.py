@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 from pyspark.sql.utils import AnalysisException
 from cdm_souffleur.utils.utils import spark
+from cdm_souffleur.utils.constants import VOCABULARY_DESCRIPTION_PATH
 
 
 def load_vocabulary(path=r'D:\vocabulary\\'):
@@ -21,12 +22,9 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
     return vocabulary_list
 
 
-def return_lookup_list(path=r'D:\vocabulary\\'):
-    """Return ATHENA vocabulary lookup list
-    :param path - path to directory loaded from ATHENA
-    """
-    vocabulary_description = pd.read_csv(Path(path) / 'VOCABULARY.csv',
-                                         sep='\t')
+def return_lookup_list():
+    """Return ATHENA vocabulary lookup list"""
+    vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')
     lookup_list = vocabulary_description['vocabulary_id']
     return lookup_list.values.tolist()
 
