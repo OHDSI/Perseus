@@ -6,19 +6,14 @@
 }
 
 .rules-content{
+  width: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.applyed-content {
-
-}
-
-.transformation{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.transformation-chip {
+  width:auto !important;
 }
 
 .dialog {
@@ -75,5 +70,9 @@
             color: #066BBB;
         }
     }
+}
 
+.dialog-header {
+  display: flex;
+  justify-content: center;
 }

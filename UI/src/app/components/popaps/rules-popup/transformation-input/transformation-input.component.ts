@@ -3,14 +3,19 @@ import {
   OnInit,
   OnChanges,
   Output,
-  EventEmitter
+  EventEmitter,
+  Inject,
+  Input
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SQL_STRING_FUNCTIONS } from './model/sql-string-functions';
+import {
+  SqlFunctionDefinition,
+  SqlFunction
+} from './model/sql-string-functions';
 import { startWith, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
-import { ValuesPopupComponent } from '../../values-popup/values-popup.component';
+import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 
 @Component({
   selector: 'app-transformation-input',
@@ -18,31 +23,37 @@ import { ValuesPopupComponent } from '../../values-popup/values-popup.component'
   styleUrls: ['./transformation-input.component.scss']
 })
 export class TransformationInputComponent implements OnInit, OnChanges {
-  @Output() apply = new EventEmitter<string>();
+  @Input() columnname: string;
+  @Output() apply = new EventEmitter<SqlFunction>();
 
   formControl: FormControl;
-  sqlFunctions = SQL_STRING_FUNCTIONS;
-  filteredOptions: Observable<string[]>;
-  criteria = '';
+  filteredOptions: Observable<any[]>;
+  criteria: SqlFunction;
 
-  constructor() {
+  constructor(
+    @Inject(SqlFunctionsInjector)
+    private sqlFunctions: Array<SqlFunction>
+  ) {
     this.formControl = new FormControl();
   }
 
   ngOnInit() {
     this.filteredOptions = this.formControl.valueChanges.pipe(
       startWith(''),
-      map(value => value || ''),
-      map(value => (typeof value === 'string' ? value : value.name)),
-      map(name => (name ? this._filter(name) : this.sqlFunctions.slice()))
+      map(value => (value instanceof SqlFunction ? value : null)),
+      map(value => (value ? this._filter(value.name) : this.sqlFunctions.slice()))
     );
   }
 
-  private _filter(name: string): string[] {
+  displayFn(definition?: SqlFunctionDefinition): string | undefined {
+    return definition ? definition.name : undefined;
+  }
+
+  private _filter(name: string): SqlFunctionDefinition[] {
     const filterValue = name.toLowerCase();
 
     return this.sqlFunctions.filter(
-      option => option.toLowerCase().indexOf(filterValue) === 0
+      option => option.name.toLowerCase().indexOf(filterValue) === 0
     );
   }
 
@@ -51,16 +62,18 @@ export class TransformationInputComponent implements OnInit, OnChanges {
   }
 
   applyTransform(event: MatAutocompleteSelectedEvent) {
-    this.criteria = event.option.value;
-    this.apply.emit(event.option.value);
+    const value: SqlFunction = event.option.value;
+    this.criteria = value;
+    this.formControl.setValue(this.criteria.getTemplate(this.columnname));
+    this.apply.emit(this.criteria);
   }
 
-  onEnterPressed(value: string) {
+  onEnterPressed(value: SqlFunction) {
     this.criteria = value;
   }
 
   clear(): void {
     this.formControl.reset();
-    this.criteria = '';
+    this.criteria = new SqlFunction();
   }
 }

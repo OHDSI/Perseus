@@ -45,7 +45,7 @@ export class MappingService {
             sql_alias: arrow.targetColumn
           };
 
-          this.applyTransforms(node, arrow);
+          //this.applyTransforms(node, arrow);
 
           pair.mapping.push(node);
         });
@@ -60,9 +60,9 @@ export class MappingService {
     return mapping;
   }
 
-  applyTransforms(node: MappingNode, connector: any) {
-    node.sql_field = connector.transforms.reduce((acc, transform) => {
-      return `${transform}(${acc})`;
-    }, node.sql_field);
-  }
+  // applyTransforms(node: MappingNode, connector: any) {
+  //   node.sql_field = connector.transforms.reduce((acc, transform) => {
+  //     return `${transform}(${acc})`;
+  //   }, node.sql_field);
+  // }
 }
