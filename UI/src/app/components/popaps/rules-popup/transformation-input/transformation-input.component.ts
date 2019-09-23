@@ -94,6 +94,9 @@ export class TransformationInputComponent implements OnInit, OnChanges {
     const value: SqlFunction = event.option.value;
     this.criteria = value;
     this.formControl.setValue(this.criteria);
+
+    // Incorrect beravior. !Base sql function mutated by this class.
+    this.apply.emit(this.criteria);
   }
 
   onEnterPressed(value: SqlFunction) {

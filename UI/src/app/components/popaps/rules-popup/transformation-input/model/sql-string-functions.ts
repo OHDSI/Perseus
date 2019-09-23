@@ -40,6 +40,10 @@ export class SqlFunction {
 
     return `${this.name}('${this.parameters.join('\', \'')}')`;
   }
+
+  getSql() {
+    return `${this.name}('${this.parameters.join('\', \'')}')`;
+  }
 }
 
 export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
