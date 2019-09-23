@@ -7,7 +7,7 @@ import {
   Inject,
   Input
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import {
   SqlFunctionDefinition,
   SqlFunction
@@ -15,6 +15,8 @@ import {
 import { Observable, of } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { SqlFunctionsInjector } from '../model/sql-functions-injector';
+import { isString } from 'src/app/infrastructure/utility';
+import { sqlParametersValidator } from './model/sql-function-validator';
 
 @Component({
   selector: 'app-transformation-input',
@@ -23,6 +25,8 @@ import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 })
 export class TransformationInputComponent implements OnInit, OnChanges {
   @Input() columnname: string;
+  @Input() transfrom: SqlFunction;
+
   @Output() apply = new EventEmitter<SqlFunction>();
 
   get displayFn(): any {
@@ -37,22 +41,38 @@ export class TransformationInputComponent implements OnInit, OnChanges {
     @Inject(SqlFunctionsInjector)
     private sqlFunctions: Array<SqlFunction>
   ) {
-    this.formControl = new FormControl();
+    this.formControl = new FormControl('', [
+      Validators.required,
+      sqlParametersValidator(/\((.*)\)/)
+    ]);
   }
 
   ngOnInit() {
     this.filteredOptions = of(this.sqlFunctions);
-    // this.filteredOptions = this.formControl.valueChanges.pipe(
-    //   startWith(''),
-    //   map(value => {
-    //     return value instanceof SqlFunction ? value : null
-    //   }),
-    //   map(value => {
-    //     return value ? this._filter(value.name) : this.sqlFunctions.slice();
-    //   })
-    // );
+    this.formControl['criteria'] = this.criteria;
+
+    this.formControl.valueChanges.subscribe(value => {
+      if (isString(value)) {
+        this.formControl['criteria'] = this.criteria;
+        const regex = /\((.*)\)/;
+        const parametersParsed = value.match(regex);
+        const parameters = parametersParsed
+          ? parametersParsed[1].split(',')
+          : null;
+        if (parameters) {
+          this.criteria.parameters = parameters;
+        }
+      }
+    });
   }
 
+  getErrorMessage() {
+    return this.formControl.hasError('required')
+      ? 'You must enter sql function'
+      : this.formControl.hasError('parameters')
+      ? 'Paramters are incorrect'
+      : '';
+  }
 
   _displayFn(definition: SqlFunction, columnName): string | undefined {
     return definition ? definition.getTemplate(columnName) : undefined;
@@ -70,15 +90,14 @@ export class TransformationInputComponent implements OnInit, OnChanges {
     this.formControl.setValue(this.criteria);
   }
 
-  applyTransform(event: MatAutocompleteSelectedEvent) {
+  selectTransform(event: MatAutocompleteSelectedEvent) {
     const value: SqlFunction = event.option.value;
     this.criteria = value;
     this.formControl.setValue(this.criteria);
-    this.apply.emit(this.criteria);
   }
 
   onEnterPressed(value: SqlFunction) {
-    this.criteria = value;
+    this.apply.emit(this.criteria);
   }
 
   clear(): void {

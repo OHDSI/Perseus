@@ -17,11 +17,12 @@
   >
     <mat-icon>close</mat-icon>
   </button>
+  <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
 </mat-form-field>
 <mat-autocomplete
   #auto="matAutocomplete"
   [displayWith]="displayFn"
-  (optionSelected)="applyTransform($event)"
+  (optionSelected)="selectTransform($event)"
 >
   <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
     {{ option.name }}

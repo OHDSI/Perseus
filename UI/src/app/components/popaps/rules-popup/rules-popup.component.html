@@ -15,10 +15,10 @@
         <mat-chip class="transformation-chip"
           color="primary"
           *ngFor="let item of applyedCriteria"
-          [selectable]="'false'"
           [removable]="removable"
           (removed)="removeTransform(item)"
-          >{{ item }}
+          (click)="viewTransform(item)"
+          >{{ item.name }}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
       </mat-chip-list>

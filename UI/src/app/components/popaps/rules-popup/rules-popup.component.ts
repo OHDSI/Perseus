@@ -21,8 +21,8 @@ export class RulesPopupComponent {
     return this.payload.connector.target.name || '';
   }
 
-  get applyedCriteria(): string[] {
-    return this.criteria.map(c => c.name);
+  get applyedCriteria(): SqlFunction[] {
+    return this.criteria;
   }
 
   criteria = Array<SqlFunction>();
@@ -58,12 +58,19 @@ export class RulesPopupComponent {
     this.dialogRef.close();
   }
 
-  removeTransform(transfromName: string) {
-    const index = this.criteria.findIndex(criteria => criteria.name === transfromName);
+  removeTransform(transfrom: SqlFunction) {
+    const index = this.criteria.findIndex(criteria => criteria.name === transfrom.name);
     if (index > -1) {
       this.criteria.splice(index, 1);
 
       this.tinput.clear();
+    }
+  }
+
+  viewTransform(transfrom: SqlFunction) {
+    const index = this.criteria.findIndex(criteria => criteria.name === transfrom.name);
+    if (index > -1) {
+      console.log(this.criteria[index]);
     }
   }
 }
