@@ -12,8 +12,7 @@ import {
   SqlFunctionDefinition,
   SqlFunction
 } from './model/sql-string-functions';
-import { startWith, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 
@@ -26,9 +25,13 @@ export class TransformationInputComponent implements OnInit, OnChanges {
   @Input() columnname: string;
   @Output() apply = new EventEmitter<SqlFunction>();
 
+  get displayFn(): any {
+    return (value: any) => this._displayFn(value, this.columnname);
+  }
+
   formControl: FormControl;
   filteredOptions: Observable<any[]>;
-  criteria: SqlFunction;
+  criteria = new SqlFunction();
 
   constructor(
     @Inject(SqlFunctionsInjector)
@@ -38,15 +41,21 @@ export class TransformationInputComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.filteredOptions = this.formControl.valueChanges.pipe(
-      startWith(''),
-      map(value => (value instanceof SqlFunction ? value : null)),
-      map(value => (value ? this._filter(value.name) : this.sqlFunctions.slice()))
-    );
+    this.filteredOptions = of(this.sqlFunctions);
+    // this.filteredOptions = this.formControl.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => {
+    //     return value instanceof SqlFunction ? value : null
+    //   }),
+    //   map(value => {
+    //     return value ? this._filter(value.name) : this.sqlFunctions.slice();
+    //   })
+    // );
   }
 
-  displayFn(definition?: SqlFunctionDefinition): string | undefined {
-    return definition ? definition.name : undefined;
+
+  _displayFn(definition: SqlFunction, columnName): string | undefined {
+    return definition ? definition.getTemplate(columnName) : undefined;
   }
 
   private _filter(name: string): SqlFunctionDefinition[] {
@@ -64,7 +73,7 @@ export class TransformationInputComponent implements OnInit, OnChanges {
   applyTransform(event: MatAutocompleteSelectedEvent) {
     const value: SqlFunction = event.option.value;
     this.criteria = value;
-    this.formControl.setValue(this.criteria.getTemplate(this.columnname));
+    this.formControl.setValue(this.criteria);
     this.apply.emit(this.criteria);
   }
 
