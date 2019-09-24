@@ -24,15 +24,15 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
 
 def return_lookup_list(connection_string=None):
     """Return ATHENA vocabulary lookup list"""
-    if connection_string is not None:
+    if connection_string is None:
         vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')
-        lookup_list = vocabulary_description['vocabulary_id']
+        lookup_list = vocabulary_description['vocabulary_id'].values.tolist()
     else:
         import postgresql
-        db = postgresql.open('pq://postgres:root@10.110.1.76:5432/Vocabulary')
-        concept = db.query("SELECT * from public.concept limit 10")
-        print([i[0] for i in concept])
-    return lookup_list.values.tolist()
+        db = postgresql.open(connection_string)
+        concept = db.query("SELECT * from vocabulary")
+        lookup_list = [row['vocabulary_id'] for row in concept]
+    return lookup_list
 
 
 def find_domain(column_name, table_name):
