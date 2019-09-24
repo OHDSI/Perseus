@@ -22,10 +22,16 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
     return vocabulary_list
 
 
-def return_lookup_list():
+def return_lookup_list(connection_string=None):
     """Return ATHENA vocabulary lookup list"""
-    vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')
-    lookup_list = vocabulary_description['vocabulary_id']
+    if connection_string is not None:
+        vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')
+        lookup_list = vocabulary_description['vocabulary_id']
+    else:
+        import postgresql
+        db = postgresql.open('pq://postgres:root@10.110.1.76:5432/Vocabulary')
+        concept = db.query("SELECT * from public.concept limit 10")
+        print([i[0] for i in concept])
     return lookup_list.values.tolist()
 
 
