@@ -1,3 +1,4 @@
+import postgresql
 import os
 import pandas as pd
 from pathlib import Path
@@ -28,7 +29,6 @@ def return_lookup_list(connection_string=None):
         vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')
         lookup_list = vocabulary_description['vocabulary_id'].values.tolist()
     else:
-        import postgresql
         db = postgresql.open(connection_string)
         concept = db.query("SELECT * from vocabulary")
         lookup_list = [row['vocabulary_id'] for row in concept]
