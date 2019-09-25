@@ -133,10 +133,19 @@ def handle_invalid_req_key(error):
     return response
 
 
+@app.errorhandler(KeyError)
+def handle_invalid_req_key_header(error):
+    """handle error of missed/wrong parameter"""
+    response = jsonify({'message': f'{error.__str__()} missing'})
+    response.status_code = 400
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
 @app.route('/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
-    connection_string = request.headers.get('connection-string')
+    connection_string = request.headers['connection-string']
     lookups = return_lookup_list(connection_string)
     return jsonify(lookups)
 
@@ -193,7 +202,7 @@ def find_domain_call():
 def load_report_call():
     """load report about source schema"""
     schema_name = request.args['schema_name']
-    connection_string = request.headers.get('connection-string')
+    connection_string = request.headers['connection-string']
     try:
         load_report(app.config['UPLOAD_FOLDER'] / schema_name, connection_string)
     except Exception as error:

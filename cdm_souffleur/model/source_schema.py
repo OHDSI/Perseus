@@ -96,21 +96,23 @@ def load_report(filepath, connection_string):
     to acts like with a real tables
     """
     # TODO optimization!!!
-    if connection_string is None:
-        raise ConnectionError('Provide connection argument to load')
     report_tables = []
     _open_book(filepath)
     xls = pd.ExcelFile(book, engine='xlrd')
+    import ntpath
+    head, schema_name = ntpath.split(filepath)
+    # htail = ntpath.basename(head)
+    print(schema_name)
     sheets = xls.sheet_names
     from sqlalchemy import create_engine
     engine = create_engine(f'postgresql+pypostgresql://{connection_string}')
     from sqlalchemy.schema import CreateSchema
     try:
-        engine.execute(CreateSchema('test'))
+        engine.execute(CreateSchema(schema_name))
         for sheet in sheets:
             tablename = sheet
             df = pd.read_excel(book, sheet, engine='xlrd')
-            df.to_sql(tablename, engine, schema='test', if_exists='fail')
+            df.to_sql(tablename, engine, schema=schema_name, if_exists='fail')
             # while spark are not in use
             # rdd_of_rows = _flatten_pd_df(df)
             # spark_df = spark().createDataFrame(rdd_of_rows)
