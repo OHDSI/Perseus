@@ -68,7 +68,7 @@ def _open_book(filepath=None):
 
 
 def get_top_values(table_name, column_name=None):
-    """return top 10 values be freq for target table and\or column"""
+    """return top 10 values be freq for target table and/or column"""
     try:
         table_overview = pd.read_excel(book, table_name, dtype=str,
                                        na_filter=False,
@@ -91,23 +91,34 @@ def get_top_values(table_name, column_name=None):
             raise InvalidUsage('Column invalid' + e.__str__(), 404)
 
 
-def load_report(filepath=Path('D:/mdcr.xlsx')):
+def load_report(filepath, connection_string):
     """Load report from whiteRabbit to Dataframe, separate table for each sheet
     to acts like with a real tables
     """
     # TODO optimization!!!
+    if connection_string is None:
+        raise ConnectionError('Provide connection argument to load')
     report_tables = []
-    filepath_path = Path(filepath)
-    xls = pd.ExcelFile(filepath_path)
+    _open_book(filepath)
+    xls = pd.ExcelFile(book, engine='xlrd')
     sheets = xls.sheet_names
-    for sheet in sheets:
-        tablename = sheet
-        df = pd.read_excel(filepath_path, sheet)
-        rdd_of_rows = _flatten_pd_df(df)
-        spark_df = spark().createDataFrame(rdd_of_rows)
-        spark_df.createOrReplaceTempView(tablename)
-        report_tables.append(tablename)
-    return report_tables
+    from sqlalchemy import create_engine
+    engine = create_engine(f'postgresql+pypostgresql://{connection_string}')
+    from sqlalchemy.schema import CreateSchema
+    try:
+        engine.execute(CreateSchema('test'))
+        for sheet in sheets:
+            tablename = sheet
+            df = pd.read_excel(book, sheet, engine='xlrd')
+            df.to_sql(tablename, engine, schema='test', if_exists='fail')
+            # while spark are not in use
+            # rdd_of_rows = _flatten_pd_df(df)
+            # spark_df = spark().createDataFrame(rdd_of_rows)
+            # spark_df.createOrReplaceTempView(tablename)
+            report_tables.append(tablename)
+        return report_tables
+    except Exception:
+        raise
 
 
 def _flatten_pd_df(pd_df: pd.DataFrame):

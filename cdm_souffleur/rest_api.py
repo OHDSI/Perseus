@@ -192,8 +192,12 @@ def find_domain_call():
 @app.route('/load_report')
 def load_report_call():
     """load report about source schema"""
-    path = request.args['path']
-    start_new_thread(load_report, (path,))
+    schema_name = request.args['schema_name']
+    connection_string = request.headers.get('connection-string')
+    try:
+        load_report(app.config['UPLOAD_FOLDER'] / schema_name, connection_string)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
     return 'OK'
 
 
