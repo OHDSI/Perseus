@@ -1,3 +1,6 @@
+from sqlalchemy import create_engine
+from sqlalchemy.schema import CreateSchema
+import ntpath
 from pathlib import Path
 from pyspark import Row
 import pandas as pd
@@ -92,21 +95,14 @@ def get_top_values(table_name, column_name=None):
 
 
 def load_report(filepath, connection_string):
-    """Load report from whiteRabbit to Dataframe, separate table for each sheet
-    to acts like with a real tables
-    """
+    """Load report from whiteRabbit to DB, separate table for each sheet"""
     # TODO optimization!!!
     report_tables = []
     _open_book(filepath)
     xls = pd.ExcelFile(book, engine='xlrd')
-    import ntpath
     head, schema_name = ntpath.split(filepath)
-    # htail = ntpath.basename(head)
-    print(schema_name)
     sheets = xls.sheet_names
-    from sqlalchemy import create_engine
     engine = create_engine(f'postgresql+pypostgresql://{connection_string}')
-    from sqlalchemy.schema import CreateSchema
     try:
         engine.execute(CreateSchema(schema_name))
         for sheet in sheets:
