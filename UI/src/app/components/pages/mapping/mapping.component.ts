@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver';
 import { MatDialog } from '@angular/material';
 import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.component';
 import { ITable } from 'src/app/models/table';
+import { RulesPopupService } from '../../popaps/rules-popup/services/rules-popup.service';
 
 @Component({
   selector: 'app-mapping',
@@ -43,10 +44,16 @@ export class MappingComponent implements OnInit, AfterViewInit {
     private dataService: DataService,
     private commonService: CommonService,
     private bridgeService: BridgeService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private rulesPoupService: RulesPopupService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.rulesPoupService.deleteConnector$.subscribe(done => {
+      console.log(done);
+      this.bridgeService.deleteSelectedArrows();
+    });
+  }
 
   ngAfterViewInit() {
     this.commonService.setSvg(this.svgCanvas);
@@ -56,7 +63,7 @@ export class MappingComponent implements OnInit, AfterViewInit {
   @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
-      this.bridgeService.removeSelectedArrows();
+      this.bridgeService.deleteSelectedArrows();
     }
   }
 
@@ -84,7 +91,7 @@ export class MappingComponent implements OnInit, AfterViewInit {
   }
 
   wipeAllMappings() {
-    this.bridgeService.removeAllArrows();
+    this.bridgeService.deleteAllArrows();
   }
 
   onSourcePanelOpen() {

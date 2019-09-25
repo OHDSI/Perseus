@@ -8,12 +8,25 @@ import {
 import { PortalInjector, ComponentPortal } from '@angular/cdk/portal';
 import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
+import { Observable, Subject } from 'rxjs';
 
 export class OverlayDialogRef {
+  get close$(): Observable<OverlayConfigOptions> {
+    return this.closeSubject.asObservable();
+  }
+
+  private closeSubject = new Subject<OverlayConfigOptions>();
+
   constructor(private overlayRef: OverlayRef) {}
 
-  close() {
+  close(configOptions?: OverlayConfigOptions) {
     this.overlayRef.dispose();
+
+    if (configOptions) {
+      this.closeSubject.next(configOptions);
+    } else {
+      this.closeSubject.next();
+    }
   }
 }
 
@@ -32,7 +45,7 @@ export class OverlayService {
 
     const dialogRef = new OverlayDialogRef(overlayRef);
 
-    overlayRef.backdropClick().subscribe(() => dialogRef.close());
+    overlayRef.backdropClick().subscribe(() => dialogRef.close(configOptions));
 
     const injector = this.createInjector(configOptions, dialogRef);
 

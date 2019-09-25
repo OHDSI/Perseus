@@ -31,6 +31,8 @@ export class BridgeButtonComponent {
   openRulesDialog(anchor) {
     const component = RulesPopupComponent;
 
+    this.payloadObj.connector.select();
+
     const dialogOptions: OverlayConfigOptions = {
       disableClose: true,
       hasBackdrop: true,
@@ -39,12 +41,14 @@ export class BridgeButtonComponent {
       payload: this.payloadObj
     };
 
-    this.overlayService.open(
+    const dialogRef = this.overlayService.open(
       dialogOptions,
       anchor,
       component
     );
 
-    console.log(this.payloadObj);
+    dialogRef.close$.subscribe(configOptions => {
+      this.payloadObj.connector.deselect();
+    });
   }
 }

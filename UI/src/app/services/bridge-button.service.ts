@@ -13,7 +13,6 @@ import { BridgeButtonComponent } from '../components/bridge-button/bridge-button
 import { middleHeightOfLine, areaOffset } from './utilites/draw-utilites';
 import { IConnector } from '../models/interface/connector.interface';
 import { BRIDGE_BUTTON_DATA } from '../components/bridge-button/model/bridge-button-injector';
-import { BridgeService } from './bridge.service';
 import { ArrowCache } from '../models/arrow-cache';
 
 @Injectable()

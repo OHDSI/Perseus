@@ -4,6 +4,7 @@ import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-dat
 import { TransformRulesData } from './model/transform-rules-data';
 import { TransformationInputComponent } from './transformation-input/transformation-input.component';
 import { SqlFunction } from './transformation-input/model/sql-string-functions';
+import { RulesPopupService } from './services/rules-popup.service';
 
 @Component({
   selector: 'app-rules-popup',
@@ -29,6 +30,7 @@ export class RulesPopupComponent {
   removable = true;
 
   constructor(
+    private rulesPopupService: RulesPopupService,
     public dialogRef: OverlayDialogRef,
     @Inject(OVERLAY_DIALOG_DATA) public payload: TransformRulesData
   ) {
@@ -52,7 +54,10 @@ export class RulesPopupComponent {
     this.dialogRef.close();
   }
 
-  deleteLink() {}
+  deleteLink() {
+    this.rulesPopupService.deleteConnector();
+    this.dialogRef.close();
+  }
 
   close() {
     this.dialogRef.close();

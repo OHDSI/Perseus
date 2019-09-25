@@ -36,6 +36,7 @@ import { UserSettings } from './services/user-settings.service';
 import { TransformationInputComponent } from './components/popaps/rules-popup/transformation-input/transformation-input.component';
 import { SqlFunctionsInjector } from './components/popaps/rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './components/popaps/rules-popup/transformation-input/model/sql-string-functions';
+import { RulesPopupService } from './components/popaps/rules-popup/services/rules-popup.service';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { SQL_FUNCTIONS } from './components/popaps/rules-popup/transformation-in
     UploadService,
     BridgeButtonService,
     UserSettings,
+    RulesPopupService,
     [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}]
   ],
   bootstrap: [AppComponent]

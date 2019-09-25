@@ -53,8 +53,8 @@ export class DrawService {
     return drawEntity;
   }
 
-  removeConnector(id: string, removeSelected: boolean = false) {
-    if (removeSelected && !this.cache[id].selected) {
+  removeConnector(id: string, isSelected: boolean = false) {
+    if (isSelected && !this.cache[id].selected) {
       return;
     }
 
@@ -67,7 +67,8 @@ export class DrawService {
   }
 
   removeSelectedConnectors() {
-    Object.keys(this.cache).forEach(key => this.removeConnector(key, true));
+    const isSelected = true;
+    Object.keys(this.cache).forEach(key => this.removeConnector(key, isSelected));
   }
 
   removeConnectorsBoundToTable({ id, area }) {

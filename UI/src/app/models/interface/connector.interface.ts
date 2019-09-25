@@ -13,4 +13,6 @@ export interface IConnector {
   remove(): void;
   adjustPosition(): void;
   attachButton(button): void;
+  select(): void;
+  deselect(): void;
 }
