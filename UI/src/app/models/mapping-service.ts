@@ -62,7 +62,7 @@ export class MappingService {
 
   applyTransforms(node: MappingNode, connector: any) {
     node.sql_field = connector.transforms.reduce((acc, transform) => {
-      return transform.getSql();
-    }, '');
+      return transform.getSql(acc);
+    }, `'${node.sql_field}'`);
   }
 }

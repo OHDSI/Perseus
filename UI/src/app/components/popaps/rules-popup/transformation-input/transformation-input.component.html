@@ -1,10 +1,30 @@
 <mat-form-field [floatLabel]="'never'" class="transform-input">
-  <mat-icon matPrefix>search</mat-icon>
+  <mat-icon matPrefix>edit</mat-icon>
   <input
     matInput
     placeholder="input sql function"
-    [formControl]="formControl"
-    (keyup.enter)="onEnterPressed(formControl.value)"
+    [formControl]="editor"
+    (keyup.enter)="onEnterPressed(editor.value)"
+  />
+  <button
+    *ngIf="editor.value"
+    mat-button
+    matSuffix
+    mat-icon-button
+    aria-label="Clear editor"
+    (click)="clearEditor()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-error *ngIf="editor.invalid">{{ getErrorMessage() }}</mat-error>
+</mat-form-field>
+<mat-form-field [floatLabel]="'never'" class="transform-input">
+  <mat-icon matPrefix>search</mat-icon>
+  <input
+    matInput
+    placeholder="select sql function"
+    [formControl]="selector"
+    (keyup.enter)="onEnterPressed(selector.value)"
     [matAutocomplete]="auto"
   />
   <button
@@ -12,12 +32,11 @@
     mat-button
     matSuffix
     mat-icon-button
-    aria-label="Clear"
-    (click)="clear()"
+    aria-label="Clear selector"
+    (click)="clearSelector()"
   >
     <mat-icon>close</mat-icon>
   </button>
-  <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
 </mat-form-field>
 <mat-autocomplete
   #auto="matAutocomplete"

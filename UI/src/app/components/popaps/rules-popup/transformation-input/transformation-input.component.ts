@@ -17,6 +17,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 import { isString } from 'src/app/infrastructure/utility';
 import { sqlParametersValidator } from './model/sql-function-validator';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-transformation-input',
@@ -29,11 +30,9 @@ export class TransformationInputComponent implements OnInit, OnChanges {
 
   @Output() apply = new EventEmitter<SqlFunction>();
 
-  get displayFn(): any {
-    return (value: any) => this._displayFn(value, this.columnname);
-  }
+  selector: FormControl;
+  editor: FormControl;
 
-  formControl: FormControl;
   filteredOptions: Observable<any[]>;
   criteria = new SqlFunction();
 
@@ -41,41 +40,47 @@ export class TransformationInputComponent implements OnInit, OnChanges {
     @Inject(SqlFunctionsInjector)
     private sqlFunctions: Array<SqlFunction>
   ) {
-    this.formControl = new FormControl('', [
+    this.selector = new FormControl();
+
+    this.editor = new FormControl('', [
       Validators.required,
       sqlParametersValidator(/\((.*)\)/)
     ]);
   }
 
   ngOnInit() {
-    this.filteredOptions = of(this.sqlFunctions);
-    this.formControl['criteria'] = this.criteria;
+    this.filteredOptions = this.selector.valueChanges.pipe(
+      startWith(''),
+      map(value =>
+        typeof value === 'string' ? value : value ? value.name : null
+      ),
+      map(name => (name ? this._filter(name) : this.sqlFunctions.slice()))
+    );
 
-    this.formControl.valueChanges.subscribe(value => {
+    // tslint:disable-next-line:no-string-literal
+    this.editor['criteria'] = this.criteria;
+
+    this.editor.valueChanges.subscribe(value => {
       if (isString(value)) {
-        this.formControl['criteria'] = this.criteria;
+        // tslint:disable-next-line:no-string-literal
+        this.editor['criteria'] = this.criteria;
         const regex = /\((.*)\)/;
         const parametersParsed = value.match(regex);
         const parameters = parametersParsed
           ? parametersParsed[1].split(',')
           : null;
         if (parameters) {
+          // Save value position
+          const valueIndex = this.criteria.valueIndex;
+          const valueSave = this.criteria.parameters[valueIndex];
+
           this.criteria.parameters = parameters;
+
+          // Restore value position
+          this.criteria.parameters[valueIndex] = valueSave;
         }
       }
     });
-  }
-
-  getErrorMessage() {
-    return this.formControl.hasError('required')
-      ? 'You must enter sql function'
-      : this.formControl.hasError('parameters')
-      ? 'Paramters are incorrect'
-      : '';
-  }
-
-  _displayFn(definition: SqlFunction, columnName): string | undefined {
-    return definition ? definition.getTemplate(columnName) : undefined;
   }
 
   private _filter(name: string): SqlFunctionDefinition[] {
@@ -86,16 +91,21 @@ export class TransformationInputComponent implements OnInit, OnChanges {
     );
   }
 
+  displayFn(definition: any): string | undefined {
+    return definition ? definition.name : undefined;
+  }
+
   ngOnChanges() {
-    this.formControl.setValue(this.criteria);
+    // this.editor.setValue(this.criteria);
+    // this.selector.setValue(this.criteria);
   }
 
   selectTransform(event: MatAutocompleteSelectedEvent) {
-    const value: SqlFunction = event.option.value;
-    this.criteria = value;
-    this.formControl.setValue(this.criteria);
+    const transform: SqlFunction = event.option.value;
+    this.criteria = new SqlFunction(transform);
 
-    // Incorrect beravior. !Base sql function mutated by this class.
+    this.editor.setValue(this.criteria.getTemplate(this.columnname));
+
     this.apply.emit(this.criteria);
   }
 
@@ -103,8 +113,20 @@ export class TransformationInputComponent implements OnInit, OnChanges {
     this.apply.emit(this.criteria);
   }
 
-  clear(): void {
-    this.formControl.reset();
+  clearEditor(): void {
+    this.editor.reset();
     this.criteria = new SqlFunction();
+  }
+
+  clearSelector(): void {
+    this.selector.reset();
+  }
+
+  getErrorMessage() {
+    return this.editor.hasError('required')
+      ? 'You must enter sql function'
+      : this.editor.hasError('parameters')
+      ? 'Paramters are incorrect'
+      : '';
   }
 }

@@ -22,10 +22,10 @@ export class RulesPopupComponent {
   }
 
   get applyedCriteria(): SqlFunction[] {
-    return this.criteria;
+    return this.criterias;
   }
 
-  criteria = Array<SqlFunction>();
+  criterias = Array<SqlFunction>();
   removable = true;
 
   constructor(
@@ -34,19 +34,19 @@ export class RulesPopupComponent {
   ) {
     const { arrowCache, connector } = this.payload;
     if (arrowCache[connector.id]) {
-      this.criteria = arrowCache[connector.id].transforms || [];
+      this.criterias = arrowCache[connector.id].transforms || [];
     }
   }
 
   onTransformSelected(event: SqlFunction): void {
-    this.criteria.push(event);
+    this.criterias.push(event);
   }
 
   // TODO use command patter
   apply() {
     const { arrowCache, connector } = this.payload;
     if (arrowCache[connector.id]) {
-      arrowCache[connector.id].transforms = this.criteria;
+      arrowCache[connector.id].transforms = this.criterias;
     }
 
     this.dialogRef.close();
@@ -59,18 +59,18 @@ export class RulesPopupComponent {
   }
 
   removeTransform(transfrom: SqlFunction) {
-    const index = this.criteria.findIndex(criteria => criteria.name === transfrom.name);
+    const index = this.criterias.findIndex(criteria => criteria.name === transfrom.name);
     if (index > -1) {
-      this.criteria.splice(index, 1);
+      this.criterias.splice(index, 1);
 
-      this.tinput.clear();
+      this.tinput.clearEditor();
     }
   }
 
   viewTransform(transfrom: SqlFunction) {
-    const index = this.criteria.findIndex(criteria => criteria.name === transfrom.name);
+    const index = this.criterias.findIndex(criteria => criteria.name === transfrom.name);
     if (index > -1) {
-      console.log(this.criteria[index]);
+      console.log(this.criterias[index]);
     }
   }
 }

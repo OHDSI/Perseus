@@ -12,37 +12,53 @@ export interface SqlFunctionDefinition {
   name?: string;
   parameters?: Array<string>;
   hint?: string;
+  maxNumberOfParameters?: number;
 }
 
 export class SqlFunction {
+  get valueIndex(): number {
+    return this.parameters.findIndex(pramName => pramName === 'value');
+  }
+
   name: string;
   parameters: Array<string>;
+  displayParameters: Array<string>;
+  maxNumberOfParameters: number;
   hint?: string;
 
   constructor(opt: SqlFunctionDefinition = {}) {
     this.name = opt.name || '';
     this.parameters = opt.parameters || [];
     this.hint = opt.hint || '';
+    this.maxNumberOfParameters =
+      opt.maxNumberOfParameters || this.parameters.length;
   }
 
-  getTemplate(columnName: string): string {
-    if (!columnName || this.parameters.length === 0) {
-      return '';
+  getTemplate(columnName?: string) {
+    this.displayParameters = [...this.parameters];
+
+    const functionName = this.name;
+
+    if (columnName && this.valueIndex > -1) {
+      this.displayParameters[this.valueIndex] = columnName;
     }
 
+    const parameters =
+      this.displayParameters.length > 0
+        ? `('${this.displayParameters.join('\', \'')}')`
+        : '';
+    return `${functionName}${parameters}`;
+  }
+
+  getSql(value: any) {
     const valuePlaceholderIndex = this.parameters.findIndex(
-      pramName => pramName === 'value'
+      parameterName => parameterName === 'value'
     );
 
     if (valuePlaceholderIndex > -1) {
-      this.parameters[valuePlaceholderIndex] = columnName;
+      this.parameters[valuePlaceholderIndex] = value;
     }
-
-    return `${this.name}('${this.parameters.join('\', \'')}')`;
-  }
-
-  getSql() {
-    return `${this.name}('${this.parameters.join('\', \'')}')`;
+    return `${this.name}(${this.parameters.join('\', \'')})`;
   }
 }
 
@@ -51,8 +67,14 @@ export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
     name: 'REPLACE',
     parameters: ['value', 'old_string', 'new_string']
   }),
-  new SqlFunction({ name: 'UPPER', parameters: ['value'] }),
-  new SqlFunction({ name: 'LOWER', parameters: ['value'] }),
+  new SqlFunction({
+    name: 'UPPER',
+    parameters: ['value']
+  }),
+  new SqlFunction({
+    name: 'LOWER',
+    parameters: ['value']
+  }),
   new SqlFunction({
     name: 'CAST',
     parameters: ['value', 'datatype'],
@@ -78,7 +100,17 @@ export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
   new SqlFunction({ name: 'ABS', parameters: ['value'] }),
   new SqlFunction({ name: 'RIGHT', parameters: ['value', 'number_of_chars'] }),
   new SqlFunction({ name: 'LEFT', parameters: ['value', 'number_of_chars'] }),
-  new SqlFunction({ name: 'COALESCE', parameters: ['value'] })
+
+  new SqlFunction({
+    name: 'COALESCE',
+    parameters: ['value'],
+    maxNumberOfParameters: Number.POSITIVE_INFINITY
+  }),
+  new SqlFunction({
+    name: 'CONCAT',
+    parameters: ['value'],
+    maxNumberOfParameters: Number.POSITIVE_INFINITY
+  })
 ];
 
 export const SQL_STRING_FUNCTIONS = [
