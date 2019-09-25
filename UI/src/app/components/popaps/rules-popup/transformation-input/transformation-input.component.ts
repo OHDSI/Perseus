@@ -5,7 +5,8 @@ import {
   Output,
   EventEmitter,
   Inject,
-  Input
+  Input,
+  ViewChild
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
@@ -13,11 +14,15 @@ import {
   SqlFunction
 } from './model/sql-string-functions';
 import { Observable, of } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
+import {
+  MatAutocompleteSelectedEvent,
+  MatAutocomplete
+} from '@angular/material';
 import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 import { isString } from 'src/app/infrastructure/utility';
 import { sqlParametersValidator } from './model/sql-function-validator';
 import { startWith, map } from 'rxjs/operators';
+import { stringify } from '@angular/core/src/render3/util';
 
 @Component({
   selector: 'app-transformation-input',
@@ -25,8 +30,10 @@ import { startWith, map } from 'rxjs/operators';
   styleUrls: ['./transformation-input.component.scss']
 })
 export class TransformationInputComponent implements OnInit, OnChanges {
+  @ViewChild(MatAutocomplete) autocomplete: MatAutocomplete;
+
   @Input() columnname: string;
-  @Input() transfrom: SqlFunction;
+  @Input() transform: SqlFunction;
 
   @Output() apply = new EventEmitter<SqlFunction>();
 
@@ -66,10 +73,11 @@ export class TransformationInputComponent implements OnInit, OnChanges {
         this.editor['criteria'] = this.criteria;
         const regex = /\((.*)\)/;
         const parametersParsed = value.match(regex);
-        const parameters = parametersParsed
+        let parameters = parametersParsed
           ? parametersParsed[1].split(',')
           : null;
         if (parameters) {
+          parameters = this.clearParamters(parameters);
           // Save value position
           const valueIndex = this.criteria.valueIndex;
           const valueSave = this.criteria.parameters[valueIndex];
@@ -81,6 +89,10 @@ export class TransformationInputComponent implements OnInit, OnChanges {
         }
       }
     });
+  }
+
+  private clearParamters(parameters: string[]): string[] {
+    return parameters.map(p => p.replace(/'/g, '').trim());
   }
 
   private _filter(name: string): SqlFunctionDefinition[] {
@@ -96,8 +108,9 @@ export class TransformationInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    // this.editor.setValue(this.criteria);
-    // this.selector.setValue(this.criteria);
+    this.criteria = new SqlFunction(this.transform);
+    this.selector.setValue(this.transform);
+    this.editor.setValue(this.criteria.getTemplate(this.columnname));
   }
 
   selectTransform(event: MatAutocompleteSelectedEvent) {
@@ -115,11 +128,13 @@ export class TransformationInputComponent implements OnInit, OnChanges {
 
   clearEditor(): void {
     this.editor.reset();
+    this.selector.reset();
     this.criteria = new SqlFunction();
   }
 
   clearSelector(): void {
     this.selector.reset();
+    this.editor.reset();
   }
 
   getErrorMessage() {

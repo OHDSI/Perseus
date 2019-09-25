@@ -7,17 +7,23 @@
     {{ targetColumnName }}
   </mat-card-subtitle>
   <mat-card-content class="rules-content">
-    <app-transformation-input #tinput [columnname]="sourceColumnname" (apply)="onTransformSelected($event)">
+    <app-transformation-input
+      #tinput
+      [columnname]="sourceColumnname"
+      [transform]="selectedTransform"
+      (apply)="onTransformSelected($event)"
+    >
     </app-transformation-input>
     <div class="applyed-content">
       <p *ngIf="applyedCriteria.length > 0">Transformations:</p>
       <mat-chip-list class="mat-chip-list-stacked" aria-label="Transformations">
-        <mat-chip class="transformation-chip"
+        <mat-chip
+          class="transformation-chip"
           color="primary"
-          *ngFor="let item of applyedCriteria"
+          *ngFor="let item of applyedCriteria; let i = index"
           [removable]="removable"
-          (removed)="removeTransform(item)"
-          (click)="viewTransform(item)"
+          (removed)="removeTransform(i)"
+          (click)="viewTransform(i)"
           >{{ item.name }}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>

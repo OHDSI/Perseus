@@ -14,6 +14,8 @@ import { RulesPopupService } from './services/rules-popup.service';
 export class RulesPopupComponent {
   @ViewChild('tinput') tinput: TransformationInputComponent;
 
+  selectedTransform: SqlFunction = new SqlFunction();
+
   get sourceColumnname(): string {
     return this.payload.connector.source.name || '';
   }
@@ -63,19 +65,12 @@ export class RulesPopupComponent {
     this.dialogRef.close();
   }
 
-  removeTransform(transfrom: SqlFunction) {
-    const index = this.criterias.findIndex(criteria => criteria.name === transfrom.name);
-    if (index > -1) {
-      this.criterias.splice(index, 1);
-
-      this.tinput.clearEditor();
-    }
+  removeTransform(index: number) {
+    this.criterias.splice(index, 1);
+    this.tinput.clearEditor();
   }
 
-  viewTransform(transfrom: SqlFunction) {
-    const index = this.criterias.findIndex(criteria => criteria.name === transfrom.name);
-    if (index > -1) {
-      console.log(this.criterias[index]);
-    }
+  viewTransform(index: number) {
+    this.selectedTransform = this.criterias[index];
   }
 }
