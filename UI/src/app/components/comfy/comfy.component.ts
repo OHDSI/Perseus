@@ -1,22 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  ViewChildren,
+  QueryList
+} from '@angular/core';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import {
   CdkDragDrop,
   moveItemInArray,
-  copyArrayItem
+  copyArrayItem,
+  CdkDrag,
+  CdkDragMove
 } from '@angular/cdk/drag-drop';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { Subscription, merge } from 'rxjs';
+import { startWith, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-comfy',
   templateUrl: './comfy.component.html',
   styleUrls: ['./comfy.component.scss']
 })
-export class ComfyComponent implements OnInit {
+export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('scrollEl')
+  scrollEl: ElementRef<HTMLElement>;
+
+  @ViewChildren(CdkDrag)
+  dragEls: QueryList<CdkDrag>;
+
   busy = true;
 
   get state() {
@@ -45,6 +64,10 @@ export class ComfyComponent implements OnInit {
     duration: 3000
   };
 
+  speed = 5;
+  subs = new Subscription();
+  private animationFrame: number | undefined;
+
   constructor(
     private dataService: DataService,
     private stateService: StateService,
@@ -52,6 +75,70 @@ export class ComfyComponent implements OnInit {
     private bridgeService: BridgeService,
     private snakbar: MatSnackBar
   ) {}
+
+  ngAfterViewInit() {
+    const onMove$ = this.dragEls.changes.pipe(
+      startWith(this.dragEls),
+      map((d: QueryList<CdkDrag>) => d.toArray()),
+      map(dragels => dragels.map(drag => drag.moved)),
+      switchMap(obs => merge(...obs)),
+      tap(this.triggerScroll)
+    );
+
+    this.subs.add(onMove$.subscribe());
+
+    const onDown$ = this.dragEls.changes.pipe(
+      startWith(this.dragEls),
+      map((d: QueryList<CdkDrag>) => d.toArray()),
+      map(dragels => dragels.map(drag => drag.ended)),
+      switchMap(obs => merge(...obs)),
+      tap(this.cancelScroll)
+    );
+
+    this.subs.add(onDown$.subscribe());
+  }
+
+  @bound
+  public triggerScroll($event: CdkDragMove) {
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = undefined;
+    }
+    this.animationFrame = requestAnimationFrame(() => this.scroll($event));
+  }
+
+  @bound
+  private cancelScroll() {
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = undefined;
+    }
+  }
+
+  private scroll($event: CdkDragMove) {
+    const { y } = $event.pointerPosition;
+    const baseEl = this.scrollEl.nativeElement;
+    const box = baseEl.getBoundingClientRect();
+    const scrollTop = baseEl.scrollTop;
+    const top = box.top + -y;
+    if (top > 0 && scrollTop !== 0) {
+      const newScroll = scrollTop - this.speed * Math.exp(top / 50);
+      baseEl.scrollTop = newScroll;
+      this.animationFrame = requestAnimationFrame(() => this.scroll($event));
+      return;
+    }
+
+    const bottom = y - box.bottom;
+    if (bottom > 0 && scrollTop < box.bottom) {
+      const newScroll = scrollTop + this.speed * Math.exp(bottom / 50);
+      baseEl.scrollTop = newScroll;
+      this.animationFrame = requestAnimationFrame(() => this.scroll($event));
+    }
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.dataService.initialize().subscribe(_ => {
@@ -113,7 +200,7 @@ export class ComfyComponent implements OnInit {
 
       this.setFirstElementAlwaysOnTop(targetname);
     }
-}
+  }
 
   setFirstElementAlwaysOnTop(targetname: string): void {
     if (!targetname) {
@@ -151,16 +238,17 @@ export class ComfyComponent implements OnInit {
     const indexes = {};
 
     this.state.source.tables.forEach(table => {
-      indexes[table.name] = selectedSourceColumns.map(
-        columnname => table.rows.findIndex(r => r.name === columnname)
+      indexes[table.name] = selectedSourceColumns.map(columnname =>
+        table.rows.findIndex(r => r.name === columnname)
       );
     });
 
-    this.highlitedtables = Object.keys(indexes).filter(
-      tableName => {
-        return indexes[tableName].length > 0 && !(indexes[tableName].findIndex(idx => idx === -1) > -1);
-      }
-    );
+    this.highlitedtables = Object.keys(indexes).filter(tableName => {
+      return (
+        indexes[tableName].length > 0 &&
+        !(indexes[tableName].findIndex(idx => idx === -1) > -1)
+      );
+    });
 
     this.source = Object.assign([], this.source);
   }
@@ -175,5 +263,43 @@ export class ComfyComponent implements OnInit {
     if (index > -1) {
       data.splice(index, 1);
     }
+  }
+}
+
+export function bound(target: Object, propKey: string | symbol) {
+  const originalMethod = (target as any)[propKey] as Function;
+
+  // Ensure the above type-assertion is valid at runtime.
+  if (typeof originalMethod !== 'function') {
+    throw new TypeError('@bound can only be used on methods.');
+  }
+
+  if (typeof target === 'function') {
+    // Static method, bind to class (if target is of type "function", the method decorator was used on a static method).
+    return {
+      value() {
+        return originalMethod.apply(target, arguments);
+      }
+    };
+  } else if (typeof target === 'object') {
+    // Instance method, bind to instance on first invocation (as that is the only way to access an instance from a decorator).
+    return {
+      get() {
+        // Create bound override on object instance. This will hide the original method on the prototype, and instead yield a bound version from the
+        // instance itself. The original method will no longer be accessible. Inside a getter, 'this' will refer to the instance.
+        const instance = this;
+
+        Object.defineProperty(instance, propKey.toString(), {
+          value() {
+            // This is effectively a lightweight bind() that skips many (here unnecessary) checks found in native implementations.
+            return originalMethod.apply(instance, arguments);
+          }
+        });
+
+        // The first invocation (per instance) will return the bound method from here. Subsequent calls will never reach this point, due to the way
+        // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
+        return instance[propKey];
+      }
+    } as PropertyDescriptor;
   }
 }

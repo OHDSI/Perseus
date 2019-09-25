@@ -4,7 +4,7 @@
 
 .comfy {
   display: grid;
-  grid-template-columns: 230px 200px 1fr;
+  grid-template-columns: 230px 230px 1fr;
   column-gap: 20px;
   grid-auto-rows: minmax(200px, auto);
 }
@@ -180,6 +180,17 @@ div[highlighted=true] {
   justify-content: center;
   align-items: center;
 }
+
+.target-scrolled-items{
+  height: 70vh;
+  overflow-y:scroll;
+}
+
+.source-scrolled-items {
+  height: 70vh;
+  overflow-y:scroll;
+}
+
 
 
 
