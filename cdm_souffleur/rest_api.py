@@ -136,7 +136,8 @@ def handle_invalid_req_key(error):
 @app.route('/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
-    lookups = return_lookup_list()
+    connection_string = request.headers.get('connection-string')
+    lookups = return_lookup_list(connection_string)
     return jsonify(lookups)
 
 
