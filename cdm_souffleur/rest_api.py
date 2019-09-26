@@ -7,7 +7,7 @@ from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
     delete_generated_xml
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
-    return_lookup_list
+    return_lookup_list, return_domain_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
@@ -147,6 +147,14 @@ def get_lookups_call():
     connection_string = request.headers.get('connection-string')
     lookups = return_lookup_list(connection_string)
     return jsonify(lookups)
+
+
+@app.route('/get_domain_list')
+def get_domains_call():
+    """return domains list of ATHENA vocabulary"""
+    connection_string = request.headers['connection-string']
+    domains = return_domain_list(connection_string)
+    return jsonify(domains)
 
 
 @app.route('/get_xml', methods=['POST'])

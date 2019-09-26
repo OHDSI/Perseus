@@ -35,6 +35,14 @@ def return_lookup_list(connection_string):
     return lookup_list
 
 
+def return_domain_list(connection_string):
+    """Return ATHENA vocabulary lookup list"""
+    db = postgresql.open(f'pq://{connection_string}')
+    domain = db.query("SELECT * from domain")
+    domain_list = [row['domain_id'] for row in domain]
+    return domain_list
+
+
 def find_domain(column_name, table_name):
     """find target information by source code
     :param column_name - source code name column
