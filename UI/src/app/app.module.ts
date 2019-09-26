@@ -78,6 +78,7 @@ import { RulesPopupService } from './components/popaps/rules-popup/services/rule
     ThemeModule
   ],
   providers: [
+    OverlayService,
     DataService,
     CommonService,
     BridgeService,

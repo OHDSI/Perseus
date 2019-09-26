@@ -10,7 +10,6 @@ import {
 import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
@@ -86,19 +85,7 @@ export class PanelTableComponent implements OnInit {
   }
 
   setActiveRow(row: IRow) {
-    //this.commonService.activeRow = row;
-  }
-
-  openTopValuesDialog(anchor: HTMLElement) {
-    const component = ValuesPopupComponent;
-
-    const dialogOptions: OverlayConfigOptions = {
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      strategyFor: 'values'
-    };
-
-    this.overlayService.open(dialogOptions, anchor, component);
+    // this.commonService.activeRow = row;
   }
 
   openCommentDialog(anchor: HTMLElement, row: IRow) {

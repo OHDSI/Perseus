@@ -9,8 +9,7 @@ import { BridgeButtonData } from './model/bridge-button-data';
 @Component({
   selector: 'app-bridge-button',
   templateUrl: './bridge-button.component.html',
-  styleUrls: ['./bridge-button.component.scss'],
-  providers: [OverlayService]
+  styleUrls: ['./bridge-button.component.scss']
 })
 export class BridgeButtonComponent {
   text = 'T';
