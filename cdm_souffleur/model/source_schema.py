@@ -1,21 +1,22 @@
+from sqlalchemy import create_engine
+from sqlalchemy.schema import CreateSchema
+import ntpath
 from pathlib import Path
 from pyspark import Row
 import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
-    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, \
-    UPLOAD_SOURCE_SCHEMA_FOLDER
+    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
 import glob
 import shutil
 from cdm_souffleur.view.Table import Table, Column
-from pandasql import sqldf, PandaSQLException
+from pandasql import sqldf
 import xlrd
 from cdm_souffleur.utils import time_it
 from cdm_souffleur.utils.exceptions import InvalidUsage
-
 import json
 
 book = None
@@ -25,9 +26,8 @@ with open('configuration/default.json', 'r') as configuration_file:
     print(configuration)
 
 
-@time_it
 def get_source_schema(schemaname):
-    """return tables and columns of source schema based on WR report"""
+    """return tables and columns of source schema based on WR report, arg actually is path"""
     print("schema name: " + str(schemaname))
 
     if schemaname == configuration['schema']['name']:
@@ -57,7 +57,6 @@ def get_source_schema(schemaname):
     return schema
 
 
-@time_it
 def _open_book(filepath=None):
     global book
     if book is None and filepath is not None:
@@ -92,25 +91,20 @@ def get_top_values(table_name, column_name=None):
 
 
 def load_report(filepath, connection_string):
-    """Load report from whiteRabbit to Dataframe, separate table for each sheet
-    to acts like with a real tables
-    """
+    """Load report from whiteRabbit to DB, separate table for each sheet"""
     # TODO optimization!!!
-    if connection_string is None:
-        raise ConnectionError('Provide connection argument to load')
     report_tables = []
     _open_book(filepath)
     xls = pd.ExcelFile(book, engine='xlrd')
+    head, schema_name = ntpath.split(filepath)
     sheets = xls.sheet_names
-    from sqlalchemy import create_engine
     engine = create_engine(f'postgresql+pypostgresql://{connection_string}')
-    from sqlalchemy.schema import CreateSchema
     try:
-        engine.execute(CreateSchema('test'))
+        engine.execute(CreateSchema(schema_name))
         for sheet in sheets:
             tablename = sheet
             df = pd.read_excel(book, sheet, engine='xlrd')
-            df.to_sql(tablename, engine, schema='test', if_exists='fail')
+            df.to_sql(tablename, engine, schema=schema_name, if_exists='fail')
             # while spark are not in use
             # rdd_of_rows = _flatten_pd_df(df)
             # spark_df = spark().createDataFrame(rdd_of_rows)
@@ -167,8 +161,8 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
             shutil.rmtree(str(GENERATE_CDM_SOURCE_DATA_PATH / filename))
 
 
-def get_existing_source_schemas_list():
-    return os.listdir(str(UPLOAD_SOURCE_SCHEMA_FOLDER))
+def get_existing_source_schemas_list(path):
+    return os.listdir(str(path))
 
 
 if __name__ == '__main__':
