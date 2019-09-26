@@ -32,11 +32,11 @@ export class SqlFunction {
     this.hint = opt.hint || '';
     this.maxNumberOfParameters =
       opt.maxNumberOfParameters || this.parameters.length;
+
+    this.displayParameters = [...this.parameters];
   }
 
   getTemplate(columnName?: string) {
-    this.displayParameters = [...this.parameters];
-
     const functionName = this.name;
 
     if (columnName && this.valueIndex > -1) {

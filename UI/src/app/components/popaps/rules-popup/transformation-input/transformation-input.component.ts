@@ -22,7 +22,6 @@ import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 import { isString } from 'src/app/infrastructure/utility';
 import { sqlParametersValidator } from './model/sql-function-validator';
 import { startWith, map } from 'rxjs/operators';
-import { stringify } from '@angular/core/src/render3/util';
 
 @Component({
   selector: 'app-transformation-input',
@@ -82,10 +81,10 @@ export class TransformationInputComponent implements OnInit, OnChanges {
           const valueIndex = this.criteria.valueIndex;
           const valueSave = this.criteria.parameters[valueIndex];
 
-          this.criteria.parameters = parameters;
+          this.criteria.displayParameters = parameters;
 
           // Restore value position
-          this.criteria.parameters[valueIndex] = valueSave;
+          this.criteria.displayParameters[valueIndex] = valueSave;
         }
       }
     });
@@ -108,7 +107,7 @@ export class TransformationInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.criteria = new SqlFunction(this.transform);
+    this.criteria = this.transform;
     this.selector.setValue(this.transform);
     this.editor.setValue(this.criteria.getTemplate(this.columnname));
   }

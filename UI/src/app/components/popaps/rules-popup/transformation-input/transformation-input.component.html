@@ -1,4 +1,4 @@
-<mat-form-field [floatLabel]="'never'" class="transform-input">
+<mat-form-field *ngIf="criteria.displayParameters.length > 0" [floatLabel]="'never'" class="transform-input">
   <mat-icon matPrefix>edit</mat-icon>
   <input
     matInput
