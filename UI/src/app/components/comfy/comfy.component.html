@@ -51,7 +51,7 @@
             cdkDropList
             cdkDropListOrientation="horizontal"
             [cdkDropListData]="target[targetName].data"
-            (cdkDropListDropped)="drop($event)"
+            (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)"
           >
             <div
               class="horizontal-box"

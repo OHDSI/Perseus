@@ -23,6 +23,7 @@ import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { Subscription, merge } from 'rxjs';
 import { startWith, map, switchMap, tap } from 'rxjs/operators';
+import { Command } from 'src/app/infrastructure/command';
 
 @Component({
   selector: 'app-comfy',
@@ -30,14 +31,6 @@ import { startWith, map, switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./comfy.component.scss']
 })
 export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('scrollEl')
-  scrollEl: ElementRef<HTMLElement>;
-
-  @ViewChildren(CdkDrag)
-  dragEls: QueryList<CdkDrag>;
-
-  busy = true;
-
   get state() {
     return this.stateService.state;
   }
@@ -53,6 +46,21 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   get highlitedTables(): string[] {
     return this.highlitedtables;
   }
+
+  constructor(
+    private dataService: DataService,
+    private stateService: StateService,
+    private mappingDialog: MatDialog,
+    private bridgeService: BridgeService,
+    private snakbar: MatSnackBar
+  ) {}
+  @ViewChild('scrollEl')
+  scrollEl: ElementRef<HTMLElement>;
+
+  @ViewChildren(CdkDrag)
+  dragEls: QueryList<CdkDrag>;
+
+  busy = true;
   private highlitedtables: string[] = [];
 
   source = [];
@@ -67,14 +75,6 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   speed = 5;
   subs = new Subscription();
   private animationFrame: number | undefined;
-
-  constructor(
-    private dataService: DataService,
-    private stateService: StateService,
-    private mappingDialog: MatDialog,
-    private bridgeService: BridgeService,
-    private snakbar: MatSnackBar
-  ) {}
 
   ngAfterViewInit() {
     const onMove$ = this.dragEls.changes.pipe(
@@ -181,26 +181,37 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stateService.Target = this.target;
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      copyArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+  // tslint:disable-next-line:member-ordering
+  drop = new Command({
+    execute: (event: CdkDragDrop<string[]>) => {
+      if (event.previousContainer === event.container) {
+        moveItemInArray(
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      } else {
+        copyArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
 
-      const targetname = event.container.id.split('-')[1];
+        const targetname = event.container.id.split('-')[1];
 
-      this.setFirstElementAlwaysOnTop(targetname);
+        this.setFirstElementAlwaysOnTop(targetname);
+      }
+    },
+    canExecute: (event: CdkDragDrop<string[]>) => {
+      return (
+        event.container.data.findIndex(
+          tableName =>
+            event.previousContainer.data[event.previousIndex] === tableName
+        ) === -1
+      );
     }
-  }
+  });
 
   setFirstElementAlwaysOnTop(targetname: string): void {
     if (!targetname) {
