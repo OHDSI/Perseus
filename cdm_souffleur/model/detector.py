@@ -23,7 +23,7 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
     return vocabulary_list
 
 
-def return_lookup_list(connection_string=None):
+def return_lookup_list(connection_string):
     """Return ATHENA vocabulary lookup list"""
     if connection_string is None:
         vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')

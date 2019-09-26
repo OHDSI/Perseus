@@ -6,19 +6,17 @@ from pyspark import Row
 import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
-    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, \
-    UPLOAD_SOURCE_SCHEMA_FOLDER
+    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
 import glob
 import shutil
 from cdm_souffleur.view.Table import Table, Column
-from pandasql import sqldf, PandaSQLException
+from pandasql import sqldf
 import xlrd
 from cdm_souffleur.utils import time_it
 from cdm_souffleur.utils.exceptions import InvalidUsage
-
 import json
 
 book = None
@@ -28,9 +26,8 @@ with open('configuration/default.json', 'r') as configuration_file:
     print(configuration)
 
 
-@time_it
 def get_source_schema(schemaname):
-    """return tables and columns of source schema based on WR report"""
+    """return tables and columns of source schema based on WR report, arg actually is path"""
     print("schema name: " + str(schemaname))
 
     if schemaname == configuration['schema']['name']:
@@ -60,7 +57,6 @@ def get_source_schema(schemaname):
     return schema
 
 
-@time_it
 def _open_book(filepath=None):
     global book
     if book is None and filepath is not None:
@@ -165,8 +161,8 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
             shutil.rmtree(str(GENERATE_CDM_SOURCE_DATA_PATH / filename))
 
 
-def get_existing_source_schemas_list():
-    return os.listdir(str(UPLOAD_SOURCE_SCHEMA_FOLDER))
+def get_existing_source_schemas_list(path):
+    return os.listdir(str(path))
 
 
 if __name__ == '__main__':

@@ -17,13 +17,12 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequestKeyError
 import os
 
-UPLOAD_FOLDER = UPLOAD_SOURCE_SCHEMA_FOLDER
-ALLOWED_EXTENSIONS = {'xlsx'}
 
 app = Flask(__name__)
 CORS(app)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 app.secret_key = 'mdcr'
+ALLOWED_EXTENSIONS = {'xlsx'}
 
 
 def _allowed_file(filename):
@@ -40,10 +39,10 @@ def load_schema():
         if file and _allowed_file(file.filename):
             filename = secure_filename(file.filename)
             try:
-                os.mkdir(UPLOAD_FOLDER)
-                print(f"Directory {UPLOAD_FOLDER} created")
+                os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
+                print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
             except FileExistsError:
-                print(f"Directory {UPLOAD_FOLDER} already exist")
+                print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
             file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
     return '''
@@ -59,13 +58,13 @@ def load_schema():
 
 @app.route('/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
-    return jsonify(get_existing_source_schemas_list())
+    return jsonify(get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
 
 
 @app.route('/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list():
+    if schema_name in get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']):
         source_schema = get_source_schema(
             app.config['UPLOAD_FOLDER'] / schema_name)
         return jsonify([s.to_json() for s in source_schema])
@@ -76,7 +75,7 @@ def load_saved_source_schema_call():
 @app.route('/delete_saved_source_schema', methods=['GET'])
 def delete_saved_source_schema_call():
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list():
+    if schema_name in get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']):
         os.remove(app.config['UPLOAD_FOLDER'] / schema_name)
         return 'OK'
     else:
@@ -145,7 +144,7 @@ def handle_invalid_req_key_header(error):
 @app.route('/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
-    connection_string = request.headers['connection-string']
+    connection_string = request.headers.get('connection-string')
     lookups = return_lookup_list(connection_string)
     return jsonify(lookups)
 
