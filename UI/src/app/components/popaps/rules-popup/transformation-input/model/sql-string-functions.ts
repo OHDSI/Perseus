@@ -50,16 +50,57 @@ export class SqlFunction {
     return `${functionName}${parameters}`;
   }
 
-  getSql(value: any) {
-    const valuePlaceholderIndex = this.parameters.findIndex(
+  getSql(value: string, transform: SqlFunction) {
+    const placeholder = this.displayParameters.findIndex(
       parameterName => parameterName === 'value'
     );
 
-    if (valuePlaceholderIndex > -1) {
-      this.parameters[valuePlaceholderIndex] = value;
+    let displayParameters = [];
+
+    if (placeholder > -1) {
+      displayParameters = [...this.displayParameters];
+      displayParameters[placeholder] = value;
     }
-    return `${this.name}(${this.parameters.join('\', \'')})`;
+
+    let sqlFunctionParameters = '';
+
+    for (let i = 0; i < displayParameters.length; i++) {
+      if (i !== placeholder) {
+        sqlFunctionParameters += `'${displayParameters[i]}'`;
+      } else {
+        sqlFunctionParameters += displayParameters[i];
+      }
+
+      if ( i !== displayParameters.length - 1) {
+        sqlFunctionParameters += ',';
+      }
+    }
+
+    return `${this.name}(${sqlFunctionParameters})`;
   }
+
+  // getSql(value: string, transform: SqlFunction) {
+  //   if (value.indexOf('<start>') > -1) {
+  //     // Initial
+  //     return `${this.name}('${this.displayParameters.join('\', \'')}')`;
+  //   } else {
+  //     const placeholder = this.displayParameters.findIndex(
+  //       parameterName => parameterName === 'value'
+  //     );
+
+  //     let displayParameters = [];
+
+  //     if (placeholder > -1) {
+  //       displayParameters = [...this.displayParameters];
+  //       displayParameters[placeholder] = value;
+  //     }
+
+  //     const withoutPlaceholder = [...displayParameters];
+  //     withoutPlaceholder.splice(placeholder, 1);
+
+  //     return `${this.name}(${value},'${withoutPlaceholder.join('\', \'')}')`;
+  //   }
+  // }
 }
 
 export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
