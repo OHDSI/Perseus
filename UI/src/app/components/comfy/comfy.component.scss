@@ -157,6 +157,13 @@
       overflow: hidden;
     }
 
+    &.preview {
+      width: 250px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
     .remove-mapping-table {
       position: absolute;
       top: 10px;

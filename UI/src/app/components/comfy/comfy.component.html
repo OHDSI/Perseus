@@ -37,6 +37,9 @@
               >
                 {{ item }}
               </div>
+              <div *cdkDragPreview class="table-description source preview">
+                {{ item }}
+              </div>
             </div>
           </div>
         </div>
@@ -51,7 +54,9 @@
             cdkDropList
             cdkDropListOrientation="horizontal"
             [cdkDropListData]="target[targetName].data"
-            (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)"
+            (cdkDropListDropped)="
+              !drop.canExecute($event) || drop.execute($event)
+            "
           >
             <div
               class="horizontal-box"
