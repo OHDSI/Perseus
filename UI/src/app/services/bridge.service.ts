@@ -11,11 +11,12 @@ import { StateService } from './state.service';
 import { BridgeButtonService } from './bridge-button.service';
 import { UserSettings } from './user-settings.service';
 import { IConnector } from '../models/interface/connector.interface';
+import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 
 export interface IConnection {
   source: IRow;
   target: IRow;
-  transforms?: any;
+  transforms?: SqlFunction[];
 }
 
 @Injectable()
