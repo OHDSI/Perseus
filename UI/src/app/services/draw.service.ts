@@ -27,15 +27,18 @@ export class DrawService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  drawLine(source: IRow, target: IRow): IConnector {
-    const canvas = this.commonService.svgCanvas;
-
+  getConnectorId(source: IRow, target: IRow): string {
     const sourceRowId = source.id;
     const targetRowId = target.id;
     const sourceTableId = source.tableId;
     const targetTableId = target.tableId;
 
-    const entityId = `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
+    return `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
+  }
+
+  drawLine(source: IRow, target: IRow): IConnector {
+    const canvas = this.commonService.svgCanvas;
+    const entityId = this.getConnectorId(source, target);
 
     const drawEntity = new Arrow(
       canvas,

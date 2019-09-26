@@ -12,6 +12,7 @@ import { BridgeButtonService } from './bridge-button.service';
 import { UserSettings } from './user-settings.service';
 import { IConnector } from '../models/interface/connector.interface';
 import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
+import { ICommandContext, Command } from '../infrastructure/command';
 
 export interface IConnection {
   source: IRow;
@@ -21,9 +22,6 @@ export interface IConnection {
 
 @Injectable()
 export class BridgeService {
-  applyConfiguration$ = new Subject<Configuration>();
-  resetAllMappings$ = new Subject<any>();
-
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
@@ -45,6 +43,15 @@ export class BridgeService {
     this.targetrowrlement = element;
   }
 
+  constructor(
+    private drawService: DrawService,
+    private bridgeButtonService: BridgeButtonService,
+    private userSettings: UserSettings,
+    private stateService: StateService
+  ) {}
+  applyConfiguration$ = new Subject<Configuration>();
+  resetAllMappings$ = new Subject<any>();
+
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -54,12 +61,35 @@ export class BridgeService {
 
   deleteAll = new Subject();
 
-  constructor(
-    private drawService: DrawService,
-    private bridgeButtonService: BridgeButtonService,
-    private userSettings: UserSettings,
-    private stateService: StateService
-  ) {}
+  connect = new Command({
+    execute: () => {
+      const connector = this.drawService.drawLine(
+        this.sourceRow,
+        this.targetRow
+      );
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.createButton(connector, this.arrowsCache);
+      }
+
+      const connection: IConnection = {
+        source: this.sourceRow,
+        target: this.targetRow,
+        transforms: []
+      };
+
+      this.arrowsCache[connector.id] = connection;
+
+      this.connection.next(connection);
+    },
+    canExecute: () => {
+      const connectorId = this.drawService.getConnectorId(
+        this.sourceRow,
+        this.targetRow
+      );
+
+      return this.arrowsCache[connectorId] ? false : true;
+    }
+  });
 
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();
@@ -67,23 +97,6 @@ export class BridgeService {
     this.arrowsCache = Object.assign(configuration.arrows);
 
     this.applyConfiguration$.next(configuration);
-  }
-
-  connect() {
-    const connector = this.drawService.drawLine(this.sourceRow, this.targetRow);
-    if (this.userSettings.showQuestionButtons) {
-      this.bridgeButtonService.createButton(connector, this.arrowsCache);
-    }
-
-    const connection: IConnection = {
-      source: this.sourceRow,
-      target: this.targetRow,
-      transforms: []
-    };
-
-    this.arrowsCache[connector.id] = connection;
-
-    this.connection.next(connection);
   }
 
   adjustArrowsPositions() {
