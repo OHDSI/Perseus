@@ -44,6 +44,14 @@ def return_domain_list(connection_string):
     return domain_list
 
 
+def return_concept_class_list(connection_string):
+    """Return ATHENA concept class list"""
+    db = postgresql.open(f'pq://{connection_string}')
+    domain = db.query("select * from concept_class")
+    domain_list = [row['concept_class_id'] for row in domain]
+    return domain_list
+
+
 def find_domain(column_name, table_name):
     """find target information by source code
     :param column_name - source code name column
