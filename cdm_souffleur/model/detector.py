@@ -5,6 +5,7 @@ from pathlib import Path
 from pyspark.sql.utils import AnalysisException
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils.constants import VOCABULARY_DESCRIPTION_PATH
+from sqlalchemy import create_engine
 
 
 def load_vocabulary(path=r'D:\vocabulary\\'):
@@ -27,7 +28,8 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
 def return_lookup_list(connection_string):
     """Return ATHENA vocabulary lookup list"""
     if connection_string is None:
-        vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH, sep='\t')
+        vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH,
+                                             sep='\t')
         lookup_list = vocabulary_description['vocabulary_id'].values.tolist()
     else:
         db = postgresql.open(f'pq://{connection_string}')
@@ -39,16 +41,16 @@ def return_lookup_list(connection_string):
 def return_domain_list(connection_string):
     """Return ATHENA domain list"""
     db = postgresql.open(f'pq://{connection_string}')
-    domain = db.query("select * from domain")
-    domain_list = [row['domain_id'] for row in domain]
+    domain = db.query("select domain_id from domain")
+    domain_list = [row[0] for row in domain]
     return domain_list
 
 
 def return_concept_class_list(connection_string):
     """Return ATHENA concept class list"""
     db = postgresql.open(f'pq://{connection_string}')
-    domain = db.query("select * from concept_class")
-    domain_list = [row['concept_class_id'] for row in domain]
+    domain = db.query("select concept_class_id from concept_class")
+    domain_list = [row[0] for row in domain]
     return domain_list
 
 
@@ -58,8 +60,7 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     both vocabulary and report should be loaded to spark warehouse
     """
-    import sqlalchemy
-    db = sqlalchemy.create_engine(f'postgresql+pypostgresql://postgres:root@10.110.1.76:5432/Vocabulary')
+    db = create_engine(f'postgresql+pypostgresql://postgres:root@10.110.1.76:5432/Vocabulary')
     sql = open('model/sources/SQL', 'r').read()
     # TODO: with few PC's should be used sql_broadcast instead sql
     # TODO: is it client-server or task cluster App?
