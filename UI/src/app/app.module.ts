@@ -27,12 +27,16 @@ import { ComfyComponent } from './components/comfy/comfy.component';
 import { MappingPopupComponent } from './components/popaps/mapping-popup/mapping-popup.component';
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
 import { HighlightDirective } from './directives/highlight-table.directive';
-import { OverlayService } from './services/overlay.service';
+import { OverlayService } from './services/overlay/overlay.service';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
-import { DrawTransformatorService } from './services/draw-transformator.service';
+import { BridgeButtonService } from './services/bridge-button.service';
 import { UserSettings } from './services/user-settings.service';
+import { TransformationInputComponent } from './components/popaps/rules-popup/transformation-input/transformation-input.component';
+import { SqlFunctionsInjector } from './components/popaps/rules-popup/model/sql-functions-injector';
+import { SQL_FUNCTIONS } from './components/popaps/rules-popup/transformation-input/model/sql-string-functions';
+import { RulesPopupService } from './components/popaps/rules-popup/services/rules-popup.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +54,8 @@ import { UserSettings } from './services/user-settings.service';
     ColumnsListComponent,
     HighlightDirective,
     SavedMappingsComponent,
-    OpenMappingDialogComponent
+    OpenMappingDialogComponent,
+    TransformationInputComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
@@ -73,6 +78,7 @@ import { UserSettings } from './services/user-settings.service';
     ThemeModule
   ],
   providers: [
+    OverlayService,
     DataService,
     CommonService,
     BridgeService,
@@ -80,8 +86,10 @@ import { UserSettings } from './services/user-settings.service';
     CommentService,
     OverlayService,
     UploadService,
-    DrawTransformatorService,
-    UserSettings
+    BridgeButtonService,
+    UserSettings,
+    RulesPopupService,
+    [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}]
   ],
   bootstrap: [AppComponent]
 })

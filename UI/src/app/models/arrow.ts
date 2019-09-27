@@ -65,16 +65,18 @@ export class Arrow implements IConnector {
 
   select() {
     this.renderer.removeAttribute(this.line, 'marker-end');
-    if (this.selected) {
-      this.selected = false;
-      this.renderer.removeClass(this.line, 'selected');
-      this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow)');
-    } else {
-      this.selected = true;
-      this.renderer.addClass(this.line, 'selected');
 
-      this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow-active)');
-    }
+    this.selected = true;
+    this.renderer.addClass(this.line, 'selected');
+    this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow-active)');
+  }
+
+  deselect(): void {
+    this.renderer.removeAttribute(this.line, 'marker-end');
+
+    this.selected = false;
+    this.renderer.removeClass(this.line, 'selected');
+    this.renderer.setAttribute(this.line, 'marker-end', 'url(#arrow)');
   }
 
   remove() {

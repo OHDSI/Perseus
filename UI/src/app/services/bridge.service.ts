@@ -1,6 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
-
-import { CommonService } from 'src/app/services/common.service';
+import { Injectable } from '@angular/core';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
 import { ArrowCache, Arrow } from '../models/arrow-cache';
@@ -10,18 +8,20 @@ import { Subject } from 'rxjs';
 import { uniqBy } from '../infrastructure/utility';
 import { Configuration } from '../models/configuration';
 import { StateService } from './state.service';
-import { DrawTransformatorService } from './draw-transformator.service';
+import { BridgeButtonService } from './bridge-button.service';
+import { UserSettings } from './user-settings.service';
+import { IConnector } from '../models/interface/connector.interface';
+import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
+import { ICommandContext, Command } from '../infrastructure/command';
 
 export interface IConnection {
   source: IRow;
   target: IRow;
+  transforms?: SqlFunction[];
 }
 
 @Injectable()
 export class BridgeService {
-  applyConfiguration$ = new Subject<Configuration>();
-  resetAllMappings$ = new Subject<any>();
-
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
@@ -43,6 +43,15 @@ export class BridgeService {
     this.targetrowrlement = element;
   }
 
+  constructor(
+    private drawService: DrawService,
+    private bridgeButtonService: BridgeButtonService,
+    private userSettings: UserSettings,
+    private stateService: StateService
+  ) {}
+  applyConfiguration$ = new Subject<Configuration>();
+  resetAllMappings$ = new Subject<any>();
+
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -52,47 +61,65 @@ export class BridgeService {
 
   deleteAll = new Subject();
 
-  constructor(
-    private commonService: CommonService,
-    private drawService: DrawService,
-    private stateService: StateService
-  ) {}
+  connect = new Command({
+    execute: () => {
+      const connector = this.drawService.drawLine(
+        this.sourceRow,
+        this.targetRow
+      );
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.createButton(connector, this.arrowsCache);
+      }
+
+      const connection: IConnection = {
+        source: this.sourceRow,
+        target: this.targetRow,
+        transforms: []
+      };
+
+      this.arrowsCache[connector.id] = connection;
+
+      this.connection.next(connection);
+    },
+    canExecute: () => {
+      const connectorId = this.drawService.getConnectorId(
+        this.sourceRow,
+        this.targetRow
+      );
+
+      return this.arrowsCache[connectorId] ? false : true;
+    }
+  });
 
   applyConfiguration(configuration: Configuration) {
-    this.removeAllArrows();
+    this.deleteAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
 
     this.applyConfiguration$.next(configuration);
   }
 
-  connect() {
-    const arrow = this.drawService.drawLine(this.sourceRow, this.targetRow);
+  adjustArrowsPositions() {
+    const { list } = this.drawService;
 
-    const connection: IConnection = {
-      source: this.sourceRow,
-      target: this.targetRow
-    };
+    Object.keys(list).forEach(key => {
+      const drawEntity: IConnector = list[key];
+      drawEntity.adjustPosition();
 
-    this.arrowsCache[arrow.id] = connection;
-
-    // ???
-    this.commonService.linked = true;
-
-    //
-    this.connection.next(connection);
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.recalculateButtonPosition(
+          drawEntity.button,
+          drawEntity.line
+        );
+      }
+    });
   }
 
   recalculateConnectorsPositions() {
     if (!this.drawService.listIsEmpty) {
-      this.drawService.adjustArrowsPositions();
+      this.adjustArrowsPositions();
     }
   }
-
-  // reset() {
-  //   this.sourceRow = null;
-  //   this.targetRow = null;
-  // }
 
   getStyledAsDragStartElement() {
     this.sourceRow.htmlElement.classList.add('drag-start');
@@ -102,13 +129,37 @@ export class BridgeService {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
+  refresh(targetTableName) {
+    this.drawService.removeConnectors();
+
+    Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+      if (targetTableName === arrow.target.tableName) {
+        const source = this.stateService.findTable(arrow.source.tableName);
+        const target = this.stateService.findTable(arrow.target.tableName);
+        if (source.expanded && target.expanded) {
+          const connector = this.drawService.drawLine(
+            arrow.source,
+            arrow.target
+          );
+          if (this.userSettings.showQuestionButtons) {
+            this.bridgeButtonService.createButton(connector, this.arrowsCache);
+          }
+        }
+      }
+    });
+  }
+
   refreshAll() {
     this.drawService.removeConnectors();
 
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
       const source = this.stateService.findTable(arrow.source.tableName);
-      const target = this.stateService.findTable(arrow.source.tableName);
+      const target = this.stateService.findTable(arrow.target.tableName);
       if (source.expanded && target.expanded) {
+        const connector = this.drawService.drawLine(arrow.source, arrow.target);
+        if (this.userSettings.showQuestionButtons) {
+          this.bridgeButtonService.createButton(connector, this.arrowsCache);
+        }
         this.drawService.drawLine(arrow.source, arrow.target);
       }
     });
@@ -126,13 +177,13 @@ export class BridgeService {
     this.drawService.removeConnectorsBoundToTable(table);
   }
 
-  removeAllArrows() {
+  deleteAllArrows() {
     this.drawService.removeConnectors();
     this.deleteAll.next();
     this.arrowsCache = {};
   }
 
-  removeSelectedArrows() {
+  deleteSelectedArrows() {
     this.drawService.removeSelectedConnectors();
     this.deleteAll.next();
     this.arrowsCache = {};
@@ -174,7 +225,7 @@ export class BridgeService {
   }
 
   resetAllMappings() {
-    this.removeAllArrows();
+    this.deleteAllArrows();
 
     this.resetAllMappings$.next();
   }

@@ -1,36 +1,53 @@
-import { Component } from '@angular/core';
-//import { RulesPopupComponent } from 'src/app/components/popaps/rules-popup/rules-popup.component';
-import { CommonService } from 'src/app/services/common.service';
-import { OverlayService } from 'src/app/services/overlay.service';
+import { Component, Inject } from '@angular/core';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
+import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { BRIDGE_BUTTON_DATA } from './model/bridge-button-injector';
+import { BridgeButtonData } from './model/bridge-button-data';
 
 @Component({
   selector: 'app-bridge-button',
   templateUrl: './bridge-button.component.html',
-  styleUrls: ['./bridge-button.component.scss'],
-  providers: [OverlayService]
+  styleUrls: ['./bridge-button.component.scss']
 })
 export class BridgeButtonComponent {
-  text = '?';
+  text = 'T';
   drawEntity: IConnector;
+  active = false;
+  private payloadObj: BridgeButtonData;
 
   constructor(
     private overlayService: OverlayService,
-    private commonService: CommonService
-    ) { }
-
-  get active() {
-    if (this.commonService.activeConnector) {
-      return this.drawEntity.id === this.commonService.activeConnector.id;
-    }
+    @Inject(BRIDGE_BUTTON_DATA) payload: BridgeButtonData
+  ) {
+    this.payloadObj = {
+      connector: payload.connector,
+      arrowCache: payload.arrowCache
+    };
   }
 
   openRulesDialog(anchor) {
-    //this.drawEntity.active();
-    //this.commonService.activeConnector = this.drawEntity;
+    const component = RulesPopupComponent;
 
+    this.payloadObj.connector.select();
 
-    //const component = RulesPopupComponent;
-    //this.overlayService.openDialog(anchor, component, 'bridge-button');
+    const dialogOptions: OverlayConfigOptions = {
+      disableClose: true,
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      strategyFor: 'bridge-button',
+      payload: this.payloadObj
+    };
+
+    const dialogRef = this.overlayService.open(
+      dialogOptions,
+      anchor,
+      component
+    );
+
+    dialogRef.close$.subscribe(configOptions => {
+      this.payloadObj.connector.deselect();
+    });
   }
 }

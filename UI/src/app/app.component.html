@@ -1,8 +1,4 @@
 <mat-toolbar color="primary" class="app-toolbar">
-  <!-- <button mat-icon-button
-	        (click)="snav.toggle()">
-		<mat-icon>menu</mat-icon>
-	</button> -->
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="cdm menu">
     <mat-icon>more_vert</mat-icon>
   </button>
@@ -39,15 +35,4 @@
   </mat-menu>
 </mat-toolbar>
 
-<mat-sidenav-container>
-  <mat-sidenav
-    #snav
-    [mode]="mobileQuery.matches ? 'over' : 'side'"
-    [fixedInViewport]="mobileQuery.matches"
-    fixedTopGap="56"
-  >
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<router-outlet></router-outlet>

@@ -1,7 +1,13 @@
-import { Directive, HostListener, ElementRef, Input, Renderer2, OnInit, NgZone } from '@angular/core';
-
+import {
+  Directive,
+  HostListener,
+  ElementRef,
+  Input,
+  Renderer2,
+  OnInit,
+  NgZone
+} from '@angular/core';
 import { BridgeService } from 'src/app/services/bridge.service';
-import { CommonService } from 'src/app/services/common.service';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { Area } from '../models/area';
@@ -18,17 +24,20 @@ export class DraggableDirective implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private bridgeService: BridgeService,
-    private commonService: CommonService,
     private zone: NgZone
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.renderer.setAttribute(this.elementRef.nativeElement, 'draggable', 'true');
+    this.renderer.setAttribute(
+      this.elementRef.nativeElement,
+      'draggable',
+      'true'
+    );
     this.zone.runOutsideAngular(() => {
       this.elementRef.nativeElement.addEventListener(
-        'dragover', this.onDragOver.bind(this)
+        'dragover',
+        this.onDragOver.bind(this)
       );
-
     });
   }
 
@@ -86,11 +95,10 @@ export class DraggableDirective implements OnInit {
       const row = this.row;
       row.htmlElement = element;
       this.bridgeService.targetRow = row;
-      this.bridgeService.connect();
-      // ??
-      // this.bridgeService.reset();
 
-      this.commonService.activeRow.connections.push(this.row);
+      if (this.bridgeService.connect.canExecute()) {
+        this.bridgeService.connect.execute();
+      }
     }
   }
 

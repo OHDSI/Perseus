@@ -3,10 +3,10 @@
 }
 
 .comfy {
-  overflow: scroll;
-  height: 70vh;
-  width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 230px 230px 1fr;
+  column-gap: 20px;
+  grid-auto-rows: minmax(200px, auto);
 }
 
 .instruction{
@@ -157,6 +157,13 @@
       overflow: hidden;
     }
 
+    &.preview {
+      width: 250px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
     .remove-mapping-table {
       position: absolute;
       top: 10px;
@@ -180,6 +187,17 @@ div[highlighted=true] {
   justify-content: center;
   align-items: center;
 }
+
+.target-scrolled-items{
+  height: 70vh;
+  overflow-y:scroll;
+}
+
+.source-scrolled-items {
+  height: 70vh;
+  overflow-y:scroll;
+}
+
 
 
 

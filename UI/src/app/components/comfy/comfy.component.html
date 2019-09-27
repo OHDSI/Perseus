@@ -17,57 +17,62 @@
       </div>
       <div class="vertical-container source">
         <h2>Source tables</h2>
-
-        <div
-          cdkDropList
-          cdkDropListSortingDisabled
-          #sourceList="cdkDropList"
-          [cdkDropListData]="source"
-          [cdkDropListConnectedTo]="sourceConnectedTo"
-          class="vertical-list"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <div class="vertical-box" cdkDrag *ngFor="let item of source">
-            <div
-              class="table-description source caption"
-              matTooltip="{{ item }}"
-              matTooltipPosition="right"
-              [attr.criteria]="item"
-              highlight
-              [values]="highlitedTables"
-            >
-              {{ item }}
+        <div class="source-scrolled-items">
+          <div
+            cdkDropList
+            cdkDropListSortingDisabled
+            #sourceList="cdkDropList"
+            [cdkDropListData]="source"
+            [cdkDropListConnectedTo]="sourceConnectedTo"
+            class="vertical-list"
+          >
+            <div class="vertical-box" cdkDrag *ngFor="let item of source">
+              <div
+                class="table-description source caption"
+                matTooltip="{{ item }}"
+                matTooltipPosition="right"
+                [attr.criteria]="item"
+                highlight
+                [values]="highlitedTables"
+              >
+                {{ item }}
+              </div>
+              <div *cdkDragPreview class="table-description source preview">
+                {{ item }}
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="vertical-container destination" cdkDropListGroup>
         <h2>Target tables</h2>
-
-        <div
-          *ngFor="let targetName of targetTableNames"
-          cdkDropList
-          cdkDropListSortingDisabled
-          cdkDropListOrientation="horizontal"
-          id="{{ target[targetName].name }}"
-          [cdkDropListData]="target[targetName].data"
-          class="horizontal-list"
-          (cdkDropListDropped)="drop($event)"
-        >
+        <div class="target-scrolled-items" #scrollEl cdk-scrollable>
           <div
-            class="horizontal-box"
-            *ngFor="let tableName of target[targetName].data"
+            id="{{ target[targetName].name }}"
+            class="horizontal-list"
+            *ngFor="let targetName of targetTableNames"
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            [cdkDropListData]="target[targetName].data"
+            (cdkDropListDropped)="
+              !drop.canExecute($event) || drop.execute($event)
+            "
           >
             <div
-              class="table-description target caption"
-              (click)="openMapping(tableName)"
+              class="horizontal-box"
+              *ngFor="let tableName of target[targetName].data"
             >
-              {{ tableName }}
-              <mat-icon
-                class="remove-mapping-table"
-                (click)="removeTableMapping($event, tableName, targetName)"
-                >close</mat-icon
+              <div
+                class="table-description target caption"
+                (click)="openMapping(tableName)"
               >
+                {{ tableName }}
+                <mat-icon
+                  class="remove-mapping-table"
+                  (click)="removeTableMapping($event, tableName, targetName)"
+                  >close</mat-icon
+                >
+              </div>
             </div>
           </div>
         </div>

@@ -1,9 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges
+} from '@angular/core';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
 import { ValuesPopupComponent } from '../popaps/values-popup/values-popup.component';
-import { OverlayService } from 'src/app/services/overlay.service';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 
 @Component({
   selector: 'app-columns-list',
@@ -17,16 +25,17 @@ export class ColumnsListComponent implements OnInit, OnChanges {
   selectedColumns = [];
   sourceRows: IRow[];
 
-  constructor(private dataService: DataService, private overlayService: OverlayService) {}
+  constructor(
+    private dataService: DataService,
+    private overlayService: OverlayService
+  ) {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   ngOnChanges() {
     this.sourceRows = this.tables
-    .map(table => table.rows)
-    .reduce((p, k) => p.concat.apply(p, k), []);
+      .map(table => table.rows)
+      .reduce((p, k) => p.concat.apply(p, k), []);
   }
 
   onSelectColumn(name: string) {
@@ -44,10 +53,18 @@ export class ColumnsListComponent implements OnInit, OnChanges {
   showTop10Values(event: any, htmlElement: any, item: IRow) {
     event.stopPropagation();
 
-    const {tableName, name} = item;
+    const { tableName, name } = item;
     this.dataService.getTopValues(tableName, name).subscribe(result => {
       const component = ValuesPopupComponent;
-      this.overlayService.openDialog(htmlElement, component, 'values', result);
+
+      const dialogOptions: OverlayConfigOptions = {
+        hasBackdrop: true,
+        backdropClass: 'custom-backdrop',
+        strategyFor: 'values',
+        payload: { items: result }
+      };
+
+      this.overlayService.open(dialogOptions, htmlElement, component);
     });
   }
 }

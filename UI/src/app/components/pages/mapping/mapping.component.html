@@ -28,11 +28,13 @@
 <section>
   <main #maincanvas class="main">
     <app-area area="source">
-      <ng-container
-        *ngFor="let table of source; trackBy: trackByFn"
-      >
+      <ng-container *ngFor="let table of source; trackBy: trackByFn">
         <ng-container *ngIf="table.visible">
-          <app-panel [table]="table">
+          <app-panel
+            [table]="table"
+            (open)="onSourcePanelOpen()"
+            (close)="onSourcePanelClose()"
+          >
             <app-panel-table
               [table]="table"
               [displayedColumns]="[
@@ -91,13 +93,11 @@
       <p>
         {{ hint }}
       </p>
-      <div class="patch-bottom"></div>
+      <!-- <div class="patch-bottom"></div> -->
     </div>
     <!--End-of-the-Bridge-->
     <app-area area="target">
-      <ng-container
-        *ngFor="let table of target; trackBy: trackByFn"
-      >
+      <ng-container *ngFor="let table of target; trackBy: trackByFn">
         <ng-container *ngIf="table.visible">
           <app-panel [table]="table"></app-panel>
         </ng-container>

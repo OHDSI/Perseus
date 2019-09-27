@@ -1,18 +1,38 @@
+<!-- SHOW SELECTED TRANSFORMAIONS -->
 <mat-card class="dialog">
-    <mat-radio-group [(ngModel)]="selectedRule">
-        <mat-radio-button value="log-values">
-            Console.log values
-        </mat-radio-button>
-        <mat-radio-button value="log-comments">
-            Console.log comments
-        </mat-radio-button>
-    </mat-radio-group>
-    <div class="button-group">
-        <button class="delete" mat-button (click)="deleteLink()">
-            Delete link
-        </button>
-        <button class="apply" mat-button (click)="apply()">
-            Apply
-        </button>
+  <mat-card-header class="dialog-header">
+    <mat-card-title>Apply transformation to </mat-card-title>
+  </mat-card-header>
+  <mat-card-subtitle class="center-content">
+    {{ targetColumnName }}
+  </mat-card-subtitle>
+  <mat-card-content class="rules-content">
+    <app-transformation-input
+      #tinput
+      [columnname]="sourceColumnname"
+      [transform]="selectedTransform"
+      (apply)="onTransformSelected($event)"
+    >
+    </app-transformation-input>
+    <div class="applyed-content">
+      <p *ngIf="applyedCriteria.length > 0">Transformations:</p>
+      <mat-chip-list class="mat-chip-list-stacked" aria-label="Transformations">
+        <mat-chip
+          class="transformation-chip"
+          color="primary"
+          *ngFor="let item of applyedCriteria; let i = index"
+          [removable]="removable"
+          (removed)="removeTransform(i)"
+          (click)="viewTransform(i)"
+          >{{ item.name }}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
     </div>
+  </mat-card-content>
+  <mat-card-actions class="center-content">
+    <button mat-button (click)="apply()">APPLY</button>
+    <button mat-button (click)="deleteLink()">DELETE</button>
+    <button mat-button (click)="close()">CLOSE</button>
+  </mat-card-actions>
 </mat-card>

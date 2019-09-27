@@ -155,9 +155,9 @@ def get_xml(json_):
         xml = ElementTree(query_definition_tag)
         try:
             os.mkdir(GENERATE_CDM_XML_PATH)
-            print("Directory ", GENERATE_CDM_XML_PATH, " Created ")
+            print(f"Directory {GENERATE_CDM_XML_PATH} created")
         except FileExistsError:
-            print("Directory ", GENERATE_CDM_XML_PATH, " Already exist ")
+            print(f"Directory {GENERATE_CDM_XML_PATH} already exist")
         xml.write(GENERATE_CDM_XML_PATH / source_table)
         # result += '{}: \n {} + \n'.format(source_table, prettify(
         #     query_definition_tag))

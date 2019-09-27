@@ -28,11 +28,11 @@ section {
             top: -94%;
 
         }
-        .patch-bottom {
-            @extend .patch;
-            bottom: -100%;
-            //background-color: #F9F9F9;
-        }
+
+        // .patch-bottom {
+        //     @extend .patch;
+        //     bottom: -100%;
+        // }
     }
 
     .canvas {

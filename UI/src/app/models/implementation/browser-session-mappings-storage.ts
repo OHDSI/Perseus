@@ -22,8 +22,8 @@ export class BrowserSessionStorage implements IMappingsStorage {
     }).catch(error => console.log(error));
   }
 
-  save(mapping: Configuration) {
-    this.configuration[mapping.name] = mapping;
+  save(config: Configuration) {
+    this.configuration[config.name] = config;
 
     this.add('mappings', this.configuration);
   }

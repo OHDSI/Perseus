@@ -9,3 +9,4 @@ xlrd==1.2.0
 pathlib
 sqlalchemy
 Werkzeug==0.14.1
+py-postgresql==1.2.1

@@ -7,7 +7,7 @@ from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
     delete_generated_xml
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
-    return_lookup_list
+    return_lookup_list, return_domain_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
@@ -17,13 +17,12 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequestKeyError
 import os
 
-UPLOAD_FOLDER = UPLOAD_SOURCE_SCHEMA_FOLDER
-ALLOWED_EXTENSIONS = {'xlsx'}
 
 app = Flask(__name__)
 CORS(app)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 app.secret_key = 'mdcr'
+ALLOWED_EXTENSIONS = {'xlsx'}
 
 
 def _allowed_file(filename):
@@ -40,10 +39,10 @@ def load_schema():
         if file and _allowed_file(file.filename):
             filename = secure_filename(file.filename)
             try:
-                os.mkdir(UPLOAD_FOLDER)
-                print("Directory ", UPLOAD_FOLDER, " Created ")
+                os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
+                print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
             except FileExistsError:
-                print("Directory ", UPLOAD_FOLDER, " Already exist ")
+                print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
             file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
     return '''
@@ -59,13 +58,13 @@ def load_schema():
 
 @app.route('/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
-    return jsonify(get_existing_source_schemas_list())
+    return jsonify(get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
 
 
 @app.route('/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list():
+    if schema_name in get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']):
         source_schema = get_source_schema(
             app.config['UPLOAD_FOLDER'] / schema_name)
         return jsonify([s.to_json() for s in source_schema])
@@ -76,7 +75,7 @@ def load_saved_source_schema_call():
 @app.route('/delete_saved_source_schema', methods=['GET'])
 def delete_saved_source_schema_call():
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list():
+    if schema_name in get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']):
         os.remove(app.config['UPLOAD_FOLDER'] / schema_name)
         return 'OK'
     else:
@@ -126,8 +125,17 @@ def handle_invalid_usage(error):
 
 @app.errorhandler(BadRequestKeyError)
 def handle_invalid_req_key(error):
-    """handle error of missed\wrong parameter"""
+    """handle error of missed/wrong parameter"""
     response = jsonify({'message': error.__str__()})
+    response.status_code = 400
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
+@app.errorhandler(KeyError)
+def handle_invalid_req_key_header(error):
+    """handle error of missed/wrong parameter"""
+    response = jsonify({'message': f'{error.__str__()} missing'})
     response.status_code = 400
     traceback.print_tb(error.__traceback__)
     return response
@@ -136,9 +144,17 @@ def handle_invalid_req_key(error):
 @app.route('/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
-    path = request.args['path']
-    lookups = return_lookup_list(path)
+    connection_string = request.headers.get('connection-string')
+    lookups = return_lookup_list(connection_string)
     return jsonify(lookups)
+
+
+@app.route('/get_domain_list')
+def get_domains_call():
+    """return domains list of ATHENA vocabulary"""
+    connection_string = request.headers['connection-string']
+    domains = return_domain_list(connection_string)
+    return jsonify(domains)
 
 
 @app.route('/get_xml', methods=['POST'])
@@ -192,8 +208,12 @@ def find_domain_call():
 @app.route('/load_report')
 def load_report_call():
     """load report about source schema"""
-    path = request.args['path']
-    start_new_thread(load_report, (path,))
+    schema_name = request.args['schema_name']
+    connection_string = request.headers['connection-string']
+    try:
+        load_report(app.config['UPLOAD_FOLDER'] / schema_name, connection_string)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
     return 'OK'
 
 

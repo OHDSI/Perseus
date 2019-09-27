@@ -1,5 +1,7 @@
 import { ArrowCache } from './arrow-cache';
 import { Row } from './row';
+import { IConnection } from '../services/bridge.service';
+import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 
 export interface ConfigurationOptions {
   name?: string;
@@ -9,12 +11,12 @@ export interface ConfigurationOptions {
 
 export class Configuration {
   get arrows(): any {
-    const rows =  JSON.parse(this.mappingsConfiguration);
-    Object.values(rows).forEach((row: any) => {
-      const {source, target} = row;
+    const rows = JSON.parse(this.mappingsConfiguration);
+    Object.values(rows).forEach((row: IConnection) => {
+      const { source, target, transforms } = row;
       row.source = Object.setPrototypeOf(source, Row.prototype);
       row.target = Object.setPrototypeOf(target, Row.prototype);
-      return row;
+      row.transforms = transforms.map(t => new SqlFunction(t));
     });
     return rows;
   }

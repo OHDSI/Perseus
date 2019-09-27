@@ -1,9 +1,10 @@
-import { Component, Injector } from '@angular/core';
-import { OverlayRef } from '@angular/cdk/overlay';
-import { CommonService } from 'src/app/services/common.service';
-import { IComment } from 'src/app/models/comment';
-import { IRow } from 'src/app/models/row';
-import { BridgeService } from 'src/app/services/bridge.service';
+import { Component, Inject, ViewChild } from '@angular/core';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
+import { TransformRulesData } from './model/transform-rules-data';
+import { TransformationInputComponent } from './transformation-input/transformation-input.component';
+import { SqlFunction } from './transformation-input/model/sql-string-functions';
+import { RulesPopupService } from './services/rules-popup.service';
 
 @Component({
   selector: 'app-rules-popup',
@@ -11,66 +12,65 @@ import { BridgeService } from 'src/app/services/bridge.service';
   styleUrls: ['./rules-popup.component.scss']
 })
 export class RulesPopupComponent {
-  selectedRule: string;
+  @ViewChild('tinput') tinput: TransformationInputComponent;
 
-  constructor(
-    private overlay: OverlayRef,
-    private injector: Injector,
-    private commonService: CommonService
-  ) {
-    overlay.backdropClick().subscribe(() => this.close());
+  selectedTransform: SqlFunction = new SqlFunction();
+
+  get sourceColumnname(): string {
+    return this.payload.connector.source.name || '';
   }
 
-  // ???
-  apply() {
-    if (this.selectedRule) {
-      switch (this.selectedRule) {
-        // case 'log-values': {
-        //   const sourceRowValue = this.commonService.activeConnector.source.name;
-        //   const connections = this.commonService.activeConnector.source.connections;
-        //   connections.forEach(row => {
-        //     console.log(sourceRowValue , '--->', row.name);
-        //   });
-        //   this.close();
-        //   break;
-        // }
-        // case 'log-comments': {
-        //   const connector = this.commonService.activeConnector;
-        //   const connections = connector.source.connections;
-        //   if (connector.source.comments) {
-        //     connector.source.comments.forEach((comment: IComment) => {
-        //       console.log(comment);
-        //     });
-        //   }
+  get targetColumnName(): string {
+    return this.payload.connector.target.name || '';
+  }
 
-        //   if (connections.length) {
-        //     connections.forEach((row: IRow) => {
-        //       if (row.comments) {
-        //         row.comments.forEach((comment: IComment) => {
-        //           console.log(comment);
-        //         });
-        //       }
-        //     });
-        //   }
-        //   this.close();
-        //   break;
-        // }
-      }
+  get applyedCriteria(): SqlFunction[] {
+    return this.criterias;
+  }
+
+  criterias = Array<SqlFunction>();
+  removable = true;
+
+  constructor(
+    private rulesPopupService: RulesPopupService,
+    public dialogRef: OverlayDialogRef,
+    @Inject(OVERLAY_DIALOG_DATA) public payload: TransformRulesData
+  ) {
+    const { arrowCache, connector } = this.payload;
+    if (arrowCache[connector.id]) {
+      this.criterias = arrowCache[connector.id].transforms || [];
     }
   }
 
-  deleteLink() {
-    const bridgeService = this.injector.get(BridgeService);
-    const connector = this.commonService.activeConnector;
+  onTransformSelected(event: SqlFunction): void {
+    this.criterias.push(event);
+  }
 
-    bridgeService.deleteArrow(connector.id);
-    this.close();
+  // TODO use command patter
+  apply() {
+    const { arrowCache, connector } = this.payload;
+    if (arrowCache[connector.id]) {
+      arrowCache[connector.id].transforms = this.criterias;
+    }
+
+    this.dialogRef.close();
+  }
+
+  deleteLink() {
+    this.rulesPopupService.deleteConnector();
+    this.dialogRef.close();
   }
 
   close() {
-    this.overlay.detach();
-    //this.commonService.activeConnector.inactive();
-    //this.commonService.activeConnector = null;
+    this.dialogRef.close();
   }
 
+  removeTransform(index: number) {
+    this.criterias.splice(index, 1);
+    this.tinput.clearEditor();
+  }
+
+  viewTransform(index: number) {
+    this.selectedTransform = this.criterias[index];
+  }
 }

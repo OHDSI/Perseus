@@ -1,6 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { OverlayRef } from '@angular/cdk/overlay';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 
 @Component({
   selector: 'app-values-popup',
@@ -8,13 +10,12 @@ import { OverlayRef } from '@angular/cdk/overlay';
   styleUrls: ['./values-popup.component.scss']
 })
 export class ValuesPopupComponent {
-  static data: any;
-
   items = [];
 
-  constructor(private overlay: OverlayRef) {
-    this.items = overlay.getConfig()['data'];
-
-    this.overlay.backdropClick().subscribe(() => this.overlay.detach());
+  constructor(
+    public dialogRef: OverlayDialogRef,
+    @Inject(OVERLAY_DIALOG_DATA) public payload: any
+  ) {
+    this.items = [...payload.items];
   }
 }
