@@ -8,6 +8,7 @@ from cdm_souffleur.utils.constants import VOCABULARY_DESCRIPTION_PATH
 
 
 def load_vocabulary(path=r'D:\vocabulary\\'):
+    # meanwhile not in use - only DB or direct file
     """Load ATHENA vocabulary into Dataframe structure
     :param path - path to directory loaded from ATHENA
     """
@@ -30,15 +31,15 @@ def return_lookup_list(connection_string):
         lookup_list = vocabulary_description['vocabulary_id'].values.tolist()
     else:
         db = postgresql.open(f'pq://{connection_string}')
-        concept = db.query("SELECT * from vocabulary")
+        concept = db.query("select * from vocabulary")
         lookup_list = [row['vocabulary_id'] for row in concept]
     return lookup_list
 
 
 def return_domain_list(connection_string):
-    """Return ATHENA vocabulary lookup list"""
+    """Return ATHENA domain list"""
     db = postgresql.open(f'pq://{connection_string}')
-    domain = db.query("SELECT * from domain")
+    domain = db.query("select * from domain")
     domain_list = [row['domain_id'] for row in domain]
     return domain_list
 
@@ -49,14 +50,16 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     both vocabulary and report should be loaded to spark warehouse
     """
+    import sqlalchemy
+    db = sqlalchemy.create_engine(f'postgresql+pypostgresql://postgres:root@10.110.1.76:5432/Vocabulary')
     sql = open('model/sources/SQL', 'r').read()
     # TODO: with few PC's should be used sql_broadcast instead sql
     # TODO: is it client-server or task cluster App?
     # sc: SparkContext = spark.sparkContext
     # sql_broadcast = sc.broadcast(sql)
     try:
-        res = spark().sql(sql.format(column_name, table_name))
-        print(res.show())
+        # res = spark().sql(sql.format(column_name, table_name))
+        res = pd.read_sql(sql.format(column_name, table_name), con=db)
     except AnalysisException:
         raise
     return res
