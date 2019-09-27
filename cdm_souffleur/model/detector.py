@@ -40,9 +40,13 @@ def return_lookup_list(connection_string):
 
 def return_domain_list(connection_string):
     """Return ATHENA domain list"""
-    db = postgresql.open(f'pq://{connection_string}')
-    domain = db.query("select domain_id from domain")
-    domain_list = [row[0] for row in domain]
+    #TODO change all to sqlalchemy engine, create one entry point
+   # db = postgresql.open(f'pq://{connection_string}')
+   # domain = db.query("select domain_id from domain")
+   # domain_list = [row[0] for row in domain]
+    with create_engine(f'postgresql+pypostgresql://postgres:root@10.110.1.76:5432/Vocabulary').connect() as con:
+        domain = con.execute('select domain_id from domain')
+        domain_list = [row[0] for row in domain]
     return domain_list
 
 
