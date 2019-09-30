@@ -23,9 +23,9 @@
       <button
         mat-icon-button
         *ngIf="area === 'target'"
-        (click)="addConstant(column)"
+        (click)="addConstant.execute(column)"
       >
-        <mat-icon>
+        <mat-icon [ngClass]="{ active: column.hasConstant }">
           add_box
         </mat-icon>
       </button>
@@ -95,7 +95,7 @@
     (mousedown)="setActiveRow(row)"
     [class.draggable]="area == 'source'"
     class="item-{{ row.tableName }}-{{ row.name }} row-has-a-link-{{
-      isRowHasALink(row)
+      isRowHasConnection(row)
     }}"
   ></tr>
 </table>

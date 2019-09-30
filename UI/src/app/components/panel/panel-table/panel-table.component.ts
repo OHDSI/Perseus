@@ -11,8 +11,9 @@ import { IRow } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
-import { BridgeService } from 'src/app/services/bridge.service';
+import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { Command } from '../../../infrastructure/command';
 
 @Component({
   selector: 'app-panel-table',
@@ -25,8 +26,6 @@ export class PanelTableComponent implements OnInit {
   @Input() displayedColumns: string[];
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
 
-  private rowConnections = {};
-
   get rows() {
     return this.table.rows;
   }
@@ -38,8 +37,13 @@ export class PanelTableComponent implements OnInit {
   get totalRowsNumber() {
     return this.table.rows.length;
   }
+
   get visibleRowsNumber() {
     return this.table.rows.filter((row: IRow) => row.visible).length;
+  }
+
+  get visibleRows() {
+    return this.rows.filter((row: IRow) => row.visible);
   }
 
   constructor(
@@ -47,9 +51,18 @@ export class PanelTableComponent implements OnInit {
     private overlayService: OverlayService
   ) {}
 
-  get visibleRows() {
-    return this.rows.filter((row: IRow) => row.visible);
-  }
+  private rowConnections = {};
+
+  addConstant = new Command({
+    execute: (row: IRow) => {
+      if (!this.isRowHasConnection(row)) {
+        row.constant = 'true';
+      }
+    },
+    canExecute: (row: IRow) => true
+  });
+
+  rowsAvailableForConnection: IRow[];
 
   ngOnInit(): void {
     this.bridgeService.deleteAll.subscribe(_ => {
@@ -62,30 +75,28 @@ export class PanelTableComponent implements OnInit {
       this.rowConnections = {};
     });
 
-    this.bridgeService.connection.subscribe(connection => {
-      if (this.table.area === 'source') {
-        this.rows.forEach(row => {
-          if (
-            row.tableId === connection.source.tableId &&
-            row.id === connection.source.id
-          ) {
-            this.rowConnections[row.key] = true;
-          }
-        });
+    this.bridgeService.connection.subscribe(connection =>
+      this.onConnection(connection)
+    );
+  }
+
+  onConnection(connection: IConnection) {
+    this.rows.forEach(row => {
+      if (
+        row.tableId === connection[this.table.area].tableId &&
+        row.id === connection[this.table.area].id
+      ) {
+        this.rowConnections[row.key] = true;
       }
     });
   }
 
-  isRowHasALink(row: IRow): boolean {
+  isRowHasConnection(row: IRow): boolean {
     if (typeof this.rowConnections[row.key] === 'undefined') {
       return false;
     } else {
       return this.rowConnections[row.key];
     }
-  }
-
-  setActiveRow(row: IRow) {
-    // this.commonService.activeRow = row;
   }
 
   openCommentDialog(anchor: HTMLElement, row: IRow) {
@@ -109,9 +120,7 @@ export class PanelTableComponent implements OnInit {
     return row.comments.length;
   }
 
-  addConstant(row: IRow) {
-    console.log(row);
-  }
+  setActiveRow(row: IRow) {}
 
   private _getArea() {
     return this.table.area;
