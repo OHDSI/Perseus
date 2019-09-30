@@ -62,7 +62,7 @@ export class CommentPopupComponent {
       return;
     }
 
-    this.commentService.addComment(this.row, this.value)
+    this.commentService.addComment(this.row, this.value);
     this.reset();
   }
 

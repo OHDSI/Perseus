@@ -14,12 +14,12 @@ import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/c
 import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { Command } from '../../../infrastructure/command';
+import { AddConstantPopupComponent } from '../../popaps/add-constant-popup/add-constant-popup.component';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
-  styleUrls: ['./panel-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./panel-table.component.scss']
 })
 export class PanelTableComponent implements OnInit {
   @Input() table: ITable;
@@ -52,17 +52,6 @@ export class PanelTableComponent implements OnInit {
   ) {}
 
   private rowConnections = {};
-
-  addConstant = new Command({
-    execute: (row: IRow) => {
-      if (!this.isRowHasConnection(row)) {
-        row.constant = 'true';
-      }
-    },
-    canExecute: (row: IRow) => true
-  });
-
-  rowsAvailableForConnection: IRow[];
 
   ngOnInit(): void {
     this.bridgeService.deleteAll.subscribe(_ => {
@@ -114,6 +103,30 @@ export class PanelTableComponent implements OnInit {
       anchor,
       component
     );
+  }
+
+  openConstantDialog(anchor: HTMLElement, row: IRow) {
+    if (!this.isRowHasConnection(row)) {
+      const component = AddConstantPopupComponent;
+      const value = { value: row.constant };
+
+      const dialogOptions: OverlayConfigOptions = {
+        hasBackdrop: true,
+        backdropClass: 'custom-backdrop',
+        strategyFor: `comments-${this._getArea()}`,
+        payload: value
+      };
+
+      const overlayRef = this.overlayService.open(
+        dialogOptions,
+        anchor,
+        component
+      );
+
+      overlayRef.close$.subscribe(ok => {
+        row.constant = value.value;
+      });
+    }
   }
 
   hasComment(row: IRow) {

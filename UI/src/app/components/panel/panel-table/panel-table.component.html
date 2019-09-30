@@ -17,18 +17,20 @@
       </button>
     </th>
     <td mat-cell *matCellDef="let column" class="drag_indicator">
-      <mat-icon *ngIf="area === 'source'" class="icon-indicator">
-        drag_indicator
-      </mat-icon>
-      <button
-        mat-icon-button
-        *ngIf="area === 'target'"
-        (click)="addConstant.execute(column)"
-      >
-        <mat-icon [ngClass]="{ active: column.hasConstant }">
-          add_box
+      <div #anchor class="anchor">
+        <mat-icon *ngIf="area === 'source'" class="icon-indicator">
+          drag_indicator
         </mat-icon>
-      </button>
+        <button
+          mat-icon-button
+          *ngIf="area === 'target'"
+          (click)="openConstantDialog(anchor, column)"
+        >
+          <mat-icon [ngClass]="{ active: column.hasConstant }">
+            add_box
+          </mat-icon>
+        </button>
+      </div>
     </td>
   </ng-container>
 
