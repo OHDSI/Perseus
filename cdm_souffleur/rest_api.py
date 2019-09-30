@@ -7,7 +7,7 @@ from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
     delete_generated_xml
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
-    return_lookup_list, return_domain_list
+    return_lookup_list, return_domain_list, return_concept_class_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
@@ -58,13 +58,15 @@ def load_schema():
 
 @app.route('/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
-    return jsonify(get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
+    return jsonify(
+        get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
 
 
 @app.route('/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']):
+    if schema_name in get_existing_source_schemas_list(
+            app.config['UPLOAD_FOLDER']):
         source_schema = get_source_schema(
             app.config['UPLOAD_FOLDER'] / schema_name)
         return jsonify([s.to_json() for s in source_schema])
@@ -75,7 +77,8 @@ def load_saved_source_schema_call():
 @app.route('/delete_saved_source_schema', methods=['GET'])
 def delete_saved_source_schema_call():
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']):
+    if schema_name in get_existing_source_schemas_list(
+            app.config['UPLOAD_FOLDER']):
         os.remove(app.config['UPLOAD_FOLDER'] / schema_name)
         return 'OK'
     else:
@@ -157,6 +160,14 @@ def get_domains_call():
     return jsonify(domains)
 
 
+@app.route('/get_concept_class_list')
+def get_concept_classes_call():
+    """return concept class list of ATHENA vocabulary"""
+    connection_string = request.headers['connection-string']
+    domains = return_concept_class_list(connection_string)
+    return jsonify(domains)
+
+
 @app.route('/get_xml', methods=['POST'])
 def xml():
     """return XML for CDM builder in map {source_table: XML, } and
@@ -198,7 +209,7 @@ def find_domain_call():
     column_name = request.args['column_name']
     table_name = request.args['table_name']
     try:
-        found_codes = find_domain(column_name, table_name).toPandas().to_json(
+        found_codes = find_domain(column_name, table_name).to_json(
             orient='records')
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
@@ -211,7 +222,8 @@ def load_report_call():
     schema_name = request.args['schema_name']
     connection_string = request.headers['connection-string']
     try:
-        load_report(app.config['UPLOAD_FOLDER'] / schema_name, connection_string)
+        load_report(app.config['UPLOAD_FOLDER'] / schema_name,
+                    connection_string)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return 'OK'
