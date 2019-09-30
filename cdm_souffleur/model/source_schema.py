@@ -27,7 +27,9 @@ with open('configuration/default.json', 'r') as configuration_file:
 
 
 def get_source_schema(schemaname):
-    """return tables and columns of source schema based on WR report, arg actually is path"""
+    """return tables and columns of source schema based on WR report,
+     arg actually is path
+     """
     print("schema name: " + str(schemaname))
 
     if schemaname == configuration['schema']['name']:
