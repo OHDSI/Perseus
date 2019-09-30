@@ -198,7 +198,7 @@ def find_domain_call():
     column_name = request.args['column_name']
     table_name = request.args['table_name']
     try:
-        found_codes = find_domain(column_name, table_name).toPandas().to_json(
+        found_codes = find_domain(column_name, table_name).to_json(
             orient='records')
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
