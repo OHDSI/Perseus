@@ -109,6 +109,10 @@ export class PanelTableComponent implements OnInit {
     return row.comments.length;
   }
 
+  addConstant(row: IRow) {
+    console.log(row);
+  }
+
   private _getArea() {
     return this.table.area;
   }

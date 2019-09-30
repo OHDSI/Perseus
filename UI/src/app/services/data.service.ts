@@ -4,7 +4,7 @@ import { of, Observable, forkJoin, from } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { StateService } from './state.service';
-import { Row } from 'src/app/models/row';
+import { Row, RowOptions } from 'src/app/models/row';
 import { Table } from 'src/app/models/table';
 import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
@@ -64,13 +64,17 @@ export class DataService {
       const rows = [];
 
       for (let j = 0; j < item.column_list.length; j++) {
-        const id = j;
-        const tableId = i;
-        const tableName = item.table_name;
-        const name = item.column_list[j].column_name;
-        const type = item.column_list[j].column_type;
-        const comments = [];
-        const row = new Row(id, tableId, tableName, name, type, area, comments);
+        const rowOptions: RowOptions = {
+          id: j,
+          tableId: i,
+          tableName: item.table_name,
+          name: item.column_list[j].column_name,
+          type: item.column_list[j].column_type,
+          comments: [],
+          area
+        };
+
+        const row = new Row(rowOptions);
 
         rows.push(row);
       }
