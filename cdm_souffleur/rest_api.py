@@ -12,6 +12,7 @@ from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
+from cdm_souffleur.utils.utils import Database
 import traceback
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequestKeyError
@@ -147,25 +148,22 @@ def handle_invalid_req_key_header(error):
 @app.route('/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
-    connection_string = request.headers.get('connection-string')
-    lookups = return_lookup_list(connection_string)
+    lookups = return_lookup_list()
     return jsonify(lookups)
 
 
 @app.route('/get_domain_list')
 def get_domains_call():
     """return domains list of ATHENA vocabulary"""
-    connection_string = request.headers['connection-string']
-    domains = return_domain_list(connection_string)
+    domains = return_domain_list()
     return jsonify(domains)
 
 
 @app.route('/get_concept_class_list')
 def get_concept_classes_call():
     """return concept class list of ATHENA vocabulary"""
-    connection_string = request.headers['connection-string']
-    domains = return_concept_class_list(connection_string)
-    return jsonify(domains)
+    concept_classes = return_concept_class_list()
+    return jsonify(concept_classes)
 
 
 @app.route('/get_xml', methods=['POST'])
@@ -220,10 +218,8 @@ def find_domain_call():
 def load_report_call():
     """load report about source schema"""
     schema_name = request.args['schema_name']
-    connection_string = request.headers['connection-string']
     try:
-        load_report(app.config['UPLOAD_FOLDER'] / schema_name,
-                    connection_string)
+        load_report(app.config['UPLOAD_FOLDER'] / schema_name)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return 'OK'
@@ -235,6 +231,13 @@ def load_vocabulary_call():
     # TODO rewrite to threading instead _thread?
     path = request.args['path']
     start_new_thread(load_vocabulary, (path,))
+    return 'OK'
+
+
+@app.route('/set_db_connection')
+def set_db_connection_call():
+    connection_string = request.headers['connection-string']
+    Database().get_engine(connection_string)
     return 'OK'
 
 

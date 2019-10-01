@@ -1,4 +1,3 @@
-from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateSchema
 import ntpath
 from pathlib import Path
@@ -15,7 +14,7 @@ import shutil
 from cdm_souffleur.view.Table import Table, Column
 from pandasql import sqldf
 import xlrd
-from cdm_souffleur.utils import time_it
+from cdm_souffleur.utils.utils import Database
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import json
 
@@ -92,7 +91,7 @@ def get_top_values(table_name, column_name=None):
             raise InvalidUsage('Column invalid' + e.__str__(), 404)
 
 
-def load_report(filepath, connection_string):
+def load_report(filepath):
     """Load report from whiteRabbit to DB, separate table for each sheet"""
     # TODO optimization!!!
     report_tables = []
@@ -100,7 +99,7 @@ def load_report(filepath, connection_string):
     xls = pd.ExcelFile(book, engine='xlrd')
     head, schema_name = ntpath.split(filepath)
     sheets = xls.sheet_names
-    engine = create_engine(f'postgresql+pypostgresql://{connection_string}')
+    engine = Database().get_engine()
     try:
         engine.execute(CreateSchema(schema_name))
         for sheet in sheets:
