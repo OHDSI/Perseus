@@ -5,7 +5,7 @@ from pathlib import Path
 from pyspark.sql.utils import AnalysisException
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils.constants import VOCABULARY_DESCRIPTION_PATH
-from sqlalchemy import create_engine
+from cdm_souffleur.utils.utils import Database
 
 
 def load_vocabulary(path=r'D:\vocabulary\\'):
@@ -25,37 +25,33 @@ def load_vocabulary(path=r'D:\vocabulary\\'):
     return vocabulary_list
 
 
-def return_lookup_list(connection_string):
+def return_lookup_list():
     """Return ATHENA vocabulary lookup list"""
-    if connection_string is None:
+    if Database().get_engine() is None:
         vocabulary_description = pd.read_csv(VOCABULARY_DESCRIPTION_PATH,
                                              sep='\t')
         lookup_list = vocabulary_description['vocabulary_id'].values.tolist()
     else:
-        db = postgresql.open(f'pq://{connection_string}')
-        concept = db.query("select * from vocabulary")
-        lookup_list = [row['vocabulary_id'] for row in concept]
+        with Database().get_engine().connect() as con:
+            vocabulary = con.execute("select vocabulary_id from vocabulary")
+            lookup_list = [row[0] for row in vocabulary]
     return lookup_list
 
 
-def return_domain_list(connection_string):
+def return_domain_list():
     """Return ATHENA domain list"""
-    #TODO change all to sqlalchemy engine, create one entry point
-   # db = postgresql.open(f'pq://{connection_string}')
-   # domain = db.query("select domain_id from domain")
-   # domain_list = [row[0] for row in domain]
-    with create_engine(f'postgresql+pypostgresql://postgres:root@10.110.1.76:5432/Vocabulary').connect() as con:
+    with Database().get_engine().connect() as con:
         domain = con.execute('select domain_id from domain')
         domain_list = [row[0] for row in domain]
     return domain_list
 
 
-def return_concept_class_list(connection_string):
+def return_concept_class_list():
     """Return ATHENA concept class list"""
-    db = postgresql.open(f'pq://{connection_string}')
-    domain = db.query("select concept_class_id from concept_class")
-    domain_list = [row[0] for row in domain]
-    return domain_list
+    with Database().get_engine().connect() as con:
+        concept_class = con.execute("select concept_class_id from concept_class")
+        concept_class_list = [row[0] for row in concept_class]
+    return concept_class_list
 
 
 def find_domain(column_name, table_name):
@@ -64,7 +60,7 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     both vocabulary and report should be loaded to spark warehouse
     """
-    db = create_engine(f'postgresql+pypostgresql://postgres:root@10.110.1.76:5432/Vocabulary')
+    db = Database().get_engine('postgres:root@10.110.1.76:5432/Vocabulary')
     sql = open('model/sources/SQL', 'r').read()
     # TODO: with few PC's should be used sql_broadcast instead sql
     # TODO: is it client-server or task cluster App?
