@@ -9,3 +9,7 @@ export interface Arrow {
 export interface ArrowCache {
   [key: string]: IConnection;
 }
+
+export interface ConstantCache {
+  [key: string]: IRow;
+}

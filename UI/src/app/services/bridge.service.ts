@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow } from 'src/app/models/row';
-import { ArrowCache, Arrow } from '../models/arrow-cache';
+import { ArrowCache, Arrow, ConstantCache } from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
@@ -57,13 +57,17 @@ export class BridgeService {
   private targetrowrlement = null;
 
   arrowsCache: ArrowCache = {};
+  constantsCache: ConstantCache = {};
   connection = new Subject<IConnection>();
 
   deleteAll = new Subject();
 
   connect = new Command({
     execute: () => {
+      const entityId = this.getConnectorId(this.sourceRow, this.targetRow);
+
       const connector = this.drawService.drawLine(
+        entityId,
         this.sourceRow,
         this.targetRow
       );
@@ -82,13 +86,17 @@ export class BridgeService {
       this.connection.next(connection);
     },
     canExecute: () => {
-      const connectorId = this.drawService.getConnectorId(
-        this.sourceRow,
-        this.targetRow
-      );
+      const connectorId = this.getConnectorId(this.sourceRow, this.targetRow);
 
       return this.arrowsCache[connectorId] ? false : true;
     }
+  });
+
+  addConstant = new Command({
+    execute: (row: IRow) => {
+      this.constantsCache[this.getConstantId(row)] = row;
+    },
+    canExecute: () => true
   });
 
   applyConfiguration(configuration: Configuration) {
@@ -138,6 +146,7 @@ export class BridgeService {
         const target = this.stateService.findTable(arrow.target.tableName);
         if (source.expanded && target.expanded) {
           const connector = this.drawService.drawLine(
+            this.getConnectorId(arrow.source, arrow.target),
             arrow.source,
             arrow.target
           );
@@ -156,11 +165,19 @@ export class BridgeService {
       const source = this.stateService.findTable(arrow.source.tableName);
       const target = this.stateService.findTable(arrow.target.tableName);
       if (source.expanded && target.expanded) {
-        const connector = this.drawService.drawLine(arrow.source, arrow.target);
+        const connector = this.drawService.drawLine(
+          this.getConnectorId(arrow.source, arrow.target),
+          arrow.source,
+          arrow.target
+        );
         if (this.userSettings.showQuestionButtons) {
           this.bridgeButtonService.createButton(connector, this.arrowsCache);
         }
-        this.drawService.drawLine(arrow.source, arrow.target);
+        this.drawService.drawLine(
+          this.getConnectorId(arrow.source, arrow.target),
+          arrow.source,
+          arrow.target
+        );
       }
     });
   }
@@ -190,7 +207,7 @@ export class BridgeService {
   }
 
   generateMapping() {
-    const mappingService = new MappingService(this.arrowsCache);
+    const mappingService = new MappingService(this.arrowsCache, this.constantsCache);
     return mappingService.generate();
   }
 
@@ -228,5 +245,21 @@ export class BridgeService {
     this.deleteAllArrows();
 
     this.resetAllMappings$.next();
+  }
+
+  getConnectorId(source: IRow, target: IRow): string {
+    const sourceRowId = source.id;
+    const targetRowId = target.id;
+    const sourceTableId = source.tableId;
+    const targetTableId = target.tableId;
+
+    return `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
+  }
+
+  getConstantId(target: IRow): string {
+    const targetRowId = target.id;
+    const targetTableId = target.tableId;
+
+    return `${targetTableId}-${targetRowId}`;
   }
 }

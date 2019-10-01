@@ -38,6 +38,7 @@ import { SqlFunctionsInjector } from './components/popaps/rules-popup/model/sql-
 import { SQL_FUNCTIONS } from './components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 import { RulesPopupService } from './components/popaps/rules-popup/services/rules-popup.service';
 import { AddConstantPopupComponent } from './components/popaps/add-constant-popup/add-constant-popup.component';
+import { PrismComponent } from './components/popaps/preview-popup/prism.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { AddConstantPopupComponent } from './components/popaps/add-constant-popu
     SavedMappingsComponent,
     OpenMappingDialogComponent,
     TransformationInputComponent,
-    AddConstantPopupComponent
+    AddConstantPopupComponent,
+    PrismComponent
   ],
   entryComponents: [
     BridgeButtonComponent,

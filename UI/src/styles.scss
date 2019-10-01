@@ -1,4 +1,6 @@
 @import 'app/styles/theme.scss';
+@import "~prismjs/plugins/toolbar/prism-toolbar.css";
+@import "~prismjs/themes/prism-okaidia";
 
 html, body {
     height: 100%;

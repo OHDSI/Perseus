@@ -1,4 +1,7 @@
 <div class="xmls" *ngFor="let tablename of tables">
-  <div class="table-name">{{tablename | prettyName}}</div>
-  <div class="table-xml">{{data[tablename] | prettyXml}}</div>
+  <div class="table-name">{{ tablename | prettyName }}</div>
+
+  <div class="sql">
+    <prism-block [code]="data[tablename]" [language]="'sql'"></prism-block>
+  </div>
 </div>

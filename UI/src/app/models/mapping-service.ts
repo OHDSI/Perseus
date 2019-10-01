@@ -1,16 +1,19 @@
-import { ArrowCache, Arrow } from './arrow-cache';
+import { ArrowCache, Arrow, ConstantCache } from './arrow-cache';
 import { groupBy } from '../infrastructure/utility';
 import { MappingPair, MappingNode, Mapping } from './mapping';
 import { IConnection } from '../services/bridge.service';
+import { IRow } from './row';
 
 export class MappingService {
   connections: Array<IConnection>;
+  constants: Array<IRow>;
 
-  constructor(arrowCache: ArrowCache) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
     this.connections = Object.values(arrowCache);
+    this.constants = Object.values(constants);
   }
 
   generate(): Mapping {

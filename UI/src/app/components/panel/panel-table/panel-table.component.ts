@@ -125,6 +125,9 @@ export class PanelTableComponent implements OnInit {
 
       overlayRef.close$.subscribe(ok => {
         row.constant = value.value;
+        if (row.constant) {
+          this.bridgeService.addConstant.execute(row);
+        }
       });
     }
   }

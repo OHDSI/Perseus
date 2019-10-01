@@ -77,8 +77,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
     this.dataService.getXml(mapping).subscribe(json => {
       const previewDialog = this.matDialog.open(PreviewPopupComponent, {
         data: json,
-        width: '80vh',
-        height: '80vh'
+        maxHeight: '80vh',
+        minWidth: '80vh'
       });
     });
   }
