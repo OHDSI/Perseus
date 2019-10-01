@@ -1,4 +1,3 @@
-from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateSchema
 import ntpath
 from pathlib import Path
