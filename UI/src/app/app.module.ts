@@ -37,6 +37,7 @@ import { TransformationInputComponent } from './components/popaps/rules-popup/tr
 import { SqlFunctionsInjector } from './components/popaps/rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 import { RulesPopupService } from './components/popaps/rules-popup/services/rules-popup.service';
+import { AddConstantPopupComponent } from './components/popaps/add-constant-popup/add-constant-popup.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { RulesPopupService } from './components/popaps/rules-popup/services/rule
     HighlightDirective,
     SavedMappingsComponent,
     OpenMappingDialogComponent,
-    TransformationInputComponent
+    TransformationInputComponent,
+    AddConstantPopupComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
@@ -64,7 +66,8 @@ import { RulesPopupService } from './components/popaps/rules-popup/services/rule
     PreviewPopupComponent,
     MappingPopupComponent,
     ValuesPopupComponent,
-    OpenMappingDialogComponent
+    OpenMappingDialogComponent,
+    AddConstantPopupComponent
   ],
   imports: [
     BrowserModule,

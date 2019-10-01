@@ -86,7 +86,7 @@ export class DraggableDirective implements OnInit {
       this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
     }
 
-    if (this.area !== 'target' || !this.bridgeService.sourceRow) {
+    if (this.area !== 'target' || !this.bridgeService.sourceRow || this.row.hasConstant) {
       return;
     }
 

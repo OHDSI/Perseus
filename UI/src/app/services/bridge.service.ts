@@ -12,7 +12,7 @@ import { BridgeButtonService } from './bridge-button.service';
 import { UserSettings } from './user-settings.service';
 import { IConnector } from '../models/interface/connector.interface';
 import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
-import { ICommandContext, Command } from '../infrastructure/command';
+import { Command } from '../infrastructure/command';
 
 export interface IConnection {
   source: IRow;
@@ -194,7 +194,7 @@ export class BridgeService {
     return mappingService.generate();
   }
 
-  hasConnection(table: ITable): boolean {
+  isTableConnected(table: ITable): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
         return (
@@ -205,7 +205,7 @@ export class BridgeService {
     );
   }
 
-  hasRowConnection(row: IRow): boolean {
+  isRowConnected(row: IRow): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
         return connection.source.id === row.id;

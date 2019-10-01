@@ -53,7 +53,7 @@ export class FilterComponent implements OnInit {
 
   canCheck(item): boolean {
     if (item instanceof Table) {
-      return this.bridgeService.hasConnection(item);
+      return this.bridgeService.isTableConnected(item);
     } else {
       return false;
     }

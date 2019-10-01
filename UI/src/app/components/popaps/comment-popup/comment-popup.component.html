@@ -1,36 +1,64 @@
-<mat-card [ngClass]="{
-  'dialog-source': overSourceArea,
-  'dialog-target': !overSourceArea
-}">
+<mat-card
+  [ngClass]="{
+    'dialog-source': overSourceArea,
+    'dialog-target': !overSourceArea
+  }"
+>
   <mat-list>
     <ng-container *ngFor="let comment of row.comments">
-      <ng-template [ngTemplateOutlet]="loadTemplate(comment)" [ngTemplateOutletContext]="{ $implicit: comment}">
+      <ng-template
+        [ngTemplateOutlet]="loadTemplate(comment)"
+        [ngTemplateOutletContext]="{ $implicit: comment }"
+      >
       </ng-template>
     </ng-container>
   </mat-list>
-  <input [(ngModel)]="value" (click)="invalidateSelection()" [disabled]="isDisabled()" placeholder="Input comment" class="input-add"
-    (keyup.enter)="add()">
-  <button mat-button (click)="add()" [disabled]="isDisabled()" disableRipple="true" class="button-add">
+  <input
+    [(ngModel)]="value"
+    (click)="invalidateSelection()"
+    [disabled]="isDisabled()"
+    placeholder="Input value"
+    class="input-add"
+    (keyup.enter)="add()"
+  />
+  <button
+    mat-button
+    (click)="add()"
+    [disabled]="isDisabled()"
+    disableRipple="true"
+    class="button-add"
+  >
     Add
   </button>
 </mat-card>
 
 <ng-template #readOnlyTemplate let-comment>
-  <mat-list-item (click)="onCommentClick(comment)" [ngClass]="{'active': comment.active}">
+  <mat-list-item
+    (click)="onCommentClick(comment)"
+    [ngClass]="{ active: comment.active }"
+  >
     <section class="read">
       <header>
         <span class="date">
-          {{comment.date | date:'MMM d'}}
+          {{ comment.date | date: 'MMM d' }}
           <span *ngIf="comment.hasBeenEdited">(edited)</span>
         </span>
         <div>
           <ng-container *ngIf="comment.active">
-            <button mat-icon-button disableRipple="true" (click)="edit(comment)">
+            <button
+              mat-icon-button
+              disableRipple="true"
+              (click)="edit(comment)"
+            >
               <mat-icon>
                 edit
               </mat-icon>
             </button>
-            <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+            <button
+              mat-icon-button
+              disableRipple="true"
+              (click)="delete(comment)"
+            >
               <mat-icon>
                 delete
               </mat-icon>
@@ -40,7 +68,7 @@
       </header>
       <main>
         <p>
-          {{comment.text}}
+          {{ comment.text }}
         </p>
       </main>
     </section>
@@ -52,10 +80,14 @@
     <section class="edit">
       <header>
         <span class="date">
-          {{comment.date | date:'MMM d'}}
+          {{ comment.date | date: 'MMM d' }}
         </span>
         <div class="buttons">
-          <button mat-icon-button disableRipple="true" (click)="delete(comment)">
+          <button
+            mat-icon-button
+            disableRipple="true"
+            (click)="delete(comment)"
+          >
             <mat-icon>
               delete
             </mat-icon>
@@ -63,8 +95,14 @@
         </div>
       </header>
       <main>
-        <input type="text" placeholder="Edit comment" [value]="comment.text" #input class="input-edit"
-          (keyup.enter)="applyChanges(comment, input.value)">
+        <input
+          type="text"
+          placeholder="Edit comment"
+          [value]="comment.text"
+          #input
+          class="input-edit"
+          (keyup.enter)="applyChanges(comment, input.value)"
+        />
       </main>
       <footer>
         <div class="buttons">

@@ -1,6 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { OverlayRef } from '@angular/cdk/overlay';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 

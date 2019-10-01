@@ -1,0 +1,13 @@
+<mat-card class="dialog-target">
+  <input
+    [(ngModel)]="value"
+    placeholder="Input value"
+    class="input-add"
+    (keyup.enter)="add()"
+  />
+  <button mat-button (click)="add()" disableRipple="true" class="button-add">
+    Add
+  </button>
+</mat-card>
+
+

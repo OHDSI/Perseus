@@ -51,7 +51,7 @@ export class PanelComponent implements OnInit {
     });
 
     this.bridgeService.connection.subscribe(_ => {
-      if (this.bridgeService.hasConnection(this.table)) {
+      if (this.bridgeService.isTableConnected(this.table)) {
         this.panelHheader._element.nativeElement.classList.add(
           'table-has-a-link-true'
         );
