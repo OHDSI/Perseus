@@ -26,20 +26,6 @@
         width: 208px;
     }
 
-    .button-add {
-        position: relative;
-        bottom: -6px;
-        right: -6px;
-        font-size: 13px;
-        min-width: 0;
-        line-height: 23px;
-        padding: 0 6px;
-
-        &:active {
-            color: #066BBB;
-        }
-    }
-
     .mat-list {
         width: 100%;
         padding-top: 0;
@@ -202,5 +188,24 @@
         &:active {
             color: #066BBB;
         }
+    }
+}
+
+.buttons-host {
+
+}
+
+.button-add {
+    display: inline-block;
+    position: relative;
+    bottom: -6px;
+    right: -6px;
+    font-size: 13px;
+    min-width: 0;
+    line-height: 23px;
+    padding: 0 6px;
+
+    &:active {
+        color: #066BBB;
     }
 }

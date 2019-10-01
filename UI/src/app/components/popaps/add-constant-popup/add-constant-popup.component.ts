@@ -31,8 +31,10 @@ export class AddConstantPopupComponent {
     this.close();
   }
 
-  reset() {
-    this.value = '';
+  clear() {
+    this.value = null;
+    this.payload.value = this.value;
+    this.close();
   }
 
   close() {

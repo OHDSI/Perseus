@@ -5,9 +5,17 @@
     class="input-add"
     (keyup.enter)="add()"
   />
-  <button mat-button (click)="add()" disableRipple="true" class="button-add">
-    Add
-  </button>
+  <div class="buttons-host">
+    <button mat-button (click)="add()" disableRipple="true" class="button-add">
+      Add
+    </button>
+    <button
+      mat-button
+      (click)="clear()"
+      disableRipple="true"
+      class="button-add"
+    >
+      Clear
+    </button>
+  </div>
 </mat-card>
-
-
