@@ -57,6 +57,8 @@ export class MappingService {
       return pair;
     });
 
+    this.applyConstant(mapPairs, this.constants);
+
     const mapping: Mapping = Object.create(null);
     mapping.mapping_items = mapPairs;
 
@@ -67,5 +69,20 @@ export class MappingService {
     node.sql_field = connector.transforms.reduce((acc, transform) => {
       return transform.getSql(acc, transform);
     }, node.sql_field);
+  }
+
+  applyConstant(mapPairs: any[], rows: IRow[]) {
+    const mappings = mapPairs.map(x => x.mapping);
+    mappings.forEach((mapping: any[]) => {
+      rows.forEach(row => {
+        const constantObj = {
+          source_field: '',
+          sql_field: row.constant,
+          sql_alias: row.name,
+          target_field: row.name
+        };
+        mapping.push(constantObj);
+      });
+    });
   }
 }

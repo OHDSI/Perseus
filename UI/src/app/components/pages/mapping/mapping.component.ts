@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material';
 import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.component';
 import { ITable } from 'src/app/models/table';
 import { RulesPopupService } from '../../popaps/rules-popup/services/rules-popup.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mapping',
@@ -74,7 +75,10 @@ export class MappingComponent implements OnInit, AfterViewInit {
   previewMapping() {
     const mapping = this.bridgeService.generateMapping();
 
-    this.dataService.getSqlPreview(mapping).subscribe(json => {
+    this.dataService.getXmlPreview(mapping)
+    .pipe(
+      switchMap(_ => this.dataService.getSqlPreview())
+    ).subscribe(json => {
       this.matDialog.open(PreviewPopupComponent, {
         data: json,
         maxHeight: '80vh',

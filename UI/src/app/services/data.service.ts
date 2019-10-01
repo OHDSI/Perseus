@@ -117,8 +117,8 @@ export class DataService {
     return this.httpClient.post(path, mapping);
   }
 
-  getSqlPreview(mapping: Mapping): Observable<any> {
+  getSqlPreview(): Observable<any> {
     const path = `${URL}/get_generated_sql`;
-    return this.httpClient.post(path, mapping);
+    return this.httpClient.get(path);
   }
 }
