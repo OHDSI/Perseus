@@ -9,7 +9,7 @@ from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
-    get_existing_source_schemas_list, get_top_values
+    get_existing_source_schemas_list, get_top_values, extract_sql
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 from cdm_souffleur.utils.utils import Database
@@ -212,6 +212,12 @@ def find_domain_call():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(found_codes)
+
+
+@app.route('/get_generated_sql')
+def get_sql_call():
+    sql = extract_sql()
+    return jsonify(sql)
 
 
 @app.route('/load_report')

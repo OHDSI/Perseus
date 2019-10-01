@@ -5,7 +5,7 @@ from pyspark import Row
 import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
-    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS
+    GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
@@ -128,6 +128,18 @@ def _flatten_pd_df(pd_df: pd.DataFrame):
         row_dict = {str(k): str(v) for k, v in series.to_dict().items()}
         rows.append(Row(**row_dict))
     return rows
+
+
+def extract_sql():
+    result = {}
+    for root_dir, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
+        for filename in files:
+            file_tree = ElementTree.parse(Path(root_dir) / filename)
+            query = file_tree.find('Query').text.upper()
+            for k, v in FORMAT_SQL_FOR_SPARK_PARAMS.items():
+                query = query.replace(k, v)
+                result[filename] = query
+    return result
 
 
 def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
