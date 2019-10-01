@@ -85,7 +85,7 @@ export class DataService {
   }
 
   getZippedXml(mapping: Mapping): Observable<any> {
-    return this.getXml(mapping).pipe(
+    return this.getXmlPreview(mapping).pipe(
       switchMap(jsonMapping => {
         const headers = new Headers();
         headers.set('Content-type', 'application/json; charset=UTF-8');
@@ -112,8 +112,13 @@ export class DataService {
     );
   }
 
-  getXml(mapping: Mapping): Observable<any> {
+  getXmlPreview(mapping: Mapping): Observable<any> {
     const path = `${URL}/get_xml`;
+    return this.httpClient.post(path, mapping);
+  }
+
+  getSqlPreview(mapping: Mapping): Observable<any> {
+    const path = `${URL}/get_generated_sql`;
     return this.httpClient.post(path, mapping);
   }
 }

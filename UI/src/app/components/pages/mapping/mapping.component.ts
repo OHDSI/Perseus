@@ -74,8 +74,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
   previewMapping() {
     const mapping = this.bridgeService.generateMapping();
 
-    this.dataService.getXml(mapping).subscribe(json => {
-      const previewDialog = this.matDialog.open(PreviewPopupComponent, {
+    this.dataService.getSqlPreview(mapping).subscribe(json => {
+      this.matDialog.open(PreviewPopupComponent, {
         data: json,
         maxHeight: '80vh',
         minWidth: '80vh'
