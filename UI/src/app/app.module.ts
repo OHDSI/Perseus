@@ -39,6 +39,11 @@ import { SQL_FUNCTIONS } from './components/popaps/rules-popup/transformation-in
 import { RulesPopupService } from './components/popaps/rules-popup/services/rules-popup.service';
 import { AddConstantPopupComponent } from './components/popaps/add-constant-popup/add-constant-popup.component';
 import { PrismComponent } from './components/popaps/preview-popup/prism.component';
+import { VocabularySearchSelectComponent } from './components/vocabulary-search-select/vocabulary-search-select.component';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { VocabulariesService } from './services/vocabularies.service';
+import { VocabularyTransformConfiguratorComponent } from './components/vocabulary-transform-configurator/vocabulary-transform-configurator.component';
+import { VocabularyConfigurationComponent } from './components/vocabulary-transform-configurator/vocabulary-configuration/vocabulary-configuration.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +64,10 @@ import { PrismComponent } from './components/popaps/preview-popup/prism.componen
     OpenMappingDialogComponent,
     TransformationInputComponent,
     AddConstantPopupComponent,
-    PrismComponent
+    PrismComponent,
+    VocabularySearchSelectComponent,
+    VocabularyTransformConfiguratorComponent,
+    VocabularyConfigurationComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
@@ -80,7 +88,8 @@ import { PrismComponent } from './components/popaps/preview-popup/prism.componen
     CdmCustomMaterialModule,
     CdmCommonModule,
     GridModule,
-    ThemeModule
+    ThemeModule,
+    NgxMatSelectSearchModule
   ],
   providers: [
     OverlayService,
@@ -94,6 +103,7 @@ import { PrismComponent } from './components/popaps/preview-popup/prism.componen
     BridgeButtonService,
     UserSettings,
     RulesPopupService,
+    VocabulariesService,
     [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}]
   ],
   bootstrap: [AppComponent]

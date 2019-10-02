@@ -24,6 +24,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { Subscription, merge } from 'rxjs';
 import { startWith, map, switchMap, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
+import { VocabulariesService, IVocabulary } from 'src/app/services/vocabularies.service';
 
 @Component({
   selector: 'app-comfy',
@@ -49,6 +50,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private dataService: DataService,
+    private vocabulariesService: VocabulariesService,
     private stateService: StateService,
     private mappingDialog: MatDialog,
     private bridgeService: BridgeService,
@@ -140,7 +142,20 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  vocabularies: IVocabulary[];
+
   ngOnInit() {
+    /*Experiment for vocabulary*/
+    this.vocabulariesService.setVocabularyConnectionString().subscribe(
+      ok => {
+        this.vocabulariesService.getVocabularies().subscribe(vocabularies => {
+          this.vocabularies = [...vocabularies];
+        });
+      },
+      error => console.error(error)
+    );
+    /*Experiment for vocabulary*/
+
     this.dataService.initialize().subscribe(_ => {
       this.initialize();
       this.busy = false;

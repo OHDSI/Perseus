@@ -1,0 +1,17 @@
+<mat-form-field>
+  <mat-select multiple
+    [formControl]="vocabularySelect"
+    placeholder="{{ vocabulary.name }}"
+  >
+    <ngx-mat-select-search
+      placeholderLabel="type to filter"
+      [formControl]="vocabularyFilter"
+    ></ngx-mat-select-search>
+    <mat-option
+      *ngFor="let item of filteredVocabularyItems | async"
+      [value]="item"
+    >
+      {{ item.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -2,6 +2,15 @@
   <div class="instruction">
     In order to make mapping, move source table to the target table
   </div>
+  <!--experimental-->
+  <app-vocabulary-transform-configurator>
+
+  </app-vocabulary-transform-configurator>
+  <app-vocabulary-search-select
+    [vocabulary]="vocabulary"
+    *ngFor="let vocabulary of vocabularies"
+  ></app-vocabulary-search-select>
+  <!--experimental-->
   <div class="comfy">
     <div class="mapping-component-progress" *ngIf="busy">
       <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">

@@ -1,0 +1,9 @@
+.configuration{
+  display: grid;
+  grid-template-columns: 200px 250px 250px;
+  align-items: center;
+}
+
+.block {
+  display: inline-block;
+}

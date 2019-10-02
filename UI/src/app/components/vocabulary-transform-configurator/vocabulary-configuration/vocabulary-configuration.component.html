@@ -1,0 +1,19 @@
+<div class="configuration">
+  <div class="configuration-name">{{ name }}</div>
+  <div class="container">
+    <div class="block in-label">In</div>
+    <div class="block in-dictionary">
+      <app-vocabulary-search-select
+        [vocabulary]="vocabulary"
+      ></app-vocabulary-search-select>
+    </div>
+  </div>
+  <div class="container">
+    <div class="block not-in-label">Not in</div>
+    <div class="block not-in-dictionary">
+      <app-vocabulary-search-select
+        [vocabulary]="vocabulary"
+      ></app-vocabulary-search-select>
+    </div>
+  </div>
+</div>
