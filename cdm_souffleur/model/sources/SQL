@@ -1,4 +1,5 @@
-WITH Source_to_Standard AS (
+/* -- create table if not exist manually
+create table  if not exists Source_to_Standard AS
 
 SELECT c.concept_code AS SOURCE_CODE
      , c.concept_id AS SOURCE_CONCEPT_ID
@@ -30,9 +31,7 @@ AND    (c1.standard_concept IS NOT NULL
         OR c1.standard_concept != '')
 AND    (c1.INVALID_REASON IS NULL
         OR c1.INVALID_REASON = '')
-
-)
-
+*/
 
 
 SELECT DISTINCT
