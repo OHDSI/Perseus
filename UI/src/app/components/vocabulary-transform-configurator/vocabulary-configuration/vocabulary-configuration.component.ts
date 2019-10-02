@@ -8,7 +8,7 @@ import { IVocabulary } from 'src/app/services/vocabularies.service';
 })
 export class VocabularyConfigurationComponent implements OnInit {
   @Input() name: string;
-  @Input() vocabulary: IVocabulary = {name: '', payload: []};
+  @Input() vocabulary: IVocabulary;
 
   constructor() { }
 

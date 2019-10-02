@@ -1,10 +1,10 @@
 <mat-card>
   <mat-card-content>
-      <app-vocabulary-configuration name="Source Vocabulary"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Target Vocabulary"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Source Concept Class"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Target Concept Class"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Target Domain"></app-vocabulary-configuration>
+      <app-vocabulary-configuration name="Source Vocabulary" [vocabulary]="lookupVocabulary"></app-vocabulary-configuration>
+      <app-vocabulary-configuration name="Target Vocabulary" [vocabulary]="lookupVocabulary"></app-vocabulary-configuration>
+      <app-vocabulary-configuration name="Source Concept Class" [vocabulary]="conceptVocabulary"></app-vocabulary-configuration>
+      <app-vocabulary-configuration name="Target Concept Class" [vocabulary]="conceptVocabulary"></app-vocabulary-configuration>
+      <app-vocabulary-configuration name="Target Domain" [vocabulary]="domainVocabulary"></app-vocabulary-configuration>
   </mat-card-content>
   <mat-dialog-actions>
     <button mat-button>Save</button>
