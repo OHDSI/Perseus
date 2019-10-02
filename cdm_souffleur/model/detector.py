@@ -59,7 +59,7 @@ def find_domain(column_name, table_name):
     :param table_name - table where source code located
     both vocabulary and report should be loaded to spark warehouse
     """
-    db = Database().get_engine('postgres:root@10.110.1.76:5432/Vocabulary')
+    db = Database().get_engine()
     sql = open('model/sources/SQL', 'r').read()
     # TODO: with few PC's should be used sql_broadcast instead sql
     # TODO: is it client-server or task cluster App?
