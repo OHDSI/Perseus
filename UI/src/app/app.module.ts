@@ -44,6 +44,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { VocabulariesService } from './services/vocabularies.service';
 import { VocabularyTransformConfiguratorComponent } from './components/vocabulary-transform-configurator/vocabulary-transform-configurator.component';
 import { VocabularyConfigurationComponent } from './components/vocabulary-transform-configurator/vocabulary-configuration/vocabulary-configuration.component';
+import { BaseComponent } from './components/base/base.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { VocabularyConfigurationComponent } from './components/vocabulary-transf
     PrismComponent,
     VocabularySearchSelectComponent,
     VocabularyTransformConfiguratorComponent,
-    VocabularyConfigurationComponent
+    VocabularyConfigurationComponent,
+    BaseComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
