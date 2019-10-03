@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
 import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
+import { MatSelectChange } from '@angular/material';
 
 @Component({
   selector: 'app-vocabulary-search-select',
@@ -13,6 +14,7 @@ import { IVocabulary } from 'src/app/services/vocabularies.service';
 })
 export class VocabularySearchSelectComponent extends BaseComponent implements OnInit {
   @Input() vocabulary: IVocabulary;
+  @Output() value = new EventEmitter<DictionaryItem>();
 
   dicrionary: DictionaryItem[];
   vocabularySelect: FormControl = new FormControl();
@@ -32,6 +34,10 @@ export class VocabularySearchSelectComponent extends BaseComponent implements On
       });
   }
 
+  onValueSelected(event: MatSelectChange) {
+    this.value.emit(event.value);
+  }
+
   private filter() {
     if (!this.dicrionary) {
       return;
@@ -49,4 +55,6 @@ export class VocabularySearchSelectComponent extends BaseComponent implements On
       this.dicrionary.filter(vocabulary => vocabulary.name.toLowerCase().indexOf(search) > -1)
     );
   }
+
+  //this.value.emit(this.vocabularySelect.value);
 }

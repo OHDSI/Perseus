@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
+import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary';
 
 @Component({
   selector: 'app-vocabulary-configuration',
@@ -9,10 +10,28 @@ import { IVocabulary } from 'src/app/services/vocabularies.service';
 export class VocabularyConfigurationComponent implements OnInit {
   @Input() name: string;
   @Input() vocabulary: IVocabulary;
+  @Output() value = new EventEmitter<VocabularyConfiguration>();
 
-  constructor() { }
+  private result: VocabularyConfiguration;
 
-  ngOnInit() {
+  constructor() {
+    this.result = {};
   }
 
+  ngOnInit() {}
+
+  conditionIn(event: DictionaryItem[]) {
+    this.result.in = event;
+    this.value.emit(this.result);
+  }
+
+  conditionNotIn(event: DictionaryItem[]) {
+    this.result.notin = event;
+    this.value.emit(this.result);
+  }
+}
+
+export interface VocabularyConfiguration {
+  in?: DictionaryItem[];
+  notin?: DictionaryItem[];
 }

@@ -1,16 +1,34 @@
 <mat-card>
   <mat-card-content>
-      <app-vocabulary-configuration name="Source Vocabulary" [vocabulary]="lookupVocabulary"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Target Vocabulary" [vocabulary]="lookupVocabulary"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Source Concept Class" [vocabulary]="conceptVocabulary"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Target Concept Class" [vocabulary]="conceptVocabulary"></app-vocabulary-configuration>
-      <app-vocabulary-configuration name="Target Domain" [vocabulary]="domainVocabulary"></app-vocabulary-configuration>
+    <app-vocabulary-configuration
+      name="Source Vocabulary"
+      [vocabulary]="lookupVocabulary"
+      (value)="sourceVocabulary($event)"
+    ></app-vocabulary-configuration>
+    <app-vocabulary-configuration
+      name="Target Vocabulary"
+      [vocabulary]="lookupVocabulary"
+      (value)="targetVocabulary($event)"
+    ></app-vocabulary-configuration>
+    <app-vocabulary-configuration
+      name="Source Concept Class"
+      [vocabulary]="conceptVocabulary"
+      (value)="sourceConcept($event)"
+    ></app-vocabulary-configuration>
+    <app-vocabulary-configuration
+      name="Target Concept Class"
+      [vocabulary]="conceptVocabulary"
+      (value)="targetConcept($event)"
+    ></app-vocabulary-configuration>
+    <app-vocabulary-configuration
+      name="Target Domain"
+      [vocabulary]="domainVocabulary"
+      (value)="targetDomain($event)"
+    ></app-vocabulary-configuration>
   </mat-card-content>
   <mat-dialog-actions>
-    <button mat-button>Save</button>
+    <button mat-button (click)="onSavePressed()">Save</button>
     <button mat-button>Delete</button>
     <button mat-button>Close</button>
   </mat-dialog-actions>
 </mat-card>
-
-

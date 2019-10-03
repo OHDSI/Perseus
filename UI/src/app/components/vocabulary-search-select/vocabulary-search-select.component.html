@@ -1,6 +1,7 @@
 <mat-form-field>
   <mat-select multiple
     [formControl]="vocabularySelect"
+    (selectionChange)="onValueSelected($event)"
     placeholder="{{ vocabulary.name }}"
   >
     <ngx-mat-select-search

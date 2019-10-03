@@ -6,6 +6,7 @@
     <div class="block dictionary">
       <app-vocabulary-search-select
         [vocabulary]="vocabulary"
+        (value)="conditionIn($event)"
       ></app-vocabulary-search-select>
     </div>
   </div>
@@ -14,6 +15,7 @@
     <div class="block dictionary">
       <app-vocabulary-search-select
         [vocabulary]="vocabulary"
+        (value)="conditionNotIn($event)"
       ></app-vocabulary-search-select>
     </div>
   </div>
