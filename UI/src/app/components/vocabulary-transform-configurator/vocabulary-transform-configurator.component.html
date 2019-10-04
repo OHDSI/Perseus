@@ -1,34 +1,41 @@
-<mat-card>
+<mat-card *ngIf="vocabularies">
   <mat-card-content>
+    <app-vocabulary-search-select
+      [vocabulary]="lookups"
+      [ismultipe]="'false'"
+      (value)="onLookupSelected($event)"
+    >
+    </app-vocabulary-search-select>
+
+    <mat-form-field class="lookup-name" [floatLabel]="'never'">
+      <mat-icon matPrefix>edit</mat-icon>
+      <mat-label>enter configuration name</mat-label>
+      <input #configname matInput [(ngModel)]="lookupname" />
+    </mat-form-field>
+    <!--Change input of to vocabularyconfig-->
     <app-vocabulary-configuration
-      name="Source Vocabulary"
-      [vocabulary]="lookupVocabulary"
+      *ngFor="let vocabconfig of configurations"
+      [vocabularyconfig]="lookupConfig.get(vocabconfig.key)"
       (value)="sourceVocabulary($event)"
-    ></app-vocabulary-configuration>
-    <app-vocabulary-configuration
-      name="Target Vocabulary"
-      [vocabulary]="lookupVocabulary"
-      (value)="targetVocabulary($event)"
-    ></app-vocabulary-configuration>
-    <app-vocabulary-configuration
-      name="Source Concept Class"
-      [vocabulary]="conceptVocabulary"
-      (value)="sourceConcept($event)"
-    ></app-vocabulary-configuration>
-    <app-vocabulary-configuration
-      name="Target Concept Class"
-      [vocabulary]="conceptVocabulary"
-      (value)="targetConcept($event)"
-    ></app-vocabulary-configuration>
-    <app-vocabulary-configuration
-      name="Target Domain"
-      [vocabulary]="domainVocabulary"
-      (value)="targetDomain($event)"
     ></app-vocabulary-configuration>
   </mat-card-content>
   <mat-dialog-actions>
-    <button mat-button (click)="onSavePressed()">Save</button>
-    <button mat-button>Delete</button>
-    <button mat-button>Close</button>
+    <button mat-button (click)="save.execute()" [disabled]="!save.canExecute()">
+      Save
+    </button>
+    <button
+      mat-button
+      (click)="delete.execute()"
+      [disabled]="!delete.canExecute()"
+    >
+      Delete
+    </button>
+    <button
+      mat-button
+      (click)="close.execute()"
+      [disabled]="!close.canExecute()"
+    >
+      Close
+    </button>
   </mat-dialog-actions>
 </mat-card>

@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IVocabulary } from 'src/app/services/vocabularies.service';
 import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary';
 
 @Component({
@@ -8,8 +7,7 @@ import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary'
   styleUrls: ['./vocabulary-configuration.component.scss']
 })
 export class VocabularyConfigurationComponent implements OnInit {
-  @Input() name: string;
-  @Input() vocabulary: IVocabulary;
+  @Input() vocabularyconfig: VocabularyConfiguration;
   @Output() value = new EventEmitter<VocabularyConfiguration>();
 
   private result: VocabularyConfiguration;
@@ -32,6 +30,8 @@ export class VocabularyConfigurationComponent implements OnInit {
 }
 
 export interface VocabularyConfiguration {
+  key?: string;
+  name?: string;
   in?: DictionaryItem[];
   notin?: DictionaryItem[];
 }

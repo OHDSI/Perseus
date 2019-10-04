@@ -4,7 +4,6 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
 import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
-import { IVocabulary } from 'src/app/services/vocabularies.service';
 import { MatSelectChange } from '@angular/material';
 
 @Component({
@@ -13,7 +12,8 @@ import { MatSelectChange } from '@angular/material';
   styleUrls: ['./vocabulary-search-select.component.scss']
 })
 export class VocabularySearchSelectComponent extends BaseComponent implements OnInit {
-  @Input() vocabulary: IVocabulary;
+  @Input() vocabulary: DictionaryItem[];
+  @Input() ismultipe = true;
   @Output() value = new EventEmitter<DictionaryItem>();
 
   dicrionary: DictionaryItem[];
@@ -23,7 +23,7 @@ export class VocabularySearchSelectComponent extends BaseComponent implements On
   filteredVocabularyItems: ReplaySubject<DictionaryItem[]> = new ReplaySubject<DictionaryItem[]>(1);
 
   ngOnInit() {
-    this.dicrionary = this.vocabulary.payload.map(v => new DictionaryItem(v));
+    this.dicrionary = [...this.vocabulary];
 
     this.filteredVocabularyItems.next(this.dicrionary.slice());
 
@@ -55,6 +55,4 @@ export class VocabularySearchSelectComponent extends BaseComponent implements On
       this.dicrionary.filter(vocabulary => vocabulary.name.toLowerCase().indexOf(search) > -1)
     );
   }
-
-  //this.value.emit(this.vocabularySelect.value);
 }

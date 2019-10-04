@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-select multiple
+  <mat-select [multiple]="isMultiple"
     [formControl]="vocabularySelect"
     (selectionChange)="onValueSelected($event)"
     placeholder="{{ vocabulary.name }}"
@@ -8,6 +8,7 @@
       placeholderLabel="type to filter"
       [formControl]="vocabularyFilter"
     ></ngx-mat-select-search>
+    <mat-option>None</mat-option>
     <mat-option
       *ngFor="let item of filteredVocabularyItems | async"
       [value]="item"

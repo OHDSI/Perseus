@@ -1,11 +1,11 @@
-<div *ngIf="!vocabulary">Loading...</div>
-<div class="configuration" *ngIf="vocabulary">
-  <div class="configuration-name">{{ name }}</div>
+<div *ngIf="!vocabularyconfig">Loading...</div>
+<div class="configuration" *ngIf="vocabularyconfig">
+  <div class="configuration-name">{{ vocabularyconfig.name }}</div>
   <div class="container">
     <div class="block label">In:</div>
     <div class="block dictionary">
       <app-vocabulary-search-select
-        [vocabulary]="vocabulary"
+        [vocabulary]="vocabularyconfig.in"
         (value)="conditionIn($event)"
       ></app-vocabulary-search-select>
     </div>
@@ -14,7 +14,7 @@
     <div class="block label">Not In:</div>
     <div class="block dictionary">
       <app-vocabulary-search-select
-        [vocabulary]="vocabulary"
+        [vocabulary]="vocabularyconfig.notin"
         (value)="conditionNotIn($event)"
       ></app-vocabulary-search-select>
     </div>
