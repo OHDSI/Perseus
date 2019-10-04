@@ -2,7 +2,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_PATH, GENERATE_CDM_XML_ARCHIVE_FILENAME, \
-    GENERATE_CDM_XML_ARCHIVE_FORMAT
+    GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_LOOKUP_SQL_PATH
 import pandas as pd
 import os
 from shutil import make_archive,  rmtree
@@ -158,10 +158,89 @@ def get_xml(json_):
             print(f"Directory {GENERATE_CDM_XML_PATH} created")
         except FileExistsError:
             print(f"Directory {GENERATE_CDM_XML_PATH} already exist")
-        xml.write(GENERATE_CDM_XML_PATH / source_table)
+        xml.write(GENERATE_CDM_XML_PATH / (source_table + '.xml'))
         # result += '{}: \n {} + \n'.format(source_table, prettify(
         #     query_definition_tag))
         result.update({source_table: _prettify(query_definition_tag)})
+    return result
+
+
+def get_lookups_sql(cond: dict):
+    result = {}
+    try:
+        os.mkdir(GENERATE_CDM_LOOKUP_SQL_PATH)
+        print(f"Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created")
+    except FileExistsError:
+        print(f"Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist")
+    for lookup_record in cond:
+        for k, v in lookup_record.items():
+            source_vocabulary_in = ', '.join(v.get('source_vocabulary').get('in'))
+            source_vocabulary_not_in = ', '.join(v.get('source_vocabulary').get('not_in'))
+            target_vocabulary_in = ', '.join(v.get('target_vocabulary').get('in'))
+            target_vocabulary_not_in = ', '.join(v.get('target_vocabulary').get('not_in'))
+            target_concept_class_in = ', '.join(v.get('target_concept_class').get('in'))
+            target_concept_class_not_in = ', '.join(v.get('target_concept_class').get('not_in'))
+            target_domain_in = ', '.join(v.get('target_domain').get('in'))
+            target_domain_not_in = ', '.join(v.get('target_domain').get('not_in'))
+            sql = f"""
+                  Standard as (
+                  SELECT distinct SOURCE_CODE
+                       , TARGET_CONCEPT_ID
+                       , TARGET_DOMAIN_ID
+                       , SOURCE_VALID_START_DATE as VALID_START_DATE
+                       , SOURCE_VALID_END_DATE as VALID_END_DATE
+                       , SOURCE_VOCABULARY_ID
+                  FROM Source_to_Standard
+                  WHERE
+                  SOURCE_VOCABULARY_ID IN {source_vocabulary_in} 
+                  AND SOURCE_VOCABULARY_ID NOT IN {source_vocabulary_not_in}
+                  AND  TARGET_VOCABULARY_ID IN {target_vocabulary_in} 
+                  AND TARGET_VOCABULARY_ID NOT IN {target_vocabulary_not_in}
+                  AND TARGET_CONCEPT_CLASS_ID IN {target_concept_class_in} 
+                  AND TARGET_CONCEPT_CLASS_ID NOT IN {target_concept_class_not_in}
+                  AND TARGET_DOMAIN_ID) IN {target_domain_in} 
+                  AND TARGET_DOMAIN_ID NOT IN {target_domain_not_in}
+                  AND (TARGET_STANDARD_CONCEPT IS NOT NULL or TARGET_STANDARD_CONCEPT != '')
+                  AND (TARGET_INVALID_REASON IS NULL or TARGET_INVALID_REASON = '')), 
+                  Source as (
+                  SELECT distinct SOURCE_CODE
+                       , TARGET_CONCEPT_ID
+                       , SOURCE_VALID_START_DATE
+                       , SOURCE_VALID_END_DATE
+                  FROM Source_to_Source
+                  WHERE
+                  SOURCE_VOCABULARY_ID IN {source_vocabulary_in} 
+                  AND SOURCE_VOCABULARY_ID NOT IN {source_vocabulary_not_in}
+                  AND TARGET_VOCABULARY_ID IN {target_vocabulary_in} 
+                  AND TARGET_VOCABULARY_ID NOT IN {target_vocabulary_not_in}
+                  AND TARGET_CONCEPT_CLASS_ID IN {target_concept_class_in} 
+                  AND TARGET_CONCEPT_CLASS_ID NOT IN {target_concept_class_not_in}
+                  AND TARGET_DOMAIN_ID) IN {target_domain_in} 
+                  AND TARGET_DOMAIN_ID NOT IN {target_domain_not_in}),
+                  S_S as (
+                  select SOURCE_CODE from Standard
+                  union
+                  select SOURCE_CODE from Source)
+ 
+                 select distinct S_S.SOURCE_CODE
+                      , Standard.TARGET_CONCEPT_ID
+                      , Standard.TARGET_DOMAIN_ID
+                      , Standard.VALID_START_DATE
+                      , Standard.VALID_END_DATE
+                      , Standard.SOURCE_VOCABULARY_ID
+                      , Source.TARGET_CONCEPT_ID as SOURCE_TARGET_CONCEPT_ID
+                      , Source.SOURCE_VALID_START_DATE as SOURCE_VALID_START_DATE
+                      , Source.SOURCE_VALID_END_DATE
+                      , ingredient_level.ingredient_concept_id
+                 from S_S
+                 left join Standard on Standard.SOURCE_CODE = S_S.SOURCE_CODE
+                 left join Source on Source.SOURCE_CODE = S_S.SOURCE_CODE
+                 left join ingredient_level on ingredient_level.concept_id = Standard.TARGET_CONCEPT_ID"""
+            sql_file = open(GENERATE_CDM_LOOKUP_SQL_PATH / (k + '.sql'), 'w+')
+            sql_file.write(sql)
+            print(k)
+            print(sql)
+            result.update({k: sql})
     return result
 
 
@@ -182,7 +261,7 @@ def delete_generated_xml():
 
 
 if __name__ == '__main__':
-    pass
+    # pass
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
@@ -220,4 +299,56 @@ if __name__ == '__main__':
     # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
+    from ast import literal_eval
+    condition = literal_eval("""[{"lookup" : 
+{
+  "source_vocabulary": {
+    "in": ["s_voc1", "s_voc2"],
+    "not_in": ["s_voc3", "s_voc4"]
+  }
+  ,
+  "target_vocabulary": {
+    "in": ["t_voc1", "t_voc2"],
+    "not_in": ["t_voc3", "t_voc4"]
+  },
+  "source_concept_class": {
+    "in": ["s_concept1", "s_concept2"],
+    "not_in": ["s_concept3", "s_concept4"]
+  },
+  "target_concept_class": {
+    "in": ["t_concept1", "t_concept2"],
+    "not_in": ["t_concept3", "t_concept4"]
+  },
+  "target_domain": {
+    "in": ["t_domain1", "t_domain2"],
+    "not_in": ["t_domain3", "t_domain4"]
+  }
+}
+},
+{"lookup2" : 
+{
+  "source_vocabulary": {
+    "in": ["s_voc1", "s_voc2"],
+    "not_in": ["s_voc3", "s_voc4"]
+  },
+  "target_vocabulary": {
+    "in": ["t_voc1", "t_voc2"],
+    "not_in": ["t_voc3", "t_voc4"]
+  },
+  "source_concept_class": {
+    "in": ["s_concept1", "s_concept2"],
+    "not_in": ["s_concept3", "s_concept4"]
+  },
+  "target_concept_class": {
+    "in": ["t_concept1", "t_concept2"],
+    "not_in": ["t_concept3", "t_concept4"]
+  },
+  "target_domain": {
+    "in": ["t_domain1", "t_domain2"],
+    "not_in": ["t_domain3", "t_domain4"]
+  }
+}
+}]""")
+    print(condition)
+    get_lookups_sql(condition)
 
