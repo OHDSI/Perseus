@@ -4,7 +4,7 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml
+    delete_generated_xml, get_lookups_sql
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
@@ -174,6 +174,13 @@ def xml():
     json = request.get_json()
     xml_ = get_xml(json)
     return jsonify(xml_)
+
+
+@app.route('/get_lookup_sql', methods=['POST'])
+def get_lookup_sql_call():
+    json = request.get_json()
+    sql_ = get_lookups_sql(json)
+    return jsonify(sql_)
 
 
 @app.route('/get_zip_xml')

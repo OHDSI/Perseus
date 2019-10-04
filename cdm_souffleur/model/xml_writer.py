@@ -2,7 +2,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_PATH, GENERATE_CDM_XML_ARCHIVE_FILENAME, \
-    GENERATE_CDM_XML_ARCHIVE_FORMAT
+    GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_LOOKUP_SQL_PATH
 import pandas as pd
 import os
 from shutil import make_archive,  rmtree
@@ -166,6 +166,12 @@ def get_xml(json_):
 
 
 def get_lookups_sql(cond: dict):
+    result = {}
+    try:
+        os.mkdir(GENERATE_CDM_LOOKUP_SQL_PATH)
+        print(f"Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created")
+    except FileExistsError:
+        print(f"Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist")
     for lookup_record in cond:
         for k, v in lookup_record.items():
             source_vocabulary_in = ', '.join(v.get('source_vocabulary').get('in'))
@@ -230,8 +236,12 @@ def get_lookups_sql(cond: dict):
                  left join Standard on Standard.SOURCE_CODE = S_S.SOURCE_CODE
                  left join Source on Source.SOURCE_CODE = S_S.SOURCE_CODE
                  left join ingredient_level on ingredient_level.concept_id = Standard.TARGET_CONCEPT_ID"""
+            sql_file = open(GENERATE_CDM_LOOKUP_SQL_PATH / (k + '.sql'), 'w+')
+            sql_file.write(sql)
             print(k)
             print(sql)
+            result.update({k: sql})
+    return result
 
 
 def zip_xml():
