@@ -158,7 +158,7 @@ def get_xml(json_):
             print(f"Directory {GENERATE_CDM_XML_PATH} created")
         except FileExistsError:
             print(f"Directory {GENERATE_CDM_XML_PATH} already exist")
-        xml.write(GENERATE_CDM_XML_PATH / source_table)
+        xml.write(GENERATE_CDM_XML_PATH / (source_table + '.xml'))
         # result += '{}: \n {} + \n'.format(source_table, prettify(
         #     query_definition_tag))
         result.update({source_table: _prettify(query_definition_tag)})
