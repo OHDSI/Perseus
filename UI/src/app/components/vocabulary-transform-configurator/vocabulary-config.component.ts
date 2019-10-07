@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
-import { VocabularyBlock } from './vocabulary-configuration/vocabulary-block.component';
+import { VocabularyBlock } from './vocabulary-block/vocabulary-block.component';
 import { Command } from 'src/app/infrastructure/command';
 import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 
