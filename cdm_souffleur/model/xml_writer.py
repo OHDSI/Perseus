@@ -238,8 +238,6 @@ def get_lookups_sql(cond: dict):
                  left join ingredient_level on ingredient_level.concept_id = Standard.TARGET_CONCEPT_ID"""
             sql_file = open(GENERATE_CDM_LOOKUP_SQL_PATH / (k + '.sql'), 'w+')
             sql_file.write(sql)
-            print(k)
-            print(sql)
             result.update({k: sql})
     return result
 
