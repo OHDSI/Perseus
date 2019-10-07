@@ -1,23 +1,31 @@
 <mat-card *ngIf="vocabularies">
   <mat-card-content>
-    <app-vocabulary-search-select
-      [vocabulary]="lookups"
+    <app-vocabulary-dropdown
+      [vocabulary]="lookups.payload"
       [ismultipe]="'false'"
       (value)="onLookupSelected($event)"
     >
-    </app-vocabulary-search-select>
+    </app-vocabulary-dropdown>
 
     <mat-form-field class="lookup-name" [floatLabel]="'never'">
       <mat-icon matPrefix>edit</mat-icon>
       <mat-label>enter configuration name</mat-label>
       <input #configname matInput [(ngModel)]="lookupname" />
     </mat-form-field>
+
     <!--Change input of to vocabularyconfig-->
-    <app-vocabulary-configuration
-      *ngFor="let vocabconfig of configurations"
-      [vocabularyconfig]="lookupConfig.get(vocabconfig.key)"
-      (value)="sourceVocabulary($event)"
-    ></app-vocabulary-configuration>
+    <mat-tab-group>
+      <mat-tab label="Concept">
+          <app-vocabulary-block
+          *ngFor="let block of blocks"
+          [vocabularyconfig]="lookupConfig.get(block.key)"
+          (value)="sourceVocabulary($event)"
+        ></app-vocabulary-block>
+      </mat-tab>
+      <mat-tab label="Source Concept"> Content 2 </mat-tab>
+      <mat-tab label="Type"> Content 3 </mat-tab>
+    </mat-tab-group>
+
   </mat-card-content>
   <mat-dialog-actions>
     <button mat-button (click)="save.execute()" [disabled]="!save.canExecute()">

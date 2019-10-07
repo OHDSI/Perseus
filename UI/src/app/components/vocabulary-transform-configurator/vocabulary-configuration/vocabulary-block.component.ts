@@ -2,15 +2,15 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary';
 
 @Component({
-  selector: 'app-vocabulary-configuration',
-  templateUrl: './vocabulary-configuration.component.html',
-  styleUrls: ['./vocabulary-configuration.component.scss']
+  selector: 'app-vocabulary-block',
+  templateUrl: './vocabulary-block.component.html',
+  styleUrls: ['./vocabulary-block.component.scss']
 })
-export class VocabularyConfigurationComponent implements OnInit {
-  @Input() vocabularyconfig: VocabularyConfiguration;
-  @Output() value = new EventEmitter<VocabularyConfiguration>();
+export class VocabularyBlockComponent implements OnInit {
+  @Input() vocabularyconfig: VocabularyBlock;
+  @Output() value = new EventEmitter<VocabularyBlock>();
 
-  private result: VocabularyConfiguration;
+  private result: VocabularyBlock;
 
   constructor() {
     this.result = {};
@@ -29,7 +29,7 @@ export class VocabularyConfigurationComponent implements OnInit {
   }
 }
 
-export interface VocabularyConfiguration {
+export interface VocabularyBlock {
   key?: string;
   name?: string;
   in?: DictionaryItem[];

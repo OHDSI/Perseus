@@ -7,11 +7,11 @@ import { takeUntil } from 'rxjs/operators';
 import { MatSelectChange } from '@angular/material';
 
 @Component({
-  selector: 'app-vocabulary-search-select',
-  templateUrl: './vocabulary-search-select.component.html',
-  styleUrls: ['./vocabulary-search-select.component.scss']
+  selector: 'app-vocabulary-dropdown',
+  templateUrl: './vocabulary-dropdown.component.html',
+  styleUrls: ['./vocabulary-dropdown.component.scss']
 })
-export class VocabularySearchSelectComponent extends BaseComponent implements OnInit {
+export class VocabularyDropdownComponent extends BaseComponent implements OnInit {
   @Input() vocabulary: DictionaryItem[];
   @Input() ismultipe = true;
   @Output() value = new EventEmitter<DictionaryItem>();

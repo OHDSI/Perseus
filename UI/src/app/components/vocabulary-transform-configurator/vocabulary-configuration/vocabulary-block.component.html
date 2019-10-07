@@ -4,19 +4,19 @@
   <div class="container">
     <div class="block label">In:</div>
     <div class="block dictionary">
-      <app-vocabulary-search-select
+      <app-vocabulary-dropdown
         [vocabulary]="vocabularyconfig.in"
         (value)="conditionIn($event)"
-      ></app-vocabulary-search-select>
+      ></app-vocabulary-dropdown>
     </div>
   </div>
   <div class="container">
     <div class="block label">Not In:</div>
     <div class="block dictionary">
-      <app-vocabulary-search-select
+      <app-vocabulary-dropdown
         [vocabulary]="vocabularyconfig.notin"
         (value)="conditionNotIn($event)"
-      ></app-vocabulary-search-select>
+      ></app-vocabulary-dropdown>
     </div>
   </div>
 </div>

@@ -1,15 +1,15 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
-import { VocabularyConfiguration } from './vocabulary-configuration/vocabulary-configuration.component';
+import { VocabularyBlock } from './vocabulary-configuration/vocabulary-block.component';
 import { Command } from 'src/app/infrastructure/command';
 import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 
 @Component({
-  selector: 'app-vocabulary-transform-configurator',
-  templateUrl: './vocabulary-transform-configurator.component.html',
-  styleUrls: ['./vocabulary-transform-configurator.component.scss']
+  selector: 'app-vocabulary-config',
+  templateUrl: './vocabulary-config.component.html',
+  styleUrls: ['./vocabulary-config.component.scss']
 })
-export class VocabularyTransformConfiguratorComponent
+export class VocabularyConfigComponent
   implements OnInit, OnChanges {
   @Input() vocabularies: IVocabulary[];
 
@@ -19,9 +19,8 @@ export class VocabularyTransformConfiguratorComponent
   };
 
   lookupname = '';
-  configurations: VocabularyConfiguration[] = [];
-
-  private lookupConfig: LookupConfig = new LookupConfig('default');
+  lookupConfig: LookupConfig = new LookupConfig('default');
+  blocks: VocabularyBlock[] = [];
 
   save = new Command({
     execute: () => {},
@@ -71,7 +70,7 @@ export class VocabularyTransformConfiguratorComponent
         this.findVocabulary('domain')
       );
 
-      this.configurations = this.lookupConfig.asArray;
+      this.blocks = this.lookupConfig.asArray;
     }
   }
 
@@ -84,7 +83,7 @@ export class VocabularyTransformConfiguratorComponent
     }
   }
 
-  sourceVocabulary(event: VocabularyConfiguration) {
+  sourceVocabulary(event: VocabularyBlock) {
     const key = 'source_vocabulary';
     // this.updateModel(key, event);
   }
@@ -100,19 +99,19 @@ export class VocabularyTransformConfiguratorComponent
 }
 
 export class LookupConfig {
-  get asArray(): VocabularyConfiguration[] {
+  get asArray(): VocabularyBlock[] {
     return Array.from(this.model.values());
   }
 
   name: string;
 
-  private model = new Map<string, VocabularyConfiguration>();
+  private model = new Map<string, VocabularyBlock>();
 
   constructor(name: string) {
     this.name = name;
   }
 
-  get(key: string): VocabularyConfiguration {
+  get(key: string): VocabularyBlock {
     if (this.model.has(key)) {
       return this.model.get(key);
     }
@@ -125,7 +124,7 @@ export class LookupConfig {
     configurationName: string,
     vocabulary: IVocabulary
   ) {
-    const config: VocabularyConfiguration = {
+    const config: VocabularyBlock = {
       key,
       name: configurationName,
       in: vocabulary.payload.map(item => new DictionaryItem(item)),
@@ -134,7 +133,7 @@ export class LookupConfig {
     this.updateConfiguration(key, config);
   }
 
-  updateConfiguration(key: string, value: VocabularyConfiguration) {
+  updateConfiguration(key: string, value: VocabularyBlock) {
     if (this.model.has(key)) {
       this.model.delete(key);
     }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VocabularyTransformConfiguratorComponent } from './vocabulary-transform-configurator.component';
+import { VocabularyConfigComponent } from './vocabulary-config.component';
 
 describe('VocabularyTransformConfiguratorComponent', () => {
-  let component: VocabularyTransformConfiguratorComponent;
-  let fixture: ComponentFixture<VocabularyTransformConfiguratorComponent>;
+  let component: VocabularyConfigComponent;
+  let fixture: ComponentFixture<VocabularyConfigComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VocabularyTransformConfiguratorComponent ]
+      declarations: [ VocabularyConfigComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VocabularyTransformConfiguratorComponent);
+    fixture = TestBed.createComponent(VocabularyConfigComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
