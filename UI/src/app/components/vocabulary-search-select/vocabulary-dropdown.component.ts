@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
@@ -9,7 +9,8 @@ import { MatSelectChange } from '@angular/material';
 @Component({
   selector: 'app-vocabulary-dropdown',
   templateUrl: './vocabulary-dropdown.component.html',
-  styleUrls: ['./vocabulary-dropdown.component.scss']
+  styleUrls: ['./vocabulary-dropdown.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VocabularyDropdownComponent extends BaseComponent implements OnInit {
   @Input() vocabulary: DictionaryItem[];

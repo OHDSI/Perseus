@@ -1,0 +1,63 @@
+import { ConceptConfig } from './config-concept';
+import { ConceptType } from './concept-type';
+import { IVocabulary } from 'src/app/services/vocabularies.service';
+import { cloneDeep } from 'src/app/infrastructure/utility';
+
+export class VocabularyConfig {
+  get conceptConfig(): ConceptConfig {
+    return this.conceptconfig;
+  }
+
+  get sourceConceptConfig(): ConceptConfig {
+    return this.sourceconceptConfig;
+  }
+
+  get type(): ConceptType {
+    return this.typeconfig;
+  }
+
+  private conceptconfig: ConceptConfig;
+  private sourceconceptConfig: ConceptConfig;
+  private typeconfig: ConceptType;
+
+  constructor(private name: string, private vocabularies: IVocabulary[]) {
+    this.conceptconfig = new ConceptConfig(name);
+    this.conceptconfig.addVocabularyConfig(
+      'source_vocabulary',
+      'Source Vocabulary',
+      this.findVocabulary('lookup')
+    );
+    this.conceptconfig.addVocabularyConfig(
+      'target_vocabulary',
+      'Target Vocabulary',
+      this.findVocabulary('lookup')
+    );
+    this.conceptconfig.addVocabularyConfig(
+      'source_concept_class',
+      'Source Concept Class',
+      this.findVocabulary('concept')
+    );
+    this.conceptconfig.addVocabularyConfig(
+      'target_concept_class',
+      'Target Concept Class',
+      this.findVocabulary('concept')
+    );
+    this.conceptconfig.addVocabularyConfig(
+      'target_domain',
+      'Target Domain',
+      this.findVocabulary('domain')
+    );
+
+    this.sourceconceptConfig = cloneDeep(this.conceptconfig);
+    this.typeconfig = {};
+  }
+
+  private findVocabulary(name: string): IVocabulary {
+    const idx = this.vocabularies.findIndex(v => v.name === name);
+    if (idx > -1) {
+      return this.vocabularies[idx];
+    } else {
+      return null;
+    }
+  }
+}

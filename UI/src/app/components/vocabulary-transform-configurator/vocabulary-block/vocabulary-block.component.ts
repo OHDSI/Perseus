@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary';
 
 @Component({
   selector: 'app-vocabulary-block',
   templateUrl: './vocabulary-block.component.html',
-  styleUrls: ['./vocabulary-block.component.scss']
+  styleUrls: ['./vocabulary-block.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VocabularyBlockComponent implements OnInit {
   @Input() vocabularyconfig: VocabularyBlock;
