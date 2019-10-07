@@ -4,7 +4,7 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_sql
+    delete_generated_xml, get_lookups_sql, delete_generated_sql
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
@@ -203,6 +203,15 @@ def zip_xml_call():
 def clear_xml_dir_call():
     try:
         delete_generated_xml()
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
+    return 'OK'
+
+
+@app.route('/clear_sql_dir')
+def clear_sql_dir_call():
+    try:
+        delete_generated_sql()
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return 'OK'
