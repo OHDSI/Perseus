@@ -68,3 +68,4 @@ export interface IVocabulary {
   name: string;
   payload: string[];
 }
+

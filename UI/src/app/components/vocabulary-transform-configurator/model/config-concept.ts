@@ -28,6 +28,9 @@ export class ConceptConfig {
     configurationName: string,
     vocabulary: IVocabulary
   ) {
+    if (!vocabulary) {
+      return;
+    }
     const config: VocabularyBlock = {
       key,
       name: configurationName,

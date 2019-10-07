@@ -6,7 +6,7 @@
       <input #configname matInput [(ngModel)]="lookupname" />
     </mat-form-field>
     <app-vocabulary-dropdown
-      [vocabulary]="lookups.payload"
+      [vocabulary]="availableLookups"
       [ismultipe]="'false'"
       (value)="onLookupSelected($event)"
     >

@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
-import { VocabularyBlock } from './vocabulary-block/vocabulary-block.component';
 import { Command } from 'src/app/infrastructure/command';
 import { ConceptConfig } from './model/config-concept';
-import { cloneDeep } from 'src/app/infrastructure/utility';
 import { VocabularyConfig } from './model/vocabulary-config';
+import { cloneDeep } from 'src/app/infrastructure/utility';
+import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 
 @Component({
   selector: 'app-vocabulary-config',
@@ -14,26 +14,42 @@ import { VocabularyConfig } from './model/vocabulary-config';
 export class VocabularyConfigComponent implements OnInit, OnChanges {
   @Input() vocabularies: IVocabulary[];
 
-  @Input() lookups: IVocabulary = {
-    name: 'Available lokups',
-    payload: ['First', 'second']
-  };
+  @Input() lookups: any[] = [
+    {
+      name: 'default',
+      payload: new VocabularyConfig('default', [])
+    }
+  ];
+
+  get availableLookups(): DictionaryItem[] {
+    return this.availablelookups;
+  }
 
   get conceptConfig(): ConceptConfig {
-    return this.vacabularyConfig.conceptConfig;
+    return this.vocabularyConfig.conceptConfig;
   }
 
   get sourceConceptConfig(): ConceptConfig {
-    return this.vacabularyConfig.sourceConceptConfig;
+    return this.vocabularyConfig.sourceConceptConfig;
   }
 
   constructor() {}
 
   lookupname = '';
-  private vacabularyConfig: VocabularyConfig;
+  private vocabularyConfig: VocabularyConfig;
+  private configs: VocabularyConfig[] = [];
+  private availablelookups: DictionaryItem[];
 
   save = new Command({
-    execute: () => {},
+    execute: () => {
+      this.configs.push(this.vocabularyConfig);
+      this.lookups.push({
+        name: this.lookupname,
+        payload: this.vocabularyConfig
+      });
+
+      this.updateAvailableLokkups();
+    },
     canExecute: () => true
   });
 
@@ -51,11 +67,19 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.vocabularies) {
-      this.vacabularyConfig = new VocabularyConfig(
+      this.vocabularyConfig = new VocabularyConfig(
         this.lookupname,
         this.vocabularies
       );
+
+      this.updateAvailableLokkups();
     }
+  }
+
+  updateAvailableLokkups() {
+    this.availablelookups = this.lookups
+        ? [...this.lookups.map(l => new DictionaryItem(l.name))]
+        : [];
   }
 
   onLookupSelected(vocabulary: IVocabulary) {
@@ -65,5 +89,9 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
       // TODO Reset all configurations
     }
     this.lookupname = vocabulary.name;
+    const index = this.lookups.findIndex(l => l.name === vocabulary.name);
+    if (index > -1) {
+      this.vocabularyConfig = cloneDeep(this.lookups[index].payload);
+    }
   }
 }

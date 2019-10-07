@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary';
 
 @Component({
@@ -7,7 +7,7 @@ import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary'
   styleUrls: ['./vocabulary-block.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VocabularyBlockComponent implements OnInit {
+export class VocabularyBlockComponent implements OnInit, OnChanges {
   @Input() vocabularyconfig: VocabularyBlock;
   @Output() value = new EventEmitter<VocabularyBlock>();
 
@@ -17,7 +17,13 @@ export class VocabularyBlockComponent implements OnInit {
     this.result = {};
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
+
+  ngOnChanges() {
+
+  }
 
   conditionIn(event: DictionaryItem[]) {
     this.result.in = event;
