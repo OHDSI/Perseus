@@ -238,17 +238,25 @@ def get_lookups_sql(cond: dict):
                  left join ingredient_level on ingredient_level.concept_id = Standard.TARGET_CONCEPT_ID"""
             sql_file = open(GENERATE_CDM_LOOKUP_SQL_PATH / (k + '.sql'), 'w+')
             sql_file.write(sql)
-            print(k)
-            print(sql)
             result.update({k: sql})
     return result
 
 
 def zip_xml():
+    import zipfile
+    import os
+    from pathlib import Path
+
     try:
-        make_archive(
-            GENERATE_CDM_XML_ARCHIVE_PATH / GENERATE_CDM_XML_ARCHIVE_FILENAME,
-            GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_XML_PATH)
+        zip_file = zipfile.ZipFile(
+            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
+            'w', zipfile.ZIP_DEFLATED)
+        for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
+            for file in files:
+                zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+        for root, dirs, files in os.walk(GENERATE_CDM_LOOKUP_SQL_PATH):
+            for file in files:
+                zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
     except FileNotFoundError:
         raise
 
@@ -256,6 +264,13 @@ def zip_xml():
 def delete_generated_xml():
     try:
         rmtree(GENERATE_CDM_XML_PATH)
+    except FileNotFoundError:
+        raise
+
+
+def delete_generated_sql():
+    try:
+        rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
     except FileNotFoundError:
         raise
 
