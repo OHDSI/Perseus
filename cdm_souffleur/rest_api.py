@@ -59,12 +59,14 @@ def load_schema():
 
 @app.route('/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
+    """return list of saved source schemas"""
     return jsonify(
         get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
 
 
 @app.route('/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
+    """load saved source schema by name"""
     schema_name = request.args['schema_name']
     if schema_name in get_existing_source_schemas_list(
             app.config['UPLOAD_FOLDER']):
@@ -77,6 +79,7 @@ def load_saved_source_schema_call():
 
 @app.route('/delete_saved_source_schema', methods=['GET'])
 def delete_saved_source_schema_call():
+    """delete saved source schema by name"""
     schema_name = request.args['schema_name']
     if schema_name in get_existing_source_schemas_list(
             app.config['UPLOAD_FOLDER']):
@@ -178,6 +181,7 @@ def xml():
 
 @app.route('/get_lookup_sql', methods=['POST'])
 def get_lookup_sql_call():
+    """generate sql's for lookups, also return to front"""
     json = request.get_json()
     sql_ = get_lookups_sql(json)
     return jsonify(sql_)
@@ -201,6 +205,7 @@ def zip_xml_call():
 
 @app.route('/clear_xml_dir')
 def clear_xml_dir_call():
+    """clear directory with mapping items"""
     try:
         delete_generated_xml()
     except Exception as error:
@@ -210,6 +215,7 @@ def clear_xml_dir_call():
 
 @app.route('/clear_sql_dir')
 def clear_sql_dir_call():
+    """clear directory with lookup sql's items"""
     try:
         delete_generated_sql()
     except Exception as error:
@@ -232,6 +238,7 @@ def find_domain_call():
 
 @app.route('/get_generated_sql')
 def get_sql_call():
+    """return sql's from generated mapping"""
     sql = extract_sql()
     return jsonify(sql)
 
