@@ -147,7 +147,6 @@ def get_xml(json_):
                             # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
                             # defaultSource - занечение пойдет в SourceValue
                             # isNullable - запись создасться, даже если в raw был NULL
-                            # for field in fields:
                             for field in fields:
                                 SubElement(fields_tag, 'Field',
                                            attrib={key: value for
