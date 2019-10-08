@@ -10,7 +10,6 @@ def get_exist_version():
     return CDM_VERSION_LIST
 
 
-@time_it
 def get_schema(cdm_version):
     """load CDM schema from csv"""
     schema = []
