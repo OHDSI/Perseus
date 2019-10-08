@@ -4,8 +4,10 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_PATH, GENERATE_CDM_XML_ARCHIVE_FILENAME, \
     GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_LOOKUP_SQL_PATH
 import pandas as pd
+from shutil import rmtree
+import zipfile
 import os
-from shutil import make_archive,  rmtree
+from pathlib import Path
 
 
 def _convert_underscore_to_camel(word: str):
@@ -166,6 +168,7 @@ def get_xml(json_):
 
 
 def get_lookups_sql(cond: dict):
+    """prepare sql's for lookups"""
     result = {}
     try:
         os.mkdir(GENERATE_CDM_LOOKUP_SQL_PATH)
@@ -243,10 +246,7 @@ def get_lookups_sql(cond: dict):
 
 
 def zip_xml():
-    import zipfile
-    import os
-    from pathlib import Path
-
+    """add mapping XMLs and lookup sql's to archive"""
     try:
         zip_file = zipfile.ZipFile(
             GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
@@ -262,6 +262,7 @@ def zip_xml():
 
 
 def delete_generated_xml():
+    """clean mapping folder"""
     try:
         rmtree(GENERATE_CDM_XML_PATH)
     except FileNotFoundError:
@@ -269,6 +270,7 @@ def delete_generated_xml():
 
 
 def delete_generated_sql():
+    """clean lookup sql folder"""
     try:
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
     except FileNotFoundError:
