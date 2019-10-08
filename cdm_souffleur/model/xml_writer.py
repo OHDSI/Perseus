@@ -248,7 +248,8 @@ def zip_xml():
     """add mapping XMLs and lookup sql's to archive"""
     try:
         zip_file = zipfile.ZipFile(
-            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
+            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
+                (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
             'w', zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
             for file in files:
