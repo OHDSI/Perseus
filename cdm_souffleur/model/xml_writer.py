@@ -4,8 +4,10 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_PATH, GENERATE_CDM_XML_ARCHIVE_FILENAME, \
     GENERATE_CDM_XML_ARCHIVE_FORMAT, GENERATE_CDM_LOOKUP_SQL_PATH
 import pandas as pd
+from shutil import rmtree
+import zipfile
 import os
-from shutil import make_archive,  rmtree
+from pathlib import Path
 
 
 def _convert_underscore_to_camel(word: str):
@@ -145,7 +147,6 @@ def get_xml(json_):
                             # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
                             # defaultSource - занечение пойдет в SourceValue
                             # isNullable - запись создасться, даже если в raw был NULL
-                            # for field in fields:
                             for field in fields:
                                 SubElement(fields_tag, 'Field',
                                            attrib={key: value for
@@ -166,6 +167,7 @@ def get_xml(json_):
 
 
 def get_lookups_sql(cond: dict):
+    """prepare sql's for lookups"""
     result = {}
     try:
         os.mkdir(GENERATE_CDM_LOOKUP_SQL_PATH)
@@ -243,13 +245,11 @@ def get_lookups_sql(cond: dict):
 
 
 def zip_xml():
-    import zipfile
-    import os
-    from pathlib import Path
-
+    """add mapping XMLs and lookup sql's to archive"""
     try:
         zip_file = zipfile.ZipFile(
-            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
+            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
+                (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
             'w', zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
             for file in files:
@@ -262,6 +262,7 @@ def zip_xml():
 
 
 def delete_generated_xml():
+    """clean mapping folder"""
     try:
         rmtree(GENERATE_CDM_XML_PATH)
     except FileNotFoundError:
@@ -269,6 +270,7 @@ def delete_generated_xml():
 
 
 def delete_generated_sql():
+    """clean lookup sql folder"""
     try:
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
     except FileNotFoundError:
@@ -276,7 +278,7 @@ def delete_generated_sql():
 
 
 if __name__ == '__main__':
-    # pass
+    pass
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
@@ -314,56 +316,56 @@ if __name__ == '__main__':
     # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    from ast import literal_eval
-    condition = literal_eval("""[{"lookup" : 
-{
-  "source_vocabulary": {
-    "in": ["s_voc1", "s_voc2"],
-    "not_in": ["s_voc3", "s_voc4"]
-  }
-  ,
-  "target_vocabulary": {
-    "in": ["t_voc1", "t_voc2"],
-    "not_in": ["t_voc3", "t_voc4"]
-  },
-  "source_concept_class": {
-    "in": ["s_concept1", "s_concept2"],
-    "not_in": ["s_concept3", "s_concept4"]
-  },
-  "target_concept_class": {
-    "in": ["t_concept1", "t_concept2"],
-    "not_in": ["t_concept3", "t_concept4"]
-  },
-  "target_domain": {
-    "in": ["t_domain1", "t_domain2"],
-    "not_in": ["t_domain3", "t_domain4"]
-  }
-}
-},
-{"lookup2" : 
-{
-  "source_vocabulary": {
-    "in": ["s_voc1", "s_voc2"],
-    "not_in": ["s_voc3", "s_voc4"]
-  },
-  "target_vocabulary": {
-    "in": ["t_voc1", "t_voc2"],
-    "not_in": ["t_voc3", "t_voc4"]
-  },
-  "source_concept_class": {
-    "in": ["s_concept1", "s_concept2"],
-    "not_in": ["s_concept3", "s_concept4"]
-  },
-  "target_concept_class": {
-    "in": ["t_concept1", "t_concept2"],
-    "not_in": ["t_concept3", "t_concept4"]
-  },
-  "target_domain": {
-    "in": ["t_domain1", "t_domain2"],
-    "not_in": ["t_domain3", "t_domain4"]
-  }
-}
-}]""")
-    print(condition)
-    get_lookups_sql(condition)
+#     from ast import literal_eval
+#     condition = literal_eval("""[{"lookup" :
+# {
+#   "source_vocabulary": {
+#     "in": ["s_voc1", "s_voc2"],
+#     "not_in": ["s_voc3", "s_voc4"]
+#   }
+#   ,
+#   "target_vocabulary": {
+#     "in": ["t_voc1", "t_voc2"],
+#     "not_in": ["t_voc3", "t_voc4"]
+#   },
+#   "source_concept_class": {
+#     "in": ["s_concept1", "s_concept2"],
+#     "not_in": ["s_concept3", "s_concept4"]
+#   },
+#   "target_concept_class": {
+#     "in": ["t_concept1", "t_concept2"],
+#     "not_in": ["t_concept3", "t_concept4"]
+#   },
+#   "target_domain": {
+#     "in": ["t_domain1", "t_domain2"],
+#     "not_in": ["t_domain3", "t_domain4"]
+#   }
+# }
+# },
+# {"lookup2" :
+# {
+#   "source_vocabulary": {
+#     "in": ["s_voc1", "s_voc2"],
+#     "not_in": ["s_voc3", "s_voc4"]
+#   },
+#   "target_vocabulary": {
+#     "in": ["t_voc1", "t_voc2"],
+#     "not_in": ["t_voc3", "t_voc4"]
+#   },
+#   "source_concept_class": {
+#     "in": ["s_concept1", "s_concept2"],
+#     "not_in": ["s_concept3", "s_concept4"]
+#   },
+#   "target_concept_class": {
+#     "in": ["t_concept1", "t_concept2"],
+#     "not_in": ["t_concept3", "t_concept4"]
+#   },
+#   "target_domain": {
+#     "in": ["t_domain1", "t_domain2"],
+#     "not_in": ["t_domain3", "t_domain4"]
+#   }
+# }
+# }]""")
+#     print(condition)
+#     get_lookups_sql(condition)
 
