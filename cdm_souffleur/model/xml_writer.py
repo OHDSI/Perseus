@@ -277,7 +277,7 @@ def delete_generated_sql():
 
 
 if __name__ == '__main__':
-    # pass
+    pass
     # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
@@ -315,56 +315,56 @@ if __name__ == '__main__':
     # with open('sources/mock_input/mock.json') as file:
     #     data = json.load(file)
     #     print(get_xml(data))
-    from ast import literal_eval
-    condition = literal_eval("""[{"lookup" : 
-{
-  "source_vocabulary": {
-    "in": ["s_voc1", "s_voc2"],
-    "not_in": ["s_voc3", "s_voc4"]
-  }
-  ,
-  "target_vocabulary": {
-    "in": ["t_voc1", "t_voc2"],
-    "not_in": ["t_voc3", "t_voc4"]
-  },
-  "source_concept_class": {
-    "in": ["s_concept1", "s_concept2"],
-    "not_in": ["s_concept3", "s_concept4"]
-  },
-  "target_concept_class": {
-    "in": ["t_concept1", "t_concept2"],
-    "not_in": ["t_concept3", "t_concept4"]
-  },
-  "target_domain": {
-    "in": ["t_domain1", "t_domain2"],
-    "not_in": ["t_domain3", "t_domain4"]
-  }
-}
-},
-{"lookup2" : 
-{
-  "source_vocabulary": {
-    "in": ["s_voc1", "s_voc2"],
-    "not_in": ["s_voc3", "s_voc4"]
-  },
-  "target_vocabulary": {
-    "in": ["t_voc1", "t_voc2"],
-    "not_in": ["t_voc3", "t_voc4"]
-  },
-  "source_concept_class": {
-    "in": ["s_concept1", "s_concept2"],
-    "not_in": ["s_concept3", "s_concept4"]
-  },
-  "target_concept_class": {
-    "in": ["t_concept1", "t_concept2"],
-    "not_in": ["t_concept3", "t_concept4"]
-  },
-  "target_domain": {
-    "in": ["t_domain1", "t_domain2"],
-    "not_in": ["t_domain3", "t_domain4"]
-  }
-}
-}]""")
-    print(condition)
-    get_lookups_sql(condition)
+#     from ast import literal_eval
+#     condition = literal_eval("""[{"lookup" :
+# {
+#   "source_vocabulary": {
+#     "in": ["s_voc1", "s_voc2"],
+#     "not_in": ["s_voc3", "s_voc4"]
+#   }
+#   ,
+#   "target_vocabulary": {
+#     "in": ["t_voc1", "t_voc2"],
+#     "not_in": ["t_voc3", "t_voc4"]
+#   },
+#   "source_concept_class": {
+#     "in": ["s_concept1", "s_concept2"],
+#     "not_in": ["s_concept3", "s_concept4"]
+#   },
+#   "target_concept_class": {
+#     "in": ["t_concept1", "t_concept2"],
+#     "not_in": ["t_concept3", "t_concept4"]
+#   },
+#   "target_domain": {
+#     "in": ["t_domain1", "t_domain2"],
+#     "not_in": ["t_domain3", "t_domain4"]
+#   }
+# }
+# },
+# {"lookup2" :
+# {
+#   "source_vocabulary": {
+#     "in": ["s_voc1", "s_voc2"],
+#     "not_in": ["s_voc3", "s_voc4"]
+#   },
+#   "target_vocabulary": {
+#     "in": ["t_voc1", "t_voc2"],
+#     "not_in": ["t_voc3", "t_voc4"]
+#   },
+#   "source_concept_class": {
+#     "in": ["s_concept1", "s_concept2"],
+#     "not_in": ["s_concept3", "s_concept4"]
+#   },
+#   "target_concept_class": {
+#     "in": ["t_concept1", "t_concept2"],
+#     "not_in": ["t_concept3", "t_concept4"]
+#   },
+#   "target_domain": {
+#     "in": ["t_domain1", "t_domain2"],
+#     "not_in": ["t_domain3", "t_domain4"]
+#   }
+# }
+# }]""")
+#     print(condition)
+#     get_lookups_sql(condition)
 
