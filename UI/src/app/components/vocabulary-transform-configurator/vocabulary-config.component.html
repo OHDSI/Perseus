@@ -1,13 +1,20 @@
 <mat-card *ngIf="vocabularies">
+  <mat-card-header> Name </mat-card-header>
   <mat-card-content>
     <mat-form-field class="lookup-name" [floatLabel]="'never'">
       <mat-icon matPrefix>edit</mat-icon>
       <mat-label>enter configuration name</mat-label>
-      <input #configname matInput [(ngModel)]="lookupname" />
+      <input
+        #configname
+        matInput
+        [formControl]="lookupnameControl"
+        [required]="'true'"
+      />
     </mat-form-field>
     <app-vocabulary-dropdown
       [vocabulary]="availableLookups"
       [ismultipe]="'false'"
+      [showDefaultOption]="'true'"
       (value)="onLookupSelected($event)"
     >
     </app-vocabulary-dropdown>
@@ -15,12 +22,14 @@
     <mat-tab-group>
       <mat-tab label="Concept">
         <app-concept-config
-          [conceptConfig]="conceptConfig"
+          [conceptConfig]="vocabularyConfig.conceptConfig"
+          (outConfig)="outConfigHandler($event)"
         ></app-concept-config>
       </mat-tab>
       <mat-tab label="Source Concept">
         <app-concept-config
-          [conceptConfig]="sourceConceptConfig"
+          [conceptConfig]="vocabularyConfig.sourceConceptConfig"
+          (outConfig)="outConfigHandler($event)"
         ></app-concept-config>
       </mat-tab>
       <mat-tab label="Type"> Type (under construction) </mat-tab>

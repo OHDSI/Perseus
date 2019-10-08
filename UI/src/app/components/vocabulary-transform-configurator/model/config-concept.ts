@@ -1,10 +1,10 @@
-import { VocabularyBlock } from '../vocabulary-block/vocabulary-block.component';
+import { VocabularyBlock } from '../concept-config/vocabulary-block/vocabulary-block.component';
 import { DictionaryItem } from '../../vocabulary-search-select/model/vocabulary';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
 
 export class ConceptConfig {
   get asArray(): VocabularyBlock[] {
-    return Array.from(this.model.values());
+    return Array.from(this.model.values()).sort((a, b) => (a.order - b.order));
   }
 
   name: string;
@@ -26,7 +26,8 @@ export class ConceptConfig {
   addVocabularyConfig(
     key: string,
     configurationName: string,
-    vocabulary: IVocabulary
+    vocabulary: IVocabulary,
+    order: number
   ) {
     if (!vocabulary) {
       return;
@@ -35,20 +36,26 @@ export class ConceptConfig {
       key,
       name: configurationName,
       in: vocabulary.payload.map(item => new DictionaryItem(item)),
-      notin: vocabulary.payload.map(item => new DictionaryItem(item))
+      notin: vocabulary.payload.map(item => new DictionaryItem(item)),
+      order
     };
-    this.updateConfiguration(key, config);
-  }
 
-  updateConfiguration(key: string, value: VocabularyBlock) {
     if (this.model.has(key)) {
       this.model.delete(key);
     }
 
-    this.model.set(key, value);
+    this.model.set(key, config);
   }
 
-  serialyze() {
+  updateVocabularyBlock(block: VocabularyBlock) {
+    if (this.model.has(block.key)) {
+      this.model.delete(block.key);
+    }
+
+    this.model.set(block.key, block);
+  }
+
+  serialize() {
     // const modelFlat = Object.values(this.model);
     const config = {};
     const lookupConfig = this.model.forEach((value, key) => {

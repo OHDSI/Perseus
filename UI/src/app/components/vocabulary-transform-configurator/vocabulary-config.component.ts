@@ -5,6 +5,8 @@ import { ConceptConfig } from './model/config-concept';
 import { VocabularyConfig } from './model/vocabulary-config';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
+import { MatSnackBar } from '@angular/material';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-vocabulary-config',
@@ -13,44 +15,43 @@ import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 })
 export class VocabularyConfigComponent implements OnInit, OnChanges {
   @Input() vocabularies: IVocabulary[];
-
-  @Input() lookups: any[] = [
-    {
-      name: 'default',
-      payload: new VocabularyConfig('default', [])
-    }
-  ];
+  @Input() lookups: any[];
 
   get availableLookups(): DictionaryItem[] {
     return this.availablelookups;
   }
 
-  get conceptConfig(): ConceptConfig {
-    return this.vocabularyConfig.conceptConfig;
-  }
+  lookupnameControl = new FormControl();
 
-  get sourceConceptConfig(): ConceptConfig {
-    return this.vocabularyConfig.sourceConceptConfig;
-  }
-
-  constructor() {}
-
-  lookupname = '';
-  private vocabularyConfig: VocabularyConfig;
+  vocabularyConfig: VocabularyConfig;
   private configs: VocabularyConfig[] = [];
   private availablelookups: DictionaryItem[];
+
+  constructor(private snakbar: MatSnackBar) {
+    this.lookups = [];
+  }
 
   save = new Command({
     execute: () => {
       this.configs.push(this.vocabularyConfig);
       this.lookups.push({
-        name: this.lookupname,
+        name: this.lookupnameControl.value,
         payload: this.vocabularyConfig
       });
 
-      this.updateAvailableLokkups();
+      this.updateAvailableLookups();
+
+      this.snakbar.open(
+        `Lookup "${this.lookupnameControl.value}" has been added`,
+        ' DISMISS ',
+        { duration: 3000 }
+      );
+
+      this.lookupnameControl.reset();
     },
-    canExecute: () => true
+    canExecute: () => {
+      return this.lookupnameControl.valid;
+    }
   });
 
   delete = new Command({
@@ -67,31 +68,35 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.vocabularies) {
-      this.vocabularyConfig = new VocabularyConfig(
-        this.lookupname,
-        this.vocabularies
-      );
+      this.vocabularyConfig = new VocabularyConfig(this.vocabularies);
 
-      this.updateAvailableLokkups();
+      this.updateAvailableLookups();
     }
   }
 
-  updateAvailableLokkups() {
-    this.availablelookups = this.lookups
-        ? [...this.lookups.map(l => new DictionaryItem(l.name))]
-        : [];
+  updateAvailableLookups() {
+    const hash = new Set<string>();
+    this.lookups.forEach(e => {
+      hash.add(e.name);
+    });
+
+    this.availablelookups = Array.from(hash.values()).map(e => new DictionaryItem(e));
   }
 
   onLookupSelected(vocabulary: IVocabulary) {
-    if (typeof vocabulary === 'undefined') {
-      this.lookupname = '';
+    // TODO Error Save and Load configuration
+    if (!this.lookupnameControl.valid && !vocabulary) {
+      return;
+    } else if (vocabulary) {
+      this.lookupnameControl.setValue(vocabulary.name);
+      const index = this.lookups.findIndex(l => l.name === vocabulary.name);
+      if (index > -1) {
+        this.vocabularyConfig = cloneDeep(this.lookups[index].payload);
+      }
+    }
+  }
 
-      // TODO Reset all configurations
-    }
-    this.lookupname = vocabulary.name;
-    const index = this.lookups.findIndex(l => l.name === vocabulary.name);
-    if (index > -1) {
-      this.vocabularyConfig = cloneDeep(this.lookups[index].payload);
-    }
+  outConfigHandler(event: ConceptConfig) {
+    console.log(event);
   }
 }

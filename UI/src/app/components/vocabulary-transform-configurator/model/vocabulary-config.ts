@@ -20,35 +20,46 @@ export class VocabularyConfig {
   private sourceconceptConfig: ConceptConfig;
   private typeconfig: ConceptType;
 
-  constructor(private name: string, private vocabularies: IVocabulary[]) {
-    this.conceptconfig = new ConceptConfig(name);
+  constructor(private vocabularies: IVocabulary[]) {
+    this.init();
+  }
+
+  private init() {
+    this.conceptconfig = new ConceptConfig('concept');
+
     this.conceptconfig.addVocabularyConfig(
       'source_vocabulary',
       'Source Vocabulary',
-      this.findVocabulary('lookup')
+      this.findVocabulary('lookup'),
+      1
     );
     this.conceptconfig.addVocabularyConfig(
       'target_vocabulary',
       'Target Vocabulary',
-      this.findVocabulary('lookup')
+      this.findVocabulary('lookup'),
+      2
     );
     this.conceptconfig.addVocabularyConfig(
       'source_concept_class',
       'Source Concept Class',
-      this.findVocabulary('concept')
+      this.findVocabulary('concept'),
+      3
     );
     this.conceptconfig.addVocabularyConfig(
       'target_concept_class',
       'Target Concept Class',
-      this.findVocabulary('concept')
+      this.findVocabulary('concept'),
+      4
     );
     this.conceptconfig.addVocabularyConfig(
       'target_domain',
       'Target Domain',
-      this.findVocabulary('domain')
+      this.findVocabulary('domain'),
+      5
     );
 
     this.sourceconceptConfig = cloneDeep(this.conceptconfig);
+    this.sourceconceptConfig.name = 'sourceconcept';
     this.typeconfig = {};
   }
 

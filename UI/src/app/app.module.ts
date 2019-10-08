@@ -44,7 +44,7 @@ import { VocabulariesService } from './services/vocabularies.service';
 import { BaseComponent } from './components/base/base.component';
 import { VocabularyDropdownComponent } from './components/vocabulary-search-select/vocabulary-dropdown.component';
 import { VocabularyConfigComponent } from './components/vocabulary-transform-configurator/vocabulary-config.component';
-import { VocabularyBlockComponent } from './components/vocabulary-transform-configurator/vocabulary-block/vocabulary-block.component';
+import { VocabularyBlockComponent } from './components/vocabulary-transform-configurator/concept-config/vocabulary-block/vocabulary-block.component';
 import { ConceptConfigComponent } from './components/vocabulary-transform-configurator/concept-config/concept-config.component';
 
 @NgModule({

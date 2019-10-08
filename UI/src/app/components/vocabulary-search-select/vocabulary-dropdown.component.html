@@ -1,14 +1,14 @@
 <mat-form-field>
-  <mat-select [multiple]="isMultiple"
+  <mat-select [multiple]="ismultipe"
     [formControl]="vocabularySelect"
-    (selectionChange)="onValueSelected($event)"
-    placeholder="{{ vocabulary.name }}"
+    (openedChange)="onValuesSelected($event)"
+    placeholder="type to select"
   >
     <ngx-mat-select-search
       placeholderLabel="type to filter"
       [formControl]="vocabularyFilter"
     ></ngx-mat-select-search>
-    <mat-option>None</mat-option>
+    <mat-option *ngIf="showDefaultOption">None</mat-option>
     <mat-option
       *ngFor="let item of filteredVocabularyItems | async"
       [value]="item"

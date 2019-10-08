@@ -1,5 +1,5 @@
 <app-vocabulary-block
   *ngFor="let block of blocks"
   [vocabularyconfig]="conceptConfig.get(block.key)"
-  (value)="sourceVocabulary($event)"
+  (value)="onVocabularyBlockChanged($event, block)"
 ></app-vocabulary-block>

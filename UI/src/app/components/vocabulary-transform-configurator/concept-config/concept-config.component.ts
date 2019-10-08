@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { VocabularyBlock } from '../vocabulary-block/vocabulary-block.component';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { VocabularyBlock } from './vocabulary-block/vocabulary-block.component';
 import { ConceptConfig } from '../model/config-concept';
 
 @Component({
@@ -9,19 +9,31 @@ import { ConceptConfig } from '../model/config-concept';
 })
 export class ConceptConfigComponent implements OnInit {
   @Input() conceptConfig: ConceptConfig;
+  @Output() outConfig = new EventEmitter<ConceptConfig>();
 
   get blocks(): VocabularyBlock[] {
     return this.conceptConfig.asArray || [];
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  onVocabularyBlockChanged(event: any, block: any) {
+    const oldBlock = this.conceptConfig.get(block.key);
+
+    const vocabularyBlock: VocabularyBlock = {
+      name: oldBlock.name,
+      key: block.key,
+      selectedin: event.selectedin,
+      selectednotin: event.selectednotin,
+      in: oldBlock.in,
+      notin: oldBlock.notin,
+      order: oldBlock.order
+    };
+
+    this.conceptConfig.updateVocabularyBlock(vocabularyBlock);
+
+    this.outConfig.emit(this.conceptConfig);
   }
-
-  sourceVocabulary(event: VocabularyBlock) {
-    const key = 'source_vocabulary';
-    // this.updateModel(key, event);
-  }
-
 }
