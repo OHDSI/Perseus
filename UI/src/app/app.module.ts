@@ -47,6 +47,7 @@ import { VocabularyConfigComponent } from './components/vocabulary-transform-con
 import { VocabularyBlockComponent } from './components/vocabulary-transform-configurator/concept-config/vocabulary-block/vocabulary-block.component';
 import { ConceptConfigComponent } from './components/vocabulary-transform-configurator/concept-config/concept-config.component';
 import { VocabularyConditionComponent } from './components/vocabulary-transform-configurator/vocabulary-condition/vocabulary-condition.component';
+import { HighlightConceptDirective } from './components/comfy/directives/highlight-concept.directive';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { VocabularyConditionComponent } from './components/vocabulary-transform-
     VocabularyBlockComponent,
     BaseComponent,
     ConceptConfigComponent,
-    VocabularyConditionComponent
+    VocabularyConditionComponent,
+    HighlightConceptDirective
   ],
   entryComponents: [
     BridgeButtonComponent,

@@ -151,7 +151,7 @@
     }
 
     &.caption {
-      width: 150px;
+      width: 200px;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
@@ -198,6 +198,9 @@ div[highlighted=true] {
   overflow-y:scroll;
 }
 
+div[concept=true] {
+  color:red;
+}
 
 
 

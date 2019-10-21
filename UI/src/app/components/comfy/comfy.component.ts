@@ -24,7 +24,10 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { Subscription, merge } from 'rxjs';
 import { startWith, map, switchMap, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
-import { VocabulariesService, IVocabulary } from 'src/app/services/vocabularies.service';
+import {
+  VocabulariesService,
+  IVocabulary
+} from 'src/app/services/vocabularies.service';
 
 @Component({
   selector: 'app-comfy',
@@ -48,20 +51,6 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.highlitedtables;
   }
 
-  constructor(
-    private dataService: DataService,
-    private vocabulariesService: VocabulariesService,
-    private stateService: StateService,
-    private mappingDialog: MatDialog,
-    private bridgeService: BridgeService,
-    private snakbar: MatSnackBar
-  ) {}
-  @ViewChild('scrollEl')
-  scrollEl: ElementRef<HTMLElement>;
-
-  @ViewChildren(CdkDrag)
-  dragEls: QueryList<CdkDrag>;
-
   busy = true;
   private highlitedtables: string[] = [];
 
@@ -77,6 +66,21 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   speed = 5;
   subs = new Subscription();
   private animationFrame: number | undefined;
+
+  constructor(
+    private dataService: DataService,
+    private vocabulariesService: VocabulariesService,
+    private stateService: StateService,
+    private mappingDialog: MatDialog,
+    private bridgeService: BridgeService,
+    private snakbar: MatSnackBar
+  ) {}
+
+  @ViewChild('scrollEl')
+  scrollEl: ElementRef<HTMLElement>;
+
+  @ViewChildren(CdkDrag)
+  dragEls: QueryList<CdkDrag>;
 
   ngAfterViewInit() {
     const onMove$ = this.dragEls.changes.pipe(

@@ -21,7 +21,7 @@
       >
       </app-vocabulary-dropdown>
     </div>
-    <mat-tab-group>
+    <mat-tab-group [dynamicHeight]="true">
       <mat-tab label="Concept">
         <app-concept-config
           [conceptConfig]="vocabularyConfig.conceptConfig"

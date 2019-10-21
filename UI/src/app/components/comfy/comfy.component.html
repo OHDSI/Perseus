@@ -3,7 +3,7 @@
     In order to make mapping, move source table to the target table
   </div>
   <!--experimental-->
-  <app-vocabulary-config [vocabularies]="vocabularies">
+  <app-vocabulary-config *ngIf="false" [vocabularies]="vocabularies">
   </app-vocabulary-config>
   <!--experimental-->
   <div class="comfy">
@@ -67,6 +67,9 @@
               *ngFor="let tableName of target[targetName].data"
             >
               <div
+                concept="{{tableName}}"
+                matTooltip="{{ tableName }}"
+                [matTooltipPosition]="'right'"
                 class="table-description target caption"
                 (click)="openMapping(tableName)"
               >
