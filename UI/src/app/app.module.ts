@@ -46,6 +46,7 @@ import { VocabularyDropdownComponent } from './components/vocabulary-search-sele
 import { VocabularyConfigComponent } from './components/vocabulary-transform-configurator/vocabulary-config.component';
 import { VocabularyBlockComponent } from './components/vocabulary-transform-configurator/concept-config/vocabulary-block/vocabulary-block.component';
 import { ConceptConfigComponent } from './components/vocabulary-transform-configurator/concept-config/concept-config.component';
+import { VocabularyConditionComponent } from './components/vocabulary-transform-configurator/vocabulary-condition/vocabulary-condition.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { ConceptConfigComponent } from './components/vocabulary-transform-config
     VocabularyConfigComponent,
     VocabularyBlockComponent,
     BaseComponent,
-    ConceptConfigComponent
+    ConceptConfigComponent,
+    VocabularyConditionComponent
   ],
   entryComponents: [
     BridgeButtonComponent,

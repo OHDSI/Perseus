@@ -1,24 +1,26 @@
 <mat-card *ngIf="vocabularies">
-  <mat-card-header> Name </mat-card-header>
   <mat-card-content>
-    <mat-form-field class="lookup-name" [floatLabel]="'never'">
-      <mat-icon matPrefix>edit</mat-icon>
-      <mat-label>enter configuration name</mat-label>
-      <input
-        #configname
-        matInput
-        [formControl]="lookupnameControl"
-        [required]="'true'"
-      />
-    </mat-form-field>
-    <app-vocabulary-dropdown
-      [vocabulary]="availableLookups"
-      [ismultipe]="'false'"
-      [showDefaultOption]="'true'"
-      (value)="onLookupSelected($event)"
-    >
-    </app-vocabulary-dropdown>
-
+    <div class="vocabularies-header">
+      <span class="configuration-element">Configuration:</span>
+      <app-vocabulary-dropdown
+        class="configuration-element"
+        [vocabulary]="availableLookups"
+        [ismultipe]="'false'"
+        [showDefaultOption]="'true'"
+        (value)="onLookupSelected($event)"
+      >
+      </app-vocabulary-dropdown>
+      <span class="source-filed-label">Source fileds:</span>
+      <app-vocabulary-dropdown
+        class="source-filed-lookup"
+        class="configuration-element"
+        [vocabulary]="sourcefields"
+        [ismultipe]="'true'"
+        [showDefaultOption]="'true'"
+        (value)="onSourceFieldSelected($event)"
+      >
+      </app-vocabulary-dropdown>
+    </div>
     <mat-tab-group>
       <mat-tab label="Concept">
         <app-concept-config
@@ -34,8 +36,23 @@
       </mat-tab>
       <mat-tab label="Type"> Type (under construction) </mat-tab>
     </mat-tab-group>
+    <app-vocabulary-condition></app-vocabulary-condition>
   </mat-card-content>
   <mat-dialog-actions>
+    <mat-form-field
+      appearance="outline"
+      class="lookup-name"
+      [floatLabel]="'never'"
+    >
+      <mat-icon matPrefix>edit</mat-icon>
+      <mat-label>enter configuration name</mat-label>
+      <input
+        #configname
+        matInput
+        [formControl]="lookupnameControl"
+        [required]="'true'"
+      />
+    </mat-form-field>
     <button mat-button (click)="save.execute()" [disabled]="!save.canExecute()">
       Save
     </button>

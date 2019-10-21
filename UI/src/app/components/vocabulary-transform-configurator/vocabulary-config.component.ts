@@ -15,6 +15,7 @@ import { FormControl, Validators } from '@angular/forms';
 })
 export class VocabularyConfigComponent implements OnInit, OnChanges {
   @Input() vocabularies: IVocabulary[];
+  @Input() sourcefields: string[] = [];
   @Input() lookups: any[];
 
   get availableLookups(): DictionaryItem[] {
@@ -33,10 +34,12 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
 
   save = new Command({
     execute: () => {
-      this.configs.push(this.vocabularyConfig);
+      const configCopy = cloneDeep(this.vocabularyConfig);
+
+      this.configs.push(configCopy);
       this.lookups.push({
         name: this.lookupnameControl.value,
-        payload: this.vocabularyConfig
+        payload: configCopy
       });
 
       this.updateAvailableLookups();
@@ -80,7 +83,9 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
       hash.add(e.name);
     });
 
-    this.availablelookups = Array.from(hash.values()).map(e => new DictionaryItem(e));
+    this.availablelookups = Array.from(hash.values()).map(
+      e => new DictionaryItem(e)
+    );
   }
 
   onLookupSelected(vocabulary: IVocabulary) {
@@ -95,6 +100,8 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
       }
     }
   }
+
+  onSourceFieldSelected(event: any) {}
 
   outConfigHandler(event: ConceptConfig) {
     console.log(event);
