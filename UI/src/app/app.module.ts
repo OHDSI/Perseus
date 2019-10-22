@@ -43,11 +43,13 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { VocabulariesService } from './services/vocabularies.service';
 import { BaseComponent } from './components/base/base.component';
 import { VocabularyDropdownComponent } from './components/vocabulary-search-select/vocabulary-dropdown.component';
-import { VocabularyConfigComponent } from './components/vocabulary-transform-configurator/vocabulary-config.component';
 import { VocabularyBlockComponent } from './components/vocabulary-transform-configurator/concept-config/vocabulary-block/vocabulary-block.component';
 import { ConceptConfigComponent } from './components/vocabulary-transform-configurator/concept-config/concept-config.component';
 import { VocabularyConditionComponent } from './components/vocabulary-transform-configurator/vocabulary-condition/vocabulary-condition.component';
 import { HighlightConceptDirective } from './components/comfy/directives/highlight-concept.directive';
+import { VocabularyConfigComponent } from './components/vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
+import { TransformConfigComponent } from './components/vocabulary-transform-configurator/transform-config.component';
+import { ConditionDialogComponent } from './components/vocabulary-transform-configurator/condition-dialog/condition-dialog.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +77,9 @@ import { HighlightConceptDirective } from './components/comfy/directives/highlig
     BaseComponent,
     ConceptConfigComponent,
     VocabularyConditionComponent,
-    HighlightConceptDirective
+    HighlightConceptDirective,
+    TransformConfigComponent,
+    ConditionDialogComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
@@ -85,7 +89,8 @@ import { HighlightConceptDirective } from './components/comfy/directives/highlig
     MappingPopupComponent,
     ValuesPopupComponent,
     OpenMappingDialogComponent,
-    AddConstantPopupComponent
+    AddConstantPopupComponent,
+    ConditionDialogComponent
   ],
   imports: [
     BrowserModule,

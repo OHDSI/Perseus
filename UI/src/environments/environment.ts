@@ -2,9 +2,20 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+const CONCEPT_TABLES = [
+  'CONDITION_OCCURRENCE',
+  'DEVICE_EXPOSURE',
+  'DRUG_EXPOSURE',
+  'MEASUREMENT',
+  'OBSERVATION',
+  'PROCEDURE_OCCURRENCE',
+  'SPECIMEN'
+];
+
 export const environment = {
   production: false,
-  url: 'http://127.0.0.1:5000'
+  url: 'http://127.0.0.1:5000',
+  conceptTables: CONCEPT_TABLES
 };
 
 /*

@@ -6,16 +6,7 @@ import {
   OnInit,
   OnChanges
 } from '@angular/core';
-
-const CONCEPT_TABLES = [
-  'CONDITION_OCCURRENCE',
-  'DEVICE_EXPOSURE',
-  'DRUG_EXPOSURE',
-  'MEASUREMENT',
-  'OBSERVATION',
-  'PROCEDURE_OCCURRENCE',
-  'SPECIMEN'
-];
+import { environment } from 'src/environments/environment.prod';
 
 @Directive({
   selector: '[concept]'
@@ -44,7 +35,7 @@ export class HighlightConceptDirective implements OnChanges {
 
   hasConcept(tablename: string): boolean {
     return (
-      CONCEPT_TABLES.findIndex(
+      environment.conceptTables.findIndex(
         conceptTable => tablename.toUpperCase() === conceptTable.toUpperCase()
       ) > -1
     );

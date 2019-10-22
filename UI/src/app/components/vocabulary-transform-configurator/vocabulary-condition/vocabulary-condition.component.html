@@ -6,12 +6,12 @@
     [vocabulary]="sourcefields"
     [ismultipe]="'false'"
     [showDefaultOption]="'true'"
-    (value)="onLookupSelected($event)"
+    (value)="onSourceFieldSelected($event)"
   >
   </app-vocabulary-dropdown>
   <mat-form-field class="vocabulary-condition-element">
     <mat-label>is</mat-label>
-    <mat-select>
+    <mat-select [(value)]="result.operator">
       <mat-option *ngFor="let operator of operators" [value]="operator">
         {{ operator }}
       </mat-option>
@@ -20,7 +20,6 @@
   <mat-form-field class="vocabulary-condition-element condition-value" [floatLabel]="'never'">
     <mat-label>enter vaule</mat-label>
     <input
-      type="number"
       #configname
       matInput
       [formControl]="conditionValue"

@@ -9,10 +9,11 @@
 
 .vocabularies-header{
   display: grid;
-  grid-template-columns: 100px 175px;
+  grid-template-columns: 100px 175px 75px;
   align-items: center;
 }
 
-.tab{
-  height: 275px;
+.add-configuration {
+  margin-left: 7px;
 }
+
