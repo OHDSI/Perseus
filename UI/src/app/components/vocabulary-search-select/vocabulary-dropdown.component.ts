@@ -62,6 +62,14 @@ export class VocabularyDropdownComponent extends BaseComponent
     }
   }
 
+  setValue(value: string) {
+    const idx = this.vocabulary.findIndex(item => value === item.name);
+    if (idx > -1) {
+      this.selected = [this.vocabulary[idx]];
+      this.vocabularySelect.setValue(this.vocabulary[idx]);
+    }
+  }
+
   private filter() {
     if (!this.vocabulary) {
       return;

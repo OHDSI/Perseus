@@ -23,16 +23,16 @@
       </app-vocabulary-dropdown>
       <div></div>
       <span class="source-filed-label">Condition:</span>
-      <app-vocabulary-dropdown
+      <app-vocabulary-dropdown #conditionDropDown
         class="source-filed-lookup"
         class="configuration-element"
         [ismultipe]="'false'"
         [vocabulary]="conditions"
         [showDefaultOption]="'true'"
-        (value)="onConditionSelected($event)"
+        (value)="onConditionSelected($event, conditionDropDown)"
       >
       </app-vocabulary-dropdown>
-      <button class="add-configuration" mat-button (click)="openConditionsDialog()">Add</button>
+      <button class="add-configuration" mat-button (click)="openConditionsDialog(conditionDropDown)">Add</button>
     </div>
     <app-vocabulary-config
       [vocabularyConfig]="vocabularyConfig"

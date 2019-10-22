@@ -12,8 +12,7 @@ import {
 import { Command } from 'src/app/infrastructure/command';
 import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import { ITable } from 'src/app/models/table';
-import { environment } from 'src/environments/environment';
-import { VocabularyConditionResult } from './vocabulary-condition/vocabulary-condition.component';
+import { VocabularyDropdownComponent } from '../vocabulary-search-select/vocabulary-dropdown.component';
 
 @Component({
   selector: 'app-transform-config',
@@ -33,9 +32,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   get vocabularyConfig(): VocabularyConfig {
-    // Stub
-    return this.transformationConfig.conditions[0].vocabularyConfig;
+    return this.pvocabularyConfig;
   }
+
+  private pvocabularyConfig: VocabularyConfig;
 
   get conditions(): DictionaryItem[] {
     return this.pconditions;
@@ -118,7 +118,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.updateConfigurations();
       this.updateSelectedSourceFields();
-      this.updateConditions();
+      this.updateConditionsVariable();
+      this.setLastAddedVocabularyConfig();
     }
   }
 
@@ -133,7 +134,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     );
   }
 
-  private updateConditions() {
+  private updateConditionsVariable() {
     this.pconditions = this.transformationConfig.conditions.map(
       c => new DictionaryItem(c.name)
     );
@@ -143,6 +144,23 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.pselectedSourceFileds = this.transformationConfig.selectedSourceFields.map(
       c => new DictionaryItem(c)
     );
+  }
+
+  private setLastAddedVocabularyConfig() {
+    this.pvocabularyConfig = this.transformationConfig.conditions[
+      this.transformationConfig.conditions.length - 1
+    ].vocabularyConfig;
+  }
+
+  private setVocabularyConfig(name: string) {
+    const index = this.transformationConfig.conditions.findIndex(
+      condition => condition.name === name
+    );
+    if (index > -1) {
+      this.pvocabularyConfig = this.transformationConfig.conditions[
+        index
+      ].vocabularyConfig;
+    }
   }
 
   onLookupSelected(vocabulary: IVocabulary) {
@@ -162,11 +180,29 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     }
   }
 
-  onConditionSelected(event: any) {}
+  onConditionSelected(
+    event: any,
+    conditionDropDown: VocabularyDropdownComponent
+  ) {
+    const conditionName = event.name;
+    const condition = this.transformationConfig.conditions.find(
+      c => c.name === conditionName
+    );
+
+    if (condition) {
+      this.updateConditionsVariable();
+
+      this.setVocabularyConfig(conditionName);
+
+      setTimeout(() => {
+        conditionDropDown.setValue(conditionName);
+      });
+    }
+  }
 
   onSourceFieldSelected(event: any) {}
 
-  openConditionsDialog() {
+  openConditionsDialog(conditionDropDown: VocabularyDropdownComponent) {
     const data = {
       sourceFields: this.sourceFileds,
       config: this.transformationConfig,
@@ -190,7 +226,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.transformationConfig.conditions.push(condition);
 
-      this.updateConditions();
+      this.updateConditionsVariable();
+
+      this.setLastAddedVocabularyConfig();
+
+      setTimeout(() => {
+        conditionDropDown.setValue(name);
+      });
     });
   }
 }
