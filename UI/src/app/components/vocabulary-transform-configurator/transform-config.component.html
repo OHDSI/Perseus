@@ -16,7 +16,8 @@
       <app-vocabulary-dropdown
         class="source-filed-lookup"
         class="configuration-element"
-        [vocabulary]="selectedSourceFieldsDictionary"
+        [selected]="selectedSourceFieldsDictionary"
+        [vocabulary]="sourceFiledsDictionary"
         [showDefaultOption]="'true'"
         (value)="onSourceFieldSelected($event)"
       >

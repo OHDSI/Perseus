@@ -3,7 +3,11 @@
     In order to make mapping, move source table to the target table
   </div>
   <!--experimental-->
-  <app-transform-config [vocabularies]="vocabularies" [sourceTables]="sourceTables">
+  <app-transform-config
+    [vocabularies]="vocabularies"
+    [sourceTables]="sourceTables"
+    [selectedSourceFields]="['age', 'agegrp']"
+  >
   </app-transform-config>
   <!--experimental-->
   <div class="comfy">
@@ -67,7 +71,7 @@
               *ngFor="let tableName of target[targetName].data"
             >
               <div
-                concept="{{tableName}}"
+                concept="{{ tableName }}"
                 matTooltip="{{ tableName }}"
                 [matTooltipPosition]="'right'"
                 class="table-description target caption"

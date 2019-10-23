@@ -57,6 +57,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   selectedCondition: DictionaryItem[];
   selectedConfiguration: DictionaryItem[];
+  sourceFiledsDictionary: DictionaryItem[];
 
   constructor(private snakbar: MatSnackBar, private addCondition: MatDialog) {
     this.transformationConfigs = [];
@@ -136,12 +137,17 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   ngOnInit() {}
 
   ngOnChanges() {
+    // test
     if (this.sourceTables) {
       this.sourceFileds = this.sourceTables
         .slice(1, 2)
         .map(table => table.rows)
         .reduce((p, k) => p.concat.apply(p, k), [])
         .map(t => t.name);
+    }
+
+    if (this.sourceFileds) {
+      this.sourceFiledsDictionary =  this.sourceFileds.map(name => new DictionaryItem(name));
     }
 
     if (this.vocabularies) {
@@ -159,7 +165,19 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.updateSelectedSourceFields();
       this.updateConditionsVariable();
       this.setLastAddedTransformatioNCondition();
-      this.selectTransformationCondition(this.transformationConfig.conditions[0].name);
+      this.selectTransformationCondition(
+        this.transformationConfig.conditions[0].name
+      );
+
+      setTimeout(() => {
+
+
+        if (this.selectedSourceFields) {
+          this.pselectedSourceFieldsDictionary = this.selectedSourceFields.map(
+            sorceFieldName => new DictionaryItem(sorceFieldName)
+          );
+        }
+      });
     }
   }
 
@@ -283,7 +301,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
         index
       ];
 
-      this.selectedCondition = [new DictionaryItem(this.ptransformationCondition.name)];
+      this.selectedCondition = [
+        new DictionaryItem(this.ptransformationCondition.name)
+      ];
     }
   }
 }

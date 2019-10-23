@@ -62,6 +62,7 @@ export class VocabularyDropdownComponent extends BaseComponent
     if (this.selected) {
       if (this.ismultipe) {
         this.vocabularySelect.setValue(this.selected);
+        this.matselect.writeValue(this.selected);
       } else {
         this.vocabularySelect.setValue(this.selected[0]);
         this.matselect.writeValue(this.selected[0]);
