@@ -7,12 +7,12 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import {
   TransformationConfig,
-  TransformationCondition
+  TransformationCondition,
+  TransformationConfigFactory
 } from './model/transformation-config';
 import { Command } from 'src/app/infrastructure/command';
 import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import { ITable } from 'src/app/models/table';
-import { VocabularyDropdownComponent } from '../vocabulary-search-select/vocabulary-dropdown.component';
 
 @Component({
   selector: 'app-transform-config',
@@ -22,7 +22,7 @@ import { VocabularyDropdownComponent } from '../vocabulary-search-select/vocabul
 export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() sourceFileds: string[];
   @Input() vocabularies: IVocabulary[];
-  @Input() selectedSourceFilelds: string[] = [];
+  @Input() selectedSourceFields: string[] = [];
   @Input() transformationConfigs: TransformationConfig[];
 
   @Input() sourceTables: ITable[]; // test
@@ -31,11 +31,11 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     return this.pconfigurations;
   }
 
-  get vocabularyConfig(): VocabularyConfig {
-    return this.pvocabularyConfig;
+  get transformationCondition(): TransformationCondition {
+    return this.ptransformationCondition;
   }
 
-  private pvocabularyConfig: VocabularyConfig;
+  private ptransformationCondition: TransformationCondition;
 
   get conditions(): DictionaryItem[] {
     return this.pconditions;
@@ -43,44 +43,84 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   private pconditions: DictionaryItem[];
 
-  get selectedSourceFileds(): DictionaryItem[] {
-    return this.pselectedSourceFileds;
+  get selectedSourceFieldsDictionary(): DictionaryItem[] {
+    return this.pselectedSourceFieldsDictionary;
   }
 
-  private pselectedSourceFileds: DictionaryItem[];
+  private pselectedSourceFieldsDictionary: DictionaryItem[];
 
-  lookupnameControl = new FormControl();
+  configurationNameControl = new FormControl();
 
-  private configs: TransformationConfig[] = [];
   private pconfigurations: DictionaryItem[];
   private transformationConfig: TransformationConfig;
+  private transformationConfigFactory: TransformationConfigFactory;
+
+  selectedCondition: DictionaryItem[];
+  selectedConfiguration: DictionaryItem[];
 
   constructor(private snakbar: MatSnackBar, private addCondition: MatDialog) {
     this.transformationConfigs = [];
   }
 
-  save = new Command({
+  create = new Command({
+    execute: () => {
+      const configName = this.configurationNameControl.value;
+      this.transformationConfig = this.transformationConfigFactory.createNew(
+        configName,
+        this.selectedSourceFields
+      );
+
+      this.transformationConfigs.push(this.transformationConfig);
+
+      console.log(
+        'Created configuration',
+        this.transformationConfig.conditions[0].vocabularyConfig.conceptConfig
+      );
+
+      this.snakbar.open(
+        `Configuration "${this.configurationNameControl.value}" has been created`,
+        ' DISMISS ',
+        { duration: 3000 }
+      );
+
+      this.configurationNameControl.reset();
+
+      this.updateConfigurations();
+
+      this.selectedConfiguration = [
+        new DictionaryItem(this.transformationConfig.name)
+      ];
+
+      // Select default condition of the new configuration
+      this.selectTransformationCondition(
+        this.transformationConfig.conditions[0].name
+      );
+    },
+    canExecute: () => this.configurationNameControl.valid
+  });
+
+  apply = new Command({
     execute: () => {
       const configCopy: TransformationConfig = cloneDeep(
         this.transformationConfig
       );
 
-      this.configs.push(configCopy);
       this.transformationConfigs.push(configCopy);
+
+      console.log(
+        'Saved configuration',
+        configCopy.conditions[0].vocabularyConfig.conceptConfig
+      );
 
       this.updateConfigurations();
 
       this.snakbar.open(
-        `Lookup "${this.lookupnameControl.value}" has been added`,
+        `Configuration "${this.transformationConfig.name}" has been saved`,
         ' DISMISS ',
         { duration: 3000 }
       );
-
-      this.lookupnameControl.reset();
     },
-    canExecute: () => {
-      return this.lookupnameControl.valid;
-    }
+    canExecute: () => true
   });
 
   delete = new Command({
@@ -105,85 +145,46 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     }
 
     if (this.vocabularies) {
-      const defaultTransformationCondition: TransformationCondition = {
-        name: 'default',
-        vocabularyConfig: new VocabularyConfig(this.vocabularies)
-      };
-
-      this.transformationConfig = {
-        name: 'default',
-        selectedSourceFields: this.selectedSourceFilelds,
-        conditions: [defaultTransformationCondition]
-      };
+      if (!this.transformationConfigFactory) {
+        this.transformationConfigFactory = new TransformationConfigFactory(
+          this.vocabularies
+        );
+        this.transformationConfig = this.transformationConfigFactory.createNew(
+          'default',
+          this.selectedSourceFields
+        );
+      }
 
       this.updateConfigurations();
       this.updateSelectedSourceFields();
       this.updateConditionsVariable();
-      this.setLastAddedVocabularyConfig();
+      this.setLastAddedTransformatioNCondition();
+      this.selectTransformationCondition(this.transformationConfig.conditions[0].name);
     }
   }
 
-  private updateConfigurations() {
-    const hash = new Set<string>();
-    this.transformationConfigs.forEach(e => {
-      hash.add(e.name);
-    });
-
-    this.pconfigurations = Array.from(hash.values()).map(
-      e => new DictionaryItem(e)
-    );
-  }
-
-  private updateConditionsVariable() {
-    this.pconditions = this.transformationConfig.conditions.map(
-      c => new DictionaryItem(c.name)
-    );
-  }
-
-  private updateSelectedSourceFields() {
-    this.pselectedSourceFileds = this.transformationConfig.selectedSourceFields.map(
-      c => new DictionaryItem(c)
-    );
-  }
-
-  private setLastAddedVocabularyConfig() {
-    this.pvocabularyConfig = this.transformationConfig.conditions[
-      this.transformationConfig.conditions.length - 1
-    ].vocabularyConfig;
-  }
-
-  private setVocabularyConfig(name: string) {
-    const index = this.transformationConfig.conditions.findIndex(
-      condition => condition.name === name
-    );
-    if (index > -1) {
-      this.pvocabularyConfig = this.transformationConfig.conditions[
-        index
-      ].vocabularyConfig;
-    }
-  }
-
-  onLookupSelected(vocabulary: IVocabulary) {
-    // TODO Error Save and Load configuration
-    if (!this.lookupnameControl.valid && !vocabulary) {
+  onConfigurationSelected(vocabulary: IVocabulary) {
+    if (!this.configurationNameControl.valid && !vocabulary) {
       return;
     } else if (vocabulary) {
-      this.lookupnameControl.setValue(vocabulary.name);
       const index = this.transformationConfigs.findIndex(
         l => l.name === vocabulary.name
       );
       if (index > -1) {
-        this.transformationConfig = cloneDeep(
-          this.transformationConfigs[index]
+        this.transformationConfig = this.transformationConfigs[index];
+
+        this.selectTransformationCondition(
+          this.transformationConfig.conditions[0].name
         );
       }
     }
   }
 
-  onConditionSelected(
-    event: any,
-    conditionDropDown: VocabularyDropdownComponent
-  ) {
+  onConditionSelected(event: any) {
+    if (!event) {
+      return;
+    }
+
     const conditionName = event.name;
     const condition = this.transformationConfig.conditions.find(
       c => c.name === conditionName
@@ -192,17 +193,15 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     if (condition) {
       this.updateConditionsVariable();
 
-      this.setVocabularyConfig(conditionName);
+      this.selectTransformationCondition(conditionName);
 
-      setTimeout(() => {
-        conditionDropDown.setValue(conditionName);
-      });
+      this.selectedCondition = [new DictionaryItem(conditionName)];
     }
   }
 
   onSourceFieldSelected(event: any) {}
 
-  openConditionsDialog(conditionDropDown: VocabularyDropdownComponent) {
+  openConditionsDialog() {
     const data = {
       sourceFields: this.sourceFileds,
       config: this.transformationConfig,
@@ -228,11 +227,63 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.updateConditionsVariable();
 
-      this.setLastAddedVocabularyConfig();
+      this.setLastAddedTransformatioNCondition();
 
-      setTimeout(() => {
-        conditionDropDown.setValue(name);
-      });
+      this.selectedCondition = [new DictionaryItem(name)];
     });
+  }
+
+  updateTransformationCondition(event: TransformationCondition) {
+    const index = this.transformationConfig.conditions.findIndex(
+      condition => condition.name === event.name
+    );
+    if (index > -1) {
+      this.transformationConfig.conditions[index] = event;
+      this.ptransformationCondition = this.transformationConfig.conditions[
+        index
+      ];
+    }
+  }
+
+  private updateConfigurations() {
+    const hash = new Set<string>();
+    this.transformationConfigs.forEach(e => {
+      hash.add(e.name);
+    });
+
+    this.pconfigurations = Array.from(hash.values()).map(
+      e => new DictionaryItem(e)
+    );
+  }
+
+  private updateConditionsVariable() {
+    this.pconditions = this.transformationConfig.conditions.map(
+      c => new DictionaryItem(c.name)
+    );
+  }
+
+  private updateSelectedSourceFields() {
+    this.pselectedSourceFieldsDictionary = this.transformationConfig.selectedSourceFields.map(
+      c => new DictionaryItem(c)
+    );
+  }
+
+  private setLastAddedTransformatioNCondition() {
+    this.ptransformationCondition = this.transformationConfig.conditions[
+      this.transformationConfig.conditions.length - 1
+    ];
+  }
+
+  private selectTransformationCondition(name: string) {
+    const index = this.transformationConfig.conditions.findIndex(
+      condition => condition.name === name
+    );
+    if (index > -1) {
+      this.ptransformationCondition = this.transformationConfig.conditions[
+        index
+      ];
+
+      this.selectedCondition = [new DictionaryItem(this.ptransformationCondition.name)];
+    }
   }
 }

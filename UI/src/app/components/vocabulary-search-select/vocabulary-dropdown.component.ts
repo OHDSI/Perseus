@@ -5,13 +5,15 @@ import {
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
-  OnChanges
+  OnChanges,
+  ViewChild
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
 import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
+import { MatSelect } from '@angular/material';
 
 @Component({
   selector: 'app-vocabulary-dropdown',
@@ -26,6 +28,8 @@ export class VocabularyDropdownComponent extends BaseComponent
   @Input() ismultipe = true;
   @Input() showDefaultOption = false;
   @Output() value = new EventEmitter<DictionaryItem[]>();
+
+  @ViewChild(MatSelect) matselect: MatSelect;
 
   vocabularySelect: FormControl = new FormControl();
   vocabularyFilter: FormControl = new FormControl();
@@ -54,6 +58,15 @@ export class VocabularyDropdownComponent extends BaseComponent
     if (this.vocabulary) {
       this.filteredVocabularyItems.next(this.vocabulary.slice());
     }
+
+    if (this.selected) {
+      if (this.ismultipe) {
+        this.vocabularySelect.setValue(this.selected);
+      } else {
+        this.vocabularySelect.setValue(this.selected[0]);
+        this.matselect.writeValue(this.selected[0]);
+      }
+    }
   }
 
   onValuesSelected(open: any) {
@@ -62,12 +75,8 @@ export class VocabularyDropdownComponent extends BaseComponent
     }
   }
 
-  setValue(value: string) {
-    const idx = this.vocabulary.findIndex(item => value === item.name);
-    if (idx > -1) {
-      this.selected = [this.vocabulary[idx]];
-      this.vocabularySelect.setValue(this.vocabulary[idx]);
-    }
+  compareFunction(o1: DictionaryItem, o2: DictionaryItem): boolean {
+    return o1 && o2 ? o1.name === o2.name : o1 === o2;
   }
 
   private filter() {

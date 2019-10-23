@@ -5,9 +5,10 @@
       <app-vocabulary-dropdown
         class="configuration-element"
         [vocabulary]="configurations"
-        [ismultipe]="'false'"
+        [selected]="selectedConfiguration"
+        [ismultipe]="false"
         [showDefaultOption]="'true'"
-        (value)="onLookupSelected($event)"
+        (value)="onConfigurationSelected($event)"
       >
       </app-vocabulary-dropdown>
       <div></div>
@@ -15,27 +16,35 @@
       <app-vocabulary-dropdown
         class="source-filed-lookup"
         class="configuration-element"
-        [vocabulary]="selectedSourceFilelds"
-        [ismultipe]="'true'"
+        [vocabulary]="selectedSourceFieldsDictionary"
         [showDefaultOption]="'true'"
         (value)="onSourceFieldSelected($event)"
       >
       </app-vocabulary-dropdown>
       <div></div>
       <span class="source-filed-label">Condition:</span>
-      <app-vocabulary-dropdown #conditionDropDown
+      <app-vocabulary-dropdown
+        #conditionDropDown
         class="source-filed-lookup"
         class="configuration-element"
-        [ismultipe]="'false'"
+        [ismultipe]="false"
         [vocabulary]="conditions"
+        [selected]="selectedCondition"
         [showDefaultOption]="'true'"
-        (value)="onConditionSelected($event, conditionDropDown)"
+        (value)="onConditionSelected($event)"
       >
       </app-vocabulary-dropdown>
-      <button class="add-configuration" mat-button (click)="openConditionsDialog(conditionDropDown)">Add</button>
+      <button
+        class="add-configuration"
+        mat-button
+        (click)="openConditionsDialog(conditionDropDown)"
+      >
+        Add
+      </button>
     </div>
     <app-vocabulary-config
-      [vocabularyConfig]="vocabularyConfig"
+      [transformationCondition]="transformationCondition"
+      (configOut)="updateTransformationCondition($event)"
     ></app-vocabulary-config>
   </mat-card-content>
   <mat-dialog-actions>
@@ -49,12 +58,24 @@
       <input
         #configname
         matInput
-        [formControl]="lookupnameControl"
+        [formControl]="configurationNameControl"
         [required]="'true'"
       />
     </mat-form-field>
-    <button mat-button (click)="save.execute()" [disabled]="!save.canExecute()">
-      Save
+
+    <button
+      mat-button
+      (click)="create.execute()"
+      [disabled]="!create.canExecute()"
+    >
+      Create New
+    </button>
+    <button
+      mat-button
+      (click)="apply.execute()"
+      [disabled]="!apply.canExecute()"
+    >
+      Apply
     </button>
     <button
       mat-button

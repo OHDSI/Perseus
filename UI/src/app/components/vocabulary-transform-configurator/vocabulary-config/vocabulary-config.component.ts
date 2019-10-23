@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { VocabularyConfig } from '../model/vocabulary-config';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { ConceptConfig } from '../model/config-concept';
+import { TransformationCondition } from '../model/transformation-config';
+import { VocabularyConfig } from '../model/vocabulary-config';
 
 @Component({
   selector: 'app-vocabulary-config',
@@ -8,14 +9,18 @@ import { ConceptConfig } from '../model/config-concept';
   styleUrls: ['./vocabulary-config.component.scss']
 })
 export class VocabularyConfigComponent implements OnInit {
-  @Input() vocabularyConfig: VocabularyConfig;
+  @Input() transformationCondition: TransformationCondition;
+  @Output() configOut = new EventEmitter<TransformationCondition>();
 
+  get vocabularyConfig(): VocabularyConfig {
+    return this.transformationCondition.vocabularyConfig;
+  }
   constructor() { }
 
   ngOnInit() {
   }
 
   outConfigHandler(event: ConceptConfig) {
-    console.log(event);
+    this.configOut.emit(this.transformationCondition);
   }
 }
