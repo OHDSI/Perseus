@@ -5,6 +5,8 @@ import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { BRIDGE_BUTTON_DATA } from './model/bridge-button-injector';
 import { BridgeButtonData } from './model/bridge-button-data';
+import { ConceptService } from '../comfy/services/concept.service';
+import { TransformConfigComponent } from '../vocabulary-transform-configurator/transform-config.component';
 
 @Component({
   selector: 'app-bridge-button',
@@ -15,9 +17,13 @@ export class BridgeButtonComponent {
   text = 'T';
   drawEntity: IConnector;
   active = false;
+
   private payloadObj: BridgeButtonData;
+  private insnantiationType = {'transform' : RulesPopupComponent, 'lookup': TransformConfigComponent};
+  private component: any;
 
   constructor(
+    conceptService: ConceptService,
     private overlayService: OverlayService,
     @Inject(BRIDGE_BUTTON_DATA) payload: BridgeButtonData
   ) {
@@ -25,11 +31,16 @@ export class BridgeButtonComponent {
       connector: payload.connector,
       arrowCache: payload.arrowCache
     };
+
+    this.component = this.insnantiationType.transform;
+
+    if (conceptService.isSpecial(payload.connector)) {
+      this.text = 'L';
+      this.component = this.insnantiationType.lookup;
+    }
   }
 
   openRulesDialog(anchor) {
-    const component = RulesPopupComponent;
-
     this.payloadObj.connector.select();
 
     const dialogOptions: OverlayConfigOptions = {
@@ -43,7 +54,7 @@ export class BridgeButtonComponent {
     const dialogRef = this.overlayService.open(
       dialogOptions,
       anchor,
-      component
+      this.component
     );
 
     dialogRef.close$.subscribe(configOptions => {

@@ -86,6 +86,7 @@ import { ConceptService } from './components/comfy/services/concept.service';
     BridgeButtonComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
+    TransformConfigComponent,
     PreviewPopupComponent,
     MappingPopupComponent,
     ValuesPopupComponent,
