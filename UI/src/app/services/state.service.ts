@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ITable, ITableOptions, Table } from '../models/table';
 import { RowOptions, Row } from '../models/row';
 import { Area } from '../models/area';
+import { ConceptService } from '../components/comfy/services/concept.service';
 
 export interface IState {
   source: StateItem;
@@ -46,7 +47,7 @@ export class StateService {
     }
   };
 
-  constructor() {
+  constructor(private conceptService: ConceptService) {
 
   }
 
@@ -54,42 +55,9 @@ export class StateService {
     this._state[area].tables = tables;
 
     if (area === 'target' && this._state[area].tables.length > 0) {
-      const res = [this.initSpecialtable()];
+      const res = [this.conceptService.initSpecialtable()];
       this._state[area].tables = res.concat.apply(res, this._state[area].tables);
     }
-  }
-
-  initSpecialtable() {
-    const conceptRowOptions: RowOptions = {
-      id: 1,
-      tableId: -100,
-      tableName: 'SPECIAL',
-      name: 'CONCEPT',
-      type: 'any',
-      comments: [],
-      area: Area.Target
-    };
-
-    const commonRowOptions: RowOptions = {
-      id: 2,
-      tableId: -100,
-      tableName: 'SPECIAL',
-      name: 'COMMON',
-      type: 'any',
-      comments: [],
-      area: Area.Target
-    };
-
-    const tableOptions: ITableOptions = {
-      id: -100,
-      area: Area.Target,
-      name: 'SPECIAL',
-      rows: [new Row(conceptRowOptions), new Row(commonRowOptions)],
-      visible: true,
-      expanded: true
-    };
-
-    return new Table(tableOptions);
   }
 
   findTable(name: string): ITable {

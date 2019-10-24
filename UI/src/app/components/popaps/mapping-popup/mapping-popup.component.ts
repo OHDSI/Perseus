@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConceptService } from '../../comfy/services/concept.service';
 
@@ -6,7 +6,6 @@ import { ConceptService } from '../../comfy/services/concept.service';
   selector: 'app-mapping-popup',
   templateUrl: './mapping-popup.component.html',
   styleUrls: ['./mapping-popup.component.scss'],
-  providers: [ConceptService]
 })
 export class MappingPopupComponent {
   sourceTables = [];

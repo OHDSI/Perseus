@@ -50,6 +50,7 @@ import { HighlightConceptDirective } from './components/comfy/directives/highlig
 import { VocabularyConfigComponent } from './components/vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
 import { TransformConfigComponent } from './components/vocabulary-transform-configurator/transform-config.component';
 import { ConditionDialogComponent } from './components/vocabulary-transform-configurator/condition-dialog/condition-dialog.component';
+import { ConceptService } from './components/comfy/services/concept.service';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { ConditionDialogComponent } from './components/vocabulary-transform-conf
     UserSettings,
     RulesPopupService,
     VocabulariesService,
+    ConceptService,
     [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}]
   ],
   bootstrap: [AppComponent]

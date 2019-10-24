@@ -53,4 +53,37 @@ export class ConceptService {
 
     return conceptTablesRaw;
   }
+
+  initSpecialtable() {
+    const conceptRowOptions: RowOptions = {
+      id: 1,
+      tableId: -100,
+      tableName: 'SPECIAL',
+      name: 'CONCEPT',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions: RowOptions = {
+      id: 2,
+      tableId: -100,
+      tableName: 'SPECIAL',
+      name: 'COMMON',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const tableOptions: ITableOptions = {
+      id: -100,
+      area: Area.Target,
+      name: 'SPECIAL',
+      rows: [new Row(conceptRowOptions), new Row(commonRowOptions)],
+      visible: true,
+      expanded: true
+    };
+
+    return new Table(tableOptions);
+  }
 }
