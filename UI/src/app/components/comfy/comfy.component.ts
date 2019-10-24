@@ -255,10 +255,11 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
       const index = sourceTablesNames.findIndex(name => name === table.name);
       return index > -1;
     });
+
     const dialog = this.mappingDialog.open(MappingPopupComponent, {
       width: '90vw',
       height: '90vh',
-      data: { source: sourcetable, target: targettable }
+      data: { source: sourcetable, target: targettable, allTarget: this.state.target.tables}
     });
 
     dialog.afterClosed().subscribe(save => {});
