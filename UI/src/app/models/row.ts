@@ -24,7 +24,7 @@ export interface IRow {
   tableName: string;
   name: string;
   type: string;
-  area: Area;
+  area: string;
   values: any[];
   comments: IComment[];
   visible?: boolean;
@@ -32,7 +32,7 @@ export interface IRow {
   constant: string;
   removeConnections(): void;
 }
-export class Row {
+export class Row implements IRow {
   id: number;
   tableId: number;
   tableName: string;
@@ -41,7 +41,7 @@ export class Row {
   area: string;
   comments: IComment[];
   constant: string;
-
+  values: any[];
   visible = true;
   connections = [];
   htmlElement: any = null;

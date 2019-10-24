@@ -9,13 +9,31 @@ export interface ITable {
     visible: boolean;
     expanded: boolean;
 }
+
+
+export interface ITableOptions {
+  id?: number;
+  area?: Area;
+  name?: string;
+  rows?: IRow[];
+  visible?: boolean;
+  expanded?: boolean;
+}
+
 export class Table {
-    constructor(
-        public id,
-        public area,
-        public name,
-        public rows,
-        public visible = true,
-        public expanded = false
-    ) { }
+   id: number;
+   area: Area;
+   name: string;
+   rows: IRow[];
+   visible = true;
+   expanded = false;
+
+  constructor(options: ITableOptions = {}) {
+    this.id = options.id;
+    this.area = options.area;
+    this.name = options.name;
+    this.rows = options.rows;
+    this.visible = options.visible || true;
+    this.expanded = options.expanded || false;
+   }
 }

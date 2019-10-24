@@ -5,7 +5,7 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { StateService } from './state.service';
 import { Row, RowOptions } from 'src/app/models/row';
-import { Table } from 'src/app/models/table';
+import { Table, ITableOptions } from 'src/app/models/table';
 import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
 
@@ -79,7 +79,14 @@ export class DataService {
         rows.push(row);
       }
 
-      tables.push(new Table(id, area, name, rows));
+      const tableOptions: ITableOptions = {
+        id,
+        area,
+        name,
+        rows
+      };
+
+      tables.push(new Table(tableOptions));
     }
     return tables;
   }
