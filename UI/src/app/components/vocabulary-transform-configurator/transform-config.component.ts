@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { IVocabulary } from 'src/app/services/vocabularies.service';
+import { Component, OnInit, Input, OnChanges, Inject } from '@angular/core';
+import {
+  IVocabulary,
+  VocabulariesService
+} from 'src/app/services/vocabularies.service';
 import { FormControl } from '@angular/forms';
 import { VocabularyConfig } from './model/vocabulary-config';
 import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
@@ -13,6 +16,11 @@ import {
 import { Command } from 'src/app/infrastructure/command';
 import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import { ITable } from 'src/app/models/table';
+import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
+import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
+import { StateService } from 'src/app/services/state.service';
+import { switchMap, map } from 'rxjs/operators';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-transform-config',
@@ -59,8 +67,19 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   selectedConfiguration: DictionaryItem[];
   sourceFiledsDictionary: DictionaryItem[];
 
-  constructor(private snakbar: MatSnackBar, private addCondition: MatDialog) {
+  busy = false;
+
+  constructor(
+    @Inject(OVERLAY_DIALOG_DATA) public payload: TransformRulesData,
+    private dialogRef: OverlayDialogRef,
+    private snakbar: MatSnackBar,
+    private addCondition: MatDialog,
+    private stateService: StateService,
+    vocabulariesService: VocabulariesService
+  ) {
     this.transformationConfigs = [];
+    this.sourceTables = this.stateService.state.source.tables;
+    this.vocabularies = vocabulariesService.vocabularies;
   }
 
   create = new Command({
@@ -130,13 +149,21 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   });
 
   close = new Command({
-    execute: () => {},
+    execute: () => {
+      this.dialogRef.close();
+    },
     canExecute: () => true
   });
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.init();
+  }
 
   ngOnChanges() {
+    this.init();
+  }
+
+  init() {
     // test
     if (this.sourceTables) {
       this.sourceFileds = this.sourceTables
@@ -147,7 +174,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     }
 
     if (this.sourceFileds) {
-      this.sourceFiledsDictionary =  this.sourceFileds.map(name => new DictionaryItem(name));
+      this.sourceFiledsDictionary = this.sourceFileds.map(
+        name => new DictionaryItem(name)
+      );
     }
 
     if (this.vocabularies) {
@@ -170,8 +199,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       );
 
       setTimeout(() => {
-
-
         if (this.selectedSourceFields) {
           this.pselectedSourceFieldsDictionary = this.selectedSourceFields.map(
             sorceFieldName => new DictionaryItem(sorceFieldName)

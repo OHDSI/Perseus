@@ -44,7 +44,9 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get targetTableNames(): string[] {
-    return Object.keys(this.target);
+    return Object.keys(this.target).filter(
+      tableName => tableName.toUpperCase() !== 'SPECIAL'
+    );
   }
 
   get highlitedTables(): string[] {
@@ -146,7 +148,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  vocabularies: IVocabulary[];
+  vocabularies: IVocabulary[] = [];
 
   ngOnInit() {
     /*Experiment for vocabulary*/
@@ -259,7 +261,11 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     const dialog = this.mappingDialog.open(MappingPopupComponent, {
       width: '90vw',
       height: '90vh',
-      data: { source: sourcetable, target: targettable, allTarget: this.state.target.tables}
+      data: {
+        source: sourcetable,
+        target: targettable,
+        allTarget: this.state.target.tables
+      }
     });
 
     dialog.afterClosed().subscribe(save => {});

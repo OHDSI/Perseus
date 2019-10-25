@@ -8,7 +8,7 @@ import * as lookup from '../../assets/vocabularies/lookuplist.json';
 import * as concept from '../../assets/vocabularies/conceptlist.json';
 
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 const URL = environment.url;
@@ -16,8 +16,19 @@ const URL = environment.url;
 @Injectable()
 export class VocabulariesService {
   batch = [];
+  vocabularies: IVocabulary[];
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+    this.setVocabularyConnectionString()
+      .pipe(
+        switchMap(ok => {
+          return this.getVocabularies();
+        })
+      )
+      .subscribe(vocabularies => {
+        this.vocabularies = [...vocabularies];
+      });
+  }
 
   // dictionary setup
   setVocabularyConnectionString(): Observable<any> {
@@ -68,4 +79,3 @@ export interface IVocabulary {
   name: string;
   payload: string[];
 }
-

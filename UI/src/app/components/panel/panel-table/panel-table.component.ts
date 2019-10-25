@@ -94,7 +94,7 @@ export class PanelTableComponent implements OnInit {
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
-      strategyFor: `comments-${this._getArea()}`,
+      positionStrategyFor: `comments-${this._getArea()}`,
       payload: row
     };
 
@@ -113,7 +113,7 @@ export class PanelTableComponent implements OnInit {
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
         backdropClass: 'custom-backdrop',
-        strategyFor: `comments-${this._getArea()}`,
+        positionStrategyFor: `comments-${this._getArea()}`,
         payload: value
       };
 

@@ -4,7 +4,8 @@ import { Area } from '../models/area';
 @Injectable()
 export class CommonService {
   svgCanvas: ElementRef;
-  mainCanvas: ElementRef;
+  mainElement: ElementRef;
+  mappingElement: ElementRef;
 
   private areaWidth = {};
 
@@ -62,6 +63,6 @@ export class CommonService {
   }
 
   setMain(main: ElementRef) {
-    this.mainCanvas = main;
+    this.mainElement = main;
   }
 }

@@ -55,7 +55,7 @@ export class OverlayService {
   }
 
   getOverlayConfig(config: OverlayConfigOptions, ancor: any): OverlayConfig {
-    const positionStrategy = this.getOverlayPosition(ancor, config.strategyFor);
+    const positionStrategy = this.getOverlayPosition(ancor, config.positionStrategyFor);
 
     const overlayConfig = new OverlayConfig({
       hasBackdrop: config.hasBackdrop,
@@ -77,8 +77,17 @@ export class OverlayService {
     let overlayY = null;
 
     switch (strategyFor) {
-      case 'bridge-button': {
-        offsetX = 238;
+      case 'advanced-transform': {
+        offsetX = -200;
+        offsetY = 0;
+        originX = 'end';
+        originY = 'top';
+        overlayX = 'end';
+        overlayY = 'top';
+        break;
+      }
+      case 'simple-transform': {
+        offsetX = 183;
         offsetY = 28;
         originX = 'end';
         originY = 'top';

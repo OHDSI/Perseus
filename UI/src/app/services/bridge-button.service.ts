@@ -51,7 +51,7 @@ export class BridgeButtonService {
     const button = (componentRef.hostView as EmbeddedViewRef<any>)
       .rootNodes[0] as HTMLElement;
 
-    const mainCanvas = this.commonService.mainCanvas.nativeElement;
+    const mainCanvas = this.commonService.mainElement.nativeElement;
 
     this.renderer.appendChild(mainCanvas, button);
 
@@ -70,7 +70,7 @@ export class BridgeButtonService {
   }
 
   recalculateButtonPosition(button, line) {
-    const canvas = this.commonService.mainCanvas.nativeElement;
+    const canvas = this.commonService.mainElement.nativeElement;
     const { top, left } = this._calculateButtonPosition(button, line, canvas);
 
     button.style.top = top + 'px';

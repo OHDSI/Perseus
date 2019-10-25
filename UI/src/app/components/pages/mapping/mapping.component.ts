@@ -46,8 +46,11 @@ export class MappingComponent implements OnInit, AfterViewInit {
     private commonService: CommonService,
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
-    private rulesPoupService: RulesPopupService
-  ) {}
+    private rulesPoupService: RulesPopupService,
+    mappingElementRef: ElementRef
+  ) {
+    this.commonService.mappingElement = mappingElementRef;
+  }
 
   ngOnInit() {
     this.rulesPoupService.deleteConnector$.subscribe(done => {

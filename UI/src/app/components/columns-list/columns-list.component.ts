@@ -60,7 +60,7 @@ export class ColumnsListComponent implements OnInit, OnChanges {
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
         backdropClass: 'custom-backdrop',
-        strategyFor: 'values',
+        positionStrategyFor: 'values',
         payload: { items: result }
       };
 
