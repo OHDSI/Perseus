@@ -87,19 +87,19 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
     let selectedSourceTablesNames = Object.values(payload.arrowCache).map(
       arrow => {
-        return { id: arrow.source.tableName };
+        return { name: arrow.source.tableName };
       }
     );
 
-    selectedSourceTablesNames = uniqBy(selectedSourceTablesNames, 'id').map(
-      x => x.id
+    const newCelectedSourceTablesNames = uniqBy(selectedSourceTablesNames, 'name').map(
+      x => x.name
     );
 
     if (this.sourceTables) {
       this.sourceFileds = this.sourceTables
         .filter(
           sourceTable =>
-            selectedSourceTablesNames.findIndex(
+          newCelectedSourceTablesNames.findIndex(
               selectedSourceTable => selectedSourceTable === sourceTable.name
             ) > -1
         )
