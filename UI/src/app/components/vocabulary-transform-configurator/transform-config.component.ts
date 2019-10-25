@@ -7,7 +7,7 @@ import { FormControl } from '@angular/forms';
 import { VocabularyConfig } from './model/vocabulary-config';
 import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 import { MatSnackBar, MatDialog } from '@angular/material';
-import { cloneDeep } from 'src/app/infrastructure/utility';
+import { cloneDeep, uniqBy } from 'src/app/infrastructure/utility';
 import {
   TransformationConfig,
   TransformationCondition,
@@ -80,6 +80,33 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.transformationConfigs = [];
     this.sourceTables = this.stateService.state.source.tables;
     this.vocabularies = vocabulariesService.vocabularies;
+
+    this.selectedSourceFields = Object.values(payload.arrowCache).map(arrow => {
+      return arrow.source.name;
+    });
+
+    let selectedSourceTablesNames = Object.values(payload.arrowCache).map(
+      arrow => {
+        return { id: arrow.source.tableName };
+      }
+    );
+
+    selectedSourceTablesNames = uniqBy(selectedSourceTablesNames, 'id').map(
+      x => x.id
+    );
+
+    if (this.sourceTables) {
+      this.sourceFileds = this.sourceTables
+        .filter(
+          sourceTable =>
+            selectedSourceTablesNames.findIndex(
+              selectedSourceTable => selectedSourceTable === sourceTable.name
+            ) > -1
+        )
+        .map(table => table.rows)
+        .reduce((p, k) => p.concat.apply(p, k), [])
+        .map(t => t.name);
+    }
   }
 
   create = new Command({
@@ -164,15 +191,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   init() {
-    // test
-    if (this.sourceTables) {
-      this.sourceFileds = this.sourceTables
-        .slice(1, 2)
-        .map(table => table.rows)
-        .reduce((p, k) => p.concat.apply(p, k), [])
-        .map(t => t.name);
-    }
-
     if (this.sourceFileds) {
       this.sourceFiledsDictionary = this.sourceFileds.map(
         name => new DictionaryItem(name)

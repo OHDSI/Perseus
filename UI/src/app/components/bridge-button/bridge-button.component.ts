@@ -39,8 +39,7 @@ export class BridgeButtonComponent {
   ) {
     this.payloadObj = {
       connector: payload.connector,
-      arrowCache: payload.arrowCache,
-      selectedSourceFields: []
+      arrowCache: payload.arrowCache
     };
 
     this.dialogOptions = {
