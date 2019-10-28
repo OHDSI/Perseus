@@ -54,7 +54,7 @@ export class BridgeButtonComponent {
     this.component = this.insnantiationType.transform;
     this.ancor = this.elementRef.nativeElement;
 
-    if (conceptService.isSpecial(payload.connector)) {
+    if (conceptService.isConcept(payload.connector.target.tableName)) {
       this.text = 'L';
       this.component = this.insnantiationType.lookup;
       this.dialogOptions.positionStrategyFor = 'advanced-transform';

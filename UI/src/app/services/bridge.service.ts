@@ -137,11 +137,13 @@ export class BridgeService {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
-  refresh(targetTableName) {
+  refresh(target: ITable[]) {
     this.drawService.removeConnectors();
 
+    const tablenamesString = target.map(table => table.name).join(',');
+
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-      if (targetTableName === arrow.target.tableName) {
+      if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
         const source = this.stateService.findTable(arrow.source.tableName);
         const target = this.stateService.findTable(arrow.target.tableName);
         if (source.expanded && target.expanded) {
@@ -190,7 +192,20 @@ export class BridgeService {
     }
   }
 
-  deleteTableArrows(table: ITable): void {
+  deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {
+    Object.keys(this.arrowsCache).forEach(key => {
+      if (
+        this.arrowsCache[key].target.tableName.toUpperCase() ===
+          targetTableName.toUpperCase() &&
+        this.arrowsCache[key].source.tableName.toUpperCase() ===
+          sourceTableName.toUpperCase()
+      ) {
+        delete this.arrowsCache[key];
+      }
+    });
+  }
+
+  hideTableArrows(table: ITable): void {
     this.drawService.removeConnectorsBoundToTable(table);
   }
 
@@ -207,7 +222,10 @@ export class BridgeService {
   }
 
   generateMapping() {
-    const mappingService = new MappingService(this.arrowsCache, this.constantsCache);
+    const mappingService = new MappingService(
+      this.arrowsCache,
+      this.constantsCache
+    );
     return mappingService.generate();
   }
 

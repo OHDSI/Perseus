@@ -4,7 +4,6 @@ import { ITable, Table, ITableOptions } from 'src/app/models/table';
 
 import { Row, RowOptions } from 'src/app/models/row';
 import { Area } from 'src/app/models/area';
-import { IConnector } from 'src/app/models/interface/connector.interface';
 
 const CONCEPT_COLUMNS = [
   'CONCEPT_ID',
@@ -185,9 +184,9 @@ export class ConceptService {
     return [new Table(conceptTableOptions), new Table(commonTableOptions)];
   }
 
-  isSpecial(connector: IConnector): boolean {
+  isConcept(tableName: string): boolean {
     return (
-      ['CONCEPT'].indexOf(connector.target.tableName.toUpperCase()) >
+      ['CONCEPT'].indexOf(tableName.toUpperCase()) >
       -1
     );
   }

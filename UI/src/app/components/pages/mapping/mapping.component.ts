@@ -102,11 +102,11 @@ export class MappingComponent implements OnInit, AfterViewInit {
   }
 
   onSourcePanelOpen() {
-    this.bridgeService.refresh(this.target[0].name);
+    this.bridgeService.refresh(this.target);
   }
 
   onSourcePanelClose() {
-    this.bridgeService.refresh(this.target[0].name);
+    this.bridgeService.refresh(this.target);
     this.source.forEach(table =>
       this.hideArrowsIfCorespondingTableasAreClosed(table)
     );
@@ -120,7 +120,7 @@ export class MappingComponent implements OnInit, AfterViewInit {
     corespondingTableNames.forEach(name => {
       const correspondentTable = this.stateService.findTable(name);
       if (!correspondentTable.expanded && !table.expanded) {
-        this.bridgeService.deleteTableArrows(table);
+        this.bridgeService.hideTableArrows(table);
       }
     });
   }

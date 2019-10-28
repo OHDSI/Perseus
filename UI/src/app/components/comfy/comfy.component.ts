@@ -28,6 +28,8 @@ import {
   VocabulariesService,
   IVocabulary
 } from 'src/app/services/vocabularies.service';
+import { ConceptService } from './services/concept.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-comfy',
@@ -75,7 +77,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     private stateService: StateService,
     private mappingDialog: MatDialog,
     private bridgeService: BridgeService,
-    private snakbar: MatSnackBar
+    private snakbar: MatSnackBar,
+    private conceptService: ConceptService
   ) {}
 
   @ViewChild('scrollEl')
@@ -290,15 +293,34 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.source = Object.assign([], this.source);
   }
 
-  removeTableMapping(event: any, tableName: string, targetTableName: string) {
+  removeTableMapping(
+    event: any,
+    sourceTableName: string,
+    targetTableName: string
+  ) {
     event.stopPropagation();
 
-    const { data } = this.target[targetTableName];
+    const table = this.target[targetTableName];
+    const { data } = table;
 
-    const index = data.findIndex(tablename => tablename === tableName);
+    const index = data.findIndex(tablename => tablename === sourceTableName);
 
     if (index > -1) {
       data.splice(index, 1);
+    }
+
+    if (this.conceptService.isConceptTable(targetTableName)) {
+      environment.conceptTables.forEach(conceptTable => {
+        this.bridgeService.deleteArrowsForMapping(
+          conceptTable,
+          sourceTableName
+        );
+      });
+    } else {
+      this.bridgeService.deleteArrowsForMapping(
+        targetTableName,
+        sourceTableName
+      );
     }
   }
 }
