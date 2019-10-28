@@ -21,7 +21,7 @@ const COMMON_COLUMNS = [
   'END_DATETIME',
   'PROVIDER_ID',
   'VISIT_OCCURRENCE_ID',
-  'VIDIT_DETAIL_ID'
+  'VISIT_DETAIL_ID'
 ];
 
 @Injectable()
@@ -34,61 +34,161 @@ export class ConceptService {
     let conceptTablesRaw = allTargetTables.filter(
       targetTable =>
         environment.conceptTables.findIndex(
-          conceptTableName => conceptTableName.toUpperCase() === targetTable.name.toUpperCase()
+          conceptTableName =>
+            conceptTableName.toUpperCase() === targetTable.name.toUpperCase()
         ) > -1
     );
 
     conceptTablesRaw = conceptTablesRaw.map(table => {
-      table.rows = table.rows.filter(row => {
-        return (
-          CONCEPT_COLUMNS.filter(
-            concept => row.name.toUpperCase().indexOf(concept) > -1
-          ).length === 0 &&
-          COMMON_COLUMNS.filter(
-            concept => row.name.toUpperCase().indexOf(concept) > -1
-          ).length === 0
-        );
-      });
+      if (['CONCEPT', 'COMMON'].indexOf(table.name.toUpperCase()) < 0) {
+        table.rows = table.rows.filter(row => {
+          return (
+            CONCEPT_COLUMNS.filter(
+              concept => row.name.toUpperCase().indexOf(concept) > -1
+            ).length === 0 &&
+            COMMON_COLUMNS.filter(
+              concept => row.name.toUpperCase().indexOf(concept) > -1
+            ).length === 0
+          );
+        });
+      }
       return table;
     });
 
     return conceptTablesRaw;
   }
 
-  initSpecialtable() {
+  initSpecialtables(): ITable[] {
+    const conceptTableId = -100;
+    const commonTableId = -101;
+
+    const conceptTableName = 'CONCEPT';
+    const commonTableName = 'COMMON';
+
     const conceptRowOptions: RowOptions = {
       id: 1,
-      tableId: -100,
-      tableName: 'SPECIAL',
+      tableId: conceptTableId,
+      tableName: conceptTableName,
       name: 'CONCEPT',
       type: 'any',
       comments: [],
       area: Area.Target
     };
 
-    const commonRowOptions: RowOptions = {
+    const commonRowOptions1: RowOptions = {
       id: 2,
-      tableId: -100,
-      tableName: 'SPECIAL',
-      name: 'COMMON',
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'PERSON_ID',
       type: 'any',
       comments: [],
       area: Area.Target
     };
 
-    const tableOptions: ITableOptions = {
-      id: -100,
+    const commonRowOptions2: RowOptions = {
+      id: 3,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'START_DATE',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions3: RowOptions = {
+      id: 4,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'START_DATETIME',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions4: RowOptions = {
+      id: 5,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'END_DATE',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions5: RowOptions = {
+      id: 6,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'END_DATETIME',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions6: RowOptions = {
+      id: 7,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'PROVIDER_ID',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions7: RowOptions = {
+      id: 8,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'VISIT_OCCURRENCE_ID',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const commonRowOptions8: RowOptions = {
+      id: 9,
+      tableId: commonTableId,
+      tableName: commonTableName,
+      name: 'VISIT_DETAIL_ID',
+      type: 'any',
+      comments: [],
+      area: Area.Target
+    };
+
+    const conceptTableOptions: ITableOptions = {
+      id: conceptTableId,
       area: Area.Target,
-      name: 'SPECIAL',
-      rows: [new Row(conceptRowOptions), new Row(commonRowOptions)],
+      name: 'CONCEPT',
+      rows: [new Row(conceptRowOptions)],
       visible: true,
       expanded: true
     };
 
-    return new Table(tableOptions);
+    const commonTableOptions: ITableOptions = {
+      id: commonTableId,
+      area: Area.Target,
+      name: 'COMMON',
+      rows: [
+        new Row(commonRowOptions1),
+        new Row(commonRowOptions2),
+        new Row(commonRowOptions3),
+        new Row(commonRowOptions4),
+        new Row(commonRowOptions5),
+        new Row(commonRowOptions6),
+        new Row(commonRowOptions7),
+        new Row(commonRowOptions8)
+      ],
+      visible: true,
+      expanded: true
+    };
+
+    return [new Table(conceptTableOptions), new Table(commonTableOptions)];
   }
 
   isSpecial(connector: IConnector): boolean {
-    return connector.target.tableName.toUpperCase() === 'SPECIAL';
+    return (
+      ['CONCEPT'].indexOf(connector.target.tableName.toUpperCase()) >
+      -1
+    );
   }
 }

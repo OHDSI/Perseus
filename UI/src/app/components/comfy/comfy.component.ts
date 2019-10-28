@@ -45,7 +45,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get targetTableNames(): string[] {
     return Object.keys(this.target).filter(
-      tableName => tableName.toUpperCase() !== 'SPECIAL'
+      tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
     );
   }
 

@@ -19,7 +19,6 @@ import { ITable } from 'src/app/models/table';
 import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { StateService } from 'src/app/services/state.service';
-import { switchMap, map } from 'rxjs/operators';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 
 @Component({

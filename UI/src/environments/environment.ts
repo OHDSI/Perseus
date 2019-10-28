@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 const CONCEPT_TABLES = [
-  'SPECIAL',
+  'CONCEPT',
+  'COMMON',
   'CONDITION_OCCURRENCE',
   'DEVICE_EXPOSURE',
   'DRUG_EXPOSURE',

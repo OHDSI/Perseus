@@ -55,7 +55,7 @@ export class StateService {
     this._state[area].tables = tables;
 
     if (area === 'target' && this._state[area].tables.length > 0) {
-      const res = [this.conceptService.initSpecialtable()];
+      const res = this.conceptService.initSpecialtables();
       this._state[area].tables = res.concat.apply(res, this._state[area].tables);
     }
   }
