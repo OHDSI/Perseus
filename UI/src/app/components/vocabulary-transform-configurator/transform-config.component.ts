@@ -77,6 +77,18 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     vocabulariesService: VocabulariesService
   ) {
     this.transformationConfigs = [];
+
+    const { arrowCache, connector } = this.payload;
+    if (
+      arrowCache[connector.id] &&
+      arrowCache[connector.id].transformationConfigs
+    ) {
+      this.transformationConfigs = [].concat.apply(
+        this.transformationConfigs,
+        arrowCache[connector.id].transformationConfigs
+      );
+    }
+
     this.sourceTables = this.stateService.state.source.tables;
     this.vocabularies = vocabulariesService.vocabularies;
 
@@ -84,21 +96,22 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       return arrow.source.name;
     });
 
-    let selectedSourceTablesNames = Object.values(payload.arrowCache).map(
+    const selectedSourceTablesNames = Object.values(payload.arrowCache).map(
       arrow => {
         return { name: arrow.source.tableName };
       }
     );
 
-    const newCelectedSourceTablesNames = uniqBy(selectedSourceTablesNames, 'name').map(
-      x => x.name
-    );
+    const newCelectedSourceTablesNames = uniqBy(
+      selectedSourceTablesNames,
+      'name'
+    ).map(x => x.name);
 
     if (this.sourceTables) {
       this.sourceFileds = this.sourceTables
         .filter(
           sourceTable =>
-          newCelectedSourceTablesNames.findIndex(
+            newCelectedSourceTablesNames.findIndex(
               selectedSourceTable => selectedSourceTable === sourceTable.name
             ) > -1
         )
@@ -151,7 +164,20 @@ export class TransformConfigComponent implements OnInit, OnChanges {
         this.transformationConfig
       );
 
-      this.transformationConfigs.push(configCopy);
+      // TODO Update existed
+      const idx = this.transformationConfigs.findIndex(
+        config => config.name === configCopy.name
+      );
+      if (idx > -1) {
+        this.transformationConfigs[idx] = configCopy;
+      }
+
+      const { arrowCache, connector } = this.payload;
+      if (arrowCache[connector.id]) {
+        arrowCache[
+          connector.id
+        ].transformationConfigs = this.transformationConfigs;
+      }
 
       console.log(
         'Saved configuration',

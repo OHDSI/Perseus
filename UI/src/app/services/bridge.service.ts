@@ -13,11 +13,13 @@ import { UserSettings } from './user-settings.service';
 import { IConnector } from '../models/interface/connector.interface';
 import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 import { Command } from '../infrastructure/command';
+import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
 
 export interface IConnection {
   source: IRow;
   target: IRow;
   transforms?: SqlFunction[];
+  transformationConfigs?: TransformationConfig[];
 }
 
 @Injectable()
