@@ -374,6 +374,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.selectedCondition = [
         new DictionaryItem(this.ptransformationCondition.name)
       ];
+
+      this.updateConditionsVariable();
     }
   }
 }
