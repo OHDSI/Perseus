@@ -9,6 +9,7 @@ import {
 import { ConceptConfig } from '../model/config-concept';
 import { TransformationCondition } from '../model/transformation-config';
 import { VocabularyConfig } from '../model/vocabulary-config';
+import { TypeConcept } from '../model/concept-type';
 
 @Component({
   selector: 'app-vocabulary-config',
@@ -24,7 +25,7 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
     return this.transformationCondition.vocabularyConfig;
   }
 
-  typeConceptItems: TypeConcept[];
+  typeConcept: TypeConcept[];
 
   constructor() {}
 
@@ -32,7 +33,7 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.selectedSourceFields) {
-      this.typeConceptItems = this.selectedSourceFields.map(fieldName => {
+      this.typeConcept = this.selectedSourceFields.map(fieldName => {
         const typeconcept: TypeConcept = {
           sourceFieldName: fieldName,
           visitTypeIP: 'IP',
@@ -43,8 +44,15 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
           valueER: '0'
         };
 
+        const idx = this.vocabularyConfig.typeConcept.findIndex(tc => tc.sourceFieldName === fieldName);
+        if (idx > -1) {
+          return this.vocabularyConfig.typeConcept[idx];
+        }
+
         return typeconcept;
       });
+
+      this.vocabularyConfig.typeConcept = this.typeConcept;
     }
   }
 
@@ -53,14 +61,4 @@ export class VocabularyConfigComponent implements OnInit, OnChanges {
   }
 }
 
-export interface TypeConcept {
-  sourceFieldName: string;
-  visitTypeIP: 'IP';
-  valueIP: string;
-  visitTypeOP: 'OP';
-  valueOP: string;
-  visitTypeER: 'ER';
-  valueER: string;
-}
 
-export type VisitType = 'IP|OP|ER';

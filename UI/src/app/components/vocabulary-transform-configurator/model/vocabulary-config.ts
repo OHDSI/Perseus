@@ -1,5 +1,5 @@
 import { ConceptConfig } from './config-concept';
-import { ConceptType } from './concept-type';
+import { TypeConcept } from './concept-type';
 import { IVocabulary } from 'src/app/services/vocabularies.service';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 
@@ -12,13 +12,17 @@ export class VocabularyConfig {
     return this.sourceconceptConfig;
   }
 
-  get type(): ConceptType {
-    return this.typeconfig;
+  get typeConcept(): TypeConcept[] {
+    return this.typeconcept;
+  }
+
+  set typeConcept(typeConcept: TypeConcept[]) {
+    this.typeconcept = typeConcept;
   }
 
   private conceptconfig: ConceptConfig;
   private sourceconceptConfig: ConceptConfig;
-  private typeconfig: ConceptType;
+  private typeconcept: TypeConcept[];
 
   constructor(private vocabularies: IVocabulary[]) {
     this.init();
@@ -60,7 +64,7 @@ export class VocabularyConfig {
 
     this.sourceconceptConfig = cloneDeep(this.conceptconfig);
     this.sourceconceptConfig.name = 'sourceconcept';
-    this.typeconfig = {};
+    this.typeconcept = [];
   }
 
   private findVocabulary(name: string): IVocabulary {
