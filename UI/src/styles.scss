@@ -123,3 +123,8 @@ line {
   }
 }
 
+.vocabulary-config-tabs .mat-tab-body .mat-tab-body-content {
+  height: 300px;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+}
