@@ -1,7 +1,7 @@
 <mat-list role="list" dense>
   <cdk-virtual-scroll-viewport
     class="virtual-scroll-container"
-    itemSize="36"
+    itemSize="60"
     minBufferPx="200"
     maxBufferPx="400"
   >
@@ -20,7 +20,7 @@
         <div class="data-item" #ancor>
           <span>{{ item.name }}</span>
           <span style="flex: 1 1 auto;"></span>
-          <mat-icon (click)="showTop10Values($event, ancor, item)">trending_up</mat-icon>
+          <mat-icon (click)="showTop10Values($event, ancor, item)">sort</mat-icon>
         </div>
       </div>
     </mat-list-item>

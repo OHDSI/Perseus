@@ -4,7 +4,7 @@
 
 .comfy-grid {
   display: grid;
-  grid-template-columns: 230px 1fr 230px 230px;
+  grid-template-columns: 292px 1fr 292px 292px;
   column-gap: 20px;
   grid-auto-rows: minmax(200px, auto);
 }
@@ -16,14 +16,11 @@
 
 .vertical-container {
   max-width: 100%;
-  height: 78vh;
-  margin: 0 25px 25px 0;
   vertical-align: top;
 }
 
 .vertical-list {
   max-width: 100%;
-  min-height: 60px;
   display: block;
   background: white;
   overflow: hidden;
@@ -38,7 +35,8 @@
   box-sizing: border-box;
   background: #E1F2FF;
   font-size: 14px;
-  width: 200px;
+  border-radius: 2px;
+  box-shadow: 0px 2px 2px rgba(128, 128, 128, 0.25);
 }
 
 .vertical-placeholder {
@@ -79,7 +77,7 @@
 
 .table-description {
     position: relative;
-    padding: 1.428571428571429rem;
+    padding: 1.128571428571429rem;
     color: #000d37;
     font-size: 1.142857142857143rem;
     line-height: 1.357142857142857rem;
@@ -126,8 +124,10 @@ div[highlighted=true] {
 }
 
 .scrolled-items {
-  height: 70vh;
+  height: 90vh;
   overflow-y:scroll;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 div[concept=true] {
@@ -154,12 +154,12 @@ div[concept=true] {
   flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
-  box-sizing: border-box;
   background: #F3F3F3;
   font-size: 14px;
-  width: 200px;
   margin-bottom: 16px;
   padding-left: 20px;
+  border-radius: 2px;
+  box-shadow: 0px 2px 2px rgba(128, 128, 128, 0.25);
 }
 
 

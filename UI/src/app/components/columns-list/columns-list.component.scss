@@ -6,26 +6,25 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 150px;
-
   display: flex;
   align-items: center;
+  padding-right: 5px;
 }
 
 .data-item-caption {
-  padding: 9px;
-  border-radius: 5px;
-  background-color: #ffca0596;
+  position: relative;
+  padding: 1.128571428571429rem;
   color: #000d37;
-  font-size: 1rem;
+  font-size: 1.142857142857143rem;
+  line-height: 1.357142857142857rem;
   width: 100%;
   text-transform: uppercase;
+  background: #E5E5E5;
   cursor: pointer;
 }
 
 .virtual-scroll-container {
-  height: 70vh;
-  width: 200px;
+  height: 90vh;
   overflow-x: hidden;
 }
 
@@ -35,5 +34,6 @@ div[highlighted=true] {
 }
 
 .list-item {
-  padding-bottom: 5px !important;
+  padding-bottom: 16px !important;
+  height: 60px !important;
 }
