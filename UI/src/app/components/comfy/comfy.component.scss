@@ -19,33 +19,24 @@
   height: 78vh;
   margin: 0 25px 25px 0;
   vertical-align: top;
-   &.source {
-    width: 400px;
-   }
-
-   &.destination {
-     min-width: 700px;
-   }
 }
 
 .vertical-list {
-  width: 500px;
   max-width: 100%;
   min-height: 60px;
   display: block;
   background: white;
-  border-radius: 4px;
   overflow: hidden;
+  padding-bottom: 16px;
 }
 
 .vertical-box {
-  padding-bottom: 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  background: white;
+  background: #E1F2FF;
   font-size: 14px;
   width: 200px;
 }
@@ -56,6 +47,10 @@
   border: dotted 3px #999;
   min-height: 60px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.vertical-box:first-child {
+  background: #A6D2F4;
 }
 
 .vertical-box:last-child {
@@ -69,7 +64,6 @@
 
 .cdk-drag-preview {
   box-sizing: border-box;
-  border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
               0 8px 10px 1px rgba(0, 0, 0, 0.14),
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -86,28 +80,12 @@
 .table-description {
     position: relative;
     padding: 1.428571428571429rem;
-    background-color: #ffca05;
     color: #000d37;
     font-size: 1.142857142857143rem;
     line-height: 1.357142857142857rem;
     width: 100%;
     text-transform: uppercase;
     cursor: move;
-
-    &.source {
-      border-radius: 5px;
-    }
-
-    &.target {
-      border-radius: 5px;
-    }
-
-    &.target:first-child {
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
 
     &.caption {
       width: 200px;
@@ -147,12 +125,7 @@ div[highlighted=true] {
   align-items: center;
 }
 
-.target-scrolled-items{
-  height: 70vh;
-  overflow-y:scroll;
-}
-
-.source-scrolled-items {
+.scrolled-items {
   height: 70vh;
   overflow-y:scroll;
 }
@@ -161,6 +134,33 @@ div[concept=true] {
   color:red;
 }
 
+.cdm-container {
+  max-width: 100%;
+  vertical-align: top;
+  direction: rtl;
+}
+
+.cdm-list {
+  max-width: 100%;
+  min-height: 60px;
+  display: block;
+  background: white;
+  overflow: hidden;
+
+}
+
+.cdm-box {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background: #F3F3F3;
+  font-size: 14px;
+  width: 200px;
+  margin-bottom: 16px;
+  padding-left: 20px;
+}
 
 
 

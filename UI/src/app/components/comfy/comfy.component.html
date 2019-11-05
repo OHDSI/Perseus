@@ -8,18 +8,18 @@
   </div>
   <div class="comfy-grid" *ngIf="!busy">
     <!-- CDM tables -->
-    <div class="vertical-container source">
+    <div class="cdm-container">
       <h2>Target tables</h2>
-      <div class="source-scrolled-items">
-        <div
+      <div class="scrolled-items">
+        <div class="cdm-list"
           cdkDropList
           cdkDropListSortingDisabled
           #sourceList="cdkDropList"
           [cdkDropListData]="source"
           [cdkDropListConnectedTo]="sourceConnectedTo"
-          class="vertical-list"
-        >
-          <div class="vertical-box" cdkDrag *ngFor="let item of source">
+         >
+          <div class="cdm-box" cdkDrag *ngFor="let item of source">
+            <mat-icon>drag_indicator</mat-icon>
             <div
               class="table-description source caption"
               matTooltip="{{ item }}"
@@ -42,7 +42,7 @@
     <!-- Source schema tables (what we want to compose) -->
     <div class="vertical-container destination" cdkDropListGroup>
       <h2>Source tables</h2>
-      <div class="target-scrolled-items" #scrollEl cdk-scrollable>
+      <div class="scrolled-items" #scrollEl cdk-scrollable>
         <div
           id="{{ target[targetName].name }}"
           class="vertical-list"
@@ -55,17 +55,17 @@
         >
           <div
             class="vertical-box"
-            *ngFor="let tableName of target[targetName].data"
+            *ngFor="let tableName of target[targetName].data; let i = index;"
           >
             <div
+              class="table-description target caption"
               concept="{{ tableName }}"
               matTooltip="{{ tableName }}"
               [matTooltipPosition]="'right'"
-              class="table-description target caption"
               (click)="openMapping(tableName)"
             >
               {{ tableName }}
-              <mat-icon
+              <mat-icon *ngIf="i > 0"
                 class="remove-mapping-table"
                 (click)="removeTableMapping($event, tableName, targetName)"
                 >close</mat-icon
