@@ -2,92 +2,86 @@
   <div class="instruction">
     In order to make mapping, move source table to the target table
   </div>
-  <!--experimental-->
-  <!-- <app-transform-config *ngIf="false"
-    [vocabularies]="vocabularies"
-    [sourceTables]="sourceTables"
-    [selectedSourceFields]="['age', 'agegrp']"
-  >
-  </app-transform-config> -->
-  <!--experimental-->
-  <div class="comfy">
-    <div class="mapping-component-progress" *ngIf="busy">
-      <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
-      </mat-progress-spinner>
-    </div>
-    <ng-container *ngIf="!busy">
-      <div class="vertical-container">
-        <h2>Source columns</h2>
-        <app-columns-list
-          [tables]="sourceTables"
-          (columnsSelected)="findTables($event)"
-        ></app-columns-list>
-      </div>
-      <div class="vertical-container source">
-        <h2>Source tables</h2>
-        <div class="source-scrolled-items">
-          <div
-            cdkDropList
-            cdkDropListSortingDisabled
-            #sourceList="cdkDropList"
-            [cdkDropListData]="source"
-            [cdkDropListConnectedTo]="sourceConnectedTo"
-            class="vertical-list"
-          >
-            <div class="vertical-box" cdkDrag *ngFor="let item of source">
-              <div
-                class="table-description source caption"
-                matTooltip="{{ item }}"
-                matTooltipPosition="right"
-                [attr.criteria]="item"
-                highlight
-                [values]="highlitedTables"
-              >
-                {{ item }}
-              </div>
-              <div *cdkDragPreview class="table-description source preview">
-                {{ item }}
-              </div>
+  <div class="mapping-component-progress" *ngIf="busy">
+    <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
+    </mat-progress-spinner>
+  </div>
+  <div class="comfy-grid" *ngIf="!busy">
+    <!-- CDM tables -->
+    <div class="vertical-container source">
+      <h2>Target tables</h2>
+      <div class="source-scrolled-items">
+        <div
+          cdkDropList
+          cdkDropListSortingDisabled
+          #sourceList="cdkDropList"
+          [cdkDropListData]="source"
+          [cdkDropListConnectedTo]="sourceConnectedTo"
+          class="vertical-list"
+        >
+          <div class="vertical-box" cdkDrag *ngFor="let item of source">
+            <div
+              class="table-description source caption"
+              matTooltip="{{ item }}"
+              matTooltipPosition="right"
+              [attr.criteria]="item"
+              highlight
+              [values]="highlitedTables"
+            >
+              {{ item }}
+            </div>
+            <div *cdkDragPreview class="table-description source preview">
+              {{ item }}
             </div>
           </div>
         </div>
       </div>
-      <div class="vertical-container destination" cdkDropListGroup>
-        <h2>Target tables</h2>
-        <div class="target-scrolled-items" #scrollEl cdk-scrollable>
+    </div>
+    <!-- Empty space -->
+    <div></div>
+    <!-- Source schema tables (what we want to compose) -->
+    <div class="vertical-container destination" cdkDropListGroup>
+      <h2>Source tables</h2>
+      <div class="target-scrolled-items" #scrollEl cdk-scrollable>
+        <div
+          id="{{ target[targetName].name }}"
+          class="vertical-list"
+          *ngFor="let targetName of targetTableNames"
+          cdkDropList
+          [cdkDropListData]="target[targetName].data"
+          (cdkDropListDropped)="
+            !drop.canExecute($event) || drop.execute($event)
+          "
+        >
           <div
-            id="{{ target[targetName].name }}"
-            class="horizontal-list"
-            *ngFor="let targetName of targetTableNames"
-            cdkDropList
-            cdkDropListOrientation="horizontal"
-            [cdkDropListData]="target[targetName].data"
-            (cdkDropListDropped)="
-              !drop.canExecute($event) || drop.execute($event)
-            "
+            class="vertical-box"
+            *ngFor="let tableName of target[targetName].data"
           >
             <div
-              class="horizontal-box"
-              *ngFor="let tableName of target[targetName].data"
+              concept="{{ tableName }}"
+              matTooltip="{{ tableName }}"
+              [matTooltipPosition]="'right'"
+              class="table-description target caption"
+              (click)="openMapping(tableName)"
             >
-              <div
-                concept="{{ tableName }}"
-                matTooltip="{{ tableName }}"
-                [matTooltipPosition]="'right'"
-                class="table-description target caption"
-                (click)="openMapping(tableName)"
+              {{ tableName }}
+              <mat-icon
+                class="remove-mapping-table"
+                (click)="removeTableMapping($event, tableName, targetName)"
+                >close</mat-icon
               >
-                {{ tableName }}
-                <mat-icon
-                  class="remove-mapping-table"
-                  (click)="removeTableMapping($event, tableName, targetName)"
-                  >close</mat-icon
-                >
-              </div>
             </div>
           </div>
         </div>
       </div>
-    </ng-container>
+    </div>
+    <!-- Source schema columns-->
+    <div class="vertical-container">
+      <h2>Source columns</h2>
+      <app-columns-list
+        [tables]="sourceTables"
+        (columnsSelected)="findTables($event)"
+      ></app-columns-list>
+    </div>
   </div>
 </div>
