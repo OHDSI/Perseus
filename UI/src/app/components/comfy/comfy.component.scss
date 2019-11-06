@@ -61,14 +61,23 @@
 }
 
 .cdk-drag-preview {
+  opacity: 1;
   box-sizing: border-box;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow: 0px 2px 2px rgba(128, 128, 128, 0.25);
+
+  .table-description {
+    color:red;
+    background: #E1F2FF;
+  }
 }
 
 .cdk-drag-placeholder {
-  opacity: 0;
+  opacity: 0.5;
+
 }
 
 .cdk-drag-animating {
@@ -86,10 +95,7 @@
     cursor: move;
 
     &.caption {
-      width: 200px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      width: 100%;
     }
 
     &.preview {
@@ -99,9 +105,21 @@
       overflow: hidden;
     }
 
+    &.source {
+      direction: ltr;
+      width: 200px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &.target {
+      display: flex;
+    }
+
     .remove-mapping-table {
       position: absolute;
-      top: 10px;
+      top: 15px;
       right: 10px;
       cursor: pointer;
       width: 24px;
@@ -109,6 +127,12 @@
     }
 }
 
+.target-label {
+  width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 div[highlighted=true] {
   background-color: #a7a4a4d1;

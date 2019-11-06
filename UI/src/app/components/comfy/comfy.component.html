@@ -64,7 +64,8 @@
               [matTooltipPosition]="'right'"
               (click)="openMapping(tableName)"
             >
-              {{ tableName }}
+              <span class="target-label">{{ tableName }}</span>
+              <span style="flex: 1 1 auto"></span>
               <mat-icon *ngIf="i > 0"
                 class="remove-mapping-table"
                 (click)="removeTableMapping($event, tableName, targetName)"
