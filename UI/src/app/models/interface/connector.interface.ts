@@ -3,7 +3,7 @@ import { IRow } from '../row';
 export interface IConnector {
   id: string;
   canvas: any;
-  line: Element;
+  svgPath: Element;
   source: IRow;
   target: IRow;
   selected: boolean;

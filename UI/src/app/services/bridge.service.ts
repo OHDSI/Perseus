@@ -119,7 +119,7 @@ export class BridgeService {
       if (this.userSettings.showQuestionButtons) {
         this.bridgeButtonService.recalculateButtonPosition(
           drawEntity.button,
-          drawEntity.line
+          drawEntity.svgPath
         );
       }
     });

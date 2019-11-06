@@ -34,7 +34,7 @@ export class BridgeButtonService {
   }
 
   createButton(drawEntity: IConnector, arrowsCache: ArrowCache) {
-    const line = drawEntity.line;
+    const line = drawEntity.svgPath;
 
     const injector = Injector.create({
       providers: [{ provide: BRIDGE_BUTTON_DATA, useValue: {connector: drawEntity, arrowCache: arrowsCache }}]

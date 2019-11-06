@@ -5,8 +5,9 @@
 .comfy-grid {
   display: grid;
   grid-template-columns: 292px 1fr 292px 292px;
+  grid-template-rows: 100px minmax(200px, auto);
   column-gap: 20px;
-  grid-auto-rows: minmax(200px, auto);
+  //grid-auto-rows: minmax(200px, auto);
 }
 
 .instruction{

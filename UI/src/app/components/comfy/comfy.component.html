@@ -7,17 +7,22 @@
     </mat-progress-spinner>
   </div>
   <div class="comfy-grid" *ngIf="!busy">
+    <app-comfy-search-by-name [placeholder]="'by target table'"></app-comfy-search-by-name>
+    <div></div>
+    <app-comfy-search-by-name [placeholder]="'by source table'"></app-comfy-search-by-name>
+    <app-comfy-search-by-name [placeholder]="'by source column'"></app-comfy-search-by-name>
     <!-- CDM tables -->
     <div class="cdm-container">
       <h2>Target tables</h2>
       <div class="scrolled-items">
-        <div class="cdm-list"
+        <div
+          class="cdm-list"
           cdkDropList
           cdkDropListSortingDisabled
           #sourceList="cdkDropList"
           [cdkDropListData]="source"
           [cdkDropListConnectedTo]="sourceConnectedTo"
-         >
+        >
           <div class="cdm-box" cdkDrag *ngFor="let item of source">
             <mat-icon>drag_indicator</mat-icon>
             <div
@@ -55,7 +60,7 @@
         >
           <div
             class="vertical-box"
-            *ngFor="let tableName of target[targetName].data; let i = index;"
+            *ngFor="let tableName of target[targetName].data; let i = index"
           >
             <div
               class="table-description target caption"
@@ -66,7 +71,8 @@
             >
               <span class="target-label">{{ tableName }}</span>
               <span style="flex: 1 1 auto"></span>
-              <mat-icon *ngIf="i > 0"
+              <mat-icon
+                *ngIf="i > 0"
                 class="remove-mapping-table"
                 (click)="removeTableMapping($event, tableName, targetName)"
                 >close</mat-icon

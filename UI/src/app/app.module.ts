@@ -51,6 +51,7 @@ import { VocabularyConfigComponent } from './components/vocabulary-transform-con
 import { TransformConfigComponent } from './components/vocabulary-transform-configurator/transform-config.component';
 import { ConditionDialogComponent } from './components/vocabulary-transform-configurator/condition-dialog/condition-dialog.component';
 import { ConceptService } from './components/comfy/services/concept.service';
+import { ComfySearchByNameComponent } from './components/comfy-search-by-name/comfy-search-by-name.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { ConceptService } from './components/comfy/services/concept.service';
     VocabularyConditionComponent,
     HighlightConceptDirective,
     TransformConfigComponent,
-    ConditionDialogComponent
+    ConditionDialogComponent,
+    ComfySearchByNameComponent
   ],
   entryComponents: [
     BridgeButtonComponent,
