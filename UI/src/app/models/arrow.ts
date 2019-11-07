@@ -24,6 +24,51 @@ export class Arrow implements IConnector {
     this.canvas = canvasRef.nativeElement;
   }
 
+  // draw() {
+  //   const source = this.checkAndChangeHtmlElement(this.source);
+  //   const target = this.checkAndChangeHtmlElement(this.target);
+
+  //   // TODO Check htmlElement for existance
+  //   const sourceSVGPoint = getSVGPoint(source, this.canvas);
+  //   const targetSVGPoint = getSVGPoint(target, this.canvas);
+
+  //   const id = this.id;
+
+  //   const { x: x1, y: y1 } = sourceSVGPoint;
+  //   const { x: x2, y: y2 } = targetSVGPoint;
+
+  //   const line = this.renderer.createElement('line', 'svg');
+
+  //   this.renderer.addClass(line, 'arrow');
+  //   this.renderer.setAttribute(line, 'x1', x1 + '');
+  //   this.renderer.setAttribute(line, 'y1', y1 + '');
+  //   this.renderer.setAttribute(line, 'x2', x2 - 6 + '');
+  //   this.renderer.setAttribute(line, 'y2', y2 + '');
+  //   this.renderer.setAttribute(line, 'id', id);
+
+  //   this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
+
+  //   this.removeClickListener = this.renderer.listen(
+  //     line,
+  //     'click',
+  //     this.clickHandler.bind(this)
+  //   );
+
+  //   this.svgPath = line;
+
+  //   this.renderer.appendChild(this.canvas, line);
+  // }
+
+  private generateSvgPath(pointStart: number[], pointEnd: number[]): string {
+    const x1 = pointStart[0];
+    const y1 = pointStart[1];
+    const x2 = pointEnd[0];
+    const y2 = pointEnd[1];
+
+    // M173,475 C326,467 137,69 265,33
+    return `M${x1},${y1} C${x1 + 200},${y1} ${x2 - 200},${y2} ${x2},${y2}`;
+  }
+
   draw() {
     const source = this.checkAndChangeHtmlElement(this.source);
     const target = this.checkAndChangeHtmlElement(this.target);
@@ -37,123 +82,6 @@ export class Arrow implements IConnector {
     const { x: x1, y: y1 } = sourceSVGPoint;
     const { x: x2, y: y2 } = targetSVGPoint;
 
-    const line = this.renderer.createElement('line', 'svg');
-
-    this.renderer.addClass(line, 'arrow');
-    this.renderer.setAttribute(line, 'x1', x1 + '');
-    this.renderer.setAttribute(line, 'y1', y1 + '');
-    this.renderer.setAttribute(line, 'x2', x2 - 6 + '');
-    this.renderer.setAttribute(line, 'y2', y2 + '');
-    this.renderer.setAttribute(line, 'id', id);
-
-    this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
-
-    this.removeClickListener = this.renderer.listen(
-      line,
-      'click',
-      this.clickHandler.bind(this)
-    );
-
-    this.svgPath = line;
-
-    this.renderer.appendChild(this.canvas, line);
-  }
-
-  drawPath() {
-    const source = this.checkAndChangeHtmlElement(this.source);
-    const target = this.checkAndChangeHtmlElement(this.target);
-
-    // TODO Check htmlElement for existance
-    const sourceSVGPoint = getSVGPoint(source, this.canvas);
-    const targetSVGPoint = getSVGPoint(target, this.canvas);
-
-    const id = this.id;
-
-    const { x: x1, y: y1 } = sourceSVGPoint;
-    const { x: x2, y: y2 } = targetSVGPoint;
-
-    const line = (pointA, pointB) => {
-      const lengthX = pointB[0] - pointA[0];
-      const lengthY = pointB[1] - pointA[1];
-      return {
-        length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
-        angle: Math.atan2(lengthY, lengthX)
-      };
-    };
-
-    const controlPoint = (current, previous, next, reverse?) => {
-      // When 'current' is the first or last point of the array
-      // 'previous' or 'next' don't exist.
-      // Replace with 'current'
-      const p = previous || current;
-      const n = next || current;
-      // The smoothing ratio
-      const smoothing = 0.1;
-      // Properties of the opposed-line
-      const o = line(p, n);
-      // If is end-control-point, add PI to the angle to go backward
-      const angle = o.angle + (reverse ? Math.PI : 0);
-      const length = o.length * smoothing;
-      // The control point position is relative to the current point
-      const x = current[0] + Math.cos(angle) * length;
-      const y = current[1] + Math.sin(angle) * length;
-      return [x, y];
-    };
-
-    const lineCommand = point => `L ${point[0]} ${point[1]}`;
-
-    const bezierCommand = (point, i, a) => {
-      // start control point
-      const [cpsX, cpsY] = controlPoint(a[i - 1], a[i - 2], point);
-      // end control point
-      const [cpeX, cpeY] = controlPoint(point, a[i - 1], a[i + 1], true);
-      return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point[0]},${point[1]}`;
-    };
-
-    const svgPath = (points, command) => {
-      // build the d attributes by looping over the points
-      const d = points.reduce(
-        (acc, point, i, a) =>
-          i === 0
-            ? `M ${point[0]},${point[1]}`
-            : `${acc} ${command(point, i, a)}`,
-        ''
-      );
-      // return `<path d="${d}" fill="none" stroke="grey" />`;
-      return d;
-    };
-
-    const createPath = (pointA, pointB) => {
-      const lengthX = pointB[0] - pointA[0];
-      const lengthY = pointB[1] - pointA[1];
-      const middle = [
-        Math.floor((pointA[0] + pointB[0]) / 2),
-        Math.floor((pointA[1] + pointB[1]) / 2)
-      ];
-
-      const angle = Math.atan2(lengthY, lengthX);
-
-      const gap = 20;
-
-      if (angle === 0) {
-        return [pointA, pointB];
-      } else if (angle > 0) {
-        return [
-          pointA,
-          [middle[0], pointA[1] + gap],
-          [middle[0], pointB[1] - gap],
-          pointB
-        ];
-      } else if (angle < 0) {
-        return [
-          pointA,
-          [middle[0], pointA[1] - gap],
-          [middle[0], pointB[1] + gap],
-          pointB
-        ];
-      }
-    };
-
     const path = this.renderer.createElement('path', 'svg');
 
     this.renderer.addClass(path, 'arrow');
@@ -161,13 +89,14 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(
       path,
       'd',
-      svgPath(createPath([x1, y1], [x2, y2]), bezierCommand)
+      this.generateSvgPath([x1, y1], [x2, y2])
     );
 
     this.renderer.setAttribute(path, 'fill', 'none');
     this.renderer.setAttribute(path, 'stroke', 'grey');
-
     this.renderer.setAttribute(path, 'id', id);
+    this.renderer.setAttribute(path, 'middleY', Math.floor((y1 + y2) / 2).toString());
+    this.renderer.setAttribute(path, 'endXY', `${x1},${y1}`);
 
     this.renderer.setAttribute(path, 'marker-end', 'url(#arrow)');
 

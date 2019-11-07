@@ -51,14 +51,15 @@ export class BridgeButtonService {
     const button = (componentRef.hostView as EmbeddedViewRef<any>)
       .rootNodes[0] as HTMLElement;
 
-    const mainCanvas = this.commonService.mainElement.nativeElement;
+    const {mainElement, svgCanvas} = this.commonService;
 
-    this.renderer.appendChild(mainCanvas, button);
+    this.renderer.appendChild(mainElement.nativeElement, button);
 
     const { top, left } = this._calculateButtonPosition(
       button,
       line,
-      mainCanvas
+      mainElement.nativeElement,
+      svgCanvas.nativeElement
     );
 
     button.style.top = top + 'px';
@@ -70,26 +71,37 @@ export class BridgeButtonService {
   }
 
   recalculateButtonPosition(button, line) {
-    const canvas = this.commonService.mainElement.nativeElement;
-    const { top, left } = this._calculateButtonPosition(button, line, canvas);
+    const mainElement = this.commonService.mainElement.nativeElement;
+    const canvasElement = this.commonService.svgCanvas.nativeElement;
+
+    const { top, left } = this._calculateButtonPosition(button, line, mainElement, canvasElement);
 
     button.style.top = top + 'px';
     button.style.left = left + 'px';
   }
 
-  private _calculateButtonPosition(button, line, canvas) {
+  private _calculateButtonPosition(button, line, mainElement, canvasElement) {
     const buttonClientRect = button.getBoundingClientRect();
+
     const buttonOffsetX = buttonClientRect.width / 2;
     const buttonOffsetY = buttonClientRect.height / 2;
 
     const sourceArea = this.commonService.getAreaWidth('source');
     const targetArea = this.commonService.getAreaWidth('target');
+
+    // return {
+    //   top: middleHeightOfLine(line) - buttonOffsetY,
+    //   left:
+    //     canvas.clientWidth / 2 -
+    //     buttonOffsetX -
+    //     areaOffset(sourceArea, targetArea)
+    // };
+
+    const {endXY} = line.attributes;
+    const pointEnd = endXY.nodeValue.split(',');
     return {
-      top: middleHeightOfLine(line) - buttonOffsetY,
-      left:
-        canvas.clientWidth / 2 -
-        buttonOffsetX -
-        areaOffset(sourceArea, targetArea)
+      top:  +pointEnd[1] - buttonOffsetY,
+      left: mainElement.clientWidth - targetArea - canvasElement.clientWidth + buttonOffsetX
     };
   }
 }
