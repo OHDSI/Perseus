@@ -1,6 +1,7 @@
 <div class="comfy-container">
   <div class="instruction">
-    In order to make mapping, move source table to the target table
+    <h1>Tables mapping</h1>
+    <div>In order to make mapping, drag and drop source table to the target table</div>
   </div>
   <div class="mapping-component-progress" *ngIf="busy">
     <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
@@ -22,7 +23,7 @@
     ></app-comfy-search-by-name>
     <!-- CDM tables -->
     <div class="cdm-container">
-      <h2>Target tables</h2>
+      <h2 class="page-column-label">Target tables</h2>
       <div class="scrolled-items">
         <div
           class="cdm-list"
@@ -55,7 +56,7 @@
     <div></div>
     <!-- Source schema tables (what we want to compose) -->
     <div class="vertical-container destination" cdkDropListGroup>
-      <h2>Source tables</h2>
+      <h2 class="page-column-label">Source tables</h2>
       <div class="scrolled-items" #scrollEl cdk-scrollable>
         <div
           id="{{ target[targetName].name }}"
@@ -93,7 +94,7 @@
     </div>
     <!-- Source schema columns-->
     <div class="vertical-container">
-      <h2>Source columns</h2>
+      <h2 class="page-column-label">Source columns</h2>
       <app-columns-list
         [tables]="sourceTables"
         (columnsSelected)="findTables($event)"
