@@ -30,6 +30,7 @@ import {
 } from 'src/app/services/vocabularies.service';
 import { ConceptService } from './services/concept.service';
 import { environment } from 'src/environments/environment';
+import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 
 @Component({
   selector: 'app-comfy',
@@ -70,6 +71,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   speed = 5;
   subs = new Subscription();
   private animationFrame: number | undefined;
+
+  vocabularies: IVocabulary[] = [];
 
   constructor(
     private dataService: DataService,
@@ -151,8 +154,6 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  vocabularies: IVocabulary[] = [];
-
   ngOnInit() {
     /*Experiment for vocabulary*/
     this.vocabulariesService.setVocabularyConnectionString().subscribe(
@@ -191,6 +192,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const prefix = 'target';
     this.source = this.state.source.tables.map(table => table.name);
+
     this.state.target.tables.map(table => {
       this.target[table.name] = {};
       this.target[table.name].name = `${prefix}-${table.name}`;
@@ -322,6 +324,10 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
         sourceTableName
       );
     }
+  }
+
+  filterByName(area: string, event: Criteria): void {
+
   }
 }
 

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ITable, ITableOptions, Table } from '../models/table';
-import { RowOptions, Row } from '../models/row';
-import { Area } from '../models/area';
+import { ITable} from '../models/table';
 import { ConceptService } from '../components/comfy/services/concept.service';
 
 export interface IState {
