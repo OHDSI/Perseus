@@ -47,10 +47,13 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get targetTableNames(): string[] {
-    return Object.keys(this.target).filter(
-      tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
-    );
+    return this.targettablenames;
+    // return Object.keys(this.target).filter(
+    //   tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
+    // );
   }
+
+  private targettablenames: string[] = [];
 
   get highlitedTables(): string[] {
     return this.highlitedtables;
@@ -59,7 +62,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   busy = true;
   private highlitedtables: string[] = [];
 
-  source = [];
+  source: string[] = [];
+
   target = {};
   sourceConnectedTo = [];
   sourceRows = [];
@@ -200,6 +204,10 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
       this.target[table.name].data = [table.name];
     });
 
+    this.targettablenames = Object.keys(this.target).filter(
+      tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
+    );
+
     this.sourceConnectedTo = this.state.target.tables.map(
       table => `${prefix}-${table.name}`
     );
@@ -326,8 +334,24 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  filterByName(area: string, event: Criteria): void {
+  filterByName(area: string, byName: Criteria): void {
+    const areas = ['source-column', 'target', 'source'];
+    const idx = areas.indexOf(area);
 
+    const sortByName = (a, b) => {
+      if (a.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1) {
+        return -1;
+      }
+      return 1;
+    };
+
+    if (idx > -1) {
+      if (area === 'source') {
+        this.source = this.source.sort(sortByName);
+      } else if (area === 'target') {
+        this.targettablenames = this.targetTableNames.sort(sortByName);
+      }
+    }
   }
 }
 
