@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, ViewChild, OnChanges, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  OnChanges,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material';
 import { BaseComponent } from '../base/base.component';
@@ -37,9 +45,6 @@ export class ComfySearchByNameComponent extends BaseComponent
 
     this.dbNameFormControl.valueChanges.subscribe(criteria => {
       this.criteria = criteria;
-      this.filteredNames = criteria
-        ? this.model.filterNames(criteria)
-        : this.model.datablockNames.slice();
     });
 
     this.autoCmplt.optionSelected

@@ -1,12 +1,13 @@
 <mat-form-field
+  appearance="outline"
   class="comfy-search-by-name"
   [floatLabel]="'never'"
 >
+  <mat-label>{{ placeholder }}</mat-label>
   <mat-icon matPrefix>search</mat-icon>
   <input
     #nameSearchInput
     matInput
-    placeholder="{{placeholder}}"
     [formControl]="dbNameFormControl"
     (keyup.enter)="search(nameSearchInput.value)"
     [matAutocomplete]="auto"

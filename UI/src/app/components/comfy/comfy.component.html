@@ -7,10 +7,19 @@
     </mat-progress-spinner>
   </div>
   <div class="comfy-grid" *ngIf="!busy">
-    <app-comfy-search-by-name [placeholder]="'by target table'"></app-comfy-search-by-name>
+    <app-comfy-search-by-name
+      class="filter-by-name"
+      [placeholder]="'Search by target table'"
+    ></app-comfy-search-by-name>
     <div></div>
-    <app-comfy-search-by-name [placeholder]="'by source table'"></app-comfy-search-by-name>
-    <app-comfy-search-by-name [placeholder]="'by source column'"></app-comfy-search-by-name>
+    <app-comfy-search-by-name
+      class="filter-by-name"
+      [placeholder]="'Search by source table'"
+    ></app-comfy-search-by-name>
+    <app-comfy-search-by-name
+      class="filter-by-name"
+      [placeholder]="'Search by source column'"
+    ></app-comfy-search-by-name>
     <!-- CDM tables -->
     <div class="cdm-container">
       <h2>Target tables</h2>
