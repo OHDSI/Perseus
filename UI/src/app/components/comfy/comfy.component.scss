@@ -1,13 +1,12 @@
 .comfy-container {
-  padding: 10px;
+  padding: 1em 5em 1em 5em;
 }
 
 .comfy-grid {
   display: grid;
-  grid-template-columns: 292px 292px 1fr 292px;
+  grid-template-columns: 292px 292px 292px;
   grid-template-rows: 100px minmax(200px, auto);
-  column-gap: 20px;
-  //grid-auto-rows: minmax(200px, auto);
+  column-gap: 100px;
 }
 
 .instruction{
@@ -162,7 +161,6 @@ div[concept=true] {
 .cdm-container {
   max-width: 100%;
   vertical-align: top;
-  direction: rtl;
 }
 
 .cdm-list {

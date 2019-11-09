@@ -21,7 +21,6 @@
       [placeholder]="'Search by source table'"
       (complete)="filterByName('source', $event)"
     ></app-comfy-search-by-name>
-    <div></div>
     <app-comfy-search-by-name
       class="filter-by-name"
       [placeholder]="'Search by target table'"
@@ -68,8 +67,6 @@
         </div>
       </div>
     </div>
-    <!-- Empty space -->
-    <div></div>
     <!-- Source schema tables (what we want to compose) -->
     <div class="vertical-container destination" cdkDropListGroup>
       <h2 class="page-column-label">Target tables</h2>
