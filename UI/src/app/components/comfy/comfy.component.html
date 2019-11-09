@@ -36,7 +36,7 @@
         (columnsSelected)="findTables($event)"
       ></app-columns-list>
     </div>
-    <!-- CDM tables -->
+    <!-- Source tables -->
     <div class="cdm-container">
       <h2 class="page-column-label">Source tables</h2>
       <div class="scrolled-items">
@@ -48,15 +48,19 @@
           [cdkDropListData]="source"
           [cdkDropListConnectedTo]="sourceConnectedTo"
         >
-          <div class="cdm-box" cdkDrag *ngFor="let item of source">
+          <div
+            class="cdm-box"
+            [attr.criteria]="item"
+            highlight
+            [values]="highlitedTables"
+            cdkDrag
+            *ngFor="let item of source"
+          >
             <mat-icon>drag_indicator</mat-icon>
             <div
               class="table-description source caption"
               matTooltip="{{ item }}"
               matTooltipPosition="right"
-              [attr.criteria]="item"
-              highlight
-              [values]="highlitedTables"
             >
               {{ item }}
             </div>
@@ -67,7 +71,7 @@
         </div>
       </div>
     </div>
-    <!-- Source schema tables (what we want to compose) -->
+    <!-- CDM -->
     <div class="vertical-container destination" cdkDropListGroup>
       <h2 class="page-column-label">Target tables</h2>
       <div class="scrolled-items" #scrollEl cdk-scrollable>

@@ -6,7 +6,6 @@ import {
   EventEmitter,
   OnChanges
 } from '@angular/core';
-import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
 import { ValuesPopupComponent } from '../popaps/values-popup/values-popup.component';
