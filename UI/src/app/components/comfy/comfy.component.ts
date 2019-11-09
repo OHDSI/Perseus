@@ -32,6 +32,7 @@ import { ConceptService } from './services/concept.service';
 import { environment } from 'src/environments/environment';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 import { IRow } from 'src/app/models/row';
+import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 
 @Component({
   selector: 'app-comfy',
@@ -196,7 +197,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.target = {};
 
     const prefix = 'target';
-    this.source = this.state.source.tables.map(table => table.name);
+
+    this.source = uniq(this.state.source.tables.map(table => table.name));
 
     this.state.target.tables.map(table => {
       this.target[table.name] = {};
@@ -205,9 +207,9 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
       this.target[table.name].data = [table.name];
     });
 
-    this.targettablenames = Object.keys(this.target).filter(
+    this.targettablenames = uniq(Object.keys(this.target).filter(
       tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
-    );
+    ));
 
     this.sourceConnectedTo = this.state.target.tables.map(
       table => `${prefix}-${table.name}`
@@ -215,9 +217,9 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.stateService.Target = this.target;
 
-    this.sourceRows = this.state.source.tables
+    this.sourceRows = uniqBy(this.state.source.tables
       .map(table => table.rows)
-      .reduce((p, k) => p.concat.apply(p, k), []);
+      .reduce((p, k) => p.concat.apply(p, k), []), 'name');
   }
 
   // tslint:disable-next-line:member-ordering
@@ -356,7 +358,10 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
       } else if (area === 'target') {
         this.targettablenames = this.targetTableNames.sort(sortByName);
       } else if (area === 'source-column') {
-        this.sourceRows = Object.assign([], this.sourceRows.sort(row => sortByName(row.name)));
+        this.sourceRows = Object.assign(
+          [],
+          this.sourceRows.sort(row => sortByName(row.name))
+        );
       }
     }
   }
