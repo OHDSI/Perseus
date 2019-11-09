@@ -174,7 +174,6 @@ div[concept=true] {
 
 .cdm-box {
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
   background: #F3F3F3;
@@ -201,5 +200,8 @@ div[concept=true] {
   padding-left: 13px;
 }
 
+.source-columns-list {
+  direction: rtl;
+}
 
 
