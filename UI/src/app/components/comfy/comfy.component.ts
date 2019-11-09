@@ -31,6 +31,7 @@ import {
 import { ConceptService } from './services/concept.service';
 import { environment } from 'src/environments/environment';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
+import { IRow } from 'src/app/models/row';
 
 @Component({
   selector: 'app-comfy',
@@ -66,7 +67,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   target = {};
   sourceConnectedTo = [];
-  sourceRows = [];
+  sourceRows: IRow[] = [];
 
   private snakbarOptions = {
     duration: 3000
@@ -213,6 +214,10 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.stateService.Target = this.target;
+
+    this.sourceRows = this.state.source.tables
+      .map(table => table.rows)
+      .reduce((p, k) => p.concat.apply(p, k), []);
   }
 
   // tslint:disable-next-line:member-ordering
@@ -338,7 +343,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     const areas = ['source-column', 'target', 'source'];
     const idx = areas.indexOf(area);
 
-    const sortByName = (a, b) => {
+    const sortByName = (a, b?) => {
       if (a.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1) {
         return -1;
       }
@@ -350,6 +355,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
         this.source = this.source.sort(sortByName);
       } else if (area === 'target') {
         this.targettablenames = this.targetTableNames.sort(sortByName);
+      } else if (area === 'source-column') {
+        this.sourceRows = Object.assign([], this.sourceRows.sort(row => sortByName(row.name)));
       }
     }
   }

@@ -19,11 +19,11 @@ import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-op
   styleUrls: ['./columns-list.component.scss']
 })
 export class ColumnsListComponent implements OnInit, OnChanges {
-  @Input() tables: ITable[];
+  @Input() sourceRows: IRow[];
+
   @Output() columnsSelected = new EventEmitter<string[]>();
 
   selectedColumns = [];
-  sourceRows: IRow[];
 
   constructor(
     private dataService: DataService,
@@ -32,11 +32,7 @@ export class ColumnsListComponent implements OnInit, OnChanges {
 
   ngOnInit() {}
 
-  ngOnChanges() {
-    this.sourceRows = this.tables
-      .map(table => table.rows)
-      .reduce((p, k) => p.concat.apply(p, k), []);
-  }
+  ngOnChanges() {}
 
   onSelectColumn(name: string) {
     const idx = this.selectedColumns.findIndex(x => x === name);
