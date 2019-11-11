@@ -61,6 +61,7 @@
               class="table-description source caption"
               matTooltip="{{ item }}"
               matTooltipPosition="right"
+              concept="{{ item }}"
             >
               {{ item }}
             </div>
@@ -91,7 +92,6 @@
           >
             <div
               class="table-description target caption"
-              concept="{{ tableName }}"
               matTooltip="{{ tableName }}"
               [matTooltipPosition]="'right'"
               (click)="openMapping(tableName)"

@@ -44,15 +44,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.stateService.state;
   }
 
-  get sourceTables(): ITable[] {
-    return this.state.source.tables;
-  }
-
   get targetTableNames(): string[] {
     return this.targettablenames;
-    // return Object.keys(this.target).filter(
-    //   tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
-    // );
   }
 
   private targettablenames: string[] = [];
@@ -198,7 +191,9 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const prefix = 'target';
 
-    this.source = uniq(this.state.source.tables.map(table => table.name));
+    this.source = uniq(this.state.source.tables.map(table => table.name).filter(
+      tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0
+    ));
 
     this.state.target.tables.map(table => {
       this.target[table.name] = {};
@@ -207,9 +202,7 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
       this.target[table.name].data = [table.name];
     });
 
-    this.targettablenames = uniq(Object.keys(this.target).filter(
-      tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0 // HIDE SPECIAL TARGET TABLES
-    ));
+    this.targettablenames = uniq(Object.keys(this.target));
 
     this.sourceConnectedTo = this.state.target.tables.map(
       table => `${prefix}-${table.name}`

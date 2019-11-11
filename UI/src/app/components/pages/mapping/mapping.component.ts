@@ -57,6 +57,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
       console.log(done);
       this.bridgeService.deleteSelectedArrows();
     });
+
+    this.switchSourceToTarget();
   }
 
   ngAfterViewInit() {
@@ -69,6 +71,12 @@ export class MappingComponent implements OnInit, AfterViewInit {
     if (event.key === 'Delete') {
       this.bridgeService.deleteSelectedArrows();
     }
+  }
+
+  switchSourceToTarget() {
+    const temp = [...this.source];
+    this.source = [...this.target];
+    this.target = temp;
   }
 
   trackByFn(index) {
