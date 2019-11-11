@@ -5,7 +5,8 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
-  HostListener
+  HostListener,
+  OnDestroy
 } from '@angular/core';
 
 import { StateService } from 'src/app/services/state.service';
@@ -17,14 +18,17 @@ import { MatDialog } from '@angular/material';
 import { PreviewPopupComponent } from '../../popaps/preview-popup/preview-popup.component';
 import { ITable } from 'src/app/models/table';
 import { RulesPopupService } from '../../popaps/rules-popup/services/rules-popup.service';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { IConnector } from 'src/app/models/interface/connector.interface';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   selector: 'app-mapping',
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss']
 })
-export class MappingComponent implements OnInit, AfterViewInit {
+export class MappingComponent extends BaseComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
@@ -40,6 +44,8 @@ export class MappingComponent implements OnInit, AfterViewInit {
   @ViewChild('arrowsarea', { read: ElementRef }) svgCanvas: ElementRef;
   @ViewChild('maincanvas', { read: ElementRef }) mainCanvas: ElementRef;
 
+  clickArrowSubscriptions = [];
+
   constructor(
     private stateService: StateService,
     private dataService: DataService,
@@ -49,16 +55,39 @@ export class MappingComponent implements OnInit, AfterViewInit {
     private rulesPoupService: RulesPopupService,
     mappingElementRef: ElementRef
   ) {
+    super();
     this.commonService.mappingElement = mappingElementRef;
   }
 
   ngOnInit() {
-    this.rulesPoupService.deleteConnector$.subscribe(done => {
-      console.log(done);
-      this.bridgeService.deleteSelectedArrows();
-    });
+    this.bridgeService.connection
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(connection => {
+        this.clickArrowSubscriptions.push(
+          connection.connector.clicked.subscribe(this.clickArrowHandler)
+        );
+      });
+
+    this.rulesPoupService.deleteConnector$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(done => {
+        console.log(done);
+        this.bridgeService.deleteSelectedArrows();
+      });
 
     this.switchSourceToTarget();
+  }
+
+  clickArrowHandler(event: IConnector) {
+    console.log(event);
+  }
+
+  ngOnDestroy() {
+    this.clickArrowSubscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+
+    super.ngOnDestroy();
   }
 
   ngAfterViewInit() {
@@ -86,16 +115,16 @@ export class MappingComponent implements OnInit, AfterViewInit {
   previewMapping() {
     const mapping = this.bridgeService.generateMapping();
 
-    this.dataService.getXmlPreview(mapping)
-    .pipe(
-      switchMap(_ => this.dataService.getSqlPreview())
-    ).subscribe(json => {
-      this.matDialog.open(PreviewPopupComponent, {
-        data: json,
-        maxHeight: '80vh',
-        minWidth: '80vh'
+    this.dataService
+      .getXmlPreview(mapping)
+      .pipe(switchMap(_ => this.dataService.getSqlPreview()))
+      .subscribe(json => {
+        this.matDialog.open(PreviewPopupComponent, {
+          data: json,
+          maxHeight: '80vh',
+          minWidth: '80vh'
+        });
       });
-    });
   }
 
   generateMappingJson() {

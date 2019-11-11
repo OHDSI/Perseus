@@ -2,11 +2,13 @@ import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
 import { extractHtmlElement } from '../services/utilites/html-utilities';
 import { IConnector } from './interface/connector.interface';
-import { Renderer2, ElementRef } from '@angular/core';
+import { Renderer2, ElementRef, EventEmitter } from '@angular/core';
 
 // TODO Hide properties with WeakMap
 
 export class Arrow implements IConnector {
+  clicked = new EventEmitter<IConnector>();
+
   canvas: any;
   svgPath: SVGLineElement;
   button: Element;
@@ -23,41 +25,6 @@ export class Arrow implements IConnector {
   ) {
     this.canvas = canvasRef.nativeElement;
   }
-
-  // draw() {
-  //   const source = this.checkAndChangeHtmlElement(this.source);
-  //   const target = this.checkAndChangeHtmlElement(this.target);
-
-  //   // TODO Check htmlElement for existance
-  //   const sourceSVGPoint = getSVGPoint(source, this.canvas);
-  //   const targetSVGPoint = getSVGPoint(target, this.canvas);
-
-  //   const id = this.id;
-
-  //   const { x: x1, y: y1 } = sourceSVGPoint;
-  //   const { x: x2, y: y2 } = targetSVGPoint;
-
-  //   const line = this.renderer.createElement('line', 'svg');
-
-  //   this.renderer.addClass(line, 'arrow');
-  //   this.renderer.setAttribute(line, 'x1', x1 + '');
-  //   this.renderer.setAttribute(line, 'y1', y1 + '');
-  //   this.renderer.setAttribute(line, 'x2', x2 - 6 + '');
-  //   this.renderer.setAttribute(line, 'y2', y2 + '');
-  //   this.renderer.setAttribute(line, 'id', id);
-
-  //   this.renderer.setAttribute(line, 'marker-end', 'url(#arrow)');
-
-  //   this.removeClickListener = this.renderer.listen(
-  //     line,
-  //     'click',
-  //     this.clickHandler.bind(this)
-  //   );
-
-  //   this.svgPath = line;
-
-  //   this.renderer.appendChild(this.canvas, line);
-  // }
 
   private generateSvgPath(pointStart: number[], pointEnd: number[]): string {
     const x1 = pointStart[0];
@@ -152,7 +119,9 @@ export class Arrow implements IConnector {
   }
 
   clickHandler(event: any) {
-    this.select();
+    event.stopPropagation();
+    this.clicked.emit(this);
+    //this.select();
   }
 
   adjustPosition() {

@@ -33,52 +33,52 @@ export class BridgeButtonService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  createButton(drawEntity: IConnector, arrowsCache: ArrowCache) {
-    const line = drawEntity.svgPath;
+  // createButton(drawEntity: IConnector, arrowsCache: ArrowCache) {
+  //   const line = drawEntity.svgPath;
 
-    const injector = Injector.create({
-      providers: [{ provide: BRIDGE_BUTTON_DATA, useValue: {connector: drawEntity, arrowCache: arrowsCache }}]
-    });
+  //   const injector = Injector.create({
+  //     providers: [{ provide: BRIDGE_BUTTON_DATA, useValue: {connector: drawEntity, arrowCache: arrowsCache }}]
+  //   });
 
-    const componentRef = this.componentFactoryResolver
-      .resolveComponentFactory(BridgeButtonComponent)
-      .create(injector);
+  //   const componentRef = this.componentFactoryResolver
+  //     .resolveComponentFactory(BridgeButtonComponent)
+  //     .create(injector);
 
-    componentRef.instance.drawEntity = drawEntity;
+  //   componentRef.instance.drawEntity = drawEntity;
 
-    this.appRef.attachView(componentRef.hostView);
+  //   this.appRef.attachView(componentRef.hostView);
 
-    const button = (componentRef.hostView as EmbeddedViewRef<any>)
-      .rootNodes[0] as HTMLElement;
+  //   const button = (componentRef.hostView as EmbeddedViewRef<any>)
+  //     .rootNodes[0] as HTMLElement;
 
-    const {mainElement, svgCanvas} = this.commonService;
+  //   const {mainElement, svgCanvas} = this.commonService;
 
-    this.renderer.appendChild(mainElement.nativeElement, button);
+  //   this.renderer.appendChild(mainElement.nativeElement, button);
 
-    const { top, left } = this._calculateButtonPosition(
-      button,
-      line,
-      mainElement.nativeElement,
-      svgCanvas.nativeElement
-    );
+  //   const { top, left } = this._calculateButtonPosition(
+  //     button,
+  //     line,
+  //     mainElement.nativeElement,
+  //     svgCanvas.nativeElement
+  //   );
 
-    button.style.top = top + 'px';
-    button.style.left = left + 'px';
+  //   button.style.top = top + 'px';
+  //   button.style.left = left + 'px';
 
-    drawEntity.attachButton(button);
+  //   drawEntity.attachButton(button);
 
-    return button;
-  }
+  //   return button;
+  // }
 
-  recalculateButtonPosition(button, line) {
-    const mainElement = this.commonService.mainElement.nativeElement;
-    const canvasElement = this.commonService.svgCanvas.nativeElement;
+  // recalculateButtonPosition(button, line) {
+  //   const mainElement = this.commonService.mainElement.nativeElement;
+  //   const canvasElement = this.commonService.svgCanvas.nativeElement;
 
-    const { top, left } = this._calculateButtonPosition(button, line, mainElement, canvasElement);
+  //   const { top, left } = this._calculateButtonPosition(button, line, mainElement, canvasElement);
 
-    button.style.top = top + 'px';
-    button.style.left = left + 'px';
-  }
+  //   button.style.top = top + 'px';
+  //   button.style.left = left + 'px';
+  // }
 
   private _calculateButtonPosition(button, line, mainElement, canvasElement) {
     const buttonClientRect = button.getBoundingClientRect();

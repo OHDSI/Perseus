@@ -106,15 +106,14 @@ app-dialog {
 }
 
 
-line {
-  stroke-width:2;
+path {
+  stroke-width:1;
 
   &.arrow {
     stroke: #808080;
   }
 
   &.arrow:hover {
-    stroke:#ffca05;
     stroke-width:5;
   }
 

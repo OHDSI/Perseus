@@ -1,4 +1,5 @@
 import { IRow } from '../row';
+import { EventEmitter } from '@angular/core';
 
 export interface IConnector {
   id: string;
@@ -8,6 +9,7 @@ export interface IConnector {
   target: IRow;
   selected: boolean;
   button: Element;
+  clicked: EventEmitter<IConnector>;
 
   draw(): void;
   remove(): void;
