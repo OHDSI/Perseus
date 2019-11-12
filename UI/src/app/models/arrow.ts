@@ -14,6 +14,9 @@ export class Arrow implements IConnector {
   button: Element;
   selected = false;
 
+  sourceSVGPoint: any;
+  targetSVGPoint: any;
+
   private removeClickListener: any;
 
   constructor(
@@ -36,18 +39,18 @@ export class Arrow implements IConnector {
     return `M${x1},${y1} C${x1 + 200},${y1} ${x2 - 200},${y2} ${x2},${y2}`;
   }
 
-  draw() {
+  draw(): void {
     const source = this.checkAndChangeHtmlElement(this.source);
     const target = this.checkAndChangeHtmlElement(this.target);
 
     // TODO Check htmlElement for existance
-    const sourceSVGPoint = getSVGPoint(source, this.canvas);
-    const targetSVGPoint = getSVGPoint(target, this.canvas);
+    this.sourceSVGPoint = getSVGPoint(source, this.canvas);
+    this.targetSVGPoint = getSVGPoint(target, this.canvas);
 
     const id = this.id;
 
-    const { x: x1, y: y1 } = sourceSVGPoint;
-    const { x: x2, y: y2 } = targetSVGPoint;
+    const { x: x1, y: y1 } = this.sourceSVGPoint;
+    const { x: x2, y: y2 } = this.targetSVGPoint;
 
     const path = this.renderer.createElement('path', 'svg');
 

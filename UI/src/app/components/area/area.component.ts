@@ -1,4 +1,12 @@
-import { Component, Input, ElementRef, AfterViewChecked, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
+import {
+  Component,
+  Input,
+  ElementRef,
+  AfterViewChecked,
+  ViewChild,
+  AfterViewInit,
+  Renderer2
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -12,8 +20,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.scss']
 })
-
-export class AreaComponent implements AfterViewInit, AfterViewChecked {
+export class AreaComponent implements AfterViewInit {
   @Input() area: Area;
   @ViewChild('scrollabale') scrollableContent;
 
@@ -26,25 +33,23 @@ export class AreaComponent implements AfterViewInit, AfterViewChecked {
     private bridgeService: BridgeService,
     private renderer: Renderer2
   ) {
-    this.matIconRegistry
-      .addSvgIcon(
-        'filter',
-        this.getSanitizedUrl('filter')
-      );
+    this.matIconRegistry.addSvgIcon('filter', this.getSanitizedUrl('filter'));
   }
 
   ngAfterViewInit() {
-    this.renderer.listen(this.scrollableContent.nativeElement, 'scroll', (event) => {
-      this.bridgeService.recalculateConnectorsPositions();
-    });
-  }
-
-  ngAfterViewChecked() {
-    // we need to set width of areas so that we could calculate position of a BridgeButton component.
     const element = this.elementRef.nativeElement;
+
     if (element.offsetWidth) {
       this.commonService.setAreaWidth(this.area, element.offsetWidth);
     }
+
+    this.renderer.listen(
+      this.scrollableContent.nativeElement,
+      'scroll',
+      event => {
+        this.bridgeService.recalculateConnectorsPositions();
+      }
+    );
   }
 
   get areaIsSource() {
@@ -56,16 +61,23 @@ export class AreaComponent implements AfterViewInit, AfterViewChecked {
   }
 
   getSanitizedUrl(iconName) {
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/icons/${iconName}.svg`);
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(
+      `assets/icons/${iconName}.svg`
+    );
   }
 
   get totalColumnsNumber() {
-    return this.stateService.state &&
-     this.stateService.state[this.area].tables.length;
+    return (
+      this.stateService.state &&
+      this.stateService.state[this.area].tables.length
+    );
   }
 
   get visibleColumnsNumber() {
-    return this.stateService.state &&
-     this.stateService.state[this.area].tables.filter(table => table.visible).length;
+    return (
+      this.stateService.state &&
+      this.stateService.state[this.area].tables.filter(table => table.visible)
+        .length
+    );
   }
 }

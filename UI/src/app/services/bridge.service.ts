@@ -75,9 +75,9 @@ export class BridgeService {
         this.targetRow
       );
 
-      // if (this.userSettings.showQuestionButtons) {
-      //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
-      // }
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.createButton(connector, this.arrowsCache);
+      }
 
       const connection: IConnection = {
         source: this.sourceRow,
@@ -119,12 +119,12 @@ export class BridgeService {
       const drawEntity: IConnector = list[key];
       drawEntity.adjustPosition();
 
-      // if (this.userSettings.showQuestionButtons) {
-      //   this.bridgeButtonService.recalculateButtonPosition(
-      //     drawEntity.button,
-      //     drawEntity.svgPath
-      //   );
-      // }
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.recalculateButtonPosition(
+          drawEntity.button,
+          drawEntity.svgPath
+        );
+      }
     });
   }
 
@@ -158,9 +158,9 @@ export class BridgeService {
             arrow.target
           );
 
-          // if (this.userSettings.showQuestionButtons) {
-          //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
-          // }
+          if (this.userSettings.showQuestionButtons) {
+            this.bridgeButtonService.createButton(connector, this.arrowsCache);
+          }
         }
       }
     });
@@ -173,14 +173,16 @@ export class BridgeService {
       const source = this.stateService.findTable(arrow.source.tableName);
       const target = this.stateService.findTable(arrow.target.tableName);
       if (source.expanded && target.expanded) {
-        // const connector = this.drawService.drawLine(
-        //   this.getConnectorId(arrow.source, arrow.target),
-        //   arrow.source,
-        //   arrow.target
-        // );
-        // if (this.userSettings.showQuestionButtons) {
-        //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
-        // }
+        const connector = this.drawService.drawLine(
+          this.getConnectorId(arrow.source, arrow.target),
+          arrow.source,
+          arrow.target
+        );
+
+        if (this.userSettings.showQuestionButtons) {
+          this.bridgeButtonService.createButton(connector, this.arrowsCache);
+        }
+
         this.drawService.drawLine(
           this.getConnectorId(arrow.source, arrow.target),
           arrow.source,

@@ -33,75 +33,74 @@ export class BridgeButtonService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  // createButton(drawEntity: IConnector, arrowsCache: ArrowCache) {
-  //   const line = drawEntity.svgPath;
+  createButton(drawEntity: IConnector, arrowsCache: ArrowCache) {
+    const line = drawEntity.svgPath;
 
-  //   const injector = Injector.create({
-  //     providers: [{ provide: BRIDGE_BUTTON_DATA, useValue: {connector: drawEntity, arrowCache: arrowsCache }}]
-  //   });
+    const injector = Injector.create({
+      providers: [
+        {
+          provide: BRIDGE_BUTTON_DATA,
+          useValue: { connector: drawEntity, arrowCache: arrowsCache }
+        }
+      ]
+    });
 
-  //   const componentRef = this.componentFactoryResolver
-  //     .resolveComponentFactory(BridgeButtonComponent)
-  //     .create(injector);
+    const componentRef = this.componentFactoryResolver
+      .resolveComponentFactory(BridgeButtonComponent)
+      .create(injector);
 
-  //   componentRef.instance.drawEntity = drawEntity;
+    componentRef.instance.drawEntity = drawEntity;
 
-  //   this.appRef.attachView(componentRef.hostView);
+    this.appRef.attachView(componentRef.hostView);
 
-  //   const button = (componentRef.hostView as EmbeddedViewRef<any>)
-  //     .rootNodes[0] as HTMLElement;
+    const button = (componentRef.hostView as EmbeddedViewRef<any>)
+      .rootNodes[0] as HTMLElement;
 
-  //   const {mainElement, svgCanvas} = this.commonService;
+    const { mainElement, svgCanvas } = this.commonService;
 
-  //   this.renderer.appendChild(mainElement.nativeElement, button);
+    this.renderer.appendChild(mainElement.nativeElement, button);
 
-  //   const { top, left } = this._calculateButtonPosition(
-  //     button,
-  //     line,
-  //     mainElement.nativeElement,
-  //     svgCanvas.nativeElement
-  //   );
+    const { top, left } = this._calculateButtonPosition(
+      button,
+      line,
+      svgCanvas.nativeElement
+    );
 
-  //   button.style.top = top + 'px';
-  //   button.style.left = left + 'px';
+    button.style.top = top + 'px';
+    button.style.left = left + 'px';
 
-  //   drawEntity.attachButton(button);
+    drawEntity.attachButton(button);
 
-  //   return button;
-  // }
+    return button;
+  }
 
-  // recalculateButtonPosition(button, line) {
-  //   const mainElement = this.commonService.mainElement.nativeElement;
-  //   const canvasElement = this.commonService.svgCanvas.nativeElement;
+  recalculateButtonPosition(button, line) {
+    const mainElement = this.commonService.mainElement.nativeElement;
+    const canvasElement = this.commonService.svgCanvas.nativeElement;
 
-  //   const { top, left } = this._calculateButtonPosition(button, line, mainElement, canvasElement);
+    const { top, left } = this._calculateButtonPosition(
+      button,
+      line,
+      canvasElement
+    );
 
-  //   button.style.top = top + 'px';
-  //   button.style.left = left + 'px';
-  // }
+    button.style.top = top + 'px';
+    button.style.left = left + 'px';
+  }
 
-  private _calculateButtonPosition(button, line, mainElement, canvasElement) {
+  private _calculateButtonPosition(button, line, canvasElement) {
+    const canvasClientRect = canvasElement.getBoundingClientRect();
     const buttonClientRect = button.getBoundingClientRect();
 
     const buttonOffsetX = buttonClientRect.width / 2;
     const buttonOffsetY = buttonClientRect.height / 2;
 
-    const sourceArea = this.commonService.getAreaWidth('source');
-    const targetArea = this.commonService.getAreaWidth('target');
-
-    // return {
-    //   top: middleHeightOfLine(line) - buttonOffsetY,
-    //   left:
-    //     canvas.clientWidth / 2 -
-    //     buttonOffsetX -
-    //     areaOffset(sourceArea, targetArea)
-    // };
-
-    const {endXY} = line.attributes;
+    const { endXY } = line.attributes;
     const pointEnd = endXY.nodeValue.split(',');
+
     return {
-      top:  +pointEnd[1] - buttonOffsetY,
-      left: mainElement.clientWidth - targetArea - canvasElement.clientWidth + buttonOffsetX
+      top: +pointEnd[1] + canvasClientRect.y - buttonOffsetY,
+      left: canvasClientRect.x + buttonOffsetX
     };
   }
 }

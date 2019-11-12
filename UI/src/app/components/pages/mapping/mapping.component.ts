@@ -21,6 +21,11 @@ import { RulesPopupService } from '../../popaps/rules-popup/services/rules-popup
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { BaseComponent } from '../../base/base.component';
+import { ConceptService } from '../../comfy/services/concept.service';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { TransformRulesData } from '../../popaps/rules-popup/model/transform-rules-data';
+import { RulesPopupComponent } from '../../popaps/rules-popup/rules-popup.component';
+import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 
 @Component({
   selector: 'app-mapping',
@@ -53,7 +58,9 @@ export class MappingComponent extends BaseComponent
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
     private rulesPoupService: RulesPopupService,
-    mappingElementRef: ElementRef
+    private conceptService: ConceptService,
+    private overlayService: OverlayService,
+    private mappingElementRef: ElementRef
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -64,7 +71,7 @@ export class MappingComponent extends BaseComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
         this.clickArrowSubscriptions.push(
-          connection.connector.clicked.subscribe(this.clickArrowHandler)
+          connection.connector.clicked.subscribe(x => this.clickArrowHandler(x))
         );
       });
 
@@ -78,8 +85,53 @@ export class MappingComponent extends BaseComponent
     this.switchSourceToTarget();
   }
 
-  clickArrowHandler(event: IConnector) {
-    console.log(event);
+  clickArrowHandler(arrow: IConnector) {
+    let payloadObj: TransformRulesData;
+
+    const insnantiationType = {
+      transform: RulesPopupComponent,
+      lookup: TransformConfigComponent
+    };
+
+    const isConcept = this.conceptService.isConceptTable(
+      arrow.target.tableName
+    );
+
+    payloadObj = {
+      connector: arrow,
+      arrowCache: this.bridgeService.arrowsCache
+    };
+
+    const dialogOptions = {
+      disableClose: true,
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      panelClass: 'transformation-unit',
+      positionStrategyFor: 'simple-transform',
+      payload: payloadObj
+    };
+
+    let component: any = insnantiationType.transform;
+
+    let ancor = this.mappingElementRef.nativeElement;
+
+    if (isConcept) {
+      component = insnantiationType.lookup;
+      dialogOptions.positionStrategyFor = 'advanced-transform';
+      ancor = this.commonService.mappingElement.nativeElement;
+    }
+
+    // Open
+
+    payloadObj.connector.select();
+
+    const dialogRef = this.overlayService.open(dialogOptions, ancor, component);
+
+    dialogRef.close$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(configOptions => {
+        payloadObj.connector.deselect();
+      });
   }
 
   ngOnDestroy() {
