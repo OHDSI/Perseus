@@ -4,7 +4,8 @@ import {
   OnInit,
   ViewChild,
   Output,
-  EventEmitter
+  EventEmitter,
+  AfterViewInit
 } from '@angular/core';
 import { MatDialog, MatExpansionPanel } from '@angular/material';
 
@@ -19,11 +20,12 @@ import { SampleDataPopupComponent } from '../popaps/sample-data-popup/sample-dat
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss']
 })
-export class PanelComponent implements OnInit {
+export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
+  @Output() initialized = new EventEmitter();
 
   @ViewChild('exppanelheader') panelHheader: any;
   @ViewChild('matpanel') panel: MatExpansionPanel;
@@ -42,6 +44,11 @@ export class PanelComponent implements OnInit {
     private bridgeService: BridgeService,
     private stateService: StateService
   ) {}
+
+
+  ngAfterViewInit() {
+    this.initialized.emit();
+  }
 
   ngOnInit() {
     this.bridgeService.deleteAll.subscribe(_ => {
@@ -63,21 +70,22 @@ export class PanelComponent implements OnInit {
     this.commonService.expanded(this.area);
     this.setExpandedFlagOnSourceAndTargetTables(this.table, true);
 
-    setTimeout(() => {
-      this.open.emit();
-    }, 50);
+    this.open.emit();
 
+    // setTimeout(() => {
+
+    // }, 50);
   }
 
   onClose() {
     this.commonService.collapsed(this.area);
     this.setExpandedFlagOnSourceAndTargetTables(this.table, false);
 
-    setTimeout(() => {
-      this.close.emit();
-    }, 50);
+    this.close.emit();
 
+    // setTimeout(() => {
 
+    // }, 50);
   }
 
   openSampleDataDialog(e) {

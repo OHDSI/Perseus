@@ -10,7 +10,6 @@ import {
 
 import { CommonService } from 'src/app/services/common.service';
 import { BridgeButtonComponent } from '../components/bridge-button/bridge-button.component';
-import { middleHeightOfLine, areaOffset } from './utilites/draw-utilites';
 import { IConnector } from '../models/interface/connector.interface';
 import { BRIDGE_BUTTON_DATA } from '../components/bridge-button/model/bridge-button-injector';
 import { ArrowCache } from '../models/arrow-cache';
@@ -91,15 +90,22 @@ export class BridgeButtonService {
     const canvasClientRect = canvasElement.getBoundingClientRect();
     const buttonClientRect = button.getBoundingClientRect();
 
-    const buttonOffsetX = buttonClientRect.width / 2;
-    const buttonOffsetY = buttonClientRect.height / 2;
+    const buttonOffsetX = Math.floor(buttonClientRect.width / 2);
+    const buttonOffsetY =  Math.floor(buttonClientRect.height / 2);
 
     const { endXY } = line.attributes;
+    const { startXY } = line.attributes;
+    const pointStart = startXY.nodeValue.split(',');
     const pointEnd = endXY.nodeValue.split(',');
 
+    const x = Math.floor(+pointStart[0]);
+    const y = Math.floor(+pointStart[1]);
+    const x1 = Math.floor(+pointEnd[0]);
+    const y1 = Math.floor(+pointEnd[1]);
+
     return {
-      top: +pointEnd[1] + canvasClientRect.y - buttonOffsetY,
-      left: canvasClientRect.x + buttonOffsetX
+      top: y + Math.floor(canvasClientRect.y) - buttonOffsetY,
+      left: Math.floor(canvasClientRect.x) + buttonOffsetX
     };
   }
 }

@@ -50,6 +50,7 @@ export class MappingComponent extends BaseComponent
   @ViewChild('maincanvas', { read: ElementRef }) mainCanvas: ElementRef;
 
   clickArrowSubscriptions = [];
+  panelsViewInitialized = { source: false, target: false };
 
   constructor(
     private stateService: StateService,
@@ -141,8 +142,7 @@ export class MappingComponent extends BaseComponent
   }
 
   ngAfterViewInit() {
-    this.commonService.setSvg(this.svgCanvas);
-    this.commonService.setMain(this.mainCanvas);
+
   }
 
   @HostListener('document:keyup', ['$event'])
@@ -163,7 +163,8 @@ export class MappingComponent extends BaseComponent
       .getXmlPreview(mapping)
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(_ => this.dataService.getSqlPreview()))
+        switchMap(_ => this.dataService.getSqlPreview())
+      )
       .subscribe(json => {
         this.matDialog.open(PreviewPopupComponent, {
           data: json,
@@ -175,11 +176,12 @@ export class MappingComponent extends BaseComponent
 
   generateMappingJson() {
     const mappingJSON = this.bridgeService.generateMapping();
-    this.dataService.getZippedXml(mappingJSON)
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(file => {
-      saveAs(file);
-    });
+    this.dataService
+      .getZippedXml(mappingJSON)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(file => {
+        saveAs(file);
+      });
   }
 
   wipeAllMappings() {
@@ -187,7 +189,12 @@ export class MappingComponent extends BaseComponent
   }
 
   onSourcePanelOpen() {
-    this.bridgeService.refresh(this.target);
+    if (
+      this.panelsViewInitialized.source &&
+      this.panelsViewInitialized.target
+    ) {
+      this.bridgeService.refresh(this.target);
+    }
   }
 
   onSourcePanelClose() {
@@ -200,6 +207,22 @@ export class MappingComponent extends BaseComponent
   onTargetPanelOpen() {}
 
   onTargetPanelClose() {}
+
+  onPanelInit(area: string) {
+    this.panelsViewInitialized[area] = true;
+
+    if (
+      this.panelsViewInitialized.source &&
+      this.panelsViewInitialized.target
+    ) {
+      this.commonService.setSvg(this.svgCanvas);
+      this.commonService.setMain(this.mainCanvas);
+
+      setTimeout(() => {
+        this.bridgeService.refresh(this.target);
+      }, 200);
+    }
+  }
 
   private hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
     const corespondingTableNames = this.bridgeService.findCorrespondingTables(

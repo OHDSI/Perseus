@@ -1,4 +1,4 @@
-import { Component, Inject, ElementRef } from '@angular/core';
+import { Component, Inject, ElementRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
@@ -13,9 +13,10 @@ import { CommonService } from 'src/app/services/common.service';
 @Component({
   selector: 'app-bridge-button',
   templateUrl: './bridge-button.component.html',
-  styleUrls: ['./bridge-button.component.scss']
+  styleUrls: ['./bridge-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BridgeButtonComponent {
+export class BridgeButtonComponent implements OnInit {
   text = 'T';
   drawEntity: IConnector;
   active = false;
@@ -60,6 +61,9 @@ export class BridgeButtonComponent {
       this.dialogOptions.positionStrategyFor = 'advanced-transform';
       this.ancor = this.commonService.mappingElement.nativeElement;
     }
+  }
+
+  ngOnInit() {
   }
 
   openRulesDialog() {

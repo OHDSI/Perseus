@@ -66,6 +66,7 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(path, 'stroke', 'grey');
     this.renderer.setAttribute(path, 'id', id);
     this.renderer.setAttribute(path, 'middleY', Math.floor((y1 + y2) / 2).toString());
+    this.renderer.setAttribute(path, 'startXY', `${x1},${y1}`);
     this.renderer.setAttribute(path, 'endXY', `${x1},${y1}`);
 
     this.renderer.setAttribute(path, 'marker-end', 'url(#arrow)');

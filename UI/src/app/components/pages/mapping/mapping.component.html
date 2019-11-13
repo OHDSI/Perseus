@@ -34,6 +34,7 @@
             [table]="table"
             (open)="onSourcePanelOpen()"
             (close)="onSourcePanelClose()"
+            (initialized)="onPanelInit('source')"
           >
             <app-panel-table
               [table]="table"
@@ -107,14 +108,10 @@
             [table]="table"
             (open)="onTargetPanelOpen()"
             (close)="onTargetPanelClose()"
+            (initialized)="onPanelInit('target')"
           ></app-panel>
         </mat-tab>
       </mat-tab-group>
-      <!-- <ng-container *ngFor="let table of target; trackBy: trackByFn">
-        <ng-container *ngIf="table.visible">
-          <app-panel [table]="table"></app-panel>
-        </ng-container>
-      </ng-container> -->
     </app-area>
   </main>
   <footer>
