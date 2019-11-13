@@ -159,7 +159,12 @@ export class BridgeService {
           );
 
           if (this.userSettings.showQuestionButtons) {
-            this.bridgeButtonService.createButton(connector, this.arrowsCache);
+            setTimeout(() => {
+              this.bridgeButtonService.createButton(
+                connector,
+                this.arrowsCache
+              );
+            });
           }
         }
       }

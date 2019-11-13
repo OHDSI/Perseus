@@ -75,7 +75,6 @@ export class BridgeButtonService {
   }
 
   recalculateButtonPosition(button, line) {
-    const mainElement = this.commonService.mainElement.nativeElement;
     const canvasElement = this.commonService.svgCanvas.nativeElement;
 
     const { top, left } = this._calculateButtonPosition(

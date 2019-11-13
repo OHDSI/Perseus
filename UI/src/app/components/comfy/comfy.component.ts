@@ -286,6 +286,7 @@ export class ComfyComponent extends BaseComponent
     data[index] = temp;
   }
 
+  // TODO Switch to the router
   openMapping(targetTableName: string): void {
     const targettable = this.state.target.tables.filter(
       table => table.name === targetTableName
