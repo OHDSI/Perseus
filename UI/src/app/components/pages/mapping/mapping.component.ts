@@ -81,8 +81,6 @@ export class MappingComponent extends BaseComponent
         console.log(done);
         this.bridgeService.deleteSelectedArrows();
       });
-
-    this.switchSourceToTarget();
   }
 
   clickArrowHandler(arrow: IConnector) {
@@ -154,12 +152,6 @@ export class MappingComponent extends BaseComponent
     }
   }
 
-  switchSourceToTarget() {
-    const temp = [...this.source];
-    this.source = [...this.target];
-    this.target = temp;
-  }
-
   trackByFn(index) {
     return index;
   }
@@ -169,7 +161,9 @@ export class MappingComponent extends BaseComponent
 
     this.dataService
       .getXmlPreview(mapping)
-      .pipe(switchMap(_ => this.dataService.getSqlPreview()))
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        switchMap(_ => this.dataService.getSqlPreview()))
       .subscribe(json => {
         this.matDialog.open(PreviewPopupComponent, {
           data: json,
@@ -181,7 +175,9 @@ export class MappingComponent extends BaseComponent
 
   generateMappingJson() {
     const mappingJSON = this.bridgeService.generateMapping();
-    this.dataService.getZippedXml(mappingJSON).subscribe(file => {
+    this.dataService.getZippedXml(mappingJSON)
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(file => {
       saveAs(file);
     });
   }
@@ -200,6 +196,10 @@ export class MappingComponent extends BaseComponent
       this.hideArrowsIfCorespondingTableasAreClosed(table)
     );
   }
+
+  onTargetPanelOpen() {}
+
+  onTargetPanelClose() {}
 
   private hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
     const corespondingTableNames = this.bridgeService.findCorrespondingTables(

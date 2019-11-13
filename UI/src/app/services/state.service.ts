@@ -52,7 +52,7 @@ export class StateService {
   initialize(tables: any[], area: string) {
     this._state[area].tables = tables;
 
-    if (area === 'source' && this._state[area].tables.length > 0) {
+    if (area === 'target' && this._state[area].tables.length > 0) {
       const res = this.conceptService.initSpecialtables();
       this._state[area].tables = res.concat.apply(res, this._state[area].tables);
     }
@@ -68,5 +68,17 @@ export class StateService {
     }
 
     return null;
+  }
+
+  switchSourceToTarget() {
+    const temp = [...this.state.source.tables];
+    this.state.source.tables = [...this.state.target.tables];
+    this.state.target.tables = temp;
+  }
+
+  switchTargetToSource() {
+    const temp = [...this.state.target.tables];
+    this.state.target.tables = [...this.state.source.tables];
+    this.state.source.tables = temp;
   }
 }

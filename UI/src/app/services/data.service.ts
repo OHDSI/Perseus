@@ -34,10 +34,7 @@ export class DataService {
     return this.httpClient.get<any>(path).pipe(
       map(data => {
         const tables = this._normalize(data, 'source');
-
-        // this.stateService.initialize(tables, 'source');
-
-        this.stateService.initialize(tables, 'target');
+        this.stateService.initialize(tables, 'source');
       })
     );
   }
@@ -47,10 +44,7 @@ export class DataService {
     return this.httpClient.get<any>(path).pipe(
       map(data => {
         const tables = this._normalize(data, 'target');
-
-        // this.stateService.initialize(tables, 'target');
-
-        this.stateService.initialize(tables, 'source');
+        this.stateService.initialize(tables, 'target');
       })
     );
   }

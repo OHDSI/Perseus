@@ -22,7 +22,7 @@ import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.com
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { Subscription, merge } from 'rxjs';
-import { startWith, map, switchMap, tap } from 'rxjs/operators';
+import { startWith, map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
 import {
   VocabulariesService,
@@ -33,13 +33,15 @@ import { environment } from 'src/environments/environment';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 import { IRow } from 'src/app/models/row';
 import { uniq, uniqBy } from 'src/app/infrastructure/utility';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-comfy',
   templateUrl: './comfy.component.html',
   styleUrls: ['./comfy.component.scss']
 })
-export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ComfyComponent extends BaseComponent
+  implements OnInit, AfterViewInit, OnDestroy {
   get state() {
     return this.stateService.state;
   }
@@ -81,7 +83,9 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
     private bridgeService: BridgeService,
     private snakbar: MatSnackBar,
     private conceptService: ConceptService
-  ) {}
+  ) {
+    super();
+  }
 
   @ViewChild('scrollEl')
   scrollEl: ElementRef<HTMLElement>;
@@ -155,26 +159,39 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     /*Experiment for vocabulary*/
-    this.vocabulariesService.setVocabularyConnectionString().subscribe(
-      ok => {
-        this.vocabulariesService.getVocabularies().subscribe(vocabularies => {
-          this.vocabularies = [...vocabularies];
-        });
-      },
-      error => console.error(error)
-    );
+    this.vocabulariesService
+      .setVocabularyConnectionString()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
+        ok => {
+          this.vocabulariesService
+            .getVocabularies()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(vocabularies => {
+              this.vocabularies = [...vocabularies];
+            });
+        },
+        error => console.error(error)
+      );
     /*Experiment for vocabulary*/
 
-    this.dataService.initialize().subscribe(_ => {
-      this.initialize();
-      this.busy = false;
-    });
+    this.dataService
+      .initialize()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(_ => {
+        this.initialize();
+        this.busy = false;
+      });
 
-    this.bridgeService.applyConfiguration$.subscribe(configuration => {
-      this.target = configuration.tables;
-    });
+    this.bridgeService.applyConfiguration$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(configuration => {
+        this.target = configuration.tables;
+      });
 
-    this.bridgeService.resetAllMappings$.subscribe(_ => {
+    this.bridgeService.resetAllMappings$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(_ => {
       this.initialize();
 
       this.snakbar.open(
@@ -186,14 +203,21 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   initialize() {
+    this.stateService.switchSourceToTarget();
+
     this.source = [];
     this.target = {};
 
     const prefix = 'target';
 
-    this.source = uniq(this.state.source.tables.map(table => table.name).filter(
-      tableName => ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0
-    ));
+    this.source = uniq(
+      this.state.source.tables
+        .map(table => table.name)
+        .filter(
+          tableName =>
+            ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0
+        )
+    );
 
     this.state.target.tables.map(table => {
       this.target[table.name] = {};
@@ -210,9 +234,12 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.stateService.Target = this.target;
 
-    this.sourceRows = uniqBy(this.state.source.tables
-      .map(table => table.rows)
-      .reduce((p, k) => p.concat.apply(p, k), []), 'name');
+    this.sourceRows = uniqBy(
+      this.state.source.tables
+        .map(table => table.rows)
+        .reduce((p, k) => p.concat.apply(p, k), []),
+      'name'
+    );
   }
 
   // tslint:disable-next-line:member-ordering
@@ -275,8 +302,8 @@ export class ComfyComponent implements OnInit, AfterViewInit, OnDestroy {
       width: '90vw',
       height: '90vh',
       data: {
-        source: sourcetable,
-        target: targettable,
+        source: targettable, // !!!
+        target: sourcetable, // !!!
         allTarget: this.state.target.tables
       }
     });

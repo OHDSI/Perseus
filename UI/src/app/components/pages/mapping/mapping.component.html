@@ -98,8 +98,16 @@
     <!--End-of-the-Bridge-->
     <app-area area="target" class="area-target">
       <mat-tab-group>
-        <mat-tab label="{{table.name}}" *ngFor="let table of target; trackBy: trackByFn">
-          <app-panel [table]="table"></app-panel>
+        <mat-tab
+          label="{{ table.name }}"
+          *ngFor="let table of target; trackBy: trackByFn"
+        >
+          <app-panel
+            *ngIf="table.visible"
+            [table]="table"
+            (open)="onTargetPanelOpen()"
+            (close)="onTargetPanelClose()"
+          ></app-panel>
         </mat-tab>
       </mat-tab-group>
       <!-- <ng-container *ngFor="let table of target; trackBy: trackByFn">
