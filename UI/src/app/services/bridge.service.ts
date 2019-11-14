@@ -204,6 +204,15 @@ export class BridgeService {
           sourceTableName.toUpperCase()
       ) {
         delete this.arrowsCache[key];
+
+      // If target and source are switched
+      } else if (
+        this.arrowsCache[key].target.tableName.toUpperCase() ===
+          sourceTableName.toUpperCase() &&
+        this.arrowsCache[key].source.tableName.toUpperCase() ===
+          targetTableName.toUpperCase()
+      ) {
+        delete this.arrowsCache[key];
       }
     });
   }
