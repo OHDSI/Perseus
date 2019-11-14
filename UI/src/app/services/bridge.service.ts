@@ -14,6 +14,7 @@ import { IConnector } from '../models/interface/connector.interface';
 import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 import { Command } from '../infrastructure/command';
 import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
+import { TouchSequence } from 'selenium-webdriver';
 
 export interface IConnection {
   source: IRow;
@@ -143,7 +144,7 @@ export class BridgeService {
   }
 
   refresh(table: ITable[]) {
-    this.drawService.removeConnectors();
+    this.hideAllArrows();
 
     const tablenamesString = table.map(t => t.name).join(',');
 
@@ -167,7 +168,7 @@ export class BridgeService {
   }
 
   refreshAll() {
-    this.drawService.removeConnectors();
+    this.hideAllArrows();
 
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
       const source = this.stateService.findTable(arrow.source.tableName);
@@ -187,7 +188,7 @@ export class BridgeService {
   }
 
   deleteArrow(key: string) {
-    this.drawService.removeConnector(key);
+    this.drawService.deleteConnector(key);
 
     if (this.arrowsCache[key]) {
       delete this.arrowsCache[key];
@@ -207,20 +208,30 @@ export class BridgeService {
     });
   }
 
+  hideAllArrows(): void {
+    this.drawService.deleteAllConnectors();
+  }
+
   hideTableArrows(table: ITable): void {
-    this.drawService.removeConnectorsBoundToTable(table);
+    this.drawService.deleteConnectorsBoundToTable(table);
   }
 
   deleteAllArrows() {
-    this.drawService.removeConnectors();
+    Object.values(this.arrowsCache).forEach(arrow => {
+      this.deleteArrow(arrow.connector.id);
+    });
+
     this.deleteAll.next();
-    this.arrowsCache = {};
   }
 
   deleteSelectedArrows() {
-    this.drawService.removeSelectedConnectors();
+    Object.values(this.arrowsCache)
+      .filter(arrow => arrow.connector.selected)
+      .forEach(arrow => {
+        this.deleteArrow(arrow.connector.id);
+      });
+
     this.deleteAll.next();
-    this.arrowsCache = {};
   }
 
   generateMapping() {

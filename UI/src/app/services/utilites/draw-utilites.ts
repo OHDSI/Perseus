@@ -13,7 +13,11 @@ function areaOffset(source, target) {
 
 function getSVGPoint(row: IRow, canvas: any) {
   const clientRect = row.htmlElement.getBoundingClientRect();
-  const { height } = clientRect;
+  const { height, width } = clientRect;
+
+  if (height === 0 || width === 0) {
+    throw new Error('invalid client rectange height or width');
+  }
 
   let x: number;
   switch (row.area) {

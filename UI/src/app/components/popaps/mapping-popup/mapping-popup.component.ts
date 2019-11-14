@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 @Component({
   selector: 'app-mapping-popup',
   templateUrl: './mapping-popup.component.html',
-  styleUrls: ['./mapping-popup.component.scss'],
+  styleUrls: ['./mapping-popup.component.scss']
 })
 export class MappingPopupComponent implements AfterViewInit {
   sourceTables = [];
@@ -20,7 +20,5 @@ export class MappingPopupComponent implements AfterViewInit {
     this.allTargetTables = data.allTarget;
   }
 
-  ngAfterViewInit(){
-    console.log('init');
-  }
+  ngAfterViewInit() {}
 }

@@ -179,6 +179,7 @@ export class ComfyComponent extends BaseComponent
       .initialize()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
+        this.stateService.switchSourceToTarget();
         this.initialize();
         this.busy = false;
       });
@@ -203,8 +204,6 @@ export class ComfyComponent extends BaseComponent
   }
 
   initialize() {
-    this.stateService.switchSourceToTarget();
-
     this.source = [];
     this.target = {};
 

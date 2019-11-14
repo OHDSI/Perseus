@@ -9,11 +9,11 @@ import { IConnector } from '../models/interface/connector.interface';
 
 @Injectable()
 export class DrawService {
-  get list(): {[key: string]: IConnector} {
+  get list(): { [key: string]: IConnector } {
     return Object.assign({}, this.cache);
   }
 
-  private cache: {[key: string]: IConnector} = {};
+  private cache: { [key: string]: IConnector } = {};
 
   get listIsEmpty(): boolean {
     return Object.keys(this.cache).length === 0;
@@ -46,38 +46,31 @@ export class DrawService {
     return drawEntity;
   }
 
-  removeConnector(id: string, isSelected: boolean = false) {
-    if (isSelected && !this.cache[id].selected) {
-      return;
-    }
-
-    this.cache[id].remove();
-    delete this.cache[id];
+  deleteAllConnectors() {
+    Object.keys(this.cache).forEach(key => {
+      this.deleteConnector(key);
+    });
   }
 
-  removeConnectors() {
-    Object.keys(this.cache).forEach(key => this.removeConnector(key));
+  deleteConnector(key) {
+    this.cache[key].remove();
+    delete this.cache[key];
   }
 
-  removeSelectedConnectors() {
-    const isSelected = true;
-    Object.keys(this.cache).forEach(key => this.removeConnector(key, isSelected));
-  }
-
-  removeConnectorsBoundToTable({ id, area }) {
+  deleteConnectorsBoundToTable({ id, area }) {
     Object.keys(this.cache).forEach(key => {
       const { sourceTableId, targetTableId } = parseArrowKey(key);
 
       switch (area) {
         case 'source': {
           if (id === +sourceTableId) {
-            this.removeConnector(key);
+            this.deleteConnector(key);
           }
           break;
         }
         case 'target': {
           if (id === +targetTableId) {
-            this.removeConnector(key);
+            this.deleteConnector(key);
           }
           break;
         }

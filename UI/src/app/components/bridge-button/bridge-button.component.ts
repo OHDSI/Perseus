@@ -1,4 +1,10 @@
-import { Component, Inject, ElementRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Inject,
+  ElementRef,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
@@ -36,7 +42,7 @@ export class BridgeButtonComponent implements OnInit {
     private overlayService: OverlayService,
     @Inject(BRIDGE_BUTTON_DATA) payload: BridgeButtonData,
     private elementRef: ElementRef,
-    private commonService: CommonService,
+    private commonService: CommonService
   ) {
     this.payloadObj = {
       connector: payload.connector,
@@ -63,8 +69,7 @@ export class BridgeButtonComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   openRulesDialog() {
     this.payloadObj.connector.select();
@@ -75,8 +80,11 @@ export class BridgeButtonComponent implements OnInit {
       this.component
     );
 
-    dialogRef.close$.subscribe(configOptions => {
-      this.payloadObj.connector.deselect();
+    dialogRef.close$.subscribe((configOptions: any) => {
+      const { deleted } = configOptions;
+      if (!deleted) {
+        this.payloadObj.connector.deselect();
+      }
     });
   }
 }

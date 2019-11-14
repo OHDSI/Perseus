@@ -32,8 +32,8 @@
         <ng-container *ngIf="table.visible">
           <app-panel
             [table]="table"
-            (open)="onSourcePanelOpen()"
-            (close)="onSourcePanelClose()"
+            (open)="onPanelOpen()"
+            (close)="onPanelClose()"
             (initialized)="onPanelInit('source')"
           >
             <app-panel-table
@@ -98,7 +98,7 @@
     </div>
     <!--End-of-the-Bridge-->
     <app-area area="target" class="area-target">
-      <mat-tab-group>
+      <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
         <mat-tab
           label="{{ table.name }}"
           *ngFor="let table of target; trackBy: trackByFn"
@@ -106,8 +106,8 @@
           <app-panel
             *ngIf="table.visible"
             [table]="table"
-            (open)="onTargetPanelOpen()"
-            (close)="onTargetPanelClose()"
+            (open)="onPanelOpen()"
+            (close)="onPanelClose()"
             (initialized)="onPanelInit('target')"
           ></app-panel>
         </mat-tab>

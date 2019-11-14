@@ -78,9 +78,8 @@ export class MappingComponent extends BaseComponent
 
     this.rulesPoupService.deleteConnector$
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(done => {
-        console.log(done);
-        this.bridgeService.deleteSelectedArrows();
+      .subscribe(connectorKey => {
+        this.bridgeService.deleteArrow(connectorKey);
       });
   }
 
@@ -141,9 +140,7 @@ export class MappingComponent extends BaseComponent
     super.ngOnDestroy();
   }
 
-  ngAfterViewInit() {
-
-  }
+  ngAfterViewInit() {}
 
   @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -188,7 +185,7 @@ export class MappingComponent extends BaseComponent
     this.bridgeService.deleteAllArrows();
   }
 
-  onSourcePanelOpen() {
+  onPanelOpen() {
     if (
       this.panelsViewInitialized.source &&
       this.panelsViewInitialized.target
@@ -197,16 +194,12 @@ export class MappingComponent extends BaseComponent
     }
   }
 
-  onSourcePanelClose() {
+  onPanelClose() {
     this.bridgeService.refresh(this.target);
     this.source.forEach(table =>
       this.hideArrowsIfCorespondingTableasAreClosed(table)
     );
   }
-
-  onTargetPanelOpen() {}
-
-  onTargetPanelClose() {}
 
   onPanelInit(area: string) {
     this.panelsViewInitialized[area] = true;
@@ -222,6 +215,14 @@ export class MappingComponent extends BaseComponent
         this.bridgeService.refresh(this.target);
       }, 200);
     }
+  }
+
+  onTabIndexChanged(index: number): void {
+    setTimeout(() => {
+      this.target.forEach(panel => panel.expanded = false);
+      this.target[index].expanded = true;
+      this.bridgeService.refresh([this.target[index]]);
+    }, 500);
   }
 
   private hideArrowsIfCorespondingTableasAreClosed(table: ITable) {

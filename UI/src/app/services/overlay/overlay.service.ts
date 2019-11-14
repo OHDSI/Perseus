@@ -19,7 +19,7 @@ export class OverlayDialogRef {
 
   constructor(private overlayRef: OverlayRef) {}
 
-  close(configOptions?: OverlayConfigOptions) {
+  close(configOptions?: OverlayConfigOptions | any) {
     this.overlayRef.dispose();
 
     if (configOptions) {

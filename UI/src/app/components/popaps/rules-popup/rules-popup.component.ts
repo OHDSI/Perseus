@@ -53,16 +53,16 @@ export class RulesPopupComponent {
       arrowCache[connector.id].transforms = this.criterias;
     }
 
-    this.dialogRef.close();
+    this.dialogRef.close({deleted: false});
   }
 
   deleteLink() {
-    this.rulesPopupService.deleteConnector();
-    this.dialogRef.close();
+    this.rulesPopupService.deleteConnector(this.payload.connector.id);
+    this.dialogRef.close({deleted: true});
   }
 
   close() {
-    this.dialogRef.close();
+    this.dialogRef.close({deleted: false});
   }
 
   removeTransform(index: number) {

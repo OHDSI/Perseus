@@ -3,13 +3,13 @@ import { Subject, Observable } from 'rxjs';
 
 @Injectable()
 export class RulesPopupService {
-  get deleteConnector$(): Observable<any> {
+  get deleteConnector$(): Observable<string> {
     return this.deleteSubject.asObservable();
   }
 
-  private deleteSubject = new Subject<any>();
+  private deleteSubject = new Subject<string>();
 
-  deleteConnector() {
-    this.deleteSubject.next();
+  deleteConnector(key: string) {
+    this.deleteSubject.next(key);
   }
 }
