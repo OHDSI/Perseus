@@ -218,8 +218,10 @@ export class MappingComponent extends BaseComponent
   }
 
   onTabIndexChanged(index: number): void {
+    this.bridgeService.hideAllArrows();
+
     setTimeout(() => {
-      this.target.forEach(panel => panel.expanded = false);
+      this.target.forEach(panel => (panel.expanded = false));
       this.target[index].expanded = true;
       this.bridgeService.refresh([this.target[index]]);
     }, 500);
