@@ -36,7 +36,7 @@ export class AppComponent implements OnDestroy {
   constructor(
     cd: ChangeDetectorRef,
     media: MediaMatcher,
-    private bridge: BridgeService,
+    private bridgeService: BridgeService,
     private matDialog: MatDialog,
     private state: StateService,
     private renderer: Renderer,
@@ -54,8 +54,7 @@ export class AppComponent implements OnDestroy {
         map((event: any) => event.target)
       )
       .subscribe(window => {
-        console.log('Window height changed', window.innerHeight);
-        bridge.refreshAll();
+        this.bridgeService.refreshAll();
       });
   }
 
@@ -64,7 +63,7 @@ export class AppComponent implements OnDestroy {
   }
 
   resetAllMappings() {
-    this.bridge.resetAllMappings();
+    this.bridgeService.resetAllMappings();
   }
 
   openSaveMappingDialog(action: OpenMappingDialog) {

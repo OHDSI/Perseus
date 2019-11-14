@@ -38,16 +38,20 @@ export class PanelComponent implements OnInit, AfterViewInit {
     return this.table.area;
   }
 
+  initializing: boolean;
+
   constructor(
     public dialog: MatDialog,
     private commonService: CommonService,
     private bridgeService: BridgeService,
     private stateService: StateService
-  ) {}
-
+  ) {
+    this.initializing = true;
+  }
 
   ngAfterViewInit() {
     this.initialized.emit();
+    this.initializing = false;
   }
 
   ngOnInit() {
@@ -70,22 +74,20 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.commonService.expanded(this.area);
     this.setExpandedFlagOnSourceAndTargetTables(this.table, true);
 
-    this.open.emit();
-
-    // setTimeout(() => {
-
-    // }, 50);
+    if (!this.initializing) {
+      this.table.expanded = true;
+      this.open.emit();
+    }
   }
 
   onClose() {
     this.commonService.collapsed(this.area);
     this.setExpandedFlagOnSourceAndTargetTables(this.table, false);
 
-    this.close.emit();
-
-    // setTimeout(() => {
-
-    // }, 50);
+    if (!this.initializing) {
+      this.table.expanded = false;
+      this.close.emit();
+    }
   }
 
   openSampleDataDialog(e) {

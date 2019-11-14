@@ -50,7 +50,7 @@ export class MappingComponent extends BaseComponent
   @ViewChild('maincanvas', { read: ElementRef }) mainCanvas: ElementRef;
 
   clickArrowSubscriptions = [];
-  panelsViewInitialized = { source: false, target: false };
+  panelsViewInitialized = new Set();
 
   constructor(
     private stateService: StateService,
@@ -185,35 +185,37 @@ export class MappingComponent extends BaseComponent
     this.bridgeService.deleteAllArrows();
   }
 
-  onPanelOpen() {
+  onPanelOpen(table) {
     if (
-      this.panelsViewInitialized.source &&
-      this.panelsViewInitialized.target
+      this.panelsViewInitialized.size ===
+      this.source.length + this.target.length
     ) {
       this.bridgeService.refresh(this.target);
     }
   }
 
-  onPanelClose() {
-    this.bridgeService.refresh(this.target);
-    this.source.forEach(table =>
-      this.hideArrowsIfCorespondingTableasAreClosed(table)
-    );
+  onPanelClose(table) {
+    if (
+      this.panelsViewInitialized.size ===
+      this.source.length + this.target.length
+    ) {
+      this.bridgeService.refresh(this.target);
+    }
   }
 
-  onPanelInit(area: string) {
-    this.panelsViewInitialized[area] = true;
+  onPanelInit(table: ITable) {
+    if (!this.panelsViewInitialized.has(table)) {
+      this.panelsViewInitialized.add(table);
+    }
 
     if (
-      this.panelsViewInitialized.source &&
-      this.panelsViewInitialized.target
+      this.panelsViewInitialized.size ===
+      this.source.length + this.target.length
     ) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
 
-      setTimeout(() => {
-        this.bridgeService.refresh(this.target);
-      }, 200);
+      this.bridgeService.refresh(this.target);
     }
   }
 

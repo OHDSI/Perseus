@@ -32,9 +32,9 @@
         <ng-container *ngIf="table.visible">
           <app-panel
             [table]="table"
-            (open)="onPanelOpen()"
-            (close)="onPanelClose()"
-            (initialized)="onPanelInit('source')"
+            (open)="onPanelOpen(table)"
+            (close)="onPanelClose(table)"
+            (initialized)="onPanelInit(table)"
           >
             <app-panel-table
               [table]="table"
@@ -106,9 +106,9 @@
           <app-panel
             *ngIf="table.visible"
             [table]="table"
-            (open)="onPanelOpen()"
-            (close)="onPanelClose()"
-            (initialized)="onPanelInit('target')"
+            (open)="onPanelOpen(table)"
+            (close)="onPanelClose(table)"
+            (initialized)="onPanelInit(table)"
           ></app-panel>
         </mat-tab>
       </mat-tab-group>

@@ -146,27 +146,31 @@ export class BridgeService {
   refresh(table: ITable[]) {
     this.hideAllArrows();
 
-    const tablenamesString = table.map(t => t.name).join(',');
+    setTimeout(() => {
+      const tablenamesString = table.map(t => t.name).join(',');
 
-    Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-      if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
-        const source = this.stateService.findTable(arrow.source.tableName);
-        const target = this.stateService.findTable(arrow.target.tableName);
+      Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+        if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
+          const source = this.stateService.findTable(arrow.source.tableName);
+          const target = this.stateService.findTable(arrow.target.tableName);
 
-        this.initializeConnector(arrow, source, target);
-      }
-    });
+          this.initializeConnector(arrow, source, target);
+        }
+      });
+    }, 200);
   }
 
   refreshAll() {
     this.hideAllArrows();
 
-    Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-      const source = this.stateService.findTable(arrow.source.tableName);
-      const target = this.stateService.findTable(arrow.target.tableName);
+    setTimeout(() => {
+      Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+        const source = this.stateService.findTable(arrow.source.tableName);
+        const target = this.stateService.findTable(arrow.target.tableName);
 
-      this.initializeConnector(arrow, source, target);
-    });
+        this.initializeConnector(arrow, source, target);
+      });
+    }, 200);
   }
 
   initializeConnector(arrow, source, target) {
