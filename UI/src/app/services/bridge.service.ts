@@ -152,17 +152,8 @@ export class BridgeService {
       if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
         const source = this.stateService.findTable(arrow.source.tableName);
         const target = this.stateService.findTable(arrow.target.tableName);
-        if (source.expanded && target.expanded) {
-          const connector = this.drawService.drawLine(
-            this.getConnectorId(arrow.source, arrow.target),
-            arrow.source,
-            arrow.target
-          );
 
-          if (this.userSettings.showQuestionButtons) {
-            this.bridgeButtonService.createButton(connector, this.arrowsCache);
-          }
-        }
+        this.initializeConnector(arrow, source, target);
       }
     });
   }
@@ -173,18 +164,23 @@ export class BridgeService {
     Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
       const source = this.stateService.findTable(arrow.source.tableName);
       const target = this.stateService.findTable(arrow.target.tableName);
-      if (source.expanded && target.expanded) {
-        const connector = this.drawService.drawLine(
-          this.getConnectorId(arrow.source, arrow.target),
-          arrow.source,
-          arrow.target
-        );
 
-        if (this.userSettings.showQuestionButtons) {
-          this.bridgeButtonService.createButton(connector, this.arrowsCache);
-        }
-      }
+      this.initializeConnector(arrow, source, target);
     });
+  }
+
+  initializeConnector(arrow, source, target) {
+    if (source.expanded && target.expanded) {
+      const connector = this.drawService.drawLine(
+        this.getConnectorId(arrow.source, arrow.target),
+        arrow.source,
+        arrow.target
+      );
+
+      if (this.userSettings.showQuestionButtons) {
+        this.bridgeButtonService.createButton(connector, this.arrowsCache);
+      }
+    }
   }
 
   deleteArrow(key: string) {
