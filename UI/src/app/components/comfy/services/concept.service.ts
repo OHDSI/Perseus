@@ -184,10 +184,18 @@ export class ConceptService {
     return [new Table(conceptTableOptions), new Table(commonTableOptions)];
   }
 
-  isConcept(tableName: string): boolean {
+  // isConcept(tableName: string): boolean {
+  //   return (
+  //     ['CONCEPT'].indexOf(tableName.toUpperCase()) >
+  //     -1
+  //   );
+  // }
+
+  isConcept(tablename: string): boolean {
     return (
-      ['CONCEPT'].indexOf(tableName.toUpperCase()) >
-      -1
+      environment.conceptTables.findIndex(
+        conceptTable => tablename.toUpperCase() === conceptTable.toUpperCase()
+      ) > -1
     );
   }
 }
