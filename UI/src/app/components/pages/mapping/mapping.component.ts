@@ -72,7 +72,9 @@ export class MappingComponent extends BaseComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
         this.clickArrowSubscriptions.push(
-          connection.connector.clicked.subscribe(x => this.clickArrowHandler(x))
+          connection.connector.clicked
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(x => this.clickArrowHandler(x))
         );
       });
 
@@ -140,7 +142,9 @@ export class MappingComponent extends BaseComponent
     super.ngOnDestroy();
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.bridgeService.refresh(this.target, 200);
+  }
 
   @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -190,7 +194,7 @@ export class MappingComponent extends BaseComponent
       this.panelsViewInitialized.size ===
       this.source.length + this.target.length
     ) {
-      this.bridgeService.refresh(this.target);
+      this.bridgeService.refresh(this.target, 200);
     }
   }
 
@@ -199,7 +203,7 @@ export class MappingComponent extends BaseComponent
       this.panelsViewInitialized.size ===
       this.source.length + this.target.length
     ) {
-      this.bridgeService.refresh(this.target);
+      this.bridgeService.refresh(this.target, 200);
     }
   }
 
@@ -214,8 +218,8 @@ export class MappingComponent extends BaseComponent
     ) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
-
-      this.bridgeService.refresh(this.target);
+      this.source.forEach(panel => panel.expanded = true);
+      this.target.forEach(panel => panel.expanded = true);
     }
   }
 
@@ -227,18 +231,5 @@ export class MappingComponent extends BaseComponent
       this.target[index].expanded = true;
       this.bridgeService.refresh([this.target[index]]);
     }, 500);
-  }
-
-  private hideArrowsIfCorespondingTableasAreClosed(table: ITable) {
-    const corespondingTableNames = this.bridgeService.findCorrespondingTables(
-      table
-    );
-
-    corespondingTableNames.forEach(name => {
-      const correspondentTable = this.stateService.findTable(name);
-      if (!correspondentTable.expanded && !table.expanded) {
-        this.bridgeService.hideTableArrows(table);
-      }
-    });
   }
 }

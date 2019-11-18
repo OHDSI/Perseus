@@ -143,21 +143,29 @@ export class BridgeService {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
-  refresh(table: ITable[]) {
+  refresh(table: ITable[], delayMs?: number) {
     this.hideAllArrows();
 
-    setTimeout(() => {
-      const tablenamesString = table.map(t => t.name).join(',');
+    if (delayMs) {
+      setTimeout(() => {
+      this._refresh(table, this.arrowsCache, this.stateService);
+      }, delayMs);
+    } else {
+      this._refresh(table, this.arrowsCache, this.stateService);
+    }
+  }
 
-      Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-        if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
-          const source = this.stateService.findTable(arrow.source.tableName);
-          const target = this.stateService.findTable(arrow.target.tableName);
+  private _refresh(table: ITable[], arrowsCache: ArrowCache, stateService: StateService) {
+    const tablenamesString = table.map(t => t.name).join(',');
 
-          this.initializeConnector(arrow, source, target);
-        }
-      });
-    }, 200);
+    Object.values(arrowsCache).forEach((arrow: Arrow) => {
+      if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
+        const source = stateService.findTable(arrow.source.tableName);
+        const target = stateService.findTable(arrow.target.tableName);
+
+        this.initializeConnector(arrow, source, target);
+      }
+    });
   }
 
   refreshAll() {
