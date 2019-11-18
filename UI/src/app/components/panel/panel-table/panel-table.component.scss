@@ -31,8 +31,10 @@ table {
     }
 
     .anchor {
-        width: 40px;
-        margin: auto;
+       margin: auto;
+       display: flex;
+       flex-direction: row;
+       justify-content: space-between;
     }
 
     .icon-indicator {
