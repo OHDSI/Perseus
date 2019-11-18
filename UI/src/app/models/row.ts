@@ -13,6 +13,7 @@ export interface RowOptions {
   visible?: boolean;
   htmlElement?: any;
   constant?: string;
+  selected?: boolean;
 }
 
 export interface IRow {
@@ -30,8 +31,11 @@ export interface IRow {
   visible?: boolean;
   htmlElement: any;
   constant: string;
+  selected: boolean;
+
   removeConnections(): void;
 }
+
 export class Row implements IRow {
   id: number;
   tableId: number;
@@ -45,6 +49,7 @@ export class Row implements IRow {
   visible = true;
   connections = [];
   htmlElement: any = null;
+  selected: boolean;
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
@@ -63,6 +68,7 @@ export class Row implements IRow {
     this.area = options.area;
     this.comments = options.comments;
     this.constant = options.constant;
+    this.selected = options.selected || false;
   }
 
   removeConnections() {

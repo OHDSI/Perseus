@@ -4,7 +4,8 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
   ElementRef,
-  OnInit
+  OnInit,
+  Renderer2
 } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
@@ -48,7 +49,8 @@ export class PanelTableComponent implements OnInit {
 
   constructor(
     private bridgeService: BridgeService,
-    private overlayService: OverlayService
+    private overlayService: OverlayService,
+    private renderer: Renderer2
   ) {}
 
   private rowConnections = {};
@@ -136,7 +138,35 @@ export class PanelTableComponent implements OnInit {
     return row.comments.length;
   }
 
-  setActiveRow(row: IRow) {}
+  setActiveRow(event: any, row: IRow) {
+    event.stopPropagation();
+  }
+
+  selectRow(event: any, row: IRow) {
+    event.stopPropagation();
+
+    if (row.htmlElement) {
+      row.selected = !row.selected;
+
+      if (row.selected && row.htmlElement) {
+        this.renderer.setAttribute(row.htmlElement, 'selected', 'true');
+      } else {
+        this.renderer.removeAttribute(row.htmlElement, 'selected');
+      }
+
+      Object.values(this.bridgeService.arrowsCache)
+        .filter(connection => {
+          return connection[row.area].id === row.id;
+        })
+        .forEach(connection => {
+          if (row.selected) {
+            connection.connector.select();
+          } else {
+            connection.connector.deselect();
+          }
+        });
+    }
+  }
 
   private _getArea() {
     return this.table.area;

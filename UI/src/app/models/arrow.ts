@@ -65,11 +65,15 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(path, 'fill', 'none');
     this.renderer.setAttribute(path, 'stroke', 'grey');
     this.renderer.setAttribute(path, 'id', id);
-    this.renderer.setAttribute(path, 'middleY', Math.floor((y1 + y2) / 2).toString());
+    this.renderer.setAttribute(
+      path,
+      'middleY',
+      Math.floor((y1 + y2) / 2).toString()
+    );
     this.renderer.setAttribute(path, 'startXY', `${x1},${y1}`);
     this.renderer.setAttribute(path, 'endXY', `${x1},${y1}`);
 
-    this.renderer.setAttribute(path, 'marker-end', 'url(#arrow)');
+    this.renderer.setAttribute(path, 'marker-end', 'url(#dot)');
 
     this.removeClickListener = this.renderer.listen(
       path,
@@ -90,20 +94,18 @@ export class Arrow implements IConnector {
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
 
     this.selected = true;
+
     this.renderer.addClass(this.svgPath, 'selected');
-    this.renderer.setAttribute(
-      this.svgPath,
-      'marker-end',
-      'url(#arrow-active)'
-    );
+    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#dot-active)');
   }
 
   deselect(): void {
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
 
     this.selected = false;
+
     this.renderer.removeClass(this.svgPath, 'selected');
-    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#arrow)');
+    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#dot)');
   }
 
   remove() {

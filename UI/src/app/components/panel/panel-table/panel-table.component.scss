@@ -83,3 +83,8 @@ table {
   border-right: 2px solid #80808033;
   background-color: #0000000d;
 }
+
+tr[selected=true] {
+  background-color: #A6D2F4;
+  font-weight: 400;
+}
