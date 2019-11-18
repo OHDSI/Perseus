@@ -255,12 +255,12 @@ export class ComfyComponent extends BaseComponent
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
-          event.currentIndex
+          event.container.data.length
         );
 
         const targetname = event.container.id.split('-')[1];
 
-        this.setFirstElementAlwaysOnTop(targetname);
+        this.setFirstElementAlwaysOnTop(targetname, event);
       }
     },
     canExecute: (event: CdkDragDrop<string[]>) => {
@@ -273,7 +273,7 @@ export class ComfyComponent extends BaseComponent
     }
   });
 
-  setFirstElementAlwaysOnTop(targetname: string): void {
+  setFirstElementAlwaysOnTop(targetname: string, event: CdkDragDrop<string[]>): void {
     if (!targetname) {
       return;
     }
