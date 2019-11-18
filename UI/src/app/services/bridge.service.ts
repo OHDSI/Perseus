@@ -14,7 +14,6 @@ import { IConnector } from '../models/interface/connector.interface';
 import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
 import { Command } from '../infrastructure/command';
 import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
-import { TouchSequence } from 'selenium-webdriver';
 
 export interface IConnection {
   source: IRow;
@@ -178,7 +177,7 @@ export class BridgeService {
 
         this.initializeConnector(arrow, source, target);
       });
-    }, 200);
+    }, 300);
   }
 
   initializeConnector(arrow, source, target) {

@@ -97,8 +97,6 @@
     (mousedown)="setActiveRow($event, row)"
     (click)="selectRow($event, row)"
     [class.draggable]="area == 'source'"
-    class="item-{{ row.tableName }}-{{ row.name }} row-has-a-link-{{
-      isRowHasConnection(row)
-    }}"
+    class="item-{{ row.tableName }}-{{ row.name }}"
   ></tr>
 </table>

@@ -61,13 +61,13 @@ export class PanelComponent implements OnInit, AfterViewInit {
       );
     });
 
-    this.bridgeService.connection.subscribe(_ => {
-      if (this.bridgeService.isTableConnected(this.table)) {
-        this.panelHheader._element.nativeElement.classList.add(
-          'table-has-a-link-true'
-        );
-      }
-    });
+    // this.bridgeService.connection.subscribe(_ => {
+    //   if (this.bridgeService.isTableConnected(this.table)) {
+    //     this.panelHheader._element.nativeElement.classList.add(
+    //       'table-has-a-link-true'
+    //     );
+    //   }
+    // });
   }
 
   onOpen() {

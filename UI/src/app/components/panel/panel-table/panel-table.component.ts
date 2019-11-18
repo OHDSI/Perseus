@@ -53,15 +53,15 @@ export class PanelTableComponent implements OnInit {
     private renderer: Renderer2
   ) {}
 
-  private rowConnections = {};
+private rowConnections = {};
 
   ngOnInit(): void {
     this.bridgeService.deleteAll.subscribe(_ => {
-      Object.keys(this.bridgeService.arrowsCache).forEach(key => {
-        this.bridgeService.arrowsCache[key].source.htmlElement.classList.remove(
-          'row-has-a-link-true'
-        );
-      });
+      // Object.keys(this.bridgeService.arrowsCache).forEach(key => {
+      //   this.bridgeService.arrowsCache[key].source.htmlElement.classList.remove(
+      //     'row-has-a-link-true'
+      //   );
+      // });
 
       this.rowConnections = {};
     });
