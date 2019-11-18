@@ -120,10 +120,9 @@ export class BridgeService {
       drawEntity.adjustPosition();
 
       if (this.userSettings.showQuestionButtons) {
-        this.bridgeButtonService.recalculateButtonPosition(
-          drawEntity.button,
-          drawEntity.svgPath
-        );
+        Promise.resolve(null).then(_ => {
+          this.bridgeButtonService.recalculateButtonPosition(drawEntity);
+        });
       }
     });
   }
@@ -147,14 +146,18 @@ export class BridgeService {
 
     if (delayMs) {
       setTimeout(() => {
-      this._refresh(table, this.arrowsCache, this.stateService);
+        this._refresh(table, this.arrowsCache, this.stateService);
       }, delayMs);
     } else {
       this._refresh(table, this.arrowsCache, this.stateService);
     }
   }
 
-  private _refresh(table: ITable[], arrowsCache: ArrowCache, stateService: StateService) {
+  private _refresh(
+    table: ITable[],
+    arrowsCache: ArrowCache,
+    stateService: StateService
+  ) {
     const tablenamesString = table.map(t => t.name).join(',');
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
@@ -212,7 +215,7 @@ export class BridgeService {
       ) {
         delete this.arrowsCache[key];
 
-      // If target and source are switched
+        // If target and source are switched
       } else if (
         this.arrowsCache[key].target.tableName.toUpperCase() ===
           sourceTableName.toUpperCase() &&

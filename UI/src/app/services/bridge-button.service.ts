@@ -59,6 +59,8 @@ export class BridgeButtonService {
 
     this.renderer.appendChild(mainElement.nativeElement, button);
 
+    this.renderer.addClass(button, `arrow-${drawEntity.id}`);
+
     const { top, left } = this._calculateButtonPosition(
       button,
       line,
@@ -73,17 +75,32 @@ export class BridgeButtonService {
     return button;
   }
 
-  recalculateButtonPosition(button, line) {
+  recalculateButtonPosition(connector: IConnector) {
     const canvasElement = this.commonService.svgCanvas.nativeElement;
-
-    const { top, left } = this._calculateButtonPosition(
-      button,
-      line,
-      canvasElement
+    const classCollection = document.getElementsByClassName(
+      `arrow-${connector.id}`
     );
 
-    button.style.top = top + 'px';
-    button.style.left = left + 'px';
+    if (classCollection.length > 0) {
+      const button = classCollection[0];
+      let { top, left } = this._calculateButtonPosition(
+        button,
+        connector.svgPath,
+        canvasElement
+      );
+
+      const canvasClientRect = canvasElement.getBoundingClientRect();
+
+      if (canvasClientRect.top > top) {
+        top = -100;
+      }
+
+      if (canvasClientRect.height < top) {
+        top = -100;
+      }
+      this.renderer.setStyle(button, 'top', top + 'px');
+      this.renderer.setStyle(button, 'left', left + 'px');
+    }
   }
 
   private _calculateButtonPosition(button, line, canvasElement) {
@@ -91,7 +108,7 @@ export class BridgeButtonService {
     const buttonClientRect = button.getBoundingClientRect();
 
     const buttonOffsetX = Math.floor(buttonClientRect.width / 2);
-    const buttonOffsetY =  Math.floor(buttonClientRect.height / 2);
+    const buttonOffsetY = Math.floor(buttonClientRect.height / 2);
 
     const { endXY } = line.attributes;
     const { startXY } = line.attributes;

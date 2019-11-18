@@ -9,13 +9,18 @@ import { Renderer2, ElementRef, EventEmitter } from '@angular/core';
 export class Arrow implements IConnector {
   clicked = new EventEmitter<IConnector>();
 
+  get svgPath(): SVGLineElement {
+    return this.path;
+  }
+
   canvas: any;
-  svgPath: SVGLineElement;
   button: Element;
   selected = false;
 
   sourceSVGPoint: any;
   targetSVGPoint: any;
+
+  path: any;
 
   private removeClickListener: any;
 
@@ -52,38 +57,54 @@ export class Arrow implements IConnector {
     const { x: x1, y: y1 } = this.sourceSVGPoint;
     const { x: x2, y: y2 } = this.targetSVGPoint;
 
-    const path = this.renderer.createElement('path', 'svg');
+    this.path = this.renderer.createElement('path', 'svg');
 
-    this.renderer.addClass(path, 'arrow');
+    this.renderer.addClass(this.path, 'arrow');
 
     this.renderer.setAttribute(
-      path,
+      this.path,
       'd',
       this.generateSvgPath([x1, y1], [x2, y2])
     );
 
-    this.renderer.setAttribute(path, 'fill', 'none');
-    this.renderer.setAttribute(path, 'stroke', 'grey');
-    this.renderer.setAttribute(path, 'id', id);
+    this.renderer.setAttribute(this.path, 'fill', 'none');
+    this.renderer.setAttribute(this.path, 'stroke', 'grey');
+    this.renderer.setAttribute(this.path, 'id', id);
     this.renderer.setAttribute(
-      path,
+      this.path,
       'middleY',
       Math.floor((y1 + y2) / 2).toString()
     );
-    this.renderer.setAttribute(path, 'startXY', `${x1},${y1}`);
-    this.renderer.setAttribute(path, 'endXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
 
-    this.renderer.setAttribute(path, 'marker-end', 'url(#dot)');
+    this.renderer.setAttribute(this.path, 'marker-start', 'url(#dot-start)');
+    this.renderer.setAttribute(this.path, 'marker-end', 'url(#dot)');
 
     this.removeClickListener = this.renderer.listen(
-      path,
+      this.path,
       'click',
       this.clickHandler.bind(this)
     );
 
-    this.svgPath = path;
+    this.renderer.appendChild(this.canvas, this.path);
+  }
 
-    this.renderer.appendChild(this.canvas, path);
+  adjustPosition() {
+    const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
+    const targetSVGPoint = getSVGPoint(this.target, this.canvas);
+
+    const { x: x1, y: y1 } = sourceSVGPoint;
+    const { x: x2, y: y2 } = targetSVGPoint;
+
+    this.renderer.setAttribute(
+      this.path,
+      'd',
+      this.generateSvgPath([x1, y1], [x2, y2])
+    );
+
+    this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
   }
 
   attachButton(button) {
@@ -127,20 +148,6 @@ export class Arrow implements IConnector {
   clickHandler(event: any) {
     event.stopPropagation();
     this.clicked.emit(this);
-    //this.select();
-  }
-
-  adjustPosition() {
-    const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
-    const targetSVGPoint = getSVGPoint(this.target, this.canvas);
-
-    const { x: x1, y: y1 } = sourceSVGPoint;
-    const { x: x2, y: y2 } = targetSVGPoint;
-
-    this.svgPath.setAttribute('x1', x1 + '');
-    this.svgPath.setAttribute('y1', y1 + '');
-    this.svgPath.setAttribute('x2', x2 - 6 + '');
-    this.svgPath.setAttribute('y2', y2 + '');
   }
 
   private checkAndChangeHtmlElement(row: IRow): IRow {
