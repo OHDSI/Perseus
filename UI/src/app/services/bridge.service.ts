@@ -5,7 +5,7 @@ import { ArrowCache, Arrow, ConstantCache } from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
-import { uniqBy } from '../infrastructure/utility';
+import { uniqBy, cloneDeep } from '../infrastructure/utility';
 import { Configuration } from '../models/configuration';
 import { StateService } from './state.service';
 import { BridgeButtonService } from './bridge-button.service';
@@ -62,6 +62,7 @@ export class BridgeService {
   arrowsCache: ArrowCache = {};
   constantsCache: ConstantCache = {};
   connection = new Subject<IConnection>();
+  removeConnection = new Subject<IConnection>();
 
   deleteAll = new Subject();
 
@@ -198,11 +199,15 @@ export class BridgeService {
   }
 
   deleteArrow(key: string) {
+    const savedConnection = cloneDeep(this.arrowsCache[key])
+
     this.drawService.deleteConnector(key);
 
     if (this.arrowsCache[key]) {
       delete this.arrowsCache[key];
     }
+
+    this.removeConnection.next(savedConnection);
   }
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {

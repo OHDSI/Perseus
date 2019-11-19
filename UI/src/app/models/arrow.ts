@@ -78,7 +78,7 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
     this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
 
-    this.renderer.setAttribute(this.path, 'marker-start', 'url(#dot-start)');
+    //this.renderer.setAttribute(this.path, 'marker-start', 'url(#dot-start)');
     this.renderer.setAttribute(this.path, 'marker-end', 'url(#dot)');
 
     this.removeClickListener = this.renderer.listen(

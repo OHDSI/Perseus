@@ -5,7 +5,8 @@ import {
   ViewChild,
   ElementRef,
   OnInit,
-  Renderer2
+  Renderer2,
+  AfterViewInit
 } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
@@ -22,7 +23,7 @@ import { AddConstantPopupComponent } from '../../popaps/add-constant-popup/add-c
   templateUrl: './panel-table.component.html',
   styleUrls: ['./panel-table.component.scss']
 })
-export class PanelTableComponent implements OnInit {
+export class PanelTableComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
   @Input() displayedColumns: string[];
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
@@ -53,7 +54,7 @@ export class PanelTableComponent implements OnInit {
     private renderer: Renderer2
   ) {}
 
-private rowConnections = {};
+  private rowConnections = {};
 
   ngOnInit(): void {
     this.bridgeService.deleteAll.subscribe(_ => {
@@ -66,12 +67,23 @@ private rowConnections = {};
       this.rowConnections = {};
     });
 
-    this.bridgeService.connection.subscribe(connection =>
-      this.onConnection(connection)
-    );
+    this.bridgeService.connection.subscribe(connection => {
+      this.AddConnection(connection);
+      this.ShowConnectorPin(connection);
+    });
+
+    this.bridgeService.removeConnection.subscribe(connection => {
+      this.HideConnectorPin(connection);
+    });
   }
 
-  onConnection(connection: IConnection) {
+  ngAfterViewInit() {
+    Object.values(this.bridgeService.arrowsCache).forEach(connection => {
+      this.ShowConnectorPin(connection);
+    });
+  }
+
+  AddConnection(connection: IConnection) {
     this.rows.forEach(row => {
       if (
         row.tableId === connection[this.table.area].tableId &&
@@ -80,6 +92,31 @@ private rowConnections = {};
         this.rowConnections[row.key] = true;
       }
     });
+  }
+
+  ShowConnectorPin(connection: IConnection) {
+    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
+    const element = document.getElementById(rowId);
+    const collection = element.getElementsByClassName(
+      'connector-pin'
+    );
+    if (collection.length > 0) {
+      this.renderer.removeClass(collection[0], 'hide');
+    }
+  }
+
+  HideConnectorPin(connection: IConnection) {
+    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
+    const element = document.getElementById(rowId);
+    const collection = element.getElementsByClassName(
+      'connector-pin'
+    );
+    if (
+      collection.length > 0 &&
+      !this.bridgeService.isRowConnected(connection.source)
+    ) {
+      this.renderer.addClass(collection[0], 'hide');
+    }
   }
 
   isRowHasConnection(row: IRow): boolean {
