@@ -143,7 +143,25 @@ export class MappingComponent extends BaseComponent
   }
 
   ngAfterViewInit() {
-    this.bridgeService.refresh(this.target, 200);
+    const wait = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.bridgeService.refresh(this.target);
+        resolve();
+      }, 200);
+    });
+
+    wait.then(_ => {
+      this.clickArrowSubscriptions = [].concat.apply(
+        this.clickArrowSubscriptions,
+        Object.values(this.bridgeService.arrowsCache).map(arrow => {
+          return arrow.connector.clicked
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(x => {
+              this.clickArrowHandler(x);
+            });
+        })
+      );
+    });
   }
 
   @HostListener('document:keyup', ['$event'])
@@ -218,8 +236,8 @@ export class MappingComponent extends BaseComponent
     ) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
-      this.source.forEach(panel => panel.expanded = true);
-      this.target.forEach(panel => panel.expanded = true);
+      this.source.forEach(panel => (panel.expanded = true));
+      this.target.forEach(panel => (panel.expanded = true));
     }
   }
 
