@@ -112,6 +112,8 @@ export class Arrow implements IConnector {
   }
 
   select() {
+    this.refreshPathHtmlElement();
+
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
 
     this.selected = true;
@@ -121,6 +123,8 @@ export class Arrow implements IConnector {
   }
 
   deselect(): void {
+    this.refreshPathHtmlElement();
+
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
 
     this.selected = false;
@@ -148,6 +152,11 @@ export class Arrow implements IConnector {
   clickHandler(event: any) {
     event.stopPropagation();
     this.clicked.emit(this);
+  }
+
+  private refreshPathHtmlElement() {
+    const id = this.path.attributes.id.nodeValue;
+    this.path = document.getElementById(id);
   }
 
   private checkAndChangeHtmlElement(row: IRow): IRow {

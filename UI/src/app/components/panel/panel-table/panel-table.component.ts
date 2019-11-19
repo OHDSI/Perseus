@@ -171,6 +171,15 @@ export class PanelTableComponent implements OnInit, AfterViewInit {
     }
   }
 
+  openTransform(event: any, row: IRow) {
+    event.stopPropagation();
+
+    // Find all corresponding rows
+    const correspondingRows = this.bridgeService.findCorrespondingRows(this.table, row);
+
+
+  }
+
   hasComment(row: IRow) {
     return row.comments.length;
   }
@@ -183,6 +192,9 @@ export class PanelTableComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
 
     if (row.htmlElement) {
+      const rowId = row.htmlElement.attributes.id.nodeValue;
+      row.htmlElement = document.getElementById(rowId);
+
       row.selected = !row.selected;
 
       if (row.selected && row.htmlElement) {

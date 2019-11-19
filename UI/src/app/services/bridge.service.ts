@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DrawService } from 'src/app/services/draw.service';
-import { IRow } from 'src/app/models/row';
-import { ArrowCache, Arrow, ConstantCache } from '../models/arrow-cache';
+import { IRow, Row } from 'src/app/models/row';
+import { ArrowCache, Arrow, ConstantCache, CorrespondingRows } from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
@@ -199,7 +199,7 @@ export class BridgeService {
   }
 
   deleteArrow(key: string) {
-    const savedConnection = cloneDeep(this.arrowsCache[key])
+    const savedConnection = cloneDeep(this.arrowsCache[key]);
 
     this.drawService.deleteConnector(key);
 
@@ -294,6 +294,10 @@ export class BridgeService {
       .map(arrow => arrow[source]);
 
     return uniqBy(rows, 'tableName').map(row => row.tableName);
+  }
+
+  findCorrespondingRows(table: ITable, row: IRow): CorrespondingRows[] {
+    return [{'row': new Row()}];
   }
 
   resetAllMappings() {

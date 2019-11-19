@@ -82,6 +82,7 @@
         <div
           id="item-{{ row.tableName }}-{{ row.name }}"
           class="connector-pin hide"
+          (click)="openTransform($event, row)"
         >
           <div class="connector-type ">L</div>
         </div>
