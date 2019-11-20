@@ -6,19 +6,22 @@ import {
   Output,
   EventEmitter,
   AfterViewInit
-} from '@angular/core';
-import { MatDialog, MatExpansionPanel } from '@angular/material';
+} from "@angular/core";
+import { MatDialog, MatExpansionPanel } from "@angular/material";
 
-import { CommonService } from 'src/app/services/common.service';
-import { ITable } from 'src/app/models/table';
-import { BridgeService } from 'src/app/services/bridge.service';
-import { StateService } from 'src/app/services/state.service';
-import { SampleDataPopupComponent } from '../popaps/sample-data-popup/sample-data-popup.component';
+import { CommonService } from "src/app/services/common.service";
+import { ITable } from "src/app/models/table";
+import { BridgeService } from "src/app/services/bridge.service";
+import { StateService } from "src/app/services/state.service";
+import { SampleDataPopupComponent } from "../popaps/sample-data-popup/sample-data-popup.component";
+import { IRow } from "src/app/models/row";
+import { BridgeButtonService } from "../bridge-button/service/bridge-button.service";
+import { BridgeButtonData } from "../bridge-button/model/bridge-button-data";
 
 @Component({
-  selector: 'app-panel',
-  templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.scss']
+  selector: "app-panel",
+  templateUrl: "./panel.component.html",
+  styleUrls: ["./panel.component.scss"]
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
@@ -26,9 +29,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
   @Output() initialized = new EventEmitter();
+  @Output() openTransform = new EventEmitter();
 
-  @ViewChild('exppanelheader') panelHheader: any;
-  @ViewChild('matpanel') panel: MatExpansionPanel;
+  @ViewChild("exppanelheader") panelHheader: any;
+  @ViewChild("matpanel") panel: MatExpansionPanel;
 
   get title() {
     return this.table.name;
@@ -44,6 +48,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private commonService: CommonService,
     private bridgeService: BridgeService,
+    private bridgeButtonService: BridgeButtonService,
     private stateService: StateService
   ) {
     this.initializing = true;
@@ -57,7 +62,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.bridgeService.deleteAll.subscribe(_ => {
       this.panelHheader._element.nativeElement.classList.remove(
-        'table-has-a-link-true'
+        "table-has-a-link-true"
       );
     });
 
@@ -95,10 +100,30 @@ export class PanelComponent implements OnInit, AfterViewInit {
     e.stopPropagation();
 
     this.dialog.open(SampleDataPopupComponent, {
-      width: '1021px',
-      height: '696px',
+      width: "1021px",
+      height: "696px",
       data: this.table
     });
+  }
+
+  onOpenTransfromDialog(event: any) {
+    const { row, element } = event;
+
+    if (this.bridgeService.isRowConnected(row)) {
+      const connections = this.bridgeService.findCorrespondingConnections(
+        this.table,
+        row
+      );
+      if (connections.length > 0) {
+        const payload: BridgeButtonData = {
+          connector: connections[0].connector,
+          arrowCache: this.bridgeService.arrowsCache
+        };
+
+        this.bridgeButtonService.init(payload, element);
+        this.bridgeButtonService.openRulesDialog();
+      }
+    }
   }
 
   setExpandedFlagOnSourceAndTargetTables(table: ITable, expanded: boolean) {

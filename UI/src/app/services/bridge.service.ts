@@ -1,24 +1,24 @@
-import { Injectable } from '@angular/core';
-import { DrawService } from 'src/app/services/draw.service';
-import { IRow, Row } from 'src/app/models/row';
+import { Injectable } from "@angular/core";
+import { DrawService } from "src/app/services/draw.service";
+import { IRow, Row } from "src/app/models/row";
 import {
   ArrowCache,
   Arrow,
   ConstantCache,
   CorrespondingRows
-} from '../models/arrow-cache';
-import { MappingService } from '../models/mapping-service';
-import { ITable } from '../models/table';
-import { Subject } from 'rxjs';
-import { uniqBy, cloneDeep } from '../infrastructure/utility';
-import { Configuration } from '../models/configuration';
-import { StateService } from './state.service';
-import { BridgeButtonService } from './bridge-button.service';
-import { UserSettings } from './user-settings.service';
-import { IConnector } from '../models/interface/connector.interface';
-import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
-import { Command } from '../infrastructure/command';
-import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
+} from "../models/arrow-cache";
+import { MappingService } from "../models/mapping-service";
+import { ITable } from "../models/table";
+import { Subject } from "rxjs";
+import { uniqBy, cloneDeep } from "../infrastructure/utility";
+import { Configuration } from "../models/configuration";
+import { StateService } from "./state.service";
+import { BridgeButtonService } from "../components/bridge-button/service/bridge-button.service";
+import { UserSettings } from "./user-settings.service";
+import { IConnector } from "../models/interface/connector.interface";
+import { SqlFunction } from "../components/popaps/rules-popup/transformation-input/model/sql-string-functions";
+import { Command } from "../infrastructure/command";
+import { TransformationConfig } from "../components/vocabulary-transform-configurator/model/transformation-config";
 
 export interface IConnection {
   source: IRow;
@@ -81,9 +81,9 @@ export class BridgeService {
         this.targetRow
       );
 
-      if (this.userSettings.showQuestionButtons) {
-        this.bridgeButtonService.createButton(connector, this.arrowsCache);
-      }
+      // if (this.userSettings.showQuestionButtons) {
+      //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
+      // }
 
       const connection: IConnection = {
         source: this.sourceRow,
@@ -124,12 +124,6 @@ export class BridgeService {
     Object.keys(list).forEach(key => {
       const drawEntity: IConnector = list[key];
       drawEntity.adjustPosition();
-
-      if (this.userSettings.showQuestionButtons) {
-        Promise.resolve(null).then(_ => {
-          this.bridgeButtonService.recalculateButtonPosition(drawEntity);
-        });
-      }
     });
   }
 
@@ -140,11 +134,11 @@ export class BridgeService {
   }
 
   getStyledAsDragStartElement() {
-    this.sourceRow.htmlElement.classList.add('drag-start');
+    this.sourceRow.htmlElement.classList.add("drag-start");
   }
 
   getStyledAsDragEndElement() {
-    this.sourceRow.htmlElement.classList.remove('drag-start');
+    this.sourceRow.htmlElement.classList.remove("drag-start");
   }
 
   refresh(table: ITable[], delayMs?: number) {
@@ -164,7 +158,7 @@ export class BridgeService {
     arrowsCache: ArrowCache,
     stateService: StateService
   ) {
-    const tablenamesString = table.map(t => t.name).join(',');
+    const tablenamesString = table.map(t => t.name).join(",");
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
@@ -199,9 +193,9 @@ export class BridgeService {
 
       this.arrowsCache[connector.id].connector = connector;
 
-      if (this.userSettings.showQuestionButtons) {
-        this.bridgeButtonService.createButton(connector, this.arrowsCache);
-      }
+      // if (this.userSettings.showQuestionButtons) {
+      //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
+      // }
     }
   }
 
@@ -293,18 +287,23 @@ export class BridgeService {
   }
 
   findCorrespondingTables(table: ITable): string[] {
-    const source = table.area === 'source' ? 'target' : 'source';
+    const source = table.area === "source" ? "target" : "source";
     const rows = Object.values(this.arrowsCache)
       .filter(connection => {
         return connection[table.area].tableName === table.name;
       })
       .map(arrow => arrow[source]);
 
-    return uniqBy(rows, 'tableName').map(row => row.tableName);
+    return uniqBy(rows, "tableName").map(row => row.tableName);
   }
 
-  findCorrespondingRows(table: ITable, row: IRow): CorrespondingRows[] {
-    return [{ row: new Row() }];
+  findCorrespondingConnections(table: ITable, row: IRow): IConnection[] {
+    return Object.values(this.arrowsCache).filter(connection => {
+      return (
+        connection[table.area].tableName === table.name &&
+        connection[table.area].id === row.id
+      );
+    });
   }
 
   resetAllMappings() {

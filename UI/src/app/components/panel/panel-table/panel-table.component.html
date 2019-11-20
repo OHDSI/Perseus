@@ -79,10 +79,10 @@
             comment
           </mat-icon>
         </button>
-        <div
+        <div #bridgeButton
           id="item-{{ row.tableName }}-{{ row.name }}"
           class="connector-pin hide"
-          (click)="openTransform($event, row)"
+          (click)="onTransformDialogOpen($event, row, bridgeButton)"
         >
           <div class="connector-type ">L</div>
         </div>
@@ -102,7 +102,7 @@
     mat-row
     *matRowDef="let row; columns: displayedColumns"
     (mousedown)="setActiveRow($event, row)"
-    (click)="selectRow($event, row)"
+    (click)="selectTableRow($event, row)"
     [class.draggable]="area == 'source'"
     class="item-{{ row.tableName }}-{{ row.name }}"
   ></tr>

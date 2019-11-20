@@ -1,12 +1,13 @@
 import {
   Component,
   Input,
-  ChangeDetectionStrategy,
   ViewChild,
   ElementRef,
   OnInit,
   Renderer2,
-  AfterViewInit
+  AfterViewInit,
+  Output,
+  EventEmitter
 } from '@angular/core';
 
 import { IRow } from 'src/app/models/row';
@@ -15,7 +16,6 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
 import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
-import { Command } from '../../../infrastructure/command';
 import { AddConstantPopupComponent } from '../../popaps/add-constant-popup/add-constant-popup.component';
 
 @Component({
@@ -26,6 +26,9 @@ import { AddConstantPopupComponent } from '../../popaps/add-constant-popup/add-c
 export class PanelTableComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
   @Input() displayedColumns: string[];
+
+  @Output() openTransform = new EventEmitter<any>();
+
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
 
   get rows() {
@@ -171,13 +174,9 @@ export class PanelTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openTransform(event: any, row: IRow) {
+  onTransformDialogOpen(event: any, row: IRow, element: any) {
     event.stopPropagation();
-
-    // Find all corresponding rows
-    const correspondingRows = this.bridgeService.findCorrespondingRows(this.table, row);
-
-
+    this.openTransform.emit({row, element});
   }
 
   hasComment(row: IRow) {
@@ -188,7 +187,7 @@ export class PanelTableComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
   }
 
-  selectRow(event: any, row: IRow) {
+  selectTableRow(event: any, row: IRow) {
     event.stopPropagation();
 
     if (row.htmlElement) {

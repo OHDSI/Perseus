@@ -110,6 +110,10 @@ tr[selected='true'] {
   align-items: center;
 }
 
+.connector-pin:hover {
+  background: #066BBB;
+}
+
 .connector-type {
   font-style: normal;
   font-weight: 500;
@@ -122,3 +126,5 @@ tr[selected='true'] {
 .hide {
   display: none;
 }
+
+

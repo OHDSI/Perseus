@@ -9,7 +9,6 @@ import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { DataService } from 'src/app/services/data.service';
 import { CommonService } from 'src/app/services/common.service';
-import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StateService } from 'src/app/services/state.service';
 import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
@@ -31,7 +30,7 @@ import { OverlayService } from './services/overlay/overlay.service';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
-import { BridgeButtonService } from './services/bridge-button.service';
+import { BridgeButtonService } from './components/bridge-button/service/bridge-button.service';
 import { UserSettings } from './services/user-settings.service';
 import { TransformationInputComponent } from './components/popaps/rules-popup/transformation-input/transformation-input.component';
 import { SqlFunctionsInjector } from './components/popaps/rules-popup/model/sql-functions-injector';
@@ -59,7 +58,6 @@ import { ComfySearchByNameComponent } from './components/comfy-search-by-name/co
     MappingComponent,
     AreaComponent,
     CommentPopupComponent,
-    BridgeButtonComponent,
     ValuesPopupComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
@@ -85,7 +83,6 @@ import { ComfySearchByNameComponent } from './components/comfy-search-by-name/co
     ComfySearchByNameComponent
   ],
   entryComponents: [
-    BridgeButtonComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     TransformConfigComponent,
