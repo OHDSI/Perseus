@@ -84,7 +84,7 @@
           class="connector-pin hide"
           (click)="onTransformDialogOpen($event, row, bridgeButton)"
         >
-          <div class="connector-type ">L</div>
+          <div class="connector-type ">{{connectorTypeLabel.get(row.name)}}</div>
         </div>
       </div>
     </td>

@@ -13,7 +13,6 @@ import { CommonService } from 'src/app/services/common.service';
 
 @Injectable()
 export class BridgeButtonService {
-  text = 'T';
   drawEntity: IConnector;
   active = false;
 
@@ -51,8 +50,7 @@ export class BridgeButtonService {
     this.component = this.insnantiationType.transform;
     this.ancor = element;
 
-    if (this.conceptService.isConcept(payload.connector.target.tableName)) {
-      this.text = 'L';
+    if (this.conceptService.isConceptTable(payload.connector.target.tableName)) {
       this.component = this.insnantiationType.lookup;
       this.dialogOptions.positionStrategyFor = 'advanced-transform';
       this.ancor = this.commonService.mappingElement.nativeElement;

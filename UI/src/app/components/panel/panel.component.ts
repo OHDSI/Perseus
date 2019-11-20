@@ -5,7 +5,8 @@ import {
   ViewChild,
   Output,
   EventEmitter,
-  AfterViewInit
+  AfterViewInit,
+  OnChanges
 } from "@angular/core";
 import { MatDialog, MatExpansionPanel } from "@angular/material";
 
@@ -25,6 +26,7 @@ import { BridgeButtonData } from "../bridge-button/model/bridge-button-data";
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
+  @Input() tabIndex: number;
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
@@ -109,7 +111,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   onOpenTransfromDialog(event: any) {
     const { row, element } = event;
 
-    if (this.bridgeService.isRowConnected(row)) {
+    if (this.bridgeService.rowHasAnyConnection(row)) { // ??
       const connections = this.bridgeService.findCorrespondingConnections(
         this.table,
         row

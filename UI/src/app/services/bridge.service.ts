@@ -278,10 +278,22 @@ export class BridgeService {
     );
   }
 
-  isRowConnected(row: IRow): boolean {
+  rowHasAnyConnection(source: IRow): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
-        return connection.source.id === row.id;
+        return connection.source.id === source.id;
+      }).length > 0
+    );
+  }
+
+  isRowConnectedToTable(connection: IConnection, table: ITable): boolean {
+    return (
+      Object.values(this.arrowsCache).filter(arrow => {
+        return (
+          arrow.source.id === connection.source.id &&
+          arrow.target.id === connection.target.id &&
+          arrow.target.id === table.id
+        );
       }).length > 0
     );
   }
