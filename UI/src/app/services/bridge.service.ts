@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { DrawService } from 'src/app/services/draw.service';
 import { IRow, Row } from 'src/app/models/row';
-import { ArrowCache, Arrow, ConstantCache, CorrespondingRows } from '../models/arrow-cache';
+import {
+  ArrowCache,
+  Arrow,
+  ConstantCache,
+  CorrespondingRows
+} from '../models/arrow-cache';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { Subject } from 'rxjs';
@@ -192,6 +197,8 @@ export class BridgeService {
         arrow.target
       );
 
+      this.arrowsCache[connector.id].connector = connector;
+
       if (this.userSettings.showQuestionButtons) {
         this.bridgeButtonService.createButton(connector, this.arrowsCache);
       }
@@ -297,7 +304,7 @@ export class BridgeService {
   }
 
   findCorrespondingRows(table: ITable, row: IRow): CorrespondingRows[] {
-    return [{'row': new Row()}];
+    return [{ row: new Row() }];
   }
 
   resetAllMappings() {

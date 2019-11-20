@@ -7,7 +7,7 @@ import { Renderer2, ElementRef, EventEmitter } from '@angular/core';
 // TODO Hide properties with WeakMap
 
 export class Arrow implements IConnector {
-  clicked = new EventEmitter<IConnector>();
+  clicked: EventEmitter<IConnector>;
 
   get svgPath(): SVGLineElement {
     return this.path;
@@ -32,16 +32,7 @@ export class Arrow implements IConnector {
     private renderer: Renderer2
   ) {
     this.canvas = canvasRef.nativeElement;
-  }
-
-  private generateSvgPath(pointStart: number[], pointEnd: number[]): string {
-    const x1 = pointStart[0];
-    const y1 = pointStart[1];
-    const x2 = pointEnd[0];
-    const y2 = pointEnd[1];
-
-    // M173,475 C326,467 137,69 265,33
-    return `M${x1},${y1} C${x1 + 200},${y1} ${x2 - 200},${y2} ${x2},${y2}`;
+    this.clicked = new EventEmitter<IConnector>();
   }
 
   draw(): void {
@@ -152,6 +143,16 @@ export class Arrow implements IConnector {
   clickHandler(event: any) {
     event.stopPropagation();
     this.clicked.emit(this);
+  }
+
+  private generateSvgPath(pointStart: number[], pointEnd: number[]): string {
+    const x1 = pointStart[0];
+    const y1 = pointStart[1];
+    const x2 = pointEnd[0];
+    const y2 = pointEnd[1];
+
+    // M173,475 C326,467 137,69 265,33
+    return `M${x1},${y1} C${x1 + 200},${y1} ${x2 - 200},${y2} ${x2},${y2}`;
   }
 
   private refreshPathHtmlElement() {
