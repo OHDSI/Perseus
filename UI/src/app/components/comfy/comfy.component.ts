@@ -28,7 +28,7 @@ import {
   VocabulariesService,
   IVocabulary
 } from 'src/app/services/vocabularies.service';
-import { ConceptService } from './services/concept.service';
+import { ConceptService, isConceptTable } from './services/concept.service';
 import { environment } from 'src/environments/environment';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 import { IRow } from 'src/app/models/row';
@@ -346,7 +346,7 @@ export class ComfyComponent extends BaseComponent
       data.splice(index, 1);
     }
 
-    if (this.conceptService.isConceptTable(targetTableName)) {
+    if (isConceptTable(targetTableName)) {
       environment.conceptTables.forEach(conceptTable => {
         this.bridgeService.deleteArrowsForMapping(
           conceptTable,

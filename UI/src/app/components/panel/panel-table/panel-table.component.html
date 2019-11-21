@@ -1,4 +1,4 @@
-<table id="{{ table.name }}" mat-table [dataSource]="visibleRows">
+<table #tableComponent id="{{ table.name }}" mat-table [dataSource]="visibleRows">
   <ng-container matColumnDef="column_indicator">
     <th mat-header-cell *matHeaderCellDef>
       <button
@@ -79,12 +79,15 @@
             comment
           </mat-icon>
         </button>
-        <div #bridgeButton
+        <div
+          #bridgeButton
           id="item-{{ row.tableName }}-{{ row.name }}"
           class="connector-pin hide"
           (click)="onTransformDialogOpen($event, row, bridgeButton)"
         >
-          <div class="connector-type ">{{connectorTypeLabel.get(row.name)}}</div>
+          <div class="connector-type">
+            <span *ngFor="let type of connectortype[row.name]">{{ type }}</span>
+          </div>
         </div>
       </div>
     </td>

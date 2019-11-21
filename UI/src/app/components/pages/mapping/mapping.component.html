@@ -36,7 +36,7 @@
             (close)="onPanelClose(table)"
             (initialized)="onPanelInit(table)"
           >
-            <app-panel-table
+            <app-panel-table #sourcePanel
               [table]="table"
               [displayedColumns]="[
                 'column_indicator',

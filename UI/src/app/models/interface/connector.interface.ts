@@ -10,6 +10,7 @@ export interface IConnector {
   selected: boolean;
   button: Element;
   clicked: EventEmitter<IConnector>;
+  type: ConnectorType;
 
   draw(): void;
   remove(): void;
@@ -18,3 +19,5 @@ export interface IConnector {
   select(): void;
   deselect(): void;
 }
+
+export type ConnectorType = 'L' | 'T';

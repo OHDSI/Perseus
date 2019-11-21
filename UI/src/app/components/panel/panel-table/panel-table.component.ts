@@ -8,7 +8,9 @@ import {
   AfterViewInit,
   Output,
   EventEmitter,
-  OnChanges
+  OnChanges,
+  NgZone,
+  ChangeDetectorRef
 } from "@angular/core";
 
 import { IRow } from "src/app/models/row";
@@ -18,10 +20,10 @@ import { CommentPopupComponent } from "src/app/components/popaps/comment-popup/c
 import { BridgeService, IConnection } from "src/app/services/bridge.service";
 import { OverlayConfigOptions } from "src/app/services/overlay/overlay-config-options.interface";
 import { AddConstantPopupComponent } from "../../popaps/add-constant-popup/add-constant-popup.component";
-import { ConceptService } from "../../comfy/services/concept.service";
 import { takeUntil } from "rxjs/operators";
 import { BaseComponent } from "../../base/base.component";
-import { IConnector } from "src/app/models/interface/connector.interface";
+import { MatTable } from "@angular/material";
+import { cloneDeep } from "src/app/infrastructure/utility";
 
 @Component({
   selector: "app-panel-table",
@@ -37,6 +39,7 @@ export class PanelTableComponent extends BaseComponent
   @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild("htmlElement", { read: ElementRef }) element: HTMLElement;
+  @ViewChild("tableComponent") tableComponent: MatTable<any>;
 
   get rows() {
     return this.table.rows;
@@ -58,71 +61,61 @@ export class PanelTableComponent extends BaseComponent
     return this.rows.filter((row: IRow) => row.visible);
   }
 
-  connectorTypeLabel = new Map<string, string>();
+  get connectionTypes(): any[] {
+    return Object.keys(this.connectortype);
+  }
+
+  connectortype = {};
+
+  private rowConnections = {};
 
   constructor(
     private bridgeService: BridgeService,
-    private conceptService: ConceptService,
     private overlayService: OverlayService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private chg: ChangeDetectorRef
   ) {
     super();
   }
 
-  private rowConnections = {};
+  ngOnChanges() {}
 
-  ngOnChanges() {
-    Object.values(this.bridgeService.arrowsCache).forEach(connection => {
-      if (
-        this.table.name.toUpperCase() !==
-        connection.target.tableName.toUpperCase()
-      ) {
-        //this.HideConnectorPin(connection);
-        //this.ShowConnectorPin(connection);
-      }
-    });
+  equals(name1: string, name2: string): boolean {
+    return name1.toUpperCase() === name2.toUpperCase();
   }
 
   ngOnInit(): void {
     this.bridgeService.deleteAll
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
-        // Object.keys(this.bridgeService.arrowsCache).forEach(key => {
-        //   this.bridgeService.arrowsCache[key].source.htmlElement.classList.remove(
-        //     'row-has-a-link-true'
-        //   );
-        // });
-
         this.rowConnections = {};
       });
 
     this.bridgeService.connection
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
-        this.AddConnection(connection);
-        this.ShowConnectorPin(connection);
-        this.ShowConnectorPinLabel(connection);
+        this.addConnection(connection);
+        this.showConnectorPin(connection);
       });
 
     this.bridgeService.removeConnection
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
-        this.HideConnectorPin(connection);
-        this.HideConnectorPinLabel(connection);
+        this.hideConnectorPin(connection);
       });
-
-    Object.values(this.bridgeService.arrowsCache).forEach(connection => {
-      this.ShowConnectorPinLabel(connection);
-    });
   }
 
-  ngAfterViewInit() {
-    Object.values(this.bridgeService.arrowsCache).forEach(connection => {
-      this.ShowConnectorPin(connection);
-    });
-  }
+  ngAfterViewInit() {}
 
-  AddConnection(connection: IConnection) {
+  // initializeConnectorsType() {
+  //   if (this.table.area === "source") {
+  //     this.table.rows.forEach(row => {
+  //       this.connectortype[row.name] = [];
+  //     });
+  //   }
+  // }
+
+  addConnection(connection: IConnection) {
     this.rows.forEach(row => {
       if (
         row.tableId === connection[this.table.area].tableId &&
@@ -131,45 +124,6 @@ export class PanelTableComponent extends BaseComponent
         this.rowConnections[row.key] = true;
       }
     });
-  }
-
-  ShowConnectorPin(connection: IConnection) {
-    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
-    const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName("connector-pin");
-    if (
-      collection.length > 0 //&& this.bridgeService.isRowConnectedToTable(connection, this.table)
-    ) {
-      this.renderer.removeClass(collection[0], "hide");
-    }
-  }
-
-  HideConnectorPin(connection: IConnection) {
-    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
-    const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName("connector-pin");
-    if (
-      collection.length > 0
-      //&& !this.bridgeService.isRowConnectedToTable(connection, this.table)
-    ) {
-      this.renderer.addClass(collection[0], "hide");
-    }
-  }
-
-  ShowConnectorPinLabel(connection: IConnection) {
-    if (!this.connectorTypeLabel.has(connection.source.name)) {
-      if (this.conceptService.isConcept(connection.connector)) {
-        this.connectorTypeLabel.set(connection.source.name, "L");
-      } else {
-        this.connectorTypeLabel.set(connection.source.name, "T");
-      }
-    }
-  }
-
-  HideConnectorPinLabel(connection: IConnection) {
-    if (this.connectorTypeLabel.has(connection.source.name)) {
-      this.connectorTypeLabel.delete(connection.source.name);
-    }
   }
 
   isRowHasConnection(row: IRow): boolean {
@@ -263,6 +217,64 @@ export class PanelTableComponent extends BaseComponent
             connection.connector.deselect();
           }
         });
+    }
+  }
+
+  reflectConnectorsPin(target: ITable) {
+    this.connectortype = {};
+    Object.values(this.bridgeService.arrowsCache)
+      .filter(connection => {
+        return this.equals(connection.target.tableName, target.name);
+      })
+      .forEach(connection => {
+        this.showConnectorPin(connection);
+
+        const { type } = connection.connector;
+
+        if (!this.connectortype[connection.source.name]) {
+          this.connectortype[connection.source.name] = [type];
+        } else if (
+          this.connectortype[connection.source.name].findIndex(
+            existingtype => existingtype === type
+          ) === -1
+        ) {
+          this.connectortype[connection.source.name].push(type);
+        }
+      });
+
+    this.table.rows = this.table.rows.map(row => {
+      if (this.connectortype[row.name]) {
+        row.connectorTypes = this.connectortype[row.name];
+      }
+
+      return cloneDeep(row);
+    });
+
+    this.tableComponent.renderRows();
+  }
+
+  showConnectorPin(connection: IConnection) {
+    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
+    const element = document.getElementById(rowId);
+    const collection = element.getElementsByClassName("connector-pin");
+    if (collection.length > 0) {
+      this.renderer.removeClass(collection[0], "hide");
+    }
+  }
+
+  hideAllConnectorPin(element) {
+    const collection = element.getElementsByClassName("connector-pin");
+    for (let i = 0; i < collection.length; i++) {
+      this.renderer.addClass(collection[i], "hide");
+    }
+  }
+
+  hideConnectorPin(connection: IConnection) {
+    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
+    const element = document.getElementById(rowId);
+    const collection = element.getElementsByClassName("connector-pin");
+    if (collection.length > 0) {
+      this.renderer.addClass(collection[0], "hide");
     }
   }
 

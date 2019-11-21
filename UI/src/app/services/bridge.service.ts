@@ -53,8 +53,6 @@ export class BridgeService {
 
   constructor(
     private drawService: DrawService,
-    private bridgeButtonService: BridgeButtonService,
-    private userSettings: UserSettings,
     private stateService: StateService
   ) {}
   applyConfiguration$ = new Subject<Configuration>();
@@ -80,10 +78,6 @@ export class BridgeService {
         this.sourceRow,
         this.targetRow
       );
-
-      // if (this.userSettings.showQuestionButtons) {
-      //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
-      // }
 
       const connection: IConnection = {
         source: this.sourceRow,
@@ -192,10 +186,6 @@ export class BridgeService {
       );
 
       this.arrowsCache[connector.id].connector = connector;
-
-      // if (this.userSettings.showQuestionButtons) {
-      //   this.bridgeButtonService.createButton(connector, this.arrowsCache);
-      // }
     }
   }
 

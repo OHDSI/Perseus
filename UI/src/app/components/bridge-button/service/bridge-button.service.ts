@@ -8,7 +8,7 @@ import { RulesPopupComponent } from '../../popaps/rules-popup/rules-popup.compon
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { BridgeButtonData } from '../model/bridge-button-data';
-import { ConceptService } from '../../comfy/services/concept.service';
+import { ConceptService, isConceptTable } from '../../comfy/services/concept.service';
 import { CommonService } from 'src/app/services/common.service';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class BridgeButtonService {
     this.component = this.insnantiationType.transform;
     this.ancor = element;
 
-    if (this.conceptService.isConceptTable(payload.connector.target.tableName)) {
+    if (isConceptTable(payload.connector.target.tableName)) {
       this.component = this.insnantiationType.lookup;
       this.dialogOptions.positionStrategyFor = 'advanced-transform';
       this.ancor = this.commonService.mappingElement.nativeElement;

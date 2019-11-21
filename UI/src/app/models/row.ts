@@ -1,5 +1,6 @@
 import { IComment } from 'src/app/models/comment';
 import { Area } from './area';
+import { ConnectorType } from './interface/connector.interface';
 
 export interface RowOptions {
   id?: number;
@@ -32,6 +33,7 @@ export interface IRow {
   htmlElement: any;
   constant: string;
   selected: boolean;
+  connectorTypes: ConnectorType[];
 
   removeConnections(): void;
 }
@@ -50,6 +52,7 @@ export class Row implements IRow {
   connections = [];
   htmlElement: any = null;
   selected: boolean;
+  connectorTypes: ConnectorType[];
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
@@ -69,6 +72,7 @@ export class Row implements IRow {
     this.comments = options.comments;
     this.constant = options.constant;
     this.selected = options.selected || false;
+    this.connectorTypes = [];
   }
 
   removeConnections() {

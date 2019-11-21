@@ -1,8 +1,9 @@
 import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
 import { extractHtmlElement } from '../services/utilites/html-utilities';
-import { IConnector } from './interface/connector.interface';
+import { IConnector, ConnectorType } from './interface/connector.interface';
 import { Renderer2, ElementRef, EventEmitter } from '@angular/core';
+import { ConceptService, isConcept } from '../components/comfy/services/concept.service';
 
 // TODO Hide properties with WeakMap
 
@@ -21,6 +22,7 @@ export class Arrow implements IConnector {
   targetSVGPoint: any;
 
   path: any;
+  type: ConnectorType;
 
   private removeClickListener: any;
 
@@ -33,6 +35,15 @@ export class Arrow implements IConnector {
   ) {
     this.canvas = canvasRef.nativeElement;
     this.clicked = new EventEmitter<IConnector>();
+    this.type = this.getType();
+  }
+
+  private getType() {
+    if (isConcept(this)) {
+      return 'L';
+    } else {
+      return 'T';
+    }
   }
 
   draw(): void {

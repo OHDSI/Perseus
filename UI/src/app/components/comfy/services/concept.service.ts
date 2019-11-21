@@ -24,16 +24,16 @@ const COMMON_COLUMNS = [
   "VISIT_DETAIL_ID"
 ];
 
+export const isConceptTable = (tableName: string): boolean => {
+  return environment.conceptTables.findIndex(name => tableName === name) > -1;
+}
+
+export const isConcept = (connector: IConnector): boolean => {
+  return CONCEPT_COLUMNS.findIndex(name => connector.target.name.indexOf(name) > -1) > -1;
+}
+
 @Injectable()
 export class ConceptService {
-  isConceptTable(tableName: string): boolean {
-    return environment.conceptTables.findIndex(name => tableName === name) > -1;
-  }
-
-  isConcept(connector: IConnector): boolean {
-    return CONCEPT_COLUMNS.findIndex(name => connector.target.name.indexOf(name) > -1) > -1;
-  }
-
   getConceptTables(allTargetTables: ITable[]): ITable[] {
     let conceptTablesRaw = allTargetTables.filter(
       targetTable =>
