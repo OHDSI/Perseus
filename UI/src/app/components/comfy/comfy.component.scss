@@ -1,22 +1,15 @@
 .comfy-container {
-  padding: 1em 5em 1em 5em;
 }
 
 .comfy-grid {
   display: grid;
-  grid-template-columns: 292px 292px 292px;
-  grid-template-rows: 100px minmax(200px, auto);
-  column-gap: 100px;
+  grid-template-columns: 400px 292px 292px;
+  column-gap: 50px;
 }
 
-.instruction{
+.instruction {
   font-size: medium;
   font-weight: 400;
-}
-
-.vertical-container {
-  max-width: 100%;
-  vertical-align: top;
 }
 
 .vertical-list {
@@ -33,7 +26,7 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  background: #E1F2FF;
+  background: #e1f2ff;
   font-size: 14px;
   border-radius: 2px;
   box-shadow: 0px 2px 2px rgba(128, 128, 128, 0.25);
@@ -48,7 +41,7 @@
 }
 
 .vertical-box:first-child {
-  background: #A6D2F4;
+  background: #a6d2f4;
 }
 
 .vertical-box:last-child {
@@ -56,7 +49,8 @@
   padding-bottom: 0;
 }
 
-.vertical-list.cdk-drop-list-dragging .horizontal-box:not(.cdk-drag-placeholder) {
+.vertical-list.cdk-drop-list-dragging
+  .horizontal-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
@@ -70,14 +64,13 @@
   box-shadow: 0px 2px 2px rgba(128, 128, 128, 0.25);
 
   .table-description {
-    color:red;
-    background: #E1F2FF;
+    color: red;
+    background: #e1f2ff;
   }
 }
 
 .cdk-drag-placeholder {
   opacity: 0.5;
-
 }
 
 .cdk-drag-animating {
@@ -85,46 +78,46 @@
 }
 
 .table-description {
-    position: relative;
-    padding: 1.128571428571429rem;
-    color: #000d37;
-    font-size: 1.142857142857143rem;
-    line-height: 1.357142857142857rem;
+  position: relative;
+  padding: 1.128571428571429rem;
+  color: #000d37;
+  font-size: 1.142857142857143rem;
+  line-height: 1.357142857142857rem;
+  width: 100%;
+  text-transform: uppercase;
+  cursor: move;
+
+  &.caption {
     width: 100%;
-    text-transform: uppercase;
-    cursor: move;
+  }
 
-    &.caption {
-      width: 100%;
-    }
+  &.preview {
+    width: 250px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
-    &.preview {
-      width: 250px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
+  &.source {
+    direction: ltr;
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
-    &.source {
-      direction: ltr;
-      width: 200px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
+  &.target {
+    display: flex;
+  }
 
-    &.target {
-      display: flex;
-    }
-
-    .remove-mapping-table {
-      position: absolute;
-      top: 15px;
-      right: 10px;
-      cursor: pointer;
-      width: 24px;
-      height: 24px;
-    }
+  .remove-mapping-table {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .target-label {
@@ -134,8 +127,8 @@
   overflow: hidden;
 }
 
-div[highlighted=true] {
-  background-color: #A6D2F4;
+div[highlighted="true"] {
+  background-color: #a6d2f4;
   font-weight: 600;
 }
 
@@ -149,13 +142,13 @@ div[highlighted=true] {
 
 .scrolled-items {
   height: 90vh;
-  overflow-y:scroll;
+  overflow-y: scroll;
   padding-left: 10px;
   padding-right: 10px;
 }
 
-div[concept=true] {
-  background-color: #A6D2F4;
+div[concept="true"] {
+  background-color: #a6d2f4;
 }
 
 .cdm-container {
@@ -169,14 +162,13 @@ div[concept=true] {
   display: block;
   background: white;
   overflow: hidden;
-
 }
 
 .cdm-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #F3F3F3;
+  background: #f3f3f3;
   font-size: 14px;
   margin-bottom: 16px;
   padding-left: 20px;
@@ -186,7 +178,11 @@ div[concept=true] {
 
 .filter-by-name {
   padding-left: 13px;
+}
+
+.filter-label {
   padding-top: 20px;
+  padding-left: 13px;
 }
 
 .page-column-label {
@@ -194,7 +190,7 @@ div[concept=true] {
   direction: initial;
 }
 
-.instruction{
+.instruction {
   display: flex;
   flex-direction: column;
   padding-left: 13px;
@@ -204,4 +200,19 @@ div[concept=true] {
   direction: rtl;
 }
 
+.background {
+  background: #e8e8e8;
+}
 
+.vertical-container {
+  display: flex;
+  flex-direction: column;
+
+  padding-right: 32px;
+  padding-left: 32px;
+}
+
+.destination {
+  max-width: 100%;
+  vertical-align: top;
+}
