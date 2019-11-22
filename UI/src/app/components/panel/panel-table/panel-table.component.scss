@@ -1,4 +1,4 @@
-@import 'src/app/styles/variables.scss';
+@import "src/app/styles/variables.scss";
 
 table {
   width: 100%;
@@ -87,7 +87,7 @@ table {
 //   background-color: #0000000d;
 // }
 
-tr[selected='true'] {
+tr[selected="true"] {
   background-color: #a6d2f4;
   font-weight: 400;
 }
@@ -102,7 +102,7 @@ tr[selected='true'] {
   width: 17px;
   height: 17px;
   margin-top: 1px;
-  margin-right: 2px;
+
   border-radius: 4px 4px 4px 4px;
   background: #bdbdbd;
 
@@ -111,8 +111,12 @@ tr[selected='true'] {
   align-items: center;
 }
 
+.connector-pin:not(:last-child) {
+  margin-right: 2px;
+}
+
 .connector-pin:hover {
-  background: #066BBB;
+  background: #066bbb;
 }
 
 .connector-type {
@@ -127,5 +131,3 @@ tr[selected='true'] {
 .hide {
   display: none;
 }
-
-
