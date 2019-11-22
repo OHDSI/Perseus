@@ -111,20 +111,18 @@ export class PanelComponent implements OnInit, AfterViewInit {
   onOpenTransfromDialog(event: any) {
     const { row, element } = event;
 
-    if (this.bridgeService.rowHasAnyConnection(row)) { // ??
-      const connections = this.bridgeService.findCorrespondingConnections(
-        this.table,
-        row
-      );
-      if (connections.length > 0) {
-        const payload: BridgeButtonData = {
-          connector: connections[0].connector,
-          arrowCache: this.bridgeService.arrowsCache
-        };
+    const connections = this.bridgeService.findCorrespondingConnections(
+      this.table,
+      row
+    );
+    if (connections.length > 0) {
+      const payload: BridgeButtonData = {
+        connector: connections[0].connector,
+        arrowCache: this.bridgeService.arrowsCache
+      };
 
-        this.bridgeButtonService.init(payload, element);
-        this.bridgeButtonService.openRulesDialog();
-      }
+      this.bridgeButtonService.init(payload, element);
+      this.bridgeButtonService.openRulesDialog();
     }
   }
 

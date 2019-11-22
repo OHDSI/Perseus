@@ -24,6 +24,7 @@ import { takeUntil } from "rxjs/operators";
 import { BaseComponent } from "../../base/base.component";
 import { MatTable, MatTableDataSource } from "@angular/material";
 import { cloneDeep } from "src/app/infrastructure/utility";
+import { Area } from 'src/app/models/area';
 
 @Component({
   selector: "app-panel-table",
@@ -99,14 +100,14 @@ export class PanelTableComponent extends BaseComponent
         this.addConnection(connection);
 
         setTimeout(() => {
-          this.showConnectorPinElement(connection);
+          this.showConnectorPinElement(connection, Area.Target);
         });
       });
 
     this.bridgeService.removeConnection
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
-        this.hideConnectorPin(connection);
+        this.hideConnectorPin(connection, Area.Target);
       });
   }
 
@@ -225,12 +226,12 @@ export class PanelTableComponent extends BaseComponent
         return this.equals(connection.target.tableName, target.name);
       })
       .forEach(connection => {
-        this.showConnectorPinElement(connection);
+        this.showConnectorPinElement(connection, Area.Target);
       });
   }
 
-  showConnectorPinElement(connection: IConnection) {
-    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
+  showConnectorPinElement(connection: IConnection, area: Area) {
+    const rowId = connection[area].htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName("connector-pin");
     for (let i = 0; i < collection.length; i++) {
@@ -245,8 +246,8 @@ export class PanelTableComponent extends BaseComponent
     }
   }
 
-  hideConnectorPin(connection: IConnection) {
-    const rowId = connection.source.htmlElement.attributes.id.nodeValue;
+  hideConnectorPin(connection: IConnection, area: Area) {
+    const rowId = connection[area].htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName("connector-pin");
     for (let i = 0; i < collection.length; i++) {

@@ -72,7 +72,7 @@ export class BridgeService {
         this.targetRow
       );
 
-      this.sourceRow.setType(connector.type);
+      this.targetRow.setType(connector.type);
 
       const connection: IConnection = {
         source: this.sourceRow,
