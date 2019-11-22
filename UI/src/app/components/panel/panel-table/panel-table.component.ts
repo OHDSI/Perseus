@@ -197,7 +197,7 @@ export class PanelTableComponent extends BaseComponent
 
       row.selected = !row.selected;
 
-      if (row.selected && row.htmlElement) {
+      if (this.renderer && row.selected && row.htmlElement) {
         this.renderer.setAttribute(row.htmlElement, "selected", "true");
       } else {
         this.renderer.removeAttribute(row.htmlElement, "selected");
@@ -233,8 +233,8 @@ export class PanelTableComponent extends BaseComponent
     const rowId = connection.source.htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName("connector-pin");
-    if (collection.length > 0) {
-      this.renderer.removeClass(collection[0], "hide");
+    for (let i = 0; i < collection.length; i++) {
+      this.renderer.removeClass(collection[i], "hide");
     }
   }
 
@@ -249,7 +249,7 @@ export class PanelTableComponent extends BaseComponent
     const rowId = connection.source.htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName("connector-pin");
-    if (collection.length > 0) {
+    for (let i = 0; i < collection.length; i++) {
       this.renderer.addClass(collection[0], "hide");
     }
   }
