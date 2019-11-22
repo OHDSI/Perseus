@@ -20,4 +20,4 @@ export interface IConnector {
   deselect(): void;
 }
 
-export type ConnectorType = 'L' | 'T';
+export type ConnectorType = 'L' | 'T' | 'M' | '';

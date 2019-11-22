@@ -1,20 +1,13 @@
 import { Injectable } from "@angular/core";
 import { DrawService } from "src/app/services/draw.service";
 import { IRow, Row } from "src/app/models/row";
-import {
-  ArrowCache,
-  Arrow,
-  ConstantCache,
-  CorrespondingRows
-} from "../models/arrow-cache";
+import { ArrowCache, Arrow, ConstantCache } from "../models/arrow-cache";
 import { MappingService } from "../models/mapping-service";
 import { ITable } from "../models/table";
 import { Subject } from "rxjs";
 import { uniqBy, cloneDeep } from "../infrastructure/utility";
 import { Configuration } from "../models/configuration";
 import { StateService } from "./state.service";
-import { BridgeButtonService } from "../components/bridge-button/service/bridge-button.service";
-import { UserSettings } from "./user-settings.service";
 import { IConnector } from "../models/interface/connector.interface";
 import { SqlFunction } from "../components/popaps/rules-popup/transformation-input/model/sql-string-functions";
 import { Command } from "../infrastructure/command";
@@ -78,6 +71,8 @@ export class BridgeService {
         this.sourceRow,
         this.targetRow
       );
+
+      this.sourceRow.setType(connector.type);
 
       const connection: IConnection = {
         source: this.sourceRow,
@@ -159,7 +154,7 @@ export class BridgeService {
         const source = stateService.findTable(arrow.source.tableName);
         const target = stateService.findTable(arrow.target.tableName);
 
-        this.initializeConnector(arrow, source, target);
+        this.refreshConnector(arrow, source, target);
       }
     });
   }
@@ -172,12 +167,12 @@ export class BridgeService {
         const source = this.stateService.findTable(arrow.source.tableName);
         const target = this.stateService.findTable(arrow.target.tableName);
 
-        this.initializeConnector(arrow, source, target);
+        this.refreshConnector(arrow, source, target);
       });
     }, 300);
   }
 
-  initializeConnector(arrow, source, target) {
+  refreshConnector(arrow, source, target) {
     if (source.expanded && target.expanded) {
       const connector = this.drawService.drawLine(
         this.getConnectorId(arrow.source, arrow.target),

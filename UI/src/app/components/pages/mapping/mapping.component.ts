@@ -35,7 +35,7 @@ export class MappingComponent extends BaseComponent
   @Input() source: ITable[];
   @Input() target: ITable[];
 
-  tabIndex: number = -1;
+  tabIndex = 0;
 
   get hint(): string {
     return "no hint";
@@ -84,6 +84,8 @@ export class MappingComponent extends BaseComponent
 
   ngAfterViewInit() {
     this.bridgeService.refresh(this.target, 200);
+
+    this.sourcePanel.reflectConnectorsPin(this.target[this.tabIndex]);
   }
 
   @HostListener("document:keyup", ["$event"])

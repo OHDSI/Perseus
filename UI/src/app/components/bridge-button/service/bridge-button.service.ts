@@ -28,7 +28,6 @@ export class BridgeButtonService {
 
   constructor(
     private overlayService: OverlayService,
-    private conceptService: ConceptService,
     private commonService: CommonService
   ) {}
 

@@ -36,6 +36,7 @@ export interface IRow {
   connectorTypes: ConnectorType[];
 
   removeConnections(): void;
+  setType(type: ConnectorType): void;
 }
 
 export class Row implements IRow {
@@ -77,6 +78,13 @@ export class Row implements IRow {
 
   removeConnections() {
     this.connections = [];
+  }
+
+  setType(type: ConnectorType) {
+    const idx = this.connectorTypes.findIndex(existingType => existingType === type);
+    if (idx === -1) {
+       this.connectorTypes.push(type);
+    }
   }
 
   toString(): string {

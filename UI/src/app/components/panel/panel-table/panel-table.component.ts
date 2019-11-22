@@ -22,7 +22,7 @@ import { OverlayConfigOptions } from "src/app/services/overlay/overlay-config-op
 import { AddConstantPopupComponent } from "../../popaps/add-constant-popup/add-constant-popup.component";
 import { takeUntil } from "rxjs/operators";
 import { BaseComponent } from "../../base/base.component";
-import { MatTable } from "@angular/material";
+import { MatTable, MatTableDataSource } from "@angular/material";
 import { cloneDeep } from "src/app/infrastructure/utility";
 
 @Component({
@@ -39,11 +39,7 @@ export class PanelTableComponent extends BaseComponent
   @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild("htmlElement", { read: ElementRef }) element: HTMLElement;
-  @ViewChild("tableComponent") tableComponent: MatTable<any>;
-
-  get rows() {
-    return this.table.rows;
-  }
+  @ViewChild("tableComponent") tableComponent: MatTable<IRow[]>;
 
   get area() {
     return this.table.area;
@@ -57,9 +53,7 @@ export class PanelTableComponent extends BaseComponent
     return this.table.rows.filter((row: IRow) => row.visible).length;
   }
 
-  get visibleRows() {
-    return this.rows.filter((row: IRow) => row.visible);
-  }
+  datasource: MatTableDataSource<IRow>;
 
   get connectionTypes(): any[] {
     return Object.keys(this.connectortype);
@@ -84,7 +78,15 @@ export class PanelTableComponent extends BaseComponent
     return name1.toUpperCase() === name2.toUpperCase();
   }
 
+  dataSourceInit(data: any[]) {
+    this.datasource = new MatTableDataSource(
+      data.filter((row: IRow) => row.visible)
+    );
+  }
+
   ngOnInit(): void {
+    this.dataSourceInit(this.table.rows);
+
     this.bridgeService.deleteAll
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
@@ -95,7 +97,10 @@ export class PanelTableComponent extends BaseComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
         this.addConnection(connection);
-        this.showConnectorPin(connection);
+
+        setTimeout(() => {
+          this.showConnectorPinElement(connection);
+        });
       });
 
     this.bridgeService.removeConnection
@@ -107,16 +112,8 @@ export class PanelTableComponent extends BaseComponent
 
   ngAfterViewInit() {}
 
-  // initializeConnectorsType() {
-  //   if (this.table.area === "source") {
-  //     this.table.rows.forEach(row => {
-  //       this.connectortype[row.name] = [];
-  //     });
-  //   }
-  // }
-
   addConnection(connection: IConnection) {
-    this.rows.forEach(row => {
+    this.table.rows.forEach(row => {
       if (
         row.tableId === connection[this.table.area].tableId &&
         row.id === connection[this.table.area].id
@@ -220,6 +217,7 @@ export class PanelTableComponent extends BaseComponent
     }
   }
 
+  // connectortype is not reflected in the table
   reflectConnectorsPin(target: ITable) {
     this.connectortype = {};
     Object.values(this.bridgeService.arrowsCache)
@@ -227,33 +225,11 @@ export class PanelTableComponent extends BaseComponent
         return this.equals(connection.target.tableName, target.name);
       })
       .forEach(connection => {
-        this.showConnectorPin(connection);
-
-        const { type } = connection.connector;
-
-        if (!this.connectortype[connection.source.name]) {
-          this.connectortype[connection.source.name] = [type];
-        } else if (
-          this.connectortype[connection.source.name].findIndex(
-            existingtype => existingtype === type
-          ) === -1
-        ) {
-          this.connectortype[connection.source.name].push(type);
-        }
+        this.showConnectorPinElement(connection);
       });
-
-    this.table.rows = this.table.rows.map(row => {
-      if (this.connectortype[row.name]) {
-        row.connectorTypes = this.connectortype[row.name];
-      }
-
-      return cloneDeep(row);
-    });
-
-    this.tableComponent.renderRows();
   }
 
-  showConnectorPin(connection: IConnection) {
+  showConnectorPinElement(connection: IConnection) {
     const rowId = connection.source.htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName("connector-pin");
