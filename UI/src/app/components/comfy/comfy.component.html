@@ -11,6 +11,7 @@
         class="filter-by-name"
         [placeholder]="'Search by source column'"
         (complete)="filterByName('source-column', $event)"
+        (reset)="filterByNameReset('source-column', $event)"
       ></app-comfy-search-by-name>
       <h4 class="page-column-label">Source columns</h4>
       <app-columns-list
@@ -26,6 +27,7 @@
         class="filter-by-name"
         [placeholder]="'Search by source table'"
         (complete)="filterByName('source', $event)"
+        (reset)="filterByNameReset('source', $event)"
       ></app-comfy-search-by-name>
       <h4 class="page-column-label">Source tables</h4>
       <div class="scrolled-items">
@@ -68,6 +70,7 @@
         class="filter-by-name"
         [placeholder]="'Search by target table'"
         (complete)="filterByName('target', $event)"
+        (reset)="filterByNameReset('target', $event)"
       ></app-comfy-search-by-name>
       <h4 class="page-column-label">Target tables</h4>
       <div class="scrolled-items" #scrollEl cdk-scrollable>

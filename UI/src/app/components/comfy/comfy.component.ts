@@ -7,38 +7,38 @@ import {
   ElementRef,
   ViewChildren,
   QueryList
-} from '@angular/core';
-import { DataService } from 'src/app/services/data.service';
-import { StateService } from 'src/app/services/state.service';
+} from "@angular/core";
+import { DataService } from "src/app/services/data.service";
+import { StateService } from "src/app/services/state.service";
 import {
   CdkDragDrop,
   moveItemInArray,
   copyArrayItem,
   CdkDrag,
   CdkDragMove
-} from '@angular/cdk/drag-drop';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { MappingPopupComponent } from '../popaps/mapping-popup/mapping-popup.component';
-import { ITable } from 'src/app/models/table';
-import { BridgeService } from 'src/app/services/bridge.service';
-import { Subscription, merge } from 'rxjs';
-import { startWith, map, switchMap, tap, takeUntil } from 'rxjs/operators';
-import { Command } from 'src/app/infrastructure/command';
+} from "@angular/cdk/drag-drop";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { MappingPopupComponent } from "../popaps/mapping-popup/mapping-popup.component";
+import { ITable } from "src/app/models/table";
+import { BridgeService } from "src/app/services/bridge.service";
+import { Subscription, merge } from "rxjs";
+import { startWith, map, switchMap, tap, takeUntil } from "rxjs/operators";
+import { Command } from "src/app/infrastructure/command";
 import {
   VocabulariesService,
   IVocabulary
-} from 'src/app/services/vocabularies.service';
-import { ConceptService, isConceptTable } from './services/concept.service';
-import { environment } from 'src/environments/environment';
-import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
-import { IRow } from 'src/app/models/row';
-import { uniq, uniqBy } from 'src/app/infrastructure/utility';
-import { BaseComponent } from '../base/base.component';
+} from "src/app/services/vocabularies.service";
+import { ConceptService, isConceptTable } from "./services/concept.service";
+import { environment } from "src/environments/environment";
+import { Criteria } from "../comfy-search-by-name/comfy-search-by-name.component";
+import { IRow } from "src/app/models/row";
+import { uniq, uniqBy } from "src/app/infrastructure/utility";
+import { BaseComponent } from "../base/base.component";
 
 @Component({
-  selector: 'app-comfy',
-  templateUrl: './comfy.component.html',
-  styleUrls: ['./comfy.component.scss']
+  selector: "app-comfy",
+  templateUrl: "./comfy.component.html",
+  styleUrls: ["./comfy.component.scss"]
 })
 export class ComfyComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {
@@ -87,7 +87,7 @@ export class ComfyComponent extends BaseComponent
     super();
   }
 
-  @ViewChild('scrollEl')
+  @ViewChild("scrollEl")
   scrollEl: ElementRef<HTMLElement>;
 
   @ViewChildren(CdkDrag)
@@ -180,7 +180,9 @@ export class ComfyComponent extends BaseComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
         this.stateService.switchSourceToTarget();
-        this.initialize();
+        this.initializeSourceData();
+        this.initializeTargetData();
+        this.initializeSourceColumns();
         this.busy = false;
       });
 
@@ -191,32 +193,36 @@ export class ComfyComponent extends BaseComponent
       });
 
     this.bridgeService.resetAllMappings$
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(_ => {
-      this.initialize();
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(_ => {
+        this.initializeSourceData();
+        this.initializeTargetData();
+        this.initializeSourceColumns();
 
-      this.snakbar.open(
-        `Reset all mappings success`,
-        ' DISMISS ',
-        this.snakbarOptions
-      );
-    });
+        this.snakbar.open(
+          `Reset all mappings success`,
+          " DISMISS ",
+          this.snakbarOptions
+        );
+      });
   }
 
-  initialize() {
+  initializeSourceData() {
     this.source = [];
-    this.target = {};
-
-    const prefix = 'target';
-
     this.source = uniq(
       this.state.source.tables
         .map(table => table.name)
         .filter(
           tableName =>
-            ['CONCEPT', 'COMMON'].indexOf(tableName.toUpperCase()) < 0
+            ["CONCEPT", "COMMON"].indexOf(tableName.toUpperCase()) < 0
         )
     );
+  }
+
+  initializeTargetData() {
+    this.target = {};
+
+    const prefix = "target";
 
     this.state.target.tables.map(table => {
       this.target[table.name] = {};
@@ -232,12 +238,14 @@ export class ComfyComponent extends BaseComponent
     );
 
     this.stateService.Target = this.target;
+  }
 
+  initializeSourceColumns() {
     this.sourceRows = uniqBy(
       this.state.source.tables
         .map(table => table.rows)
         .reduce((p, k) => p.concat.apply(p, k), []),
-      'name'
+      "name"
     );
   }
 
@@ -258,7 +266,7 @@ export class ComfyComponent extends BaseComponent
           event.container.data.length
         );
 
-        const targetname = event.container.id.split('-')[1];
+        const targetname = event.container.id.split("-")[1];
 
         this.setFirstElementAlwaysOnTop(targetname, event);
       }
@@ -273,7 +281,10 @@ export class ComfyComponent extends BaseComponent
     }
   });
 
-  setFirstElementAlwaysOnTop(targetname: string, event: CdkDragDrop<string[]>): void {
+  setFirstElementAlwaysOnTop(
+    targetname: string,
+    event: CdkDragDrop<string[]>
+  ): void {
     if (!targetname) {
       return;
     }
@@ -299,8 +310,8 @@ export class ComfyComponent extends BaseComponent
     });
 
     const dialog = this.mappingDialog.open(MappingPopupComponent, {
-      width: '90vw',
-      height: '90vh',
+      width: "90vw",
+      height: "90vh",
       data: {
         source: targettable, // !!!
         target: sourcetable, // !!!
@@ -362,26 +373,38 @@ export class ComfyComponent extends BaseComponent
   }
 
   filterByName(area: string, byName: Criteria): void {
-    const areas = ['source-column', 'target', 'source'];
+    const areas = ["source-column", "target", "source"];
     const idx = areas.indexOf(area);
 
-    const sortByName = (a, b?) => {
-      if (a.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1) {
-        return -1;
-      }
-      return 1;
+    const filterByName = (name, index?) => {
+      return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
     };
 
     if (idx > -1) {
-      if (area === 'source') {
-        this.source = this.source.sort(sortByName);
-      } else if (area === 'target') {
-        this.targettablenames = this.targetTableNames.sort(sortByName);
-      } else if (area === 'source-column') {
+      if (area === "source") {
+        this.source = this.source.filter(filterByName);
+      } else if (area === "target") {
+        this.targettablenames = this.targetTableNames.filter(filterByName);
+      } else if (area === "source-column") {
         this.sourceRows = Object.assign(
           [],
-          this.sourceRows.sort(row => sortByName(row.name))
+          this.sourceRows.filter(row => filterByName(row.name))
         );
+      }
+    }
+  }
+
+  filterByNameReset(area: string, byName: Criteria): void {
+    const areas = ["source-column", "target", "source"];
+    const idx = areas.indexOf(area);
+
+    if (idx > -1) {
+      if (area === "source") {
+        this.initializeSourceData();
+      } else if (area === "target") {
+        this.initializeTargetData();
+      } else if (area === "source-column") {
+        this.initializeSourceColumns();
       }
     }
   }
@@ -391,18 +414,18 @@ export function bound(target: Object, propKey: string | symbol) {
   const originalMethod = (target as any)[propKey] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
-  if (typeof originalMethod !== 'function') {
-    throw new TypeError('@bound can only be used on methods.');
+  if (typeof originalMethod !== "function") {
+    throw new TypeError("@bound can only be used on methods.");
   }
 
-  if (typeof target === 'function') {
+  if (typeof target === "function") {
     // Static method, bind to class (if target is of type "function", the method decorator was used on a static method).
     return {
       value() {
         return originalMethod.apply(target, arguments);
       }
     };
-  } else if (typeof target === 'object') {
+  } else if (typeof target === "object") {
     // Instance method, bind to instance on first invocation (as that is the only way to access an instance from a decorator).
     return {
       get() {
