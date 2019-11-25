@@ -109,10 +109,12 @@ tr[selected="true"] {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  margin-right: 5px;
 }
 
 .connector-pin:not(:last-child) {
-  margin-right: 2px;
+  margin-right: 5px;
 }
 
 .connector-pin:hover {
