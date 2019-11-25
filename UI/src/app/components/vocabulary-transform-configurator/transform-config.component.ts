@@ -1,30 +1,30 @@
-import { Component, OnInit, Input, OnChanges, Inject } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Inject } from "@angular/core";
 import {
   IVocabulary,
   VocabulariesService
-} from 'src/app/services/vocabularies.service';
-import { FormControl } from '@angular/forms';
-import { VocabularyConfig } from './model/vocabulary-config';
-import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
-import { MatSnackBar, MatDialog } from '@angular/material';
-import { cloneDeep, uniqBy } from 'src/app/infrastructure/utility';
+} from "src/app/services/vocabularies.service";
+import { FormControl } from "@angular/forms";
+import { VocabularyConfig } from "./model/vocabulary-config";
+import { DictionaryItem } from "../vocabulary-search-select/model/vocabulary";
+import { MatSnackBar, MatDialog } from "@angular/material";
+import { cloneDeep, uniqBy } from "src/app/infrastructure/utility";
 import {
   TransformationConfig,
   TransformationCondition,
   TransformationConfigFactory
-} from './model/transformation-config';
-import { Command } from 'src/app/infrastructure/command';
-import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
-import { ITable } from 'src/app/models/table';
-import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
-import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
-import { StateService } from 'src/app/services/state.service';
-import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+} from "./model/transformation-config";
+import { Command } from "src/app/infrastructure/command";
+import { ConditionDialogComponent } from "./condition-dialog/condition-dialog.component";
+import { ITable } from "src/app/models/table";
+import { TransformRulesData } from "../popaps/rules-popup/model/transform-rules-data";
+import { OVERLAY_DIALOG_DATA } from "src/app/services/overlay/overlay-dialog-data";
+import { StateService } from "src/app/services/state.service";
+import { OverlayDialogRef } from "src/app/services/overlay/overlay.service";
 
 @Component({
-  selector: 'app-transform-config',
-  templateUrl: './transform-config.component.html',
-  styleUrls: ['./transform-config.component.scss']
+  selector: "app-transform-config",
+  templateUrl: "./transform-config.component.html",
+  styleUrls: ["./transform-config.component.scss"]
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() sourceFileds: string[];
@@ -66,6 +66,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   selectedConfiguration: DictionaryItem[];
   sourceFiledsDictionary: DictionaryItem[];
 
+  selectedSourceFieldsForHeader: string;
+
   busy = false;
 
   constructor(
@@ -104,7 +106,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
     const newCelectedSourceTablesNames = uniqBy(
       selectedSourceTablesNames,
-      'name'
+      "name"
     ).map(x => x.name);
 
     if (this.sourceTables) {
@@ -132,13 +134,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.transformationConfigs.push(this.transformationConfig);
 
       console.log(
-        'Created configuration',
+        "Created configuration",
         this.transformationConfig.conditions[0].vocabularyConfig.conceptConfig
       );
 
       this.snakbar.open(
         `Configuration "${this.configurationNameControl.value}" has been created`,
-        ' DISMISS ',
+        " DISMISS ",
         { duration: 3000 }
       );
 
@@ -180,7 +182,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       }
 
       console.log(
-        'Saved configuration',
+        "Saved configuration",
         configCopy.conditions[0].vocabularyConfig.conceptConfig
       );
 
@@ -188,7 +190,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.snakbar.open(
         `Configuration "${this.transformationConfig.name}" has been saved`,
-        ' DISMISS ',
+        " DISMISS ",
         { duration: 3000 }
       );
     },
@@ -216,6 +218,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   init() {
+    if (this.selectedSourceFields) {
+      this.selectedSourceFieldsForHeader = this.selectedSourceFields.join(",");
+    }
+
     if (this.sourceFileds) {
       this.sourceFiledsDictionary = this.sourceFileds.map(
         name => new DictionaryItem(name)
@@ -228,7 +234,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
           this.vocabularies
         );
         this.transformationConfig = this.transformationConfigFactory.createNew(
-          'default',
+          "default",
           this.selectedSourceFields
         );
       }
