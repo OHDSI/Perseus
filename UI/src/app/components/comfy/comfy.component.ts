@@ -19,7 +19,7 @@ import {
 } from "@angular/cdk/drag-drop";
 import { MatSnackBar } from "@angular/material";
 import { BridgeService } from "src/app/services/bridge.service";
-import { Subscription, merge } from "rxjs";
+import { Subscription, merge, Observable } from "rxjs";
 import { startWith, map, switchMap, tap, takeUntil } from "rxjs/operators";
 import { Command } from "src/app/infrastructure/command";
 import {
@@ -85,7 +85,6 @@ export class ComfyComponent extends BaseComponent
     private mappingStorage: MappingPageSessionStorage
   ) {
     super();
-
   }
 
   @ViewChild("scrollEl")
@@ -178,13 +177,19 @@ export class ComfyComponent extends BaseComponent
 
     this.dataService
       .initialize()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(_ => {
-        this.stateService.switchSourceToTarget(); // ??
-        this.initializeSourceData();
-        this.initializeTargetData();
-        this.initializeSourceColumns();
-        this.busy = false;
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        switchMap(_ => {
+          this.stateService.switchSourceToTarget(); // ??
+          this.initializeSourceData();
+          this.initializeTargetData();
+          this.initializeSourceColumns();
+          this.busy = false;
+          return this.mappingStorage.get("mappingtables");
+        })
+      )
+      .subscribe(target => {
+        this.target = target;
       });
 
     this.bridgeService.applyConfiguration$
@@ -314,6 +319,9 @@ export class ComfyComponent extends BaseComponent
       target: sourcetable,
       allTarget: this.state.target.tables
     };
+
+    this.mappingStorage.remove("mappingtables");
+    await this.mappingStorage.add("mappingtables", this.target);
 
     this.mappingStorage.remove("mappingpage");
     await this.mappingStorage.add("mappingpage", payload);
