@@ -17,9 +17,7 @@ import {
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { MappingPopupComponent } from "../popaps/mapping-popup/mapping-popup.component";
-import { ITable } from "src/app/models/table";
+import { MatSnackBar } from "@angular/material";
 import { BridgeService } from "src/app/services/bridge.service";
 import { Subscription, merge } from "rxjs";
 import { startWith, map, switchMap, tap, takeUntil } from "rxjs/operators";
@@ -28,12 +26,14 @@ import {
   VocabulariesService,
   IVocabulary
 } from "src/app/services/vocabularies.service";
-import { ConceptService, isConceptTable } from "./services/concept.service";
+import { isConceptTable } from "./services/concept.service";
 import { environment } from "src/environments/environment";
 import { Criteria } from "../comfy-search-by-name/comfy-search-by-name.component";
 import { IRow } from "src/app/models/row";
 import { uniq, uniqBy } from "src/app/infrastructure/utility";
 import { BaseComponent } from "../base/base.component";
+import { Router } from "@angular/router";
+import { MappingPageSessionStorage } from "src/app/models/implementation/mapping-page-session-storage";
 
 @Component({
   selector: "app-comfy",
@@ -79,12 +79,13 @@ export class ComfyComponent extends BaseComponent
     private dataService: DataService,
     private vocabulariesService: VocabulariesService,
     private stateService: StateService,
-    private mappingDialog: MatDialog,
     private bridgeService: BridgeService,
     private snakbar: MatSnackBar,
-    private conceptService: ConceptService
+    private router: Router,
+    private mappingStorage: MappingPageSessionStorage
   ) {
     super();
+
   }
 
   @ViewChild("scrollEl")
@@ -179,7 +180,7 @@ export class ComfyComponent extends BaseComponent
       .initialize()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
-        this.stateService.switchSourceToTarget();
+        this.stateService.switchSourceToTarget(); // ??
         this.initializeSourceData();
         this.initializeTargetData();
         this.initializeSourceColumns();
@@ -296,8 +297,7 @@ export class ComfyComponent extends BaseComponent
     data[index] = temp;
   }
 
-  // TODO Switch to the router
-  openMapping(targetTableName: string): void {
+  async openMapping(targetTableName: string) {
     const targettable = this.state.target.tables.filter(
       table => table.name === targetTableName
     );
@@ -309,17 +309,16 @@ export class ComfyComponent extends BaseComponent
       return index > -1;
     });
 
-    const dialog = this.mappingDialog.open(MappingPopupComponent, {
-      width: "90vw",
-      height: "90vh",
-      data: {
-        source: targettable, // !!!
-        target: sourcetable, // !!!
-        allTarget: this.state.target.tables
-      }
-    });
+    const payload = {
+      source: targettable,
+      target: sourcetable,
+      allTarget: this.state.target.tables
+    };
 
-    dialog.afterClosed().subscribe(save => {});
+    this.mappingStorage.remove("mappingpage");
+    await this.mappingStorage.add("mappingpage", payload);
+
+    this.router.navigateByUrl("/mapping");
   }
 
   findTables(selectedSourceColumns: string[]): void {

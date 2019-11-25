@@ -6,8 +6,7 @@ import {
   ViewChild,
   ElementRef,
   HostListener,
-  OnDestroy,
-  ChangeDetectorRef
+  OnDestroy
 } from "@angular/core";
 
 import { StateService } from "src/app/services/state.service";
@@ -17,13 +16,12 @@ import { BridgeService } from "src/app/services/bridge.service";
 import { saveAs } from "file-saver";
 import { MatDialog } from "@angular/material";
 import { PreviewPopupComponent } from "../../popaps/preview-popup/preview-popup.component";
-import { ITable } from "src/app/models/table";
+import { ITable, Table } from "src/app/models/table";
 import { RulesPopupService } from "../../popaps/rules-popup/services/rules-popup.service";
 import { switchMap, takeUntil } from "rxjs/operators";
 import { BaseComponent } from "../../base/base.component";
-import { ConceptService } from "../../comfy/services/concept.service";
-import { OverlayService } from "src/app/services/overlay/overlay.service";
 import { PanelTableComponent } from "../../panel/panel-table/panel-table.component";
+import { MappingPageSessionStorage } from "src/app/models/implementation/mapping-page-session-storage";
 
 @Component({
   selector: "app-mapping",
@@ -59,14 +57,24 @@ export class MappingComponent extends BaseComponent
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
     private rulesPoupService: RulesPopupService,
-    private chg: ChangeDetectorRef,
-    mappingElementRef: ElementRef
+    mappingElementRef: ElementRef,
+    private mappingStorage: MappingPageSessionStorage
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
   }
 
   ngOnInit() {
+    this.mappingStorage.get("mappingpage").then(data => {
+      this.source = data.source.map(table => new Table(table));
+      this.target = data.target.map(table => new Table(table));
+
+      setTimeout(() => {
+        this.bridgeService.refresh(this.target);
+        this.sourcePanel.reflectConnectorsPin(this.target[this.tabIndex]);
+      }, 200);
+    });
+
     this.rulesPoupService.deleteConnector$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connectorKey => {
@@ -83,9 +91,7 @@ export class MappingComponent extends BaseComponent
   }
 
   ngAfterViewInit() {
-    this.bridgeService.refresh(this.target, 200);
 
-    this.sourcePanel.reflectConnectorsPin(this.target[this.tabIndex]);
   }
 
   @HostListener("document:keyup", ["$event"])

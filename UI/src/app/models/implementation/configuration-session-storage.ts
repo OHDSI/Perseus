@@ -4,20 +4,24 @@ import {
   compressObjectToString,
   decompressStringToObject
 } from 'src/app/infrastructure/text-utility';
-import { IMappingsStorage } from '../interface/mappings-storage';
 import { Configuration } from '../configuration';
+import { IStorage } from '../interface/storage.interface';
+import { namespaceHTML } from '@angular/core/src/render3';
 
 @Injectable()
-export class BrowserSessionStorage implements IMappingsStorage {
+export class BrowserSessionConfigurationStorage implements IStorage<Configuration> {
   configuration: any;
   private storage: any;
+  private name: string;
 
-  constructor() {
+  constructor(name: string) {
+    this.name = name;
+
     this.storage = localStorage;
 
     this.configuration = {};
 
-    this.get('mappings').then(configuration => {
+    this.get(this.name).then(configuration => {
       this.configuration = configuration;
     }).catch(error => console.log(error));
   }
@@ -25,7 +29,7 @@ export class BrowserSessionStorage implements IMappingsStorage {
   save(config: Configuration) {
     this.configuration[config.name] = config;
 
-    this.add('mappings', this.configuration);
+    this.add(this.name, this.configuration);
   }
 
   open(name: string): Configuration {

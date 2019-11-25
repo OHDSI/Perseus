@@ -45,6 +45,8 @@ export class StateService {
     }
   };
 
+  private switched = false;
+
   constructor(private conceptService: ConceptService) {
 
   }
@@ -71,14 +73,18 @@ export class StateService {
   }
 
   switchSourceToTarget() {
-    const temp = [...this.state.source.tables];
-    this.state.source.tables = [...this.state.target.tables];
-    this.state.target.tables = temp;
+    if (!this.switched) {
+      this.switched = true;
+      const temp = [...this.state.source.tables];
+      this.state.source.tables = [...this.state.target.tables];
+      this.state.target.tables = temp;
+    }
+
   }
 
-  switchTargetToSource() {
-    const temp = [...this.state.target.tables];
-    this.state.target.tables = [...this.state.source.tables];
-    this.state.source.tables = temp;
-  }
+  // switchTargetToSource() {
+  //   const temp = [...this.state.target.tables];
+  //   this.state.target.tables = [...this.state.source.tables];
+  //   this.state.source.tables = temp;
+  // }
 }
