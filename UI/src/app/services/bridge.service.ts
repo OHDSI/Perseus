@@ -1,23 +1,22 @@
-import { Injectable } from '@angular/core';
-import { DrawService } from 'src/app/services/draw.service';
-import { IRow } from 'src/app/models/row';
-import { ArrowCache, Arrow, ConstantCache } from '../models/arrow-cache';
-import { MappingService } from '../models/mapping-service';
-import { ITable } from '../models/table';
-import { Subject } from 'rxjs';
-import { uniqBy } from '../infrastructure/utility';
-import { Configuration } from '../models/configuration';
-import { StateService } from './state.service';
-import { BridgeButtonService } from './bridge-button.service';
-import { UserSettings } from './user-settings.service';
-import { IConnector } from '../models/interface/connector.interface';
-import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
-import { Command } from '../infrastructure/command';
-import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
+import { Injectable } from "@angular/core";
+import { DrawService } from "src/app/services/draw.service";
+import { IRow, Row } from "src/app/models/row";
+import { ArrowCache, Arrow, ConstantCache } from "../models/arrow-cache";
+import { MappingService } from "../models/mapping-service";
+import { ITable } from "../models/table";
+import { Subject } from "rxjs";
+import { uniqBy, cloneDeep } from "../infrastructure/utility";
+import { Configuration } from "../models/configuration";
+import { StateService } from "./state.service";
+import { IConnector } from "../models/interface/connector.interface";
+import { SqlFunction } from "../components/popaps/rules-popup/transformation-input/model/sql-string-functions";
+import { Command } from "../infrastructure/command";
+import { TransformationConfig } from "../components/vocabulary-transform-configurator/model/transformation-config";
 
 export interface IConnection {
   source: IRow;
   target: IRow;
+  connector: IConnector;
   transforms?: SqlFunction[];
   transformationConfigs?: TransformationConfig[];
 }
@@ -47,8 +46,6 @@ export class BridgeService {
 
   constructor(
     private drawService: DrawService,
-    private bridgeButtonService: BridgeButtonService,
-    private userSettings: UserSettings,
     private stateService: StateService
   ) {}
   applyConfiguration$ = new Subject<Configuration>();
@@ -61,6 +58,7 @@ export class BridgeService {
   arrowsCache: ArrowCache = {};
   constantsCache: ConstantCache = {};
   connection = new Subject<IConnection>();
+  removeConnection = new Subject<IConnection>();
 
   deleteAll = new Subject();
 
@@ -73,14 +71,14 @@ export class BridgeService {
         this.sourceRow,
         this.targetRow
       );
-      if (this.userSettings.showQuestionButtons) {
-        this.bridgeButtonService.createButton(connector, this.arrowsCache);
-      }
+
+      this.targetRow.setType(connector.type);
 
       const connection: IConnection = {
         source: this.sourceRow,
         target: this.targetRow,
-        transforms: []
+        transforms: [],
+        connector
       };
 
       this.arrowsCache[connector.id] = connection;
@@ -115,13 +113,6 @@ export class BridgeService {
     Object.keys(list).forEach(key => {
       const drawEntity: IConnector = list[key];
       drawEntity.adjustPosition();
-
-      if (this.userSettings.showQuestionButtons) {
-        this.bridgeButtonService.recalculateButtonPosition(
-          drawEntity.button,
-          drawEntity.svgPath
-        );
-      }
     });
   }
 
@@ -132,66 +123,77 @@ export class BridgeService {
   }
 
   getStyledAsDragStartElement() {
-    this.sourceRow.htmlElement.classList.add('drag-start');
+    this.sourceRow.htmlElement.classList.add("drag-start");
   }
 
   getStyledAsDragEndElement() {
-    this.sourceRow.htmlElement.classList.remove('drag-start');
+    this.sourceRow.htmlElement.classList.remove("drag-start");
   }
 
-  refresh(target: ITable[]) {
-    this.drawService.removeConnectors();
+  refresh(table: ITable[], delayMs?: number) {
+    this.hideAllArrows();
 
-    const tablenamesString = target.map(table => table.name).join(',');
+    if (delayMs) {
+      setTimeout(() => {
+        this._refresh(table, this.arrowsCache, this.stateService);
+      }, delayMs);
+    } else {
+      this._refresh(table, this.arrowsCache, this.stateService);
+    }
+  }
 
-    Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+  private _refresh(
+    table: ITable[],
+    arrowsCache: ArrowCache,
+    stateService: StateService
+  ) {
+    const tablenamesString = table.map(t => t.name).join(",");
+
+    Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
-        const source = this.stateService.findTable(arrow.source.tableName);
-        const target = this.stateService.findTable(arrow.target.tableName);
-        if (source.expanded && target.expanded) {
-          const connector = this.drawService.drawLine(
-            this.getConnectorId(arrow.source, arrow.target),
-            arrow.source,
-            arrow.target
-          );
-          if (this.userSettings.showQuestionButtons) {
-            this.bridgeButtonService.createButton(connector, this.arrowsCache);
-          }
-        }
+        const source = stateService.findTable(arrow.source.tableName);
+        const target = stateService.findTable(arrow.target.tableName);
+
+        this.refreshConnector(arrow, source, target);
       }
     });
   }
 
   refreshAll() {
-    this.drawService.removeConnectors();
+    this.hideAllArrows();
 
-    Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-      const source = this.stateService.findTable(arrow.source.tableName);
-      const target = this.stateService.findTable(arrow.target.tableName);
-      if (source.expanded && target.expanded) {
-        const connector = this.drawService.drawLine(
-          this.getConnectorId(arrow.source, arrow.target),
-          arrow.source,
-          arrow.target
-        );
-        if (this.userSettings.showQuestionButtons) {
-          this.bridgeButtonService.createButton(connector, this.arrowsCache);
-        }
-        this.drawService.drawLine(
-          this.getConnectorId(arrow.source, arrow.target),
-          arrow.source,
-          arrow.target
-        );
-      }
-    });
+    setTimeout(() => {
+      Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+        const source = this.stateService.findTable(arrow.source.tableName);
+        const target = this.stateService.findTable(arrow.target.tableName);
+
+        this.refreshConnector(arrow, source, target);
+      });
+    }, 300);
+  }
+
+  refreshConnector(arrow, source, target) {
+    if (source.expanded && target.expanded) {
+      const connector = this.drawService.drawLine(
+        this.getConnectorId(arrow.source, arrow.target),
+        arrow.source,
+        arrow.target
+      );
+
+      this.arrowsCache[connector.id].connector = connector;
+    }
   }
 
   deleteArrow(key: string) {
-    this.drawService.removeConnector(key);
+    const savedConnection = cloneDeep(this.arrowsCache[key]);
+
+    this.drawService.deleteConnector(key);
 
     if (this.arrowsCache[key]) {
       delete this.arrowsCache[key];
     }
+
+    this.removeConnection.next(savedConnection);
   }
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {
@@ -203,24 +205,43 @@ export class BridgeService {
           sourceTableName.toUpperCase()
       ) {
         delete this.arrowsCache[key];
+
+        // If target and source are switched
+      } else if (
+        this.arrowsCache[key].target.tableName.toUpperCase() ===
+          sourceTableName.toUpperCase() &&
+        this.arrowsCache[key].source.tableName.toUpperCase() ===
+          targetTableName.toUpperCase()
+      ) {
+        delete this.arrowsCache[key];
       }
     });
   }
 
+  hideAllArrows(): void {
+    this.drawService.deleteAllConnectors();
+  }
+
   hideTableArrows(table: ITable): void {
-    this.drawService.removeConnectorsBoundToTable(table);
+    this.drawService.deleteConnectorsBoundToTable(table);
   }
 
   deleteAllArrows() {
-    this.drawService.removeConnectors();
+    Object.values(this.arrowsCache).forEach(arrow => {
+      this.deleteArrow(arrow.connector.id);
+    });
+
     this.deleteAll.next();
-    this.arrowsCache = {};
   }
 
   deleteSelectedArrows() {
-    this.drawService.removeSelectedConnectors();
+    Object.values(this.arrowsCache)
+      .filter(arrow => arrow.connector.selected)
+      .forEach(arrow => {
+        this.deleteArrow(arrow.connector.id);
+      });
+
     this.deleteAll.next();
-    this.arrowsCache = {};
   }
 
   generateMapping() {
@@ -242,23 +263,44 @@ export class BridgeService {
     );
   }
 
-  isRowConnected(row: IRow): boolean {
+  rowHasAnyConnection(source: IRow): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
-        return connection.source.id === row.id;
+        return connection.source.id === source.id;
+      }).length > 0
+    );
+  }
+
+  isRowConnectedToTable(connection: IConnection, table: ITable): boolean {
+    return (
+      Object.values(this.arrowsCache).filter(arrow => {
+        return (
+          arrow.source.id === connection.source.id &&
+          arrow.target.id === connection.target.id &&
+          arrow.target.id === table.id
+        );
       }).length > 0
     );
   }
 
   findCorrespondingTables(table: ITable): string[] {
-    const source = table.area === 'source' ? 'target' : 'source';
+    const source = table.area === "source" ? "target" : "source";
     const rows = Object.values(this.arrowsCache)
       .filter(connection => {
         return connection[table.area].tableName === table.name;
       })
       .map(arrow => arrow[source]);
 
-    return uniqBy(rows, 'tableName').map(row => row.tableName);
+    return uniqBy(rows, "tableName").map(row => row.tableName);
+  }
+
+  findCorrespondingConnections(table: ITable, row: IRow): IConnection[] {
+    return Object.values(this.arrowsCache).filter(connection => {
+      return (
+        connection[table.area].tableName === table.name &&
+        connection[table.area].id === row.id
+      );
+    });
   }
 
   resetAllMappings() {

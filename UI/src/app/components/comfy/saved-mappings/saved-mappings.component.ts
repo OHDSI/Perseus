@@ -10,8 +10,9 @@ import { FormControl } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { Configuration } from 'src/app/models/configuration';
 import { MatSnackBar } from '@angular/material';
-import { IMappingsStorage } from 'src/app/models/interface/mappings-storage';
-import { BrowserSessionStorage } from 'src/app/models/implementation/browser-session-mappings-storage';
+import { IStorage } from 'src/app/models/interface/storage.interface';
+import { BrowserSessionConfigurationStorage } from 'src/app/models/implementation/configuration-session-storage';
+
 
 @Component({
   selector: 'app-saved-mappings',
@@ -32,17 +33,17 @@ export class SavedMappingsComponent implements OnInit {
     duration: 3000
   };
 
-  mappingsService: IMappingsStorage;
+  configStorageService: IStorage<Configuration>;
 
   constructor(
     private bridgeService: BridgeService,
     private snakbar: MatSnackBar
   ) {
-    this.mappingsService = new BrowserSessionStorage();
+    this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
   }
 
   ngOnInit() {
-    this.configurations = [...Object.values(this.mappingsService.configuration)];
+    this.configurations = [...Object.values(this.configStorageService.configuration)];
   }
 
   openedChangeHandler(open: any) {
@@ -54,7 +55,7 @@ export class SavedMappingsComponent implements OnInit {
   }
 
   onOpenConfiguration(configuration: Configuration) {
-    const config = this.mappingsService.open(configuration.name);
+    const config = this.configStorageService.open(configuration.name);
     if (config) {
     } else {
       alert('config not found');
@@ -81,8 +82,8 @@ export class SavedMappingsComponent implements OnInit {
       tablesConfiguration: this.tablesconfiguration
     });
 
-    this.mappingsService.save(newConfiguration);
-    this.configurations = [...Object.values(this.mappingsService.configuration)];
+    this.configStorageService.save(newConfiguration);
+    this.configurations = [...Object.values(this.configStorageService.configuration)];
     this.configurationControl.reset();
 
     this.snakbar.open(

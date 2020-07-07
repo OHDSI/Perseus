@@ -1,112 +1,125 @@
-<div class="export-actions">
-  <button
-    mat-icon-button
-    matTooltip="Download ziped mappings"
-    aria-label="generate mapping xmls"
-    (click)="generateMappingJson()"
-  >
-    <mat-icon>file_download</mat-icon>
-  </button>
-  <button
-    mat-icon-button
-    matTooltip="Preview mappings"
-    aria-label="preview mapping xmls"
-    (click)="previewMapping()"
-  >
-    <mat-icon>play_circle_filled_white</mat-icon>
-  </button>
-  <button
-    mat-icon-button
-    matTooltip="Delete all mappings"
-    aria-label="delete all mappings"
-    (click)="wipeAllMappings()"
-  >
-    <mat-icon>delete</mat-icon>
-  </button>
-</div>
-
-<section>
-  <main #maincanvas class="main">
-    <app-area area="source">
-      <ng-container *ngFor="let table of source; trackBy: trackByFn">
-        <ng-container *ngIf="table.visible">
-          <app-panel
-            [table]="table"
-            (open)="onSourcePanelOpen()"
-            (close)="onSourcePanelClose()"
-          >
-            <app-panel-table
+<div class="app-mapping">
+  <div class="export-actions">
+    <button
+      mat-icon-button
+      matTooltip="Download ziped mappings"
+      aria-label="generate mapping xmls"
+      (click)="generateMappingJson()"
+    >
+      <mat-icon>file_download</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Preview mappings"
+      aria-label="preview mapping xmls"
+      (click)="previewMapping()"
+    >
+      <mat-icon>play_circle_filled_white</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matTooltip="Delete all mappings"
+      aria-label="delete all mappings"
+      (click)="wipeAllMappings()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <section>
+    <main #maincanvas class="main">
+      <app-area area="source" class="area-source">
+        <ng-container *ngFor="let table of source; trackBy: trackByFn">
+          <ng-container *ngIf="table.visible">
+            <app-panel
               [table]="table"
-              [displayedColumns]="[
-                'column_indicator',
-                'column_name',
-                'column_type',
-                'values',
-                'comments'
-              ]"
+              (open)="onPanelOpen(table)"
+              (close)="onPanelClose(table)"
+              (initialized)="onPanelInit(table)"
             >
-            </app-panel-table>
-          </app-panel>
+              <app-panel-table
+                #sourcePanel
+                [table]="table"
+                [displayedColumns]="[
+                  'column_indicator',
+                  'column_name',
+                  'column_type',
+                  'values',
+                  'comments'
+                ]"
+              >
+              </app-panel-table>
+            </app-panel>
+          </ng-container>
         </ng-container>
-      </ng-container>
-    </app-area>
-    <!--Bridge-->
-    <div class="hint">
-      <div class="patch-top"></div>
-      <svg class="canvas" #arrowsarea>
-        <defs>
-          <!--markerUnits="strokeWidth" - increase marker proportional to width of line-->
-          <marker
-            id="arrow"
-            markerWidth="10"
-            markerHeight="10"
-            refX="5"
-            refY="5"
-            orient="auto"
-            markerUnits="userSpaceOnUse"
+      </app-area>
+      <!--Bridge-->
+      <div class="hint">
+        <div class="patch-top"></div>
+        <svg class="canvas" #arrowsarea>
+          <defs>
+            <marker
+              id="dot-start"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="10"
+              markerHeight="10"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="5" cy="5" r="5" fill="#BDBDBD" />
+            </marker>
+            <marker
+              id="dot"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="10"
+              markerHeight="10"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="5" cy="5" r="5" fill="#BDBDBD" />
+            </marker>
+            <marker
+              id="dot-active"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="10"
+              markerHeight="10"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="5" cy="5" r="5" fill="#066BBB" />
+            </marker>
+          </defs>
+        </svg>
+        <p>
+          {{ hint }}
+        </p>
+        <!-- <div class="patch-bottom"></div> -->
+      </div>
+      <!--End-of-the-Bridge-->
+      <app-area area="target" class="area-target">
+        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
+          <mat-tab
+            label="{{ table.name }}"
+            *ngFor="let table of target; trackBy: trackByFn"
           >
-            <path
-              d="M0,0 l5,5 l-5,5"
-              fill="none"
-              stroke="#808080"
-              stroke-width="1"
-            />
-          </marker>
-          <marker
-            id="arrow-active"
-            markerWidth="10"
-            markerHeight="10"
-            refX="5"
-            refY="5"
-            orient="auto"
-            markerUnits="userSpaceOnUse"
-          >
-            <path
-              d="M0,0 l5,5 l-5,5"
-              fill="none"
-              stroke="#066BBB"
-              stroke-width="1"
-            />
-          </marker>
-        </defs>
-      </svg>
-      <p>
-        {{ hint }}
-      </p>
-      <!-- <div class="patch-bottom"></div> -->
-    </div>
-    <!--End-of-the-Bridge-->
-    <app-area area="target">
-      <ng-container *ngFor="let table of target; trackBy: trackByFn">
-        <ng-container *ngIf="table.visible">
-          <app-panel [table]="table"></app-panel>
-        </ng-container>
-      </ng-container>
-    </app-area>
-  </main>
-  <footer>
-    <div>
-      <mat-checkbox>Link similar items from other source tables</mat-checkbox>
-    </div>
-  </footer>
-</section>
+            <app-panel
+              *ngIf="table.visible"
+              [tabIndex]="tabIndex"
+              [table]="table"
+              (open)="onPanelOpen(table)"
+              (close)="onPanelClose(table)"
+              (initialized)="onPanelInit(table)"
+            ></app-panel>
+          </mat-tab>
+        </mat-tab-group>
+      </app-area>
+    </main>
+    <footer>
+      <div>
+        <mat-checkbox>Link similar items from other source tables</mat-checkbox>
+      </div>
+    </footer>
+  </section>
+</div>

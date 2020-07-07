@@ -1,4 +1,4 @@
-import { IRow } from 'src/app/models/row';
+import { IRow, Row } from 'src/app/models/row';
 import { Area } from './area';
 
 export interface ITable {
@@ -32,7 +32,7 @@ export class Table {
     this.id = options.id;
     this.area = options.area;
     this.name = options.name;
-    this.rows = options.rows;
+    this.rows = options.rows.map((row: any) => new Row(row));
     this.visible = options.visible || true;
     this.expanded = options.expanded || false;
    }

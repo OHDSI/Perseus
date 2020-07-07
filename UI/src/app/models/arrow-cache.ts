@@ -13,3 +13,7 @@ export interface ArrowCache {
 export interface ConstantCache {
   [key: string]: IRow;
 }
+
+export interface CorrespondingRows {
+  [key: string]: IRow;
+}

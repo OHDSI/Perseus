@@ -1,4 +1,4 @@
-<table id="{{ table.name }}" mat-table [dataSource]="visibleRows">
+<table #tableComponent id="{{ table.name }}" mat-table [dataSource]="datasource">
   <ng-container matColumnDef="column_indicator">
     <th mat-header-cell *matHeaderCellDef>
       <button
@@ -65,7 +65,7 @@
 
   <ng-container matColumnDef="comments">
     <th mat-header-cell *matHeaderCellDef>Comments</th>
-    <td mat-cell *matCellDef="let row">
+    <td mat-cell *matCellDef="let row" class="no-right-padding">
       <div #anchor class="anchor">
         <button
           mat-icon-button
@@ -79,6 +79,17 @@
             comment
           </mat-icon>
         </button>
+        <span style="flex: 1 1 auto"></span>
+        <div *ngFor="let connectorType of row.connectorTypes"
+          #bridgeButton
+          id="item-{{ row.tableName }}-{{ row.name }}"
+          class="connector-pin hide"
+          (click)="onTransformDialogOpen($event, row, bridgeButton)"
+        >
+          <div class="connector-type">
+            <span>{{ connectorType }}</span>
+          </div>
+        </div>
       </div>
     </td>
   </ng-container>
@@ -94,10 +105,9 @@
     [row]="row"
     mat-row
     *matRowDef="let row; columns: displayedColumns"
-    (mousedown)="setActiveRow(row)"
+    (mousedown)="setActiveRow($event, row)"
+    (click)="selectTableRow($event, row)"
     [class.draggable]="area == 'source'"
-    class="item-{{ row.tableName }}-{{ row.name }} row-has-a-link-{{
-      isRowHasConnection(row)
-    }}"
+    class="item-{{ row.tableName }}-{{ row.name }}"
   ></tr>
 </table>

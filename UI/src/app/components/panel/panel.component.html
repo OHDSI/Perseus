@@ -15,12 +15,14 @@
   </mat-expansion-panel-header>
   <app-panel-table
     [table]="table"
+    [tabIndex]="tabIndex"
     [displayedColumns]="[
       'column_indicator',
       'column_name',
       'column_type',
       'comments'
     ]"
+    (openTransform)="onOpenTransfromDialog($event)"
   >
   </app-panel-table>
 </mat-expansion-panel>

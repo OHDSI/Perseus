@@ -9,7 +9,6 @@ import { AreaComponent } from 'src/app/components/area/area.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { DataService } from 'src/app/services/data.service';
 import { CommonService } from 'src/app/services/common.service';
-import { BridgeButtonComponent } from 'src/app/components/bridge-button/bridge-button.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StateService } from 'src/app/services/state.service';
 import { ValuesPopupComponent } from 'src/app/components/popaps/values-popup/values-popup.component';
@@ -24,14 +23,13 @@ import { CdmCommonModule } from './common/cdm-common.module';
 import { GridModule } from 'ng2-qgrid';
 import { ThemeModule } from 'ng2-qgrid/theme/material';
 import { ComfyComponent } from './components/comfy/comfy.component';
-import { MappingPopupComponent } from './components/popaps/mapping-popup/mapping-popup.component';
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
 import { HighlightDirective } from './directives/highlight-table.directive';
 import { OverlayService } from './services/overlay/overlay.service';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
-import { BridgeButtonService } from './services/bridge-button.service';
+import { BridgeButtonService } from './components/bridge-button/service/bridge-button.service';
 import { UserSettings } from './services/user-settings.service';
 import { TransformationInputComponent } from './components/popaps/rules-popup/transformation-input/transformation-input.component';
 import { SqlFunctionsInjector } from './components/popaps/rules-popup/model/sql-functions-injector';
@@ -52,6 +50,7 @@ import { TransformConfigComponent } from './components/vocabulary-transform-conf
 import { ConditionDialogComponent } from './components/vocabulary-transform-configurator/condition-dialog/condition-dialog.component';
 import { ConceptService } from './components/comfy/services/concept.service';
 import { ComfySearchByNameComponent } from './components/comfy-search-by-name/comfy-search-by-name.component';
+import { MappingPageSessionStorage } from './models/implementation/mapping-page-session-storage';
 
 @NgModule({
   declarations: [
@@ -59,13 +58,11 @@ import { ComfySearchByNameComponent } from './components/comfy-search-by-name/co
     MappingComponent,
     AreaComponent,
     CommentPopupComponent,
-    BridgeButtonComponent,
     ValuesPopupComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,
     ComfyComponent,
-    MappingPopupComponent,
     ColumnsListComponent,
     HighlightDirective,
     SavedMappingsComponent,
@@ -85,12 +82,10 @@ import { ComfySearchByNameComponent } from './components/comfy-search-by-name/co
     ComfySearchByNameComponent
   ],
   entryComponents: [
-    BridgeButtonComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     TransformConfigComponent,
     PreviewPopupComponent,
-    MappingPopupComponent,
     ValuesPopupComponent,
     OpenMappingDialogComponent,
     AddConstantPopupComponent,
@@ -122,7 +117,8 @@ import { ComfySearchByNameComponent } from './components/comfy-search-by-name/co
     RulesPopupService,
     VocabulariesService,
     ConceptService,
-    [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}]
+    [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}],
+    MappingPageSessionStorage
   ],
   bootstrap: [AppComponent]
 })

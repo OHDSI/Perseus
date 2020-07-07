@@ -1,5 +1,6 @@
 import { IComment } from 'src/app/models/comment';
 import { Area } from './area';
+import { ConnectorType } from './interface/connector.interface';
 
 export interface RowOptions {
   id?: number;
@@ -13,6 +14,7 @@ export interface RowOptions {
   visible?: boolean;
   htmlElement?: any;
   constant?: string;
+  selected?: boolean;
 }
 
 export interface IRow {
@@ -30,8 +32,13 @@ export interface IRow {
   visible?: boolean;
   htmlElement: any;
   constant: string;
+  selected: boolean;
+  connectorTypes: ConnectorType[];
+
   removeConnections(): void;
+  setType(type: ConnectorType): void;
 }
+
 export class Row implements IRow {
   id: number;
   tableId: number;
@@ -45,6 +52,8 @@ export class Row implements IRow {
   visible = true;
   connections = [];
   htmlElement: any = null;
+  selected: boolean;
+  connectorTypes: ConnectorType[];
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
@@ -63,10 +72,19 @@ export class Row implements IRow {
     this.area = options.area;
     this.comments = options.comments;
     this.constant = options.constant;
+    this.selected = options.selected || false;
+    this.connectorTypes = [];
   }
 
   removeConnections() {
     this.connections = [];
+  }
+
+  setType(type: ConnectorType) {
+    const idx = this.connectorTypes.findIndex(existingType => existingType === type);
+    if (idx === -1) {
+       this.connectorTypes.push(type);
+    }
   }
 
   toString(): string {

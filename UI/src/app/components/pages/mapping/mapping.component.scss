@@ -1,12 +1,19 @@
 @import 'src/app/styles/variables.scss';
 
+.area-source {
+  min-width: 400px;
+}
+
+.area-target {
+  max-width: 500px;
+}
+
 section {
-    margin: 0 20px;
+    //margin: 0 20px;
 
     main {
-        display: flex;
-        justify-content: space-around;
-        position: relative;
+        display: grid;
+        grid-template-columns: 0.5fr 0.5fr 0.5fr;
     }
 
     .hint {
@@ -15,7 +22,7 @@ section {
         display: flex;
         text-align: center;
         justify-content: center;
-        width: 100%;
+        min-width: 200px;
 
         p {
             top: 20%;
@@ -69,3 +76,11 @@ section {
   flex-direction: row;
   padding-left: 50px;
 }
+
+.app-mapping {
+  margin-left: 20px;
+  padding: 0 50px 0 50px;
+  display: flex;
+  flex-direction: column;
+}
+

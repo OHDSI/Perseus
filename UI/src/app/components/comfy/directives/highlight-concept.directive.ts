@@ -19,7 +19,7 @@ export class HighlightConceptDirective implements OnChanges {
   ngOnChanges() {
     const attributeName = 'concept';
 
-    if (this.hasConcept(this.tableName)) {
+    if (this.isConceptTable(this.tableName)) {
       this.renderer.setAttribute(
         this.elementRef.nativeElement,
         attributeName,
@@ -33,7 +33,7 @@ export class HighlightConceptDirective implements OnChanges {
     }
   }
 
-  hasConcept(tablename: string): boolean {
+  isConceptTable(tablename: string): boolean {
     return (
       environment.conceptTables.findIndex(
         conceptTable => tablename.toUpperCase() === conceptTable.toUpperCase()

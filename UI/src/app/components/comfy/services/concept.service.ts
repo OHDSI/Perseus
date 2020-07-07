@@ -1,34 +1,39 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { ITable, Table, ITableOptions } from 'src/app/models/table';
+import { Injectable } from "@angular/core";
+import { environment } from "src/environments/environment";
+import { ITable, Table, ITableOptions } from "src/app/models/table";
 
-import { Row, RowOptions } from 'src/app/models/row';
-import { Area } from 'src/app/models/area';
+import { Row, RowOptions } from "src/app/models/row";
+import { Area } from "src/app/models/area";
+import { IConnector } from 'src/app/models/interface/connector.interface';
 
 const CONCEPT_COLUMNS = [
-  'CONCEPT_ID',
-  'SOURCE_CONCEPT_ID',
-  'TYPE_CONCEPT_ID',
-  'SOURCE_VALUE'
+  "CONCEPT_ID",
+  "SOURCE_CONCEPT_ID",
+  "TYPE_CONCEPT_ID",
+  "SOURCE_VALUE"
 ];
 
 const COMMON_COLUMNS = [
-  'PERSON_ID',
-  'START_DATE',
-  'START_DATETIME',
-  'END_DATE',
-  'END_DATETIME',
-  'PROVIDER_ID',
-  'VISIT_OCCURRENCE_ID',
-  'VISIT_DETAIL_ID'
+  "PERSON_ID",
+  "START_DATE",
+  "START_DATETIME",
+  "END_DATE",
+  "END_DATETIME",
+  "PROVIDER_ID",
+  "VISIT_OCCURRENCE_ID",
+  "VISIT_DETAIL_ID"
 ];
+
+export const isConceptTable = (tableName: string): boolean => {
+  return environment.conceptTables.findIndex(name => tableName === name) > -1;
+}
+
+export const isConcept = (connector: IConnector): boolean => {
+  return CONCEPT_COLUMNS.findIndex(name => connector.target.name.indexOf(name) > -1) > -1;
+}
 
 @Injectable()
 export class ConceptService {
-  isConceptTable(tableName: string): boolean {
-    return environment.conceptTables.findIndex(name => tableName === name) > -1;
-  }
-
   getConceptTables(allTargetTables: ITable[]): ITable[] {
     let conceptTablesRaw = allTargetTables.filter(
       targetTable =>
@@ -39,7 +44,7 @@ export class ConceptService {
     );
 
     conceptTablesRaw = conceptTablesRaw.map(table => {
-      if (['CONCEPT', 'COMMON'].indexOf(table.name.toUpperCase()) < 0) {
+      if (["CONCEPT", "COMMON"].indexOf(table.name.toUpperCase()) < 0) {
         table.rows = table.rows.filter(row => {
           return (
             CONCEPT_COLUMNS.filter(
@@ -61,15 +66,15 @@ export class ConceptService {
     const conceptTableId = -100;
     const commonTableId = -101;
 
-    const conceptTableName = 'CONCEPT';
-    const commonTableName = 'COMMON';
+    const conceptTableName = "CONCEPT";
+    const commonTableName = "COMMON";
 
     const conceptRowOptions: RowOptions = {
       id: 1,
       tableId: conceptTableId,
       tableName: conceptTableName,
-      name: 'CONCEPT',
-      type: 'any',
+      name: "CONCEPT",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -78,8 +83,8 @@ export class ConceptService {
       id: 2,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'PERSON_ID',
-      type: 'any',
+      name: "PERSON_ID",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -88,8 +93,8 @@ export class ConceptService {
       id: 3,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'START_DATE',
-      type: 'any',
+      name: "START_DATE",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -98,8 +103,8 @@ export class ConceptService {
       id: 4,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'START_DATETIME',
-      type: 'any',
+      name: "START_DATETIME",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -108,8 +113,8 @@ export class ConceptService {
       id: 5,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'END_DATE',
-      type: 'any',
+      name: "END_DATE",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -118,8 +123,8 @@ export class ConceptService {
       id: 6,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'END_DATETIME',
-      type: 'any',
+      name: "END_DATETIME",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -128,8 +133,8 @@ export class ConceptService {
       id: 7,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'PROVIDER_ID',
-      type: 'any',
+      name: "PROVIDER_ID",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -138,8 +143,8 @@ export class ConceptService {
       id: 8,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'VISIT_OCCURRENCE_ID',
-      type: 'any',
+      name: "VISIT_OCCURRENCE_ID",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -148,8 +153,8 @@ export class ConceptService {
       id: 9,
       tableId: commonTableId,
       tableName: commonTableName,
-      name: 'VISIT_DETAIL_ID',
-      type: 'any',
+      name: "VISIT_DETAIL_ID",
+      type: "any",
       comments: [],
       area: Area.Target
     };
@@ -157,7 +162,7 @@ export class ConceptService {
     const conceptTableOptions: ITableOptions = {
       id: conceptTableId,
       area: Area.Target,
-      name: 'CONCEPT',
+      name: "CONCEPT",
       rows: [new Row(conceptRowOptions)],
       visible: true,
       expanded: true
@@ -166,7 +171,7 @@ export class ConceptService {
     const commonTableOptions: ITableOptions = {
       id: commonTableId,
       area: Area.Target,
-      name: 'COMMON',
+      name: "COMMON",
       rows: [
         new Row(commonRowOptions1),
         new Row(commonRowOptions2),
@@ -182,12 +187,5 @@ export class ConceptService {
     };
 
     return [new Table(conceptTableOptions), new Table(commonTableOptions)];
-  }
-
-  isConcept(tableName: string): boolean {
-    return (
-      ['CONCEPT'].indexOf(tableName.toUpperCase()) >
-      -1
-    );
   }
 }

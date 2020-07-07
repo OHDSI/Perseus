@@ -64,7 +64,7 @@ export class FilterComponent implements OnInit {
       key => (this.data[key].visible = this.checkboxes[key])
     );
 
-    setTimeout(() => this.bridgeService.refreshAll(), 50);
+    this.bridgeService.refreshAll();
 
     this.close();
   }

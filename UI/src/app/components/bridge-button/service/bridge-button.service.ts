@@ -1,22 +1,18 @@
-import { Component, Inject, ElementRef } from '@angular/core';
+// Legacy
+import { Injectable, ElementRef } from '@angular/core';
+
+import { IConnector } from '../../../models/interface/connector.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { IConnector } from 'src/app/models/interface/connector.interface';
-import { RulesPopupComponent } from '../popaps/rules-popup/rules-popup.component';
+import { TransformRulesData } from '../../popaps/rules-popup/model/transform-rules-data';
+import { RulesPopupComponent } from '../../popaps/rules-popup/rules-popup.component';
+import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
-import { BRIDGE_BUTTON_DATA } from './model/bridge-button-injector';
-import { BridgeButtonData } from './model/bridge-button-data';
-import { ConceptService } from '../comfy/services/concept.service';
-import { TransformConfigComponent } from '../vocabulary-transform-configurator/transform-config.component';
-import { TransformRulesData } from '../popaps/rules-popup/model/transform-rules-data';
+import { BridgeButtonData } from '../model/bridge-button-data';
+import { ConceptService, isConceptTable } from '../../comfy/services/concept.service';
 import { CommonService } from 'src/app/services/common.service';
 
-@Component({
-  selector: 'app-bridge-button',
-  templateUrl: './bridge-button.component.html',
-  styleUrls: ['./bridge-button.component.scss']
-})
-export class BridgeButtonComponent {
-  text = 'T';
+@Injectable()
+export class BridgeButtonService {
   drawEntity: IConnector;
   active = false;
 
@@ -31,12 +27,11 @@ export class BridgeButtonComponent {
   private ancor: any;
 
   constructor(
-    conceptService: ConceptService,
     private overlayService: OverlayService,
-    @Inject(BRIDGE_BUTTON_DATA) payload: BridgeButtonData,
-    private elementRef: ElementRef,
-    private commonService: CommonService,
-  ) {
+    private commonService: CommonService
+  ) {}
+
+  init(payload: BridgeButtonData, element: Element) {
     this.payloadObj = {
       connector: payload.connector,
       arrowCache: payload.arrowCache
@@ -52,10 +47,9 @@ export class BridgeButtonComponent {
     };
 
     this.component = this.insnantiationType.transform;
-    this.ancor = this.elementRef.nativeElement;
+    this.ancor = element;
 
-    if (conceptService.isConcept(payload.connector.target.tableName)) {
-      this.text = 'L';
+    if (isConceptTable(payload.connector.target.tableName)) {
       this.component = this.insnantiationType.lookup;
       this.dialogOptions.positionStrategyFor = 'advanced-transform';
       this.ancor = this.commonService.mappingElement.nativeElement;
@@ -71,8 +65,11 @@ export class BridgeButtonComponent {
       this.component
     );
 
-    dialogRef.close$.subscribe(configOptions => {
-      this.payloadObj.connector.deselect();
+    dialogRef.close$.subscribe((configOptions: any) => {
+      const { deleted } = configOptions;
+      if (!deleted) {
+        this.payloadObj.connector.deselect();
+      }
     });
   }
 }
