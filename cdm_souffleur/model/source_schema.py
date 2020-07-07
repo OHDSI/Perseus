@@ -38,8 +38,8 @@ def get_source_schema(schemaname):
 
     schema = []
     _open_book(filepath)
-    overview = pd.read_excel(book, 'Overview', dtype=str, na_filter=False,
-                             engine='xlrd')
+    overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
+    # always take the first sheet of the excel file
     tables_pd = sqldf(
         """select `table`, group_concat(field || ':' || type, ',') as fields
          from overview group by `table`;""")
@@ -59,12 +59,15 @@ def get_source_schema(schemaname):
 
 
 def _open_book(filepath=None):
+    # TODO decide whether check below is required (if yes, find all cases when book should be set to None)
     global book
-    if book is None and filepath is not None:
-        book = xlrd.open_workbook(Path(filepath))
-        return book
-    else:
-        return book
+    # if book is None and filepath is not None:
+    #     book = xlrd.open_workbook(Path(filepath))
+    #     return book
+    # else:
+    #     return book
+    book = xlrd.open_workbook(Path(filepath))
+    return book
 
 
 def get_top_values(table_name, column_name=None):
@@ -130,15 +133,17 @@ def _flatten_pd_df(pd_df: pd.DataFrame):
     return rows
 
 
-def extract_sql():
+def extract_sql(source_table_name):
     result = {}
+    file_to_select = source_table_name+'.xml'
     for root_dir, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
         for filename in files:
-            file_tree = ElementTree.parse(Path(root_dir) / filename)
-            query = file_tree.find('Query').text.upper()
-            for k, v in FORMAT_SQL_FOR_SPARK_PARAMS.items():
-                query = query.replace(k, v)
-                result[filename] = query
+            if filename == file_to_select:
+                file_tree = ElementTree.parse(Path(root_dir) / filename)
+                query = file_tree.find('Query').text.upper()
+                for k, v in FORMAT_SQL_FOR_SPARK_PARAMS.items():
+                    query = query.replace(k, v)
+                    result[filename] = query
     return result
 
 
@@ -176,6 +181,11 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
 
 def get_existing_source_schemas_list(path):
     return os.listdir(str(path))
+
+
+def set_book_to_none():
+    global book
+    book = None
 
 
 if __name__ == '__main__':

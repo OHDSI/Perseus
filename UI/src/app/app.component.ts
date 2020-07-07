@@ -16,6 +16,7 @@ import { StateService } from './services/state.service';
 import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
 import { environment } from 'src/environments/environment';
+import { DataService } from "./services/data.service";
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ export class AppComponent implements OnDestroy {
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
     private state: StateService,
+    private dataService: DataService,
     private renderer: Renderer,
     private uploadService: UploadService,
     private snakbar: MatSnackBar
@@ -124,6 +126,8 @@ export class AppComponent implements OnDestroy {
       .catch(errResponce => {
         console.log(errResponce);
       });
+      this.bridgeService.resetAllMappings();
+      this.bridgeService.loadSavedSchema(files[0].name);
   }
 }
 
