@@ -12,6 +12,7 @@ import { IConnector } from "../models/interface/connector.interface";
 import { SqlFunction } from "../components/popaps/rules-popup/transformation-input/model/sql-string-functions";
 import { Command } from "../infrastructure/command";
 import { TransformationConfig } from "../components/vocabulary-transform-configurator/model/transformation-config";
+import { DataService } from "./data.service";
 
 export interface IConnection {
   source: IRow;
@@ -46,10 +47,12 @@ export class BridgeService {
 
   constructor(
     private drawService: DrawService,
-    private stateService: StateService
+    private stateService: StateService,
+    private dataService: DataService
   ) {}
   applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
+  loadSavedSchema$ = new Subject<any>();
 
   private sourcerow: IRow;
   private targetrow: IRow;
@@ -323,5 +326,9 @@ export class BridgeService {
     const targetTableId = target.tableId;
 
     return `${targetTableId}-${targetRowId}`;
+  }
+
+  loadSavedSchema(schema_name: string){
+    this.dataService.LoadSourceData(schema_name).subscribe(_=>{this.loadSavedSchema$.next();});
   }
 }

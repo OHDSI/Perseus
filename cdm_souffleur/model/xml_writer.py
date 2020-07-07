@@ -257,6 +257,7 @@ def zip_xml():
         for root, dirs, files in os.walk(GENERATE_CDM_LOOKUP_SQL_PATH):
             for file in files:
                 zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+        zip_file.close()
     except FileNotFoundError:
         raise
 

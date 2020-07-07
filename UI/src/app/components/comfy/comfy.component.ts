@@ -56,6 +56,8 @@ export class ComfyComponent extends BaseComponent
     return this.highlitedtables;
   }
 
+  COLUMNS_TO_EXCLUDE_FROM_TARGET = ["CONCEPT", "COMMON"]
+
   busy = true;
   private highlitedtables: string[] = [];
 
@@ -180,7 +182,7 @@ export class ComfyComponent extends BaseComponent
       .pipe(
         takeUntil(this.ngUnsubscribe),
         switchMap(_ => {
-          this.stateService.switchSourceToTarget(); // ??
+         // this.stateService.switchSourceToTarget(); // ??
           this.initializeSourceData();
           this.initializeTargetData();
           this.initializeSourceColumns();
@@ -189,7 +191,7 @@ export class ComfyComponent extends BaseComponent
         })
       )
       .subscribe(target => {
-        this.target = target;
+       // this.target = target;
       });
 
     this.bridgeService.applyConfiguration$
@@ -211,6 +213,21 @@ export class ComfyComponent extends BaseComponent
           this.snakbarOptions
         );
       });
+
+      this.bridgeService.loadSavedSchema$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(_ => {
+        this.initializeTargetData();
+        this.initializeSourceData();
+        this.initializeSourceColumns();
+
+        this.snakbar.open(
+          `New source schema loaded`,
+          " DISMISS ",
+          this.snakbarOptions
+        );
+      });
+
   }
 
   initializeSourceData() {
@@ -218,10 +235,6 @@ export class ComfyComponent extends BaseComponent
     this.source = uniq(
       this.state.source.tables
         .map(table => table.name)
-        .filter(
-          tableName =>
-            ["CONCEPT", "COMMON"].indexOf(tableName.toUpperCase()) < 0
-        )
     );
   }
 
@@ -231,10 +244,11 @@ export class ComfyComponent extends BaseComponent
     const prefix = "target";
 
     this.state.target.tables.map(table => {
-      this.target[table.name] = {};
+      if(this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name)<0)
+      {this.target[table.name] = {};
       this.target[table.name].name = `${prefix}-${table.name}`;
       this.target[table.name].first = table.name;
-      this.target[table.name].data = [table.name];
+      this.target[table.name].data = [table.name];}
     });
 
     this.targettablenames = uniq(Object.keys(this.target));
@@ -315,8 +329,8 @@ export class ComfyComponent extends BaseComponent
     });
 
     const payload = {
-      source: targettable,
-      target: sourcetable,
+      source: sourcetable,
+      target: targettable,
       allTarget: this.state.target.tables
     };
 

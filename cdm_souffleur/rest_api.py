@@ -17,7 +17,7 @@ import traceback
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequestKeyError
 import os
-
+from cdm_souffleur.model.source_schema import set_book_to_none
 
 app = Flask(__name__)
 CORS(app)
@@ -67,6 +67,7 @@ def get_existing_source_schemas_list_call():
 @app.route('/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
     """load saved source schema by name"""
+    # set_book_to_none()
     schema_name = request.args['schema_name']
     if schema_name in get_existing_source_schemas_list(
             app.config['UPLOAD_FOLDER']):
@@ -236,10 +237,11 @@ def find_domain_call():
     return jsonify(found_codes)
 
 
-@app.route('/get_generated_sql')
+@app.route('/get_generated_sql', methods=['GET'])
 def get_sql_call():
     """return sql's from generated mapping"""
-    sql = extract_sql()
+    source_table_name = request.args['source_table_name']
+    sql = extract_sql(source_table_name)
     return jsonify(sql)
 
 
@@ -272,4 +274,4 @@ def set_db_connection_call():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    #app.run(host='0:0:0:0', port=5000)
+    # app.run(host='0.0.0.0', port=5000)

@@ -31,6 +31,7 @@ export class DataService {
 
   _initSourceData(): Observable<any> {
     const path = `${URL}/get_source_schema?path=default`;
+   //const path = `${URL}/load_saved_source_schema?schema_name=ScanReport_2.xlsx`;
     return this.httpClient.get<any>(path).pipe(
       map(data => {
         const tables = this._normalize(data, 'source');
@@ -45,6 +46,16 @@ export class DataService {
       map(data => {
         const tables = this._normalize(data, 'target');
         this.stateService.initialize(tables, 'target');
+      })
+    );
+  }
+
+  LoadSourceData(schema_name: string): Observable<any> {
+    const path = `${URL}/load_saved_source_schema?schema_name=${schema_name}`;
+    return this.httpClient.get<any>(path).pipe(
+      map(data => {
+        const tables = this._normalize(data, 'source');
+        this.stateService.initialize(tables, 'source');
       })
     );
   }
@@ -124,8 +135,8 @@ export class DataService {
     return this.httpClient.post(path, mapping);
   }
 
-  getSqlPreview(): Observable<any> {
-    const path = `${URL}/get_generated_sql`;
+  getSqlPreview(source_table: string): Observable<any> {
+    const path = `${URL}/get_generated_sql?source_table_name=${source_table}`;
     return this.httpClient.get(path);
   }
 }
