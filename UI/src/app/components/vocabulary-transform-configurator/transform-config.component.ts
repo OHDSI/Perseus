@@ -1,30 +1,23 @@
-import { Component, OnInit, Input, OnChanges, Inject } from "@angular/core";
-import {
-  IVocabulary,
-  VocabulariesService
-} from "src/app/services/vocabularies.service";
-import { FormControl } from "@angular/forms";
-import { VocabularyConfig } from "./model/vocabulary-config";
-import { DictionaryItem } from "../vocabulary-search-select/model/vocabulary";
-import { MatSnackBar, MatDialog } from "@angular/material";
-import { cloneDeep, uniqBy } from "src/app/infrastructure/utility";
-import {
-  TransformationConfig,
-  TransformationCondition,
-  TransformationConfigFactory
-} from "./model/transformation-config";
-import { Command } from "src/app/infrastructure/command";
-import { ConditionDialogComponent } from "./condition-dialog/condition-dialog.component";
-import { ITable } from "src/app/models/table";
-import { TransformRulesData } from "../popaps/rules-popup/model/transform-rules-data";
-import { OVERLAY_DIALOG_DATA } from "src/app/services/overlay/overlay-dialog-data";
-import { StateService } from "src/app/services/state.service";
-import { OverlayDialogRef } from "src/app/services/overlay/overlay.service";
+import { Component, Inject, Input, OnChanges, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { Command } from 'src/app/infrastructure/command';
+import { cloneDeep, uniqBy } from 'src/app/infrastructure/utility';
+import { ITable } from 'src/app/models/table';
+import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { StateService } from 'src/app/services/state.service';
+import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
+import { TransformRulesData } from '../popups/rules-popup/model/transform-rules-data';
+import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
+import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
+import { TransformationCondition, TransformationConfig, TransformationConfigFactory } from './model/transformation-config';
+import { VocabularyConfig } from './model/vocabulary-config';
 
 @Component({
-  selector: "app-transform-config",
-  templateUrl: "./transform-config.component.html",
-  styleUrls: ["./transform-config.component.scss"]
+  selector: 'app-transform-config',
+  templateUrl: './transform-config.component.html',
+  styleUrls: ['./transform-config.component.scss']
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() sourceFileds: string[];
@@ -80,7 +73,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   ) {
     this.transformationConfigs = [];
 
-    const { arrowCache, connector } = this.payload;
+    const {arrowCache, connector} = this.payload;
     if (
       arrowCache[connector.id] &&
       arrowCache[connector.id].transformationConfigs
@@ -100,13 +93,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
     const selectedSourceTablesNames = Object.values(payload.arrowCache).map(
       arrow => {
-        return { name: arrow.source.tableName };
+        return {name: arrow.source.tableName};
       }
     );
 
     const newCelectedSourceTablesNames = uniqBy(
       selectedSourceTablesNames,
-      "name"
+      'name'
     ).map(x => x.name);
 
     if (this.sourceTables) {
@@ -134,14 +127,14 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.transformationConfigs.push(this.transformationConfig);
 
       console.log(
-        "Created configuration",
+        'Created configuration',
         this.transformationConfig.conditions[0].vocabularyConfig.conceptConfig
       );
 
       this.snakbar.open(
         `Configuration "${this.configurationNameControl.value}" has been created`,
-        " DISMISS ",
-        { duration: 3000 }
+        ' DISMISS ',
+        {duration: 3000}
       );
 
       this.configurationNameControl.reset();
@@ -174,15 +167,15 @@ export class TransformConfigComponent implements OnInit, OnChanges {
         this.transformationConfigs[idx] = configCopy;
       }
 
-      const { arrowCache, connector } = this.payload;
+      const {arrowCache, connector} = this.payload;
       if (arrowCache[connector.id]) {
         arrowCache[
           connector.id
-        ].transformationConfigs = this.transformationConfigs;
+          ].transformationConfigs = this.transformationConfigs;
       }
 
       console.log(
-        "Saved configuration",
+        'Saved configuration',
         configCopy.conditions[0].vocabularyConfig.conceptConfig
       );
 
@@ -190,15 +183,16 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.snakbar.open(
         `Configuration "${this.transformationConfig.name}" has been saved`,
-        " DISMISS ",
-        { duration: 3000 }
+        ' DISMISS ',
+        {duration: 3000}
       );
     },
     canExecute: () => true
   });
 
   delete = new Command({
-    execute: () => {},
+    execute: () => {
+    },
     canExecute: () => true
   });
 
@@ -219,7 +213,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   init() {
     if (this.selectedSourceFields) {
-      this.selectedSourceFieldsForHeader = this.selectedSourceFields.join(",");
+      this.selectedSourceFieldsForHeader = this.selectedSourceFields.join(',');
     }
 
     if (this.sourceFileds) {
@@ -234,7 +228,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
           this.vocabularies
         );
         this.transformationConfig = this.transformationConfigFactory.createNew(
-          "default",
+          'default',
           this.selectedSourceFields
         );
       }
@@ -293,7 +287,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     }
   }
 
-  onSourceFieldSelected(event: any) {}
+  onSourceFieldSelected(event: any) {
+  }
 
   openConditionsDialog() {
     const data = {
@@ -307,7 +302,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(_ => {
-      const { result } = data;
+      const {result} = data;
       const name = `${result.field} ${result.operator} ${result.criteria}`;
       const condition: TransformationCondition = {
         name,
@@ -335,7 +330,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.transformationConfig.conditions[index] = event;
       this.ptransformationCondition = this.transformationConfig.conditions[
         index
-      ];
+        ];
     }
   }
 
@@ -364,8 +359,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   private setLastAddedTransformatioNCondition() {
     this.ptransformationCondition = this.transformationConfig.conditions[
-      this.transformationConfig.conditions.length - 1
-    ];
+    this.transformationConfig.conditions.length - 1
+      ];
   }
 
   private selectTransformationCondition(name: string) {
@@ -375,7 +370,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     if (index > -1) {
       this.ptransformationCondition = this.transformationConfig.conditions[
         index
-      ];
+        ];
 
       this.selectedCondition = [
         new DictionaryItem(this.ptransformationCondition.name)

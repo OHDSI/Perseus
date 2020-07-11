@@ -9,19 +9,22 @@
       #sourceUpload
       type="file"
       (change)="onFileUpload($event)"
-      style="display: none"
-    />
+      style="display: none"/>
     <button mat-menu-item (click)="onOpenSourceClick()">
       <mat-icon>folder_open</mat-icon>
-      <span>Open new source</span>
+      <span>Load New Report</span>
+    </button>
+    <button mat-menu-item (click)="openSetCDMDialog('open')">
+      <mat-icon>description</mat-icon>
+      <span>Set CDM Version</span>
     </button>
     <button mat-menu-item (click)="openSaveMappingDialog('open')">
       <mat-icon>description</mat-icon>
-      <span>Open mappings</span>
+      <span>Open Mappings</span>
     </button>
     <button mat-menu-item (click)="openSaveMappingDialog('save')">
       <mat-icon>save</mat-icon>
-      <span>Save mappings</span>
+      <span>Save Mappings</span>
     </button>
     <button
       mat-menu-item
@@ -30,7 +33,7 @@
       (click)="resetAllMappings()"
     >
       <mat-icon>delete</mat-icon>
-      <span>Reset mappings</span>
+      <span>Reset All Mappings</span>
     </button>
   </mat-menu>
 </mat-toolbar>

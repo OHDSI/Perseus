@@ -1,7 +1,7 @@
 import { ArrowCache } from './arrow-cache';
 import { Row } from './row';
 import { IConnection } from '../services/bridge.service';
-import { SqlFunction } from '../components/popaps/rules-popup/transformation-input/model/sql-string-functions';
+import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
 
 export interface ConfigurationOptions {
   name?: string;

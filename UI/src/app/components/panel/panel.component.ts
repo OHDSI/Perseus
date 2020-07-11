@@ -1,28 +1,18 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-  Output,
-  EventEmitter,
-  AfterViewInit,
-  OnChanges
-} from "@angular/core";
-import { MatDialog, MatExpansionPanel } from "@angular/material";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatDialog, MatExpansionPanel } from '@angular/material';
+import { ITable } from 'src/app/models/table';
+import { BridgeService } from 'src/app/services/bridge.service';
 
-import { CommonService } from "src/app/services/common.service";
-import { ITable } from "src/app/models/table";
-import { BridgeService } from "src/app/services/bridge.service";
-import { StateService } from "src/app/services/state.service";
-import { SampleDataPopupComponent } from "../popaps/sample-data-popup/sample-data-popup.component";
-import { IRow } from "src/app/models/row";
-import { BridgeButtonService } from "../bridge-button/service/bridge-button.service";
-import { BridgeButtonData } from "../bridge-button/model/bridge-button-data";
+import { CommonService } from 'src/app/services/common.service';
+import { StateService } from 'src/app/services/state.service';
+import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
+import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
+import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
 
 @Component({
-  selector: "app-panel",
-  templateUrl: "./panel.component.html",
-  styleUrls: ["./panel.component.scss"]
+  selector: 'app-panel',
+  templateUrl: './panel.component.html',
+  styleUrls: ['./panel.component.scss']
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
@@ -33,8 +23,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
 
-  @ViewChild("exppanelheader") panelHheader: any;
-  @ViewChild("matpanel") panel: MatExpansionPanel;
+  @ViewChild('exppanelheader') panelHheader: any;
+  @ViewChild('matpanel') panel: MatExpansionPanel;
 
   get title() {
     return this.table.name;
@@ -64,7 +54,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.bridgeService.deleteAll.subscribe(_ => {
       this.panelHheader._element.nativeElement.classList.remove(
-        "table-has-a-link-true"
+        'table-has-a-link-true'
       );
     });
 
@@ -102,14 +92,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
     e.stopPropagation();
 
     this.dialog.open(SampleDataPopupComponent, {
-      width: "1021px",
-      height: "696px",
+      width: '1021px',
+      height: '696px',
       data: this.table
     });
   }
 
   onOpenTransfromDialog(event: any) {
-    const { row, element } = event;
+    const {row, element} = event;
 
     const connections = this.bridgeService.findCorrespondingConnections(
       this.table,

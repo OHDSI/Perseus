@@ -13,10 +13,10 @@ import { fromEvent } from 'rxjs';
 import { BridgeService } from './services/bridge.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { StateService } from './services/state.service';
-import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
+import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
 import { environment } from 'src/environments/environment';
-import { DataService } from "./services/data.service";
+import { DataService } from './services/data.service';
 
 @Component({
   selector: 'app-root',
@@ -62,6 +62,15 @@ export class AppComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this.mobileQueryListener);
+  }
+
+  addIcons() {
+    ['CDM_version', 'folder', 'mapping', 'reset', 'save'].forEach(key => {
+      this.matIconRegistry.addSvgIcon(
+        key,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/${key}.svg`)
+      );
+    });
   }
 
   resetAllMappings() {
@@ -126,8 +135,8 @@ export class AppComponent implements OnDestroy {
       .catch(errResponce => {
         console.log(errResponce);
       });
-      this.bridgeService.resetAllMappings();
-      this.bridgeService.loadSavedSchema(files[0].name);
+    this.bridgeService.resetAllMappings();
+    this.bridgeService.loadSavedSchema(files[0].name);
   }
 }
 

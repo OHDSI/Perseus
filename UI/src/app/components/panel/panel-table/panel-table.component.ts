@@ -1,35 +1,33 @@
 import {
-  Component,
-  Input,
-  ViewChild,
-  ElementRef,
-  OnInit,
-  Renderer2,
   AfterViewInit,
-  Output,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
   EventEmitter,
+  Input,
   OnChanges,
-  NgZone,
-  ChangeDetectorRef
-} from "@angular/core";
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material';
+import { takeUntil } from 'rxjs/operators';
 
-import { IRow } from "src/app/models/row";
-import { ITable } from "src/app/models/table";
-import { OverlayService } from "src/app/services/overlay/overlay.service";
-import { CommentPopupComponent } from "src/app/components/popaps/comment-popup/comment-popup.component";
-import { BridgeService, IConnection } from "src/app/services/bridge.service";
-import { OverlayConfigOptions } from "src/app/services/overlay/overlay-config-options.interface";
-import { AddConstantPopupComponent } from "../../popaps/add-constant-popup/add-constant-popup.component";
-import { takeUntil } from "rxjs/operators";
-import { BaseComponent } from "../../base/base.component";
-import { MatTable, MatTableDataSource } from "@angular/material";
-import { cloneDeep } from "src/app/infrastructure/utility";
+import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
 import { Area } from 'src/app/models/area';
+import { IRow } from 'src/app/models/row';
+import { ITable } from 'src/app/models/table';
+import { BridgeService, IConnection } from 'src/app/services/bridge.service';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { BaseComponent } from '../../base/base.component';
+import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-constant-popup.component';
 
 @Component({
-  selector: "app-panel-table",
-  templateUrl: "./panel-table.component.html",
-  styleUrls: ["./panel-table.component.scss"]
+  selector: 'app-panel-table',
+  templateUrl: './panel-table.component.html',
+  styleUrls: ['./panel-table.component.scss']
 })
 export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
@@ -39,8 +37,8 @@ export class PanelTableComponent extends BaseComponent
 
   @Output() openTransform = new EventEmitter<any>();
 
-  @ViewChild("htmlElement", { read: ElementRef }) element: HTMLElement;
-  @ViewChild("tableComponent") tableComponent: MatTable<IRow[]>;
+  @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
+  @ViewChild('tableComponent') tableComponent: MatTable<IRow[]>;
 
   get area() {
     return this.table.area;
@@ -73,7 +71,8 @@ export class PanelTableComponent extends BaseComponent
     super();
   }
 
-  ngOnChanges() {}
+  ngOnChanges() {
+  }
 
   equals(name1: string, name2: string): boolean {
     return name1.toUpperCase() === name2.toUpperCase();
@@ -111,7 +110,8 @@ export class PanelTableComponent extends BaseComponent
       });
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+  }
 
   addConnection(connection: IConnection) {
     this.table.rows.forEach(row => {
@@ -125,7 +125,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   isRowHasConnection(row: IRow): boolean {
-    if (typeof this.rowConnections[row.key] === "undefined") {
+    if (typeof this.rowConnections[row.key] === 'undefined') {
       return false;
     } else {
       return this.rowConnections[row.key];
@@ -137,7 +137,7 @@ export class PanelTableComponent extends BaseComponent
 
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
-      backdropClass: "custom-backdrop",
+      backdropClass: 'custom-backdrop',
       positionStrategyFor: `comments-${this._getArea()}`,
       payload: row
     };
@@ -152,11 +152,11 @@ export class PanelTableComponent extends BaseComponent
   openConstantDialog(anchor: HTMLElement, row: IRow) {
     if (!this.isRowHasConnection(row)) {
       const component = AddConstantPopupComponent;
-      const value = { value: row.constant };
+      const value = {value: row.constant};
 
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
-        backdropClass: "custom-backdrop",
+        backdropClass: 'custom-backdrop',
         positionStrategyFor: `comments-${this._getArea()}`,
         payload: value
       };
@@ -178,7 +178,7 @@ export class PanelTableComponent extends BaseComponent
 
   onTransformDialogOpen(event: any, row: IRow, element: any) {
     event.stopPropagation();
-    this.openTransform.emit({ row, element });
+    this.openTransform.emit({row, element});
   }
 
   hasComment(row: IRow) {
@@ -199,9 +199,9 @@ export class PanelTableComponent extends BaseComponent
       row.selected = !row.selected;
 
       if (this.renderer && row.selected && row.htmlElement) {
-        this.renderer.setAttribute(row.htmlElement, "selected", "true");
+        this.renderer.setAttribute(row.htmlElement, 'selected', 'true');
       } else {
-        this.renderer.removeAttribute(row.htmlElement, "selected");
+        this.renderer.removeAttribute(row.htmlElement, 'selected');
       }
 
       Object.values(this.bridgeService.arrowsCache)
@@ -233,25 +233,25 @@ export class PanelTableComponent extends BaseComponent
   showConnectorPinElement(connection: IConnection, area: Area) {
     const rowId = connection[area].htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName("connector-pin");
+    const collection = element.getElementsByClassName('connector-pin');
     for (let i = 0; i < collection.length; i++) {
-      this.renderer.removeClass(collection[i], "hide");
+      this.renderer.removeClass(collection[i], 'hide');
     }
   }
 
   hideAllConnectorPin(element) {
-    const collection = element.getElementsByClassName("connector-pin");
+    const collection = element.getElementsByClassName('connector-pin');
     for (let i = 0; i < collection.length; i++) {
-      this.renderer.addClass(collection[i], "hide");
+      this.renderer.addClass(collection[i], 'hide');
     }
   }
 
   hideConnectorPin(connection: IConnection, area: Area) {
     const rowId = connection[area].htmlElement.attributes.id.nodeValue;
     const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName("connector-pin");
+    const collection = element.getElementsByClassName('connector-pin');
     for (let i = 0; i < collection.length; i++) {
-      this.renderer.addClass(collection[0], "hide");
+      this.renderer.addClass(collection[0], 'hide');
     }
   }
 

@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { MatExpansionModule } from '@angular/material/expansion';
-import { PanelComponent } from 'src/app/components/panel/panel.component';
+import { CdmCommonModule } from 'src/app/common/cdm-common.module';
+import { CdmCustomMaterialModule } from 'src/app/common/cdm-custom-material.module';
+import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
+import { PanelComponent } from 'src/app/components/panel/panel.component';
+import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
 import { DrawService } from 'src/app/services/draw.service';
-import { FilterComponent } from 'src/app/components/filter/filter.component';
-import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
-import { CdmCustomMaterialModule } from 'src/app/common/cdm-custom-material.module';
-import { CdmCommonModule } from 'src/app/common/cdm-common.module';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import { CdmCommonModule } from 'src/app/common/cdm-common.module';
     CommentPopupComponent
   ],
   imports: [
-  MatExpansionModule,
+    MatExpansionModule,
     CommonModule,
     CdmCustomMaterialModule,
     CdmCommonModule
@@ -35,4 +35,5 @@ import { CdmCommonModule } from 'src/app/common/cdm-common.module';
   providers: [DrawService]
 
 })
-export class PanelModule { }
+export class PanelModule {
+}
