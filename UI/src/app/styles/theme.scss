@@ -21,17 +21,99 @@ $custom-typography: mat-typography-config(
   $caption: mat-typography-level(12px, 20px, 400),
     // Buttons and anchors.
   $button: mat-typography-level(14px, 18px, 500),
+    // Line-height must be unit-less fraction of the font-size.
+    // Form input fields.
+  $input: mat-typography-level(inherit, 1.125, 400)
 );
 
-$my-theme-primary: mat-palette($mat-gray, 900);
-$my-theme-accent: mat-palette($mat-light-blue, A700);
-$my-theme-warn: mat-palette($mat-red);
+// Foreground config
+$dark-text: $cdm-grey;
+$dark-primary-text: rgba($dark-text, 0.87);
+$dark-accent-text: rgba($dark-primary-text, 0.54);
+$dark-disabled-text: rgba($dark-primary-text, 0.38);
+$dark-dividers: rgba($dark-primary-text, 0.12);
+$dark-focused: rgba($dark-primary-text, 0.12);
 
-$my-theme: mat-light-theme(
-    $my-theme-primary,
-    $my-theme-accent,
-    $my-theme-warn
+$mat-light-theme-foreground: (
+  base:              $cdm-grey,
+  divider:           $dark-dividers,
+  dividers:          $dark-dividers,
+  disabled:          $dark-disabled-text,
+  disabled-button:   rgba($dark-text, 0.26),
+  disabled-text:     $dark-disabled-text,
+  elevation:         black,
+  secondary-text:    $dark-accent-text,
+  hint-text:         $dark-disabled-text,
+  accent-text:       $dark-accent-text,
+  icon:              $dark-accent-text,
+  icons:             $dark-accent-text,
+  text:              $dark-primary-text,
+  slider-min:        $dark-primary-text,
+  slider-off:        rgba($dark-text, 0.26),
+  slider-off-active: $dark-disabled-text,
+);
+
+// Background config
+$light-background:    $white;
+$light-bg-darker-5:   darken($light-background, 5%);
+$light-bg-darker-10:  darken($light-background, 10%);
+$light-bg-darker-20:  darken($light-background, 20%);
+$light-bg-darker-30:  darken($light-background, 30%);
+$light-bg-lighter-5:  lighten($light-background, 5%);
+$dark-bg-tooltip:     lighten($cdm-grey, 20%);
+$dark-bg-alpha-4:     rgba($cdm-grey, 0.04);
+$dark-bg-alpha-12:    rgba($cdm-grey, 0.12);
+
+$mat-light-theme-background: (
+  background:               $light-background,
+  status-bar:               $light-bg-darker-20,
+  app-bar:                  $light-bg-darker-5,
+  hover:                    $dark-bg-alpha-4,
+  card:                     $light-bg-lighter-5,
+  dialog:                   $light-bg-lighter-5,
+  tooltip:                  $dark-bg-tooltip,
+  disabled-button:          $dark-bg-alpha-12,
+  raised-button:            $light-bg-lighter-5,
+  focused-button:           $dark-focused,
+  selected-button:          $light-bg-darker-20,
+  selected-disabled-button: $light-bg-darker-30,
+  disabled-button-toggle:   $light-bg-darker-10,
+  unselected-chip:          $light-bg-darker-10,
+  disabled-list-option:     $light-bg-darker-10,
+);
+
+$mat-primary: (
+  main: $cdm-grey,
+  lighter: $white,
+  darker: $cdm-grey-light,
+  200: $cdm-grey, // For slide toggle,
+  contrast : (
+    main: $light-primary-text,
+    lighter: $dark-primary-text,
+    darker: $dark-primary-text,
+  )
+);
+$mat-accent: (
+  main: $blue,
+  lighter: $cdm-blue-light,
+  darker: $cdm-blue-light,
+  200: $blue, // For slide toggle,
+  contrast : (
+    main: $light-primary-text,
+    lighter: $dark-primary-text,
+    darker: $light-primary-text,
+  )
+);
+
+$cdm-theme-primary: mat-palette($mat-primary, main, lighter, darker);
+$cdm-theme-accent: mat-palette($mat-accent, main, lighter, darker);
+$cdm-theme-warn: mat-palette($mat-red);
+
+$cdm-theme: mat-light-theme(
+    $cdm-theme-primary,
+    $cdm-theme-accent,
+    $cdm-theme-warn
 );
 
 @include mat-core($custom-typography);
-@include angular-material-theme($my-theme);
+@include angular-material-theme($cdm-theme);

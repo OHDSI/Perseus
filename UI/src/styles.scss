@@ -4,11 +4,8 @@
 
 html, body {
   height: 100%;
-
-  * {
-    @extend .mat-typography;
-  }
-
+  @extend .mat-typography;
+  color: $cdm-grey;
 }
 
 body {
