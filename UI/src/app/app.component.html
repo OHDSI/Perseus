@@ -2,6 +2,9 @@
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="cdm menu">
     <mat-icon>more_vert</mat-icon>
   </button>
+  <button mat-icon-button>
+    <mat-icon svgIcon="help"></mat-icon>
+  </button>
   <span style="flex: 1 1 auto"></span>
   <h1>CDM ETL</h1>
   <mat-menu #menu="matMenu">
@@ -11,19 +14,19 @@
       (change)="onFileUpload($event)"
       style="display: none"/>
     <button mat-menu-item (click)="onOpenSourceClick()">
-      <mat-icon>folder_open</mat-icon>
+      <mat-icon svgIcon="folder"></mat-icon>
       <span>Load New Report</span>
     </button>
     <button mat-menu-item (click)="openSetCDMDialog('open')">
-      <mat-icon>description</mat-icon>
+      <mat-icon svgIcon="CDM_version"></mat-icon>
       <span>Set CDM Version</span>
     </button>
     <button mat-menu-item (click)="openSaveMappingDialog('open')">
-      <mat-icon>description</mat-icon>
+      <mat-icon svgIcon="mapping"></mat-icon>
       <span>Open Mappings</span>
     </button>
     <button mat-menu-item (click)="openSaveMappingDialog('save')">
-      <mat-icon>save</mat-icon>
+      <mat-icon  svgIcon="save"></mat-icon>
       <span>Save Mappings</span>
     </button>
     <button
@@ -32,7 +35,7 @@
       matTolltipPosition="right"
       (click)="resetAllMappings()"
     >
-      <mat-icon>delete</mat-icon>
+      <mat-icon svgIcon="reset"></mat-icon>
       <span>Reset All Mappings</span>
     </button>
   </mat-menu>

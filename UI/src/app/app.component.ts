@@ -8,10 +8,11 @@ import {
   Renderer2
 } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { DomSanitizer } from '@angular/platform-browser';
 import { debounceTime, map } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
 import { BridgeService } from './services/bridge.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar } from '@angular/material';
 import { StateService } from './services/state.service';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { UploadService } from './services/upload.service';
@@ -43,8 +44,12 @@ export class AppComponent implements OnDestroy {
     private dataService: DataService,
     private renderer: Renderer,
     private uploadService: UploadService,
-    private snakbar: MatSnackBar
+    private snakbar: MatSnackBar,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
   ) {
+    this.addIcons();
+
     this.mobileQueryListener = () => cd.detectChanges();
 
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -65,10 +70,10 @@ export class AppComponent implements OnDestroy {
   }
 
   addIcons() {
-    ['CDM_version', 'folder', 'mapping', 'reset', 'save'].forEach(key => {
+    ['CDM_version', 'folder', 'mapping', 'reset', 'save', 'help'].forEach(key => {
       this.matIconRegistry.addSvgIcon(
         key,
-        this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/${key}.svg`)
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/icons/${key}.svg`)
       );
     });
   }
@@ -137,6 +142,10 @@ export class AppComponent implements OnDestroy {
       });
     this.bridgeService.resetAllMappings();
     this.bridgeService.loadSavedSchema(files[0].name);
+  }
+
+  openSetCDMDialog(open: string) {
+
   }
 }
 
