@@ -1,10 +1,31 @@
 // CUSTOM_THEME
 
 @import '~@angular/material/_theming';
+@import "./variables.scss";
+
+$custom-typography: mat-typography-config(
+  $font-family: $cdm-font-family,
+    // Section heading corresponding to the <h1> tag.
+  $headline: mat-typography-level(24px, 32px, 500),
+    // Section heading corresponding to the <h2> tag.
+  $title: mat-typography-level(20px, 32px, 500),
+    // Section heading corresponding to the <h3> tag.
+  $subheading-2: mat-typography-level(18px, 23px, 600),
+    // Section heading corresponding to the <h4> tag.
+  $subheading-1: mat-typography-level(16px, 20px, 600),
+    // Bolder body text.
+  $body-2: mat-typography-level(14px, 18px, 600),
+    // Base body text.
+  $body-1: mat-typography-level(14px, 20px, 500),
+    // Smaller body and hint text.
+  $caption: mat-typography-level(12px, 20px, 400),
+    // Buttons and anchors.
+  $button: mat-typography-level(14px, 18px, 500),
+);
 
 $my-theme-primary: mat-palette($mat-gray, 900);
-$my-theme-accent : mat-palette($mat-light-blue, A700);
-$my-theme-warn   : mat-palette($mat-red);
+$my-theme-accent: mat-palette($mat-light-blue, A700);
+$my-theme-warn: mat-palette($mat-red);
 
 $my-theme: mat-light-theme(
     $my-theme-primary,
@@ -12,5 +33,5 @@ $my-theme: mat-light-theme(
     $my-theme-warn
 );
 
-@include mat-core();
+@include mat-core($custom-typography);
 @include angular-material-theme($my-theme);
