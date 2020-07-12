@@ -13,7 +13,7 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
 import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
-import { MatSelect } from '@angular/material';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-vocabulary-dropdown',

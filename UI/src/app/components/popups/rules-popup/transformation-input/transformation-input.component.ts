@@ -14,10 +14,7 @@ import {
   SqlFunction
 } from './model/sql-string-functions';
 import { Observable, of } from 'rxjs';
-import {
-  MatAutocompleteSelectedEvent,
-  MatAutocomplete
-} from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 import { isString } from 'src/app/infrastructure/utility';
 import { sqlParametersValidator } from './model/sql-function-validator';

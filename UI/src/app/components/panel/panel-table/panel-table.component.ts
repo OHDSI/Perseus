@@ -11,7 +11,7 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { MatTable, MatTableDataSource } from '@angular/material';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
 
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';

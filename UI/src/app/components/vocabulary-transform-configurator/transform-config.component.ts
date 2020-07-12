@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnChanges, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Command } from 'src/app/infrastructure/command';
 import { cloneDeep, uniqBy } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';

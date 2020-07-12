@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';

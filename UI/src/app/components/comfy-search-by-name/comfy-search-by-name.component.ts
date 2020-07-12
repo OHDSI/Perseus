@@ -8,7 +8,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
 
