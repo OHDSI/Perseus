@@ -23,9 +23,6 @@ import { DrawService } from 'src/app/services/draw.service';
     PanelTableComponent,
     FilterComponent
   ],
-  entryComponents: [
-    CommentPopupComponent
-  ],
   imports: [
     MatExpansionModule,
     CommonModule,
