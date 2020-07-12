@@ -29,7 +29,7 @@ import { startWith, map } from 'rxjs/operators';
   styleUrls: ['./transformation-input.component.scss']
 })
 export class TransformationInputComponent implements OnInit, OnChanges {
-  @ViewChild(MatAutocomplete) autocomplete: MatAutocomplete;
+  @ViewChild(MatAutocomplete, { static: true }) autocomplete: MatAutocomplete;
 
   @Input() columnname: string;
   @Input() transform: SqlFunction;

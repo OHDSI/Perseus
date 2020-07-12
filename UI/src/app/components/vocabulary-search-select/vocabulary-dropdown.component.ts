@@ -29,7 +29,7 @@ export class VocabularyDropdownComponent extends BaseComponent
   @Input() showDefaultOption = false;
   @Output() value = new EventEmitter<DictionaryItem[]>();
 
-  @ViewChild(MatSelect) matselect: MatSelect;
+  @ViewChild(MatSelect, { static: true }) matselect: MatSelect;
 
   vocabularySelect: FormControl = new FormControl();
   vocabularyFilter: FormControl = new FormControl();

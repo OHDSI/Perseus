@@ -6,7 +6,6 @@ import {
 } from 'src/app/infrastructure/text-utility';
 import { Configuration } from '../configuration';
 import { IStorage } from '../interface/storage.interface';
-import { namespaceHTML } from '@angular/core/src/render3';
 
 @Injectable()
 export class BrowserSessionConfigurationStorage implements IStorage<Configuration> {

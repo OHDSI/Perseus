@@ -23,8 +23,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
 
-  @ViewChild('exppanelheader') panelHheader: any;
-  @ViewChild('matpanel') panel: MatExpansionPanel;
+  @ViewChild('exppanelheader', { static: true }) panelHheader: any;
+  @ViewChild('matpanel', { static: true }) panel: MatExpansionPanel;
 
   get title() {
     return this.table.name;

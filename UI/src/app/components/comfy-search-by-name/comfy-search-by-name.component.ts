@@ -25,10 +25,10 @@ export class ComfySearchByNameComponent extends BaseComponent
   @Output() complete = new EventEmitter<Criteria>();
   @Output() reset = new EventEmitter<Criteria>();
 
-  @ViewChild('nameSearchInput', { read: MatAutocompleteTrigger })
+  @ViewChild('nameSearchInput', { read: MatAutocompleteTrigger, static: true })
   private autoCmpltTrg: MatAutocompleteTrigger;
 
-  @ViewChild(MatAutocomplete)
+  @ViewChild(MatAutocomplete, { static: true })
   private autoCmplt: MatAutocomplete;
 
   private model: any;

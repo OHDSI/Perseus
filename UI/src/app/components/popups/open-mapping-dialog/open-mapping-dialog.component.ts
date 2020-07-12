@@ -10,7 +10,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
   styleUrls: ['./open-mapping-dialog.component.scss']
 })
 export class OpenMappingDialogComponent implements OnInit {
-  @ViewChild(SavedMappingsComponent) controller: SavedMappingsComponent;
+  @ViewChild(SavedMappingsComponent, { static: true }) controller: SavedMappingsComponent;
 
   target = {};
   action = '';

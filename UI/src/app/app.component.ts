@@ -1,23 +1,15 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  Renderer,
-  Renderer2
-} from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { DomSanitizer } from '@angular/platform-browser';
-import { debounceTime, map } from 'rxjs/operators';
-import { fromEvent } from 'rxjs';
-import { BridgeService } from './services/bridge.service';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog, MatIconRegistry, MatSnackBar } from '@angular/material';
-import { StateService } from './services/state.service';
-import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
-import { UploadService } from './services/upload.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { fromEvent } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
+import { BridgeService } from './services/bridge.service';
 import { DataService } from './services/data.service';
+import { StateService } from './services/state.service';
+import { UploadService } from './services/upload.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +17,7 @@ import { DataService } from './services/data.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnDestroy {
-  @ViewChild('sourceUpload') fileInput: ElementRef;
+  @ViewChild('sourceUpload', { static: true }) fileInput: ElementRef;
 
   mobileQuery: MediaQueryList;
 
@@ -42,7 +34,7 @@ export class AppComponent implements OnDestroy {
     private matDialog: MatDialog,
     private state: StateService,
     private dataService: DataService,
-    private renderer: Renderer,
+    private renderer: Renderer2,
     private uploadService: UploadService,
     private snakbar: MatSnackBar,
     private matIconRegistry: MatIconRegistry,
@@ -86,7 +78,7 @@ export class AppComponent implements OnDestroy {
     const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
       closeOnNavigation: true,
       disableClose: true,
-      data: { action, target: this.state.Target }
+      data: {action, target: this.state.Target}
     });
 
     matDialog.afterClosed().subscribe(result => {
@@ -118,11 +110,7 @@ export class AppComponent implements OnDestroy {
       null
     );
 
-    this.renderer.invokeElementMethod(
-      this.fileInput.nativeElement,
-      'dispatchEvent',
-      [event]
-    );
+    this.fileInput.nativeElement.dispatchEvent(event);
   }
 
   onFileUpload(event: any): void {

@@ -22,7 +22,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 })
 export class AreaComponent implements AfterViewInit {
   @Input() area: Area;
-  @ViewChild('scrollabale') scrollableContent;
+  @ViewChild('scrollabale', { static: true }) scrollableContent;
 
   constructor(
     private commonService: CommonService,
