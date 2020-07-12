@@ -36,7 +36,7 @@ export class MappingComponent extends BaseComponent
 
   @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
   @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
-  @ViewChild('sourcePanel', { static: false }) sourcePanel: PanelTableComponent;
+  @ViewChild('sourcePanel') sourcePanel: PanelTableComponent;
 
   clickArrowSubscriptions = [];
   panelsViewInitialized = new Set();

@@ -89,7 +89,7 @@ export class ComfyComponent extends BaseComponent
     super();
   }
 
-  @ViewChild("scrollEl", { static: false })
+  @ViewChild("scrollEl")
   scrollEl: ElementRef<HTMLElement>;
 
   @ViewChildren(CdkDrag)

@@ -8,8 +8,8 @@ import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-dat
   styleUrls: ['./add-constant-popup.component.scss']
 })
 export class AddConstantPopupComponent {
-  @ViewChild('readOnlyTemplate', { static: false }) readOnlyTemplate: TemplateRef<any>;
-  @ViewChild('editTemplate', { static: false }) editTemplate: TemplateRef<any>;
+  @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
+  @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
 
   value: string;
 

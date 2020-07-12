@@ -37,7 +37,7 @@ export class PanelTableComponent extends BaseComponent
 
   @Output() openTransform = new EventEmitter<any>();
 
-  @ViewChild('htmlElement', { read: ElementRef, static: false }) element: HTMLElement;
+  @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
   @ViewChild('tableComponent', { static: true }) tableComponent: MatTable<IRow[]>;
 
   get area() {
