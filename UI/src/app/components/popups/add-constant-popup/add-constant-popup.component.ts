@@ -9,7 +9,7 @@ import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 })
 export class AddConstantPopupComponent {
   @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
-  @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
+  @ViewChild('editTemplate', {static: true}) editTemplate: TemplateRef<any>;
 
   value: string;
 
