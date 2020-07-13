@@ -355,7 +355,7 @@ export class ComfyComponent extends BaseComponent
     this.highlitedtables = Object.keys(indexes).filter(tableName => {
       return (
         indexes[tableName].length > 0 &&
-        !(indexes[tableName].findIndex(idx => idx === -1) > -1)
+        (indexes[tableName].findIndex(idx => idx > -1) > -1)
       );
     });
 
