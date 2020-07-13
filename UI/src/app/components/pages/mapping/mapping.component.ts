@@ -98,12 +98,15 @@ export class MappingComponent extends BaseComponent
 
   previewMapping() {
     const mapping = this.bridgeService.generateMapping();
-    const source_table = mapping['mapping_items'][0]['source_table'];
+    if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
+      return;
+    }
+    const sourceTable = mapping.mapping_items[0].source_table;
     this.dataService
       .getXmlPreview(mapping)
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(_ => this.dataService.getSqlPreview(source_table))
+        switchMap(_ => this.dataService.getSqlPreview(sourceTable))
       )
       .subscribe(json => {
         this.matDialog.open(PreviewPopupComponent, {
