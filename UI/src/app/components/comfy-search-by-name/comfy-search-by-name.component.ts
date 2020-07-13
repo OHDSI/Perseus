@@ -60,18 +60,18 @@ export class ComfySearchByNameComponent extends BaseComponent
   }
 
   search(textCriteria: string) {
-    if(textCriteria==''){
+    if(textCriteria=='') {
       this.clear()
+    } else {
+      const searchCriteria: Criteria = {
+        filtername: 'by-name',
+        criteria: textCriteria
+      };
+      this.complete.emit(searchCriteria);
+      this.autoCmpltTrg.closePanel();
     }
-    else{
-    const searchCriteria: Criteria = {
-      filtername: 'by-name',
-      criteria: textCriteria
-    };
-    this.complete.emit(searchCriteria);
-    this.autoCmpltTrg.closePanel();
   }
-  }
+  
   clear(): void {
     this.dbNameFormControl.reset();
 
