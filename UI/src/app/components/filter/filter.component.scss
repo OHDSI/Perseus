@@ -65,19 +65,6 @@ section {
     align-items: center;
 }
 
-// mat-checkbox {
-//     color: rgb(0,178,0);
-//     /deep/ .mat-checkbox-background {
-//         background-color: rgb(0,178,0);
-//     }
-
-//     /deep/ &.mat-checkbox-focused{
-//         .mat-ink-ripple{
-//             background-color: rgba(0, 178, 0, .26);
-//         }
-//     }
-// }
-
 mat-card ::-webkit-scrollbar-track
 {
 	border-radius: 100px;

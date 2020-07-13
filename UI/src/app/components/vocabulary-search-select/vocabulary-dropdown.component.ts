@@ -13,7 +13,7 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
 import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
-import { MatSelect } from '@angular/material';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-vocabulary-dropdown',
@@ -29,7 +29,7 @@ export class VocabularyDropdownComponent extends BaseComponent
   @Input() showDefaultOption = false;
   @Output() value = new EventEmitter<DictionaryItem[]>();
 
-  @ViewChild(MatSelect) matselect: MatSelect;
+  @ViewChild(MatSelect, { static: true }) matselect: MatSelect;
 
   vocabularySelect: FormControl = new FormControl();
   vocabularyFilter: FormControl = new FormControl();

@@ -1,32 +1,23 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
-  HostListener,
-  OnDestroy
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { saveAs } from 'file-saver';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
+import { ITable, Table } from 'src/app/models/table';
+import { BridgeService } from 'src/app/services/bridge.service';
+import { CommonService } from 'src/app/services/common.service';
+import { DataService } from 'src/app/services/data.service';
 
-import { StateService } from "src/app/services/state.service";
-import { DataService } from "src/app/services/data.service";
-import { CommonService } from "src/app/services/common.service";
-import { BridgeService } from "src/app/services/bridge.service";
-import { saveAs } from "file-saver";
-import { MatDialog } from "@angular/material";
-import { PreviewPopupComponent } from "../../popaps/preview-popup/preview-popup.component";
-import { ITable, Table } from "src/app/models/table";
-import { RulesPopupService } from "../../popaps/rules-popup/services/rules-popup.service";
-import { switchMap, takeUntil } from "rxjs/operators";
-import { BaseComponent } from "../../base/base.component";
-import { PanelTableComponent } from "../../panel/panel-table/panel-table.component";
-import { MappingPageSessionStorage } from "src/app/models/implementation/mapping-page-session-storage";
+import { StateService } from 'src/app/services/state.service';
+import { BaseComponent } from '../../base/base.component';
+import { PanelTableComponent } from '../../panel/panel-table/panel-table.component';
+import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
+import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 
 @Component({
-  selector: "app-mapping",
-  templateUrl: "./mapping.component.html",
-  styleUrls: ["./mapping.component.scss"]
+  selector: 'app-mapping',
+  templateUrl: './mapping.component.html',
+  styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent extends BaseComponent
   implements OnInit, OnDestroy, AfterViewInit {
@@ -36,16 +27,16 @@ export class MappingComponent extends BaseComponent
   tabIndex = 0;
 
   get hint(): string {
-    return "no hint";
+    return 'no hint';
   }
 
   get state() {
     return this.stateService.state;
   }
 
-  @ViewChild("arrowsarea", { read: ElementRef }) svgCanvas: ElementRef;
-  @ViewChild("maincanvas", { read: ElementRef }) mainCanvas: ElementRef;
-  @ViewChild("sourcePanel") sourcePanel: PanelTableComponent;
+  @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
+  @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
+  @ViewChild('sourcePanel') sourcePanel: PanelTableComponent;
 
   clickArrowSubscriptions = [];
   panelsViewInitialized = new Set();
@@ -65,7 +56,7 @@ export class MappingComponent extends BaseComponent
   }
 
   ngOnInit() {
-    this.mappingStorage.get("mappingpage").then(data => {
+    this.mappingStorage.get('mappingpage').then(data => {
       this.source = data.source.map(table => new Table(table));
       this.target = data.target.map(table => new Table(table));
 
@@ -94,9 +85,9 @@ export class MappingComponent extends BaseComponent
 
   }
 
-  @HostListener("document:keyup", ["$event"])
+  @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === "Delete") {
+    if (event.key === 'Delete') {
       this.bridgeService.deleteSelectedArrows();
     }
   }
@@ -107,18 +98,21 @@ export class MappingComponent extends BaseComponent
 
   previewMapping() {
     const mapping = this.bridgeService.generateMapping();
-    const source_table = mapping["mapping_items"][0]["source_table"]
+    if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
+      return;
+    }
+    const sourceTable = mapping.mapping_items[0].source_table;
     this.dataService
       .getXmlPreview(mapping)
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(_ => this.dataService.getSqlPreview(source_table))
+        switchMap(_ => this.dataService.getSqlPreview(sourceTable))
       )
       .subscribe(json => {
         this.matDialog.open(PreviewPopupComponent, {
           data: json,
-          maxHeight: "80vh",
-          minWidth: "80vh"
+          maxHeight: '80vh',
+          minWidth: '80vh'
         });
       });
   }

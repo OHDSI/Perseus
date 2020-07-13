@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { ITable, Table } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';

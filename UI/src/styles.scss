@@ -3,78 +3,94 @@
 @import "~prismjs/themes/prism-okaidia";
 
 html, body {
-    height: 100%;
-
-    * {
-        font-family: 'Akzidenz-Grotesk Pro', Arial, Helvetica, sans-serif;
-    }
-
+  height: 100%;
+  @extend .mat-typography;
+  color: $cdm-grey;
 }
 
 body {
-    margin: 0;
+  margin: 0;
+}
+
+.divider {
+  flex: 1 1 auto;
 }
 
 .dialog-arrow {
-    border-color: transparent;
-    border-bottom-color: white;
-    border-style: dashed dashed solid;
-    border-width: 0 8.5px 8.5px;
-    position: absolute;
-    top: 37px;
-    z-index: 1001;
-    height: 0;
-    width: 0;
-    -webkit-animation: gb__a 100ms;
-    animation: gb__a 100ms;
-    filter: drop-shadow( 0 -2px 1px rgba(0,0,0,.05));
+  border-color: transparent;
+  border-bottom-color: white;
+  border-style: dashed dashed solid;
+  border-width: 0 8.5px 8.5px;
+  position: absolute;
+  top: 37px;
+  z-index: 1001;
+  height: 0;
+  width: 0;
+  -webkit-animation: gb__a 100ms;
+  animation: gb__a 100ms;
+  filter: drop-shadow(0 -2px 1px rgba(0, 0, 0, .05));
 }
 
-@-webkit-keyframes gb__a{0%{opacity:0}50%{opacity:1}}
-@keyframes gb__a{0%{opacity:0}50%{opacity:1}}
+@-webkit-keyframes gb__a {
+  0% {
+    opacity: 0
+  }
+  50% {
+    opacity: 1
+  }
+}
+
+@keyframes gb__a {
+  0% {
+    opacity: 0
+  }
+  50% {
+    opacity: 1
+  }
+}
 
 .mat-expansion-panel-body {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .mat-menu-content {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 app-dialog {
-    width: 240px;
+  width: 240px;
 }
 
 
 .drag-over {
-    background-color: #DCECF9;
-    outline: #066BBB auto;
+  background-color: #DCECF9;
+  outline: #066BBB auto;
 }
 
 .mat-menu-panel {
-    border-radius: 0 !important;
+  border-radius: 0 !important;
 }
 
 .mat-card {
-    border-radius: 0 !important;
-    background-color: #F9F9F9;
-    box-shadow:  0px 0px 6px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 0 !important;
+  background-color: #F9F9F9;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 .mat-dialog-container {
-    border-radius: 0 !important;
-    background-color: #F9F9F9;
+  border-radius: 0 !important;
+  background-color: #F9F9F9;
 }
 
 .mat-table {
-    background-color: #F9F9F9;
+  background-color: #F9F9F9;
 }
 
 .mat-radio-container,
 .mat-radio-outer-circle,
 .mat-radio-inner-circle {
-    width: 15px !important;
-    height: 15px !important;
+  width: 15px !important;
+  height: 15px !important;
 }
 
 ::-webkit-scrollbar {
@@ -101,24 +117,24 @@ app-dialog {
   background-color: rgba(255, 255, 255, 0.5);
 
   & * {
-      color: #C0C0C0 !important;
+    color: #C0C0C0 !important;
   }
 }
 
 
 path {
-  stroke-width:1;
+  stroke-width: 1;
 
   &.arrow {
     stroke: #808080;
   }
 
   &.arrow:hover {
-    stroke-width:5;
+    stroke-width: 5;
   }
 
   &.selected {
-    stroke:#066BBB;
+    stroke: #066BBB;
   }
 }
 

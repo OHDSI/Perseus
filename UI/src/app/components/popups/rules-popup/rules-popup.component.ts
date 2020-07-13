@@ -12,7 +12,7 @@ import { RulesPopupService } from './services/rules-popup.service';
   styleUrls: ['./rules-popup.component.scss']
 })
 export class RulesPopupComponent {
-  @ViewChild('tinput') tinput: TransformationInputComponent;
+  @ViewChild('tinput', { static: true }) tinput: TransformationInputComponent;
 
   selectedTransform: SqlFunction = new SqlFunction();
 
