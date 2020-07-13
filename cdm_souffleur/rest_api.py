@@ -32,7 +32,7 @@ def _allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/load_schema', methods=['GET', 'POST'])
+@app.route('/api/load_schema', methods=['GET', 'POST'])
 def load_schema():
     """save source schema to server side"""
     if request.method == 'POST':
@@ -57,14 +57,14 @@ def load_schema():
     '''
 
 
-@app.route('/get_existing_source_schemas_list', methods=['GET'])
+@app.route('/api/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
     """return list of saved source schemas"""
     return jsonify(
         get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
 
 
-@app.route('/load_saved_source_schema', methods=['GET'])
+@app.route('/api/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
     """load saved source schema by name"""
     # set_book_to_none()
@@ -78,7 +78,7 @@ def load_saved_source_schema_call():
         raise InvalidUsage('Schema was not loaded', 404)
 
 
-@app.route('/delete_saved_source_schema', methods=['GET'])
+@app.route('/api/delete_saved_source_schema', methods=['GET'])
 def delete_saved_source_schema_call():
     """delete saved source schema by name"""
     schema_name = request.args['schema_name']
@@ -90,13 +90,13 @@ def delete_saved_source_schema_call():
         raise InvalidUsage('Schema was not loaded', 404)
 
 
-@app.route('/get_cdm_versions')
+@app.route('/api/get_cdm_versions')
 def get_cdm_versions_call():
     """return available CDM versions schema list"""
     return jsonify(get_exist_version())
 
 
-@app.route('/get_cdm_schema')
+@app.route('/api/get_cdm_schema')
 def get_cdm_schema_call():
     """return CDM schema for target version"""
     cdm_version = request.args['cdm_version']
@@ -104,7 +104,7 @@ def get_cdm_schema_call():
     return jsonify([s.to_json() for s in cdm_schema])
 
 
-@app.route('/get_source_schema')
+@app.route('/api/get_source_schema')
 def get_source_schema_call():
     """return with source schema based on White Rabbit report"""
     path = request.args['path']
@@ -112,7 +112,7 @@ def get_source_schema_call():
     return jsonify([s.to_json() for s in source_schema])
 
 
-@app.route('/get_top_values')
+@app.route('/api/get_top_values')
 def get_top_values_call():
     """return top 10 values by freq for table and row(optionally)
     based on WR report
@@ -149,28 +149,28 @@ def handle_invalid_req_key_header(error):
     return response
 
 
-@app.route('/get_lookup_list')
+@app.route('/api/get_lookup_list')
 def get_lookups_call():
     """return lookups list of ATHENA vocabulary"""
     lookups = return_lookup_list()
     return jsonify(lookups)
 
 
-@app.route('/get_domain_list')
+@app.route('/api/get_domain_list')
 def get_domains_call():
     """return domains list of ATHENA vocabulary"""
     domains = return_domain_list()
     return jsonify(domains)
 
 
-@app.route('/get_concept_class_list')
+@app.route('/api/get_concept_class_list')
 def get_concept_classes_call():
     """return concept class list of ATHENA vocabulary"""
     concept_classes = return_concept_class_list()
     return jsonify(concept_classes)
 
 
-@app.route('/get_xml', methods=['POST'])
+@app.route('/api/get_xml', methods=['POST'])
 def xml():
     """return XML for CDM builder in map {source_table: XML, } and
     create file on back-end
@@ -180,7 +180,7 @@ def xml():
     return jsonify(xml_)
 
 
-@app.route('/get_lookup_sql', methods=['POST'])
+@app.route('/api/get_lookup_sql', methods=['POST'])
 def get_lookup_sql_call():
     """generate sql's for lookups, also return to front"""
     json = request.get_json()
@@ -188,7 +188,7 @@ def get_lookup_sql_call():
     return jsonify(sql_)
 
 
-@app.route('/get_zip_xml')
+@app.route('/api/get_zip_xml')
 def zip_xml_call():
     """return attached ZIP of XML's from back-end folder
     TODO  - now the folder is not cleared
@@ -204,7 +204,7 @@ def zip_xml_call():
                                as_attachment=True)
 
 
-@app.route('/clear_xml_dir')
+@app.route('/api/clear_xml_dir')
 def clear_xml_dir_call():
     """clear directory with mapping items"""
     try:
@@ -214,7 +214,7 @@ def clear_xml_dir_call():
     return 'OK'
 
 
-@app.route('/clear_sql_dir')
+@app.route('/api/clear_sql_dir')
 def clear_sql_dir_call():
     """clear directory with lookup sql's items"""
     try:
@@ -224,7 +224,7 @@ def clear_sql_dir_call():
     return 'OK'
 
 
-@app.route('/find_domain')
+@app.route('/api/find_domain')
 def find_domain_call():
     """load report and vocabulary before, return matched codes"""
     column_name = request.args['column_name']
@@ -237,7 +237,7 @@ def find_domain_call():
     return jsonify(found_codes)
 
 
-@app.route('/get_generated_sql', methods=['GET'])
+@app.route('/api/get_generated_sql', methods=['GET'])
 def get_sql_call():
     """return sql's from generated mapping"""
     source_table_name = request.args['source_table_name']
@@ -245,7 +245,7 @@ def get_sql_call():
     return jsonify(sql)
 
 
-@app.route('/load_report')
+@app.route('/api/load_report')
 def load_report_call():
     """load report about source schema"""
     schema_name = request.args['schema_name']
@@ -256,7 +256,7 @@ def load_report_call():
     return 'OK'
 
 
-@app.route('/load_vocabulary')
+@app.route('/api/load_vocabulary')
 def load_vocabulary_call():
     """load vocabulary"""
     # TODO rewrite to threading instead _thread?
@@ -265,7 +265,7 @@ def load_vocabulary_call():
     return 'OK'
 
 
-@app.route('/set_db_connection')
+@app.route('/api/set_db_connection')
 def set_db_connection_call():
     connection_string = request.headers['connection-string']
     Database().get_engine(connection_string)
