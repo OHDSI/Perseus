@@ -59,7 +59,7 @@ $light-bg-darker-5:   darken($light-background, 5%);
 $light-bg-darker-10:  darken($light-background, 10%);
 $light-bg-darker-20:  darken($light-background, 20%);
 $light-bg-darker-30:  darken($light-background, 30%);
-$light-bg-lighter-5:  lighten($light-background, 5%);
+$light-bg-lighter-5:  $cdm-background-grey-light;
 $dark-bg-tooltip:     lighten($cdm-grey, 20%);
 $dark-bg-alpha-4:     rgba($cdm-grey, 0.04);
 $dark-bg-alpha-12:    rgba($cdm-grey, 0.12);
@@ -73,7 +73,7 @@ $mat-light-theme-background: (
   dialog:                   $light-bg-lighter-5,
   tooltip:                  $dark-bg-tooltip,
   disabled-button:          $dark-bg-alpha-12,
-  raised-button:            $light-bg-lighter-5,
+  raised-button:            #e5e5e5,
   focused-button:           $dark-focused,
   selected-button:          $light-bg-darker-20,
   selected-disabled-button: $light-bg-darker-30,

@@ -1,11 +1,17 @@
+@import '~@angular/material/theming';
+
 @import 'app/styles/theme.scss';
-@import "~prismjs/plugins/toolbar/prism-toolbar.css";
-@import "~prismjs/themes/prism-okaidia";
+@import 'app/styles/overlays.scss';
+@import '~prismjs/plugins/toolbar/prism-toolbar.css';
+@import '~prismjs/themes/prism-okaidia';
 
 html, body {
   height: 100%;
   @extend .mat-typography;
   color: $cdm-grey;
+  > * {
+    box-sizing: border-box;
+  }
 }
 
 body {
@@ -148,12 +154,9 @@ path {
   padding: 0 10px !important;
 }
 
-//.mat-form-field-flex > .mat-form-field-infix { padding: 0.4em 0px !important;}
-//.mat-form-field-label-wrapper { top: -1.5em; }
-
-//  .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
-//     transform: translateY(-1.1em) scale(.75);
-//     width: 133.33333%;
-// }
+button.mat-raised-button.mat-button-base {
+  border-radius: 2px ;
+  @include mat-elevation(0);
+}
 
 

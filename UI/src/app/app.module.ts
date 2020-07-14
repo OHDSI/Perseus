@@ -47,6 +47,8 @@ import { VocabularyConfigComponent } from './components/vocabulary-transform-con
 import { HighlightDirective } from './directives/highlight-table.directive';
 import { MappingPageSessionStorage } from './models/implementation/mapping-page-session-storage';
 import { CommentService } from './services/comment.service';
+import { CommonUtilsService } from './services/common-utils.service';
+import { HttpService } from './services/http.service';
 import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
@@ -94,6 +96,7 @@ import { VocabulariesService } from './services/vocabularies.service';
     NgxMatSelectSearchModule
   ],
   providers: [
+    HttpService,
     OverlayService,
     DataService,
     CommonService,
@@ -107,6 +110,7 @@ import { VocabulariesService } from './services/vocabularies.service';
     RulesPopupService,
     VocabulariesService,
     ConceptService,
+    CommonUtilsService,
     [{provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}],
     MappingPageSessionStorage
   ],
