@@ -147,6 +147,11 @@ div[highlighted="true"] {
   padding-right: 10px;
 }
 
+.scrolled-items-rtl {
+  @extend .scrolled-items;
+  direction: rtl;
+}
+
 div[concept="true"] {
   background-color: #a6d2f4;
 }
