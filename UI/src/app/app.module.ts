@@ -29,6 +29,7 @@ import { HighlightConceptDirective } from './components/comfy/directives/highlig
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { ConceptService } from './components/comfy/services/concept.service';
 import { AddConstantPopupComponent } from './components/popups/add-constant-popup/add-constant-popup.component';
+import { CdmVersionDialogComponent } from './components/popups/cdm-version-dialog/cdm-version-dialog.component';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { PreviewPopupComponent } from './components/popups/preview-popup/preview-popup.component';
 import { PrismComponent } from './components/popups/preview-popup/prism.component';
@@ -69,6 +70,7 @@ import { VocabulariesService } from './services/vocabularies.service';
     HighlightDirective,
     SavedMappingsComponent,
     OpenMappingDialogComponent,
+    CdmVersionDialogComponent,
     TransformationInputComponent,
     AddConstantPopupComponent,
     PrismComponent,

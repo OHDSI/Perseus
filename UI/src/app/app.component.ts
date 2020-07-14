@@ -134,8 +134,8 @@ export class AppComponent implements OnDestroy {
     this.bridgeService.loadSavedSchema(files[0].name);
   }
 
-  openSetCDMDialog(open: string) {
-
+  openSetCDMDialog() {
+    this.commonUtilsService.openSetCDMDialog();
   }
 }
 
