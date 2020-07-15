@@ -2,6 +2,7 @@ import { ArrowCache } from './arrow-cache';
 import { Row } from './row';
 import { IConnection } from '../services/bridge.service';
 import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
+import * as circularJson from 'circular-json';
 
 export interface ConfigurationOptions {
   name?: string;
@@ -11,7 +12,7 @@ export interface ConfigurationOptions {
 
 export class Configuration {
   get arrows(): any {
-    const rows = JSON.parse(this.mappingsConfiguration);
+    const rows = circularJson.parse(this.mappingsConfiguration);
     Object.values(rows).forEach((row: IConnection) => {
       const { source, target, transforms } = row;
       row.source = Object.setPrototypeOf(source, Row.prototype);
@@ -31,7 +32,7 @@ export class Configuration {
 
   constructor(options: ConfigurationOptions = {}) {
     this.name = options.name;
-    this.mappingsConfiguration = JSON.stringify(options.mappingsConfiguration);
+    this.mappingsConfiguration = circularJson.stringify(options.mappingsConfiguration);
     this.tablesConfiguration = JSON.stringify(options.tablesConfiguration);
   }
 }

@@ -33,7 +33,7 @@ export class Arrow implements IConnector {
     public target: IRow,
     private renderer: Renderer2
   ) {
-    this.canvas = canvasRef.nativeElement;
+    this.canvas = canvasRef ? canvasRef.nativeElement : null;
     this.clicked = new EventEmitter<IConnector>();
     this.type = this.getType();
   }

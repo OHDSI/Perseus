@@ -57,8 +57,14 @@ export class MappingComponent extends BaseComponent
 
   ngOnInit() {
     this.mappingStorage.get('mappingpage').then(data => {
-      this.source = data.source.map(table => new Table(table));
-      this.target = data.target.map(table => new Table(table));
+      this.source = data.source.map(table => {
+        table.expanded = true;
+        return new Table(table);
+      });
+      this.target = data.target.map(table => {
+        table.expanded = true;
+        return new Table(table);
+      });
 
       setTimeout(() => {
         this.bridgeService.refresh(this.target);
