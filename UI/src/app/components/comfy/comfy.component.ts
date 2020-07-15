@@ -244,10 +244,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
     this.state.target.tables.map(table => {
       if (this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name) < 0) {
-        this.target[table.name] = {};
-        this.target[table.name].name = `${prefix}-${table.name}`;
-        this.target[table.name].first = table.name;
-        this.target[table.name].data = [table.name];
+        const tableName = table.name;
+        this.target[tableName] = {
+          name: `${prefix}-${tableName}`,
+          first: tableName,
+          data: [tableName]
+        }
       }
     });
 
@@ -270,10 +272,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      const container = event.container;
-      const previousContainer = event.previousContainer;
+      const {container , previousContainer, previousIndex} = event;
       const data = container.data;
-      const previousIndex = event.previousIndex;
 
       if (previousContainer === container) {
         moveItemInArray(data, previousIndex, event.currentIndex);
