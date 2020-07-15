@@ -9,7 +9,7 @@ from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
-    get_existing_source_schemas_list, get_top_values, extract_sql
+    get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, load_saved_source_schema_from_server
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 from cdm_souffleur.utils.utils import Database
@@ -23,13 +23,6 @@ app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 app.secret_key = 'mdcr'
-ALLOWED_EXTENSIONS = {'xlsx'}
-
-
-def _allowed_file(filename):
-    """check allowed extension of file"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/api/load_schema', methods=['GET', 'POST'])
@@ -37,15 +30,7 @@ def load_schema():
     """save source schema to server side"""
     if request.method == 'POST':
         file = request.files['file']
-        if file and _allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            try:
-                os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
-                print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
-            except FileExistsError:
-                print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
-            file.save(str(app.config['UPLOAD_FOLDER'] / filename))
-            file.close()
+        load_schema_to_server(file)
     return jsonify(success=True)
 
 
@@ -59,13 +44,24 @@ def get_existing_source_schemas_list_call():
 @app.route('/api/load_saved_source_schema', methods=['GET'])
 def load_saved_source_schema_call():
     """load saved source schema by name"""
-    # set_book_to_none()
     schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list(
-            app.config['UPLOAD_FOLDER']):
-        source_schema = get_source_schema(
-            app.config['UPLOAD_FOLDER'] / schema_name)
-        return jsonify([s.to_json() for s in source_schema])
+    saved_schema = load_saved_source_schema_from_server(schema_name)
+    if saved_schema is not None:
+        return jsonify([s.to_json() for s in saved_schema])
+    else:
+        raise InvalidUsage('Schema was not loaded', 404)
+
+
+@app.route('/api/save_and_load_schema', methods=['GET', 'POST'])
+def save_and_load_schema_call():
+    """save schema to server and load it from server in the same request"""
+    delete_generated_xml() #remove Definitions directory
+    if request.method == 'POST':
+        file = request.files['file']
+        load_schema_to_server(file)
+    saved_schema = load_saved_source_schema_from_server(file.filename)
+    if saved_schema is not None:
+        return jsonify([s.to_json() for s in saved_schema])
     else:
         raise InvalidUsage('Schema was not loaded', 404)
 

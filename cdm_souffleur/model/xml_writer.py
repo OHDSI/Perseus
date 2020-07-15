@@ -267,7 +267,7 @@ def delete_generated_xml():
     try:
         rmtree(GENERATE_CDM_XML_PATH)
     except FileNotFoundError:
-        raise
+        print(f"Directory {GENERATE_CDM_XML_PATH} does not exist")
 
 
 def delete_generated_sql():

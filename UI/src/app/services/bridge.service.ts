@@ -59,7 +59,7 @@ export class BridgeService {
   applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
   loadSavedSchema$ = new Subject<any>();
-
+  saveAndLoadSchema$ = new Subject<any>();
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;

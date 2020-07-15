@@ -6,6 +6,7 @@ import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
@@ -17,8 +18,10 @@ import xlrd
 from cdm_souffleur.utils.utils import Database
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import json
+from werkzeug.utils import secure_filename
 
 book = None
+ALLOWED_EXTENSIONS = {'xlsx'}
 
 with open('configuration/default.json', 'r') as configuration_file:
     configuration = json.load(configuration_file)
@@ -135,11 +138,11 @@ def _flatten_pd_df(pd_df: pd.DataFrame):
 
 def extract_sql(source_table_name):
     result = {}
-    file_to_select = source_table_name+'.xml'
+    file_to_select = source_table_name + '.xml'
     for root_dir, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
         for filename in files:
             if filename == file_to_select:
-                file_tree = ElementTree.parse(Path(root_dir) / filename)
+                file_tree = ElementTree.parse(f"{Path(root_dir)}/{filename}")
                 query = file_tree.find('Query').text.upper()
                 for k, v in FORMAT_SQL_FOR_SPARK_PARAMS.items():
                     query = query.replace(k, v)
@@ -153,30 +156,28 @@ def prepare_source_data(filepath=Path('D:/mdcr.xlsx')):
     load_report(filepath)
     for root_dir, dirs, files in os.walk(Path('generate/CDM_xml')):
         for filename in files:
-            file_tree = ElementTree.parse(Path(root_dir) / filename)
+            file_tree = ElementTree.parse(f"{Path(root_dir)}/{filename}")
             query = file_tree.find('Query').text.upper()
             for k, v in FORMAT_SQL_FOR_SPARK_PARAMS.items():
                 query = query.replace(k, v)
             filtered_data = spark_.sql(query)
             # TODO move write metadata to separete def
-            with open(GENERATE_CDM_SOURCE_METADATA_PATH / (
-                    filename + '.txt'), mode='x') as metadata_file:
+            with open(f"{GENERATE_CDM_SOURCE_METADATA_PATH}/{filename}.txt", mode='x') as metadata_file:
                 csv_writer = csv.writer(metadata_file, delimiter=',',
                                         quotechar='"')
                 header = filtered_data.columns
                 csv_writer.writerow(header)
             filtered_data.collect
             filtered_data.write.csv(
-                str(GENERATE_CDM_SOURCE_DATA_PATH / filename),
+                f"{GENERATE_CDM_SOURCE_DATA_PATH}/{filename}",
                 compression='gzip', quote='`', nullValue='\0',
                 dateFormat='yyyy-MM-dd')
             # TODO move rename to separate def
             old_filename = glob.glob(
-                str(GENERATE_CDM_SOURCE_DATA_PATH / filename / '*.gz'))
-            new_filename = str(
-                GENERATE_CDM_SOURCE_DATA_PATH / (filename + '.gz'))
+                f"{GENERATE_CDM_SOURCE_DATA_PATH}/{filename}*.gz")
+            new_filename = f"{GENERATE_CDM_SOURCE_DATA_PATH}/{filename}.gz"
             os.rename(old_filename[0], new_filename)
-            shutil.rmtree(str(GENERATE_CDM_SOURCE_DATA_PATH / filename))
+            shutil.rmtree(f"{GENERATE_CDM_SOURCE_DATA_PATH}/{filename}")
 
 
 def get_existing_source_schemas_list(path):
@@ -186,6 +187,42 @@ def get_existing_source_schemas_list(path):
 def set_book_to_none():
     global book
     book = None
+
+
+def _allowed_file(filename):
+    """check allowed extension of file"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def load_schema_to_server(file):
+    """save source schema to server side"""
+    if file and _allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        try:
+            os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
+            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
+        except FileExistsError:
+            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
+        file.save(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{filename}")
+        file.close()
+    return
+
+
+def load_saved_source_schema_from_server(schema_name):
+    """load saved source schema by name"""
+    if schema_name in get_existing_source_schemas_list(
+            UPLOAD_SOURCE_SCHEMA_FOLDER):
+        source_schema = get_source_schema(
+            f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{schema_name}")
+        return source_schema
+    else:
+        return None
+
+# def remove_existing_mappings():
+#     for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
+#         for f in files:
+#             os.unlink(os.path.join(root, f))
 
 
 if __name__ == '__main__':

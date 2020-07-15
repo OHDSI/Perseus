@@ -206,7 +206,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         );
       });
 
-    this.bridgeService.loadSavedSchema$
+    this.bridgeService.saveAndLoadSchema$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
         this.initializeData();
