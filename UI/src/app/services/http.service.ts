@@ -14,7 +14,8 @@ const API_URLS = {
   getTopValues: (tableName, columnName) => `${URL}/get_top_values?table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
   getSqlPreview: (name) => `${URL}/get_generated_sql?source_table_name=${name}`,
-  postLoadSchema: () => `${URL}/load_schema`
+  postLoadSchema: () => `${URL}/load_schema`,
+  postSaveLoadSchema: () => `${URL}/save_and_load_schema`
 
 };
 
@@ -55,6 +56,10 @@ export class HttpService {
 
   postLoadSchema(formData: FormData) {
     return this.httpClient.post(API_URLS.postLoadSchema(), formData);
+  }
+
+  postSaveLoadSchema(formData: FormData) {
+    return this.httpClient.post(API_URLS.postSaveLoadSchema(), formData);
   }
 
 }

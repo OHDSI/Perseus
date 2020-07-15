@@ -78,20 +78,6 @@ export class AppComponent implements OnDestroy {
   openSetCDMDialog() {
     this.commonUtilsService.openSetCDMDialog();
   }
-
-  onFileUpload2(event: any): void {
-    this.bridgeService.resetAllMappings();
-    const files = event.srcElement.files;
-    const url = environment.url.concat('/save_and_load_schema');
-    this.uploadService
-      .putFileOnServer('POST', url, [], files)
-      .then(data => {
-        this.bridgeService.saveAndLoadSchema(JSON.parse(data))
-      })
-      .catch(errResponce => {
-        console.log(errResponce);
-      });
-  }
 }
 
 
