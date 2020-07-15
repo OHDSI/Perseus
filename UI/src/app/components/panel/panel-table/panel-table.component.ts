@@ -86,6 +86,7 @@ export class PanelTableComponent extends BaseComponent
 
   ngOnInit(): void {
     this.dataSourceInit(this.table.rows);
+    this.bridgeService.refreshAll();
 
     this.bridgeService.deleteAll
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -115,10 +116,7 @@ export class PanelTableComponent extends BaseComponent
 
   addConnection(connection: IConnection) {
     this.table.rows.forEach(row => {
-      if (
-        row.tableId === connection[this.table.area].tableId &&
-        row.id === connection[this.table.area].id
-      ) {
+      if (row.tableId === connection[this.table.area].tableId && row.id === connection[this.table.area].id) {
         this.rowConnections[row.key] = true;
       }
     });
@@ -231,7 +229,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   showConnectorPinElement(connection: IConnection, area: Area) {
-    const rowId = connection[area].htmlElement.attributes.id.nodeValue;
+    const rowId = connection[area].name;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName('connector-pin');
     for (let i = 0; i < collection.length; i++) {
@@ -247,7 +245,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   hideConnectorPin(connection: IConnection, area: Area) {
-    const rowId = connection[area].htmlElement.attributes.id.nodeValue;
+    const rowId = connection[area].name;
     const element = document.getElementById(rowId);
     const collection = element.getElementsByClassName('connector-pin');
     for (let i = 0; i < collection.length; i++) {

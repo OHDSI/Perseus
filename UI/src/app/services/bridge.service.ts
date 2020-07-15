@@ -176,6 +176,9 @@ export class BridgeService {
         const source = this.stateService.findTable(arrow.source.tableName);
         const target = this.stateService.findTable(arrow.target.tableName);
 
+        source.expanded = true;
+        target.expanded = true;
+
         this.refreshConnector(arrow, source, target);
       });
     }, 300);
@@ -190,6 +193,8 @@ export class BridgeService {
       );
 
       this.arrowsCache[connector.id].connector = connector;
+
+      this.connection.next(this.arrowsCache[connector.id]);
     }
   }
 
@@ -208,19 +213,15 @@ export class BridgeService {
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {
     Object.keys(this.arrowsCache).forEach(key => {
       if (
-        this.arrowsCache[key].target.tableName.toUpperCase() ===
-        targetTableName.toUpperCase() &&
-        this.arrowsCache[key].source.tableName.toUpperCase() ===
-        sourceTableName.toUpperCase()
+        this.arrowsCache[key].target.tableName.toUpperCase() === targetTableName.toUpperCase() &&
+        this.arrowsCache[key].source.tableName.toUpperCase() === sourceTableName.toUpperCase()
       ) {
         delete this.arrowsCache[key];
 
         // If target and source are switched
       } else if (
-        this.arrowsCache[key].target.tableName.toUpperCase() ===
-        sourceTableName.toUpperCase() &&
-        this.arrowsCache[key].source.tableName.toUpperCase() ===
-        targetTableName.toUpperCase()
+        this.arrowsCache[key].target.tableName.toUpperCase() === sourceTableName.toUpperCase() &&
+        this.arrowsCache[key].source.tableName.toUpperCase() === targetTableName.toUpperCase()
       ) {
         delete this.arrowsCache[key];
       }
