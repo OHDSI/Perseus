@@ -1,33 +1,50 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { mergeMap } from 'rxjs/operators';
 
-@Injectable()
+import { BridgeService } from './bridge.service';
+import { DataService } from './data.service';
+import { HttpService } from './http.service';
+
+@Injectable({
+  providedIn: 'root'
+})
 export class UploadService {
 
-  constructor() {}
+  constructor(
+    private snackbar: MatSnackBar,
+    private bridgeService: BridgeService,
+    private httpService: HttpService,
+    private dataService: DataService,
+  ) {
+  }
 
-  public putFileOnServer(method: string = 'POST', url: string, params: string[], files: File[]): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const formData = new FormData();
+  uploadSchema(files: File[]) {
+    const formData: FormData = new FormData();
+    for (const file of files) {
+      formData.append('file', file, file.name);
+    }
+    return this.httpService.postLoadSchema(formData);
+  }
 
-      const xhr = new XMLHttpRequest();
+  onFileChange(event: any): void {
+    const files = event.target.files;
+    this.uploadSchema(files).pipe(
+      mergeMap(res => {
+        this.snackbar.open(
+          'Success file upload',
+          ' DISMISS ',
+          {duration: 3000}
+        );
+        this.bridgeService.resetAllMappings();
+        return this.dataService.getSourceSchemaData(files[0].name);
+      })).subscribe(res2 => this.bridgeService.loadSavedSchema$.next());
+  }
 
-      for (let i = 0; i < files.length; i++) {
-        formData.append('file', files[i], files[i].name);
-      }
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            resolve(xhr.response);
-          } else {
-            reject(xhr.response);
-          }
-        }
-      };
-
-      xhr.open(method, url, true);
-
-      xhr.send(formData);
-    });
+  onFileInputClick(el: ElementRef) {
+    if (el.nativeElement.files && el.nativeElement.files.length > 0) {
+      el.nativeElement.value = '';
+    }
+    el.nativeElement.click();
   }
 }

@@ -46,15 +46,7 @@ def load_schema():
                 print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
             file.save(str(app.config['UPLOAD_FOLDER'] / filename))
             file.close()
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form action="" method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+    return jsonify(success=True)
 
 
 @app.route('/api/get_existing_source_schemas_list', methods=['GET'])

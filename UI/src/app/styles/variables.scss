@@ -3,8 +3,6 @@ $cdm-font-family: 'Akzidenz-Grotesk Pro', Arial, Helvetica, sans-serif;
 $black: #000;
 $white: #fff;
 
-$yellowish: #F9F9F9;
-
 $light-grey: #BDBDBD;
 $grey: #808080;
 $dark-grey: #3E3E3E;
@@ -12,9 +10,21 @@ $dark-grey: #3E3E3E;
 $light-blue: #DCECF9;
 $blue: #066BBB;
 
+// CDM app main colors
+
 $cdm-grey: #404040;
+$cdm-grey-lighter: #f9f9f9;
 $cdm-grey-light: #e7e7e7;
 $cdm-blue: $blue;
 $cdm-blue-light: $light-blue;
 
+
+// CDM app main background colors
+
+$cdm-background-grey-light: $cdm-grey-lighter;
+$cdm-background-grey-dark: $cdm-grey;
+$cdm-background-grey-blue-gradient: linear-gradient(180deg, $cdm-grey-light 22.56%, #D8E3EC 100%);
+
+
+$cdm-border-radius: 2px;
 

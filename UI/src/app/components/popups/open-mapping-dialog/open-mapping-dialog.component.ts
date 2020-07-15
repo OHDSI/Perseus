@@ -5,7 +5,7 @@ import { Configuration } from 'src/app/models/configuration';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
-  selector: 'app-save-mapping-dialog',
+  selector: 'app-open-mapping-dialog',
   templateUrl: './open-mapping-dialog.component.html',
   styleUrls: ['./open-mapping-dialog.component.scss']
 })

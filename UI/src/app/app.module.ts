@@ -29,6 +29,7 @@ import { HighlightConceptDirective } from './components/comfy/directives/highlig
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { ConceptService } from './components/comfy/services/concept.service';
 import { AddConstantPopupComponent } from './components/popups/add-constant-popup/add-constant-popup.component';
+import { CdmVersionDialogComponent } from './components/popups/cdm-version-dialog/cdm-version-dialog.component';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { PreviewPopupComponent } from './components/popups/preview-popup/preview-popup.component';
 import { PrismComponent } from './components/popups/preview-popup/prism.component';
@@ -47,6 +48,8 @@ import { VocabularyConfigComponent } from './components/vocabulary-transform-con
 import { HighlightDirective } from './directives/highlight-table.directive';
 import { MappingPageSessionStorage } from './models/implementation/mapping-page-session-storage';
 import { CommentService } from './services/comment.service';
+import { CommonUtilsService } from './services/common-utils.service';
+import { HttpService } from './services/http.service';
 import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
@@ -67,6 +70,7 @@ import { VocabulariesService } from './services/vocabularies.service';
     HighlightDirective,
     SavedMappingsComponent,
     OpenMappingDialogComponent,
+    CdmVersionDialogComponent,
     TransformationInputComponent,
     AddConstantPopupComponent,
     PrismComponent,
@@ -94,6 +98,7 @@ import { VocabulariesService } from './services/vocabularies.service';
     NgxMatSelectSearchModule
   ],
   providers: [
+    HttpService,
     OverlayService,
     DataService,
     CommonService,
@@ -107,6 +112,7 @@ import { VocabulariesService } from './services/vocabularies.service';
     RulesPopupService,
     VocabulariesService,
     ConceptService,
+    CommonUtilsService,
     [{provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}],
     MappingPageSessionStorage
   ],

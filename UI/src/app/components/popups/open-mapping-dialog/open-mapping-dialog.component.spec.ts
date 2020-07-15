@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SaveMappingDialogComponent } from './open-mapping-dialog.component';
+import { OpenMappingDialogComponent } from './open-mapping-dialog.component';
 
 describe('SaveMappingDialogComponent', () => {
-  let component: SaveMappingDialogComponent;
-  let fixture: ComponentFixture<SaveMappingDialogComponent>;
+  let component: OpenMappingDialogComponent;
+  let fixture: ComponentFixture<OpenMappingDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaveMappingDialogComponent ]
+      declarations: [ OpenMappingDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SaveMappingDialogComponent);
+    fixture = TestBed.createComponent(OpenMappingDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
