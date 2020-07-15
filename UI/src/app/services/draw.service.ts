@@ -54,8 +54,10 @@ export class DrawService {
   }
 
   deleteConnector(key) {
-    this.cache[key].remove();
-    delete this.cache[key];
+    if (this.cache[key]) {
+      this.cache[key].remove();
+      delete this.cache[key];
+    }
   }
 
   deleteConnectorsBoundToTable({id, area}) {

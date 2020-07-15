@@ -25,8 +25,7 @@ import { isConceptTable } from './services/concept.service';
   templateUrl: './comfy.component.html',
   styleUrls: ['./comfy.component.scss']
 })
-export class ComfyComponent extends BaseComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   get state() {
     return this.stateService.state;
   }
@@ -78,9 +77,9 @@ export class ComfyComponent extends BaseComponent
     super();
   }
 
-  @ViewChild('scrollEl', {static: false})
+  @ViewChild('scrollEl', { static: false })
   scrollEl: ElementRef<HTMLElement>;
-  @ViewChild('sourceUpload', {static: false})
+  @ViewChild('sourceUpload', { static: false })
   fileInput: ElementRef<HTMLElement>;
 
   @ViewChildren(CdkDrag)
@@ -126,7 +125,7 @@ export class ComfyComponent extends BaseComponent
   }
 
   private scroll($event: CdkDragMove) {
-    const {y} = $event.pointerPosition;
+    const { y } = $event.pointerPosition;
     const baseEl = this.scrollEl.nativeElement;
     const box = baseEl.getBoundingClientRect();
     const scrollTop = baseEl.scrollTop;
@@ -234,12 +233,14 @@ export class ComfyComponent extends BaseComponent
 
     const prefix = 'target';
 
-    this.data.target.map(table => {
+    this.data.target.tables.map(table => {
       if (this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name) < 0) {
-        this.target[table.name] = {};
-        this.target[table.name].name = `${prefix}-${table.name}`;
-        this.target[table.name].first = table.name;
-        this.target[table.name].data = [table.name];
+        const tableName = table.name;
+        this.target[tableName] = {
+          name: `${prefix}-${tableName}`,
+          first: tableName,
+          data: [tableName]
+        }
       }
     });
 
@@ -269,32 +270,20 @@ export class ComfyComponent extends BaseComponent
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      if (event.previousContainer === event.container) {
-        moveItemInArray(
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex
-        );
+      const {container , previousContainer, previousIndex} = event;
+      const data = container.data;
+
+      if (previousContainer === container) {
+        moveItemInArray(data, previousIndex, event.currentIndex);
       } else {
-        copyArrayItem(
-          event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.container.data.length
-        );
-
-        const targetname = event.container.id.split('-')[1];
-
+        copyArrayItem(previousContainer.data, data, previousIndex, data.length);
+        const targetname = container.id.split('-')[1];
         this.setFirstElementAlwaysOnTop(targetname, event);
+        this.stateService.Target = this.target;
       }
     },
     canExecute: (event: CdkDragDrop<string[]>) => {
-      return (
-        event.container.data.findIndex(
-          tableName =>
-            event.previousContainer.data[event.previousIndex] === tableName
-        ) === -1
-      );
+      return event.container.data.findIndex(tableName => event.previousContainer.data[event.previousIndex] === tableName) === -1;
     }
   });
 
@@ -306,11 +295,13 @@ export class ComfyComponent extends BaseComponent
       return;
     }
 
-    const {data, first} = this.target[targetname];
+    const { data, first } = this.target[targetname];
     const index = data.findIndex(value => value === first);
-    const temp = data[0];
-    data[0] = first;
-    data[index] = temp;
+    if (index) {
+      const temp = data[0];
+      data[0] = first;
+      data[index] = temp;
+    }
   }
 
   async openMapping(targetTableName: string) {
@@ -349,7 +340,7 @@ export class ComfyComponent extends BaseComponent
     this.highlitedtables = Object.keys(indexes).filter(tableName => {
       return (
         indexes[tableName].length > 0 &&
-        !(indexes[tableName].findIndex(idx => idx === -1) > -1)
+        (indexes[tableName].findIndex(idx => idx > -1) > -1)
       );
     });
 
@@ -364,7 +355,7 @@ export class ComfyComponent extends BaseComponent
     event.stopPropagation();
 
     const table = this.target[targetTableName];
-    const {data} = table;
+    const { data } = table;
 
     const index = data.findIndex(tablename => tablename === sourceTableName);
 
@@ -448,7 +439,7 @@ export class ComfyComponent extends BaseComponent
   }
 }
 
-export function bound(target: Object, propKey: string | symbol) {
+export function bound(target: object, propKey: string | symbol) {
   const originalMethod = (target as any)[propKey] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
@@ -457,7 +448,7 @@ export function bound(target: Object, propKey: string | symbol) {
   }
 
   if (typeof target === 'function') {
-    // Static method, bind to class (if target is of type "function", the method decorator was used on a static method).
+    // Static method, bind to class (if target is of type 'function', the method decorator was used on a static method).
     return {
       value() {
         return originalMethod.apply(target, arguments);
@@ -467,8 +458,9 @@ export function bound(target: Object, propKey: string | symbol) {
     // Instance method, bind to instance on first invocation (as that is the only way to access an instance from a decorator).
     return {
       get() {
-        // Create bound override on object instance. This will hide the original method on the prototype, and instead yield a bound version from the
-        // instance itself. The original method will no longer be accessible. Inside a getter, 'this' will refer to the instance.
+        // Create bound override on object instance.
+        // This will hide the original method on the prototype, and instead yield a bound version from the instance itself.
+        // The original method will no longer be accessible. Inside a getter, 'this' will refer to the instance.
         const instance = this;
 
         Object.defineProperty(instance, propKey.toString(), {
@@ -478,7 +470,8 @@ export function bound(target: Object, propKey: string | symbol) {
           }
         });
 
-        // The first invocation (per instance) will return the bound method from here. Subsequent calls will never reach this point, due to the way
+        // The first invocation (per instance) will return the bound method from here.
+        // Subsequent calls will never reach this point, due to the way
         // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
         return instance[propKey];
       }
