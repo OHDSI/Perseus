@@ -1,111 +1,131 @@
-<div class="comfy-container">
-  <div class="mapping-component-progress" *ngIf="busy">
-    <mat-progress-spinner [mode]="'indeterminate'" [color]="'accent'">
-    </mat-progress-spinner>
-  </div>
-  <div class="comfy-grid" *ngIf="!busy">
-    <!-- Source schema columns-->
-    <div class="vertical-container background">
-      <h3 class="filter-label">Filter by columns</h3>
+<nav>
+  <h3>Filter by columns</h3>
+  <h4>Source columns
+    <ng-container *ngIf="data.source?.length">({{sourceRows.length}})</ng-container>
+  </h4>
+  <app-comfy-search-by-name
+    *ngIf="data.source?.length"
+    class="filter-by-name"
+    placeholder='Search by source column'
+    (complete)="filterByName('source-column', $event)"
+    (reset)="filterByNameReset('source-column', $event)"
+  ></app-comfy-search-by-name>
+  <app-columns-list
+    *ngIf="data.source?.length"
+    class="source-columns-list"
+    [sourceRows]="sourceRows"
+    (columnsSelected)="findTables($event)"
+  ></app-columns-list>
+</nav>
+<main>
+  <h3>Link tables</h3>
+  <div class="articles">
+    <article>
+      <h4>Source tables
+        <ng-container *ngIf="data.source?.length">({{data.source.length}})</ng-container>
+      </h4>
       <app-comfy-search-by-name
-        class="filter-by-name"
-        [placeholder]="'Search by source column'"
-        (complete)="filterByName('source-column', $event)"
-        (reset)="filterByNameReset('source-column', $event)"
-      ></app-comfy-search-by-name>
-      <h4 class="page-column-label">Source columns</h4>
-      <app-columns-list
-        class="source-columns-list"
-        [sourceRows]="sourceRows"
-        (columnsSelected)="findTables($event)"
-      ></app-columns-list>
-    </div>
-    <!-- Source tables -->
-    <div class="cdm-container">
-      <h3 class="filter-label">Link tables</h3>
-      <app-comfy-search-by-name
+        *ngIf="data.source?.length"
         class="filter-by-name"
         [placeholder]="'Search by source table'"
         (complete)="filterByName('source', $event)"
         (reset)="filterByNameReset('source', $event)"
       ></app-comfy-search-by-name>
-      <h4 class="page-column-label">Source tables</h4>
-      <div class="scrolled-items">
+      <div class="scrolled-items"
+           *ngIf="data.source?.length">
         <div
           class="cdm-list"
           cdkDropList
           cdkDropListSortingDisabled
           #sourceList="cdkDropList"
           [cdkDropListData]="source"
-          [cdkDropListConnectedTo]="sourceConnectedTo"
-        >
-          <div
-            class="cdm-box"
+          [cdkDropListConnectedTo]="sourceConnectedTo">
+          <div class="cdm-box"
             [attr.criteria]="item"
             highlight
             [values]="highlitedTables"
             cdkDrag
-            *ngFor="let item of source"
-          >
+            *ngFor="let item of source">
             <mat-icon>drag_indicator</mat-icon>
             <div
               class="table-description source caption"
-              matTooltip="{{ item }}"
+              [matTooltip]="item"
               matTooltipPosition="right"
-              concept="{{ item }}"
-            >
+              [concept]="item">
               {{ item }}
             </div>
-            <div *cdkDragPreview class="table-description source preview">
+            <div *cdkDragPreview
+                 class="table-description source preview">
               {{ item }}
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- CDM -->
-    <div class="destination" cdkDropListGroup>
-      <h3 class="filter-label-white">Map CDM to the Source tables</h3>
+      <div class="initial"
+           *ngIf="!data.source.length">
+        <p>Please load New Report to see Source tables</p>
+        <input
+          #sourceUpload
+          type="file"
+          (change)="onFileUpload($event)"
+          hidden/>
+        <button mat-raised-button
+                color="accent"
+                (click)="loadNewReport()">
+          Load New Report
+        </button>
+      </div>
+    </article>
+    <article>
+      <h4>Target tables
+        <ng-container *ngIf="data.target?.length">({{data.target.length}})</ng-container>
+      </h4>
       <app-comfy-search-by-name
         class="filter-by-name"
         [placeholder]="'Search by target table'"
         (complete)="filterByName('target', $event)"
         (reset)="filterByNameReset('target', $event)"
+        *ngIf="data.target?.length"
       ></app-comfy-search-by-name>
-      <h4 class="page-column-label">Target tables</h4>
-      <div class="scrolled-items" #scrollEl cdk-scrollable>
+      <div class="scrolled-items"
+           #scrollEl
+           cdk-scrollable
+           *ngIf="data.target?.length">
         <div
-          id="{{ target[targetName].name }}"
+          [id]="target[targetName].name"
           class="vertical-list"
-          *ngFor="let targetName of targettablenames"
+          *ngFor="let targetName of targetTableNames"
           cdkDropList
           [cdkDropListData]="target[targetName].data"
-          (cdkDropListDropped)="
-            !drop.canExecute($event) || drop.execute($event)
-          "
-        >
+          (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
           <div
             class="vertical-box"
-            *ngFor="let tableName of target[targetName].data; let i = index"
-          >
+            *ngFor="let tableName of target[targetName].data; let i = index">
             <div
               class="table-description target caption"
-              matTooltip="{{ tableName }}"
-              [matTooltipPosition]="'right'"
-              (click)="openMapping(tableName)"
-            >
+              [matTooltip]="tableName"
+              matTooltipPosition="right"
+              (click)="openMapping(tableName)">
               <span class="target-label">{{ tableName }}</span>
               <span class="divider"></span>
               <mat-icon
                 *ngIf="i > 0"
                 class="remove-mapping-table"
-                (click)="removeTableMapping($event, tableName, targetName)"
-                >close</mat-icon
-              >
+                (click)="removeTableMapping($event, tableName, targetName)">close
+              </mat-icon>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <div class="initial"
+           *ngIf="!data.target.length">
+        <p>Please select CDM version to see Target tables</p>
+        <button mat-raised-button
+                color="accent"
+                (click)="openSetCDMDialog()">
+          Set CDM Version
+        </button>
+      </div>
+    </article>
   </div>
-</div>
+</main>

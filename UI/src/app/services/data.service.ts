@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable, forkJoin, from } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { StateService } from './state.service';
 import { Row, RowOptions } from 'src/app/models/row';
-import { Table, ITableOptions } from 'src/app/models/table';
+import { ITableOptions, Table } from 'src/app/models/table';
 import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
+import { HttpService } from './http.service';
+import { StateService } from './state.service';
+import { StoreService } from './store.service';
 
 const URL = environment.url;
 
@@ -17,53 +19,10 @@ export class DataService {
 
   constructor(
     private httpClient: HttpClient,
-    private stateService: StateService
-  ) {}
-
-  initialize(): Observable<any> {
-    if (!this.stateService.initialized) {
-      this.batch = [this._initSourceData(), this._initTargetData()];
-      return forkJoin(this.batch);
-    }
-
-    return of(true);
-  }
-
-  _initSourceData(): Observable<any> {
-    const path = `${URL}/get_source_schema?path=default`;
-   //const path = `${URL}/load_saved_source_schema?schema_name=ScanReport_2.xlsx`;
-    return this.httpClient.get<any>(path).pipe(
-      map(data => {
-        const tables = this._normalize(data, 'source');
-        this.stateService.initialize(tables, 'source');
-      })
-    );
-  }
-
-  _initTargetData(): Observable<any> {
-    const path = `${URL}/get_cdm_schema?cdm_version=5.0.1`;
-    return this.httpClient.get<any>(path).pipe(
-      map(data => {
-        const tables = this._normalize(data, 'target');
-        this.stateService.initialize(tables, 'target');
-      })
-    );
-  }
-
-  LoadSourceData(schema_name: string): Observable<any> {
-    const path = `${URL}/load_saved_source_schema?schema_name=${schema_name}`;
-    return this.httpClient.get<any>(path).pipe(
-      map(data => {
-        const tables = this._normalize(data, 'source');
-        this.stateService.initialize(tables, 'source');
-      })
-    );
-  }
-
-  getTopValues(tablename: string, columname: string): Observable<any> {
-    const path = `${URL}/get_top_values?table_name=${tablename}&column_name=${columname}`;
-
-    return this.httpClient.get<any>(path);
+    private httpService: HttpService,
+    private stateService: StateService,
+    private storeService: StoreService,
+  ) {
   }
 
   _normalize(data, area) {
@@ -131,12 +90,45 @@ export class DataService {
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {
-    const path = `${URL}/get_xml`;
-    return this.httpClient.post(path, mapping);
+    return this.httpService.getXmlPreview(mapping);
   }
 
-  getSqlPreview(source_table: string): Observable<any> {
-    const path = `${URL}/get_generated_sql?source_table_name=${source_table}`;
-    return this.httpClient.get(path);
+  getSqlPreview(sourceTable: string): Observable<any> {
+    return this.httpService.getSqlPreview(sourceTable);
+  }
+
+  getCDMVersions() {
+    return this.httpService.getCDMVersions();
+  }
+
+  getTargetData(version) {
+    return this.httpService.getTargetData(version).pipe(
+      map(data => {
+        this.storeService.add('version', version);
+        return this.prepareTables(data, 'target');
+      })
+    );
+  }
+
+  getSourceSchema(path) {
+    return this.httpService.getSourceSchema(path).pipe(
+      map(data => this.prepareTables(data, 'source'))
+    );
+  }
+
+  getSourceSchemaData(name: string): Observable<any> {
+    return this.httpService.getSourceSchemaData(name).pipe(
+      map(data => this.prepareTables(data, 'source'))
+    );
+  }
+
+  getTopValues(tableName: string, columnName: string): Observable<any> {
+    return this.httpService.getTopValues(tableName, columnName);
+  }
+
+  prepareTables(data, key) {
+    const tables = this._normalize(data, key);
+    this.storeService.add(key, tables);
+    return tables;
   }
 }

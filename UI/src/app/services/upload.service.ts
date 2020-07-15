@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { mergeMap } from 'rxjs/operators';
 
 import { BridgeService } from './bridge.service';
 import { DataService } from './data.service';
@@ -28,14 +29,22 @@ export class UploadService {
 
   onFileChange(event: any): void {
     const files = event.target.files;
-    this.uploadSchema(files).subscribe(res => {
-      this.snackbar.open(
-        'Success file upload',
-        ' DISMISS ',
-        {duration: 3000}
-      );
-      this.bridgeService.resetAllMappings();
-      this.dataService.getSourceSchemaData(files[0].name).subscribe(_ => this.bridgeService.loadSavedSchema$.next());
-    });
+    this.uploadSchema(files).pipe(
+      mergeMap(res => {
+        this.snackbar.open(
+          'Success file upload',
+          ' DISMISS ',
+          {duration: 3000}
+        );
+        this.bridgeService.resetAllMappings();
+        return this.dataService.getSourceSchemaData(files[0].name);
+      })).subscribe(res2 => this.bridgeService.loadSavedSchema$.next());
+  }
+
+  onFileInputClick(el: ElementRef) {
+    if (el.nativeElement.files && el.nativeElement.files.length > 0) {
+      el.nativeElement.value = '';
+    }
+    el.nativeElement.click();
   }
 }
