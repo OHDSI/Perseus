@@ -16,9 +16,11 @@ const CONCEPT_TABLES = [
 
 export const environment = {
   production: false,
-  url: 'http://127.0.0.1/api',
+  url: 'http://127.0.0.1:5000/api',
   conceptTables: CONCEPT_TABLES
 };
+
+// 10.110.8.6
 
 /*
  * For easier debugging in development mode, you can import the following file

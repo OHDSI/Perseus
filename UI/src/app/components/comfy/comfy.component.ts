@@ -233,7 +233,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
     const prefix = 'target';
 
-    this.data.target.tables.map(table => {
+    this.data.target.map(table => {
       if (this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name) < 0) {
         const tableName = table.name;
         this.target[tableName] = {
