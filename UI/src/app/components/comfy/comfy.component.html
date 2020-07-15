@@ -65,7 +65,7 @@
     </div>
     <!-- CDM -->
     <div class="destination" cdkDropListGroup>
-      <h3 class="filter-label" style="color: white;">Map CDM to the Source tables</h3>
+      <h3 class="filter-label-white">Map CDM to the Source tables</h3>
       <app-comfy-search-by-name
         class="filter-by-name"
         [placeholder]="'Search by target table'"
@@ -95,7 +95,7 @@
               (click)="openMapping(tableName)"
             >
               <span class="target-label">{{ tableName }}</span>
-              <span style="flex: 1 1 auto"></span>
+              <span class="divider"></span>
               <mat-icon
                 *ngIf="i > 0"
                 class="remove-mapping-table"

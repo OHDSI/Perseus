@@ -14,10 +14,7 @@ import {
   SqlFunction
 } from './model/sql-string-functions';
 import { Observable, of } from 'rxjs';
-import {
-  MatAutocompleteSelectedEvent,
-  MatAutocomplete
-} from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { SqlFunctionsInjector } from '../model/sql-functions-injector';
 import { isString } from 'src/app/infrastructure/utility';
 import { sqlParametersValidator } from './model/sql-function-validator';
@@ -29,7 +26,7 @@ import { startWith, map } from 'rxjs/operators';
   styleUrls: ['./transformation-input.component.scss']
 })
 export class TransformationInputComponent implements OnInit, OnChanges {
-  @ViewChild(MatAutocomplete) autocomplete: MatAutocomplete;
+  @ViewChild(MatAutocomplete, { static: true }) autocomplete: MatAutocomplete;
 
   @Input() columnname: string;
   @Input() transform: SqlFunction;

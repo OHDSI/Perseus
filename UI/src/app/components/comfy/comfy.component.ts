@@ -17,7 +17,7 @@ import {
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { MatSnackBar } from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { BridgeService } from "src/app/services/bridge.service";
 import { Subscription, merge, Observable } from "rxjs";
 import { startWith, map, switchMap, tap, takeUntil } from "rxjs/operators";
@@ -89,7 +89,7 @@ export class ComfyComponent extends BaseComponent
     super();
   }
 
-  @ViewChild("scrollEl")
+  @ViewChild("scrollEl", { static: false })
   scrollEl: ElementRef<HTMLElement>;
 
   @ViewChildren(CdkDrag)

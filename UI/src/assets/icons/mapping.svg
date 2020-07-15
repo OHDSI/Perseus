@@ -1,0 +1,13 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 14C8.53333 14 12.5333 14.6636 13.0666 11.9973C13.5222 9.71971 13.2523 5.74922 16 6.00024" stroke="black"/>
+  <path d="M16 10C14.9333 10 12 10.5 10.9332 8.26338C9.93331 6.16695 9.33327 6.13006 8.2666 6.13006" stroke="black"/>
+  <path d="M16 18C14.5 18 13.6507 17.4568 12.5333 14.6635C11.4667 11.9967 10.4 9.86348 8.2668 10.3968" stroke="black"/>
+  <rect x="9" y="5" width="2" height="5" rx="0.5" transform="rotate(90 9 5)" fill="black"/>
+  <rect x="9" y="9" width="2" height="5" rx="0.5" transform="rotate(90 9 9)" fill="black"/>
+  <rect x="20" y="5" width="2.13333" height="5.33333" rx="0.5" transform="rotate(90 20 5)" fill="black"/>
+  <rect x="20" y="9" width="2" height="5" rx="0.5" transform="rotate(90 20 9)" fill="black"/>
+  <rect x="20" y="13" width="2" height="5" rx="0.5" transform="rotate(90 20 13)" fill="black"/>
+  <rect x="20" y="17" width="2" height="5" rx="0.5" transform="rotate(90 20 17)" fill="black"/>
+  <rect x="9" y="13" width="2" height="5" rx="0.5" transform="rotate(90 9 13)" fill="black"/>
+  <rect x="9" y="17" width="2" height="5" rx="0.5" transform="rotate(90 9 17)" fill="black"/>
+</svg>

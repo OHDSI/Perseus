@@ -1,18 +1,19 @@
-import { Injectable } from "@angular/core";
-import { DrawService } from "src/app/services/draw.service";
-import { IRow, Row } from "src/app/models/row";
-import { ArrowCache, Arrow, ConstantCache } from "../models/arrow-cache";
-import { MappingService } from "../models/mapping-service";
-import { ITable } from "../models/table";
-import { Subject } from "rxjs";
-import { uniqBy, cloneDeep } from "../infrastructure/utility";
-import { Configuration } from "../models/configuration";
-import { StateService } from "./state.service";
-import { IConnector } from "../models/interface/connector.interface";
-import { SqlFunction } from "../components/popaps/rules-popup/transformation-input/model/sql-string-functions";
-import { Command } from "../infrastructure/command";
-import { TransformationConfig } from "../components/vocabulary-transform-configurator/model/transformation-config";
-import { DataService } from "./data.service";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+import { IRow } from 'src/app/models/row';
+import { DrawService } from 'src/app/services/draw.service';
+import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
+import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
+import { Command } from '../infrastructure/command';
+import { cloneDeep, uniqBy } from '../infrastructure/utility';
+import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
+import { Configuration } from '../models/configuration';
+import { IConnector } from '../models/interface/connector.interface';
+import { MappingService } from '../models/mapping-service';
+import { ITable } from '../models/table';
+import { DataService } from './data.service';
+import { StateService } from './state.service';
 
 export interface IConnection {
   source: IRow;
@@ -27,6 +28,7 @@ export class BridgeService {
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
+
   get sourceRow() {
     return this.sourcerow;
   }
@@ -34,6 +36,7 @@ export class BridgeService {
   set targetRow(row: IRow) {
     this.targetrow = row;
   }
+
   get targetRow() {
     return this.targetrow;
   }
@@ -41,6 +44,7 @@ export class BridgeService {
   get targetRowElement() {
     return this.targetrowrlement;
   }
+
   set targetRowElement(element: HTMLElement) {
     this.targetrowrlement = element;
   }
@@ -49,7 +53,9 @@ export class BridgeService {
     private drawService: DrawService,
     private stateService: StateService,
     private dataService: DataService
-  ) {}
+  ) {
+  }
+
   applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
   loadSavedSchema$ = new Subject<any>();
@@ -111,7 +117,7 @@ export class BridgeService {
   }
 
   adjustArrowsPositions() {
-    const { list } = this.drawService;
+    const {list} = this.drawService;
 
     Object.keys(list).forEach(key => {
       const drawEntity: IConnector = list[key];
@@ -126,11 +132,11 @@ export class BridgeService {
   }
 
   getStyledAsDragStartElement() {
-    this.sourceRow.htmlElement.classList.add("drag-start");
+    this.sourceRow.htmlElement.classList.add('drag-start');
   }
 
   getStyledAsDragEndElement() {
-    this.sourceRow.htmlElement.classList.remove("drag-start");
+    this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
   refresh(table: ITable[], delayMs?: number) {
@@ -150,7 +156,7 @@ export class BridgeService {
     arrowsCache: ArrowCache,
     stateService: StateService
   ) {
-    const tablenamesString = table.map(t => t.name).join(",");
+    const tablenamesString = table.map(t => t.name).join(',');
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
@@ -203,18 +209,18 @@ export class BridgeService {
     Object.keys(this.arrowsCache).forEach(key => {
       if (
         this.arrowsCache[key].target.tableName.toUpperCase() ===
-          targetTableName.toUpperCase() &&
+        targetTableName.toUpperCase() &&
         this.arrowsCache[key].source.tableName.toUpperCase() ===
-          sourceTableName.toUpperCase()
+        sourceTableName.toUpperCase()
       ) {
         delete this.arrowsCache[key];
 
         // If target and source are switched
       } else if (
         this.arrowsCache[key].target.tableName.toUpperCase() ===
-          sourceTableName.toUpperCase() &&
+        sourceTableName.toUpperCase() &&
         this.arrowsCache[key].source.tableName.toUpperCase() ===
-          targetTableName.toUpperCase()
+        targetTableName.toUpperCase()
       ) {
         delete this.arrowsCache[key];
       }
@@ -287,14 +293,14 @@ export class BridgeService {
   }
 
   findCorrespondingTables(table: ITable): string[] {
-    const source = table.area === "source" ? "target" : "source";
+    const source = table.area === 'source' ? 'target' : 'source';
     const rows = Object.values(this.arrowsCache)
       .filter(connection => {
         return connection[table.area].tableName === table.name;
       })
       .map(arrow => arrow[source]);
 
-    return uniqBy(rows, "tableName").map(row => row.tableName);
+    return uniqBy(rows, 'tableName').map(row => row.tableName);
   }
 
   findCorrespondingConnections(table: ITable, row: IRow): IConnection[] {
@@ -328,8 +334,10 @@ export class BridgeService {
     return `${targetTableId}-${targetRowId}`;
   }
 
-  loadSavedSchema(schema_name: string){
-    this.dataService.LoadSourceData(schema_name).subscribe(_=>{this.loadSavedSchema$.next();});
+  loadSavedSchema(schema_name: string) {
+    this.dataService.LoadSourceData(schema_name).subscribe(_ => {
+      this.loadSavedSchema$.next();
+    });
   }
 
   saveAndLoadSchema(schema: any){

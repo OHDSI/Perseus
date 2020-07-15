@@ -1,11 +1,11 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-
-import { CommonService } from 'src/app/services/common.service';
 import { IRow } from 'src/app/models/row';
 
-import { parseArrowKey } from './business/rules';
+import { CommonService } from 'src/app/services/common.service';
 import { Arrow } from '../models/arrow';
 import { IConnector } from '../models/interface/connector.interface';
+
+import { parseArrowKey } from './business/rules';
 
 @Injectable()
 export class DrawService {
@@ -20,6 +20,7 @@ export class DrawService {
   }
 
   private renderer: Renderer2;
+
   constructor(
     private commonService: CommonService,
     rendererFactory: RendererFactory2
@@ -57,9 +58,9 @@ export class DrawService {
     delete this.cache[key];
   }
 
-  deleteConnectorsBoundToTable({ id, area }) {
+  deleteConnectorsBoundToTable({id, area}) {
     Object.keys(this.cache).forEach(key => {
-      const { sourceTableId, targetTableId } = parseArrowKey(key);
+      const {sourceTableId, targetTableId} = parseArrowKey(key);
 
       switch (area) {
         case 'source': {

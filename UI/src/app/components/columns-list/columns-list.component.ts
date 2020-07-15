@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
-import { ValuesPopupComponent } from '../popaps/values-popup/values-popup.component';
+import { ValuesPopupComponent } from '../popups/values-popup/values-popup.component';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 

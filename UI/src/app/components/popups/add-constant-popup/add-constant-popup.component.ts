@@ -1,6 +1,6 @@
-import { Component, ViewChild, TemplateRef, Inject } from '@angular/core';
-import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-add-constant-popup',
@@ -8,8 +8,8 @@ import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-dat
   styleUrls: ['./add-constant-popup.component.scss']
 })
 export class AddConstantPopupComponent {
-  @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
-  @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
+  @ViewChild('readOnlyTemplate', {static: false}) readOnlyTemplate: TemplateRef<any>;
+  @ViewChild('editTemplate', {static: false}) editTemplate: TemplateRef<any>;
 
   value: string;
 

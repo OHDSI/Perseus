@@ -9,7 +9,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { Configuration } from 'src/app/models/configuration';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { IStorage } from 'src/app/models/interface/storage.interface';
 import { BrowserSessionConfigurationStorage } from 'src/app/models/implementation/configuration-session-storage';
 

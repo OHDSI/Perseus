@@ -30,7 +30,7 @@
 .scrollbarLeft {
     direction: rtl;
 
-    /deep/.mat-expansion-panel {
+  ::ng-deep.mat-expansion-panel {
         direction: ltr;
         margin-left: 5px;
     }
@@ -38,7 +38,7 @@
 
 .scrollbarRight {
 
-    /deep/.mat-expansion-panel {
+  ::ng-deep.mat-expansion-panel {
         margin-right: 5px;
     }
 }

@@ -11,8 +11,8 @@ import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-dat
   styleUrls: ['./comment-popup.component.scss']
 })
 export class CommentPopupComponent {
-  @ViewChild('readOnlyTemplate') readOnlyTemplate: TemplateRef<any>;
-  @ViewChild('editTemplate') editTemplate: TemplateRef<any>;
+  @ViewChild('readOnlyTemplate', { static: true }) readOnlyTemplate: TemplateRef<any>;
+  @ViewChild('editTemplate', { static: true }) editTemplate: TemplateRef<any>;
 
   value: string;
   editedComment: IComment;

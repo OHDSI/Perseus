@@ -41,30 +41,24 @@ export class VocabulariesService {
 
   getVocabularies(): Observable<IVocabulary[]> {
     if (environment.production) {
-      const batch = [];
-      batch.push(
-        this.httpClient.get(`${URL}/get_domain_list`).pipe(
-          map(d => {
+      const domain$ = this.httpClient.get(`${URL}/get_domain_list`).pipe(
+          map<any, IVocabulary>(d => {
             return { name: 'domain', payload: d };
           })
-        )
-      );
-      batch.push(
-        this.httpClient.get(`${URL}/get_lookup_list`).pipe(
-          map(d => {
+        );
+      const $lookup = this.httpClient.get(`${URL}/get_lookup_list`).pipe(
+          map<any, IVocabulary>(d => {
             return { name: 'lookup', payload: d };
           })
-        )
-      );
-      batch.push(
-        this.httpClient.get(`${URL}/get_concept_class_list`).pipe(
-          map(d => {
+        );
+      const concept$ = this.httpClient.get(`${URL}/get_concept_class_list`).pipe(
+          map<any, IVocabulary>(d => {
             return { name: 'concept', payload: d };
           })
-        )
-      );
+        );
 
-      return forkJoin(batch);
+      return forkJoin(domain$, $lookup, concept$);
+
     } else {
       return of([
         { name: 'domain', payload: domain.domain },

@@ -3,8 +3,8 @@ import { Injectable, ElementRef } from '@angular/core';
 
 import { IConnector } from '../../../models/interface/connector.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { TransformRulesData } from '../../popaps/rules-popup/model/transform-rules-data';
-import { RulesPopupComponent } from '../../popaps/rules-popup/rules-popup.component';
+import { TransformRulesData } from '../../popups/rules-popup/model/transform-rules-data';
+import { RulesPopupComponent } from '../../popups/rules-popup/rules-popup.component';
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { BridgeButtonData } from '../model/bridge-button-data';

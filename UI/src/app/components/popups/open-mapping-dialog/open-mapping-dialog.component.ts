@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SavedMappingsComponent } from '../../comfy/saved-mappings/saved-mappings.component';
 import { Configuration } from 'src/app/models/configuration';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -10,7 +10,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
   styleUrls: ['./open-mapping-dialog.component.scss']
 })
 export class OpenMappingDialogComponent implements OnInit {
-  @ViewChild(SavedMappingsComponent) controller: SavedMappingsComponent;
+  @ViewChild(SavedMappingsComponent, { static: true }) controller: SavedMappingsComponent;
 
   target = {};
   action = '';
