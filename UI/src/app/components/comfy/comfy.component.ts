@@ -7,41 +7,40 @@ import {
   ElementRef,
   ViewChildren,
   QueryList
-} from "@angular/core";
-import { DataService } from "src/app/services/data.service";
-import { StateService } from "src/app/services/state.service";
+} from '@angular/core';
+import { DataService } from 'src/app/services/data.service';
+import { StateService } from 'src/app/services/state.service';
 import {
   CdkDragDrop,
   moveItemInArray,
   copyArrayItem,
   CdkDrag,
   CdkDragMove
-} from "@angular/cdk/drag-drop";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { BridgeService } from "src/app/services/bridge.service";
-import { Subscription, merge, Observable } from "rxjs";
-import { startWith, map, switchMap, tap, takeUntil } from "rxjs/operators";
-import { Command } from "src/app/infrastructure/command";
+} from '@angular/cdk/drag-drop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BridgeService } from 'src/app/services/bridge.service';
+import { Subscription, merge, Observable } from 'rxjs';
+import { startWith, map, switchMap, tap, takeUntil } from 'rxjs/operators';
+import { Command } from 'src/app/infrastructure/command';
 import {
   VocabulariesService,
   IVocabulary
-} from "src/app/services/vocabularies.service";
-import { isConceptTable } from "./services/concept.service";
-import { environment } from "src/environments/environment";
-import { Criteria } from "../comfy-search-by-name/comfy-search-by-name.component";
-import { IRow } from "src/app/models/row";
-import { uniq, uniqBy } from "src/app/infrastructure/utility";
-import { BaseComponent } from "../base/base.component";
-import { Router } from "@angular/router";
-import { MappingPageSessionStorage } from "src/app/models/implementation/mapping-page-session-storage";
+} from 'src/app/services/vocabularies.service';
+import { isConceptTable } from './services/concept.service';
+import { environment } from 'src/environments/environment';
+import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
+import { IRow } from 'src/app/models/row';
+import { uniq, uniqBy } from 'src/app/infrastructure/utility';
+import { BaseComponent } from '../base/base.component';
+import { Router } from '@angular/router';
+import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 
 @Component({
-  selector: "app-comfy",
-  templateUrl: "./comfy.component.html",
-  styleUrls: ["./comfy.component.scss"]
+  selector: 'app-comfy',
+  templateUrl: './comfy.component.html',
+  styleUrls: ['./comfy.component.scss']
 })
-export class ComfyComponent extends BaseComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   get state() {
     return this.stateService.state;
   }
@@ -56,7 +55,7 @@ export class ComfyComponent extends BaseComponent
     return this.highlitedtables;
   }
 
-  COLUMNS_TO_EXCLUDE_FROM_TARGET = ["CONCEPT", "COMMON"]
+  COLUMNS_TO_EXCLUDE_FROM_TARGET = ['CONCEPT', 'COMMON'];
 
   busy = true;
   private highlitedtables: string[] = [];
@@ -89,7 +88,7 @@ export class ComfyComponent extends BaseComponent
     super();
   }
 
-  @ViewChild("scrollEl", { static: false })
+  @ViewChild('scrollEl', { static: false })
   scrollEl: ElementRef<HTMLElement>;
 
   @ViewChildren(CdkDrag)
@@ -182,16 +181,16 @@ export class ComfyComponent extends BaseComponent
       .pipe(
         takeUntil(this.ngUnsubscribe),
         switchMap(_ => {
-         // this.stateService.switchSourceToTarget(); // ??
+          // this.stateService.switchSourceToTarget(); // ??
           this.initializeSourceData();
           this.initializeTargetData();
           this.initializeSourceColumns();
           this.busy = false;
-          return this.mappingStorage.get("mappingtables");
+          return this.mappingStorage.get('mappingtables');
         })
       )
       .subscribe(target => {
-       // this.target = target;
+        this.target = target;
       });
 
     this.bridgeService.applyConfiguration$
@@ -208,13 +207,13 @@ export class ComfyComponent extends BaseComponent
         this.initializeSourceColumns();
 
         this.snakbar.open(
-          `Reset all mappings success`,
-          " DISMISS ",
+          'Reset all mappings success',
+          ' DISMISS ',
           this.snakbarOptions
         );
       });
 
-      this.bridgeService.saveAndLoadSchema$
+    this.bridgeService.saveAndLoadSchema$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
         this.initializeTargetData();
@@ -222,8 +221,8 @@ export class ComfyComponent extends BaseComponent
         this.initializeSourceColumns();
 
         this.snakbar.open(
-          `New source schema loaded`,
-          " DISMISS ",
+          'New source schema loaded',
+          ' DISMISS ',
           this.snakbarOptions
         );
       });
@@ -241,14 +240,17 @@ export class ComfyComponent extends BaseComponent
   initializeTargetData() {
     this.target = {};
 
-    const prefix = "target";
+    const prefix = 'target';
 
     this.state.target.tables.map(table => {
-      if(this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name)<0)
-      {this.target[table.name] = {};
-      this.target[table.name].name = `${prefix}-${table.name}`;
-      this.target[table.name].first = table.name;
-      this.target[table.name].data = [table.name];}
+      if (this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name) < 0) {
+        const tableName = table.name;
+        this.target[tableName] = {
+          name: `${prefix}-${tableName}`,
+          first: tableName,
+          data: [tableName]
+        }
+      }
     });
 
     this.targettablenames = uniq(Object.keys(this.target));
@@ -262,42 +264,28 @@ export class ComfyComponent extends BaseComponent
 
   initializeSourceColumns() {
     this.sourceRows = uniqBy(
-      this.state.source.tables
-        .map(table => table.rows)
-        .reduce((p, k) => p.concat.apply(p, k), []),
-      "name"
+      this.state.source.tables.map(table => table.rows).reduce((p, k) => p.concat.apply(p, k), []),
+      'name'
     );
   }
 
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      if (event.previousContainer === event.container) {
-        moveItemInArray(
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex
-        );
+      const {container , previousContainer, previousIndex} = event;
+      const data = container.data;
+
+      if (previousContainer === container) {
+        moveItemInArray(data, previousIndex, event.currentIndex);
       } else {
-        copyArrayItem(
-          event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.container.data.length
-        );
-
-        const targetname = event.container.id.split("-")[1];
-
+        copyArrayItem(previousContainer.data, data, previousIndex, data.length);
+        const targetname = container.id.split('-')[1];
         this.setFirstElementAlwaysOnTop(targetname, event);
+        this.stateService.Target = this.target;
       }
     },
     canExecute: (event: CdkDragDrop<string[]>) => {
-      return (
-        event.container.data.findIndex(
-          tableName =>
-            event.previousContainer.data[event.previousIndex] === tableName
-        ) === -1
-      );
+      return event.container.data.findIndex(tableName => event.previousContainer.data[event.previousIndex] === tableName) === -1;
     }
   });
 
@@ -311,9 +299,11 @@ export class ComfyComponent extends BaseComponent
 
     const { data, first } = this.target[targetname];
     const index = data.findIndex(value => value === first);
-    const temp = data[0];
-    data[0] = first;
-    data[index] = temp;
+    if (index) {
+      const temp = data[0];
+      data[0] = first;
+      data[index] = temp;
+    }
   }
 
   async openMapping(targetTableName: string) {
@@ -334,13 +324,13 @@ export class ComfyComponent extends BaseComponent
       allTarget: this.state.target.tables
     };
 
-    this.mappingStorage.remove("mappingtables");
-    await this.mappingStorage.add("mappingtables", this.target);
+    this.mappingStorage.remove('mappingtables');
+    await this.mappingStorage.add('mappingtables', this.target);
 
-    this.mappingStorage.remove("mappingpage");
-    await this.mappingStorage.add("mappingpage", payload);
+    this.mappingStorage.remove('mappingpage');
+    await this.mappingStorage.add('mappingpage', payload);
 
-    this.router.navigateByUrl("/mapping");
+    this.router.navigateByUrl('/mapping');
   }
 
   findTables(selectedSourceColumns: string[]): void {
@@ -394,7 +384,7 @@ export class ComfyComponent extends BaseComponent
   }
 
   filterByName(area: string, byName: Criteria): void {
-    const areas = ["source-column", "target", "source"];
+    const areas = ['source-column', 'target', 'source'];
     const idx = areas.indexOf(area);
 
     const filterByName = (name, index?) => {
@@ -402,11 +392,11 @@ export class ComfyComponent extends BaseComponent
     };
 
     if (idx > -1) {
-      if (area === "source") {
+      if (area === 'source') {
         this.source = this.source.filter(filterByName);
-      } else if (area === "target") {
+      } else if (area === 'target') {
         this.targettablenames = this.targetTableNames.filter(filterByName);
-      } else if (area === "source-column") {
+      } else if (area === 'source-column') {
         this.sourceRows = Object.assign(
           [],
           this.sourceRows.filter(row => filterByName(row.name))
@@ -416,42 +406,43 @@ export class ComfyComponent extends BaseComponent
   }
 
   filterByNameReset(area: string, byName: Criteria): void {
-    const areas = ["source-column", "target", "source"];
+    const areas = ['source-column', 'target', 'source'];
     const idx = areas.indexOf(area);
 
     if (idx > -1) {
-      if (area === "source") {
+      if (area === 'source') {
         this.initializeSourceData();
-      } else if (area === "target") {
+      } else if (area === 'target') {
         this.initializeTargetData();
-      } else if (area === "source-column") {
+      } else if (area === 'source-column') {
         this.initializeSourceColumns();
       }
     }
   }
 }
 
-export function bound(target: Object, propKey: string | symbol) {
+export function bound(target: object, propKey: string | symbol) {
   const originalMethod = (target as any)[propKey] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
-  if (typeof originalMethod !== "function") {
-    throw new TypeError("@bound can only be used on methods.");
+  if (typeof originalMethod !== 'function') {
+    throw new TypeError('@bound can only be used on methods.');
   }
 
-  if (typeof target === "function") {
-    // Static method, bind to class (if target is of type "function", the method decorator was used on a static method).
+  if (typeof target === 'function') {
+    // Static method, bind to class (if target is of type 'function', the method decorator was used on a static method).
     return {
       value() {
         return originalMethod.apply(target, arguments);
       }
     };
-  } else if (typeof target === "object") {
+  } else if (typeof target === 'object') {
     // Instance method, bind to instance on first invocation (as that is the only way to access an instance from a decorator).
     return {
       get() {
-        // Create bound override on object instance. This will hide the original method on the prototype, and instead yield a bound version from the
-        // instance itself. The original method will no longer be accessible. Inside a getter, 'this' will refer to the instance.
+        // Create bound override on object instance.
+        // This will hide the original method on the prototype, and instead yield a bound version from the instance itself.
+        // The original method will no longer be accessible. Inside a getter, 'this' will refer to the instance.
         const instance = this;
 
         Object.defineProperty(instance, propKey.toString(), {
@@ -461,7 +452,8 @@ export function bound(target: Object, propKey: string | symbol) {
           }
         });
 
-        // The first invocation (per instance) will return the bound method from here. Subsequent calls will never reach this point, due to the way
+        // The first invocation (per instance) will return the bound method from here.
+        // Subsequent calls will never reach this point, due to the way
         // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
         return instance[propKey];
       }
