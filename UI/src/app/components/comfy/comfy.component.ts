@@ -214,7 +214,7 @@ export class ComfyComponent extends BaseComponent
         );
       });
 
-      this.bridgeService.loadSavedSchema$
+      this.bridgeService.saveAndLoadSchema$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
         this.initializeTargetData();

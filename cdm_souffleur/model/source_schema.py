@@ -6,6 +6,7 @@ import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
@@ -17,8 +18,10 @@ import xlrd
 from cdm_souffleur.utils.utils import Database
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import json
+from werkzeug.utils import secure_filename
 
 book = None
+ALLOWED_EXTENSIONS = {'xlsx'}
 
 with open('configuration/default.json', 'r') as configuration_file:
     configuration = json.load(configuration_file)
@@ -135,7 +138,7 @@ def _flatten_pd_df(pd_df: pd.DataFrame):
 
 def extract_sql(source_table_name):
     result = {}
-    file_to_select = source_table_name+'.xml'
+    file_to_select = source_table_name + '.xml'
     for root_dir, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
         for filename in files:
             if filename == file_to_select:
@@ -186,6 +189,42 @@ def get_existing_source_schemas_list(path):
 def set_book_to_none():
     global book
     book = None
+
+
+def _allowed_file(filename):
+    """check allowed extension of file"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def load_schema_to_server(file):
+    """save source schema to server side"""
+    if file and _allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        try:
+            os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
+            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
+        except FileExistsError:
+            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
+        file.save(str(UPLOAD_SOURCE_SCHEMA_FOLDER / filename))
+        file.close()
+    return
+
+
+def load_saved_source_schema_from_server(schema_name):
+    """load saved source schema by name"""
+    if schema_name in get_existing_source_schemas_list(
+            UPLOAD_SOURCE_SCHEMA_FOLDER):
+        source_schema = get_source_schema(
+            UPLOAD_SOURCE_SCHEMA_FOLDER / schema_name)
+        return source_schema
+    else:
+        return None
+
+# def remove_existing_mappings():
+#     for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
+#         for f in files:
+#             os.unlink(os.path.join(root, f))
 
 
 if __name__ == '__main__':

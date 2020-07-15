@@ -53,7 +53,7 @@ export class BridgeService {
   applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
   loadSavedSchema$ = new Subject<any>();
-
+  saveAndLoadSchema$ = new Subject<any>();
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -331,4 +331,11 @@ export class BridgeService {
   loadSavedSchema(schema_name: string){
     this.dataService.LoadSourceData(schema_name).subscribe(_=>{this.loadSavedSchema$.next();});
   }
+
+  saveAndLoadSchema(schema: any){
+    const tables = this.dataService._normalize(schema, 'source');
+    this.stateService.initialize(tables, 'source');
+    this.saveAndLoadSchema$.next();
+  }
+
 }
