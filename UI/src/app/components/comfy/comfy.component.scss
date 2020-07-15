@@ -202,6 +202,8 @@ div[concept="true"] {
 
 .source-columns-list {
   direction: rtl;
+  height: calc(100% - 225px);
+  overflow: scroll;
 }
 
 .background {
