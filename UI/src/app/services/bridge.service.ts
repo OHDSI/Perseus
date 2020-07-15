@@ -97,7 +97,7 @@ export class BridgeService {
     canExecute: () => {
       const connectorId = this.getConnectorId(this.sourceRow, this.targetRow);
 
-      return this.arrowsCache[connectorId] ? false : true;
+      return !this.arrowsCache[connectorId];
     }
   });
 
@@ -334,17 +334,4 @@ export class BridgeService {
 
     return `${targetTableId}-${targetRowId}`;
   }
-
-  loadSavedSchema(schema_name: string) {
-    this.dataService.LoadSourceData(schema_name).subscribe(_ => {
-      this.loadSavedSchema$.next();
-    });
-  }
-
-  saveAndLoadSchema(schema: any){
-    const tables = this.dataService._normalize(schema, 'source');
-    this.stateService.initialize(tables, 'source');
-    this.saveAndLoadSchema$.next();
-  }
-
 }

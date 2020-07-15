@@ -31,15 +31,7 @@ def load_schema():
     if request.method == 'POST':
         file = request.files['file']
         load_schema_to_server(file)
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form action="" method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+    return jsonify(success=True)
 
 
 @app.route('/api/get_existing_source_schemas_list', methods=['GET'])
