@@ -154,9 +154,11 @@ path {
   padding: 0 10px !important;
 }
 
-button.mat-raised-button.mat-button-base {
-  border-radius: 2px ;
-  @include mat-elevation(0);
+.mat-flat-button {
+  background-color: #e5e5e5;
+}
+button.mat-flat-button.mat-button-base {
+  border-radius: 2px;
 }
 
 
