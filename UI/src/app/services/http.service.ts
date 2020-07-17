@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { Mapping } from '../models/mapping';
+
+// use for dev purposes
+// import * as schemaData from '../mockups/schema.mockup.json';
 
 const {url: URL} = environment;
 const API_URLS = {
@@ -60,6 +63,9 @@ export class HttpService {
 
   postSaveLoadSchema(formData: FormData) {
     return this.httpClient.post(API_URLS.postSaveLoadSchema(), formData);
+
+    // use this for dev purposes to use mockup for schemaData (to speed up)
+    // return of(schemaData.data);
   }
 
 }
