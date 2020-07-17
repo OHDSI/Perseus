@@ -79,7 +79,12 @@
     <article>
       <h4>Target tables
         <ng-container *ngIf="data.target?.length">({{data.target.length}})</ng-container>
+        <mat-icon style="float:right;" (click)="onTargetFilter()">sort</mat-icon>
       </h4>
+      <app-cmd-filter 
+      *ngIf="targetFilterVisible"
+      (complete)="filterByType($event)">
+    </app-cmd-filter>
       <app-comfy-search-by-name
         class="filter-by-name"
         [placeholder]="'Search by target table'"

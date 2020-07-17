@@ -18,7 +18,7 @@ def get_schema(cdm_version):
     else:
         raise ValueError('Version {} is not in {}'.format(cdm_version,
                                                           CDM_VERSION_LIST))
-    with open(path) as file:
+    with open(path, encoding='utf-8') as file:
         cdm_schema_description = pd.read_csv(file)
         cdm_schema_description['COLUMN_NAME_AND_TYPE'] = \
             cdm_schema_description['COLUMN_NAME'] + ':' + \

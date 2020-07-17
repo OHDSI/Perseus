@@ -31,6 +31,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   targetTableNames: string[] = [];
+  savedTargetTableNames: string[] = [];
 
   get highlitedTables(): string[] {
     return this.highlitedtables;
@@ -61,6 +62,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     target: [],
     version: undefined
   };
+
+  targetFilterVisible = false;
 
   constructor(
     private dataService: DataService,
@@ -245,6 +248,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     });
 
     this.targetTableNames = uniq(Object.keys(this.target));
+    this.savedTargetTableNames = [...this.targetTableNames];
 
     this.sourceConnectedTo = this.data.target.map(
       table => `${prefix}-${table.name}`
@@ -393,7 +397,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           break;
         }
         case 'target': {
-          this.targetTableNames = this.targetTableNames.filter(filterByName);
+          this.targetTableNames = this.savedTargetTableNames.filter(filterByName);
           break;
         }
         case 'source-column': {
@@ -402,6 +406,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         }
       }
     }
+  }
+
+  filterByType(byTypes: string[]): void {
+    if (byTypes.length==0) {
+      this.targetTableNames = this.savedTargetTableNames
+      return
+    }
+    const filterByType = (name, index?) => {
+      return byTypes.indexOf(name.toUpperCase()) > -1;
+    };
+    this.targetTableNames = this.savedTargetTableNames.filter(filterByType);
   }
 
   filterByNameReset(area: string, byName: Criteria): void {
@@ -436,6 +451,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   onFileUpload(event: Event) {
     this.uploadService.onFileChange(event);
+  }
+
+  onTargetFilter(){
+    this.targetFilterVisible = !this.targetFilterVisible;
   }
 }
 
