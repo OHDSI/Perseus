@@ -1,4 +1,7 @@
-<div class="selected">Selected: <span>{{selected.length}}</span></div>
+<div class="selected">
+  Selected: <span>{{selected.length}}</span>
+  <a (click)="deselectAll()">Deselect All</a>
+</div>
 <mat-list class="source-columns-list" role="list" dense>
   <cdk-virtual-scroll-viewport
     class="virtual-scroll-container"
@@ -14,7 +17,7 @@
         highlight
         [attr.criteria]="item.name"
         [values]="selected"
-        (click)="onSelectColumn(item.name)">
+        (click)="onSelect(item.name)">
         <div class="data-item" #anchor>
           <span>{{ item.name }}</span>
           <span class="divider"></span>

@@ -27,7 +27,7 @@ $custom-typography: mat-typography-config(
 );
 
 // Foreground config
-$dark-text: $cdm-grey;
+$dark-text: $cdm-grey-dark;
 $dark-primary-text: rgba($dark-text, 0.87);
 $dark-accent-text: rgba($dark-primary-text, 0.54);
 $dark-disabled-text: rgba($dark-primary-text, 0.38);
@@ -35,7 +35,7 @@ $dark-dividers: rgba($dark-primary-text, 0.12);
 $dark-focused: rgba($dark-primary-text, 0.12);
 
 $mat-light-theme-foreground: (
-  base:              $cdm-grey,
+  base: $cdm-grey-dark,
   divider:           $dark-dividers,
   dividers:          $dark-dividers,
   disabled:          $dark-disabled-text,
@@ -60,9 +60,9 @@ $light-bg-darker-10:  darken($light-background, 10%);
 $light-bg-darker-20:  darken($light-background, 20%);
 $light-bg-darker-30:  darken($light-background, 30%);
 $light-bg-lighter-5:  $cdm-background-grey-light;
-$dark-bg-tooltip:     lighten($cdm-grey, 20%);
-$dark-bg-alpha-4:     rgba($cdm-grey, 0.04);
-$dark-bg-alpha-12:    rgba($cdm-grey, 0.12);
+$dark-bg-tooltip:     lighten($cdm-grey-dark, 20%);
+$dark-bg-alpha-4:     rgba($cdm-grey-dark, 0.04);
+$dark-bg-alpha-12:    rgba($cdm-grey-dark, 0.12);
 
 $mat-light-theme-background: (
   background:               $light-background,
@@ -85,10 +85,10 @@ $mat-light-theme-background: (
 );
 
 $mat-primary: (
-  main: $cdm-grey,
+  main: $cdm-grey-dark,
   lighter: $white,
   darker: $cdm-grey-light,
-  200: $cdm-grey, // For slide toggle,
+  200: $cdm-grey-dark, // For slide toggle,
   contrast : (
     main: $light-primary-text,
     lighter: $dark-primary-text,

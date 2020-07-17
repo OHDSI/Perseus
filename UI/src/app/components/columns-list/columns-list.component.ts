@@ -1,14 +1,9 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
-import { ValuesPopupComponent } from '../popups/values-popup/values-popup.component';
-import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { ValuesPopupComponent } from '../popups/values-popup/values-popup.component';
 
 @Component({
   selector: 'app-columns-list',
@@ -25,9 +20,10 @@ export class ColumnsListComponent {
   constructor(
     private dataService: DataService,
     private overlayService: OverlayService
-  ) {}
+  ) {
+  }
 
-  onSelectColumn(name: string) {
+  onSelect(name: string) {
     const itemSelected = this.selected.find(x => x === name);
     if (itemSelected) {
       this.selected = this.selected.filter(it => it !== name);
@@ -36,6 +32,13 @@ export class ColumnsListComponent {
     }
 
     this.columnsSelected.emit(this.selected);
+  }
+
+  deselectAll() {
+    if (this.selected.length) {
+      this.selected = [];
+      this.columnsSelected.emit(this.selected);
+    }
   }
 
   showTop10Values(event: any, htmlElement: any, item: IRow) {
