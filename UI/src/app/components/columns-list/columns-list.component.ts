@@ -1,48 +1,44 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
-import { ValuesPopupComponent } from '../popups/values-popup/values-popup.component';
-import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { ValuesPopupComponent } from '../popups/values-popup/values-popup.component';
 
 @Component({
   selector: 'app-columns-list',
   templateUrl: './columns-list.component.html',
   styleUrls: ['./columns-list.component.scss']
 })
-export class ColumnsListComponent implements OnInit, OnChanges {
+export class ColumnsListComponent {
   @Input() sourceRows: IRow[];
 
   @Output() columnsSelected = new EventEmitter<string[]>();
 
-  selectedColumns = [];
+  selected = [];
 
   constructor(
     private dataService: DataService,
     private overlayService: OverlayService
-  ) {}
+  ) {
+  }
 
-  ngOnInit() {}
-
-  ngOnChanges() {}
-
-  onSelectColumn(name: string) {
-    const idx = this.selectedColumns.findIndex(x => x === name);
-    if (idx > -1) {
-      this.selectedColumns.splice(idx, 1);
+  onSelect(name: string) {
+    const itemSelected = this.selected.find(x => x === name);
+    if (itemSelected) {
+      this.selected = this.selected.filter(it => it !== name);
     } else {
-      this.selectedColumns.push(name);
+      this.selected = [...this.selected, name];
     }
 
-    this.selectedColumns = Object.assign([], this.selectedColumns);
-    this.columnsSelected.emit(this.selectedColumns);
+    this.columnsSelected.emit(this.selected);
+  }
+
+  deselectAll() {
+    if (this.selected.length) {
+      this.selected = [];
+      this.columnsSelected.emit(this.selected);
+    }
   }
 
   showTop10Values(event: any, htmlElement: any, item: IRow) {
