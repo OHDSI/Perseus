@@ -31,7 +31,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   targetTableNames: string[] = [];
-  savedTargetTableNames: string[] = [];
 
   get highlitedTables(): string[] {
     return this.highlitedtables;
@@ -248,7 +247,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     });
 
     this.targetTableNames = uniq(Object.keys(this.target));
-    this.savedTargetTableNames = [...this.targetTableNames];
 
     this.sourceConnectedTo = this.data.target.map(
       table => `${prefix}-${table.name}`
@@ -397,7 +395,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           break;
         }
         case 'target': {
-          this.targetTableNames = this.savedTargetTableNames.filter(filterByName);
+          this.targetTableNames = uniq(Object.keys(this.target)).filter(filterByName);
           break;
         }
         case 'source-column': {
@@ -410,13 +408,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   filterByType(byTypes: string[]): void {
     if (byTypes.length==0) {
-      this.targetTableNames = this.savedTargetTableNames
+      this.targetTableNames = uniq(Object.keys(this.target))
       return
     }
     const filterByType = (name, index?) => {
       return byTypes.indexOf(name.toUpperCase()) > -1;
     };
-    this.targetTableNames = this.savedTargetTableNames.filter(filterByType);
+    this.targetTableNames = uniq(Object.keys(this.target)).filter(filterByType);
   }
 
   filterByNameReset(area: string, byName: Criteria): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import  *  as  data  from  './CdmByTypes.json';
 import { MatListOption } from '@angular/material/list';
+import { uniq } from 'src/app/infrastructure/utility';
 
 
 
@@ -19,11 +20,9 @@ export class CmdFilterComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.targetTypes.push("Show All")
     this.cdmByTypes = (data as any).default
-     for (var value in this.cdmByTypes) {  
-      this.targetTypes.push(value)  
-    }
+    this.targetTypes.push("Show All")
+    this.targetTypes = this.targetTypes.concat(uniq(Object.keys(this.cdmByTypes)))
   }
 
   onTypeSelection(types: MatListOption[]){
@@ -38,5 +37,4 @@ export class CmdFilterComponent implements OnInit {
     }
     this.complete.emit(this.selectedTables);
   }
-
 }
