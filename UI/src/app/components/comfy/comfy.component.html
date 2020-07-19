@@ -78,12 +78,21 @@
     </article>
     <article>
       <h4>Target tables
-        <ng-container *ngIf="data.target?.length">({{data.target.length}})</ng-container>
-        <mat-icon style="float:right;" (click)="onTargetFilter()">sort</mat-icon>
+        <mat-label style = "padding-right: 15px;" *ngIf="data.target?.length">({{data.target.length}})</mat-label>
+        <mat-label 
+        style = "padding-left: 15px; border-left: 2px solid black; color: gray;" 
+        *ngIf="cdmFilter?.selectedTypes.length"
+        [matTooltip]="cdmFilter.selectedTypes.join(', ')"
+        matTooltipPosition="above"
+        >
+        {{cdmFilter.selectedTypes.join(', ').length>25 ? 
+        (cdmFilter.selectedTypes.join(', ') | slice:0:25) + '..':
+        cdmFilter.selectedTypes.join(', ')}}</mat-label>
+        <mat-icon *ngIf="data.target?.length" style="float:right;" (click)="onTargetFilter()">sort</mat-icon>
       </h4>
       <app-cmd-filter 
       *ngIf="targetFilterVisible"
-      (complete)="filterByType($event)">
+      (complete)="filterByType()">
     </app-cmd-filter>
       <app-comfy-search-by-name
         class="filter-by-name"

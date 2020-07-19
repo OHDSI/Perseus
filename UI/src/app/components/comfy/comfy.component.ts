@@ -19,6 +19,7 @@ import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 import { isConceptTable } from './services/concept.service';
+import { CmdFilterComponent } from '../popups/open-cmd-filter/cmd-filter.component';
 
 @Component({
   selector: 'app-comfy',
@@ -62,7 +63,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     version: undefined
   };
 
-  targetFilterVisible = false;
+  targetFilterVisible = false
+  selectedTargetTypes: string[]=[]
 
   constructor(
     private dataService: DataService,
@@ -83,6 +85,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false })
   fileInput: ElementRef<HTMLElement>;
+  @ViewChild(CmdFilterComponent, {static: false})
+  cdmFilter: CmdFilterComponent;
 
   @ViewChildren(CdkDrag)
   dragEls: QueryList<CdkDrag>;
@@ -406,13 +410,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     }
   }
 
-  filterByType(byTypes: string[]): void {
-    if (byTypes.length==0) {
+  filterByType(): void {
+    if (this.cdmFilter.selectedTables.length==0) {
       this.targetTableNames = uniq(Object.keys(this.target))
       return
     }
     const filterByType = (name, index?) => {
-      return byTypes.indexOf(name.toUpperCase()) > -1;
+      return this.cdmFilter.selectedTables.indexOf(name.toUpperCase()) > -1;
     };
     this.targetTableNames = uniq(Object.keys(this.target)).filter(filterByType);
   }

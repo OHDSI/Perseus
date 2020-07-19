@@ -15,7 +15,8 @@ export class CmdFilterComponent implements OnInit {
   targetTypes: string [] = []
   cdmByTypes:Map<string, string[]>
   selectedTables:string[] = []
-  @Output() complete = new EventEmitter<string[]>();
+  selectedTypes:string[] = []
+  @Output() complete = new EventEmitter<void>();
   
   constructor() { }
 
@@ -27,14 +28,15 @@ export class CmdFilterComponent implements OnInit {
 
   onTypeSelection(types: MatListOption[]){
     this.selectedTables=[]
-    var selected = types.map(item => item.value)
-    for (var item of selected){
+    this.selectedTypes = types.map(item => item.value)
+    for (var item of this.selectedTypes){
       if (item=="Show All"){
         this.selectedTables = []
+        this.selectedTypes = uniq(Object.keys(this.cdmByTypes))
         break
       }
       this.selectedTables = this.selectedTables.concat(this.cdmByTypes[item])
     }
-    this.complete.emit(this.selectedTables);
+    this.complete.emit();
   }
 }
