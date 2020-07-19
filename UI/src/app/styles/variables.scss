@@ -12,9 +12,10 @@ $blue: #066BBB;
 
 // CDM app main colors
 
-$cdm-grey: #404040;
+$cdm-grey-dark: #404040;
+$cdm-grey: #9b9b9b;
+$cdm-grey-light: #e5e5e5;
 $cdm-grey-lighter: #f9f9f9;
-$cdm-grey-light: #e7e7e7;
 $cdm-blue: $blue;
 $cdm-blue-light: $light-blue;
 
@@ -22,7 +23,7 @@ $cdm-blue-light: $light-blue;
 // CDM app main background colors
 
 $cdm-background-grey-light: $cdm-grey-lighter;
-$cdm-background-grey-dark: $cdm-grey;
+$cdm-background-grey-dark: $cdm-grey-dark;
 $cdm-background-grey-blue-gradient: linear-gradient(180deg, $cdm-grey-light 22.56%, #D8E3EC 100%);
 
 

@@ -27,7 +27,7 @@
       <app-comfy-search-by-name
         *ngIf="data.source?.length"
         class="filter-by-name"
-        [placeholder]="'Search by source table'"
+        placeholder="Search by source table"
         (complete)="filterByName('source', $event)"
         (reset)="filterByNameReset('source', $event)"
       ></app-comfy-search-by-name>
@@ -69,7 +69,7 @@
           type="file"
           (change)="onFileUpload($event)"
           hidden/>
-        <button mat-raised-button
+        <button mat-flat-button
                 color="accent"
                 (click)="loadNewReport()">
           Load New Report
@@ -96,7 +96,7 @@
     </app-cmd-filter>
       <app-comfy-search-by-name
         class="filter-by-name"
-        [placeholder]="'Search by target table'"
+        placeholder="Search by target table"
         (complete)="filterByName('target', $event)"
         (reset)="filterByNameReset('target', $event)"
         *ngIf="data.target?.length"
@@ -134,7 +134,7 @@
       <div class="initial"
            *ngIf="!data.target.length">
         <p>Please select CDM version to see Target tables</p>
-        <button mat-raised-button
+        <button mat-flat-button
                 color="accent"
                 (click)="openSetCDMDialog()">
           Set CDM Version

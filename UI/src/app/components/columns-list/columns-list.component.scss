@@ -1,5 +1,16 @@
-.data-list {
+@import "../../styles/variables.scss";
 
+.selected {
+  direction: ltr;
+  font-size: smaller;
+  padding: 10px;
+  span {
+    color: $cdm-grey;
+  }
+  a {
+    margin-left: 30px;
+    cursor: pointer;
+  }
 }
 
 .data-item {
