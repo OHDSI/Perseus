@@ -54,7 +54,7 @@ import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
-import { CmdFilterComponent } from './components/popups/open-cmd-filter/cmd-filter.component';
+import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filter.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +85,7 @@ import { CmdFilterComponent } from './components/popups/open-cmd-filter/cmd-filt
     TransformConfigComponent,
     ConditionDialogComponent,
     ComfySearchByNameComponent,
-    CmdFilterComponent
+    CdmFilterComponent
   ],
   imports: [
     BrowserModule,

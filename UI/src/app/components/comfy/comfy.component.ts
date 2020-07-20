@@ -19,7 +19,7 @@ import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 import { isConceptTable } from './services/concept.service';
-import { CmdFilterComponent } from '../popups/open-cmd-filter/cmd-filter.component';
+import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 
 @Component({
   selector: 'app-comfy',
@@ -63,8 +63,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     version: undefined
   };
 
-  targetFilterVisible = false
-  selectedTargetTypes: string[]=[]
+  targetFilterVisible = false;
+  selectedTargetTypes: string[] = [];
 
   constructor(
     private dataService: DataService,
@@ -85,8 +85,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false })
   fileInput: ElementRef<HTMLElement>;
-  @ViewChild(CmdFilterComponent, {static: false})
-  cdmFilter: CmdFilterComponent;
+  @ViewChild(CdmFilterComponent, {static: false})
+  cdmFilter: CdmFilterComponent;
 
   @ViewChildren(CdkDrag)
   dragEls: QueryList<CdkDrag>;
@@ -411,7 +411,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByType(): void {
-    if (this.cdmFilter.selectedTables.length==0) {
+    if (this.cdmFilter.selectedTables.length == 0) {
       this.targetTableNames = uniq(Object.keys(this.target))
       return
     }

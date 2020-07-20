@@ -78,22 +78,20 @@
     </article>
     <article>
       <h4>Target tables
-        <mat-label style = "padding-right: 15px;" *ngIf="data.target?.length">({{data.target.length}})</mat-label>
-        <mat-label 
-        style = "padding-left: 15px; border-left: 2px solid black; color: gray;" 
+        <label class = "target-table-count" *ngIf="data.target?.length">({{data.target.length}})</label>
+        <label 
+        class = "cdm-filter-label"
         *ngIf="cdmFilter?.selectedTypes.length"
-        [matTooltip]="cdmFilter.selectedTypes.join(', ')"
+        [matTooltip]="cdmFilter.selectedTypes"
         matTooltipPosition="above"
         >
-        {{cdmFilter.selectedTypes.join(', ').length>25 ? 
-        (cdmFilter.selectedTypes.join(', ') | slice:0:25) + '..':
-        cdmFilter.selectedTypes.join(', ')}}</mat-label>
-        <mat-icon *ngIf="data.target?.length" style="float:right;" (click)="onTargetFilter()">sort</mat-icon>
+        {{cdmFilter.selectedTypes}}</label>
+        <mat-icon color = "accent" class="cdm-filter-icon" *ngIf="data.target?.length" (click)="onTargetFilter()">sort</mat-icon>
       </h4>
-      <app-cmd-filter 
+      <app-cdm-filter 
       *ngIf="targetFilterVisible"
       (complete)="filterByType()">
-    </app-cmd-filter>
+    </app-cdm-filter>
       <app-comfy-search-by-name
         class="filter-by-name"
         placeholder="Search by target table"
