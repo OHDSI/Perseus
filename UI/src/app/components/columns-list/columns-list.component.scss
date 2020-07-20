@@ -12,7 +12,6 @@
 
   a {
     margin-left: 30px;
-    cursor: pointer;
   }
 }
 
@@ -31,6 +30,9 @@
     &.checked {
       display: none;
     }
+  }
+  span {
+    font-weight: bolder;
   }
 }
 

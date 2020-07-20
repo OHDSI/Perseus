@@ -1,3 +1,4 @@
+@import '~@angular/material/theming';
 @import 'src/app/styles/variables.scss';
 
 .comfy-grid {
@@ -24,11 +25,13 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  box-sizing: border-box;
-  background: #e1f2ff;
+  background-color: #e1f2ff;
+  padding: 10px 15px 5px;
   font-size: 14px;
+  border: 1px solid transparent;
   border-radius: 2px;
-  box-shadow: 0 2px 2px rgba(128, 128, 128, 0.25);
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
 }
 
 .vertical-placeholder {
@@ -39,16 +42,7 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.vertical-box:first-child {
-  background: #a6d2f4;
-}
-
-.vertical-box:last-child {
-  border: none;
-  padding-bottom: 0;
-}
-
-.vertical-list.cdk-drop-list-dragging
+.vertical-list.cdk-drop-list-dragging,
 .horizontal-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -78,13 +72,10 @@
 
 .table-description {
   position: relative;
-  padding: 1.128571428571429rem;
-  color: #000d37;
-  font-size: 1.142857142857143rem;
-  line-height: 1.357142857142857rem;
   width: 100%;
   text-transform: uppercase;
   cursor: move;
+  font-weight: bolder;
 
   &.caption {
     width: 100%;
@@ -144,11 +135,13 @@ div[highlighted="true"] {
   overflow-y: scroll;
   padding-left: 10px;
   padding-right: 10px;
-}
-
-.scrolled-items-rtl {
-  @extend .scrolled-items;
-  direction: rtl;
+  a {
+    font-size: smaller;
+  }
+  &-rtl {
+    @extend .scrolled-items;
+    direction: rtl;
+  }
 }
 
 div[concept="true"] {
@@ -170,13 +163,21 @@ div[concept="true"] {
 
 .cdm-box {
   display: flex;
+  padding: 10px 15px 5px;
   align-items: center;
-  background: #f3f3f3;
+  background-color: #F9F9F9;
   font-size: 14px;
-  margin-bottom: 16px;
-  padding-left: 20px;
   border-radius: 2px;
-  box-shadow: 0 2px 2px rgba(128, 128, 128, 0.25);
+  border: 1px solid transparent;
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
+
+  .mat-icon {
+    font-size: 16px;
+  }
+  & + & {
+    margin-top: 15px;
+  }
 }
 
 .filter-label {
