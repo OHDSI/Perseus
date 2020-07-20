@@ -1,6 +1,10 @@
 @import '~@angular/material/theming';
 @import 'src/app/styles/variables.scss';
 
+a {
+  font-size: smaller;
+}
+
 .comfy-grid {
   display: grid;
   grid-template-columns: 400px 292px 292px;
@@ -32,6 +36,9 @@
   border-radius: 2px;
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
+  &:first-of-type {
+    background-color: #A6D2F4;
+  }
 }
 
 .vertical-placeholder {
@@ -102,11 +109,12 @@
 
   .remove-mapping-table {
     position: absolute;
-    top: 15px;
-    right: 10px;
+    top: 0;
+    right: 0;
     cursor: pointer;
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
   }
 }
 
@@ -115,11 +123,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-}
-
-div[highlighted="true"] {
-  background-color: #a6d2f4;
-  font-weight: 600;
 }
 
 .mapping-component-progress {
@@ -135,9 +138,7 @@ div[highlighted="true"] {
   overflow-y: scroll;
   padding-left: 10px;
   padding-right: 10px;
-  a {
-    font-size: smaller;
-  }
+
   &-rtl {
     @extend .scrolled-items;
     direction: rtl;
@@ -159,6 +160,7 @@ div[concept="true"] {
   display: block;
   background: white;
   overflow: hidden;
+  direction: ltr;
 }
 
 .cdm-box {
@@ -172,8 +174,13 @@ div[concept="true"] {
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
 
+  &[highlighted="true"] {
+    background-color: #E7F4FF;
+  }
+
   .mat-icon {
     font-size: 16px;
+    height: 16px;
   }
   & + & {
     margin-top: 15px;

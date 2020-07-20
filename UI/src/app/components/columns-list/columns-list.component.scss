@@ -22,11 +22,13 @@
   display: flex;
   padding: 10px 15px 5px;
   font-size: larger;
+  align-items: center;
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
 
   .mat-icon {
     font-size: 15px;
+    height: 16px;
     &.checked {
       display: none;
     }
@@ -58,7 +60,7 @@ mat-list-item.mat-list-item {
   overflow-x: hidden;
 }
 
-[highlighted=true] {
+[highlighted="true"] {
   background-color: #E7F4FF;
   border-color: $cdm-blue;
   border-radius: 2px;
