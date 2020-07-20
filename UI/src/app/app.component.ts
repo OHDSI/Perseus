@@ -5,8 +5,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { fromEvent } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { BridgeService } from './services/bridge.service';
-import { CommonUtilsService } from './services/common-utils.service';
-import { UploadService } from './services/upload.service';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +12,6 @@ import { UploadService } from './services/upload.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnDestroy {
-  @ViewChild('sourceUpload', { static: true }) fileInput: ElementRef;
-
   mobileQuery: MediaQueryList;
 
   private mobileQueryListener: () => void;
@@ -24,8 +20,6 @@ export class AppComponent implements OnDestroy {
     cd: ChangeDetectorRef,
     media: MediaMatcher,
     private bridgeService: BridgeService,
-    private commonUtilsService: CommonUtilsService,
-    private uploadService: UploadService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
   ) {
@@ -57,26 +51,6 @@ export class AppComponent implements OnDestroy {
         this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/icons/${key}.svg`)
       );
     });
-  }
-
-  resetAllMappings() {
-    this.bridgeService.resetAllMappings();
-  }
-
-  openSaveMappingDialog(action: OpenMappingDialog) {
-    this.commonUtilsService.openSaveMappingDialog(action);
-  }
-
-  onOpenSourceClick() {
-    this.uploadService.onFileInputClick(this.fileInput);
-  }
-
-  onFileUpload(event: Event) {
-    this.uploadService.onFileChange(event);
-  }
-
-  openSetCDMDialog() {
-    this.commonUtilsService.openSetCDMDialog();
   }
 }
 

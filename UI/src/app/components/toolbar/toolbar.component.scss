@@ -1,0 +1,12 @@
+mat-toolbar.app-toolbar {
+  padding-left: 64px;
+  padding-right: 80px;
+
+  .logo {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: smaller;
+    font-weight: bolder;
+  }
+}

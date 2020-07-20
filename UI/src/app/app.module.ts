@@ -38,6 +38,7 @@ import { RulesPopupService } from './components/popups/rules-popup/services/rule
 import { SQL_FUNCTIONS } from './components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { TransformationInputComponent } from './components/popups/rules-popup/transformation-input/transformation-input.component';
 import { SampleDataPopupComponent } from './components/popups/sample-data-popup/sample-data-popup.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { VocabularyDropdownComponent } from './components/vocabulary-search-select/vocabulary-dropdown.component';
 import { ConceptConfigComponent } from './components/vocabulary-transform-configurator/concept-config/concept-config.component';
 import { VocabularyBlockComponent } from './components/vocabulary-transform-configurator/concept-config/vocabulary-block/vocabulary-block.component';
@@ -58,6 +59,7 @@ import { VocabulariesService } from './services/vocabularies.service';
 @NgModule({
   declarations: [
     AppComponent,
+    ToolbarComponent,
     MappingComponent,
     AreaComponent,
     CommentPopupComponent,
