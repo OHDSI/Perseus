@@ -19,9 +19,9 @@
         [values]="selected"
         (click)="onSelect(item.name)">
         <div class="data-item" #anchor>
+          <mat-icon (click)="showTop10Values($event, anchor, item)">sort</mat-icon>
           <span>{{ item.name }}</span>
           <span class="divider"></span>
-          <mat-icon (click)="showTop10Values($event, anchor, item)">sort</mat-icon>
         </div>
       </div>
     </mat-list-item>
