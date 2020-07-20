@@ -61,6 +61,7 @@ mat-list-item.mat-list-item {
 }
 
 [highlighted="true"] {
+  @include mat-elevation-transition;
   background-color: #E7F4FF;
   border-color: $cdm-blue;
   border-radius: 2px;
@@ -68,4 +69,5 @@ mat-list-item.mat-list-item {
     display: block;
   }
 }
+
 

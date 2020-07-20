@@ -38,6 +38,8 @@ a {
   @include mat-elevation(1, $cdm-grey, 0.8);
   &:first-of-type {
     background-color: #A6D2F4;
+    position: relative;
+    @include mat-elevation(2, $cdm-grey, 0.8);
   }
 }
 
@@ -112,9 +114,10 @@ a {
     top: 0;
     right: 0;
     cursor: pointer;
-    width: 16px;
-    height: 16px;
-    font-size: 16px;
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 16px;
   }
 }
 
@@ -176,6 +179,7 @@ div[concept="true"] {
 
   &[highlighted="true"] {
     background-color: #E7F4FF;
+    box-shadow: 0 0 8px #A6D2F4;
   }
 
   .mat-icon {

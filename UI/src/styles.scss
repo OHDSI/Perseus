@@ -9,6 +9,7 @@ html, body {
   height: 100%;
   @extend .mat-typography;
   color: $cdm-grey-dark;
+
   > * {
     box-sizing: border-box;
   }
@@ -162,8 +163,31 @@ path {
 .mat-flat-button {
   background-color: #e5e5e5;
 }
+
 button.mat-flat-button.mat-button-base {
   border-radius: 2px;
 }
 
+.mat-form-field.mat-form-field-appearance-outline {
+  .mat-form-field-wrapper {
+    margin: 0;
+  }
 
+  .mat-form-field-prefix,
+  .mat-form-field-prefix .mat-icon {
+    color: $grey !important;
+  }
+
+  .mat-form-field-outline {
+    box-shadow: 0 0 4px rgba(128, 128, 128, 0.25);
+    border-radius: 2px;
+
+    &:hover {
+      box-shadow: 0 0 8px #A6D2F4;
+    }
+
+    & > * {
+      background-color: white;
+    }
+  }
+}
