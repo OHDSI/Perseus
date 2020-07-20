@@ -229,6 +229,10 @@ div[concept="true"] {
   height: calc(100% - 64px);
 }
 
+h3 {
+  margin-bottom: 30px;
+}
+
 main {
   flex: 3 1 80%;
   order: 2;
@@ -244,6 +248,10 @@ nav {
   padding: 50px 50px 10px;
   position: relative;
   z-index: 1;
+
+  h3, h4 {
+    padding-left: 23px;
+  }
 }
 
 ul {

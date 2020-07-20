@@ -10,8 +10,7 @@
     maxBufferPx="400">
     <mat-list-item
       role="listitem"
-      *cdkVirtualFor="let item of sourceRows"
-      class="list-item">
+      *cdkVirtualFor="let item of sourceRows">
       <div
         class="data-item-caption"
         highlight
@@ -19,9 +18,10 @@
         [values]="selected"
         (click)="onSelect(item.name)">
         <div class="data-item" #anchor>
-          <mat-icon (click)="showTop10Values($event, anchor, item)">sort</mat-icon>
+          <mat-icon (click)="showTop10Values($event, anchor, item)" class="sort">sort</mat-icon>
           <span>{{ item.name }}</span>
           <span class="divider"></span>
+          <mat-icon color="accent" class="checked">done</mat-icon>
         </div>
       </div>
     </mat-list-item>
