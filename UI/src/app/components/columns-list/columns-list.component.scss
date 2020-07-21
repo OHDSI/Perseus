@@ -4,7 +4,11 @@
 .selected {
   direction: ltr;
   font-size: smaller;
-  padding: 10px;
+  position: absolute;
+  display: block;
+  width: 200px;
+  top: -23px;
+  left: 10px;
 
   span {
     color: $cdm-grey;
@@ -58,6 +62,7 @@ mat-list-item.mat-list-item {
 .virtual-scroll-container {
   height: calc(100vh - 340px);
   overflow-x: hidden;
+  top: -1px;
 }
 
 [highlighted="true"] {

@@ -30,7 +30,7 @@ a {
   align-items: center;
   justify-content: space-between;
   background-color: #e1f2ff;
-  padding: 10px 15px 5px;
+  padding: 10px 15px 5px 38px;
   font-size: 14px;
   border: 1px solid transparent;
   border-radius: 2px;
@@ -216,6 +216,7 @@ div[concept="true"] {
   direction: rtl;
   height: calc(100% - 225px);
   overflow: scroll;
+  position: relative;
 }
 
 .background {
@@ -294,6 +295,7 @@ article {
   min-width: 410px;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   .initial {
     background-color: rgba(231, 244, 255, 0.2);
@@ -318,4 +320,10 @@ article {
       direction: ltr;
     }
   }
+}
+
+.filter-by-name + a {
+  position: absolute;
+  top: 75px;
+  left: 10px;
 }
