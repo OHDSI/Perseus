@@ -1,0 +1,38 @@
+{
+    "Meta-data": [
+        "CDM_SOURCE", 
+        "METADATA"],
+    "Clinical Data": [
+        "PERSON",
+        "OBSERVATION_PERIOD",
+        "VISIT_OCCURRENCE",
+        "VISIT_DETAIL",
+        "CONDITION_OCCURRENCE",
+        "DEATH",
+        "DRUG_EXPOSURE",
+        "PROCEDURE_OCCURRENCE",
+        "DEVICE_EXPOSURE",
+        "MEASUREMENT",
+        "NOTE",
+        "NOTE_NLP",
+        "SURVEY_CONDUCT",
+        "OBSERVATION",
+        "SPECIMEN",
+        "FACT_RELATIONSHIP"],
+    "Health System Data":[
+        "LOCATION",
+        "LOCATION_HISTORY",
+        "CARE_SITE",
+        "PROVIDER"
+    ],
+    "Health Economics":[
+        "PAYER_PLAN_PERIOD",
+        "COST"],
+    "Derived Elements":[
+        "DRUG_ERA",
+        "DOSE_ERA",
+        "CONDITION_ERA"],
+    "Results Schema":[
+        "COHORT",
+        "COHORT_DEFINITION"]
+    }

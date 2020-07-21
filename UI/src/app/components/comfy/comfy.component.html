@@ -78,8 +78,20 @@
     </article>
     <article>
       <h4>Target tables
-        <ng-container *ngIf="data.target?.length">({{data.target.length}})</ng-container>
+        <label class = "target-table-count" *ngIf="data.target?.length">({{data.target.length}})</label>
+        <label 
+        class = "cdm-filter-label"
+        *ngIf="cdmFilter?.selectedTypes.length"
+        [matTooltip]="cdmFilter.selectedTypes"
+        matTooltipPosition="above"
+        >
+        {{cdmFilter.selectedTypes}}</label>
+        <mat-icon color = "accent" class="cdm-filter-icon" *ngIf="data.target?.length" (click)="onTargetFilter()">sort</mat-icon>
       </h4>
+      <app-cdm-filter 
+      *ngIf="targetFilterVisible"
+      (complete)="filterByType()">
+    </app-cdm-filter>
       <app-comfy-search-by-name
         class="filter-by-name"
         placeholder="Search by target table"

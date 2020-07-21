@@ -297,5 +297,27 @@ article {
     ul {
       direction: ltr;
     }
+
+    .cdm-filter-label {
+      padding-left: 15px; 
+        border-left: 2px solid black; 
+        color: gray; 
+        overflow: hidden;
+        white-space: nowrap; 
+        text-overflow: ellipsis; 
+        width: 200px; 
+        display: inline-block;  
+        vertical-align: bottom;
+        font-size: 90%
+    }
+
+    .target-table-count {
+      padding-right: 15px;
+    }
+
+    .cdm-filter-icon {
+      float: right;
+    }
+
   }
 }

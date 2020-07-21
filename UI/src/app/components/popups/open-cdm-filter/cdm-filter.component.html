@@ -1,0 +1,7 @@
+<mat-selection-list #types (selectionChange)="onTypeSelection(types.selectedOptions.selected)">
+    <mat-list-option *ngFor="let item of targetTypes" 
+    checkboxPosition="before"
+    [value] = "item">
+      {{item}}
+    </mat-list-option>
+</mat-selection-list>
