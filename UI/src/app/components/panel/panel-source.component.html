@@ -1,4 +1,4 @@
-<mat-expansion-panel #matpanel (opened)="onOpen()" (closed)="onClose()" expanded="true">
+<mat-expansion-panel (opened)="onOpen()" (closed)="onClose()" expanded="true">
   <mat-expansion-panel-header
     #exppanelheader
     class="mat-expansion-panel-header panel-header-{{ table.name }}"
@@ -10,10 +10,14 @@
       >
         list
       </mat-icon>
-      {{ title | prettyName }}
+      <span>{{ title | prettyName }}</span>
+      <div *ngIf="table.area === 'source'" class="linkSimilarItems">
+        <mat-slide-toggle (change)="onCheckboxChange($event)" (click)="$event.stopPropagation();">Link similar fields</mat-slide-toggle>
+      </div>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <app-panel-table
+    #panel
     [table]="table"
     [tabIndex]="tabIndex"
     [displayedColumns]="[

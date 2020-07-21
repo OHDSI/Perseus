@@ -1,56 +1,24 @@
 <div class="app-mapping">
-  <div class="export-actions">
-    <button
-      mat-icon-button
-      matTooltip="Download ziped mappings"
-      aria-label="generate mapping xmls"
-      (click)="generateMappingJson()"
-    >
-      <mat-icon>file_download</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Preview mappings"
-      aria-label="preview mapping xmls"
-      (click)="previewMapping()"
-    >
-      <mat-icon>play_circle_filled_white</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Delete all mappings"
-      aria-label="delete all mappings"
-      (click)="wipeAllMappings()"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
-  </div>
   <section>
     <main #maincanvas class="main">
       <app-area area="source" class="area-source">
-        <ng-container *ngFor="let table of source; trackBy: trackByFn">
-          <ng-container *ngIf="table.visible">
-            <app-panel
+        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')">
+          <mat-tab
+            label="{{ table.name | prettyName }}"
+            *ngFor="let table of source; trackBy: trackByFn"
+          >
+            <app-panel-source
+              #sourcePanel
+              *ngIf="table.visible"
+              [tabIndex]="sourceTabIndex"
               [table]="table"
+              [tables]="source"
               (open)="onPanelOpen(table)"
               (close)="onPanelClose(table)"
               (initialized)="onPanelInit(table)"
-            >
-              <app-panel-table
-                #sourcePanel
-                [table]="table"
-                [displayedColumns]="[
-                  'column_indicator',
-                  'column_name',
-                  'column_type',
-                  'values',
-                  'comments'
-                ]"
-              >
-              </app-panel-table>
-            </app-panel>
-          </ng-container>
-        </ng-container>
+            ></app-panel-source>
+          </mat-tab>
+        </mat-tab-group>
       </app-area>
       <!--Bridge-->
       <div class="hint">
@@ -99,27 +67,25 @@
       </div>
       <!--End-of-the-Bridge-->
       <app-area area="target" class="area-target">
-        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
+        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab
-            label="{{ table.name }}"
+            label="{{ table.name | prettyName }}"
             *ngFor="let table of target; trackBy: trackByFn"
           >
-            <app-panel
+            <app-panel-target
+              #targetPanel
               *ngIf="table.visible"
-              [tabIndex]="tabIndex"
+              [tabIndex]="targetTabIndex"
               [table]="table"
+              [tables]="target"
               (open)="onPanelOpen(table)"
               (close)="onPanelClose(table)"
               (initialized)="onPanelInit(table)"
-            ></app-panel>
+            ></app-panel-target>
           </mat-tab>
         </mat-tab-group>
       </app-area>
     </main>
-    <footer>
-      <div>
-        <mat-checkbox>Link similar items from other source tables</mat-checkbox>
-      </div>
-    </footer>
+    <footer></footer>
   </section>
 </div>

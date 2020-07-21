@@ -5,19 +5,22 @@ import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 import { CommonService } from 'src/app/services/common.service';
-import { StateService } from 'src/app/services/state.service';
+import { StoreService } from 'src/app/services/store.service';
 import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
 import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { PanelTableComponent } from './panel-table/panel-table.component';
 
 @Component({
-  selector: 'app-panel',
-  templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.scss']
+  selector: 'app-panel-source',
+  templateUrl: './panel-source.component.html',
+  styleUrls: ['./panel-source.component.scss']
 })
-export class PanelComponent implements OnInit, AfterViewInit {
+export class PanelSourceComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
+  @Input() tables: ITable[];
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
@@ -25,7 +28,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Output() openTransform = new EventEmitter();
 
   @ViewChild('exppanelheader', { static: true }) panelHheader: any;
-  @ViewChild('matpanel', { static: true }) panel: MatExpansionPanel;
+  @ViewChild('panel') panel: PanelTableComponent;
 
   get title() {
     return this.table.name;
@@ -42,7 +45,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private commonService: CommonService,
     private bridgeService: BridgeService,
     private bridgeButtonService: BridgeButtonService,
-    private stateService: StateService
+    private storeService: StoreService
   ) {
     this.initializing = true;
   }
@@ -118,8 +121,42 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   setExpandedFlagOnSourceAndTargetTables(table: ITable, expanded: boolean) {
-    this.stateService.state[table.area].tables
-      .filter(t => t.id === table.id)
-      .forEach(t => (t.expanded = expanded));
+    this.storeService.state[table.area].filter(t => t.id === table.id).forEach(t => (t.expanded = expanded));
+  }
+
+  onCheckboxChange(event: MatCheckboxChange) {
+    for (const row of this.table.rows) {
+      const connections = this.bridgeService.findCorrespondingConnections(this.table, row);
+      for (const connection of connections) {
+        if (!event.checked) {
+          this.unlinkSimilarFields(connection);
+        } else {
+          this.linkSimilarFields(connection);
+        }
+      }
+    }
+  }
+
+  linkSimilarFields(connection) {
+    for (const table of this.tables) {
+      if (table.name !== this.table.name) {
+        const similarField = table.rows.find(x => x.name === connection.source.name);
+        if (similarField) {
+          this.bridgeService.drawArrow(similarField, connection.target);
+        }
+      }
+    }
+  }
+
+  unlinkSimilarFields(connection) {
+    for (const table of this.tables) {
+      if (table.name !== this.table.name) {
+        const similarField = table.rows.find(x => x.name === connection.source.name);
+        if (similarField) {
+          const connectorId = this.bridgeService.getConnectorId(similarField, connection.target);
+          this.bridgeService.deleteArrow(connectorId);
+        }
+      }
+    }
   }
 }

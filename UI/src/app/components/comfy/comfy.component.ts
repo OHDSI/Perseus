@@ -305,17 +305,23 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   async openMapping(targetTableName: string) {
-    const targettable = this.data.target.filter(table => table.name === targetTableName);
-    const {data} = this.target[targetTableName];
-
-    const sourcetable = this.data.source.filter(table => {
-      const sourceTablesNames = data.slice(1, data.length);
-      return !!sourceTablesNames.find(name => name === table.name);
+    let sourceTablesNames = [];
+    const targetTablesNames = Object.keys(this.target).filter(key => {
+      const data = this.target[key].data;
+      if (data.length > 1) {
+        sourceTablesNames.push(...data.slice(1, data.length));
+        return true;
+      }
+      return false;
     });
+    sourceTablesNames = uniq(sourceTablesNames);
+
+    const targetTables = this.data.target.filter(table => targetTablesNames.includes(table.name));
+    const sourceTables = this.data.source.filter(table => sourceTablesNames.includes(table.name));
 
     const payload = {
-      source: sourcetable,
-      target: targettable,
+      source: sourceTables,
+      target: targetTables,
       allTarget: this.data.target
     };
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { ITable} from '../models/table';
 
 @Injectable({
   providedIn: 'root'
@@ -25,4 +26,15 @@ export class StoreService {
     this.state = {...this.state, [key]: value};
   }
 
+  findTable(name: string): ITable {
+    const index1 = this.state.target.findIndex(t => t.name === name);
+    const index2 = this.state.source.findIndex(t => t.name === name);
+    if (index1 > -1) {
+      return this.state.target[index1];
+    } else if (index2 > -1) {
+      return this.state.source[index2];
+    }
+
+    return null;
+  }
 }

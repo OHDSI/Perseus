@@ -11,15 +11,20 @@
     }
 
     mat-panel-title {
-        font-size: 13px;
-        display: flex;
-        align-items: center;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
 
-        mat-icon {
-            margin-right: 10px;
-            align-self: center;
-            color: $grey;
-        }
+      mat-icon {
+          margin-right: 10px;
+          align-self: center;
+          color: $grey;
+      }
+
+      .linkSimilarItems {
+        margin-left: auto;
+        margin-right: 10px;
+      }
     }
 }
 

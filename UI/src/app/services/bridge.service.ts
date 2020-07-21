@@ -12,8 +12,7 @@ import { Configuration } from '../models/configuration';
 import { IConnector } from '../models/interface/connector.interface';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
-import { DataService } from './data.service';
-import { StateService } from './state.service';
+import { StoreService } from './store.service';
 
 export interface IConnection {
   source: IRow;
@@ -51,8 +50,7 @@ export class BridgeService {
 
   constructor(
     private drawService: DrawService,
-    private stateService: StateService,
-    private dataService: DataService
+    private storeService: StoreService
   ) {
   }
 
@@ -73,26 +71,7 @@ export class BridgeService {
 
   connect = new Command({
     execute: () => {
-      const entityId = this.getConnectorId(this.sourceRow, this.targetRow);
-
-      const connector = this.drawService.drawLine(
-        entityId,
-        this.sourceRow,
-        this.targetRow
-      );
-
-      this.targetRow.setType(connector.type);
-
-      const connection: IConnection = {
-        source: this.sourceRow,
-        target: this.targetRow,
-        transforms: [],
-        connector
-      };
-
-      this.arrowsCache[connector.id] = connection;
-
-      this.connection.next(connection);
+      this.drawArrow(this.sourceRow, this.targetRow);
     },
     canExecute: () => {
       const connectorId = this.getConnectorId(this.sourceRow, this.targetRow);
@@ -139,29 +118,28 @@ export class BridgeService {
     this.sourceRow.htmlElement.classList.remove('drag-start');
   }
 
-  refresh(table: ITable[], delayMs?: number) {
+  refresh(table: ITable, delayMs?: number) {
     this.hideAllArrows();
 
     if (delayMs) {
       setTimeout(() => {
-        this._refresh(table, this.arrowsCache, this.stateService);
+        this._refresh(table, this.arrowsCache, this.storeService);
       }, delayMs);
     } else {
-      this._refresh(table, this.arrowsCache, this.stateService);
+      this._refresh(table, this.arrowsCache, this.storeService);
     }
   }
 
   private _refresh(
-    table: ITable[],
+    table: ITable,
     arrowsCache: ArrowCache,
-    stateService: StateService
+    storeService: StoreService
   ) {
-    const tablenamesString = table.map(t => t.name).join(',');
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
-      if (tablenamesString.indexOf(arrow.target.tableName) > -1) {
-        const source = stateService.findTable(arrow.source.tableName);
-        const target = stateService.findTable(arrow.target.tableName);
+      if (table.name === arrow[table.area].tableName) {
+        const source = storeService.findTable(arrow.source.tableName);
+        const target = storeService.findTable(arrow.target.tableName);
 
         this.refreshConnector(arrow, source, target);
       }
@@ -173,8 +151,8 @@ export class BridgeService {
 
     setTimeout(() => {
       Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-        const source = this.stateService.findTable(arrow.source.tableName);
-        const target = this.stateService.findTable(arrow.target.tableName);
+        const source = this.storeService.findTable(arrow.source.tableName);
+        const target = this.storeService.findTable(arrow.target.tableName);
 
         source.expanded = true;
         target.expanded = true;
@@ -185,17 +163,15 @@ export class BridgeService {
   }
 
   refreshConnector(arrow, source, target) {
-    if (source.expanded && target.expanded) {
-      const connector = this.drawService.drawLine(
-        this.getConnectorId(arrow.source, arrow.target),
-        arrow.source,
-        arrow.target
-      );
+    const connector = this.drawService.drawLine(
+      this.getConnectorId(arrow.source, arrow.target),
+      arrow.source,
+      arrow.target
+    );
 
-      this.arrowsCache[connector.id].connector = connector;
+    this.arrowsCache[connector.id].connector = connector;
 
-      this.connection.next(this.arrowsCache[connector.id]);
-    }
+    this.connection.next(this.arrowsCache[connector.id]);
   }
 
   deleteArrow(key: string) {
@@ -226,6 +202,29 @@ export class BridgeService {
         delete this.arrowsCache[key];
       }
     });
+  }
+
+  drawArrow(sourceRow, targetRow) {
+    const entityId = this.getConnectorId(sourceRow, targetRow);
+
+    const connector = this.drawService.drawLine(
+      entityId,
+      sourceRow,
+      targetRow
+    );
+
+    this.targetRow.setType(connector.type);
+
+    const connection: IConnection = {
+      source: sourceRow,
+      target: targetRow,
+      transforms: [],
+      connector
+    };
+
+    this.arrowsCache[connector.id] = connection;
+
+    this.connection.next(connection);
   }
 
   hideAllArrows(): void {

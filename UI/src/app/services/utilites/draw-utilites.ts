@@ -12,6 +12,10 @@ function areaOffset(source, target) {
 }
 
 function getSVGPoint(row: IRow, canvas: any) {
+  if (!row.htmlElement) {
+    return;
+  }
+
   const clientRect = row.htmlElement.getBoundingClientRect();
   const { height, width } = clientRect;
 

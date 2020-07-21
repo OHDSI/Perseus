@@ -217,14 +217,14 @@ export class PanelTableComponent extends BaseComponent
   }
 
   // connectortype is not reflected in the table
-  reflectConnectorsPin(target: ITable) {
+  reflectConnectorsPin(table: ITable) {
     this.connectortype = {};
     Object.values(this.bridgeService.arrowsCache)
       .filter(connection => {
-        return this.equals(connection.target.tableName, target.name);
+        return this.equals(connection[table.area].tableName, table.name);
       })
       .forEach(connection => {
-        this.showConnectorPinElement(connection, Area.Target);
+        this.showConnectorPinElement(connection, table.area);
       });
   }
 
