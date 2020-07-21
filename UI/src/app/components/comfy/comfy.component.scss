@@ -139,8 +139,8 @@ a {
 .scrolled-items {
   height: 90vh;
   overflow-y: scroll;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
 
   &-rtl {
     @extend .scrolled-items;
@@ -217,6 +217,7 @@ div[concept="true"] {
   height: calc(100% - 225px);
   overflow: scroll;
   position: relative;
+  left: 20px;
 }
 
 .background {
@@ -258,12 +259,18 @@ nav {
   width: 395px;
   max-width: 395px;
   order: 1;
-  padding: 50px 50px 10px;
+  padding: 50px 42px 10px 40px;
   position: relative;
   z-index: 1;
 
   h3, h4 {
-    padding-left: 23px;
+    margin-left: 35px;
+  }
+
+  .filter-by-name {
+    display: block;
+    margin-left: 26px;
+    width: 100%;
   }
 }
 
