@@ -1,8 +1,10 @@
+@import "../../styles/variables.scss";
+
 mat-card {
     padding: 18px 16px;
     height: 424px;
     width: 212px;
-    background: #F9F9F9;
+    background: $cdm-grey-lighter;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
     border-radius: 0;
 

@@ -1,15 +1,21 @@
+@import '~@angular/material/theming';
 @import "../../styles/variables.scss";
 
 .selected {
   direction: ltr;
   font-size: smaller;
-  padding: 10px;
+  position: absolute;
+  display: block;
+  width: 200px;
+  top: -23px;
+  left: 10px;
+
   span {
     color: $cdm-grey;
   }
+
   a {
     margin-left: 30px;
-    cursor: pointer;
   }
 }
 
@@ -18,36 +24,55 @@
   white-space: nowrap;
   overflow: hidden;
   display: flex;
+  padding: 10px 15px 5px;
+  font-size: larger;
   align-items: center;
-  padding-right: 5px;
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
+
+  .mat-icon {
+    font-size: 15px;
+    height: 16px;
+    &.checked {
+      display: none;
+    }
+  }
+  span {
+    font-weight: bolder;
+  }
 }
 
 .data-item-caption {
   position: relative;
-  padding: 1rem;
-  color: #000d37;
-  font-size: 1.142857142857143rem;
-  line-height: 1.357142857142857rem;
   width: 100%;
   text-transform: uppercase;
-  background: #F9F9F9;
   cursor: pointer;
+  background-color: $cdm-grey-lighter;
+  border: 1px solid transparent;
+}
+
+mat-list-item.mat-list-item {
+  direction: ltr;
+
+  & + & {
+    margin-top: 16px;
+  }
 }
 
 .virtual-scroll-container {
-  height: 90vh;
+  height: calc(100vh - 340px);
   overflow-x: hidden;
+  top: -1px;
 }
 
-div[highlighted=true] {
-  background-color: #A6D2F4;
-  font-weight: 400;
-}
-
-.list-item {
-  padding-bottom: 16px !important;
-  height: 60px !important;
-  direction: ltr;
+[highlighted="true"] {
+  @include mat-elevation-transition;
+  background-color: $cdm-blue-lightest;
+  border-color: $cdm-blue;
+  border-radius: 2px;
+  .mat-icon.checked {
+    display: block;
+  }
 }
 
 

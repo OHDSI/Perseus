@@ -9,6 +9,7 @@ html, body {
   height: 100%;
   @extend .mat-typography;
   color: $cdm-grey-dark;
+
   > * {
     box-sizing: border-box;
   }
@@ -24,6 +25,7 @@ body {
 
 a {
   color: $cdm-blue;
+  cursor: pointer;
 }
 
 .dialog-arrow {
@@ -83,17 +85,17 @@ app-dialog {
 
 .mat-card {
   border-radius: 0 !important;
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 .mat-dialog-container {
   border-radius: 0 !important;
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
 }
 
 .mat-table {
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
 }
 
 .mat-radio-container,
@@ -154,15 +156,74 @@ path {
   overflow-y: scroll !important;
 }
 
-.mat-list-base[dense] {
+mat-list.mat-list.mat-list-base[dense] {
   padding-top: 0;
+  .mat-list-item .mat-list-item-content {
+    padding: 0 8px;
+  }
 }
 
 .mat-flat-button {
   background-color: #e5e5e5;
 }
+
 button.mat-flat-button.mat-button-base {
   border-radius: 2px;
 }
 
+.mat-form-field.mat-form-field-appearance-outline {
+  .mat-form-field-wrapper {
+    margin: 0;
+    padding-bottom: 32px;
+  }
 
+  .mat-form-field-prefix,
+  .mat-form-field-prefix .mat-icon {
+    color: $grey;
+    font-size: 17px;
+  }
+
+  .mat-form-field-suffix {
+    top: 0;
+    button.mat-icon-button {
+      width: 20px;
+      height: 20px;
+    }
+
+    .mat-icon {
+      font-size: 14px;
+    }
+  }
+
+  .mat-form-field-flex {
+    border-radius: 2px;
+
+    &:hover,
+    &:active {
+      .mat-form-field-prefix .mat-icon {
+        color: $cdm-blue;
+      }
+    }
+  }
+
+  .mat-form-field-outline {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    border-color: white;
+
+    & > * {
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    &-thick {
+      box-shadow: 0 0 8px $cdm-blue-light;
+      color: white;
+      border-radius: 2px;
+    }
+  }
+}
+
+.mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0 0 6px;
+}

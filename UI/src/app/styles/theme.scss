@@ -30,12 +30,12 @@ $custom-typography: mat-typography-config(
 $dark-text: $cdm-grey-dark;
 $dark-primary-text: rgba($dark-text, 0.87);
 $dark-accent-text: rgba($dark-primary-text, 0.54);
-$dark-disabled-text: rgba($dark-primary-text, 0.38);
+$dark-disabled-text: #808080;
 $dark-dividers: rgba($dark-primary-text, 0.12);
 $dark-focused: rgba($dark-primary-text, 0.12);
 
 $mat-light-theme-foreground: (
-  base: $cdm-grey-dark,
+  base:              $cdm-grey-dark,
   divider:           $dark-dividers,
   dividers:          $dark-dividers,
   disabled:          $dark-disabled-text,
@@ -45,8 +45,8 @@ $mat-light-theme-foreground: (
   secondary-text:    $dark-accent-text,
   hint-text:         $dark-disabled-text,
   accent-text:       $dark-accent-text,
-  icon:              $dark-accent-text,
-  icons:             $dark-accent-text,
+  icon:              $dark-disabled-text,
+  icons:             $dark-disabled-text,
   text:              $dark-primary-text,
   slider-min:        $dark-primary-text,
   slider-off:        rgba($dark-text, 0.26),
@@ -97,8 +97,8 @@ $mat-primary: (
 );
 $mat-accent: (
   main: $blue,
-  lighter: $cdm-blue-light,
-  darker: $cdm-blue-light,
+  lighter: $cdm-blue-lighter,
+  darker: $cdm-blue-lighter,
   200: $blue, // For slide toggle,
   contrast : (
     main: $light-primary-text,
