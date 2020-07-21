@@ -37,7 +37,7 @@ a {
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
   &:first-of-type {
-    background-color: #A6D2F4;
+    background-color: $cdm-blue-light;
     position: relative;
     @include mat-elevation(2, $cdm-grey, 0.8);
   }
@@ -149,7 +149,7 @@ a {
 }
 
 div[concept="true"] {
-  background-color: #a6d2f4;
+  background-color: $cdm-blue-light;
 }
 
 .cdm-container {
@@ -170,7 +170,7 @@ div[concept="true"] {
   display: flex;
   padding: 10px 15px 5px;
   align-items: center;
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
   font-size: 14px;
   border-radius: 2px;
   border: 1px solid transparent;
@@ -178,8 +178,8 @@ div[concept="true"] {
   @include mat-elevation(1, $cdm-grey, 0.8);
 
   &[highlighted="true"] {
-    background-color: #E7F4FF;
-    box-shadow: 0 0 8px #A6D2F4;
+    background-color: $cdm-blue-lightest;
+    box-shadow: 0 0 8px $cdm-blue-light;
   }
 
   .mat-icon {
@@ -319,7 +319,7 @@ article {
 
   &:last-of-type {
     .initial {
-      border-color: #a6d2f4;
+      border-color: $cdm-blue-light;
       background-color: rgba(166, 210, 244, 0.4);
     }
 

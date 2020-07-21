@@ -17,7 +17,7 @@
 }
 
 .dialog {
-    background-color: #F9F9F9;
+    background-color: $cdm-grey-lighter;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -31,7 +31,7 @@
         height: 0;
         box-sizing: border-box;
         border: 7px solid $black;
-        border-color:  #F9F9F9 transparent transparent #F9F9F9;
+        border-color:  $cdm-grey-lighter transparent transparent $cdm-grey-lighter;
         transform-origin: 0 0;
         transform: rotate(45deg);
         box-shadow: -1px -1px 2px 0 rgba(0, 0, 0, 0.1);

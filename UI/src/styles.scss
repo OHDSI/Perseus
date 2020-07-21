@@ -85,17 +85,17 @@ app-dialog {
 
 .mat-card {
   border-radius: 0 !important;
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 .mat-dialog-container {
   border-radius: 0 !important;
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
 }
 
 .mat-table {
-  background-color: #F9F9F9;
+  background-color: $cdm-grey-lighter;
 }
 
 .mat-radio-container,
@@ -217,7 +217,7 @@ button.mat-flat-button.mat-button-base {
     }
 
     &-thick {
-      box-shadow: 0 0 8px #A6D2F4;
+      box-shadow: 0 0 8px $cdm-blue-light;
       color: white;
       border-radius: 2px;
     }

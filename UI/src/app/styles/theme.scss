@@ -97,8 +97,8 @@ $mat-primary: (
 );
 $mat-accent: (
   main: $blue,
-  lighter: $cdm-blue-light,
-  darker: $cdm-blue-light,
+  lighter: $cdm-blue-lighter,
+  darker: $cdm-blue-lighter,
   200: $blue, // For slide toggle,
   contrast : (
     main: $light-primary-text,

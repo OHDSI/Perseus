@@ -47,7 +47,7 @@
   width: 100%;
   text-transform: uppercase;
   cursor: pointer;
-  background-color: #f9f9f9;
+  background-color: $cdm-grey-lighter;
   border: 1px solid transparent;
 }
 
@@ -67,7 +67,7 @@ mat-list-item.mat-list-item {
 
 [highlighted="true"] {
   @include mat-elevation-transition;
-  background-color: #E7F4FF;
+  background-color: $cdm-blue-lightest;
   border-color: $cdm-blue;
   border-radius: 2px;
   .mat-icon.checked {

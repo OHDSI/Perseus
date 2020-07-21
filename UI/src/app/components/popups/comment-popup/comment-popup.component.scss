@@ -12,7 +12,7 @@
         border-radius: 2px;
         border: 0.75px solid $light-grey;
         height: 25px;
-        background-color: #F9F9F9;
+        background-color: $cdm-grey-lighter;
     }
 
     .input-add {
@@ -80,7 +80,7 @@
         height: 0;
         box-sizing: border-box;
         border: 5px solid $black;
-        border-color: transparent transparent #F9F9F9 #F9F9F9;
+        border-color: transparent transparent $cdm-grey-lighter $cdm-grey-lighter;
         transform-origin: 0 0;
         transform: rotate(45deg);
         box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
