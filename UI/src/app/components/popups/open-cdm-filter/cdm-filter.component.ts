@@ -13,7 +13,8 @@ import { uniq } from 'src/app/infrastructure/utility';
 export class CdmFilterComponent implements OnInit {
 
   targetTypes: string[] = [];
-  cdmTypes: Object;
+  cdmTypes = (data as any).default;
+  readonly uniqueCdmTypes = uniq(Object.keys(this.cdmTypes));
   selectedTables: string[] = [];
   selectedTypes: string[] = [];
   @Output() complete = new EventEmitter<void>();
@@ -21,21 +22,23 @@ export class CdmFilterComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.cdmTypes = (data as any).default
-    const uniqueCdmTypes = uniq(Object.keys(this.cdmTypes));
-    this.targetTypes = [...this.targetTypes, 'Show All', ...uniqueCdmTypes ];
+    this.targetTypes = [...this.targetTypes, 'Show All', ...this.uniqueCdmTypes ];
   }
 
   onTypeSelection(types: MatListOption[]){
-    this.selectedTables = []
-    this.selectedTypes = types.map(item => item.value)
-    const showAllSelected = !!this.selectedTypes.find(x => x == 'Show All')
-    const otherOptionsSelected = !!this.selectedTypes.find(x => x != 'Show All')
+    this.selectedTables = [];
+    this.selectedTypes = types.map(item => item.value);
+    const showAllSelected = !!this.selectedTypes.find(x => x === 'Show All');
+    const otherOptionsSelected = !!this.selectedTypes.find(x => x !== 'Show All'); 
     if (showAllSelected) {
-      this.selectedTypes = uniq(Object.keys(this.cdmTypes))
+      this.selectedTypes = this.uniqueCdmTypes;
     }
     if (otherOptionsSelected) {
-      this.selectedTypes.map(item => this.selectedTables = [...this.selectedTables, ...this.cdmTypes[item]])
+      this.selectedTables = this.selectedTypes
+        .reduce((prev, cur) => {
+          prev = [...prev, ...this.cdmTypes[cur]];
+          return prev;
+        }, []);
     }
     this.complete.emit();
   }

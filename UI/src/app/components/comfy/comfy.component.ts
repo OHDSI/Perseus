@@ -415,9 +415,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.targetTableNames = uniq(Object.keys(this.target))
       return
     }
-    const filterByType = (name, index?) => {
-      return this.cdmFilter.selectedTables.indexOf(name.toUpperCase()) > -1;
-    };
+    const filterByType = (name) => !!this.cdmFilter.selectedTables.find(x => x === name.toUpperCase());
     this.targetTableNames = uniq(Object.keys(this.target)).filter(filterByType);
   }
 
