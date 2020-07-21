@@ -29,7 +29,7 @@ a {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: #e1f2ff;
+  background-color: $cdm-blue-lightest;
   padding: 10px 15px 5px 38px;
   font-size: 14px;
   border: 1px solid transparent;
@@ -67,7 +67,7 @@ a {
 
   .table-description {
     color: red;
-    background: #e1f2ff;
+    background-color: $cdm-blue-lightest;
   }
 }
 
