@@ -14,7 +14,7 @@ export class UploadService {
     private snackbar: MatSnackBar,
     private bridgeService: BridgeService,
     private httpService: HttpService,
-    private dataService: DataService,
+    private dataService: DataService
   ) {
   }
 
