@@ -65,7 +65,7 @@ export class BridgeButtonService {
       this.component
     );
 
-    dialogRef.close$.subscribe((configOptions: any) => {
+    dialogRef.afterClosed$.subscribe((configOptions: any) => {
       const { deleted } = configOptions;
       if (!deleted) {
         this.payloadObj.connector.deselect();

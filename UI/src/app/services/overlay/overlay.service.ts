@@ -1,23 +1,20 @@
+import { ConnectionPositionPair, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector } from '@angular/core';
-import {
-  ConnectionPositionPair,
-  Overlay,
-  OverlayConfig,
-  OverlayRef
-} from '@angular/cdk/overlay';
-import { PortalInjector, ComponentPortal } from '@angular/cdk/portal';
+import { Observable, Subject } from 'rxjs';
 import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
-import { Observable, Subject } from 'rxjs';
+import * as strategiesData from './strategies.json';
 
 export class OverlayDialogRef {
-  get close$(): Observable<OverlayConfigOptions> {
+  get afterClosed$(): Observable<OverlayConfigOptions> {
     return this.closeSubject.asObservable();
   }
 
   private closeSubject = new Subject<OverlayConfigOptions>();
 
-  constructor(private overlayRef: OverlayRef) {}
+  constructor(private overlayRef: OverlayRef) {
+  }
 
   close(configOptions?: OverlayConfigOptions | any) {
     this.overlayRef.dispose();
@@ -30,9 +27,12 @@ export class OverlayDialogRef {
   }
 }
 
+
 @Injectable()
 export class OverlayService {
-  constructor(private overlay: Overlay, private injector: Injector) {}
+  readonly strategies = (strategiesData as any).strategies;
+  constructor(private overlay: Overlay, private injector: Injector) {
+  }
 
   open(
     configOptions: OverlayConfigOptions,
@@ -56,74 +56,26 @@ export class OverlayService {
 
   getOverlayConfig(config: OverlayConfigOptions, ancor: any): OverlayConfig {
     const positionStrategy = this.getOverlayPosition(ancor, config.positionStrategyFor);
+    const scrollStrategy = this.overlay.scrollStrategies.block();
+    const {hasBackdrop, backdropClass, panelClass} = config;
 
-    const overlayConfig = new OverlayConfig({
-      hasBackdrop: config.hasBackdrop,
-      backdropClass: config.backdropClass,
-      panelClass: config.panelClass,
-      scrollStrategy: this.overlay.scrollStrategies.block(),
-      positionStrategy
-    });
-
-    return overlayConfig;
+    return new OverlayConfig({hasBackdrop, backdropClass, panelClass, positionStrategy, scrollStrategy});
   }
 
   getOverlayPosition(anchor, strategyFor): any {
-    let offsetX = 0;
-    let offsetY = 0;
-    let originX = null;
-    let originY = null;
-    let overlayX = null;
-    let overlayY = null;
-
-    switch (strategyFor) {
-      case 'advanced-transform': {
-        offsetX = -200;
-        offsetY = 0;
-        originX = 'end';
-        originY = 'top';
-        overlayX = 'end';
-        overlayY = 'top';
-        break;
-      }
-      case 'simple-transform': {
-        offsetX = 183;
-        offsetY = 28;
-        originX = 'end';
-        originY = 'top';
-        overlayX = 'end';
-        overlayY = 'top';
-        break;
-      }
-      case 'values': {
-        offsetX = 40;
-        offsetY = 0;
-        originX = 'start';
-        originY = 'top';
-        overlayX = 'start';
-        overlayY = 'top';
-        break;
-      }
-      case 'comments-source': {
-        offsetX = 40;
-        offsetY = 32;
-        originX = 'start';
-        originY = 'bottom';
-        overlayX = 'start';
-        overlayY = 'bottom';
-        break;
-      }
-      case 'comments-target': {
-        offsetX = -205;
-        offsetY = -35;
-        originX = 'start';
-        originY = 'bottom';
-        overlayX = 'start';
-        overlayY = 'bottom';
-        break;
-      }
+    let offsets = {
+      offsetX: 0,
+      offsetY: 0,
+      originX: null,
+      originY: null,
+      overlayX: null,
+      overlayY: null
+    };
+    if (this.strategies[strategyFor]) {
+      offsets = {...offsets, ...this.strategies[strategyFor]};
     }
 
+    const {offsetX, offsetY, originX, originY, overlayX, overlayY} = offsets;
     const positions = [
       new ConnectionPositionPair(
         {

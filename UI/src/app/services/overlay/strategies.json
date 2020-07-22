@@ -1,0 +1,44 @@
+{
+  "strategies": {
+    "advanced-transform": {
+      "offsetX": -200,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    },
+    "simple-transform": {
+      "offsetX": 183,
+      "offsetY": 28,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    },
+    "values": {
+      "offsetX": 40,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
+    },
+    "comments-source": {
+      "offsetX": 40,
+      "offsetY": 32,
+      "originX": "start",
+      "originY": "bottom",
+      "overlayX": "start",
+      "overlayY": "bottom"
+    },
+    "comments-target": {
+      "offsetX": -205,
+      "offsetY": -35,
+      "originX": "start",
+      "originY": "bottom",
+      "overlayX": "start",
+      "overlayY": "bottom"
+    }
+  }
+}
