@@ -33,12 +33,14 @@ export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: any;
-  @Input() displayedColumns: string[];
-
   @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
   @ViewChild('tableComponent', {static: true}) tableComponent: MatTable<IRow[]>;
+
+  get displayedColumns() {
+    return ['column_indicator', 'column_name', 'column_type', 'comments'];
+  }
 
   get area() {
     return this.table.area;
@@ -217,23 +219,25 @@ export class PanelTableComponent extends BaseComponent
   }
 
   // connectortype is not reflected in the table
-  reflectConnectorsPin(target: ITable) {
+  reflectConnectorsPin(table: ITable) {
     this.connectortype = {};
     Object.values(this.bridgeService.arrowsCache)
       .filter(connection => {
-        return this.equals(connection.target.tableName, target.name);
+        return this.equals(connection[table.area].tableName, table.name);
       })
       .forEach(connection => {
-        this.showConnectorPinElement(connection, Area.Target);
+        this.showConnectorPinElement(connection, table.area);
       });
   }
 
   showConnectorPinElement(connection: IConnection, area: Area) {
     const rowId = connection[area].name;
     const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName('connector-pin');
-    for (let i = 0; i < collection.length; i++) {
-      this.renderer.removeClass(collection[i], 'hide');
+    if (element) {
+      const collection = element.getElementsByClassName('connector-pin');
+      for (let i = 0; i < collection.length; i++) {
+        this.renderer.removeClass(collection[i], 'hide');
+      }
     }
   }
 
@@ -247,9 +251,11 @@ export class PanelTableComponent extends BaseComponent
   hideConnectorPin(connection: IConnection, area: Area) {
     const rowId = connection[area].name;
     const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName('connector-pin');
-    for (let i = 0; i < collection.length; i++) {
-      this.renderer.addClass(collection[0], 'hide');
+    if (element) {
+      const collection = element.getElementsByClassName('connector-pin');
+      for (let i = 0; i < collection.length; i++) {
+        this.renderer.addClass(collection[0], 'hide');
+      }
     }
   }
 

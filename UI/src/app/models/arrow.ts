@@ -54,6 +54,10 @@ export class Arrow implements IConnector {
     this.sourceSVGPoint = getSVGPoint(source, this.canvas);
     this.targetSVGPoint = getSVGPoint(target, this.canvas);
 
+    if (!this.sourceSVGPoint || !this.targetSVGPoint) {
+      return;
+    }
+
     const id = this.id;
 
     const { x: x1, y: y1 } = this.sourceSVGPoint;

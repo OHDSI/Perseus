@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -9,8 +9,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 
 import { StateService } from 'src/app/services/state.service';
+import { StoreService } from 'src/app/services/store.service';
 import { BaseComponent } from '../../base/base.component';
-import { PanelTableComponent } from '../../panel/panel-table/panel-table.component';
+import { PanelSourceComponent } from '../../panel/panel-source.component';
+import { PanelTargetComponent } from '../../panel/panel-target.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 
@@ -19,12 +21,12 @@ import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss']
 })
-export class MappingComponent extends BaseComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+export class MappingComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
-  tabIndex = 0;
+  sourceTabIndex = 0;
+  targetTabIndex = 0;
 
   get hint(): string {
     return 'no hint';
@@ -36,13 +38,15 @@ export class MappingComponent extends BaseComponent
 
   @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
   @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
-  @ViewChild('sourcePanel') sourcePanel: PanelTableComponent;
+  @ViewChild('sourcePanel') sourcePanel: PanelSourceComponent;
+  @ViewChild('targetPanel') targetPanel: PanelTargetComponent;
 
   clickArrowSubscriptions = [];
   panelsViewInitialized = new Set();
 
   constructor(
     private stateService: StateService,
+    private storeService: StoreService,
     private dataService: DataService,
     private commonService: CommonService,
     private bridgeService: BridgeService,
@@ -67,8 +71,9 @@ export class MappingComponent extends BaseComponent
       });
 
       setTimeout(() => {
-        this.bridgeService.refresh(this.target);
-        this.sourcePanel.reflectConnectorsPin(this.target[this.tabIndex]);
+        this.bridgeService.refresh(this.target[this.targetTabIndex]);
+        this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
+        this.targetPanel.panels.forEach(panel => panel.reflectConnectorsPin(this.source[this.sourceTabIndex]));
       }, 200);
     });
 
@@ -85,10 +90,6 @@ export class MappingComponent extends BaseComponent
     });
 
     super.ngOnDestroy();
-  }
-
-  ngAfterViewInit() {
-
   }
 
   @HostListener('document:keyup', ['$event'])
@@ -142,7 +143,7 @@ export class MappingComponent extends BaseComponent
       this.panelsViewInitialized.size ===
       this.source.length + this.target.length
     ) {
-      this.bridgeService.refresh(this.target, 200);
+      this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
     }
   }
 
@@ -151,7 +152,7 @@ export class MappingComponent extends BaseComponent
       this.panelsViewInitialized.size ===
       this.source.length + this.target.length
     ) {
-      this.bridgeService.refresh(this.target, 200);
+      this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
     }
   }
 
@@ -171,18 +172,20 @@ export class MappingComponent extends BaseComponent
     }
   }
 
-  onTabIndexChanged(index: number): void {
-    this.tabIndex = index;
-
+  onTabIndexChanged(index: number, tables: ITable[], area: string): void {
     this.bridgeService.hideAllArrows();
-    this.sourcePanel.hideAllConnectorPin(document);
+
+    if (area === 'source') {
+      this.sourceTabIndex = index;
+    } else {
+      this.targetTabIndex = index;
+    }
 
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
-        this.target.forEach(panel => (panel.expanded = false));
-        this.target[index].expanded = true;
-        this.bridgeService.refresh([this.target[index]]);
-        this.sourcePanel.reflectConnectorsPin(this.target[index]);
+        tables.forEach(table => (table.expanded = false));
+        tables[index].expanded = true;
+        this.bridgeService.refresh(tables[index]);
         resolve();
       }, 500);
     });
