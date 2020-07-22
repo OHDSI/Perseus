@@ -231,9 +231,11 @@ export class PanelTableComponent extends BaseComponent
   showConnectorPinElement(connection: IConnection, area: Area) {
     const rowId = connection[area].name;
     const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName('connector-pin');
-    for (let i = 0; i < collection.length; i++) {
-      this.renderer.removeClass(collection[i], 'hide');
+    if (element) {
+      const collection = element.getElementsByClassName('connector-pin');
+      for (let i = 0; i < collection.length; i++) {
+        this.renderer.removeClass(collection[i], 'hide');
+      }
     }
   }
 
@@ -247,9 +249,11 @@ export class PanelTableComponent extends BaseComponent
   hideConnectorPin(connection: IConnection, area: Area) {
     const rowId = connection[area].name;
     const element = document.getElementById(rowId);
-    const collection = element.getElementsByClassName('connector-pin');
-    for (let i = 0; i < collection.length; i++) {
-      this.renderer.addClass(collection[0], 'hide');
+    if (element) {
+      const collection = element.getElementsByClassName('connector-pin');
+      for (let i = 0; i < collection.length; i++) {
+        this.renderer.addClass(collection[0], 'hide');
+      }
     }
   }
 

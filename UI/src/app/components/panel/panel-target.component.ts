@@ -1,15 +1,13 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 import { CommonService } from 'src/app/services/common.service';
-import { StateService } from 'src/app/services/state.service';
-import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
+import { StoreService } from 'src/app/services/store.service';
 import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
-import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { PanelTableComponent } from './panel-table/panel-table.component';
+import { PanelBaseComponent } from './panel-base.component';
 
 const groupsConf = {
   common: [
@@ -82,51 +80,28 @@ const groupsConf = {
   templateUrl: './panel-target.component.html',
   styleUrls: ['./panel-target.component.scss']
 })
-export class PanelTargetComponent implements OnInit, AfterViewInit {
-  @Input() table: ITable;
-  @Input() tabIndex: number;
-  @Input() tables: ITable[];
-
-  @Output() open = new EventEmitter();
-  @Output() close = new EventEmitter();
-  @Output() initialized = new EventEmitter();
-  @Output() openTransform = new EventEmitter();
-
-  @ViewChild('exppanelheader', { static: true }) panelHheader: any;
+export class PanelTargetComponent extends PanelBaseComponent implements OnInit {
   @ViewChild('conceptPanel') conceptPanel: PanelTableComponent;
   @ViewChild('commonPanel') commonPanel: PanelTableComponent;
   @ViewChild('individualPanel') individualPanel: PanelTableComponent;
 
-  get title() {
-    return this.table.name;
-  }
-
-  get area() {
-    return this.table.area;
-  }
-
-  initializing: boolean;
-
   constructor(
     public dialog: MatDialog,
-    private commonService: CommonService,
-    private bridgeService: BridgeService,
-    private bridgeButtonService: BridgeButtonService,
-    private stateService: StateService
+    commonService: CommonService,
+    bridgeService: BridgeService,
+    bridgeButtonService: BridgeButtonService,
+    storeService: StoreService
   ) {
-    this.initializing = true;
+    super(dialog, commonService, bridgeService, bridgeButtonService, storeService);
   }
 
   concept: ITable;
   common: ITable;
   individual: ITable;
 
-  ngAfterViewInit() {
-    this.initialized.emit();
-    this.initializing = false;
-  }
-
   ngOnInit() {
+    super.ngOnInit();
+
     const concept = [];
     const common = [];
     const individual = [];
@@ -150,110 +125,5 @@ export class PanelTargetComponent implements OnInit, AfterViewInit {
     this.individual = Object.assign({}, this.table);
     this.individual.rows = individual;
     this.individual.expanded = individual.length ? true : false;
-
-    this.bridgeService.deleteAll.subscribe(_ => {
-      this.panelHheader._element.nativeElement.classList.remove(
-        'table-has-a-link-true'
-      );
-    });
-
-    this.bridgeService.connection.subscribe(_ => {
-      if (this.bridgeService.isTableConnected(this.table)) {
-        this.panelHheader._element.nativeElement.classList.add(
-          'table-has-a-link-true'
-        );
-      }
-    });
-  }
-
-  onOpen() {
-    this.commonService.expanded(this.area);
-    this.setExpandedFlagOnSourceAndTargetTables(this.table, true);
-
-    if (!this.initializing) {
-      this.table.expanded = true;
-      this.open.emit();
-    }
-  }
-
-  onClose() {
-    this.commonService.collapsed(this.area);
-    this.setExpandedFlagOnSourceAndTargetTables(this.table, false);
-
-    if (!this.initializing) {
-      this.table.expanded = false;
-      this.close.emit();
-    }
-  }
-
-  openSampleDataDialog(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    this.dialog.open(SampleDataPopupComponent, {
-      width: '1021px',
-      height: '696px',
-      data: this.table
-    });
-  }
-
-  onOpenTransfromDialog(event: any) {
-    const {row, element} = event;
-
-    const connections = this.bridgeService.findCorrespondingConnections(
-      this.table,
-      row
-    );
-    if (connections.length > 0) {
-      const payload: BridgeButtonData = {
-        connector: connections[0].connector,
-        arrowCache: this.bridgeService.arrowsCache
-      };
-
-      this.bridgeButtonService.init(payload, element);
-      this.bridgeButtonService.openRulesDialog();
-    }
-  }
-
-  setExpandedFlagOnSourceAndTargetTables(table: ITable, expanded: boolean) {
-    this.stateService.state[table.area].tables
-      .filter(t => t.id === table.id)
-      .forEach(t => (t.expanded = expanded));
-  }
-
-  onCheckboxChange(event: MatCheckboxChange) {
-    for (const row of this.table.rows) {
-      const connections = this.bridgeService.findCorrespondingConnections(this.table, row);
-      for (const connection of connections) {
-        if (!event.checked) {
-          this.unlinkSimilarFields(connection);
-        } else {
-          this.linkSimilarFields(connection);
-        }
-      }
-    }
-  }
-
-  linkSimilarFields(connection) {
-    for (const table of this.tables) {
-      if (table.name !== this.table.name) {
-        const similarField = table.rows.find(x => x.name === connection.target.name);
-        if (similarField) {
-          this.bridgeService.drawArrow(connection.source, similarField);
-        }
-      }
-    }
-  }
-
-  unlinkSimilarFields(connection) {
-    for (const table of this.tables) {
-      if (table.name !== this.table.name) {
-        const similarField = table.rows.find(x => x.name === connection.target.name);
-        if (similarField) {
-          const connectorId = this.bridgeService.getConnectorId(connection.source, similarField);
-          this.bridgeService.deleteArrow(connectorId);
-        }
-      }
-    }
   }
 }

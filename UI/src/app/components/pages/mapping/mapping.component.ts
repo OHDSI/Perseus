@@ -179,12 +179,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (area === 'source') {
       this.sourceTabIndex = index;
-      this.sourcePanel.panel.hideAllConnectorPin(document);
     } else {
       this.targetTabIndex = index;
-      this.targetPanel.conceptPanel.hideAllConnectorPin(document);
-      this.targetPanel.commonPanel.hideAllConnectorPin(document);
-      this.targetPanel.individualPanel.hideAllConnectorPin(document);
     }
 
     const wait = new Promise((resolve, reject) => {
@@ -192,15 +188,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         tables.forEach(table => (table.expanded = false));
         tables[index].expanded = true;
         this.bridgeService.refresh(tables[index]);
-
-        if (area === 'source') {
-          this.sourcePanel.panel.reflectConnectorsPin(tables[index]);
-        } else {
-          this.targetPanel.conceptPanel.reflectConnectorsPin(tables[index]);
-          this.targetPanel.commonPanel.reflectConnectorsPin(tables[index]);
-          this.targetPanel.individualPanel.reflectConnectorsPin(tables[index]);
-        }
-
         resolve();
       }, 500);
     });
