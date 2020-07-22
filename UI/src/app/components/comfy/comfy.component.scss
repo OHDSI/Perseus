@@ -36,6 +36,7 @@ a {
   border-radius: 2px;
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
+
   &:first-of-type {
     background-color: $cdm-blue-light;
     position: relative;
@@ -186,6 +187,7 @@ div[concept="true"] {
     font-size: 16px;
     height: 16px;
   }
+
   & + & {
     margin-top: 15px;
   }
@@ -327,27 +329,33 @@ article {
       direction: ltr;
     }
 
-    .cdm-filter-label {
-      padding-left: 15px; 
-        border-left: 2px solid black; 
-        color: gray; 
-        overflow: hidden;
-        white-space: nowrap; 
-        text-overflow: ellipsis; 
-        width: 200px; 
-        display: inline-block;  
-        vertical-align: bottom;
-        font-size: 90%
-    }
-
     .target-table-count {
       padding-right: 15px;
     }
 
-    .cdm-filter-icon {
-      float: right;
+    span + label {
+      margin-left: 15px;
+      padding-left: 15px;
+      border-left: 2px solid $cdm-grey;
+      color: #8a8a8a;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 200px;
+      display: inline-block;
+      vertical-align: bottom;
     }
 
+    .mat-icon {
+      position: absolute;
+      cursor: pointer;
+      right: 0;
+      font-size: 18px;
+      color: $grey;
+      &.active {
+        color: $cdm-blue;
+      }
+    }
   }
 }
 

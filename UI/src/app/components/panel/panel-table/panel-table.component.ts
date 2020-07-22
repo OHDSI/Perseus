@@ -167,7 +167,7 @@ export class PanelTableComponent extends BaseComponent
         component
       );
 
-      overlayRef.close$.subscribe(ok => {
+      overlayRef.afterClosed$.subscribe(ok => {
         row.constant = value.value;
         if (row.constant) {
           this.bridgeService.addConstant.execute(row);

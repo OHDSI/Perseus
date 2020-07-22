@@ -1,3 +1,6 @@
+@import '~@angular/material/_theming';
+@import "./variables.scss";
+
 .cdm-version-dialog {
   border-radius: 2px;
   .mat-dialog-container {
@@ -10,4 +13,8 @@
   .mat-dialog-actions {
     justify-content: space-between;
   }
+}
+.filter-popup {
+  @include mat-elevation-transition;
+  @include mat-elevation(4);
 }

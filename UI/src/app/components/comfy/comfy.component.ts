@@ -14,6 +14,8 @@ import { StateService } from 'src/app/services/state.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
 import { CommonUtilsService } from '../../services/common-utils.service';
+import { OverlayConfigOptions } from '../../services/overlay/overlay-config-options.interface';
+import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
@@ -60,11 +62,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   data = {
     source: [],
     target: [],
-    version: undefined
+    version: undefined,
+    filtered: undefined
   };
-
-  targetFilterVisible = false;
-  selectedTargetTypes: string[] = [];
 
   constructor(
     private dataService: DataService,
@@ -76,7 +76,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private snakbar: MatSnackBar,
     private router: Router,
     private mappingStorage: MappingPageSessionStorage,
-    private uploadService: UploadService
+    private uploadService: UploadService,
+    private overlayService: OverlayService,
   ) {
     super();
   }
@@ -246,7 +247,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           name: `${prefix}-${tableName}`,
           first: tableName,
           data: [tableName]
-        }
+        };
       }
     });
 
@@ -257,6 +258,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     );
 
     this.stateService.Target = this.target;
+    if (this.data.filtered) {
+      this.filterByType();
+    }
   }
 
   initializeSourceColumns() {
@@ -417,12 +421,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByType(): void {
-    if (this.cdmFilter.selectedTables.length == 0) {
-      this.targetTableNames = uniq(Object.keys(this.target))
-      return
+    const uniqueTargetNames = uniq(Object.keys(this.target));
+    const {tables: selectedTables} = this.data.filtered;
+    if (selectedTables.length === 0) {
+      this.targetTableNames = uniqueTargetNames;
+      return;
     }
-    const filterByType = (name) => !!this.cdmFilter.selectedTables.find(x => x === name.toUpperCase());
-    this.targetTableNames = uniq(Object.keys(this.target)).filter(filterByType);
+    const filterByType = (name) => !!selectedTables.find(x => x === name.toUpperCase());
+    this.targetTableNames = uniqueTargetNames.filter(filterByType);
   }
 
   filterByNameReset(area: string, byName: Criteria): void {
@@ -459,8 +465,15 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.uploadService.onFileChange(event);
   }
 
-  onTargetFilter(){
-    this.targetFilterVisible = !this.targetFilterVisible;
+  openFilter(target) {
+    const types = this.data.filtered ? this.data.filtered.types : [];
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      panelClass: 'filter-popup',
+      payload: { types }
+    };
+    this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
 }
 

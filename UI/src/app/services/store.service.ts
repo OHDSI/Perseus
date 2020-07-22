@@ -8,6 +8,7 @@ import { ITable} from '../models/table';
 export class StoreService {
   private initialState = {
     version: undefined,
+    filtered: undefined,
     target: [],
     source: [],
     report: undefined

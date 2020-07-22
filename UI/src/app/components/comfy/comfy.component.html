@@ -42,11 +42,11 @@
           [cdkDropListData]="source"
           [cdkDropListConnectedTo]="sourceConnectedTo">
           <div class="cdm-box"
-            [attr.criteria]="item"
-            highlight
-            [values]="highlitedTables"
-            cdkDrag
-            *ngFor="let item of source">
+               highlight
+               cdkDrag
+               *ngFor="let item of source"
+               [attr.criteria]="item"
+               [values]="highlitedTables">
             <mat-icon>drag_indicator</mat-icon>
             <div
               class="table-description source caption"
@@ -79,20 +79,22 @@
     </article>
     <article>
       <h4>Target tables
-        <label class = "target-table-count" *ngIf="data.target?.length">({{data.target.length}})</label>
-        <label 
-        class = "cdm-filter-label"
-        *ngIf="cdmFilter?.selectedTypes.length"
-        [matTooltip]="cdmFilter.selectedTypes"
-        matTooltipPosition="above"
-        >
-        {{cdmFilter.selectedTypes}}</label>
-        <mat-icon color = "accent" class="cdm-filter-icon" *ngIf="data.target?.length" (click)="onTargetFilter()">sort</mat-icon>
+        <span *ngIf="data.target?.length">({{data.target.length}})</span>
+        <label
+          class="cdm-filter-label"
+          *ngIf="data.filtered?.types.length"
+          [matTooltip]="data.filtered.types"
+          matTooltipPosition="above">
+          {{data.filtered.types}}
+        </label>
+        <mat-icon *ngIf="data.target?.length"
+                  matTooltip="Filters applied"
+                  matTooltipPosition="above"
+                  [matTooltipDisabled]="!data.filtered?.types.length"
+                  [class]="{active: data.filtered?.types.length}"
+                  (click)="openFilter($event.target)">sort
+        </mat-icon>
       </h4>
-      <app-cdm-filter 
-      *ngIf="targetFilterVisible"
-      (complete)="filterByType()">
-    </app-cdm-filter>
       <app-comfy-search-by-name
         class="filter-by-name"
         placeholder="Search by target table"
