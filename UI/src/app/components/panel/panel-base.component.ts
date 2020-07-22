@@ -20,7 +20,7 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
 
-  @ViewChildren('exppanelheader') panelHeader: QueryList<any>;
+  @ViewChildren('expPanelHeader') panelHeader: QueryList<any>;
 
   get title() {
     return this.table.name;

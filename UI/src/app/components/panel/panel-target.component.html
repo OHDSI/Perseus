@@ -1,7 +1,7 @@
 <ng-container *ngFor="let item of groups | keyvalue">
   <mat-expansion-panel (opened)="onOpen()" (closed)="onClose()" [expanded]="item.value.expanded">
     <mat-expansion-panel-header
-      #exppanelheader
+      #expPanelHeader
       class="mat-expansion-panel-header panel-header-{{ table.name }}"
     >
       <mat-panel-title>
