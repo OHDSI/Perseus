@@ -80,7 +80,8 @@ app-dialog {
 }
 
 .mat-menu-panel {
-  border-radius: 0 !important;
+  border-radius: 2px !important;
+  background-color: white;
 }
 
 .mat-card {
@@ -138,7 +139,7 @@ path {
   stroke-width: 1;
 
   &.arrow {
-    stroke: #808080;
+    stroke: $grey;
   }
 
   &.arrow:hover {

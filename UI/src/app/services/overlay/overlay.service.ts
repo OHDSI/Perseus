@@ -1,10 +1,17 @@
-import { ConnectionPositionPair, Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import {
+  ConnectedPosition,
+  ConnectionPositionPair,
+  FlexibleConnectedPositionStrategy,
+  Overlay,
+  OverlayConfig,
+  OverlayRef
+} from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
-import * as strategiesData from './strategies.json';
+import * as positionsData from './positions.json';
 
 export class OverlayDialogRef {
   get afterClosed$(): Observable<OverlayConfigOptions> {
@@ -30,7 +37,8 @@ export class OverlayDialogRef {
 
 @Injectable()
 export class OverlayService {
-  readonly strategies = (strategiesData as any).strategies;
+  readonly strategies = (positionsData as any).positions;
+
   constructor(private overlay: Overlay, private injector: Injector) {
   }
 
@@ -54,42 +62,33 @@ export class OverlayService {
     return dialogRef;
   }
 
-  getOverlayConfig(config: OverlayConfigOptions, ancor: any): OverlayConfig {
-    const positionStrategy = this.getOverlayPosition(ancor, config.positionStrategyFor);
+  getOverlayConfig(config: OverlayConfigOptions, anchor: any): OverlayConfig {
+    const positionStrategy = this.getOverlayPosition(anchor, config.positionStrategyFor);
     const scrollStrategy = this.overlay.scrollStrategies.block();
     const {hasBackdrop, backdropClass, panelClass} = config;
 
     return new OverlayConfig({hasBackdrop, backdropClass, panelClass, positionStrategy, scrollStrategy});
   }
 
-  getOverlayPosition(anchor, strategyFor): any {
-    let offsets = {
-      offsetX: 0,
-      offsetY: 0,
-      originX: null,
-      originY: null,
-      overlayX: null,
-      overlayY: null
-    };
-    if (this.strategies[strategyFor]) {
-      offsets = {...offsets, ...this.strategies[strategyFor]};
+  getOverlayPosition(anchor, strategyFor): FlexibleConnectedPositionStrategy {
+    let positions = [this.strategies['right-bottom'], this.strategies['left-top']];
+    if (strategyFor && this.strategies[strategyFor]) {
+      const {offsetX, offsetY, originX, originY, overlayX, overlayY} = this.strategies[strategyFor];
+      positions = [
+        new ConnectionPositionPair(
+          {
+            originX,
+            originY
+          },
+          {
+            overlayX,
+            overlayY
+          },
+          offsetX,
+          offsetY
+        )
+      ];
     }
-
-    const {offsetX, offsetY, originX, originY, overlayX, overlayY} = offsets;
-    const positions = [
-      new ConnectionPositionPair(
-        {
-          originX,
-          originY
-        },
-        {
-          overlayX,
-          overlayY
-        },
-        offsetX,
-        offsetY
-      )
-    ];
 
     return this.overlay
       .position()

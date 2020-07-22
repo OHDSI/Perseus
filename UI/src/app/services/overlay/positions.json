@@ -1,5 +1,5 @@
 {
-  "strategies": {
+  "positions": {
     "advanced-transform": {
       "offsetX": -200,
       "offsetY": 0,
@@ -39,6 +39,22 @@
       "originY": "bottom",
       "overlayX": "start",
       "overlayY": "bottom"
+    },
+    "right-bottom": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "left-top": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
     }
   }
 }
