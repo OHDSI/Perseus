@@ -1,0 +1,10 @@
+:host {
+  display: block;
+  background-color: white;
+  .mat-list-base {
+    padding-top: 0;
+    .mat-list-item-content {
+      padding: 0;
+    }
+  }
+}

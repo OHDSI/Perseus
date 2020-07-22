@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class StoreService {
   private initialState = {
     version: undefined,
+    filtered: undefined,
     target: [],
     source: []
   };
