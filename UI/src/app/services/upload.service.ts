@@ -28,6 +28,7 @@ export class UploadService {
 
   onFileChange(event: any): void {
     const files = event.target.files;
+    const dotPosition = files[0].name.lastIndexOf('.');
     this.uploadSchema(files).subscribe(res => {
       this.snackbar.open(
         'Success file upload',
@@ -36,6 +37,7 @@ export class UploadService {
       );
       this.bridgeService.resetAllMappings();
       this.dataService.prepareTables(res, 'source');
+      this.dataService.saveReportName(files[0].name.slice(0, dotPosition), 'report')
       this.bridgeService.saveAndLoadSchema$.next();
     });
   }

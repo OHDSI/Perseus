@@ -1,0 +1,34 @@
+@import 'src/app/styles/variables.scss';
+
+.mat-expansion-panel {
+  background-color: $cdm-background-grey-light;
+  margin-bottom: 5px;
+  border-radius: 1px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+
+  mat-expansion-panel-header {
+        font-weight: bold;
+  }
+
+  mat-panel-title {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+        margin-right: 10px;
+        align-self: center;
+        color: $grey;
+    }
+
+    .linkSimilarItems {
+      margin-left: auto;
+      margin-right: 10px;
+    }
+  }
+}
+
+.table-has-a-link-true {
+  border-right: 2px solid #80808033;
+  background-color: #0000000d;
+}

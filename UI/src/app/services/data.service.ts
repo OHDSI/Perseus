@@ -131,4 +131,8 @@ export class DataService {
     this.storeService.add(key, tables);
     return tables;
   }
+
+  saveReportName(data, key){
+    this.storeService.add(key, data);
+  }
 }

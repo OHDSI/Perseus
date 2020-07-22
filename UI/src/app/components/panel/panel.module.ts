@@ -6,20 +6,23 @@ import { CdmCommonModule } from 'src/app/common/cdm-common.module';
 import { CdmCustomMaterialModule } from 'src/app/common/cdm-custom-material.module';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
-import { PanelComponent } from 'src/app/components/panel/panel.component';
+import { PanelSourceComponent } from 'src/app/components/panel/panel-source.component';
+import { PanelTargetComponent } from 'src/app/components/panel/panel-target.component';
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
 import { DrawService } from 'src/app/services/draw.service';
 
 @NgModule({
   declarations: [
-    PanelComponent,
+    PanelSourceComponent,
+    PanelTargetComponent,
     PanelTableComponent,
     DraggableDirective,
     FilterComponent
   ],
   exports: [
-    PanelComponent,
+    PanelSourceComponent,
+    PanelTargetComponent,
     PanelTableComponent,
     FilterComponent
   ],
