@@ -8,7 +8,8 @@ export class StoreService {
   private initialState = {
     version: undefined,
     target: [],
-    source: []
+    source: [],
+    report: undefined
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
   readonly state$ = this.storeState.asObservable();

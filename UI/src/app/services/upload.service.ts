@@ -14,7 +14,7 @@ export class UploadService {
     private snackbar: MatSnackBar,
     private bridgeService: BridgeService,
     private httpService: HttpService,
-    private dataService: DataService
+    private dataService: DataService,
   ) {
   }
 
@@ -36,6 +36,7 @@ export class UploadService {
       );
       this.bridgeService.resetAllMappings();
       this.dataService.prepareTables(res, 'source');
+      this.dataService.saveReportName(files[0].name.substr(0, files[0].name.lastIndexOf('.')), 'report')
       this.bridgeService.saveAndLoadSchema$.next();
     });
   }
