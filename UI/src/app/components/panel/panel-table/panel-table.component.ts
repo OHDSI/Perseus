@@ -33,12 +33,14 @@ export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: any;
-  @Input() displayedColumns: string[];
-
   @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
   @ViewChild('tableComponent', {static: true}) tableComponent: MatTable<IRow[]>;
+
+  get displayedColumns() {
+    return ['column_indicator', 'column_name', 'column_type', 'comments'];
+  }
 
   get area() {
     return this.table.area;

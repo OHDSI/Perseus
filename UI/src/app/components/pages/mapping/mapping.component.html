@@ -4,7 +4,7 @@
       <app-area area="source" class="area-source">
         <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')">
           <mat-tab
-            label="{{ table.name | prettyName }}"
+            [label]="table.name | prettyName"
             *ngFor="let table of source; trackBy: trackByFn"
           >
             <app-panel-source
@@ -69,7 +69,7 @@
       <app-area area="target" class="area-target">
         <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab
-            label="{{ table.name | prettyName }}"
+            [label]="table.name | prettyName"
             *ngFor="let table of target; trackBy: trackByFn"
           >
             <app-panel-target

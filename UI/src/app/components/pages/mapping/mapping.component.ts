@@ -73,9 +73,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       setTimeout(() => {
         this.bridgeService.refresh(this.target[this.targetTabIndex]);
         this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
-        this.targetPanel.conceptPanel.reflectConnectorsPin(this.source[this.sourceTabIndex]);
-        this.targetPanel.commonPanel.reflectConnectorsPin(this.source[this.sourceTabIndex]);
-        this.targetPanel.individualPanel.reflectConnectorsPin(this.source[this.sourceTabIndex]);
+        this.targetPanel.panels.forEach(panel => panel.reflectConnectorsPin(this.source[this.sourceTabIndex]));
       }, 200);
     });
 

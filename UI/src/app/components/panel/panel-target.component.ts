@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -8,72 +8,7 @@ import { StoreService } from 'src/app/services/store.service';
 import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { PanelBaseComponent } from './panel-base.component';
-
-const groupsConf = {
-  common: [
-    'PERSON_ID',
-    'VISIT_OCCURRENCE_ID',
-    'VISIT_DETAIL_ID',
-    'PROVIDER_ID',
-    'START_DATE',
-    'START_DATETIME',
-    'END_DATE',
-    'END_DATETIME',
-    'CONDITION_START_DATE',
-    'CONDITION_START_DATETIME',
-    'CONDITION_END_DATE',
-    'CONDITION_END_DATETIME',
-    'DRAG_EXPLOSURE_START_DATE',
-    'DRAG_EXPLOSURE_START_DATETIME',
-    'DRAG_EXPLOSURE_END_DATE',
-    'DRAG_EXPLOSURE_END_DATETIME',
-    'DEVICE_EXPLOSURE_START_DATE',
-    'DEVICE_EXPLOSURE_START_DATETIME',
-    'DEVICE_EXPLOSURE_END_DATE',
-    'DEVICE_EXPLOSURE_END_DATETIME',
-    'MEASUREMENT_DATE',
-    'MEASUREMENT_DATETIME',
-    'OBSERVATION_DATE',
-    'OBSERVATION_DATETIME',
-    'PROCEDURE_DATE',
-    'PROCEDURE_DATETIME',
-    'SPECIMEN_DATE',
-    'SPECIMEN_DATETIME'
-  ],
-  concept: [
-    'CONCEPT_ID',
-    'SOURCE_VALUE',
-    'SOURCE_CONCEPT_ID',
-    'TYPE_CONCEPT_ID',
-    'CONDITION_CONCEPT_ID',
-    'CONDITION_SOURCE_VALUE',
-    'CONDITION_SOURCE_CONCEPT_ID',
-    'CONDITION_TYPE_CONCEPT_ID',
-    'DRAG_CONCEPT_ID',
-    'DRAG_SOURCE_VALUE',
-    'DRAG_SOURCE_CONCEPT_ID',
-    'DRAG_TYPE_CONCEPT_ID',
-    'DEVICE_CONCEPT_ID',
-    'DEVICE_SOURCE_VALUE',
-    'DEVICE_SOURCE_CONCEPT_ID',
-    'DEVICE_TYPE_CONCEPT_ID',
-    'MEASUREMENT_CONCEPT_ID',
-    'MEASUREMENT_SOURCE_VALUE',
-    'MEASUREMENT_SOURCE_CONCEPT_ID',
-    'MEASUREMENT_TYPE_CONCEPT_ID',
-    'OBSERVATION_CONCEPT_ID',
-    'OBSERVATION_SOURCE_VALUE',
-    'OBSERVATION_SOURCE_CONCEPT_ID',
-    'OBSERVATION_TYPE_CONCEPT_ID',
-    'PROCEDURE_CONCEPT_ID',
-    'PROCEDURE_SOURCE_VALUE',
-    'PROCEDURE_SOURCE_CONCEPT_ID',
-    'PROCEDURE_TYPE_CONCEPT_ID',
-    'SPECIMEN_CONCEPT_ID',
-    'SPECIMEN_SOURCE_VALUE',
-    'SPECIMEN_TYPE_CONCEPT_ID'
-  ]
-};
+import * as groupsConf from './groups-conf.json';
 
 @Component({
   selector: 'app-panel-target',
@@ -81,9 +16,7 @@ const groupsConf = {
   styleUrls: ['./panel-target.component.scss']
 })
 export class PanelTargetComponent extends PanelBaseComponent implements OnInit {
-  @ViewChild('conceptPanel') conceptPanel: PanelTableComponent;
-  @ViewChild('commonPanel') commonPanel: PanelTableComponent;
-  @ViewChild('individualPanel') individualPanel: PanelTableComponent;
+  @ViewChildren('panel') panels: QueryList<PanelTableComponent>;
 
   constructor(
     public dialog: MatDialog,
@@ -95,9 +28,7 @@ export class PanelTargetComponent extends PanelBaseComponent implements OnInit {
     super(dialog, commonService, bridgeService, bridgeButtonService, storeService);
   }
 
-  concept: ITable;
-  common: ITable;
-  individual: ITable;
+  groups: object;
 
   ngOnInit() {
     super.ngOnInit();
@@ -116,14 +47,10 @@ export class PanelTargetComponent extends PanelBaseComponent implements OnInit {
       }
     }
 
-    this.concept = Object.assign({}, this.table);
-    this.concept.rows = concept;
-    this.concept.expanded = concept.length ? true : false;
-    this.common = Object.assign({}, this.table);
-    this.common.rows = common;
-    this.common.expanded = common.length ? true : false;
-    this.individual = Object.assign({}, this.table);
-    this.individual.rows = individual;
-    this.individual.expanded = individual.length ? true : false;
+    this.groups = {
+      concept: {...this.table, rows: concept, expanded: !!concept.length},
+      common: {...this.table, rows: common, expanded: !!common.length},
+      individual: {...this.table, rows: individual, expanded: !!individual.length}
+    };
   }
 }

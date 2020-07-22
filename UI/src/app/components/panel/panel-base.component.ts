@@ -1,4 +1,4 @@
-import { AfterViewInit, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, EventEmitter, Input, OnInit, Output, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -20,7 +20,7 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
 
-  @ViewChild('exppanelheader', { static: true }) panelHheader: any;
+  @ViewChildren('exppanelheader') panelHeader: QueryList<any>;
 
   get title() {
     return this.table.name;
@@ -49,16 +49,16 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.bridgeService.deleteAll.subscribe(_ => {
-      this.panelHheader._element.nativeElement.classList.remove(
-        'table-has-a-link-true'
-      );
+      this.panelHeader.forEach(panelHeader => {
+        panelHeader._element.nativeElement.classList.remove('table-has-a-link-true');
+      });
     });
 
     this.bridgeService.connection.subscribe(_ => {
       if (this.bridgeService.isTableConnected(this.table)) {
-        this.panelHheader._element.nativeElement.classList.add(
-          'table-has-a-link-true'
-        );
+        this.panelHeader.forEach(panelHeader => {
+          panelHeader._element.nativeElement.classList.add('table-has-a-link-true');
+        });
       }
     });
   }
@@ -120,13 +120,7 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
     for (const row of this.table.rows) {
       const connections = this.bridgeService.findCorrespondingConnections(this.table, row);
       for (const connection of connections) {
-        let action;
-        if (!event.checked) {
-          action = this.unLinkFields;
-        } else {
-          action = this.linkFields;
-        }
-
+        const action = event.checked ? this.linkFields : this.unLinkFields;
         this.similarFieldsAction(connection, action.bind(this));
       }
     }
@@ -134,17 +128,21 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
 
   similarFieldsAction(connection, action) {
     this.tables.forEach(table => {
-      if (table.name !== this.table.name) {
-        table.rows.forEach(field => {
-          if (field.name === connection[this.area].name) {
-            if (this.area === 'source') {
-              action(field, connection.target);
-            } else {
-              action(connection.source, field);
-            }
-          }
-        });
+      if (table.name === this.table.name) {
+        return;
       }
+
+      table.rows.forEach(field => {
+        if (field.name !== connection[this.area].name) {
+          return;
+        }
+
+        if (this.area === 'source') {
+          action(field, connection.target);
+        } else {
+          action(connection.source, field);
+        }
+      });
     });
   }
 
