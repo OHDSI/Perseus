@@ -27,8 +27,8 @@ export class ToolbarComponent implements OnInit{
 
   ngOnInit(){
     this.storeService.state$.subscribe(res => {
-      this.cdmVersion = res['version'] ? "CDM v"+res['version'] : "CDM version";
-      this.reportName = res['report'] ? res['report'] : "Report name";
+      this.cdmVersion = res['version'] ? `CDM v${res['version']}` : 'CDM version';
+      this.reportName = res['report'] ? res['report'] : 'Report name';
     });
   }
 
