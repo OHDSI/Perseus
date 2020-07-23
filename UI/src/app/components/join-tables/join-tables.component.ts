@@ -2,7 +2,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import * as CodeMirror from 'codemirror';
+import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/show-hint';
@@ -17,6 +17,7 @@ const editorSettings = {
   matchBrackets: true,
   autofocus: true,
   extraKeys: {'Ctrl-Space': 'autocomplete'},
+  hint: CodeMirror.hint.sql,
   hintOptions: {
     tables: {
       users: {name: null, score: null, birthDate: null},

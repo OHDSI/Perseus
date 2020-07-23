@@ -239,3 +239,6 @@ button.mat-flat-button.mat-button-base {
     text-transform: uppercase;
   }
 }
+.CodeMirror-hints.default {
+  z-index: 1000;
+}
