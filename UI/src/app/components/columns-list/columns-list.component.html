@@ -10,7 +10,7 @@
     maxBufferPx="400">
     <mat-list-item
       role="listitem"
-      *cdkVirtualFor="let item of sourceRows">
+      *cdkVirtualFor="let item of sourceRows; templateCacheSize: 0">
       <div
         class="data-item-caption"
         highlight
