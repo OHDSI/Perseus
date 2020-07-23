@@ -41,19 +41,8 @@ def get_source_schema(schemaname):
 
     schema = []
     _open_book(filepath)
-    try:
-        SHEET_NAME = 'Overview'
-        HEADER = ['Table', 'Field', 'Type', 'Max length', 'N rows', 'N rows checked', 'Fraction empty']
-
-        # always take the sheet "Overview" of the excel file
-        overview = pd.read_excel(book, dtype=str, sheet_name=SHEET_NAME, na_filter=False, engine='xlrd')
-
-        header = overview.columns.ravel().tolist()
-        if header != HEADER:
-            raise WrongReportStructure('Report file does not contain "Overview" sheet')
-    except xlrd.biffh.XLRDError as err:
-        print(err)
-        raise WrongReportStructure('Incorrect header of "Overview" sheet')
+    overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
+    # always take the first sheet of the excel file
 
     tables_pd = sqldf(
         """select `table`, group_concat(field || ':' || type, ',') as fields
