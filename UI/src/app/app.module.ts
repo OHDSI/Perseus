@@ -28,6 +28,7 @@ import { ComfyComponent } from './components/comfy/comfy.component';
 import { HighlightConceptDirective } from './components/comfy/directives/highlight-concept.directive';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { ConceptService } from './components/comfy/services/concept.service';
+import { JoinTablesComponent } from './components/join-tables/join-tables.component';
 import { AddConstantPopupComponent } from './components/popups/add-constant-popup/add-constant-popup.component';
 import { CdmVersionDialogComponent } from './components/popups/cdm-version-dialog/cdm-version-dialog.component';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
@@ -87,7 +88,8 @@ import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filt
     TransformConfigComponent,
     ConditionDialogComponent,
     ComfySearchByNameComponent,
-    CdmFilterComponent
+    CdmFilterComponent,
+    JoinTablesComponent
   ],
   imports: [
     BrowserModule,

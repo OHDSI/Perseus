@@ -1,0 +1,36 @@
+<h3>Join tables</h3>
+<mat-icon class="close"
+          mat-dialog-close>close
+</mat-icon>
+<div mat-dialog-content>
+  <section>
+    <label>SQL Function</label>
+    <textarea #editor></textarea>
+  </section>
+  <section>
+    <label>Available Tables</label>
+    <mat-chip-list
+      class="example-chip"
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="drop($event)">
+      <mat-chip
+        class="example-box"
+        cdkDrag
+        *ngFor="let table of data.tables">
+        {{table.name}}
+      </mat-chip>
+    </mat-chip-list>
+  </section>
+</div>
+<div mat-dialog-actions>
+  <button mat-dialog-close
+          mat-flat-button>
+    Cancel
+  </button>
+  <button [mat-dialog-close]="true"
+          mat-flat-button
+          color="accent">
+    Apply
+  </button>
+</div>

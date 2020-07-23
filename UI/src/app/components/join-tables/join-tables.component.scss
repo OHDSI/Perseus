@@ -1,0 +1,43 @@
+@import "../../styles/variables.scss";
+
+:host {
+  display: block;
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+label {
+  color: $grey;
+}
+
+section + section {
+  margin-top: 20px;
+}
+
+.example-box {
+  text-transform: uppercase;
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.example-chip {
+  width: 500px;
+  height: 85px;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .cdk-drop-list-dragging {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}

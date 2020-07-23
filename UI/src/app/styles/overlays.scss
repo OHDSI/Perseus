@@ -1,8 +1,12 @@
 @import '~@angular/material/_theming';
 @import "./variables.scss";
 
-.cdm-version-dialog {
+%common-dialog {
   border-radius: 2px;
+}
+
+.cdm-version-dialog {
+  @extend %common-dialog;
   .mat-dialog-container {
     position: relative;
     padding: 40px;
@@ -12,6 +16,21 @@
   }
   .mat-dialog-actions {
     justify-content: space-between;
+  }
+}
+
+.join-tables-dialog {
+  @extend %common-dialog;
+  .mat-dialog-container {
+    position: relative;
+    width: 570px;
+    padding: 40px 35px;
+  }
+  .mat-dialog-actions {
+    justify-content: center;
+    button.mat-button-base + button.mat-button-base {
+      margin-left: 15px;
+    }
   }
 }
 .filter-popup {

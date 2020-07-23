@@ -1,5 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDragMove, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { merge, Subscription } from 'rxjs';
@@ -20,8 +21,9 @@ import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
-import { isConceptTable } from './services/concept.service';
+import { JoinTablesComponent } from '../join-tables/join-tables.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
+import { isConceptTable } from './services/concept.service';
 
 @Component({
   selector: 'app-comfy',
@@ -78,13 +80,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
+    private matDialog: MatDialog
   ) {
     super();
   }
 
-  @ViewChild('scrollEl', { static: false })
+  @ViewChild('scrollEl', {static: false})
   scrollEl: ElementRef<HTMLElement>;
-  @ViewChild('sourceUpload', { static: false })
+  @ViewChild('sourceUpload', {static: false})
   fileInput: ElementRef<HTMLElement>;
   @ViewChild(CdmFilterComponent, {static: false})
   cdmFilter: CdmFilterComponent;
@@ -132,7 +135,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   private scroll($event: CdkDragMove) {
-    const { y } = $event.pointerPosition;
+    const {y} = $event.pointerPosition;
     const baseEl = this.scrollEl.nativeElement;
     const box = baseEl.getBoundingClientRect();
     const scrollTop = baseEl.scrollTop;
@@ -280,7 +283,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      const {container , previousContainer, previousIndex} = event;
+      const {container, previousContainer, previousIndex} = event;
       const data = container.data;
 
       if (previousContainer === container) {
@@ -474,6 +477,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       payload: { types }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
+  }
+
+  openJoinTablesEditor() {
+    const matDialog = this.matDialog.open(JoinTablesComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'join-tables-dialog',
+      data: { tables: this.data.source }
+    });
+
+    matDialog.afterClosed().subscribe(res => console.log(res));
   }
 }
 

@@ -31,7 +31,7 @@
         (complete)="filterByName('source', $event)"
         (reset)="filterByNameReset('source', $event)"
       ></app-comfy-search-by-name>
-      <a *ngIf="data.source?.length">Join tables</a>
+      <a *ngIf="data.source?.length" (click)="openJoinTablesEditor()">Join tables</a>
       <div class="scrolled-items-rtl"
            *ngIf="data.source?.length">
         <div
