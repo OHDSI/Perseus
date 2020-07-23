@@ -10,12 +10,12 @@
   <section>
     <label>Available Tables</label>
     <mat-chip-list
-      class="example-chip"
+      class="table-name"
       cdkDropList
       cdkDropListOrientation="horizontal"
       (cdkDropListDropped)="drop($event)">
       <mat-chip
-        class="example-box"
+        class="table-box"
         cdkDrag
         *ngFor="let table of data.tables">
         {{table.name}}
