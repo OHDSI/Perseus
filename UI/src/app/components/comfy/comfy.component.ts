@@ -468,7 +468,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   openFilter(target) {
     const types = this.data.filtered ? this.data.filtered.types : [];
-    const checkedTypes = this.data.checkedTypes ? this.data.checkedTypes : [];
+    const checkedTypes = this.data.filtered ? this.data.filtered.checkedTypes : [];
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',

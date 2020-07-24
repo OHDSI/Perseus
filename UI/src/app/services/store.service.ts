@@ -11,7 +11,7 @@ export class StoreService {
     filtered: undefined,
     target: [],
     source: [],
-    report: undefined
+    report: undefined,
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
   readonly state$ = this.storeState.asObservable();
