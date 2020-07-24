@@ -64,7 +64,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     target: [],
     version: undefined,
     filtered: undefined,
-    checkedTypes: undefined
   };
 
   constructor(
