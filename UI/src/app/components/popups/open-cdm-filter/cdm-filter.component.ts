@@ -44,9 +44,10 @@ export class CdmFilterComponent implements OnInit {
         }, []);
     }
     this.storeService.add('filtered', {types: this.selectedTypes, tables: this.selectedTables});
+    this.storeService.add('checkedTypes', types.map(item => item.value))
   }
 
   isSelected(item) {
-    return this.payload.types.includes(item);
+    return this.payload.checkedTypes.includes(item);
   }
 }
