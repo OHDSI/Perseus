@@ -206,21 +206,27 @@ button.mat-flat-button.mat-button-base {
       }
     }
   }
-
   .mat-form-field-outline {
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
     border-radius: 2px;
     border-color: white;
-
     & > * {
       background-color: white;
       border-radius: 2px;
     }
-
     &-thick {
-      box-shadow: 0 0 8px $cdm-blue-light;
       color: white;
       border-radius: 2px;
+    }
+
+  }
+
+  &.search-by-name {
+    .mat-form-field-outline {
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+
+      &-thick {
+        box-shadow: 0 0 8px $cdm-blue-light;
+      }
     }
   }
 }

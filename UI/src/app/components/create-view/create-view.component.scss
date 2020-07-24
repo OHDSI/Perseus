@@ -4,23 +4,13 @@
   display: block;
 }
 
-.close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  cursor: pointer;
-}
-
 label {
+  display: block;
   color: $grey;
 }
 
-section + section {
-  margin-top: 20px;
+section:nth-of-type(2) {
+  margin-bottom: 20px;
 }
 
 .table-box {

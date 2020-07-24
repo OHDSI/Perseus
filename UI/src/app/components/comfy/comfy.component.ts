@@ -21,7 +21,7 @@ import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
-import { JoinTablesComponent } from '../join-tables/join-tables.component';
+import { CreateViewComponent } from '../create-view/create-view.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { isConceptTable } from './services/concept.service';
 
@@ -479,11 +479,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
 
-  openJoinTablesEditor() {
-    const matDialog = this.matDialog.open(JoinTablesComponent, {
+  openCreateViewEditor() {
+    const matDialog = this.matDialog.open(CreateViewComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'join-tables-dialog',
+      panelClass: 'create-view-dialog',
       data: { tables: this.data.source }
     });
 

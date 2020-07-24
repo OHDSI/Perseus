@@ -1,8 +1,20 @@
-<h3>Join tables</h3>
+<h3>Create View
+  <mat-icon svgIcon="help"></mat-icon>
+</h3>
 <mat-icon class="close"
           mat-dialog-close>close
 </mat-icon>
 <div mat-dialog-content>
+  <section>
+    <label>View Name*</label>
+    <mat-form-field appearance="outline"
+                    floatLabel="auto"
+                    required>
+      <input #name
+             matInput
+             placeholder="Set name for the view"/>
+    </mat-form-field>
+  </section>
   <section>
     <label>SQL Function</label>
     <textarea #editor></textarea>
