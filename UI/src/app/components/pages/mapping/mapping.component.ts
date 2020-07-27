@@ -65,14 +65,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   ngAfterViewInit() {
     this.svgCanvas.nativeElement.addEventListener('mouseup', (event: any) => {
-      const areaWidth = 16;
-      const offsetX = event.offsetX;
-      const offsetY = event.offsetY;
-      const currentTarget = event.currentTarget;
-      if (offsetX < areaWidth) {
+      const markerWidth = 16;
+      const { offsetX, offsetY, currentTarget } = event;
+
+      if (offsetX < markerWidth) {
         event.stopPropagation();
         this.startMarkerClick(offsetY, currentTarget);
-      } else if (offsetX > currentTarget.clientWidth - areaWidth) {
+      } else if (offsetX > currentTarget.clientWidth - markerWidth) {
         event.stopPropagation();
         this.endMarkerClick(offsetY, currentTarget);
       }
@@ -88,7 +87,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[6].value);
+      const startXYAttributeIndex = 6;
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[startXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
         this.bridgeService.deleteArrow(child.id);
       }
@@ -101,7 +101,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[7].value);
+      const endXYAttributeIndex = 7;
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[endXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
         if (!this.bridgeService.arrowsCache[child.id].connector.selected) {
           return;

@@ -120,7 +120,8 @@ export class Arrow implements IConnector {
   setEndMarkerType(type: string): void {
     this.refreshPathHtmlElement();
 
-    const isActive = this.svgPath.attributes[9].value.includes('active');
+    const markerEndAttributeIndex = 9;
+    const isActive = this.svgPath.attributes[markerEndAttributeIndex].value.includes('active');
 
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
     this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${isActive ? '-active' : ''}${type !== 'None' ? `-${type}` : ''})`);
@@ -176,7 +177,8 @@ export class Arrow implements IConnector {
 
   clickHandler(event: any) {
     event.stopPropagation();
-    if (event.offsetX < 16 || event.offsetX > event.currentTarget.parentElement.clientWidth - 16) {
+    const markerWidth = 16;
+    if (event.offsetX < markerWidth || event.offsetX > event.currentTarget.parentElement.clientWidth - markerWidth) {
       return;
     }
 
