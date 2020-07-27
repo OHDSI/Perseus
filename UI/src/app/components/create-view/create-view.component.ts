@@ -1,4 +1,4 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
@@ -41,23 +41,20 @@ export class CreateViewComponent implements AfterViewInit {
   codeMirror;
 
   drop(event: CdkDragDrop<any>) {
-    console.log(this.editorContent);
-    moveItemInArray(this.data.tables, event.previousIndex, event.currentIndex);
+    const text = event.item.element.nativeElement.textContent.trim();
+
+    const editor = this.codeMirror.getDoc();
+
+    if (this.editorContent) {
+      const joinCount = (this.editorContent.match(/join/gi) || []).length;
+      editor.setValue(`${this.editorContent} \n join ${text} as t${joinCount + 2} on`);
+    } else {
+      editor.setValue(`select * from ${text} as t1`);
+    }
   }
 
   ngAfterViewInit() {
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-
-    this.codeMirror.on('cursorActivity', (cm, event) => {
-        const cursor = cm.getCursor();
-        const token = cm.getTokenAt(cursor);
-        const start: number = token.start;
-        const end: number = cursor.ch;
-        const line: number = cursor.line;
-        const currentWord: string = token.string;
-        console.log(token, currentWord, cm.getValue);
-        // this.codeMirror.execCommand('autocomplete');
-    });
   }
 
   get editorContent(): string {

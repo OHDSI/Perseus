@@ -15,17 +15,22 @@
              placeholder="Set name for the view"/>
     </mat-form-field>
   </section>
-  <section>
+  <section cdkDropList
+           #editorArea="cdkDropList"
+           [cdkDropListConnectedTo]="[tables]"
+           (cdkDropListDropped)="drop($event)">
     <label>SQL Function</label>
     <textarea #editor></textarea>
   </section>
   <section>
     <label>Available Tables</label>
     <mat-chip-list
-      class="table-name"
+      #tables="cdkDropList"
       cdkDropList
-      cdkDropListOrientation="horizontal"
-      (cdkDropListDropped)="drop($event)">
+      cdkDropListSortingDisabled
+      [cdkDropListData]="data.tables"
+      [cdkDropListConnectedTo]="[editorArea]"
+      class="table-name">
       <mat-chip
         class="table-box"
         cdkDrag
