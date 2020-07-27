@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild  } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -15,13 +15,16 @@ import { PanelSourceComponent } from '../../panel/panel-source.component';
 import { PanelTargetComponent } from '../../panel/panel-target.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
 
 @Component({
   selector: 'app-mapping',
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss']
 })
-export class MappingComponent extends BaseComponent implements OnInit, OnDestroy {
+export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() source: ITable[];
   @Input() target: ITable[];
 
@@ -53,10 +56,86 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private matDialog: MatDialog,
     private rulesPoupService: RulesPopupService,
     mappingElementRef: ElementRef,
-    private mappingStorage: MappingPageSessionStorage
+    private mappingStorage: MappingPageSessionStorage,
+    private overlayService: OverlayService
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
+  }
+
+  ngAfterViewInit() {
+    this.svgCanvas.nativeElement.addEventListener('mouseup', (event: any) => {
+      const areaWidth = 16;
+      const offsetX = event.offsetX;
+      const offsetY = event.offsetY;
+      const currentTarget = event.currentTarget;
+      if (offsetX < areaWidth) {
+        event.stopPropagation();
+        this.startMarkerClick(offsetY, currentTarget);
+      } else if (offsetX > currentTarget.clientWidth - areaWidth) {
+        event.stopPropagation();
+        this.endMarkerClick(offsetY, currentTarget);
+      }
+    });
+  }
+
+  startMarkerClick(offset: number, currentTarget: any) {
+    let i = currentTarget.children.length - 1;
+    while (i >= 0) {
+      const child = currentTarget.children[i];
+      i--;
+      if (child.localName !== 'path') {
+        continue;
+      }
+
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[6].value);
+      if (offset >= upperLimit && offset <= lowerLimit) {
+        this.bridgeService.deleteArrow(child.id);
+      }
+    }
+  }
+
+  endMarkerClick(offset: number, currentTarget: any) {
+    for (const child of currentTarget.children) {
+      if (child.localName !== 'path') {
+        continue;
+      }
+
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[7].value);
+      if (offset >= upperLimit && offset <= lowerLimit) {
+        if (!this.bridgeService.arrowsCache[child.id].connector.selected) {
+          return;
+        }
+
+        const dialogOptions: OverlayConfigOptions = {
+          hasBackdrop: true,
+          backdropClass: 'custom-backdrop',
+          positionStrategyFor: 'values'
+        };
+
+        const component = SetConnectionTypePopupComponent;
+        const rowIndex = child.id.split('/')[1].split('-')[1];
+        const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
+        const htmlElement = document.getElementById(htmlElementId);
+
+        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, component);
+        dialogRef.afterClosed$.subscribe((configOptions: any) => {
+          const { connectionType } = configOptions;
+          if (connectionType) {
+            this.bridgeService.setArrowType(child.id, connectionType);
+          }
+        });
+        return;
+      }
+    }
+  }
+
+  getLimits(value: string) {
+    const offset = 8;
+    const point = parseInt(value.split(',')[1], 0);
+    const upperLimit = point - offset;
+    const lowerLimit = point + offset;
+    return { upperLimit, lowerLimit };
   }
 
   ngOnInit() {

@@ -82,10 +82,10 @@ export class Arrow implements IConnector {
       Math.floor((y1 + y2) / 2).toString()
     );
     this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
-    this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'endXY', `${x2},${y2}`);
 
-    this.renderer.setAttribute(this.path, 'marker-start', 'url(#dot-start)');
-    this.renderer.setAttribute(this.path, 'marker-end', 'url(#dot)');
+    this.renderer.setAttribute(this.path, 'marker-start', 'url(#marker-start)');
+    this.renderer.setAttribute(this.path, 'marker-end', 'url(#marker-end)');
 
     this.removeClickListener = this.renderer.listen(
       this.path,
@@ -110,33 +110,52 @@ export class Arrow implements IConnector {
     );
 
     this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
-    this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'endXY', `${x2},${y2}`);
   }
 
   attachButton(button) {
     this.button = button;
   }
 
+  setEndMarkerType(type: string): void {
+    this.refreshPathHtmlElement();
+
+    const isActive = this.svgPath.attributes[9].value.includes('active');
+
+    this.renderer.removeAttribute(this.svgPath, 'marker-end');
+    this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${isActive ? '-active' : ''}${type !== 'None' ? `-${type}` : ''})`);
+  }
+
   select() {
     this.refreshPathHtmlElement();
 
+    const isTypeT = this.svgPath.attributes[9].value.endsWith('-T)');
+    const isTypeL = this.svgPath.attributes[9].value.endsWith('-L)');
+
+    this.renderer.removeAttribute(this.svgPath, 'marker-start');
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
 
     this.selected = true;
 
     this.renderer.addClass(this.svgPath, 'selected');
-    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#dot-active)');
+    this.renderer.setAttribute(this.svgPath, 'marker-start', 'url(#marker-start-active)');
+    this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end-active${isTypeL ? '-L' : isTypeT ? '-T' : ''})`);
   }
 
   deselect(): void {
     this.refreshPathHtmlElement();
 
-    this.renderer.removeAttribute(this.svgPath, 'marker-end');
+    const isTypeT = this.svgPath.attributes[9].value.endsWith('-T)');
+    const isTypeL = this.svgPath.attributes[9].value.endsWith('-L)');
+
+    this.renderer.removeAttribute(this.svgPath, 'marker-start-active');
+    this.renderer.removeAttribute(this.svgPath, 'marker-end-active');
 
     this.selected = false;
 
     this.renderer.removeClass(this.svgPath, 'selected');
-    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#dot)');
+    this.renderer.setAttribute(this.svgPath, 'marker-start', 'url(#marker-start)');
+    this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${isTypeL ? '-L' : isTypeT ? '-T' : ''})`);
   }
 
   remove() {
@@ -157,7 +176,17 @@ export class Arrow implements IConnector {
 
   clickHandler(event: any) {
     event.stopPropagation();
+    if (event.offsetX < 16 || event.offsetX > event.currentTarget.parentElement.clientWidth - 16) {
+      return;
+    }
+
     this.clicked.emit(this);
+
+    if (this.selected) {
+      this.deselect();
+    } else {
+      this.select();
+    }
   }
 
   private generateSvgPath(pointStart: number[], pointEnd: number[]): string {

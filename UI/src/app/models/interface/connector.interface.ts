@@ -18,6 +18,7 @@ export interface IConnector {
   attachButton(button): void;
   select(): void;
   deselect(): void;
+  setEndMarkerType(type: string): void;
 }
 
 export type ConnectorType = 'L' | 'T' | 'M' | '';
