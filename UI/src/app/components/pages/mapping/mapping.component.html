@@ -52,43 +52,104 @@
         <svg class="canvas" #arrowsarea>
           <defs>
             <marker
-              id="dot-start"
-              viewBox="0 0 10 10"
-              refX="5"
-              refY="5"
-              markerWidth="10"
-              markerHeight="10"
+              id="marker-start"
+              viewBox="0 0 20 20"
+              refX="4"
+              refY="8"
+              markerWidth="20"
+              markerHeight="20"
               markerUnits="userSpaceOnUse"
             >
-              <circle cx="5" cy="5" r="5" fill="#BDBDBD" />
+              <rect x="0" y="0" rx="5" width="20" height="16" fill="#BDBDBD" pointer-events="visiblePoint"/>
+              <line x1="8" y1="4" x2="16" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+              <line x1="16" y1="4" x2="8" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
             </marker>
             <marker
-              id="dot"
-              viewBox="0 0 10 10"
-              refX="5"
-              refY="5"
-              markerWidth="10"
-              markerHeight="10"
+              id="marker-start-active"
+              viewBox="0 0 20 20"
+              refX="4"
+              refY="8"
+              markerWidth="20"
+              markerHeight="20"
               markerUnits="userSpaceOnUse"
             >
-              <circle cx="5" cy="5" r="5" fill="#BDBDBD" />
+              <rect x="0" y="0" rx="5" width="20" height="16" fill="#066BBB"/>
+              <line x1="8" y1="4" x2="16" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+              <line x1="16" y1="4" x2="8" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+            </marker>
+
+            <marker
+              id="marker-end"
+              viewBox="0 0 20 20"
+              refX="10"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
             </marker>
             <marker
-              id="dot-active"
-              viewBox="0 0 10 10"
-              refX="5"
-              refY="5"
-              markerWidth="10"
-              markerHeight="10"
+              id="marker-end-T"
+              viewBox="0 0 20 20"
+              refX="10"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
               markerUnits="userSpaceOnUse"
             >
-              <circle cx="5" cy="5" r="5" fill="#066BBB" />
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">T</text>
+            </marker>
+            <marker
+              id="marker-end-L"
+              viewBox="0 0 20 20"
+              refX="10"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">L</text>
+            </marker>
+            <marker
+              id="marker-end-active"
+              viewBox="0 0 20 20"
+              refX="10"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+            </marker>
+            <marker
+              id="marker-end-active-T"
+              viewBox="0 0 20 20"
+              refX="10"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">T</text>
+            </marker>
+            <marker
+              id="marker-end-active-L"
+              viewBox="0 0 20 20"
+              refX="10"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">L</text>
             </marker>
           </defs>
         </svg>
-        <p>
-          {{ hint }}
-        </p>
         <!-- <div class="patch-bottom"></div> -->
       </div>
       <!--End-of-the-Bridge-->

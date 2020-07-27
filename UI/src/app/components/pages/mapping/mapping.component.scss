@@ -1,65 +1,72 @@
 @import 'src/app/styles/variables.scss';
 
 .area-source {
-  width: 100%;
+  position: relative;
+  width: 35%;
+  float: left;
 }
 
 .area-target {
-  width: 100%;
+  position: relative;
+  width: 35%;
+  float: right;
 }
 
 section {
-    //margin: 0 20px;
 
-    main {
-        display: grid;
-        grid-template-columns: 0.5fr 0.5fr 0.5fr;
+  main {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    float: left;
+  }
+
+  .hint {
+    position: absolute;
+    left: 35%;
+    color: $cdm-grey-dark;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: calc(30% + 8px);
+    height: 100%;
+    z-index: 2;
+
+    p {
+      top: 20%;
+      position: absolute;
+      font-size: 14px;
     }
 
-    .hint {
-        color: #404040;
-        position: relative;
-        display: flex;
-        text-align: center;
-        justify-content: center;
-        min-width: 200px;
-
-        p {
-            top: 20%;
-            position: absolute;
-            font-size: 14px;
-        }
-
-        .patch-top {
-            @extend .patch;
-            top: -94%;
-
-        }
-
-        // .patch-bottom {
-        //     @extend .patch;
-        //     bottom: -100%;
-        // }
+    .patch-top {
+      @extend .patch;
+      top: -94%;
     }
 
-    .canvas {
-        height: 100%;
-        width: 100%;
+    .patch-bottom {
+      @extend .patch;
+      bottom: -100%;
     }
+  }
+}
 
-    footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 60px;
-    }
+.canvas {
+  height: 100%;
+  width: 100%;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 60px;
 }
 
 .patch {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1000;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1000;
 }
 
 .mapping-component-progress {
@@ -78,9 +85,7 @@ section {
 }
 
 .app-mapping {
-  margin-left: 20px;
   padding: 0 50px 0 50px;
   display: flex;
   flex-direction: column;
 }
-
