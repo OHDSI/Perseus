@@ -7,6 +7,8 @@ import { ConceptService, isConcept } from '../components/comfy/services/concept.
 
 // TODO Hide properties with WeakMap
 
+const markerEndAttributeIndex = 9;
+
 export class Arrow implements IConnector {
   clicked: EventEmitter<IConnector>;
 
@@ -120,7 +122,6 @@ export class Arrow implements IConnector {
   setEndMarkerType(type: string): void {
     this.refreshPathHtmlElement();
 
-    const markerEndAttributeIndex = 9;
     const isActive = this.svgPath.attributes[markerEndAttributeIndex].value.includes('active');
 
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
@@ -130,8 +131,8 @@ export class Arrow implements IConnector {
   select() {
     this.refreshPathHtmlElement();
 
-    const isTypeT = this.svgPath.attributes[9].value.endsWith('-T)');
-    const isTypeL = this.svgPath.attributes[9].value.endsWith('-L)');
+    const isTypeT = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-T)');
+    const isTypeL = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-L)');
 
     this.renderer.removeAttribute(this.svgPath, 'marker-start');
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
@@ -146,8 +147,8 @@ export class Arrow implements IConnector {
   deselect(): void {
     this.refreshPathHtmlElement();
 
-    const isTypeT = this.svgPath.attributes[9].value.endsWith('-T)');
-    const isTypeL = this.svgPath.attributes[9].value.endsWith('-L)');
+    const isTypeT = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-T)');
+    const isTypeL = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-L)');
 
     this.renderer.removeAttribute(this.svgPath, 'marker-start-active');
     this.renderer.removeAttribute(this.svgPath, 'marker-end-active');
