@@ -55,9 +55,30 @@ export class CreateViewComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
+
+    this.codeMirror.on('cursorActivity', this.onCursorActivity);
   }
 
   get editorContent(): string {
     return this.codeMirror.getValue();
+  }
+
+  onCursorActivity(cm, event) {
+    const cursor = cm.getCursor();
+    const token = cm.getTokenAt(cursor);
+    const end: number = cursor.ch;
+    const line: number = cursor.line;
+    const currentWord: string = token.string;
+    console.log(token, currentWord, cm.getValue);
+    if (token.type === 'keyword' && currentWord === 'join') {
+      const options = {
+        hint: () => ({
+          from: cursor,
+          to: cursor,
+          list: ['left join', 'right join', 'inner join', 'outer join']
+        })
+      };
+      cm.showHint(options);
+    }
   }
 }
