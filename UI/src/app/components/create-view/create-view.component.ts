@@ -1,12 +1,11 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
-
-import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
 
 const editorSettings = {
@@ -39,7 +38,6 @@ export class CreateViewComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-
     this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
   }
 
@@ -62,9 +60,7 @@ export class CreateViewComponent implements AfterViewInit {
 
   drop(event: CdkDragDrop<any>) {
     const text = event.item.element.nativeElement.textContent.trim();
-
     const doc = this.codeMirror.getDoc();
-
     if (this.editorContent) {
       const joinCount = (this.editorContent.match(/join/gi) || []).length;
       doc.setValue(`${this.editorContent}
