@@ -65,7 +65,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     source: [],
     target: [],
     version: undefined,
-    filtered: undefined
+    filtered: undefined,
   };
 
   constructor(
@@ -470,11 +470,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   openFilter(target) {
     const types = this.data.filtered ? this.data.filtered.types : [];
+    const checkedTypes = this.data.filtered ? this.data.filtered.checkedTypes : [];
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       panelClass: 'filter-popup',
-      payload: { types }
+      payload: { types, checkedTypes }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }

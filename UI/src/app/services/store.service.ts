@@ -39,4 +39,15 @@ export class StoreService {
 
     return null;
   }
+
+  resetAllData() {
+    this.initialState = {
+      version: undefined,
+      filtered: undefined,
+      target: [],
+      source: [],
+      report: undefined
+    };
+    this.storeState.next(this.initialState);
+  }
 }

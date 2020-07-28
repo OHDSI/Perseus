@@ -177,6 +177,10 @@ export class BridgeService {
   deleteArrow(key: string) {
     const savedConnection = cloneDeep(this.arrowsCache[key]);
 
+    if (!savedConnection.connector.selected) {
+      return;
+    }
+
     this.drawService.deleteConnector(key);
 
     if (this.arrowsCache[key]) {
@@ -241,6 +245,11 @@ export class BridgeService {
     });
 
     this.deleteAll.next();
+  }
+
+  setArrowType(id: string, type: string) {
+    const arrow = this.arrowsCache[id];
+    arrow.connector.setEndMarkerType(type);
   }
 
   deleteSelectedArrows() {

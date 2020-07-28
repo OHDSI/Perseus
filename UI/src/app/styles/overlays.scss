@@ -33,6 +33,17 @@
   }
 }
 
+.warning-dialog {
+   border-radius: 2px;
+   width: 245px;
+   height: 247px;
+  .mat-dialog-container {
+    position: relative;
+    padding: 40px;
+  }
+}
+
+
 .create-view-dialog {
   @extend %common-dialog;
 
