@@ -56,6 +56,7 @@ import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
 import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filter.component';
+import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filt
     TransformConfigComponent,
     ConditionDialogComponent,
     ComfySearchByNameComponent,
-    CdmFilterComponent
+    CdmFilterComponent,
+    ResetWarningComponent
   ],
   imports: [
     BrowserModule,

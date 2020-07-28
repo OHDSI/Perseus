@@ -45,7 +45,7 @@ export class AppComponent implements OnDestroy {
   }
 
   addIcons() {
-    ['CDM_version', 'folder', 'mapping', 'reset', 'save', 'help'].forEach(key => {
+    ['CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping'].forEach(key => {
       this.matIconRegistry.addSvgIcon(
         key,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/icons/${key}.svg`)

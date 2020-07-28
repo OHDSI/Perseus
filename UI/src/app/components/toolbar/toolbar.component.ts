@@ -51,4 +51,8 @@ export class ToolbarComponent implements OnInit{
   openSetCDMDialog() {
     this.commonUtilsService.openSetCDMDialog();
   }
+
+  resetSourceAndTarget() {
+    this.commonUtilsService.openResetWarningDialog();
+  }
 }
