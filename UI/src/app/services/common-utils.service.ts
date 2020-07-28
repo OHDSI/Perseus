@@ -57,19 +57,17 @@ export class CommonUtilsService {
       panelClass: 'warning-dialog',
     });
 
-    matDialog.afterClosed().pipe(
-      map(res => {
-        if (res) {
-          this.openSaveMappingDialog('save');
-        } else {
-          if (res === '') {
-            return;
-          }
-          this.bridgeService.resetAllMappings();
-          this.storeService.resetAllData();
-
+    matDialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.openSaveMappingDialog('save');
+      } else {
+        if (res === '') {
+          return;
         }
-      })
-    ).subscribe();
+        this.bridgeService.resetAllMappings();
+        this.storeService.resetAllData();
+
+      }
+    });
   }
 }
