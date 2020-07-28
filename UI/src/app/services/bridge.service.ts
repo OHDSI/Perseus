@@ -253,7 +253,7 @@ export class BridgeService {
   setArrowType(id: string, type: string) {
     const arrow = this.arrowsCache[id];
     arrow.connector.setEndMarkerType(type);
-    arrow.type = type !== 'None' ? type : '';
+    arrow.type = type === 'None' ? '' : type;
   }
 
   deleteSelectedArrows() {
