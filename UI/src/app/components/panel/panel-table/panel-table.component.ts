@@ -35,8 +35,8 @@ export class PanelTableComponent extends BaseComponent
   @Input() tabIndex: any;
   @Output() openTransform = new EventEmitter<any>();
 
-  @ViewChild('htmlElement', {read: ElementRef}) element: HTMLElement;
-  @ViewChild('tableComponent', {static: true}) tableComponent: MatTable<IRow[]>;
+  @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
+  @ViewChild('tableComponent', { static: true }) tableComponent: MatTable<IRow[]>;
 
   get displayedColumns() {
     return ['column_indicator', 'column_name', 'column_type', 'comments'];

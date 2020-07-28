@@ -85,11 +85,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     super();
   }
 
-  @ViewChild('scrollEl', {static: false})
+  @ViewChild('scrollEl', { static: false })
   scrollEl: ElementRef<HTMLElement>;
-  @ViewChild('sourceUpload', {static: false})
+  @ViewChild('sourceUpload', { static: false })
   fileInput: ElementRef<HTMLElement>;
-  @ViewChild(CdmFilterComponent, {static: false})
+  @ViewChild(CdmFilterComponent, { static: false })
   cdmFilter: CdmFilterComponent;
 
   @ViewChildren(CdkDrag)
@@ -135,7 +135,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   private scroll($event: CdkDragMove) {
-    const {y} = $event.pointerPosition;
+    const { y } = $event.pointerPosition;
     const baseEl = this.scrollEl.nativeElement;
     const box = baseEl.getBoundingClientRect();
     const scrollTop = baseEl.scrollTop;

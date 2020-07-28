@@ -32,10 +32,33 @@ export class CreateViewComponent implements AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
-  @ViewChild('name', {static: true}) name: ElementRef;
-  @ViewChild('editor', {static: true}) editor;
+  @ViewChild('name', { static: true }) name: ElementRef;
+  @ViewChild('editor', { static: true }) editor;
   codeMirror;
   hintIsShown = false;
+
+  ngAfterViewInit() {
+    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
+
+    this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
+  }
+
+  get editorContent(): string {
+    return this.codeMirror ? this.codeMirror.getValue() : '';
+  }
+
+  get sourceTable() {
+    const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
+    return {
+      area: 'source',
+      expanded: false,
+      id: maxId + 1,
+      name: this.name.nativeElement.value,
+      rows: [],
+      visible: true,
+      sql: this.editorContent
+    };
+  }
 
   drop(event: CdkDragDrop<any>) {
     const text = event.item.element.nativeElement.textContent.trim();
@@ -49,16 +72,6 @@ export class CreateViewComponent implements AfterViewInit {
     } else {
       doc.setValue(`select * from ${text} as t1`);
     }
-  }
-
-  ngAfterViewInit() {
-    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-
-    this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
-  }
-
-  get editorContent(): string {
-    return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
   onCursorActivity(cm, event) {
@@ -96,18 +109,5 @@ export class CreateViewComponent implements AfterViewInit {
       this.codeMirror.setCursor({line, ch: tokenLength + optionSelected.length});
     }
     this.hintIsShown = false;
-  }
-
-  sourceTable() {
-    const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
-    return {
-      area: 'source',
-      expanded: false,
-      id: maxId + 1,
-      name: this.name.nativeElement.value,
-      rows: [],
-      visible: true,
-      sql: this.editorContent
-    };
   }
 }
