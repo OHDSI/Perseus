@@ -66,7 +66,6 @@ export class CommonUtilsService {
         }
         this.bridgeService.resetAllMappings();
         this.storeService.resetAllData();
-
       }
     });
   }
