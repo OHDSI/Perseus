@@ -33,11 +33,12 @@ export class Arrow implements IConnector {
     public id: string,
     public source: IRow,
     public target: IRow,
+    type: ConnectorType,
     private renderer: Renderer2
   ) {
     this.canvas = canvasRef ? canvasRef.nativeElement : null;
     this.clicked = new EventEmitter<IConnector>();
-    this.type = this.getType();
+    this.type = type;
   }
 
   private getType() {
@@ -87,7 +88,7 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(this.path, 'endXY', `${x2},${y2}`);
 
     this.renderer.setAttribute(this.path, 'marker-start', 'url(#marker-start)');
-    this.renderer.setAttribute(this.path, 'marker-end', 'url(#marker-end)');
+    this.renderer.setAttribute(this.path, 'marker-end', `url(#marker-end${this.type ? `-${this.type}` : ''})`);
 
     this.removeClickListener = this.renderer.listen(
       this.path,
@@ -119,13 +120,15 @@ export class Arrow implements IConnector {
     this.button = button;
   }
 
-  setEndMarkerType(type: string): void {
+  setEndMarkerType(type): void {
     this.refreshPathHtmlElement();
 
     const isActive = this.svgPath.attributes[markerEndAttributeIndex].value.includes('active');
 
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
-    this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${isActive ? '-active' : ''}${type !== 'None' ? `-${type}` : ''})`);
+    type = type !== 'None' ? type : '';
+    this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${isActive ? '-active' : ''}${type ? `-${type}` : ''})`);
+    this.type = type;
   }
 
   select() {

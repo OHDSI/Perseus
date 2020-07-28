@@ -154,6 +154,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.refresh(this.target[this.targetTabIndex]);
         this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
         this.targetPanel.panels.forEach(panel => panel.reflectConnectorsPin(this.source[this.sourceTabIndex]));
+        this.bridgeService.adjustArrowsPositions();
       }, 200);
     });
 

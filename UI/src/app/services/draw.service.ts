@@ -28,7 +28,7 @@ export class DrawService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  drawLine(entityId: string, source: IRow, target: IRow): IConnector {
+  drawLine(entityId: string, source: IRow, target: IRow, type: any): IConnector {
     const canvas = this.commonService.svgCanvas;
 
     const drawEntity = new Arrow(
@@ -36,6 +36,7 @@ export class DrawService {
       entityId,
       source,
       target,
+      type,
       this.renderer
     );
 
