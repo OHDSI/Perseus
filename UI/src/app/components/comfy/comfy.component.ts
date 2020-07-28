@@ -316,7 +316,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const payload = {
       source: sourceTables,
       target: targetTables,
-      allTarget: this.data.target
+      allTarget: this.data.target,
+      mappedTables: this.getMappedTables()
     };
 
     this.mappingStorage.remove('mappingtables');
@@ -326,6 +327,16 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     await this.mappingStorage.add('mappingpage', payload);
 
     this.router.navigateByUrl('/mapping');
+  }
+
+  getMappedTables() {
+    const mappedTables = [];
+    Object.keys(this.targetConfig).forEach(key => {
+      const item = this.targetConfig[key].data;
+      if (item.length > 1) {
+        mappedTables.push(item);
+      }
+    });
   }
 
   findTables(selectedSourceColumns: string[]): void {
