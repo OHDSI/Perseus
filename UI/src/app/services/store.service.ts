@@ -10,6 +10,7 @@ export class StoreService {
     version: undefined,
     filtered: undefined,
     target: [],
+    targetConfig: {},
     source: [],
     report: undefined
   };
