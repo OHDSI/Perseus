@@ -1,5 +1,5 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
@@ -18,12 +18,7 @@ const editorSettings = {
   autofocus: true,
   extraKeys: {'Ctrl-Space': 'autocomplete'},
   hint: CodeMirror.hint.sql,
-  hintOptions: {
-    tables: {
-      users: {name: null, score: null, birthDate: null},
-      countries: {name: null, population: null, size: null}
-    }
-  }
+  hintOptions: {}
 };
 
 @Component({
@@ -37,6 +32,7 @@ export class CreateViewComponent implements AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
+  @ViewChild('name', {static: true}) name: ElementRef;
   @ViewChild('editor', {static: true}) editor;
   codeMirror;
   hintIsShown = false;
@@ -62,7 +58,7 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   get editorContent(): string {
-    return this.codeMirror.getValue();
+    return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
   onCursorActivity(cm, event) {
@@ -100,5 +96,18 @@ export class CreateViewComponent implements AfterViewInit {
       this.codeMirror.setCursor({line, ch: tokenLength + optionSelected.length});
     }
     this.hintIsShown = false;
+  }
+
+  sourceTable() {
+    const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
+    return {
+      area: 'source',
+      expanded: false,
+      id: maxId + 1,
+      name: this.name.nativeElement.value,
+      rows: [],
+      visible: true,
+      sql: this.editorContent
+    };
   }
 }

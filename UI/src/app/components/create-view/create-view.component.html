@@ -8,8 +8,7 @@
   <section>
     <label>View Name*</label>
     <mat-form-field appearance="outline"
-                    floatLabel="auto"
-                    required>
+                    floatLabel="auto">
       <input #name
              matInput
              placeholder="Set name for the view"/>
@@ -45,7 +44,7 @@
           mat-flat-button>
     Cancel
   </button>
-  <button [mat-dialog-close]="true"
+  <button [mat-dialog-close]="sourceTable()"
           mat-flat-button
           color="accent">
     Apply

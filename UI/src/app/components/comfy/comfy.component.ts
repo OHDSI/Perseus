@@ -283,7 +283,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      const {container, previousContainer, previousIndex} = event;
+      const { container, previousContainer, previousIndex } = event;
       const data = container.data;
 
       if (previousContainer === container) {
@@ -488,7 +488,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       data: { tables: this.data.source }
     });
 
-    matDialog.afterClosed().subscribe(res => console.log(res));
+    matDialog.afterClosed().subscribe(res => {
+        if (res) {
+          this.storeService.add('source', [res, ...this.data.source]);
+        }
+      }
+    );
   }
 }
 
