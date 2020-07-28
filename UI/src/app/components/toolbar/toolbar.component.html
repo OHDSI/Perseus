@@ -18,6 +18,11 @@
       (change)="onFileUpload($event)"
       hidden/>
     <button mat-menu-item
+            (click)="resetSourceAndTarget()">
+      <mat-icon svgIcon="new_mapping"></mat-icon>
+      <span>Create New Mapping</span>
+    </button>
+    <button mat-menu-item
             (click)="onOpenSourceClick()">
       <mat-icon svgIcon="folder"></mat-icon>
       <span>Load New Report</span>
