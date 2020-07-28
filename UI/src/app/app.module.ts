@@ -57,6 +57,7 @@ import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
 import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filter.component';
 import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
+import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { ResetWarningComponent } from './components/popups/reset-warning/reset-w
     AreaComponent,
     CommentPopupComponent,
     ValuesPopupComponent,
+    SetConnectionTypePopupComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,
