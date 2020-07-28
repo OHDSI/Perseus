@@ -126,7 +126,7 @@ export class Arrow implements IConnector {
     const isActive = this.svgPath.attributes[markerEndAttributeIndex].value.includes('active');
 
     this.renderer.removeAttribute(this.svgPath, 'marker-end');
-    type = type !== 'None' ? type : '';
+    type = type === 'None' ? '' : type;
     this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${isActive ? '-active' : ''}${type ? `-${type}` : ''})`);
     this.type = type;
   }

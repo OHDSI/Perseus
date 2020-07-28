@@ -280,12 +280,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const tableName = this.source[this.sourceTabIndex].name;
     const tagretTableNameIndex = 0;
     const targetTableName = this.mappedTables.find(item => item.includes(tableName))[tagretTableNameIndex];
-    for (let i = 0; i < this.target.length; i++) {
-      if (this.target[i].name === targetTableName) {
-        this.targetTabIndex = i;
-        break;
-      }
-    }
+    this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
   }
 
   isDisabled(tableName: string): boolean {
