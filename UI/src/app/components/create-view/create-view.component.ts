@@ -39,24 +39,26 @@ export class CreateViewComponent implements AfterViewInit {
 
   @ViewChild('editor', {static: true}) editor;
   codeMirror;
+  hintIsShown = false;
 
   drop(event: CdkDragDrop<any>) {
     const text = event.item.element.nativeElement.textContent.trim();
 
-    const editor = this.codeMirror.getDoc();
+    const doc = this.codeMirror.getDoc();
 
     if (this.editorContent) {
       const joinCount = (this.editorContent.match(/join/gi) || []).length;
-      editor.setValue(`${this.editorContent} \n join ${text} as t${joinCount + 2} on`);
+      doc.setValue(`${this.editorContent}
+      join ${text} as t${joinCount + 2} on`);
     } else {
-      editor.setValue(`select * from ${text} as t1`);
+      doc.setValue(`select * from ${text} as t1`);
     }
   }
 
   ngAfterViewInit() {
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
 
-    this.codeMirror.on('cursorActivity', this.onCursorActivity);
+    this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
   }
 
   get editorContent(): string {
@@ -66,19 +68,37 @@ export class CreateViewComponent implements AfterViewInit {
   onCursorActivity(cm, event) {
     const cursor = cm.getCursor();
     const token = cm.getTokenAt(cursor);
-    const end: number = cursor.ch;
-    const line: number = cursor.line;
-    const currentWord: string = token.string;
-    console.log(token, currentWord, cm.getValue);
-    if (token.type === 'keyword' && currentWord === 'join') {
+    if (token.type === 'keyword' && token.string === 'join' && !this.hintIsShown) {
       const options = {
         hint: () => ({
-          from: cursor,
-          to: cursor,
+          from: token.start,
+          to: token.end,
           list: ['left join', 'right join', 'inner join', 'outer join']
         })
       };
       cm.showHint(options);
+      this.hintIsShown = true;
+      if (cm.state.completionActive) {
+        const {data: hintMenu} = cm.state.completionActive;
+        CodeMirror.on(hintMenu, 'select', this.onHintSelect.bind(this));
+      }
     }
+  }
+
+  onHintSelect(optionSelected, element) {
+    if (this.hintIsShown) {
+      const cm = this.codeMirror;
+      const cursor = cm.getCursor();
+      const {line} = cursor;
+      const token = cm.getTokenAt(cursor);
+      const tokenLength = token.end - token.start;
+      const rows = this.editorContent.split('\n');
+      const curRowChars = rows[line].split('');
+      curRowChars.splice(token.start, tokenLength, optionSelected);
+      rows[line] = curRowChars.join('');
+      this.codeMirror.setValue(rows.join('\n'));
+      this.codeMirror.setCursor({line, ch: tokenLength + optionSelected.length});
+    }
+    this.hintIsShown = false;
   }
 }
