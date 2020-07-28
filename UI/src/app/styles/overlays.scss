@@ -14,6 +14,17 @@
     justify-content: space-between;
   }
 }
+
+.warning-dialog {
+   border-radius: 2px;
+   width: 245px;
+   height: 247px;
+  .mat-dialog-container {
+    position: relative;
+    padding: 40px;
+  }
+}
+
 .filter-popup {
   @include mat-elevation-transition;
   @include mat-elevation(4);

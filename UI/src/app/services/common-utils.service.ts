@@ -52,8 +52,9 @@ export class CommonUtilsService {
 
   openResetWarningDialog() {
     const matDialog = this.matDialog.open(ResetWarningComponent, {
-      closeOnNavigation: true,
-      disableClose: true,
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog',
     });
 
     matDialog.afterClosed().pipe(
@@ -61,6 +62,9 @@ export class CommonUtilsService {
         if (res) {
           this.openSaveMappingDialog('save');
         } else {
+          if (res === '') {
+            return;
+          }
           this.bridgeService.resetAllMappings();
           this.storeService.resetAllData();
 
