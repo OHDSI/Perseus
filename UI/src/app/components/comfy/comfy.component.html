@@ -145,8 +145,10 @@
   </div>
   <button 
   mat-flat-button color='accent' 
-  class="right-bottom-button">Go To Link Fields</button>
+  class="right-bottom-button"
+  [disabled]="!checkExistingMappings()">Go To Link Fields</button>
   <button mat-flat-button 
-  class="right-bottom-button-reset" 
+  class="right-bottom-button-reset"
+  [disabled]="!checkExistingMappings()" 
   (click)="resetMapping()">Delete Mapping</button>
 </main>
