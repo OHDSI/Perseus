@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -8,7 +7,6 @@ import { ITableOptions, Table } from 'src/app/models/table';
 import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
-import { StateService } from './state.service';
 import { StoreService } from './store.service';
 
 const URL = environment.url;
@@ -18,9 +16,7 @@ export class DataService {
   batch = [];
 
   constructor(
-    private httpClient: HttpClient,
     private httpService: HttpService,
-    private stateService: StateService,
     private storeService: StoreService,
   ) {
   }
@@ -104,8 +100,10 @@ export class DataService {
   getTargetData(version) {
     return this.httpService.getTargetData(version).pipe(
       map(data => {
+        const tables = this.prepareTables(data, 'target');
         this.storeService.add('version', version);
-        return this.prepareTables(data, 'target');
+        this.prepareTargetConfig(data);
+        return tables;
       })
     );
   }
@@ -126,7 +124,25 @@ export class DataService {
     return this.httpService.getTopValues(tableName, columnName);
   }
 
-  prepareTables(data, key) {
+  prepareTargetConfig(data) {
+    const COLUMNS_TO_EXCLUDE_FROM_TARGET = ['CONCEPT', 'COMMON'];
+    const targetConfig = {};
+
+    data.map(table => {
+      const tableName = table.table_name;
+      if (COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === tableName) < 0) {
+        targetConfig[tableName] = {
+          name: `target-${tableName}`,
+          first: tableName,
+          data: [tableName]
+        };
+      }
+    });
+
+    this.storeService.add('targetConfig', targetConfig);
+  }
+
+  prepareTables(data, key: string) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

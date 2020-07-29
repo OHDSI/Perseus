@@ -30,6 +30,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   sourceTabIndex = 0;
   targetTabIndex = 0;
+  mappedTables = [];
 
   get hint(): string {
     return 'no hint';
@@ -150,10 +151,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         return new Table(table);
       });
 
+      this.mappedTables = data.mappedTables;
+
       setTimeout(() => {
         this.bridgeService.refresh(this.target[this.targetTabIndex]);
         this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
         this.targetPanel.panels.forEach(panel => panel.reflectConnectorsPin(this.source[this.sourceTabIndex]));
+        this.bridgeService.adjustArrowsPositions();
       }, 200);
     });
 
@@ -257,6 +261,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (area === 'source') {
       this.sourceTabIndex = index;
+      this.changeTargetTabIndex();
     } else {
       this.targetTabIndex = index;
     }
@@ -269,5 +274,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         resolve();
       }, 500);
     });
+  }
+
+  changeTargetTabIndex() {
+    const tableName = this.source[this.sourceTabIndex].name;
+    const tagretTableNameIndex = 0;
+    const targetTableName = this.mappedTables.find(item => item.includes(tableName))[tagretTableNameIndex];
+    this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
+  }
+
+  isDisabled(tableName: string): boolean {
+    const activeTableName = this.source[this.sourceTabIndex].name;
+    return !this.mappedTables.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 }
