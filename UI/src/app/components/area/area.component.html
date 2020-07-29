@@ -1,27 +1,4 @@
 <div
-  class="caption"
-  [ngStyle]="{ 'margin-left': areaIsSource ? '28px' : '17px' }"
->
-  <div #anchor>
-    <button
-      mat-icon-button
-      disableRipple="true"
-      #menuTrigger="matMenuTrigger"
-      [matMenuTriggerFor]="filter"
-    >
-      <mat-icon svgIcon="filter"></mat-icon>
-
-      <mat-menu #filter="matMenu">
-        <ng-template matMenuContent>
-          <app-filter [menuTrigger]="menuTrigger" [data]="tables"></app-filter>
-        </ng-template>
-      </mat-menu>
-    </button>
-  </div>
-  <p>{{ area }} : {{ visibleColumnsNumber }}/{{ totalColumnsNumber }}</p>
-</div>
-
-<div
   class="scrollable"
   #scrollabale
   [ngClass]="{

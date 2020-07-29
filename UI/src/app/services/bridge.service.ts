@@ -176,10 +176,10 @@ export class BridgeService {
     this.connection.next(this.arrowsCache[connector.id]);
   }
 
-  deleteArrow(key: string) {
+  deleteArrow(key: string, force = false) {
     const savedConnection = cloneDeep(this.arrowsCache[key]);
 
-    if (!savedConnection.connector.selected) {
+    if (!savedConnection.connector.selected && !force) {
       return;
     }
 
@@ -243,7 +243,7 @@ export class BridgeService {
 
   deleteAllArrows() {
     Object.values(this.arrowsCache).forEach(arrow => {
-      this.deleteArrow(arrow.connector.id);
+      this.deleteArrow(arrow.connector.id, true);
     });
 
     this.deleteAll.next();
