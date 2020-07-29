@@ -119,8 +119,7 @@
             <div
               class="table-description target caption"
               [matTooltip]="tableName"
-              matTooltipPosition="right"
-              (click)="openMapping(tableName)">
+              matTooltipPosition="right">
               <span class="target-label">{{ tableName }}</span>
               <span class="divider"></span>
               <mat-icon
@@ -146,7 +145,8 @@
   <button 
   mat-flat-button color="accent" 
   class="right-bottom-button"
-  [disabled]="!checkExistingMappings()">Go To Link Fields</button>
+  [disabled]="!checkExistingMappings()"
+  (click)="openMapping()">Go To Link Fields</button>
   <button mat-flat-button 
   class="right-bottom-button-reset"
   [disabled]="!checkExistingMappings()" 
