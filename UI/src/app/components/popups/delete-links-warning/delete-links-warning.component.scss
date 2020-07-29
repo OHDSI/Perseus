@@ -1,0 +1,34 @@
+:host {
+  display: block;
+}
+
+.label {
+  display: inline-block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 14px;
+}
+
+.mat-dialog-container {
+  background: #F9F9F9;
+}
+
+.button {
+  font-weight: bold;
+}
+
+.delete-button {
+  color: red;
+  background: #FFFFFF;
+}
+
+.cancel-button {
+  color: #000000;
+  background: #E5E5E5;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}

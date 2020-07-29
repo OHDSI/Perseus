@@ -16,16 +16,15 @@
     >
       <mat-icon>play_circle_filled_white</mat-icon>
     </button>
-    <button
-      mat-icon-button
-      matTooltip="Delete all mappings"
-      aria-label="delete all mappings"
-      (click)="wipeAllMappings()"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
   </div>
   <section>
+    <!-- Temporary. TODO implement bredcrumbs -->
+    <div class="breadcrumbs">
+      <div class="title link-tables">Link Tables</div>
+      <div class="title sep">></div>
+      <div class="title link-fields">Link Fields</div>
+    </div>
+    <!-- Temporary. TODO implement bredcrumbs -->
     <main #maincanvas class="main">
       <app-area area="source" class="area-source">
         <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')">
@@ -174,6 +173,14 @@
         </mat-tab-group>
       </app-area>
     </main>
-    <footer></footer>
+    <footer>
+      <button
+        mat-flat-button
+        class="delete-links"
+        [disabled]="isDeleteLinksDisabled()"
+        (click)="deleteLinks()"
+      >Delete Links
+      </button>
+    </footer>
   </section>
 </div>

@@ -59,6 +59,7 @@ import { VocabulariesService } from './services/vocabularies.service';
 import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filter.component';
 import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
 import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
+import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-links-warning/delete-links-warning.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-c
     CommentPopupComponent,
     ValuesPopupComponent,
     SetConnectionTypePopupComponent,
+    DeleteLinksWarningComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,

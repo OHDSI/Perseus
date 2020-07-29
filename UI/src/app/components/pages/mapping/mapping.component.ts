@@ -18,6 +18,7 @@ import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
+import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
 
 @Component({
   selector: 'app-mapping',
@@ -286,5 +287,28 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   isDisabled(tableName: string): boolean {
     const activeTableName = this.source[this.sourceTabIndex].name;
     return !this.mappedTables.find(item => item.includes(tableName) && item.includes(activeTableName));
+  }
+
+  isDeleteLinksDisabled() {
+    for (const key of Object.keys(this.bridgeService.arrowsCache)) {
+      if (this.bridgeService.arrowsCache[key].connector.selected) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  deleteLinks() {
+    const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog'
+    });
+
+    dialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.bridgeService.deleteSelectedArrows();
+      }
+    });
   }
 }
