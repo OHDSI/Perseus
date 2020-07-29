@@ -107,15 +107,15 @@
            cdk-scrollable
            *ngIf="data.target?.length">
         <div
-          [id]="target[targetName].name"
+          [id]="targetConfig[targetName].name"
           class="vertical-list"
           *ngFor="let targetName of targetTableNames"
           cdkDropList
-          [cdkDropListData]="target[targetName].data"
+          [cdkDropListData]="targetConfig[targetName].data"
           (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
           <div
             class="vertical-box"
-            *ngFor="let tableName of target[targetName].data; let i = index">
+            *ngFor="let tableName of targetConfig[targetName].data; let i = index">
             <div
               class="table-description target caption"
               [matTooltip]="tableName"
@@ -143,4 +143,12 @@
       </div>
     </article>
   </div>
+  <button 
+  mat-flat-button color="accent" 
+  class="right-bottom-button"
+  [disabled]="!checkExistingMappings()">Go To Link Fields</button>
+  <button mat-flat-button 
+  class="right-bottom-button-reset"
+  [disabled]="!checkExistingMappings()" 
+  (click)="resetMapping()">Delete Mapping</button>
 </main>

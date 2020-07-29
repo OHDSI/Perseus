@@ -138,16 +138,16 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
         }
 
         if (this.area === 'source') {
-          action(field, connection.target);
+          action(field, connection.target, connection.type);
         } else {
-          action(connection.source, field);
+          action(connection.source, field, connection.type);
         }
       });
     });
   }
 
-  linkFields(sourceField, targetField) {
-    this.bridgeService.drawArrow(sourceField, targetField);
+  linkFields(sourceField, targetField, type) {
+    this.bridgeService.drawArrow(sourceField, targetField, type);
   }
 
   unLinkFields(sourceField, targetField) {

@@ -20,6 +20,7 @@ export interface IConnection {
   connector: IConnector;
   transforms?: SqlFunction[];
   transformationConfigs?: TransformationConfig[];
+  type?: string;
 }
 
 @Injectable()
@@ -166,7 +167,8 @@ export class BridgeService {
     const connector = this.drawService.drawLine(
       this.getConnectorId(arrow.source, arrow.target),
       arrow.source,
-      arrow.target
+      arrow.target,
+      arrow.type
     );
 
     this.arrowsCache[connector.id].connector = connector;
@@ -208,22 +210,22 @@ export class BridgeService {
     });
   }
 
-  drawArrow(sourceRow, targetRow) {
+  drawArrow(sourceRow, targetRow, type = '') {
     const entityId = this.getConnectorId(sourceRow, targetRow);
 
     const connector = this.drawService.drawLine(
       entityId,
       sourceRow,
-      targetRow
+      targetRow,
+      type
     );
-
-    this.targetRow.setType(connector.type);
 
     const connection: IConnection = {
       source: sourceRow,
       target: targetRow,
       transforms: [],
-      connector
+      connector,
+      type
     };
 
     this.arrowsCache[connector.id] = connection;
@@ -250,6 +252,7 @@ export class BridgeService {
   setArrowType(id: string, type: string) {
     const arrow = this.arrowsCache[id];
     arrow.connector.setEndMarkerType(type);
+    arrow.type = type === 'None' ? '' : type;
   }
 
   deleteSelectedArrows() {

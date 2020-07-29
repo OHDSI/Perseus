@@ -50,7 +50,7 @@ export class CommonUtilsService {
     });
   }
 
-  openResetWarningDialog() {
+  openResetWarningDialog(resetAllData: boolean) {
     const matDialog = this.matDialog.open(ResetWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -65,7 +65,9 @@ export class CommonUtilsService {
           return;
         }
         this.bridgeService.resetAllMappings();
-        this.storeService.resetAllData();
+        if (resetAllData) {
+          this.storeService.resetAllData();
+        }
       }
     });
   }
