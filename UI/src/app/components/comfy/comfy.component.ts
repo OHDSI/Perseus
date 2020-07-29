@@ -337,6 +337,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         mappedTables.push(item);
       }
     });
+
+    return mappedTables;
   }
 
   findTables(selectedSourceColumns: string[]): void {

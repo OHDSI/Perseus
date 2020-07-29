@@ -210,23 +210,22 @@ export class BridgeService {
     });
   }
 
-  drawArrow(sourceRow, targetRow) {
+  drawArrow(sourceRow, targetRow, type = '') {
     const entityId = this.getConnectorId(sourceRow, targetRow);
 
     const connector = this.drawService.drawLine(
       entityId,
       sourceRow,
       targetRow,
-      ''
+      type
     );
-
-    this.targetRow.setType(connector.type);
 
     const connection: IConnection = {
       source: sourceRow,
       target: targetRow,
       transforms: [],
-      connector
+      connector,
+      type
     };
 
     this.arrowsCache[connector.id] = connection;
