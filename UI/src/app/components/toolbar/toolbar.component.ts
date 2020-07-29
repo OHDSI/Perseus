@@ -53,6 +53,6 @@ export class ToolbarComponent implements OnInit{
   }
 
   resetSourceAndTarget() {
-    this.commonUtilsService.openResetWarningDialog();
+    this.commonUtilsService.openResetWarningDialog(true);
   }
 }
