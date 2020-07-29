@@ -1,5 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDragMove, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { merge, Subscription } from 'rxjs';
@@ -9,8 +10,6 @@ import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
-import { DataService } from 'src/app/services/data.service';
-import { StateService } from 'src/app/services/state.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
 import { CommonUtilsService } from '../../services/common-utils.service';
@@ -20,8 +19,9 @@ import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
-import { isConceptTable } from './services/concept.service';
+import { CreateViewComponent } from '../create-view/create-view.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
+import { isConceptTable } from './services/concept.service';
 
 @Component({
   selector: 'app-comfy',
@@ -76,6 +76,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
+    private matDialog: MatDialog
   ) {
     super();
   }
@@ -84,7 +85,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false })
   fileInput: ElementRef<HTMLElement>;
-  @ViewChild(CdmFilterComponent, {static: false})
+  @ViewChild(CdmFilterComponent, { static: false })
   cdmFilter: CdmFilterComponent;
 
   @ViewChildren(CdkDrag)
@@ -264,7 +265,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      const {container , previousContainer, previousIndex} = event;
+      const { container, previousContainer, previousIndex } = event;
       const data = container.data;
 
       if (previousContainer === container) {
@@ -419,7 +420,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   filterByType(): void {
     const uniqueTargetNames = uniq(Object.keys(this.targetConfig));
-    const {tables: selectedTables} = this.data.filtered;
+    const { tables: selectedTables } = this.data.filtered;
     if (selectedTables.length === 0) {
       this.targetTableNames = uniqueTargetNames;
       return;
@@ -479,9 +480,25 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.target[it].data.length > 1)
+    return !!this.targetTableNames.find(it => this.target[it].data.length > 1);
   }
 
+
+  openCreateViewEditor() {
+    const matDialog = this.matDialog.open(CreateViewComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'create-view-dialog',
+      data: { tables: this.data.source }
+    });
+
+    matDialog.afterClosed().subscribe(res => {
+        if (res) {
+          this.storeService.add('source', [res, ...this.data.source]);
+        }
+      }
+    );
+  }
 }
 
 export function bound(target: object, propKey: string | symbol) {

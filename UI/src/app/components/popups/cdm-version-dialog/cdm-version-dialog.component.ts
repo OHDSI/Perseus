@@ -10,8 +10,8 @@ import { SavedMappingsComponent } from '../../comfy/saved-mappings/saved-mapping
   styleUrls: ['./cdm-version-dialog.component.scss']
 })
 export class CdmVersionDialogComponent implements OnInit {
-  @ViewChild(SavedMappingsComponent, {static: true}) controller: SavedMappingsComponent;
-  @ViewChild('version', {static: true}) versionElement: MatSelect;
+  @ViewChild(SavedMappingsComponent, { static: true }) controller: SavedMappingsComponent;
+  @ViewChild('version', { static: true }) versionElement: MatSelect;
   versions = [];
   selectedVersion;
 

@@ -11,8 +11,8 @@ import { StoreService } from '../../services/store.service';
   styleUrls: ['./toolbar.component.scss'],
   templateUrl: './toolbar.component.html'
 })
-export class ToolbarComponent implements OnInit{
-  @ViewChild('sourceUpload', {static: true}) fileInput: ElementRef;
+export class ToolbarComponent implements OnInit {
+  @ViewChild('sourceUpload', { static: true }) fileInput: ElementRef;
 
   cdmVersion: string;
   reportName: string;

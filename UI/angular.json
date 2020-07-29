@@ -28,6 +28,8 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/codemirror/lib/codemirror.css",
+              "node_modules/codemirror/addon/hint/show-hint.css",
               "src/styles.scss"
             ],
             "scripts": [
