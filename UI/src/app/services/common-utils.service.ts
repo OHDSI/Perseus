@@ -50,24 +50,37 @@ export class CommonUtilsService {
     });
   }
 
-  openResetWarningDialog(resetAllData: boolean) {
+  openResetWarningDialog(
+    warning: string,
+    header: string,
+    okButton: string,
+    deleteButton: string,
+    deleteAll: boolean) {
     const matDialog = this.matDialog.open(ResetWarningComponent, {
+      data: {
+        warningText: warning,
+        headerText: header,
+        okButtonText: okButton,
+        deleteButtonText: deleteButton,
+      },
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog',
     });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.openSaveMappingDialog('save');
-      } else {
-        if (res === '') {
+      switch (res) {
+        case '':
           return;
-        }
-        this.bridgeService.resetAllMappings();
-        if (resetAllData) {
-          this.storeService.resetAllData();
-        }
+        case 'Cancel':
+          return;
+        case 'Save':
+          this.openSaveMappingDialog('save');
+          break;
+      }
+      this.bridgeService.resetAllMappings();
+      if (deleteAll) {
+        this.storeService.resetAllData();
       }
     });
   }

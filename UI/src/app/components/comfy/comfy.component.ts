@@ -478,7 +478,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   resetMapping() {
-    this.commonUtilsService.openResetWarningDialog(false);
+    this.commonUtilsService.openResetWarningDialog(
+      'You want to reset all mappings. This action cannot be undone',
+      'Delete mappings',
+      'Cancel',
+      'Delete',
+      false
+      );
   }
 
   checkExistingMappings(): boolean {

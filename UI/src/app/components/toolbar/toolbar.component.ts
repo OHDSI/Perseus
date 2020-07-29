@@ -53,6 +53,10 @@ export class ToolbarComponent implements OnInit{
   }
 
   resetSourceAndTarget() {
-    this.commonUtilsService.openResetWarningDialog(true);
+    this.commonUtilsService.openResetWarningDialog('All mappings will be lost. Do you want to save created mappings?',
+    'Save mappings',
+    'Save',
+    'Delete',
+    true);
   }
 }
