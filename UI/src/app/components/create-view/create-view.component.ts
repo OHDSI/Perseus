@@ -107,13 +107,16 @@ export class CreateViewComponent implements AfterViewInit {
       this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
         const isFrom = cur[1] && cur[1] === 'from';
         const isJoin = cur[5] && cur[5] === 'join';
+        let aliasName;
+        let tableName;
         if (isFrom) {
-          const tableName = cur[2];
-          const aliasName = cur[4];
-          prev[aliasName] = tableName;
+          tableName = cur[2];
+          aliasName = cur[4];
         } else if (isJoin) {
-          const tableName = cur[6];
-          const aliasName = cur[8];
+          tableName = cur[6];
+          aliasName = cur[8];
+        }
+        if (aliasName && tableName) {
           prev[aliasName] = tableName;
         }
         return prev;
@@ -128,11 +131,10 @@ export class CreateViewComponent implements AfterViewInit {
     const token = cm.getTokenAt(cursor);
     const hasReplaceHints = !!this.tokenReplaceMapping[token.string];
     if (hasReplaceHints) {
+      cm.showHint(this.hintOptions(token) as any);
       if (cm.state.completionActive) {
         const { data: hintMenu } = cm.state.completionActive;
         CodeMirror.on(hintMenu, 'select', this.onHintSelect.bind(this));
-      } else {
-        cm.showHint(this.hintOptions(token) as any);
       }
     }
   }
