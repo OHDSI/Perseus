@@ -34,14 +34,30 @@ export class CreateViewComponent implements AfterViewInit {
   @ViewChild('name', { static: true }) name: ElementRef;
   @ViewChild('editor', { static: true }) editor;
   codeMirror;
-  hintIsShown = false;
+  tableColumnsMapping;
+  aliasTableMapping;
+  tokenReplaceMapping = {
+    join: (context) => ['left join', 'right join', 'inner join', 'outer join'],
+    '*': (context) => Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
+      const tableName = this.aliasTableMapping[cur];
+      const tableColumns = this.tableColumnsMapping[tableName].map(it => `${cur}.${it}`);
+      return [...prev, ...tableColumns];
+    }, [])
+  };
 
   ngAfterViewInit() {
+    this.tableColumnsMapping = this.data.tables.reduce((prev, cur) => {
+      prev[cur.name] = cur.rows.map(it => it.name);
+      return prev;
+    }, {});
+    editorSettings.hintOptions = { tables: this.tableColumnsMapping };
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
     this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
+    this.codeMirror.on('keyup', this.onKeyUp.bind(this));
+    this.codeMirror.on('change', this.onChange.bind(this));
   }
 
-  get editorContent(): string {
+  get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
@@ -58,46 +74,80 @@ export class CreateViewComponent implements AfterViewInit {
     };
   }
 
+  hintOptions(token) {
+    const getList = this.tokenReplaceMapping[token.string];
+    return {
+      completeSingle: false,
+      hint: () => ({
+        from: token.start,
+        to: token.end,
+        list: getList(token)
+      })
+    };
+  }
+
+  joinTemplate(text) {
+    const joinCount = (this.editorContent.match(/join/gi) || []).length;
+    return `${this.editorContent}
+      join ${text} as t${joinCount + 2} on`;
+  }
+
+  selectTemplate(text) {
+    return `select * from ${text} as t1`;
+  }
+
   drop(event: CdkDragDrop<any>) {
     const text = event.item.element.nativeElement.textContent.trim();
-    const doc = this.codeMirror.getDoc();
-    if (this.editorContent) {
-      const joinCount = (this.editorContent.match(/join/gi) || []).length;
-      doc.setValue(`${this.editorContent}
-      join ${text} as t${joinCount + 2} on`);
+    this.codeMirror.setValue(this.editorContent ? this.joinTemplate(text) : this.selectTemplate(text));
+  }
+
+  onChange(cm, event) {
+    const matches = this.editorContent.matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
+    if (matches) {
+      this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
+        const isFrom = cur[1] && cur[1] === 'from';
+        const isJoin = cur[5] && cur[5] === 'join';
+        if (isFrom) {
+          const tableName = cur[2];
+          const aliasName = cur[4];
+          prev[aliasName] = tableName;
+        } else if (isJoin) {
+          const tableName = cur[6];
+          const aliasName = cur[8];
+          prev[aliasName] = tableName;
+        }
+        return prev;
+      }, {});
     } else {
-      doc.setValue(`select * from ${text} as t1`);
+      this.aliasTableMapping = {};
     }
   }
 
   onCursorActivity(cm, event) {
     const cursor = cm.getCursor();
     const token = cm.getTokenAt(cursor);
-    if (token.type === 'keyword' && token.string === 'join' && !this.hintIsShown) {
-      const options = {
-        hint: () => ({
-          from: token.start,
-          to: token.end,
-          list: ['left join', 'right join', 'inner join', 'outer join']
-        })
-      };
-      cm.showHint(options);
-      this.hintIsShown = true;
+    const hasReplaceHints = !!this.tokenReplaceMapping[token.string];
+    if (hasReplaceHints) {
       if (cm.state.completionActive) {
         const { data: hintMenu } = cm.state.completionActive;
         CodeMirror.on(hintMenu, 'select', this.onHintSelect.bind(this));
+      } else {
+        cm.showHint(this.hintOptions(token) as any);
       }
     }
   }
 
-  onHintSelect(optionSelected, element) {
-    if (this.hintIsShown) {
-      const cm = this.codeMirror;
-      const cursor = cm.getCursor();
-      const { line } = cursor;
-      const token = cm.getTokenAt(cursor);
-      this.codeMirror.replaceRange(optionSelected, { line, ch: token.start }, { line, ch: token.end });
+  onKeyUp(cm, event) {
+    if (!cm.state.completionActive && event.code === 'Period') {
+      cm.showHint({ completeSingle: false } as any);
     }
-    this.hintIsShown = false;
+  }
+
+  onHintSelect(optionSelected, element) {
+    const cm = this.codeMirror;
+    const cursor = cm.getCursor();
+    const { line } = cursor;
+    const token = cm.getTokenAt(cursor);
+    cm.replaceRange(optionSelected, { line, ch: token.start }, { line, ch: token.end });
   }
 }
