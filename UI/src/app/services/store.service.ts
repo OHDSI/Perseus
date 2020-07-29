@@ -47,7 +47,8 @@ export class StoreService {
       filtered: undefined,
       target: [],
       source: [],
-      report: undefined
+      report: undefined,
+      targetConfig: {},
     };
     this.storeState.next(this.initialState);
   }

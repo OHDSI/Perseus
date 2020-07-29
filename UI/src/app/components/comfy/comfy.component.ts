@@ -203,6 +203,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.resetAllMappings$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
+        Object.values(this.targetConfig).forEach(item => {
+          item['data'] = [item['first']];
+        } );
         this.initializeData();
 
         this.snakbar.open(
@@ -486,7 +489,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.target[it] && this.target[it].data && this.target[it].data.length > 1);
+    return !!this.targetTableNames.find(it => this.targetConfig[it] && this.targetConfig[it].data && this.targetConfig[it].data.length > 1);
   }
 
 

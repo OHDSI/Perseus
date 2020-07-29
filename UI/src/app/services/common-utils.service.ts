@@ -10,6 +10,7 @@ import { StateService } from './state.service';
 import { ResetWarningComponent } from '../components/popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class CommonUtilsService {
     private stateService: StateService,
     private dataService: DataService,
     private bridgeService: BridgeService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router,
   ) {
 
   }
@@ -42,11 +44,18 @@ export class CommonUtilsService {
     ).subscribe();
   }
 
-  openSaveMappingDialog(action: OpenMappingDialog) {
+  openSaveMappingDialog(action: OpenMappingDialog, deleteAfterSave: boolean) {
     const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
       closeOnNavigation: true,
       disableClose: true,
-      data: {action, target: this.stateService.Target}
+      data: {action, target: this.storeService.state['targetConfig']}
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (deleteAfterSave) {
+        this.bridgeService.resetAllMappings();
+        this.storeService.resetAllData();
+      }
+      this.router.navigateByUrl('/comfy');
     });
   }
 
@@ -75,13 +84,15 @@ export class CommonUtilsService {
         case 'Cancel':
           return;
         case 'Save':
-          this.openSaveMappingDialog('save');
+          this.openSaveMappingDialog('save', true);
           break;
+        default: {
+          this.bridgeService.resetAllMappings();
+          if (deleteAll) {
+            this.storeService.resetAllData(); }
+        }
       }
-      this.bridgeService.resetAllMappings();
-      if (deleteAll) {
-        this.storeService.resetAllData();
-      }
+      this.router.navigateByUrl('/comfy');
     });
   }
 }

@@ -37,7 +37,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   openSaveMappingDialog(action: OpenMappingDialog) {
-    this.commonUtilsService.openSaveMappingDialog(action);
+    this.commonUtilsService.openSaveMappingDialog(action, false);
   }
 
   onOpenSourceClick() {
