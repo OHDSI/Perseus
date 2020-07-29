@@ -13,10 +13,11 @@
 }
 
 section {
+  height: calc(100% - 40px);
 
   main {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 161px);
     position: relative;
     float: left;
   }
@@ -56,10 +57,21 @@ section {
 }
 
 footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 60px;
+    width: 100%;
+    float: left;
+
+    button {
+      float: right;
+      margin-top: 15px;
+      margin-bottom: 30px;
+    }
+
+    .delete-links {
+      color: red;
+      cursor: pointer;
+      background: #E8E8E8;
+      font-weight: bold;
+    }
 }
 
 .patch {
@@ -88,4 +100,34 @@ footer {
   padding: 0 50px 0 50px;
   display: flex;
   flex-direction: column;
+  height: calc(100% - 64px);
+}
+
+
+// Temporary
+.breadcrumbs {
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  float: left;
+
+  .title {
+    font-size: 14px;
+    font-weight: bold;
+    float: left;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .link-tables {
+    color: $black;
+  }
+
+  .link-fields {
+    color: $blue;
+  }
+
+  .sep {
+    color:$cdm-grey-dark;
+  }
 }
