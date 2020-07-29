@@ -51,7 +51,7 @@ def find_domain(column_name, table_name):
 
 
 if __name__ == '__main__':
-    engine = create_engine('sqlite:///my.db', echo=True)
+    engine = create_engine('sqlite:///my.db', echo=False)
     connection = engine.connect()
     load_report()
     load_vocabulary()
