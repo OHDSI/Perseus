@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ITable} from '../models/table';
+import { ITable } from '../models/table';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class StoreService {
   }
 
   add(key, value) {
-    this.state = {...this.state, [key]: value};
+    this.state = { ...this.state, [key]: value };
   }
 
   findTable(name: string): ITable {

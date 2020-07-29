@@ -480,7 +480,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.target[it].data.length > 1);
+    return !!this.targetTableNames.find(it => this.target[it] && this.target[it].data && this.target[it].data.length > 1);
   }
 
 

@@ -1,12 +1,15 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
+import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
+import { uniq } from '../../infrastructure/utility';
+import { Area } from '../../models/area';
+import { Row } from '../../models/row';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -34,15 +37,12 @@ export class CreateViewComponent implements AfterViewInit {
   @ViewChild('name', { static: true }) name: ElementRef;
   @ViewChild('editor', { static: true }) editor;
   codeMirror;
-  tableColumnsMapping;
-  aliasTableMapping;
+  tablesWithoutAlias = [];
+  tableColumnsMapping = {};
+  aliasTableMapping = {};
   tokenReplaceMapping = {
     join: (context) => ['left join', 'right join', 'inner join', 'outer join'],
-    '*': (context) => Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
-      const tableName = this.aliasTableMapping[cur];
-      const tableColumns = this.tableColumnsMapping[tableName].map(it => `${cur}.${it}`);
-      return [...prev, ...tableColumns];
-    }, [])
+    '*': (context) => [...this.aliasedTablesColumns(true), ...this.tablesWithoutAliasColumns]
   };
 
   ngAfterViewInit() {
@@ -57,21 +57,64 @@ export class CreateViewComponent implements AfterViewInit {
     this.codeMirror.on('change', this.onChange.bind(this));
   }
 
+
   get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
-  get sourceTable() {
+  get tablesWithoutAliasColumns() {
+    return this.tablesWithoutAlias.reduce((prev, cur) => [...prev, ...this.tableColumnsMapping[cur]], []);
+  }
+
+  get allColumns() {
+    return [...this.aliasedTablesColumns(), ...this.tablesWithoutAliasColumns];
+  }
+
+
+  sourceTable() {
+    const columnsMatch = this.editorContent.match(/select (.*\b)from\b/im);
+    let columns = [];
+    if (columnsMatch) {
+      const columnsRow = columnsMatch[1].trim();
+      if (columnsRow === '*') {
+        columns = uniq(this.allColumns);
+      } else {
+        columns = columnsRow.split(',').filter(it => !!it.trim());
+      }
+    }
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
+    const tableId = maxId + 1;
+    const tableName = this.name.nativeElement.value;
     return {
-      area: 'source',
+      area: Area.Source,
       expanded: false,
-      id: maxId + 1,
-      name: this.name.nativeElement.value,
-      rows: [],
+      id: tableId,
+      name: tableName,
+      rows: columns.map((name, index) => {
+        const options = {
+          name,
+          id: index,
+          tableId,
+          tableName,
+          type: 'any',
+          comments: [],
+          area: Area.Source
+        };
+        return new Row(options);
+      }),
       visible: true,
       sql: this.editorContent
     };
+  }
+
+
+  aliasedTablesColumns(prefix = false) {
+    return Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
+      const tableName = this.aliasTableMapping[cur];
+      const columns = this.tableColumnsMapping[tableName];
+      const tableColumns = prefix ? columns.map(it => `${cur}.${it}`) : columns;
+      return [...prev, ...tableColumns];
+    }, []);
   }
 
   hintOptions(token) {
@@ -102,6 +145,7 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   onChange(cm, event) {
+    this.tablesWithoutAlias = [];
     const matches = this.editorContent.matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
     if (matches) {
       this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
@@ -118,6 +162,9 @@ export class CreateViewComponent implements AfterViewInit {
         }
         if (aliasName && tableName) {
           prev[aliasName] = tableName;
+        }
+        if (!aliasName && tableName) {
+          this.tablesWithoutAlias = [...this.tablesWithoutAlias, tableName];
         }
         return prev;
       }, {});
