@@ -364,3 +364,16 @@ article {
   top: 75px;
   left: 10px;
 }
+
+.right-bottom-button {
+  text-align: center;
+  float: right;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.right-bottom-button-reset { 
+  @extend .right-bottom-button; 
+  color: red; 
+  margin-right: 15px
+}

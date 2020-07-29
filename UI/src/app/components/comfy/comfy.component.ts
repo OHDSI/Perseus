@@ -476,6 +476,15 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
+
+  resetMapping() {
+    this.commonUtilsService.openResetWarningDialog(false);
+  }
+
+  checkExistingMappings(): boolean {
+    return !!this.targetTableNames.find(it => this.target[it].data.length > 1)
+  }
+
 }
 
 export function bound(target: object, propKey: string | symbol) {
