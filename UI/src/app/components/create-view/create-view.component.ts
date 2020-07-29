@@ -15,7 +15,7 @@ const editorSettings = {
   smartIndent: true,
   matchBrackets: true,
   autofocus: true,
-  extraKeys: {'Ctrl-Space': 'autocomplete'},
+  extraKeys: { 'Ctrl-Space': 'autocomplete' },
   hint: CodeMirror.hint.sql,
   hintOptions: {}
 };
@@ -84,7 +84,7 @@ export class CreateViewComponent implements AfterViewInit {
       cm.showHint(options);
       this.hintIsShown = true;
       if (cm.state.completionActive) {
-        const {data: hintMenu} = cm.state.completionActive;
+        const { data: hintMenu } = cm.state.completionActive;
         CodeMirror.on(hintMenu, 'select', this.onHintSelect.bind(this));
       }
     }
@@ -94,15 +94,9 @@ export class CreateViewComponent implements AfterViewInit {
     if (this.hintIsShown) {
       const cm = this.codeMirror;
       const cursor = cm.getCursor();
-      const {line} = cursor;
+      const { line } = cursor;
       const token = cm.getTokenAt(cursor);
-      const tokenLength = token.end - token.start;
-      const rows = this.editorContent.split('\n');
-      const curRowChars = rows[line].split('');
-      curRowChars.splice(token.start, tokenLength, optionSelected);
-      rows[line] = curRowChars.join('');
-      this.codeMirror.setValue(rows.join('\n'));
-      this.codeMirror.setCursor({line, ch: tokenLength + optionSelected.length});
+      this.codeMirror.replaceRange(optionSelected, { line, ch: token.start }, { line, ch: token.end });
     }
     this.hintIsShown = false;
   }
