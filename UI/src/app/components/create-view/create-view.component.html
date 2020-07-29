@@ -1,0 +1,52 @@
+<h3>Create View
+  <mat-icon svgIcon="help"></mat-icon>
+</h3>
+<mat-icon class="close"
+          mat-dialog-close>close
+</mat-icon>
+<div mat-dialog-content>
+  <section>
+    <label>View Name*</label>
+    <mat-form-field appearance="outline"
+                    floatLabel="auto">
+      <input #name
+             matInput
+             placeholder="Set name for the view"/>
+    </mat-form-field>
+  </section>
+  <section cdkDropList
+           #editorArea="cdkDropList"
+           [cdkDropListConnectedTo]="[tables]"
+           (cdkDropListDropped)="drop($event)">
+    <label>SQL Function</label>
+    <textarea #editor></textarea>
+  </section>
+  <section>
+    <label>Available Tables</label>
+    <mat-chip-list
+      #tables="cdkDropList"
+      cdkDropList
+      cdkDropListSortingDisabled
+      [cdkDropListData]="data.tables"
+      [cdkDropListConnectedTo]="[editorArea]"
+      class="table-name">
+      <mat-chip
+        class="table-box"
+        cdkDrag
+        *ngFor="let table of data.tables">
+        {{table.name}}
+      </mat-chip>
+    </mat-chip-list>
+  </section>
+</div>
+<div mat-dialog-actions>
+  <button mat-dialog-close
+          mat-flat-button>
+    Cancel
+  </button>
+  <button [mat-dialog-close]="sourceTable()"
+          mat-flat-button
+          color="accent">
+    Apply
+  </button>
+</div>

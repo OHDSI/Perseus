@@ -154,10 +154,11 @@
       </div>
       <!--End-of-the-Bridge-->
       <app-area area="target" class="area-target">
-        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
+        <mat-tab-group [selectedIndex]="targetTabIndex" (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab
             [label]="table.name | prettyName"
             *ngFor="let table of target; trackBy: trackByFn"
+            [disabled]="isDisabled(table.name)"
           >
             <app-panel-target
               #targetPanel

@@ -31,7 +31,7 @@
         (complete)="filterByName('source', $event)"
         (reset)="filterByNameReset('source', $event)"
       ></app-comfy-search-by-name>
-      <a *ngIf="data.source?.length">Join tables</a>
+      <a *ngIf="data.source?.length" (click)="openCreateViewEditor()">Create View</a>
       <div class="scrolled-items-rtl"
            *ngIf="data.source?.length">
         <div
@@ -107,15 +107,15 @@
            cdk-scrollable
            *ngIf="data.target?.length">
         <div
-          [id]="target[targetName].name"
+          [id]="targetConfig[targetName].name"
           class="vertical-list"
           *ngFor="let targetName of targetTableNames"
           cdkDropList
-          [cdkDropListData]="target[targetName].data"
+          [cdkDropListData]="targetConfig[targetName].data"
           (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
           <div
             class="vertical-box"
-            *ngFor="let tableName of target[targetName].data; let i = index">
+            *ngFor="let tableName of targetConfig[targetName].data; let i = index">
             <div
               class="table-description target caption"
               [matTooltip]="tableName"

@@ -1,5 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDragMove, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { merge, Subscription } from 'rxjs';
@@ -9,8 +10,6 @@ import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
-import { DataService } from 'src/app/services/data.service';
-import { StateService } from 'src/app/services/state.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
 import { CommonUtilsService } from '../../services/common-utils.service';
@@ -20,8 +19,9 @@ import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
-import { isConceptTable } from './services/concept.service';
+import { CreateViewComponent } from '../create-view/create-view.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
+import { isConceptTable } from './services/concept.service';
 
 @Component({
   selector: 'app-comfy',
@@ -30,7 +30,7 @@ import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.compone
 })
 export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   get state() {
-    return this.stateService.state;
+    return this.storeService.state;
   }
 
   targetTableNames: string[] = [];
@@ -39,14 +39,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.highlitedtables;
   }
 
-  COLUMNS_TO_EXCLUDE_FROM_TARGET = ['CONCEPT', 'COMMON'];
-
   busy = true;
   private highlitedtables: string[] = [];
 
   source: string[] = [];
 
   target = {};
+  targetConfig = {};
   sourceConnectedTo = [];
   sourceRows: IRow[] = [];
 
@@ -62,14 +61,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   data = {
     source: [],
     target: [],
+    targetConfig: {},
     version: undefined,
     filtered: undefined,
   };
 
   constructor(
-    private dataService: DataService,
     private vocabulariesService: VocabulariesService,
-    private stateService: StateService,
     private storeService: StoreService,
     private commonUtilsService: CommonUtilsService,
     private bridgeService: BridgeService,
@@ -78,6 +76,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
+    private matDialog: MatDialog
   ) {
     super();
   }
@@ -86,7 +85,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false })
   fileInput: ElementRef<HTMLElement>;
-  @ViewChild(CdmFilterComponent, {static: false})
+  @ViewChild(CdmFilterComponent, { static: false })
   cdmFilter: CdmFilterComponent;
 
   @ViewChildren(CdkDrag)
@@ -198,7 +197,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(configuration => {
-        this.target = configuration.tables;
+        this.targetConfig = configuration.tables;
       });
 
     this.bridgeService.resetAllMappings$
@@ -236,28 +235,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   initializeTargetData() {
-    this.target = {};
-
-    const prefix = 'target';
-
-    this.data.target.map(table => {
-      if (this.COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === table.name) < 0) {
-        const tableName = table.name;
-        this.target[tableName] = {
-          name: `${prefix}-${tableName}`,
-          first: tableName,
-          data: [tableName]
-        };
-      }
-    });
-
-    this.targetTableNames = uniq(Object.keys(this.target));
+    this.target = this.data.target;
+    this.targetConfig = this.data.targetConfig;
+    this.targetTableNames = uniq(Object.keys(this.targetConfig));
 
     this.sourceConnectedTo = this.data.target.map(
-      table => `${prefix}-${table.name}`
+      table => `target-${table.name}`
     );
 
-    this.stateService.Target = this.target;
     if (this.data.filtered) {
       this.filterByType();
     }
@@ -280,7 +265,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   // tslint:disable-next-line:member-ordering
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
-      const {container , previousContainer, previousIndex} = event;
+      const { container, previousContainer, previousIndex } = event;
       const data = container.data;
 
       if (previousContainer === container) {
@@ -289,7 +274,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         const targetname = container.id.split('-')[1];
         this.setFirstElementAlwaysOnTop(targetname, event);
-        this.stateService.Target = this.target;
+        this.storeService.add('targetConfig', this.targetConfig);
       }
     },
     canExecute: (event: CdkDragDrop<string[]>) => {
@@ -305,7 +290,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       return;
     }
 
-    const { data, first } = this.target[targetname];
+    const { data, first } = this.targetConfig[targetname];
     const index = data.findIndex(value => value === first);
     if (index) {
       const temp = data[0];
@@ -316,8 +301,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   async openMapping() {
     let sourceTablesNames = [];
-    const targetTablesNames = Object.keys(this.target).filter(key => {
-      const data = this.target[key].data;
+    const targetTablesNames = Object.keys(this.targetConfig).filter(key => {
+      const data = this.targetConfig[key].data;
       if (data.length > 1) {
         sourceTablesNames.push(...data.slice(1, data.length));
         return true;
@@ -332,16 +317,29 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const payload = {
       source: sourceTables,
       target: targetTables,
-      allTarget: this.data.target
+      allTarget: this.data.target,
+      mappedTables: this.getMappedTables()
     };
 
     this.mappingStorage.remove('mappingtables');
-    await this.mappingStorage.add('mappingtables', this.target);
+    await this.mappingStorage.add('mappingtables', this.targetConfig);
 
     this.mappingStorage.remove('mappingpage');
     await this.mappingStorage.add('mappingpage', payload);
 
     this.router.navigateByUrl('/mapping');
+  }
+
+  getMappedTables() {
+    const mappedTables = [];
+    Object.keys(this.targetConfig).forEach(key => {
+      const item = this.targetConfig[key].data;
+      if (item.length > 1) {
+        mappedTables.push(item);
+      }
+    });
+
+    return mappedTables;
   }
 
   findTables(selectedSourceColumns: string[]): void {
@@ -370,7 +368,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   ) {
     event.stopPropagation();
 
-    const table = this.target[targetTableName];
+    const table = this.targetConfig[targetTableName];
     const { data } = table;
 
     const index = data.findIndex(tablename => tablename === sourceTableName);
@@ -409,7 +407,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           break;
         }
         case 'target': {
-          this.targetTableNames = uniq(Object.keys(this.target)).filter(filterByName);
+          this.targetTableNames = uniq(Object.keys(this.targetConfig)).filter(filterByName);
           break;
         }
         case 'source-column': {
@@ -421,8 +419,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByType(): void {
-    const uniqueTargetNames = uniq(Object.keys(this.target));
-    const {tables: selectedTables} = this.data.filtered;
+    const uniqueTargetNames = uniq(Object.keys(this.targetConfig));
+    const { tables: selectedTables } = this.data.filtered;
     if (selectedTables.length === 0) {
       this.targetTableNames = uniqueTargetNames;
       return;
@@ -488,9 +486,25 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.target[it].data.length > 1)
+    return !!this.targetTableNames.find(it => this.target[it] && this.target[it].data && this.target[it].data.length > 1);
   }
 
+
+  openCreateViewEditor() {
+    const matDialog = this.matDialog.open(CreateViewComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'create-view-dialog',
+      data: { tables: this.data.source }
+    });
+
+    matDialog.afterClosed().subscribe(res => {
+        if (res) {
+          this.storeService.add('source', [res, ...this.data.source]);
+        }
+      }
+    );
+  }
 }
 
 export function bound(target: object, propKey: string | symbol) {
