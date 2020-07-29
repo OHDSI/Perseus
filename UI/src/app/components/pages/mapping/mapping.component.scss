@@ -17,7 +17,7 @@ section {
 
   main {
     width: 100%;
-    height: calc(100% - 81px);
+    height: calc(100% - 161px);
     position: relative;
     float: left;
   }
@@ -58,6 +58,7 @@ section {
 
 footer {
     width: 100%;
+    float: left;
 
     button {
       float: right;
@@ -68,6 +69,8 @@ footer {
     .delete-links {
       color: red;
       cursor: pointer;
+      background: #E8E8E8;
+      font-weight: bold;
     }
 }
 

@@ -219,10 +219,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       });
   }
 
-  wipeAllMappings() {
-    this.bridgeService.deleteAllArrows();
-  }
-
   onPanelOpen(table) {
     if (
       this.panelsViewInitialized.size ===
@@ -290,12 +286,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isDeleteLinksDisabled() {
-    for (const key of Object.keys(this.bridgeService.arrowsCache)) {
-      if (this.bridgeService.arrowsCache[key].connector.selected) {
-        return false;
-      }
-    }
-    return true;
+    return Object.keys(this.bridgeService.arrowsCache).length === 0;
   }
 
   deleteLinks() {
@@ -307,7 +298,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     dialog.afterClosed().subscribe(res => {
       if (res) {
-        this.bridgeService.deleteSelectedArrows();
+        this.bridgeService.deleteAllArrows();
       }
     });
   }

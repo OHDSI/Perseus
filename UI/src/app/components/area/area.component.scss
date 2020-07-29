@@ -1,25 +1,8 @@
 @import 'src/app/styles/variables.scss';
 
 
-// :host {
-//     width: 100%;
-// }
-
-.caption {
-    display: flex;
-    align-items: center;
-
-    mat-icon {
-        font-size: 14px;
-        width: 10px;
-        color: $blue;
-    }
-
-    p {
-        text-transform: capitalize;
-        color: $blue;
-        font-size: 14px;
-    }
+:host {
+    width: 100%;
 }
 
 .scrollable {
