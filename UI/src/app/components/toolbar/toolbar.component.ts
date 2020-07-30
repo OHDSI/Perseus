@@ -5,6 +5,7 @@ import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { UploadService } from '../../services/upload.service';
 import { StoreService } from '../../services/store.service';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-toolbar',
@@ -53,10 +54,13 @@ export class ToolbarComponent implements OnInit {
   }
 
   resetSourceAndTarget() {
-    this.commonUtilsService.openResetWarningDialog('All mappings will be lost. Do you want to save created mappings?',
-    'Save mappings',
-    'Save',
-    'Delete',
-    true);
+    const settings = {
+      warning: 'All mappings will be lost. Do you want to save created mappings?',
+      header: 'Save mappings',
+      okButton: 'Save',
+      deleteButton: 'Delete',
+      deleteAll: true
+    };
+    this.commonUtilsService.openResetWarningDialog(settings);
   }
 }

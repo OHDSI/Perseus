@@ -1,12 +1,12 @@
-<h3>{{data.headerText}}</h3>
+<h3>{{data.header}}</h3>
 <mat-icon class="close"
           mat-dialog-close>close
 </mat-icon>
-<mat-label class="reset-label">{{data.warningText}}</mat-label>
+<mat-label class="reset-label">{{data.warning}}</mat-label>
 <mat-dialog-actions>
-    <button mat-flat-button color='accent'
-    [mat-dialog-close]="data.okButtonText">{{data.okButtonText}}</button>
+    <button mat-flat-button color="accent"
+    [mat-dialog-close]="data.okButton">{{data.okButton}}</button>
     <button mat-flat-button class="reset-button"
-    [mat-dialog-close]="data.deleteButtonText">{{data.deleteButtonText}}</button>
+    [mat-dialog-close]="data.deleteButton">{{data.deleteButton}}</button>
 </mat-dialog-actions>
 

@@ -48,7 +48,7 @@ export class CommonUtilsService {
     const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
       closeOnNavigation: true,
       disableClose: true,
-      data: {action, target: this.storeService.state['targetConfig']}
+      data: {action, target: this.storeService.state.targetConfig}
     });
     matDialog.afterClosed().subscribe(res => {
       if (deleteAfterSave) {
@@ -59,19 +59,10 @@ export class CommonUtilsService {
     });
   }
 
-  openResetWarningDialog(
-    warning: string,
-    header: string,
-    okButton: string,
-    deleteButton: string,
-    deleteAll: boolean) {
+  openResetWarningDialog(settings: any) {
+    const { warning, header, okButton, deleteButton } = settings;
     const matDialog = this.matDialog.open(ResetWarningComponent, {
-      data: {
-        warningText: warning,
-        headerText: header,
-        okButtonText: okButton,
-        deleteButtonText: deleteButton,
-      },
+      data: { warning, header, okButton, deleteButton },
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog',
@@ -80,7 +71,6 @@ export class CommonUtilsService {
     matDialog.afterClosed().subscribe(res => {
       switch (res) {
         case '':
-          return;
         case 'Cancel':
           return;
         case 'Save':
@@ -88,7 +78,7 @@ export class CommonUtilsService {
           break;
         default: {
           this.bridgeService.resetAllMappings();
-          if (deleteAll) {
+          if (settings.deleteAll) {
             this.storeService.resetAllData(); }
         }
       }

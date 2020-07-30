@@ -203,12 +203,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.resetAllMappings$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
-        Object.values(this.targetConfig).forEach(item => {
-          item['data'] = [item['first']];
+          Object.values(this.targetConfig).forEach((item: any) => {
+          item.data = [item.first];
         } );
-        this.initializeData();
+          this.initializeData();
 
-        this.snakbar.open(
+          this.snakbar.open(
           'Reset all mappings success',
           ' DISMISS ',
           this.snakbarOptions
@@ -479,13 +479,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   resetMapping() {
-    this.commonUtilsService.openResetWarningDialog(
-      'You want to reset all mappings. This action cannot be undone',
-      'Delete mappings',
-      'Cancel',
-      'Delete',
-      false
-      );
+    const settings = {
+      warning: 'You want to reset all mappings. This action cannot be undone',
+      header: 'Delete mappings',
+      okButton: 'Cancel',
+      deleteButton: 'Delete',
+      deleteAll: false,
+    };
+    this.commonUtilsService.openResetWarningDialog(settings);
   }
 
   checkExistingMappings(): boolean {
