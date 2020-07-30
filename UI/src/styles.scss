@@ -75,8 +75,8 @@ app-dialog {
 
 
 .drag-over {
-  background-color: #DCECF9;
-  outline: #066BBB auto;
+  background-color: $light-blue;
+  outline: $blue auto;
 }
 
 .mat-menu-panel {
@@ -147,7 +147,7 @@ path {
   }
 
   &.selected {
-    stroke: #066BBB;
+    stroke: $blue;
   }
 }
 
@@ -165,7 +165,7 @@ mat-list.mat-list.mat-list-base[dense] {
 }
 
 .mat-flat-button {
-  background-color: #e5e5e5;
+  background-color: $cdm-grey-light;
 }
 
 button.mat-flat-button.mat-button-base {

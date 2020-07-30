@@ -29,7 +29,7 @@
       <app-area area="source" class="area-source">
         <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')">
           <mat-tab
-            [label]="table.name | prettyName"
+            [label]="table.name"
             *ngFor="let table of source; trackBy: trackByFn"
           >
             <app-panel-source
@@ -80,7 +80,7 @@
             <marker
               id="marker-end"
               viewBox="0 0 20 20"
-              refX="10"
+              refX="8"
               refY="10"
               markerWidth="20"
               markerHeight="20"
@@ -91,7 +91,7 @@
             <marker
               id="marker-end-T"
               viewBox="0 0 20 20"
-              refX="10"
+              refX="8"
               refY="10"
               markerWidth="20"
               markerHeight="20"
@@ -103,7 +103,7 @@
             <marker
               id="marker-end-L"
               viewBox="0 0 20 20"
-              refX="10"
+              refX="8"
               refY="10"
               markerWidth="20"
               markerHeight="20"
@@ -115,7 +115,7 @@
             <marker
               id="marker-end-active"
               viewBox="0 0 20 20"
-              refX="10"
+              refX="8"
               refY="10"
               markerWidth="20"
               markerHeight="20"
@@ -126,7 +126,7 @@
             <marker
               id="marker-end-active-T"
               viewBox="0 0 20 20"
-              refX="10"
+              refX="8"
               refY="10"
               markerWidth="20"
               markerHeight="20"
@@ -138,7 +138,7 @@
             <marker
               id="marker-end-active-L"
               viewBox="0 0 20 20"
-              refX="10"
+              refX="8"
               refY="10"
               markerWidth="20"
               markerHeight="20"
@@ -155,7 +155,7 @@
       <app-area area="target" class="area-target">
         <mat-tab-group [selectedIndex]="targetTabIndex" (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab
-            [label]="table.name | prettyName"
+            [label]="table.name"
             *ngFor="let table of target; trackBy: trackByFn"
             [disabled]="isDisabled(table.name)"
           >
