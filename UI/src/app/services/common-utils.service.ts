@@ -85,4 +85,26 @@ export class CommonUtilsService {
       this.router.navigateByUrl('/comfy');
     });
   }
+
+  resetMappingsWithWarning() {
+    const settings = {
+      warning: 'You want to reset all mappings. This action cannot be undone',
+      header: 'Delete mappings',
+      okButton: 'Cancel',
+      deleteButton: 'Delete',
+      deleteAll: false,
+    };
+    this.openResetWarningDialog(settings);
+  }
+
+  resetSourceAndTargetWithWarning() {
+    const settings = {
+      warning: 'All mappings will be lost. Do you want to save created mappings?',
+      header: 'Save mappings',
+      okButton: 'Save',
+      deleteButton: 'Delete',
+      deleteAll: true
+    };
+    this.openResetWarningDialog(settings);
+  }
 }

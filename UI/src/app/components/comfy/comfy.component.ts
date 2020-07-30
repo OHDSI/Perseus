@@ -479,14 +479,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   resetMapping() {
-    const settings = {
-      warning: 'You want to reset all mappings. This action cannot be undone',
-      header: 'Delete mappings',
-      okButton: 'Cancel',
-      deleteButton: 'Delete',
-      deleteAll: false,
-    };
-    this.commonUtilsService.openResetWarningDialog(settings);
+    this.commonUtilsService.resetMappingsWithWarning();
   }
 
   checkExistingMappings(): boolean {

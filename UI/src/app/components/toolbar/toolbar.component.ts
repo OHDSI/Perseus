@@ -34,7 +34,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   resetAllMappings() {
-    this.bridgeService.resetAllMappings();
+    this.commonUtilsService.resetMappingsWithWarning();
   }
 
   openSaveMappingDialog(action: OpenMappingDialog) {
@@ -54,13 +54,6 @@ export class ToolbarComponent implements OnInit {
   }
 
   resetSourceAndTarget() {
-    const settings = {
-      warning: 'All mappings will be lost. Do you want to save created mappings?',
-      header: 'Save mappings',
-      okButton: 'Save',
-      deleteButton: 'Delete',
-      deleteAll: true
-    };
-    this.commonUtilsService.openResetWarningDialog(settings);
+    this.commonUtilsService.resetSourceAndTargetWithWarning();
   }
 }
