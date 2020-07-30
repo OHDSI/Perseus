@@ -31,8 +31,6 @@ export class PanelTargetComponent extends PanelBaseComponent implements OnInit {
   groups: object;
 
   ngOnInit() {
-    super.ngOnInit();
-
     const concept = [];
     const common = [];
     const individual = [];

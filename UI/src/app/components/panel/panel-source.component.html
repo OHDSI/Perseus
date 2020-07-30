@@ -10,7 +10,7 @@
       >
         list
       </mat-icon>
-      <span>{{ title | prettyName }}</span>
+      <span>{{ title }}</span>
       <div *ngIf="table.area === 'source'" class="linkSimilarItems">
         <mat-slide-toggle (change)="onCheckboxChange($event)" (click)="$event.stopPropagation();">Link similar fields</mat-slide-toggle>
       </div>
