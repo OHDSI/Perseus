@@ -10,6 +10,7 @@ import { StateService } from './state.service';
 import { ResetWarningComponent } from '../components/popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class CommonUtilsService {
     private stateService: StateService,
     private dataService: DataService,
     private bridgeService: BridgeService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router,
   ) {
 
   }
@@ -42,33 +44,45 @@ export class CommonUtilsService {
     ).subscribe();
   }
 
-  openSaveMappingDialog(action: OpenMappingDialog) {
+  openSaveMappingDialog(action: OpenMappingDialog, deleteAfterSave: boolean) {
     const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
       closeOnNavigation: true,
       disableClose: true,
-      data: {action, target: this.stateService.Target}
+      data: {action, target: this.storeService.state.targetConfig}
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (deleteAfterSave) {
+        this.bridgeService.resetAllMappings();
+        this.storeService.resetAllData();
+      }
+      this.router.navigateByUrl('/comfy');
     });
   }
 
-  openResetWarningDialog(resetAllData: boolean) {
+  openResetWarningDialog(settings: any) {
+    const { warning, header, okButton, deleteButton } = settings;
     const matDialog = this.matDialog.open(ResetWarningComponent, {
+      data: { warning, header, okButton, deleteButton },
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog',
     });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.openSaveMappingDialog('save');
-      } else {
-        if (res === '') {
+      switch (res) {
+        case '':
+        case 'Cancel':
           return;
-        }
-        this.bridgeService.resetAllMappings();
-        if (resetAllData) {
-          this.storeService.resetAllData();
+        case 'Save':
+          this.openSaveMappingDialog('save', true);
+          break;
+        default: {
+          this.bridgeService.resetAllMappings();
+          if (settings.deleteAll) {
+            this.storeService.resetAllData(); }
         }
       }
+      this.router.navigateByUrl('/comfy');
     });
   }
 }
