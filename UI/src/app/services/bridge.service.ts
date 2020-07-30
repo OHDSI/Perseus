@@ -284,10 +284,10 @@ export class BridgeService {
     );
   }
 
-  rowHasAnyConnection(source: IRow): boolean {
+  rowHasAnyConnection(row: IRow, area): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
-        return connection.source.id === source.id;
+        return connection[area].id === row.id;
       }).length > 0
     );
   }
