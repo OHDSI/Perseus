@@ -79,7 +79,7 @@ table {
   }
 
   mat-icon.active {
-    color: #066bbb;
+    color: $blue;
   }
 
   .drag_indicator {
@@ -92,7 +92,7 @@ table {
 }
 
 .rowHasLink[ng-reflect-area="source"] {
-  background-color: #E5E5E5;
+  background-color: $cdm-grey-light;
 }
 
 .rowHasLink[ng-reflect-area="target"] {
@@ -116,7 +116,7 @@ tr[selected="true"] {
   margin-top: 1px;
 
   border-radius: 4px 4px 4px 4px;
-  background: #bdbdbd;
+  background: $light-grey;
 
   display: flex;
   justify-content: center;
@@ -130,7 +130,7 @@ tr[selected="true"] {
 }
 
 .connector-pin:hover {
-  background: #066bbb;
+  background: $blue;
 }
 
 .connector-type {
@@ -138,7 +138,7 @@ tr[selected="true"] {
   font-weight: 500;
   font-size: 12px;
   line-height: 15px;
-  color: #ffffff;
+  color: $white;
   padding-top: 3px;
 }
 

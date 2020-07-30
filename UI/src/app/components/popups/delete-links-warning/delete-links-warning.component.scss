@@ -1,3 +1,5 @@
+@import 'src/app/styles/variables.scss';
+
 :host {
   display: block;
 }
@@ -10,7 +12,7 @@
 }
 
 .mat-dialog-container {
-  background: #F9F9F9;
+  background: $cdm-grey-lighter;
 }
 
 .button {
@@ -19,12 +21,12 @@
 
 .delete-button {
   color: red;
-  background: #FFFFFF;
+  background: $white;
 }
 
 .cancel-button {
-  color: #000000;
-  background: #E5E5E5;
+  color: $black;
+  background: $cdm-grey-light;
 }
 
 .close {

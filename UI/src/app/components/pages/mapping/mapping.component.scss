@@ -138,13 +138,13 @@ footer {
 
 ::ng-deep .mat-tab-group{
   .mat-expansion-panel-header-title span {
-    color: #404040;
+    color: $cdm-grey-dark;
     font-weight: bold;
     font-size: 14px;
   }
 
   .mat-ink-bar {
-    background-color: #066BBB !important;
+    background-color: $blue !important;
     height: 3px;
   }
 
@@ -158,7 +158,7 @@ footer {
     }
 
     .mat-tab-label-active .mat-tab-label-content {
-      color: #066BBB;
+      color: $blue;
     }
 
     .mat-tab-label-content {
