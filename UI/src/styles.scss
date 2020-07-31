@@ -159,6 +159,7 @@ path {
 
 mat-list.mat-list.mat-list-base[dense] {
   padding-top: 0;
+
   .mat-list-item .mat-list-item-content {
     padding: 0 8px;
   }
@@ -186,6 +187,7 @@ button.mat-flat-button.mat-button-base {
 
   .mat-form-field-suffix {
     top: 0;
+
     button.mat-icon-button {
       width: 20px;
       height: 20px;
@@ -206,18 +208,24 @@ button.mat-flat-button.mat-button-base {
       }
     }
   }
+
   .mat-form-field-outline {
     border-radius: 2px;
     border-color: white;
+
     & > * {
       background-color: white;
       border-radius: 2px;
     }
+
     &-thick {
       color: white;
       border-radius: 2px;
     }
+  }
 
+  &.mat-form-field-invalid .mat-form-field-outline-thick {
+    color: red;
   }
 
   &.search-by-name {
@@ -236,15 +244,21 @@ button.mat-flat-button.mat-button-base {
 }
 
 .CodeMirror.cm-s-default {
+  border: 2px solid transparent;
   box-sizing: border-box;
   height: 250px;
   padding: 10px 15px;
-  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
+
   .cm-keyword {
     color: $cdm-blue;
     text-transform: uppercase;
   }
 }
+
+.invalid .CodeMirror.cm-s-default {
+  border-color: red;
+}
+
 .CodeMirror-hints.default {
   z-index: 1000;
 }
