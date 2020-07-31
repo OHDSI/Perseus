@@ -29,7 +29,7 @@ section {
     display: flex;
     text-align: center;
     justify-content: center;
-    width: calc(30% + 8px);
+    width: calc(30% + 10px);
     height: 100%;
     z-index: 2;
 
@@ -65,13 +65,13 @@ footer {
       margin-top: 15px;
       margin-bottom: 30px;
     }
+}
 
-    .delete-links {
-      color: red;
-      cursor: pointer;
-      background: #E8E8E8;
-      font-weight: bold;
-    }
+.delete-links {
+  color: red;
+  cursor: pointer;
+  background: #E8E8E8;
+  font-weight: bold;
 }
 
 .patch {
@@ -113,7 +113,7 @@ footer {
 
   .title {
     font-size: 14px;
-    font-weight: bold;
+    font-weight: bolder;
     float: left;
     margin-left: 5px;
     margin-right: 5px;
@@ -129,5 +129,41 @@ footer {
 
   .sep {
     color:$cdm-grey-dark;
+  }
+}
+
+::ng-deep .mat-tab-labels {
+  display: block !important;
+}
+
+::ng-deep .mat-tab-group{
+  .mat-expansion-panel-header-title span {
+    color: $cdm-grey-dark;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .mat-ink-bar {
+    background-color: $blue !important;
+    height: 3px;
+  }
+
+  .mat-tab-header {
+    margin-bottom: 10px;
+    border-bottom: none;
+
+    .mat-tab-label {
+      opacity: 1;
+      float: left;
+    }
+
+    .mat-tab-label-active .mat-tab-label-content {
+      color: $blue;
+    }
+
+    .mat-tab-label-content {
+      text-transform: uppercase;
+      font-weight: bold;
+    }
   }
 }

@@ -286,6 +286,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isDeleteLinksDisabled() {
+    const a = Object.keys(this.bridgeService.arrowsCache).length;
     return Object.keys(this.bridgeService.arrowsCache).length === 0;
   }
 

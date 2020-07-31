@@ -62,8 +62,6 @@ export class PanelTableComponent extends BaseComponent
 
   connectortype = {};
 
-  private rowConnections = {};
-
   constructor(
     private bridgeService: BridgeService,
     private overlayService: OverlayService,
@@ -90,22 +88,6 @@ export class PanelTableComponent extends BaseComponent
     this.dataSourceInit(this.table.rows);
     this.bridgeService.refreshAll();
 
-    this.bridgeService.deleteAll
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(_ => {
-        this.rowConnections = {};
-      });
-
-    this.bridgeService.connection
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(connection => {
-        this.addConnection(connection);
-
-        setTimeout(() => {
-          this.showConnectorPinElement(connection, Area.Target);
-        });
-      });
-
     this.bridgeService.removeConnection
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
@@ -116,20 +98,8 @@ export class PanelTableComponent extends BaseComponent
   ngAfterViewInit() {
   }
 
-  addConnection(connection: IConnection) {
-    this.table.rows.forEach(row => {
-      if (row.tableId === connection[this.table.area].tableId && row.id === connection[this.table.area].id) {
-        this.rowConnections[row.key] = true;
-      }
-    });
-  }
-
   isRowHasConnection(row: IRow): boolean {
-    if (typeof this.rowConnections[row.key] === 'undefined') {
-      return false;
-    } else {
-      return this.rowConnections[row.key];
-    }
+    return this.bridgeService.rowHasAnyConnection(row, this.area);
   }
 
   openCommentDialog(anchor: HTMLElement, row: IRow) {
@@ -183,39 +153,6 @@ export class PanelTableComponent extends BaseComponent
 
   hasComment(row: IRow) {
     return row.comments.length;
-  }
-
-  setActiveRow(event: any, row: IRow) {
-    event.stopPropagation();
-  }
-
-  selectTableRow(event: any, row: IRow) {
-    event.stopPropagation();
-
-    if (row.htmlElement) {
-      const rowId = row.htmlElement.attributes.id.nodeValue;
-      row.htmlElement = document.getElementById(rowId);
-
-      row.selected = !row.selected;
-
-      if (this.renderer && row.selected && row.htmlElement) {
-        this.renderer.setAttribute(row.htmlElement, 'selected', 'true');
-      } else {
-        this.renderer.removeAttribute(row.htmlElement, 'selected');
-      }
-
-      Object.values(this.bridgeService.arrowsCache)
-        .filter(connection => {
-          return connection[row.area].id === row.id;
-        })
-        .forEach(connection => {
-          if (row.selected) {
-            connection.connector.select();
-          } else {
-            connection.connector.deselect();
-          }
-        });
-    }
   }
 
   // connectortype is not reflected in the table
