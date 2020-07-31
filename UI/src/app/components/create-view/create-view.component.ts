@@ -1,5 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/addon/edit/continuelist';
@@ -8,7 +9,6 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import 'codemirror/mode/sql/sql';
 
-import { uniq } from '../../infrastructure/utility';
 import { Area } from '../../models/area';
 import { Row } from '../../models/row';
 
@@ -35,9 +35,12 @@ export class CreateViewComponent implements AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
-  @ViewChild('name', { static: true }) name: ElementRef;
   @ViewChild('editor', { static: true }) editor;
   codeMirror;
+  viewForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    sql: new FormControl('', Validators.required),
+  });
   tablesWithoutAlias = [];
   tableColumnsMapping = {};
   aliasTableMapping = {};
@@ -58,6 +61,9 @@ export class CreateViewComponent implements AfterViewInit {
     this.codeMirror.on('change', this.onChange.bind(this));
   }
 
+  get isInvalid() {
+    return this.viewForm.get('sql').invalid;
+  }
 
   get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
@@ -75,19 +81,20 @@ export class CreateViewComponent implements AfterViewInit {
   sourceTable() {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
-    const tableName = this.name.nativeElement.value;
+    const viewName = this.viewForm.get('name').value;
+    console.log(this.viewForm);
     const columnNames = this.parseColumnsNames();
     return {
       area: Area.Source,
       expanded: false,
       id: tableId,
-      name: tableName,
+      name: viewName,
       rows: columnNames.map((name, index) => {
         const options = {
           name,
           id: index,
           tableId,
-          tableName,
+          tableName: viewName,
           type: 'any',
           comments: [],
           area: Area.Source
@@ -162,6 +169,10 @@ export class CreateViewComponent implements AfterViewInit {
   onChange(cm, event) {
     this.tablesWithoutAlias = [];
     const matches = this.editorContent.matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
+    const sqlControl = this.viewForm.get('sql');
+    sqlControl.setValue(this.editorContent);
+    sqlControl.markAsTouched();
+
     if (matches) {
       this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
         const isFrom = cur[1] && cur[1] === 'from';
@@ -189,6 +200,7 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   onCursorActivity(cm, event) {
+    this.viewForm.get('sql').markAsTouched();
     const cursor = cm.getCursor();
     const token = cm.getTokenAt(cursor);
     const hasReplaceHints = !!this.tokenReplaceMapping[token.string];
