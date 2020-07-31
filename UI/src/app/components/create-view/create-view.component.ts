@@ -1,12 +1,13 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
-import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
+
 import { uniq } from '../../infrastructure/utility';
 import { Area } from '../../models/area';
 import { Row } from '../../models/row';
@@ -72,25 +73,16 @@ export class CreateViewComponent implements AfterViewInit {
 
 
   sourceTable() {
-    const columnsMatch = this.editorContent.match(/select (.*\b)from\b/im);
-    let columns = [];
-    if (columnsMatch) {
-      const columnsRow = columnsMatch[1].trim();
-      if (columnsRow === '*') {
-        columns = uniq(this.allColumns);
-      } else {
-        columns = columnsRow.split(',').filter(it => !!it.trim());
-      }
-    }
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const tableName = this.name.nativeElement.value;
+    const columnNames = this.parseColumnsNames();
     return {
       area: Area.Source,
       expanded: false,
       id: tableId,
       name: tableName,
-      rows: columns.map((name, index) => {
+      rows: columnNames.map((name, index) => {
         const options = {
           name,
           id: index,
@@ -133,6 +125,29 @@ export class CreateViewComponent implements AfterViewInit {
     const joinCount = (this.editorContent.match(/join/gi) || []).length;
     return `${this.editorContent}
       join ${text} as t${joinCount + 2} on`;
+  }
+
+  parseColumnsNames() {
+    const columnsMatch = this.editorContent.match(/select (.*\b)from\b/im);
+    if (!columnsMatch) {
+      return [];
+    }
+    const columnsRow = columnsMatch[1].trim();
+    if (columnsRow === '*') {
+      return uniq(this.allColumns);
+    }
+    return columnsRow.split(',').reduce(this.columnsReducer.bind(this), []);
+  }
+
+  columnsReducer(prev, cur) {
+    const trimmed = cur.trim();
+    if (trimmed) {
+      const aliases = Object.keys(this.aliasTableMapping);
+      const aliasPrefix = aliases.find(it => trimmed.startsWith(`${it}.`));
+      const columnName = aliasPrefix ? trimmed.slice(aliasPrefix.length + 1) : trimmed;
+      return uniq([...prev, columnName]);
+    }
+    return prev;
   }
 
   selectTemplate(text) {
