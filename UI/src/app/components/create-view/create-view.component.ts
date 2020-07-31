@@ -82,7 +82,6 @@ export class CreateViewComponent implements AfterViewInit {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const viewName = this.viewForm.get('name').value;
-    console.log(this.viewForm);
     const columnNames = this.parseColumnsNames();
     return {
       area: Area.Source,
