@@ -134,7 +134,7 @@ export class CreateViewComponent implements AfterViewInit {
     }
     const columnsRow = columnsMatch[1].trim();
     if (columnsRow === '*') {
-      return uniq(this.allColumns);
+      return this.allColumns;
     }
     return columnsRow.split(',').reduce(this.columnsReducer.bind(this), []);
   }
@@ -145,7 +145,7 @@ export class CreateViewComponent implements AfterViewInit {
       const aliases = Object.keys(this.aliasTableMapping);
       const aliasPrefix = aliases.find(it => trimmed.startsWith(`${it}.`));
       const columnName = aliasPrefix ? trimmed.slice(aliasPrefix.length + 1) : trimmed;
-      return uniq([...prev, columnName]);
+      return [...prev, columnName];
     }
     return prev;
   }
