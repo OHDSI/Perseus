@@ -361,7 +361,7 @@ article {
 
 .filter-by-name + a {
   position: absolute;
-  top: 75px;
+  top: 96px;
   left: 10px;
 }
 
@@ -372,8 +372,8 @@ article {
   margin-bottom: 10px;
 }
 
-.right-bottom-button-reset { 
-  @extend .right-bottom-button; 
-  color: red; 
+.right-bottom-button-reset {
+  @extend .right-bottom-button;
+  color: red;
   margin-right: 15px
 }

@@ -1,0 +1,15 @@
+@import './variables.scss';
+
+.CodeMirror.cm-s-default {
+  box-sizing: border-box;
+  height: 250px;
+  padding: 10px 15px;
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
+  .cm-keyword {
+    color: $cdm-blue;
+    text-transform: uppercase;
+  }
+}
+.CodeMirror-hints.default {
+  z-index: 1000;
+}

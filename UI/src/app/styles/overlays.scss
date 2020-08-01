@@ -1,5 +1,5 @@
 @import '~@angular/material/_theming';
-@import "./variables.scss";
+@import './variables.scss';
 
 %common-dialog {
   border-radius: 2px;
@@ -35,7 +35,7 @@
 
 .warning-dialog {
   @extend %common-dialog;
-  
+
    border-radius: 2px;
    width: 245px;
    height: 247px;
