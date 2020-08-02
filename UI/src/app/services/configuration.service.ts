@@ -30,8 +30,12 @@ export class ConfigurationService {
         const config = this.configStorageService.open(configurationName);
         if (config) {
         } else {
-          alert('config not found');
-          return;
+            this.snakbar.open(
+                `Configuration ${configurationName} not found`,
+                ' DISMISS ',
+                this.snakbarOptions
+              );
+            return;
         }
 
         this.snakbar.open(
@@ -44,8 +48,12 @@ export class ConfigurationService {
 
       saveConfiguration(configurationName: string) {
         if (!configurationName || configurationName.length === 0) {
-          alert('configuration name should be');
-          return;
+            this.snakbar.open(
+                `Configuration name has not been entered`,
+                ' DISMISS ',
+                this.snakbarOptions
+              );
+            return;
         }
 
         const newConfiguration = new Configuration({
