@@ -7,9 +7,11 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
+
 import { uniq } from '../../infrastructure/utility';
 import { Area } from '../../models/area';
 import { Row } from '../../models/row';
+import { CommonUtilsService } from '../../services/common-utils.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -30,6 +32,7 @@ const editorSettings = {
 })
 export class CreateViewComponent implements AfterViewInit {
   constructor(
+    private commonUtilsService: CommonUtilsService,
     public dialogRef: MatDialogRef<CreateViewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
@@ -199,4 +202,9 @@ export class CreateViewComponent implements AfterViewInit {
     const token = cm.getTokenAt(cursor);
     cm.replaceRange(optionSelected, { line, ch: token.start }, { line, ch: token.end });
   }
+
+  openOnBoardingTip(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target, 'create-view');
+  }
+
 }

@@ -57,8 +57,16 @@
       "overlayY": "top"
     },
     "tour-toolbar": {
-      "offsetX": 50,
+      "offsetX": 80,
       "offsetY": 64,
+      "originX": "end",
+      "originY": "bottom",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "create-view": {
+      "offsetX": 160,
+      "offsetY": 170,
       "originX": "end",
       "originY": "bottom",
       "overlayX": "end",

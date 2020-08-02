@@ -1,17 +1,14 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { OpenMappingDialog } from '../../app.component';
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { OverlayConfigOptions } from '../../services/overlay/overlay-config-options.interface';
-import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
-import { OnBoardingComponent } from '../popups/on-boarding/on-boarding.component';
 
 @Component({
-  styleUrls: ['./toolbar.component.scss'],
   selector: 'app-toolbar',
+  styleUrls: ['./toolbar.component.scss'],
   templateUrl: './toolbar.component.html'
 })
 export class ToolbarComponent implements OnInit {
@@ -21,12 +18,10 @@ export class ToolbarComponent implements OnInit {
   reportName: string;
 
   constructor(
-    private overlayService: OverlayService,
     private bridgeService: BridgeService,
     private commonUtilsService: CommonUtilsService,
     private uploadService: UploadService,
-    private storeService: StoreService,
-    private renderer: Renderer2
+    private storeService: StoreService
   ) {
 
   }
@@ -69,20 +64,7 @@ export class ToolbarComponent implements OnInit {
     this.commonUtilsService.openResetWarningDialog(settings);
   }
 
-  openOnBoarding(target: EventTarget) {
-    const dialogOptions: OverlayConfigOptions = {
-      hasBackdrop: true,
-      backdropClass: 'on-boarding-backdrop',
-      panelClass: 'on-boarding-bottom',
-      payload: { tips: [] },
-      positionStrategyFor: 'tour-toolbar'
-    };
-    const dialogRef = this.overlayService.open(dialogOptions, target, OnBoardingComponent);
-    this.renderer.addClass(target, 'on-boarding-anchor');
-    dialogRef.afterClosed$.subscribe(configOptions => this.renderer.removeClass(target, 'on-boarding-anchor'));
-  }
-
   startOnBoarding(target: EventTarget) {
-    this.openOnBoarding(target);
+    this.commonUtilsService.openOnBoardingTip(target,  'tour-toolbar');
   }
 }
