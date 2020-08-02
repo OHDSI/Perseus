@@ -81,7 +81,7 @@ export class CommonUtilsService {
     });
   }
 
-  saveMappingDialog() {
+  saveMappingDialog(deleteAfterSave: boolean) {
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -96,6 +96,11 @@ export class CommonUtilsService {
     matDialog.afterClosed().subscribe(res => {
       if (res) {
         this.configService.saveConfiguration(res);
+        if (deleteAfterSave) {
+          this.bridgeService.resetAllMappings();
+          this.storeService.resetAllData();
+          this.router.navigateByUrl('/comfy');
+        }
       }
     });
   }
@@ -115,7 +120,7 @@ export class CommonUtilsService {
         case 'Cancel':
           return;
         case 'Save':
-          this.openSaveMappingDialog('save', true);
+          this.saveMappingDialog(true);
           break;
         default: {
           this.bridgeService.resetAllMappings();
