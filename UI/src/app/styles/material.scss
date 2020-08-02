@@ -97,6 +97,10 @@ button.mat-flat-button.mat-button-base {
       border-radius: 2px;
     }
 
+    &.mat-form-field-invalid &-thick {
+      color: red;
+    }
+
   }
 
   &.mat-focused {
