@@ -197,7 +197,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(configuration => {
-        this.targetConfig = configuration.tables;
+        this.data.targetConfig = configuration.tables;
+        this.targetConfig = this.data.targetConfig;
       });
 
     this.bridgeService.resetAllMappings$

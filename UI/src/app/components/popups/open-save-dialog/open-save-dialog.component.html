@@ -1,0 +1,27 @@
+<h3>{{data.header}}</h3>
+<mat-icon class="close"
+          mat-dialog-close>close
+</mat-icon>
+<div mat-dialog-content>
+  <mat-form-field appearance="standard">
+    <mat-label>{{data.dropdownLabel}}</mat-label>
+  <mat-select *ngIf="!data.input" #item [(value)]="resultValue">
+      <mat-option *ngFor="let item of data.items"
+                  [value]="item">
+        {{item}}
+      </mat-option>
+    </mat-select>
+ <input *ngIf="data.input" [(ngModel)]="resultValue" matInput>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-dialog-close
+          mat-flat-button>
+    Cancel
+  </button>
+  <button [mat-dialog-close]="resultValue"
+          mat-flat-button
+          color="accent">
+    {{data.okButton}}
+  </button>
+</div>

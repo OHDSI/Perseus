@@ -11,6 +11,8 @@ import { ResetWarningComponent } from '../components/popups/reset-warning/reset-
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
 import { Router } from '@angular/router';
+import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
+import { ConfigurationService } from './configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,7 @@ export class CommonUtilsService {
     private bridgeService: BridgeService,
     private storeService: StoreService,
     private router: Router,
+    private configService: ConfigurationService
   ) {
 
   }
@@ -56,6 +59,44 @@ export class CommonUtilsService {
         this.storeService.resetAllData();
       }
       this.router.navigateByUrl('/comfy');
+    });
+  }
+
+  loadMappingDialog() {
+    const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'cdm-version-dialog',
+      data: {
+        header: 'Open Mapping',
+        dropdownLabel: 'Select Configuration',
+        okButton: 'Open',
+        items: this.configService.configurations.map(config => config.name),
+        input: false}
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.configService.openConfiguration(res);
+      }
+    });
+  }
+
+  saveMappingDialog() {
+    const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'cdm-version-dialog',
+      data: {
+        header: 'Save Mapping',
+        dropdownLabel: 'Name',
+        okButton: 'Save',
+        items: this.configService.configurations.map(config => config.name),
+        input: true}
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.configService.saveConfiguration(res);
+      }
     });
   }
 
@@ -107,4 +148,5 @@ export class CommonUtilsService {
     };
     this.openResetWarningDialog(settings);
   }
+
 }

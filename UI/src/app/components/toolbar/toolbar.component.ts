@@ -37,9 +37,13 @@ export class ToolbarComponent implements OnInit {
     this.commonUtilsService.resetMappingsWithWarning();
   }
 
-  openSaveMappingDialog(action: OpenMappingDialog) {
-    this.commonUtilsService.openSaveMappingDialog(action, false);
+  openSaveMappingDialog() {
+  this.commonUtilsService.saveMappingDialog();
   }
+
+  openLoadMappingDialog() {
+    this.commonUtilsService.loadMappingDialog();
+    }
 
   onOpenSourceClick() {
     this.uploadService.onFileInputClick(this.fileInput);
