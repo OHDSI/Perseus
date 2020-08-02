@@ -5,22 +5,25 @@
 <mat-icon class="close"
           mat-dialog-close>close
 </mat-icon>
-<div mat-dialog-content>
+<div mat-dialog-content
+     [formGroup]="viewForm">
   <section>
-    <label>View Name*</label>
+    <label>View Name</label>
     <mat-form-field appearance="outline"
                     floatLabel="auto">
-      <input #name
-             matInput
-             placeholder="Set name for the view"/>
+      <input matInput
+             placeholder="Set name for the view"
+             formControlName="name"/>
     </mat-form-field>
   </section>
   <section cdkDropList
            #editorArea="cdkDropList"
            [cdkDropListConnectedTo]="[tables]"
-           (cdkDropListDropped)="drop($event)">
+           (cdkDropListDropped)="drop($event)"
+           [class.invalid]="viewForm.touched && isInvalid">
     <label>SQL Function</label>
-    <textarea #editor></textarea>
+    <textarea #editor
+              formControl="sql"></textarea>
   </section>
   <section>
     <label>Available Tables</label>
@@ -47,7 +50,8 @@
   </button>
   <button [mat-dialog-close]="sourceTable()"
           mat-flat-button
-          color="accent">
+          color="accent"
+          [disabled]="viewForm.invalid">
     Apply
   </button>
 </div>
