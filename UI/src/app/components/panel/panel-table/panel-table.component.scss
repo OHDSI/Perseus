@@ -14,18 +14,28 @@ table {
     padding-left: 10px;
   }
 
+  .mat-column-column_indicator {
+    width: 9%;
+  }
+
+  .mat-column-comments {
+    width: 15%;
+  }
+
+  .comments-button {
+    left: 100%;
+    margin-left: -80px;
+  }
+
   .caption-item {
     font-style: italic;
     padding-left: 0;
   }
 
   & .cdk-column-comments {
-    text-align: center;
+    text-align: right;
   }
   & .cdk-column-values {
-    text-align: center;
-  }
-  & .cdk-column-column_type {
     text-align: center;
   }
 
@@ -33,12 +43,12 @@ table {
     margin: auto;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
   }
 
   .icon-indicator {
-    margin-left: 20px;
+    margin-right: 15px;
     padding-top: 11px;
     cursor: move;
   }
@@ -69,7 +79,7 @@ table {
   }
 
   mat-icon.active {
-    color: #066bbb;
+    color: $blue;
   }
 
   .drag_indicator {
@@ -81,10 +91,13 @@ table {
   }
 }
 
-// .row-has-a-link-true {
-//   border-right: 2px solid #80808033;
-//   background-color: #0000000d;
-// }
+.rowHasLink[ng-reflect-area="source"] {
+  background-color: $cdm-grey-light;
+}
+
+.rowHasLink[ng-reflect-area="target"] {
+  background-color: #CFE6F9;
+}
 
 tr[selected="true"] {
   background-color: $cdm-blue-light;
@@ -103,7 +116,7 @@ tr[selected="true"] {
   margin-top: 1px;
 
   border-radius: 4px 4px 4px 4px;
-  background: #bdbdbd;
+  background: $light-grey;
 
   display: flex;
   justify-content: center;
@@ -117,7 +130,7 @@ tr[selected="true"] {
 }
 
 .connector-pin:hover {
-  background: #066bbb;
+  background: $blue;
 }
 
 .connector-type {
@@ -125,10 +138,18 @@ tr[selected="true"] {
   font-weight: 500;
   font-size: 12px;
   line-height: 15px;
-  color: #ffffff;
+  color: $white;
   padding-top: 3px;
 }
 
 .hide {
   display: none;
+}
+
+.targetRow {
+  background: #EAF2F9;
+
+  td:first-child {
+    border-left: 4px solid #4BB0FF;
+  }
 }

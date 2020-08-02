@@ -50,7 +50,7 @@
     }
 
     .active {
-        background-color: #DCECF9;
+        background-color: $light-blue;
     }
 }
 
@@ -132,7 +132,7 @@
         width: 20px;
         height: 20px;
         &:active {
-            color: #066BBB;
+            color: $blue;
         }
     }
 }
@@ -155,7 +155,7 @@
             height: 20px;
             line-height: 20px;
             &:active {
-                color: #066BBB;
+                color: $blue;
             }
         }
     }
@@ -186,7 +186,7 @@
         height: 30px;
         line-height: 30px;
         &:active {
-            color: #066BBB;
+            color: $blue;
         }
     }
 }
@@ -206,6 +206,6 @@
     padding: 0 6px;
 
     &:active {
-        color: #066BBB;
+        color: $blue;
     }
 }

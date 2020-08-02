@@ -50,7 +50,7 @@ mat-card {
 
     footer {
         button {
-            color: #066BBB;
+            color: $blue;
             width: 34px;
             align-self: flex-end;
             font-size: 13px;
@@ -81,6 +81,6 @@ mat-card ::-webkit-scrollbar-thumb
 {
     width: 5px;
 	border-radius: 100px;
-	-webkit-box-shadow: #E5E5E5;
+	-webkit-box-shadow: $cdm-grey-light;
 	background-color: #C6C6C6;
 }

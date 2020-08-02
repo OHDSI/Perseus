@@ -1,4 +1,4 @@
-import { AfterViewInit, EventEmitter, Input, OnInit, Output, ViewChildren, QueryList } from '@angular/core';
+import { AfterViewInit, EventEmitter, Input, Output, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -10,7 +10,7 @@ import { BridgeButtonService } from '../bridge-button/service/bridge-button.serv
 import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
-export class PanelBaseComponent implements OnInit, AfterViewInit {
+export class PanelBaseComponent implements AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
   @Input() tables: ITable[];
@@ -45,22 +45,6 @@ export class PanelBaseComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.initialized.emit();
     this.initializing = false;
-  }
-
-  ngOnInit() {
-    this.bridgeService.deleteAll.subscribe(_ => {
-      this.panelHeader.forEach(panelHeader => {
-        panelHeader._element.nativeElement.classList.remove('table-has-a-link-true');
-      });
-    });
-
-    this.bridgeService.connection.subscribe(_ => {
-      if (this.bridgeService.isTableConnected(this.table)) {
-        this.panelHeader.forEach(panelHeader => {
-          panelHeader._element.nativeElement.classList.add('table-has-a-link-true');
-        });
-      }
-    });
   }
 
   onOpen() {

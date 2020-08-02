@@ -48,6 +48,7 @@
       <div #anchor class="anchor">
         <button
           mat-icon-button
+          class="comments-button"
           (click)="openCommentDialog(anchor, row)"
           [disableRipple]="true"
         >
@@ -84,9 +85,8 @@
     [row]="row"
     mat-row
     *matRowDef="let row; columns: displayedColumns"
-    (mousedown)="setActiveRow($event, row)"
-    (click)="selectTableRow($event, row)"
     [class.draggable]="area == 'source'"
-    class="item-{{ row.tableName }}-{{ row.name }}"
+    class="item-{{ row.tableName }}-{{ row.name }} {{area}}Row"
+    [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
   ></tr>
 </table>
