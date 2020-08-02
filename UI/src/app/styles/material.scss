@@ -28,12 +28,7 @@
   background-color: $cdm-grey-lighter;
 }
 
-.mat-radio-container,
-.mat-radio-outer-circle,
-.mat-radio-inner-circle {
-  width: 15px !important;
-  height: 15px !important;
-}
+//
 
 
 mat-list.mat-list.mat-list-base[dense] {
@@ -126,18 +121,9 @@ button.mat-flat-button.mat-button-base {
   padding: 0 0 6px;
 }
 
-.mat-radio-button .mat-radio-container {
-  .mat-radio-outer-circle {
-    border-color: white;
-  }
-
-  .mat-radio-inner-circle {
-    background-color: white;
-  }
-}
-
 .vocabulary-config-tabs .mat-tab-body .mat-tab-body-content {
   height: 300px;
   overflow-x: hidden !important;
   overflow-y: scroll !important;
 }
+

@@ -5,7 +5,7 @@
           aria-label="cdm menu">
     <mat-icon>more_vert</mat-icon>
   </button>
-  <button mat-icon-button>
+  <button mat-icon-button (click)="startOnBoarding($event.currentTarget)">
     <mat-icon svgIcon="help"></mat-icon>
   </button>
   <label class="info-label">{{reportName}} - {{cdmVersion}}</label>

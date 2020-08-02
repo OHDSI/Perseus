@@ -1,15 +1,17 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 
 import { OpenMappingDialog } from '../../app.component';
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { UploadService } from '../../services/upload.service';
+import { OverlayConfigOptions } from '../../services/overlay/overlay-config-options.interface';
+import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
-import { stringify } from 'querystring';
+import { UploadService } from '../../services/upload.service';
+import { OnBoardingComponent } from '../popups/on-boarding/on-boarding.component';
 
 @Component({
-  selector: 'app-toolbar',
   styleUrls: ['./toolbar.component.scss'],
+  selector: 'app-toolbar',
   templateUrl: './toolbar.component.html'
 })
 export class ToolbarComponent implements OnInit {
@@ -17,19 +19,22 @@ export class ToolbarComponent implements OnInit {
 
   cdmVersion: string;
   reportName: string;
+
   constructor(
+    private overlayService: OverlayService,
     private bridgeService: BridgeService,
     private commonUtilsService: CommonUtilsService,
     private uploadService: UploadService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private renderer: Renderer2
   ) {
 
   }
 
-  ngOnInit(){
-    this.storeService.state$.subscribe(res => {
-      this.cdmVersion = res['version'] ? `CDM v${res['version']}` : 'CDM version';
-      this.reportName = res['report'] ? res['report'] : 'Report name';
+  ngOnInit() {
+    this.storeService.state$.subscribe((res: any) => {
+      this.cdmVersion = res.version ? `CDM v${res.version}` : 'CDM version';
+      this.reportName = res.report || 'Report name';
     });
   }
 
@@ -62,5 +67,22 @@ export class ToolbarComponent implements OnInit {
       deleteAll: true
     };
     this.commonUtilsService.openResetWarningDialog(settings);
+  }
+
+  openOnBoarding(target: EventTarget) {
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'on-boarding-backdrop',
+      panelClass: 'on-boarding-bottom',
+      payload: { tips: [] },
+      positionStrategyFor: 'tour-toolbar'
+    };
+    const dialogRef = this.overlayService.open(dialogOptions, target, OnBoardingComponent);
+    this.renderer.addClass(target, 'on-boarding-anchor');
+    dialogRef.afterClosed$.subscribe(configOptions => this.renderer.removeClass(target, 'on-boarding-anchor'));
+  }
+
+  startOnBoarding(target: EventTarget) {
+    this.openOnBoarding(target);
   }
 }

@@ -31,6 +31,7 @@ import { ConceptService } from './components/comfy/services/concept.service';
 import { CreateViewComponent } from './components/create-view/create-view.component';
 import { AddConstantPopupComponent } from './components/popups/add-constant-popup/add-constant-popup.component';
 import { CdmVersionDialogComponent } from './components/popups/cdm-version-dialog/cdm-version-dialog.component';
+import { OnBoardingComponent } from './components/popups/on-boarding/on-boarding.component';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { PreviewPopupComponent } from './components/popups/preview-popup/preview-popup.component';
 import { PrismComponent } from './components/popups/preview-popup/prism.component';
@@ -95,7 +96,8 @@ import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-li
     ComfySearchByNameComponent,
     CdmFilterComponent,
     CreateViewComponent,
-    ResetWarningComponent
+    ResetWarningComponent,
+    OnBoardingComponent
   ],
   imports: [
     BrowserModule,

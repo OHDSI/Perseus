@@ -55,6 +55,14 @@
       "originY": "top",
       "overlayX": "end",
       "overlayY": "top"
+    },
+    "tour-toolbar": {
+      "offsetX": 50,
+      "offsetY": 64,
+      "originX": "end",
+      "originY": "bottom",
+      "overlayX": "end",
+      "overlayY": "bottom"
     }
   }
 }

@@ -1,0 +1,8 @@
+<h3>Title</h3>
+<p>Content info</p>
+<div class="bullets">
+  <div class="bullet"
+       [class.active]="i===1"
+       *ngFor="let bullet of [1, 2, 3]; let i = index"></div>
+</div>
+<a mat-button>Next</a>
