@@ -63,5 +63,4 @@ export class ConfigurationService {
           this.snakbarOptions
         );
       }
-
 }

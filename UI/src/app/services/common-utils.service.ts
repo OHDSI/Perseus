@@ -81,7 +81,7 @@ export class CommonUtilsService {
     });
   }
 
-  saveMappingDialog(deleteAfterSave: boolean) {
+  saveMappingDialog(deleteSourceAndTargetAfterSave: boolean) {
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -96,10 +96,8 @@ export class CommonUtilsService {
     matDialog.afterClosed().subscribe(res => {
       if (res) {
         this.configService.saveConfiguration(res);
-        if (deleteAfterSave) {
-          this.bridgeService.resetAllMappings();
-          this.storeService.resetAllData();
-          this.router.navigateByUrl('/comfy');
+        if (deleteSourceAndTargetAfterSave) {
+          this.resetMappingsAndReturnToComfy(true);
         }
       }
     });
@@ -123,13 +121,18 @@ export class CommonUtilsService {
           this.saveMappingDialog(true);
           break;
         default: {
-          this.bridgeService.resetAllMappings();
-          if (settings.deleteAll) {
-            this.storeService.resetAllData(); }
+         this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
         }
       }
-      this.router.navigateByUrl('/comfy');
     });
+  }
+
+  resetMappingsAndReturnToComfy(deleteSourceAndTarget: boolean) {
+    this.bridgeService.resetAllMappings();
+    if (deleteSourceAndTarget) {
+      this.storeService.resetAllData();
+      this.router.navigateByUrl('/comfy');
+    }
   }
 
   resetMappingsWithWarning() {
@@ -138,7 +141,7 @@ export class CommonUtilsService {
       header: 'Delete mappings',
       okButton: 'Cancel',
       deleteButton: 'Delete',
-      deleteAll: false,
+      deleteSourceAndTarget: false,
     };
     this.openResetWarningDialog(settings);
   }
@@ -149,7 +152,7 @@ export class CommonUtilsService {
       header: 'Save mappings',
       okButton: 'Save',
       deleteButton: 'Delete',
-      deleteAll: true
+      deleteSourceAndTarget: true
     };
     this.openResetWarningDialog(settings);
   }
