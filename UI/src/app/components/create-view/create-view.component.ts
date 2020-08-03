@@ -2,15 +2,14 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
+import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
 
 import { Area } from '../../models/area';
-import { Row } from '../../models/row';
 import { CommonUtilsService } from '../../services/common-utils.service';
 
 const editorSettings = {
@@ -48,7 +47,10 @@ export class CreateViewComponent implements AfterViewInit {
   aliasTableMapping = {};
   tokenReplaceMapping = {
     join: (context) => ['left join', 'right join', 'inner join', 'outer join'],
-    '*': (context) => [...this.aliasedTablesColumns(true), ...this.tablesWithoutAliasColumns]
+    '*': (context) => {
+      const columnsWithoutAlias = this.tablesWithoutAliasColumns.map(it => it.name);
+      return [...this.aliasedTablesColumns(true), ...columnsWithoutAlias];
+    }
   };
 
   ngAfterViewInit() {
@@ -72,11 +74,13 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   get tablesWithoutAliasColumns() {
-    return this.tablesWithoutAlias.reduce((prev, cur) => [...prev, ...this.tableColumnNamesMapping[cur]], []);
+    return this.tablesWithoutAlias.reduce((prev, cur) => [...prev, ...this.tableColumnsMapping[cur]], []);
   }
 
   get allColumns() {
-    return [...this.aliasedTablesColumns(), ...this.tablesWithoutAliasColumns];
+    const aliasedColumns = this.aliasedTablesColumns();
+    console.log(aliasedColumns, this.tablesWithoutAliasColumns);
+    return [...aliasedColumns, ...this.tablesWithoutAliasColumns];
   }
 
 
@@ -84,24 +88,13 @@ export class CreateViewComponent implements AfterViewInit {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const viewName = this.viewForm.get('name').value;
-    const columnNames = this.parseColumns();
+    const rows = this.parseColumns();
     return {
+      rows,
       area: Area.Source,
       expanded: false,
       id: tableId,
       name: viewName,
-      rows: columnNames.map((name, index) => {
-        const options = {
-          name,
-          id: index,
-          tableId,
-          tableName: viewName,
-          type: 'any',
-          comments: [],
-          area: Area.Source
-        };
-        return new Row(options);
-      }),
       visible: true,
       sql: this.editorContent
     };
@@ -111,8 +104,8 @@ export class CreateViewComponent implements AfterViewInit {
   aliasedTablesColumns(prefix = false) {
     return Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
       const tableName = this.aliasTableMapping[cur];
-      const columns = this.tableColumnNamesMapping[tableName];
-      const tableColumns = prefix ? columns.map(it => `${cur}.${it}`) : columns;
+      const columns = this.tableColumnsMapping[tableName];
+      const tableColumns = prefix ? columns.map(it => `${cur}.${it.name}`) : columns;
       return [...prev, ...tableColumns];
     }, []);
   }
@@ -152,11 +145,14 @@ export class CreateViewComponent implements AfterViewInit {
     if (trimmed) {
       const aliases = Object.keys(this.aliasTableMapping);
       const aliasPrefix = aliases.find(it => trimmed.startsWith(`${it}.`));
+      if (!aliasPrefix) {
+        // case if we have column name string like t2.column_name and at the same time we have no t2 alias
+        return prev;
+      }
       const tableName = this.aliasTableMapping[aliasPrefix];
-      const columnName = aliasPrefix ? trimmed.slice(aliasPrefix.length + 1) : trimmed;
-      const column = this.tableColumnsMapping[tableName];
-      console.log(column);
-      return [...prev, columnName];
+      const columns = this.tableColumnsMapping[tableName];
+      const column = columns.find(it => it.name === trimmed.slice(aliasPrefix.length + 1));
+      return [...prev, column];
     }
     return prev;
   }
