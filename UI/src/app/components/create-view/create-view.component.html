@@ -20,10 +20,9 @@
            #editorArea="cdkDropList"
            [cdkDropListConnectedTo]="[tables]"
            (cdkDropListDropped)="drop($event)"
-           [class.invalid]="viewForm.touched && isInvalid">
+           [class.invalid]="viewForm.touched && !editorContent">
     <label>SQL Function</label>
-    <textarea #editor
-              formControl="sql"></textarea>
+    <textarea #editor></textarea>
   </section>
   <section>
     <label>Available Tables</label>
@@ -51,7 +50,7 @@
   <button [mat-dialog-close]="sourceTable()"
           mat-flat-button
           color="accent"
-          [disabled]="viewForm.invalid">
+          [disabled]="viewForm.invalid || !editorContent">
     Apply
   </button>
 </div>

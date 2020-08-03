@@ -40,10 +40,10 @@ export class CreateViewComponent implements AfterViewInit {
   @ViewChild('editor', { static: true }) editor;
   codeMirror;
   viewForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    sql: new FormControl('', Validators.required),
+    name: new FormControl('', Validators.required)
   });
   tablesWithoutAlias = [];
+  tableColumnNamesMapping = {};
   tableColumnsMapping = {};
   aliasTableMapping = {};
   tokenReplaceMapping = {
@@ -52,19 +52,19 @@ export class CreateViewComponent implements AfterViewInit {
   };
 
   ngAfterViewInit() {
-    this.tableColumnsMapping = this.data.tables.reduce((prev, cur) => {
+    this.tableColumnNamesMapping = this.data.tables.reduce((prev, cur) => {
       prev[cur.name] = cur.rows.map(it => it.name);
       return prev;
     }, {});
-    editorSettings.hintOptions = { tables: this.tableColumnsMapping };
+    this.tableColumnsMapping = this.data.tables.reduce((prev, cur) => {
+      prev[cur.name] = cur.rows;
+      return prev;
+    }, {});
+    editorSettings.hintOptions = { tables: this.tableColumnNamesMapping };
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
     this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
     this.codeMirror.on('keyup', this.onKeyUp.bind(this));
     this.codeMirror.on('change', this.onChange.bind(this));
-  }
-
-  get isInvalid() {
-    return this.viewForm.get('sql').invalid;
   }
 
   get editorContent() {
@@ -72,7 +72,7 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   get tablesWithoutAliasColumns() {
-    return this.tablesWithoutAlias.reduce((prev, cur) => [...prev, ...this.tableColumnsMapping[cur]], []);
+    return this.tablesWithoutAlias.reduce((prev, cur) => [...prev, ...this.tableColumnNamesMapping[cur]], []);
   }
 
   get allColumns() {
@@ -84,7 +84,7 @@ export class CreateViewComponent implements AfterViewInit {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const viewName = this.viewForm.get('name').value;
-    const columnNames = this.parseColumnsNames();
+    const columnNames = this.parseColumns();
     return {
       area: Area.Source,
       expanded: false,
@@ -111,7 +111,7 @@ export class CreateViewComponent implements AfterViewInit {
   aliasedTablesColumns(prefix = false) {
     return Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
       const tableName = this.aliasTableMapping[cur];
-      const columns = this.tableColumnsMapping[tableName];
+      const columns = this.tableColumnNamesMapping[tableName];
       const tableColumns = prefix ? columns.map(it => `${cur}.${it}`) : columns;
       return [...prev, ...tableColumns];
     }, []);
@@ -135,7 +135,7 @@ export class CreateViewComponent implements AfterViewInit {
       join ${text} as t${joinCount + 2} on`;
   }
 
-  parseColumnsNames() {
+  parseColumns() {
     const columnsMatch = this.editorContent.match(/select (.*\b)from\b/im);
     if (!columnsMatch) {
       return [];
@@ -152,7 +152,10 @@ export class CreateViewComponent implements AfterViewInit {
     if (trimmed) {
       const aliases = Object.keys(this.aliasTableMapping);
       const aliasPrefix = aliases.find(it => trimmed.startsWith(`${it}.`));
+      const tableName = this.aliasTableMapping[aliasPrefix];
       const columnName = aliasPrefix ? trimmed.slice(aliasPrefix.length + 1) : trimmed;
+      const column = this.tableColumnsMapping[tableName];
+      console.log(column);
       return [...prev, columnName];
     }
     return prev;
@@ -170,9 +173,7 @@ export class CreateViewComponent implements AfterViewInit {
   onChange(cm, event) {
     this.tablesWithoutAlias = [];
     const matches = this.editorContent.matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
-    const sqlControl = this.viewForm.get('sql');
-    sqlControl.setValue(this.editorContent);
-    sqlControl.markAsTouched();
+    this.viewForm.markAsTouched();
 
     if (matches) {
       this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
@@ -201,7 +202,7 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   onCursorActivity(cm, event) {
-    this.viewForm.get('sql').markAsTouched();
+    this.viewForm.markAsTouched();
     const cursor = cm.getCursor();
     const token = cm.getTokenAt(cursor);
     const hasReplaceHints = !!this.tokenReplaceMapping[token.string];
