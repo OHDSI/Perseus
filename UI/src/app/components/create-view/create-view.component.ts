@@ -42,7 +42,6 @@ export class CreateViewComponent implements AfterViewInit {
     name: new FormControl('', Validators.required)
   });
   tablesWithoutAlias = [];
-  tableColumnNamesMapping = {};
   tableColumnsMapping = {};
   aliasTableMapping = {};
   tokenReplaceMapping = {
@@ -54,15 +53,13 @@ export class CreateViewComponent implements AfterViewInit {
   };
 
   ngAfterViewInit() {
-    this.tableColumnNamesMapping = this.data.tables.reduce((prev, cur) => {
-      prev[cur.name] = cur.rows.map(it => it.name);
-      return prev;
-    }, {});
+    const tableColumnNamesMapping = {};
     this.tableColumnsMapping = this.data.tables.reduce((prev, cur) => {
       prev[cur.name] = cur.rows;
+      tableColumnNamesMapping[cur.name] = cur.rows.map(it => it.name);
       return prev;
     }, {});
-    editorSettings.hintOptions = { tables: this.tableColumnNamesMapping };
+    editorSettings.hintOptions = { tables: tableColumnNamesMapping };
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
     this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
     this.codeMirror.on('keyup', this.onKeyUp.bind(this));
@@ -79,7 +76,6 @@ export class CreateViewComponent implements AfterViewInit {
 
   get allColumns() {
     const aliasedColumns = this.aliasedTablesColumns();
-    console.log(aliasedColumns, this.tablesWithoutAliasColumns);
     return [...aliasedColumns, ...this.tablesWithoutAliasColumns];
   }
 
