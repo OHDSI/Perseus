@@ -7,12 +7,12 @@ export const ON_BOARDING_META = [
       key: 'close',
       title: 'Got it!'
     },
-    bullets: [1, 2, 3] // TODO: pass links to other onboarding steps
+    bullets: [1, 2, 3] // TODO: pass links to other on-boarding steps
   },
   {
     key: 'create-view',
     title: 'Ctrl + space',
-    content: 'Press hotkey to open autocomplete',
+    content: 'Press hot key to open autocomplete in SQL editor',
     action: {
       title: 'Got it!',
       key: 'close'
