@@ -347,6 +347,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   findTables(selectedSourceColumns: string[]): void {
+    if (selectedSourceColumns.length) {
     const indexes = {};
     const tableIncludesColumns = (arr, target) => target.every(v => arr.includes(v));
 
@@ -360,6 +361,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     });
 
     this.source = Object.assign([], this.source);
+  } else {
+    this.highlitedtables = [];
+  }
   }
 
   removeTableMapping(
@@ -404,7 +408,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (idx > -1) {
       switch (area) {
         case 'source': {
-          this.source = this.source.filter(filterByName);
+          this.source = this.data.source.map(item => item.name).filter(filterByName);
           break;
         }
         case 'target': {
@@ -412,7 +416,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           break;
         }
         case 'source-column': {
-          this.sourceRows = this.sourceRows.filter(row => filterByName(row.name));
+          this.sourceRows = uniqBy(this.data.source.
+          map(table => table.rows).
+          reduce((acc, val) => [...acc, ...val]), 'name').
+          filter(row => filterByName(row.name));
           break;
         }
       }
