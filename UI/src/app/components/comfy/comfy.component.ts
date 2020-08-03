@@ -348,18 +348,15 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   findTables(selectedSourceColumns: string[]): void {
     const indexes = {};
+    const tableIncludesColumns = (arr, target) => target.every(v => arr.includes(v));
 
     this.data.source.forEach(table => {
-      indexes[table.name] = selectedSourceColumns.map(columnname =>
-        table.rows.findIndex(r => r.name === columnname)
-      );
+      const rowNames = table.rows.map(item => item.name);
+      indexes[table.name] = tableIncludesColumns(rowNames, selectedSourceColumns);
     });
 
     this.highlitedtables = Object.keys(indexes).filter(tableName => {
-      return (
-        indexes[tableName].length > 0 &&
-        (indexes[tableName].findIndex(idx => idx > -1) > -1)
-      );
+      return indexes[tableName];
     });
 
     this.source = Object.assign([], this.source);
