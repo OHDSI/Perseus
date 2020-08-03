@@ -197,7 +197,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(configuration => {
-        this.targetConfig = configuration.tables;
+        this.data.targetConfig = configuration.tables;
+        this.targetConfig = this.data.targetConfig;
       });
 
     this.bridgeService.resetAllMappings$
@@ -479,14 +480,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   resetMapping() {
-    const settings = {
-      warning: 'You want to reset all mappings. This action cannot be undone',
-      header: 'Delete mappings',
-      okButton: 'Cancel',
-      deleteButton: 'Delete',
-      deleteAll: false,
-    };
-    this.commonUtilsService.openResetWarningDialog(settings);
+    this.commonUtilsService.resetMappingsWithWarning();
   }
 
   checkExistingMappings(): boolean {

@@ -34,12 +34,16 @@ export class ToolbarComponent implements OnInit {
   }
 
   resetAllMappings() {
-    this.bridgeService.resetAllMappings();
+    this.commonUtilsService.resetMappingsWithWarning();
   }
 
-  openSaveMappingDialog(action: OpenMappingDialog) {
-    this.commonUtilsService.openSaveMappingDialog(action, false);
+  openSaveMappingDialog() {
+  this.commonUtilsService.saveMappingDialog(false);
   }
+
+  openLoadMappingDialog() {
+    this.commonUtilsService.loadMappingDialog();
+    }
 
   onOpenSourceClick() {
     this.uploadService.onFileInputClick(this.fileInput);
@@ -54,14 +58,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   resetSourceAndTarget() {
-    const settings = {
-      warning: 'All mappings will be lost. Do you want to save created mappings?',
-      header: 'Save mappings',
-      okButton: 'Save',
-      deleteButton: 'Delete',
-      deleteAll: true
-    };
-    this.commonUtilsService.openResetWarningDialog(settings);
+    this.commonUtilsService.resetSourceAndTargetWithWarning();
   }
 
   startOnBoarding(target: EventTarget) {

@@ -61,6 +61,7 @@ import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filt
 import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
 import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-links-warning/delete-links-warning.component';
+import { OpenSaveDialogComponent } from './components/popups/open-save-dialog/open-save-dialog.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-li
     CdmFilterComponent,
     CreateViewComponent,
     ResetWarningComponent,
-    OnBoardingComponent
+    OnBoardingComponent,
+    OpenSaveDialogComponent
   ],
   imports: [
     BrowserModule,
