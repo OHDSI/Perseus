@@ -5,7 +5,7 @@
 <div mat-dialog-content>
   <mat-form-field appearance="standard">
     <mat-label>{{data.label}}</mat-label>
-  <mat-select *ngIf="data.type === 'select'" #item [(value)]="resultValue">
+  <mat-select *ngIf="data.type === 'select'" [(value)]="resultValue">
       <mat-option *ngFor="let item of data.items"
                   [value]="item">
         {{item}}
