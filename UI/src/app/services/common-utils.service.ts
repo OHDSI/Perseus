@@ -13,11 +13,17 @@ import { StoreService } from './store.service';
 import { Router } from '@angular/router';
 import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
 import { ConfigurationService } from './configuration.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonUtilsService {
+
+  private snakbarOptions = {
+    duration: 3000
+  };
+
   constructor(
     private matDialog: MatDialog,
     private stateService: StateService,
@@ -25,7 +31,8 @@ export class CommonUtilsService {
     private bridgeService: BridgeService,
     private storeService: StoreService,
     private router: Router,
-    private configService: ConfigurationService
+    private configService: ConfigurationService,
+    private snakbar: MatSnackBar,
   ) {
 
   }
@@ -76,7 +83,8 @@ export class CommonUtilsService {
     });
     matDialog.afterClosed().subscribe(res => {
       if (res) {
-        this.configService.openConfiguration(res);
+        const message = this.configService.openConfiguration(res.value);
+        this.openSnackbarMessage(message);
       }
     });
   }
@@ -94,8 +102,9 @@ export class CommonUtilsService {
         type: 'input'}
     });
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.configService.saveConfiguration(res);
+      if (res.action) {
+        const message = this.configService.saveConfiguration(res.value);
+        this.openSnackbarMessage(message);
         if (deleteSourceAndTargetAfterSave) {
           this.resetMappingsAndReturnToComfy(true);
         }
@@ -155,6 +164,14 @@ export class CommonUtilsService {
       deleteSourceAndTarget: true
     };
     this.openResetWarningDialog(settings);
+  }
+
+  openSnackbarMessage(message: string) {
+    this.snakbar.open(
+      message,
+      ' DISMISS ',
+      this.snakbarOptions
+    );
   }
 
 }

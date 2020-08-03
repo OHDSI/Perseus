@@ -13,46 +13,27 @@ export class ConfigurationService {
 
     configStorageService: IStorage<Configuration>;
     configurations = [];
-    private snakbarOptions = {
-        duration: 3000
-      };
 
     constructor(
         private bridgeService: BridgeService,
-        private snakbar: MatSnackBar,
         private storeService: StoreService
     ) {
         this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
         this.configurations = [...Object.values(this.configStorageService.configuration)];
     }
 
-    openConfiguration(configurationName: string) {
+    openConfiguration(configurationName: string): string {
         const config = this.configStorageService.open(configurationName);
         if (!config) {
-            this.snakbar.open(
-                `Configuration ${configurationName} not found`,
-                ' DISMISS ',
-                this.snakbarOptions
-              );
-            return;
+            return `Configuration ${configurationName} not found`;
         }
-
-        this.snakbar.open(
-          `Configuration ${config.name} has been loaded`,
-          ' DISMISS ',
-          this.snakbarOptions
-        );
         this.bridgeService.applyConfiguration(config);
+        return `Configuration ${config.name} has been loaded`;
       }
 
-      saveConfiguration(configurationName: string) {
-        if (!configurationName || configurationName.length === 0) {
-            this.snakbar.open(
-                `Configuration name has not been entered`,
-                ' DISMISS ',
-                this.snakbarOptions
-              );
-            return;
+      saveConfiguration(configurationName: string): string {
+        if (!configurationName || configurationName.trim().length === 0) {
+            return `Configuration name has not been entered`;
         }
 
         const newConfiguration = new Configuration({
@@ -64,10 +45,6 @@ export class ConfigurationService {
         this.configStorageService.save(newConfiguration);
         this.configurations = [...Object.values(this.configStorageService.configuration)];
 
-        this.snakbar.open(
-          `Configuration ${configurationName} has been saved`,
-          ' DISMISS ',
-          this.snakbarOptions
-        );
+        return `Configuration ${configurationName} has been saved`;
       }
 }

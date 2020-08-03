@@ -19,7 +19,7 @@
           mat-flat-button>
     Cancel
   </button>
-  <button [mat-dialog-close]="resultValue"
+  <button [mat-dialog-close]="{action: data.okButton, value: resultValue}"
           mat-flat-button
           color="accent">
     {{data.okButton}}
