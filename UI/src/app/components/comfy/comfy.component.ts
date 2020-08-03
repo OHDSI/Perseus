@@ -256,7 +256,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (!this.data.source.length) {
       return;
     }
-    const allColumns = this.data.source.map(table => table.rows).reduce((acc, val) => [...acc, ...val]);
+    const allColumns = this.data.source.reduce((prev, cur) => [...prev, ...cur.rows], []);
     this.sourceRows = uniqBy(allColumns, 'name');
   }
 
@@ -348,19 +348,19 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   findTables(selectedSourceColumns: string[]): void {
     if (selectedSourceColumns.length) {
-    const indexes = {};
-    const tableIncludesColumns = (arr, target) => target.every(v => arr.includes(v));
+      const indexes = {};
+      const tableIncludesColumns = (arr, target) => target.every(v => arr.includes(v));
 
-    this.data.source.forEach(table => {
-      const rowNames = table.rows.map(item => item.name);
-      indexes[table.name] = tableIncludesColumns(rowNames, selectedSourceColumns);
-    });
+      this.data.source.forEach(table => {
+        const rowNames = table.rows.map(item => item.name);
+        indexes[table.name] = tableIncludesColumns(rowNames, selectedSourceColumns);
+      });
 
-    this.highlitedtables = Object.keys(indexes).filter(tableName => {
+      this.highlitedtables = Object.keys(indexes).filter(tableName => {
       return indexes[tableName];
     });
 
-    this.source = Object.assign([], this.source);
+      this.source = Object.assign([], this.source);
   } else {
     this.highlitedtables = [];
   }
@@ -416,10 +416,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           break;
         }
         case 'source-column': {
-          this.sourceRows = uniqBy(this.data.source.
-          map(table => table.rows).
-          reduce((acc, val) => [...acc, ...val]), 'name').
-          filter(row => filterByName(row.name));
+          const rows = this.data.source.reduce((prev, cur) => [...prev, ...cur.rows], []);
+          this.sourceRows = uniqBy(rows, 'name').filter(row => filterByName(row.name));
           break;
         }
       }
