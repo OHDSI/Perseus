@@ -1,16 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
+
 import { OpenMappingDialog } from '../app.component';
 import { CdmVersionDialogComponent } from '../components/popups/cdm-version-dialog/cdm-version-dialog.component';
+import { OnBoardingComponent } from '../components/popups/on-boarding/on-boarding.component';
 import { OpenMappingDialogComponent } from '../components/popups/open-mapping-dialog/open-mapping-dialog.component';
-import { DataService } from './data.service';
-import { StateService } from './state.service';
 import { ResetWarningComponent } from '../components/popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
+import { DataService } from './data.service';
+import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
+import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
-import { Router } from '@angular/router';
 import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
 import { ConfigurationService } from './configuration.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,17 +27,20 @@ export class CommonUtilsService {
     duration: 3000
   };
 
+  private renderer: Renderer2;
+
   constructor(
+    private overlayService: OverlayService,
     private matDialog: MatDialog,
-    private stateService: StateService,
     private dataService: DataService,
     private bridgeService: BridgeService,
     private storeService: StoreService,
     private router: Router,
     private configService: ConfigurationService,
     private snakbar: MatSnackBar,
+    rendererFactory: RendererFactory2
   ) {
-
+    this.renderer = rendererFactory.createRenderer(null, null);
   }
 
   openSetCDMDialog() {
@@ -58,7 +64,7 @@ export class CommonUtilsService {
     const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
       closeOnNavigation: true,
       disableClose: true,
-      data: {action, target: this.storeService.state.targetConfig}
+      data: { action, target: this.storeService.state.targetConfig }
     });
     matDialog.afterClosed().subscribe(res => {
       if (deleteAfterSave) {
@@ -174,4 +180,16 @@ export class CommonUtilsService {
     );
   }
 
+  openOnBoardingTip(target: EventTarget, key) {
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'on-boarding-backdrop',
+      panelClass: 'on-boarding-bottom',
+      payload: { key },
+      positionStrategyFor: key
+    };
+    const dialogRef = this.overlayService.open(dialogOptions, target, OnBoardingComponent);
+    this.renderer.addClass(target, 'on-boarding-anchor');
+    dialogRef.afterClosed$.subscribe(configOptions => this.renderer.removeClass(target, 'on-boarding-anchor'));
+  }
 }

@@ -1,5 +1,5 @@
 @import '~@angular/material/_theming';
-@import "./variables.scss";
+@import './variables.scss';
 
 %common-dialog {
   border-radius: 2px;
@@ -35,7 +35,7 @@
 
 .warning-dialog {
   @extend %common-dialog;
-  
+
    border-radius: 2px;
    width: 245px;
    height: 247px;
@@ -51,6 +51,10 @@
 
   .mat-icon[svgIcon="help"] {
     cursor: pointer;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: white;
     svg {
       width: 16px;
       height: 16px;
@@ -83,4 +87,14 @@
 .filter-popup {
   @include mat-elevation-transition;
   @include mat-elevation(4);
+}
+
+.on-boarding-backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.on-boarding-anchor {
+  position: relative;
+  z-index: 10000;
+  background-color: rgba(75, 176, 255, 0.4);;
 }

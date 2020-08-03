@@ -1,11 +1,10 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { OpenMappingDialog } from '../../app.component';
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { UploadService } from '../../services/upload.service';
 import { StoreService } from '../../services/store.service';
-import { stringify } from 'querystring';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -17,6 +16,7 @@ export class ToolbarComponent implements OnInit {
 
   cdmVersion: string;
   reportName: string;
+
   constructor(
     private bridgeService: BridgeService,
     private commonUtilsService: CommonUtilsService,
@@ -26,10 +26,10 @@ export class ToolbarComponent implements OnInit {
 
   }
 
-  ngOnInit(){
-    this.storeService.state$.subscribe(res => {
-      this.cdmVersion = res['version'] ? `CDM v${res['version']}` : 'CDM version';
-      this.reportName = res['report'] ? res['report'] : 'Report name';
+  ngOnInit() {
+    this.storeService.state$.subscribe((res: any) => {
+      this.cdmVersion = res.version ? `CDM v${res.version}` : 'CDM version';
+      this.reportName = res.report || 'Report name';
     });
   }
 
@@ -59,5 +59,9 @@ export class ToolbarComponent implements OnInit {
 
   resetSourceAndTarget() {
     this.commonUtilsService.resetSourceAndTargetWithWarning();
+  }
+
+  startOnBoarding(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target,  'tour-toolbar');
   }
 }

@@ -1,9 +1,9 @@
 @import '~@angular/material/theming';
 
+@import 'app/styles/material.scss';
 @import 'app/styles/theme.scss';
 @import 'app/styles/overlays.scss';
-@import '~prismjs/plugins/toolbar/prism-toolbar.css';
-@import '~prismjs/themes/prism-okaidia';
+@import 'app/styles/codemirror';
 
 html, body {
   height: 100%;
@@ -61,14 +61,6 @@ a {
   }
 }
 
-.mat-expansion-panel-body {
-  padding: 0 !important;
-}
-
-.mat-menu-content {
-  padding: 0 !important;
-}
-
 app-dialog {
   width: 240px;
 }
@@ -77,33 +69,6 @@ app-dialog {
 .drag-over {
   background-color: $light-blue;
   outline: $blue auto;
-}
-
-.mat-menu-panel {
-  border-radius: 2px !important;
-  background-color: white;
-}
-
-.mat-card {
-  border-radius: 0 !important;
-  background-color: $cdm-grey-lighter;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
-}
-
-.mat-dialog-container {
-  border-radius: 0 !important;
-  background-color: $cdm-grey-lighter;
-}
-
-.mat-table {
-  background-color: $cdm-grey-lighter;
-}
-
-.mat-radio-container,
-.mat-radio-outer-circle,
-.mat-radio-inner-circle {
-  width: 15px !important;
-  height: 15px !important;
 }
 
 ::-webkit-scrollbar {
@@ -134,7 +99,6 @@ app-dialog {
   }
 }
 
-
 path {
   stroke-width: 1;
 
@@ -151,114 +115,3 @@ path {
   }
 }
 
-.vocabulary-config-tabs .mat-tab-body .mat-tab-body-content {
-  height: 300px;
-  overflow-x: hidden !important;
-  overflow-y: scroll !important;
-}
-
-mat-list.mat-list.mat-list-base[dense] {
-  padding-top: 0;
-
-  .mat-list-item .mat-list-item-content {
-    padding: 0 8px;
-  }
-}
-
-.mat-flat-button {
-  background-color: $cdm-grey-light;
-}
-
-button.mat-flat-button.mat-button-base {
-  border-radius: 2px;
-}
-
-.mat-form-field.mat-form-field-appearance-outline {
-  .mat-form-field-wrapper {
-    margin: 0;
-    padding-bottom: 32px;
-  }
-
-  .mat-form-field-prefix,
-  .mat-form-field-prefix .mat-icon {
-    color: $grey;
-    font-size: 17px;
-  }
-
-  .mat-form-field-suffix {
-    top: 0;
-
-    button.mat-icon-button {
-      width: 20px;
-      height: 20px;
-    }
-
-    .mat-icon {
-      font-size: 14px;
-    }
-  }
-
-  .mat-form-field-flex {
-    border-radius: 2px;
-
-    &:hover,
-    &:active {
-      .mat-form-field-prefix .mat-icon {
-        color: $cdm-blue;
-      }
-    }
-  }
-
-  .mat-form-field-outline {
-    border-radius: 2px;
-    border-color: white;
-
-    & > * {
-      background-color: white;
-      border-radius: 2px;
-    }
-
-    &-thick {
-      color: white;
-      border-radius: 2px;
-    }
-  }
-
-  &.mat-form-field-invalid .mat-form-field-outline-thick {
-    color: red;
-  }
-
-  &.search-by-name {
-    .mat-form-field-outline {
-      box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
-
-      &-thick {
-        box-shadow: 0 0 8px $cdm-blue-light;
-      }
-    }
-  }
-}
-
-.mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0 0 6px;
-}
-
-.CodeMirror.cm-s-default {
-  border: 2px solid transparent;
-  box-sizing: border-box;
-  height: 250px;
-  padding: 10px 15px;
-
-  .cm-keyword {
-    color: $cdm-blue;
-    text-transform: uppercase;
-  }
-}
-
-.invalid .CodeMirror.cm-s-default {
-  border-color: red;
-}
-
-.CodeMirror-hints.default {
-  z-index: 1000;
-}

@@ -30,6 +30,8 @@
             "styles": [
               "node_modules/codemirror/lib/codemirror.css",
               "node_modules/codemirror/addon/hint/show-hint.css",
+              "node_modules/prismjs/plugins/toolbar/prism-toolbar.css",
+              "node_modules/prismjs/themes/prism-okaidia.css",
               "src/styles.scss"
             ],
             "scripts": [
