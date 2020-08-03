@@ -28,8 +28,7 @@ export class ConfigurationService {
 
     openConfiguration(configurationName: string) {
         const config = this.configStorageService.open(configurationName);
-        if (config) {
-        } else {
+        if (!config) {
             this.snakbar.open(
                 `Configuration ${configurationName} not found`,
                 ' DISMISS ',

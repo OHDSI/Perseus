@@ -19,13 +19,13 @@ export class OpenSaveDialogComponent implements OnInit {
     private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    if (!this.data.input) {
+    if (this.data.type === 'select') {
       this.resultValue = this.data.items[0];
     }
   }
 
   ngOnInit() {
-    if (!this.data.input) {
+    if (this.data.type === 'select') {
       this.versionElement.focus();
     }
   }

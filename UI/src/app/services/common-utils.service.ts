@@ -69,10 +69,10 @@ export class CommonUtilsService {
       panelClass: 'cdm-version-dialog',
       data: {
         header: 'Open Mapping',
-        dropdownLabel: 'Select Configuration',
+        label: 'Select Configuration',
         okButton: 'Open',
         items: this.configService.configurations.map(config => config.name),
-        input: false}
+        type: 'select'}
     });
     matDialog.afterClosed().subscribe(res => {
       if (res) {
@@ -88,10 +88,10 @@ export class CommonUtilsService {
       panelClass: 'cdm-version-dialog',
       data: {
         header: 'Save Mapping',
-        dropdownLabel: 'Name',
+        label: 'Name',
         okButton: 'Save',
         items: this.configService.configurations.map(config => config.name),
-        input: true}
+        type: 'input'}
     });
     matDialog.afterClosed().subscribe(res => {
       if (res) {

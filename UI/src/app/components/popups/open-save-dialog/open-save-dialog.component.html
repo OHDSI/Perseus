@@ -4,14 +4,14 @@
 </mat-icon>
 <div mat-dialog-content>
   <mat-form-field appearance="standard">
-    <mat-label>{{data.dropdownLabel}}</mat-label>
-  <mat-select *ngIf="!data.input" #item [(value)]="resultValue">
+    <mat-label>{{data.label}}</mat-label>
+  <mat-select *ngIf="data.type === 'select'" #item [(value)]="resultValue">
       <mat-option *ngFor="let item of data.items"
                   [value]="item">
         {{item}}
       </mat-option>
     </mat-select>
- <input *ngIf="data.input" [(ngModel)]="resultValue" matInput>
+ <input *ngIf="data.type === 'input'" [(ngModel)]="resultValue" matInput>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
