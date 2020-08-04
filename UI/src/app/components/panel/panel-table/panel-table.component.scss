@@ -82,6 +82,19 @@ table {
     color: $blue;
   }
 
+  .constant-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: $light-grey;
+    line-height: 14px;
+    color: $white;
+  }
+
+  .constant-icon.active {
+    background-color: $blue;
+  }
+
   .drag_indicator {
     padding: 0 !important;
   }

@@ -13,11 +13,12 @@
 }
 
 section {
-  height: calc(100% - 40px);
+  margin-top: 35px;
+  height: calc(100% - 75px);
 
   main {
     width: 100%;
-    height: calc(100% - 161px);
+    height: calc(100% - 81px);
     position: relative;
     float: left;
   }
@@ -133,11 +134,7 @@ footer {
   }
 }
 
-::ng-deep .mat-tab-labels {
-  display: block !important;
-}
-
-::ng-deep .mat-tab-group{
+::ng-deep .mat-tab-group {
   .mat-expansion-panel-header-title span {
     color: $cdm-grey-dark;
     font-weight: bold;
