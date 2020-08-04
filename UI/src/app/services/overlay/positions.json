@@ -64,7 +64,7 @@
       "overlayX": "end",
       "overlayY": "bottom"
     },
-    "create-view": {
+    "sql-editor": {
       "offsetX": 160,
       "offsetY": 170,
       "originX": "end",

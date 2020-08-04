@@ -1,10 +1,13 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { fromEvent } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
+
 import { BridgeService } from './services/bridge.service';
+
+const ICON_NAMES = ['CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping', 'edit', 'delete'];
 
 @Component({
   selector: 'app-root',
@@ -45,7 +48,7 @@ export class AppComponent implements OnDestroy {
   }
 
   addIcons() {
-    ['CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping'].forEach(key => {
+    ICON_NAMES.forEach(key => {
       this.matIconRegistry.addSvgIcon(
         key,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/icons/${key}.svg`)
@@ -53,7 +56,6 @@ export class AppComponent implements OnDestroy {
     });
   }
 }
-
 
 
 export type OpenMappingDialog = 'open' | 'save';

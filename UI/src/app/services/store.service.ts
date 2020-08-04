@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Table } from '../models/table';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,22 @@ export class StoreService {
 
   add(key, value) {
     this.state = { ...this.state, [key]: value };
+  }
+
+  removeTable(storeKey, table) {
+    const tables = this.state[storeKey];
+    if (tables && tables.length) {
+      const updatedTables = tables.filter(it => it !== table);
+      this.state = { ...this.state, [storeKey]: updatedTables };
+    }
+  }
+
+  updateTable(storeKey, table, updates) {
+    const tables = this.state[storeKey];
+    if (tables && tables.length && table) {
+      const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...table, ...updates }) : new Table(table));
+      this.state = { ...this.state, [storeKey]: updatedTables };
+    }
   }
 
   resetAllData() {

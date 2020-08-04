@@ -12,6 +12,7 @@ import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
+import { Area } from '../../models/area';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { OverlayConfigOptions } from '../../services/overlay/overlay-config-options.interface';
 import { OverlayService } from '../../services/overlay/overlay.service';
@@ -19,8 +20,8 @@ import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
-import { CreateViewComponent } from '../create-view/create-view.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
+import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
 
 @Component({
@@ -171,27 +172,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         },
         error => console.error(error)
       );
-    /*Experiment for vocabulary*/
 
-    // this.dataService
-    //   .initialize()
-    //   .pipe(
-    //     takeUntil(this.ngUnsubscribe),
-    //     switchMap(_ => {
-    //      // this.stateService.switchSourceToTarget(); // ??
-    //       this.initializeSourceData();
-    //       this.initializeTargetData();
-    //       this.initializeSourceColumns();
-    //       this.busy = false;
-    //       return this.mappingStorage.get('mappingtables');
-    //     })
-    //   )
-    //   .subscribe(target => {
-    //    // this.target = target;
-    //   });
     this.storeService.state$.subscribe(res => {
-      this.data = res;
-      this.initializeData();
+      if (res) {
+        this.data = res;
+        this.initializeData();
+      }
     });
 
     this.bridgeService.applyConfiguration$
@@ -204,12 +190,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.resetAllMappings$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
-          Object.values(this.targetConfig).forEach((item: any) => {
+        Object.values(this.targetConfig).forEach((item: any) => {
           item.data = [item.first];
-        } );
-          this.initializeData();
+        });
+        this.initializeData();
 
-          this.snakbar.open(
+        this.snakbar.open(
           'Reset all mappings success',
           ' DISMISS ',
           this.snakbarOptions
@@ -397,28 +383,25 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByName(area: string, byName: Criteria): void {
-    const areas = ['source-column', 'target', 'source'];
-    const idx = areas.indexOf(area);
-
     const filterByName = (name, index?) => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
     };
 
-    if (idx > -1) {
-      switch (area) {
-        case 'source': {
-          this.source = this.source.filter(filterByName);
-          break;
-        }
-        case 'target': {
-          this.targetTableNames = uniq(Object.keys(this.targetConfig)).filter(filterByName);
-          break;
-        }
-        case 'source-column': {
-          this.sourceRows = this.sourceRows.filter(row => filterByName(row.name));
-          break;
-        }
+    switch (area) {
+      case Area.Source: {
+        this.source = this.source.filter(filterByName);
+        break;
       }
+      case Area.Target: {
+        this.targetTableNames = uniq(Object.keys(this.targetConfig)).filter(filterByName);
+        break;
+      }
+      case Area.SourceColumn: {
+        this.sourceRows = this.sourceRows.filter(row => filterByName(row.name));
+        break;
+      }
+      default:
+        break;
     }
   }
 
@@ -434,24 +417,21 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByNameReset(area: string, byName: Criteria): void {
-    const areas = ['source-column', 'target', 'source'];
-    const idx = areas.indexOf(area);
-
-    if (idx > -1) {
-      switch (area) {
-        case 'source': {
-          this.initializeSourceData();
-          break;
-        }
-        case 'target': {
-          this.initializeTargetData();
-          break;
-        }
-        case 'source-column': {
-          this.initializeSourceColumns();
-          break;
-        }
+    switch (area) {
+      case Area.Source: {
+        this.initializeSourceData();
+        break;
       }
+      case Area.Target: {
+        this.initializeTargetData();
+        break;
+      }
+      case Area.SourceColumn: {
+        this.initializeSourceColumns();
+        break;
+      }
+      default:
+        break;
     }
   }
 
@@ -488,20 +468,55 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
 
-  openCreateViewEditor() {
-    const matDialog = this.matDialog.open(CreateViewComponent, {
+  openSqlDialog(data) {
+    return this.matDialog.open(SqlEditorComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'create-view-dialog',
-      data: { tables: this.data.source }
+      panelClass: 'sql-editor-dialog',
+      data
     });
+  }
+  openCreateSqlDialog() {
+    const matDialog = this.openSqlDialog({ tables: this.data.source });
 
     matDialog.afterClosed().subscribe(res => {
         if (res) {
-          this.storeService.add('source', [res, ...this.data.source]);
+          this.storeService.add(Area.Source, [res, ...this.data.source]);
         }
       }
     );
+  }
+
+  openEditSqlDialog(name) {
+    const table = this.findSourceTableByName(name);
+    const matDialog = this.openSqlDialog({ tables: this.data.source, table });
+
+    matDialog.afterClosed().subscribe(res => {
+        if (res) {
+          this.storeService.updateTable(Area.Source, table, res);
+        }
+      }
+    );
+  }
+
+  openDeleteViewDialog(tableName) {
+    const dialogRef = this.commonUtilsService.deleteTableWithWarning();
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        const table = this.findSourceTableByName(tableName);
+        this.storeService.removeTable(Area.Source, table);
+      }
+    });
+
+  }
+
+  isEditable(tableName: string): boolean {
+    const table = this.findSourceTableByName(tableName);
+    return table && table.sql;
+  }
+
+  findSourceTableByName(name) {
+    return this.commonUtilsService.findTableByKeyValue(this.data.source, 'name', name);
   }
 }
 

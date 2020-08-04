@@ -1,5 +1,6 @@
 export enum Area {
   Source = 'source',
-  Target = 'target'
+  Target = 'target',
+  SourceColumn= 'source-column'
 }
 
