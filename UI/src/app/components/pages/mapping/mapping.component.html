@@ -1,14 +1,4 @@
 <div class="app-mapping">
-  <div class="export-actions">
-    <button
-      mat-icon-button
-      matTooltip="Preview mappings"
-      aria-label="preview mapping xmls"
-      (click)="previewMapping()"
-    >
-      <mat-icon>play_circle_filled_white</mat-icon>
-    </button>
-  </div>
   <section>
     <main #maincanvas class="main">
       <div class="area-source">
@@ -167,10 +157,19 @@
         mat-flat-button
         color="accent"
         matTooltip="Download ziped mappings"
-        aria-label="generate mapping xmls"
+        aria-label="Download mappings xmls"
         [disabled]="isFooterButtonDisabled()"
         (click)="generateMappingJson()"
-      >Save
+      >Generate & Save
+      </button>
+      <button
+        mat-flat-button
+        color="accent"
+        matTooltip="Preview mappings"
+        aria-label="Preview mapping xmls"
+        [disabled]="isFooterButtonDisabled()"
+        (click)="previewMapping()"
+      >Preview
       </button>
       <button
         mat-flat-button

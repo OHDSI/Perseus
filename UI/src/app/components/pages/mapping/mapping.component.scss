@@ -13,7 +13,7 @@
 }
 
 section {
-  margin-top: 35px;
+  margin-top: 75px;
   height: calc(100% - 75px);
 
   main {
@@ -60,12 +60,16 @@ section {
 footer {
     width: 100%;
     float: left;
+    margin-top: 15px;
+    margin-bottom: 30px;
 
     button {
       float: right;
-      margin-top: 15px;
-      margin-bottom: 30px;
-      margin-left: 15px;
+      margin-left: 30px;
+    }
+
+    button:first-child {
+      margin-right: 8px;
     }
 }
 
@@ -103,35 +107,6 @@ footer {
   display: flex;
   flex-direction: column;
   height: calc(100% - 64px);
-}
-
-
-// Temporary
-.breadcrumbs {
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  float: left;
-
-  .title {
-    font-size: 14px;
-    font-weight: bolder;
-    float: left;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-
-  .link-tables {
-    color: $black;
-  }
-
-  .link-fields {
-    color: $blue;
-  }
-
-  .sep {
-    color:$cdm-grey-dark;
-  }
 }
 
 ::ng-deep .mat-tab-group {
