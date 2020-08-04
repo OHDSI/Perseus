@@ -1,7 +1,7 @@
 @import './variables.scss';
 
 .CodeMirror.cm-s-default {
-  border: 2px solid transparent;
+  border: 2px solid $cdm-grey-light;
   box-sizing: border-box;
   height: 250px;
   padding: 10px 15px;
