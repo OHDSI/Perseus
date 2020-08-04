@@ -9,8 +9,17 @@ const routes: Routes = [
     redirectTo: '/comfy',
     pathMatch: 'full'
   },
-  { path: 'comfy', component: ComfyComponent },
-  { path: 'mapping', component: MappingComponent}
+  {
+    path: 'comfy',
+    component: ComfyComponent,
+    data: { breadcrumb: 'Link Tables'},
+    children : [{
+      path: 'mapping',
+      component: MappingComponent,
+      data: { breadcrumb: 'Link Fields'}
+    }]
+  },
+  { path: 'mapping', component: MappingComponent, data: { breadcrumb: 'Link Fields'}  }
 ];
 
 @NgModule({

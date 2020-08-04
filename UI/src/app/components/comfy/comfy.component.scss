@@ -252,7 +252,8 @@ h3 {
 main {
   flex: 3 1 80%;
   order: 2;
-  padding: 50px 50px 10px;
+  padding: 30px 30px 10px;
+  margin-top: 53px;
 }
 
 nav {
@@ -261,7 +262,7 @@ nav {
   width: 395px;
   max-width: 395px;
   order: 1;
-  padding: 50px 42px 10px 40px;
+  padding: 30px 30px 10px 30px;
   position: relative;
   z-index: 1;
 
@@ -372,8 +373,8 @@ article {
   margin-bottom: 10px;
 }
 
-.right-bottom-button-reset { 
-  @extend .right-bottom-button; 
-  color: red; 
+.right-bottom-button-reset {
+  @extend .right-bottom-button;
+  color: red;
   margin-right: 15px
 }

@@ -18,33 +18,28 @@
     </button>
   </div>
   <section>
-    <!-- Temporary. TODO implement bredcrumbs -->
-    <div class="breadcrumbs">
-      <div class="title link-tables">Link Tables</div>
-      <div class="title sep">></div>
-      <div class="title link-fields">Link Fields</div>
-    </div>
-    <!-- Temporary. TODO implement bredcrumbs -->
     <main #maincanvas class="main">
-      <app-area area="source" class="area-source">
-        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')">
+      <div class="area-source">
+        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')" mat-align-tabs="start">
           <mat-tab
             [label]="table.name"
             *ngFor="let table of source; trackBy: trackByFn"
           >
-            <app-panel-source
-              #sourcePanel
-              *ngIf="table.visible"
-              [tabIndex]="sourceTabIndex"
-              [table]="table"
-              [tables]="source"
-              (open)="onPanelOpen(table)"
-              (close)="onPanelClose(table)"
-              (initialized)="onPanelInit(table)"
-            ></app-panel-source>
+            <app-area area="source">
+              <app-panel-source
+                #sourcePanel
+                *ngIf="table.visible"
+                [tabIndex]="sourceTabIndex"
+                [table]="table"
+                [tables]="source"
+                (open)="onPanelOpen(table)"
+                (close)="onPanelClose(table)"
+                (initialized)="onPanelInit(table)"
+              ></app-panel-source>
+            </app-area>
           </mat-tab>
         </mat-tab-group>
-      </app-area>
+      </div>
       <!--Bridge-->
       <div class="hint">
         <div class="patch-top"></div>
@@ -152,26 +147,28 @@
         <!-- <div class="patch-bottom"></div> -->
       </div>
       <!--End-of-the-Bridge-->
-      <app-area area="target" class="area-target">
+      <div class="area-target">
         <mat-tab-group [selectedIndex]="targetTabIndex" (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab
             [label]="table.name"
             *ngFor="let table of target; trackBy: trackByFn"
             [disabled]="isDisabled(table.name)"
           >
-            <app-panel-target
-              #targetPanel
-              *ngIf="table.visible"
-              [tabIndex]="targetTabIndex"
-              [table]="table"
-              [tables]="target"
-              (open)="onPanelOpen(table)"
-              (close)="onPanelClose(table)"
-              (initialized)="onPanelInit(table)"
-            ></app-panel-target>
+            <app-area area="target">
+              <app-panel-target
+                #targetPanel
+                *ngIf="table.visible"
+                [tabIndex]="targetTabIndex"
+                [table]="table"
+                [tables]="target"
+                (open)="onPanelOpen(table)"
+                (close)="onPanelClose(table)"
+                (initialized)="onPanelInit(table)"
+              ></app-panel-target>
+            </app-area>
           </mat-tab>
         </mat-tab-group>
-      </app-area>
+      </div>
     </main>
     <footer>
       <button

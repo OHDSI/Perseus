@@ -1,0 +1,42 @@
+@import 'src/app/styles/variables.scss';
+
+.breadcrumb {
+  position: absolute;
+  background: none;
+  font-size: 18px;
+  margin: 0;
+  z-index: 2;
+  margin-top: 26px;
+  padding: 0;
+
+  li {
+    list-style: none;
+    float: left;
+    margin: 5px;
+  }
+
+  li:last-child {
+    margin-right: 20px;
+  }
+
+  li span {
+    color: $blue;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+  }
+
+  li:last-child span {
+    color: $cdm-grey-dark;
+    cursor: default;
+  }
+
+  li::after {
+    content: ">";
+    color: $black;
+  }
+
+  li:last-child::after {
+    content: "";
+  }
+}

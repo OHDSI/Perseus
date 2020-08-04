@@ -18,7 +18,6 @@
   ></app-columns-list>
 </nav>
 <main>
-  <h3>Link tables</h3>
   <div class="articles">
     <article>
       <h4>Source tables
@@ -142,13 +141,18 @@
       </div>
     </article>
   </div>
-  <button 
-  mat-flat-button color="accent" 
-  class="right-bottom-button"
-  [disabled]="!checkExistingMappings()"
-  (click)="openMapping()">Go To Link Fields</button>
-  <button mat-flat-button 
-  class="right-bottom-button-reset"
-  [disabled]="!checkExistingMappings()" 
-  (click)="resetMapping()">Delete Mapping</button>
+  <button
+    mat-flat-button color="accent"
+    class="right-bottom-button"
+    [disabled]="!checkExistingMappings()"
+    (click)="openMapping()">
+    Go To Link Fields
+  </button>
+  <button
+    mat-flat-button
+    class="right-bottom-button-reset"
+    [disabled]="!checkExistingMappings()"
+    (click)="resetMapping()">
+    Delete Mapping
+  </button>
 </main>
