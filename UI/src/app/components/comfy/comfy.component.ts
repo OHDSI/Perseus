@@ -21,7 +21,6 @@ import { UploadService } from '../../services/upload.service';
 import { BaseComponent } from '../base/base.component';
 import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
-import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
 
 @Component({
@@ -242,7 +241,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (!this.data.source.length) {
       return;
     }
-    const allColumns = this.data.source.map(table => table.rows).reduce((acc, val) => [...acc, ...val]);
+    const allColumns = this.data.source.reduce((prev, cur) => [...prev, ...cur.rows], []);
     this.sourceRows = uniqBy(allColumns, 'name');
   }
 
@@ -333,22 +332,21 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   findTables(selectedSourceColumns: string[]): void {
-    const indexes = {};
+    if (selectedSourceColumns.length) {
+      const indexes = {};
+      const tableIncludesColumns = (arr, target) => target.every(v => arr.includes(v));
 
-    this.data.source.forEach(table => {
-      indexes[table.name] = selectedSourceColumns.map(columnname =>
-        table.rows.findIndex(r => r.name === columnname)
-      );
-    });
+      this.data.source.forEach(table => {
+        const rowNames = table.rows.map(item => item.name);
+        indexes[table.name] = tableIncludesColumns(rowNames, selectedSourceColumns);
+      });
 
-    this.highlitedtables = Object.keys(indexes).filter(tableName => {
-      return (
-        indexes[tableName].length > 0 &&
-        (indexes[tableName].findIndex(idx => idx > -1) > -1)
-      );
-    });
+      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[tableName]);
 
-    this.source = Object.assign([], this.source);
+      this.source = Object.assign([], this.source);
+    } else {
+      this.highlitedtables = [];
+    }
   }
 
   removeTableMapping(
@@ -383,13 +381,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByName(area: string, byName: Criteria): void {
+
     const filterByName = (name, index?) => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
     };
 
     switch (area) {
       case Area.Source: {
-        this.source = this.source.filter(filterByName);
+        this.source = this.data.source.map(item => item.name).filter(filterByName);
         break;
       }
       case Area.Target: {
@@ -397,7 +396,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         break;
       }
       case Area.SourceColumn: {
-        this.sourceRows = this.sourceRows.filter(row => filterByName(row.name));
+        const rows = this.data.source.reduce((prev, cur) => [...prev, ...cur.rows], []);
+        this.sourceRows = uniqBy(rows, 'name').filter(row => filterByName(row.name));
         break;
       }
       default:
@@ -464,7 +464,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.targetConfig[it] && this.targetConfig[it].data && this.targetConfig[it].data.length > 1);
+    return !!this.targetTableNames.find(it => this.targetConfig[ it ]
+      && this.targetConfig[ it ].data
+      && this.targetConfig[ it ].data.length > 1);
   }
 
 
@@ -472,8 +474,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.matDialog.open(SqlEditorComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'sql-editor-dialog',
-      data
+      panelClass: 'create-view-dialog',
+      data: { tables: this.data.source }
     });
   }
   openCreateSqlDialog() {
@@ -521,7 +523,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 }
 
 export function bound(target: object, propKey: string | symbol) {
-  const originalMethod = (target as any)[propKey] as Function;
+  const originalMethod = (target as any)[ propKey ] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
   if (typeof originalMethod !== 'function') {
@@ -554,7 +556,7 @@ export function bound(target: object, propKey: string | symbol) {
         // The first invocation (per instance) will return the bound method from here.
         // Subsequent calls will never reach this point, due to the way
         // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
-        return instance[propKey];
+        return instance[ propKey ];
       }
     } as PropertyDescriptor;
   }
