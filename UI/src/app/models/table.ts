@@ -2,12 +2,12 @@ import { IRow, Row } from 'src/app/models/row';
 import { Area } from './area';
 
 export interface ITable {
-    id: number;
-    area: Area;
-    name: string;
-    rows: IRow[];
-    visible: boolean;
-    expanded: boolean;
+  id: number;
+  area: Area;
+  name: string;
+  rows: IRow[];
+  visible: boolean;
+  expanded: boolean;
 }
 
 
@@ -18,15 +18,17 @@ export interface ITableOptions {
   rows?: IRow[];
   visible?: boolean;
   expanded?: boolean;
+  sql?: string;
 }
 
 export class Table {
-   id: number;
-   area: Area;
-   name: string;
-   rows: IRow[];
-   visible = true;
-   expanded = false;
+  id: number;
+  area: Area;
+  name: string;
+  rows: IRow[];
+  visible = true;
+  expanded = false;
+  sql: string;
 
   constructor(options: ITableOptions = {}) {
     this.id = options.id;
@@ -35,5 +37,6 @@ export class Table {
     this.rows = options.rows.map((row: any) => new Row(row));
     this.visible = options.visible || true;
     this.expanded = options.expanded || false;
-   }
+    this.sql = options.sql || '';
+  }
 }

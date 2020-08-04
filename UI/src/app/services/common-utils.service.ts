@@ -1,22 +1,23 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
 import { OpenMappingDialog } from '../app.component';
 import { CdmVersionDialogComponent } from '../components/popups/cdm-version-dialog/cdm-version-dialog.component';
+import { DeleteLinksWarningComponent } from '../components/popups/delete-links-warning/delete-links-warning.component';
 import { OnBoardingComponent } from '../components/popups/on-boarding/on-boarding.component';
 import { OpenMappingDialogComponent } from '../components/popups/open-mapping-dialog/open-mapping-dialog.component';
+import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
 import { ResetWarningComponent } from '../components/popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
+import { ConfigurationService } from './configuration.service';
 import { DataService } from './data.service';
 import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
-import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
-import { ConfigurationService } from './configuration.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,11 @@ export class CommonUtilsService {
     rendererFactory: RendererFactory2
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
+  }
+
+
+  findTableByKeyValue(tables, key, value) {
+    return tables.find(it => it[key] === value);
   }
 
   openSetCDMDialog() {
@@ -85,7 +91,8 @@ export class CommonUtilsService {
         label: 'Select Configuration',
         okButton: 'Open',
         items: this.configService.configurations.map(config => config.name),
-        type: 'select'}
+        type: 'select'
+      }
     });
     matDialog.afterClosed().subscribe(res => {
       if (res) {
@@ -105,7 +112,8 @@ export class CommonUtilsService {
         label: 'Name',
         okButton: 'Save',
         items: this.configService.configurations.map(config => config.name),
-        type: 'input'}
+        type: 'input'
+      }
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
@@ -136,7 +144,7 @@ export class CommonUtilsService {
           this.saveMappingDialog(true);
           break;
         default: {
-         this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
+          this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
         }
       }
     });
@@ -170,6 +178,16 @@ export class CommonUtilsService {
       deleteSourceAndTarget: true
     };
     this.openResetWarningDialog(settings);
+  }
+
+  deleteTableWithWarning() {
+    const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog'
+    });
+
+    return dialog;
   }
 
   openSnackbarMessage(message: string) {

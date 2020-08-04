@@ -139,8 +139,8 @@ export class BridgeService {
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (table.name === arrow[table.area].tableName) {
-        const source = storeService.findTable(arrow.source.tableName);
-        const target = storeService.findTable(arrow.target.tableName);
+        const source = this.findTable(arrow.source.tableName);
+        const target = this.findTable(arrow.target.tableName);
 
         this.refreshConnector(arrow, source, target);
       }
@@ -152,8 +152,8 @@ export class BridgeService {
 
     setTimeout(() => {
       Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-        const source = this.storeService.findTable(arrow.source.tableName);
-        const target = this.storeService.findTable(arrow.target.tableName);
+        const source = this.findTable(arrow.source.tableName);
+        const target = this.findTable(arrow.target.tableName);
 
         source.expanded = true;
         target.expanded = true;
@@ -344,5 +344,20 @@ export class BridgeService {
     const targetTableId = target.tableId;
 
     return `${targetTableId}-${targetRowId}`;
+  }
+
+ // replace this method away from store service with initial code
+  // because it's not about storing and specific only for bridgeService
+  findTable(name: string): ITable {
+    const state = this.storeService.state;
+    const index1 = state.target.findIndex(t => t.name === name);
+    const index2 = state.source.findIndex(t => t.name === name);
+    if (index1 > -1) {
+      return state.target[index1];
+    } else if (index2 > -1) {
+      return state.source[index2];
+    }
+
+    return null;
   }
 }
