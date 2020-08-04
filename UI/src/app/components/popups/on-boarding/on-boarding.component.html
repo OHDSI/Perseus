@@ -1,0 +1,11 @@
+<h3>{{meta.title}}</h3>
+<p>{{meta.content}}</p>
+<div class="actions">
+  <div class="bullets">
+    <div class="bullet"
+         [class.active]="i===1"
+         *ngFor="let bullet of meta.bullets; let i = index"></div>
+  </div>
+  <a mat-button
+     (click)="execute()">{{meta.action.title}}</a>
+</div>

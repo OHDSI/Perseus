@@ -7,7 +7,7 @@
     #nameSearchInput
     matInput
     [formControl]="dbNameFormControl"
-    (keyup.enter)="search(nameSearchInput.value)"
+    (input)="search(nameSearchInput.value)"
     [matAutocomplete]="auto"
     [placeholder]="placeholder"
   />

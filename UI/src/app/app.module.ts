@@ -31,6 +31,7 @@ import { ConceptService } from './components/comfy/services/concept.service';
 import { CreateViewComponent } from './components/create-view/create-view.component';
 import { AddConstantPopupComponent } from './components/popups/add-constant-popup/add-constant-popup.component';
 import { CdmVersionDialogComponent } from './components/popups/cdm-version-dialog/cdm-version-dialog.component';
+import { OnBoardingComponent } from './components/popups/on-boarding/on-boarding.component';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { PreviewPopupComponent } from './components/popups/preview-popup/preview-popup.component';
 import { PrismComponent } from './components/popups/preview-popup/prism.component';
@@ -60,6 +61,7 @@ import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filt
 import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
 import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-links-warning/delete-links-warning.component';
+import { OpenSaveDialogComponent } from './components/popups/open-save-dialog/open-save-dialog.component';
 import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
 
 @NgModule({
@@ -97,7 +99,9 @@ import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.co
     ComfySearchByNameComponent,
     CdmFilterComponent,
     CreateViewComponent,
-    ResetWarningComponent
+    ResetWarningComponent,
+    OnBoardingComponent,
+    OpenSaveDialogComponent
   ],
   imports: [
     BrowserModule,

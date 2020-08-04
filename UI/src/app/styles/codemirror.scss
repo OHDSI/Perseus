@@ -1,0 +1,21 @@
+@import './variables.scss';
+
+.CodeMirror.cm-s-default {
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  height: 250px;
+  padding: 10px 15px;
+
+  .cm-keyword {
+    color: $cdm-blue;
+    text-transform: uppercase;
+  }
+}
+
+.invalid .CodeMirror.cm-s-default {
+  border-color: red;
+}
+
+.CodeMirror-hints.default {
+  z-index: 1000;
+}

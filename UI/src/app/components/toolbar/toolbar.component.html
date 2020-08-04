@@ -5,7 +5,7 @@
           aria-label="cdm menu">
     <mat-icon>more_vert</mat-icon>
   </button>
-  <button mat-icon-button>
+  <button mat-icon-button (click)="startOnBoarding($event.currentTarget)">
     <mat-icon svgIcon="help"></mat-icon>
   </button>
   <label class="info-label">{{reportName}} - {{cdmVersion}}</label>
@@ -32,12 +32,12 @@
       <span>Set CDM Version</span>
     </button>
     <button mat-menu-item
-            (click)="openSaveMappingDialog('open')">
+            (click)="openLoadMappingDialog()">
       <mat-icon svgIcon="mapping"></mat-icon>
       <span>Open Mappings</span>
     </button>
     <button mat-menu-item
-            (click)="openSaveMappingDialog('save')">
+            (click)="openSaveMappingDialog()">
       <mat-icon svgIcon="save"></mat-icon>
       <span>Save Mappings</span>
     </button>
@@ -45,7 +45,7 @@
       mat-menu-item
       (click)="resetAllMappings()">
       <mat-icon svgIcon="reset"></mat-icon>
-      <span>Reset All Mappings</span>
+      <span>Delete All Mappings</span>
     </button>
   </mat-menu>
 </mat-toolbar>

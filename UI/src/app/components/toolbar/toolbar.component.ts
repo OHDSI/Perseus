@@ -1,11 +1,10 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { OpenMappingDialog } from '../../app.component';
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { UploadService } from '../../services/upload.service';
 import { StoreService } from '../../services/store.service';
-import { stringify } from 'querystring';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -17,6 +16,7 @@ export class ToolbarComponent implements OnInit {
 
   cdmVersion: string;
   reportName: string;
+
   constructor(
     private bridgeService: BridgeService,
     private commonUtilsService: CommonUtilsService,
@@ -26,20 +26,24 @@ export class ToolbarComponent implements OnInit {
 
   }
 
-  ngOnInit(){
-    this.storeService.state$.subscribe(res => {
-      this.cdmVersion = res['version'] ? `CDM v${res['version']}` : 'CDM version';
-      this.reportName = res['report'] ? res['report'] : 'Report name';
+  ngOnInit() {
+    this.storeService.state$.subscribe((res: any) => {
+      this.cdmVersion = res.version ? `CDM v${res.version}` : 'CDM version';
+      this.reportName = res.report || 'Report name';
     });
   }
 
   resetAllMappings() {
-    this.bridgeService.resetAllMappings();
+    this.commonUtilsService.resetMappingsWithWarning();
   }
 
-  openSaveMappingDialog(action: OpenMappingDialog) {
-    this.commonUtilsService.openSaveMappingDialog(action, false);
+  openSaveMappingDialog() {
+  this.commonUtilsService.saveMappingDialog(false);
   }
+
+  openLoadMappingDialog() {
+    this.commonUtilsService.loadMappingDialog();
+    }
 
   onOpenSourceClick() {
     this.uploadService.onFileInputClick(this.fileInput);
@@ -54,13 +58,10 @@ export class ToolbarComponent implements OnInit {
   }
 
   resetSourceAndTarget() {
-    const settings = {
-      warning: 'All mappings will be lost. Do you want to save created mappings?',
-      header: 'Save mappings',
-      okButton: 'Save',
-      deleteButton: 'Delete',
-      deleteAll: true
-    };
-    this.commonUtilsService.openResetWarningDialog(settings);
+    this.commonUtilsService.resetSourceAndTargetWithWarning();
+  }
+
+  startOnBoarding(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target,  'tour-toolbar');
   }
 }
