@@ -1,5 +1,5 @@
-@import '~@angular/material/theming';
-@import 'src/app/styles/variables.scss';
+@import "~@angular/material/theming";
+@import "src/app/styles/variables.scss";
 
 a {
   font-size: smaller;
@@ -243,7 +243,6 @@ div[concept="true"] {
   vertical-align: top;
 }
 
-
 :host {
   display: flex;
   height: calc(100% - 64px);
@@ -270,7 +269,8 @@ nav {
   position: relative;
   z-index: 1;
 
-  h3, h4 {
+  h3,
+  h4 {
     margin-left: 35px;
   }
 
@@ -293,7 +293,6 @@ ul {
     direction: ltr;
     text-align: left;
   }
-
 }
 
 .articles {
@@ -302,7 +301,12 @@ ul {
   align-items: stretch;
   justify-content: space-between;
   max-width: 1046px;
+
+  &+.actions {
+    max-width: 1046px;
+  }
 }
+
 
 article {
   width: 40%;
@@ -380,5 +384,6 @@ article {
 .right-bottom-button-reset {
   @extend .right-bottom-button;
   color: red;
-  margin-right: 15px
+  margin-right: 15px;
 }
+
