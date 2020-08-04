@@ -23,6 +23,7 @@ import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-comfy',
@@ -77,17 +78,16 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private commonService: CommonService,
   ) {
     super();
+    this.commonService.alignBreadcrumb({left: '24%'});
   }
 
-  @ViewChild('scrollEl', { static: false })
-  scrollEl: ElementRef<HTMLElement>;
-  @ViewChild('sourceUpload', { static: false })
-  fileInput: ElementRef<HTMLElement>;
-  @ViewChild(CdmFilterComponent, { static: false })
-  cdmFilter: CdmFilterComponent;
+  @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
+  @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
+  @ViewChild(CdmFilterComponent, { static: false }) cdmFilter: CdmFilterComponent;
 
   @ViewChildren(CdkDrag)
   dragEls: QueryList<CdkDrag>;

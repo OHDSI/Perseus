@@ -65,4 +65,9 @@ export class CommonService {
   setMain(main: ElementRef) {
     this.mainElement = main;
   }
+
+  alignBreadcrumb(params) {
+    const breadcrumb = document.getElementById('breadcrumb');
+    Object.keys(params).forEach(key => breadcrumb.style[key] = params[key]);
+  }
 }

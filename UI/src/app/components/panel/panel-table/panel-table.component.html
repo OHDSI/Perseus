@@ -11,9 +11,7 @@
           *ngIf="area === 'target'"
           (click)="openConstantDialog(anchor, column)"
         >
-          <mat-icon [ngClass]="{ active: column.hasConstant }">
-            add_box
-          </mat-icon>
+          <div class="constant-icon" [ngClass]="{ active: column.hasConstant }">c</div>
         </button>
       </div>
     </td>

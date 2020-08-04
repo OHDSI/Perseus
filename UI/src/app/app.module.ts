@@ -62,11 +62,13 @@ import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
+import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ToolbarComponent,
+    BreadcrumbComponent,
     MappingComponent,
     AreaComponent,
     CommentPopupComponent,
