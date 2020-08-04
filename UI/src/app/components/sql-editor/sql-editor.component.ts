@@ -1,5 +1,5 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
@@ -30,7 +30,7 @@ const editorSettings = {
   styleUrls: ['./sql-editor.component.scss'],
   templateUrl: './sql-editor.component.html'
 })
-export class SqlEditorComponent implements AfterViewInit {
+export class SqlEditorComponent implements OnInit {
   constructor(
     private commonUtilsService: CommonUtilsService,
     public dialogRef: MatDialogRef<SqlEditorComponent>,
@@ -54,15 +54,14 @@ export class SqlEditorComponent implements AfterViewInit {
     }
   };
 
-  ngAfterViewInit() {
-    this.initCodeMirror();
+  ngOnInit() {
     this.isNew = !this.data.table;
+    this.initCodeMirror();
     if (!this.isNew) {
       const { name, sql } = this.data.table;
       this.viewForm.get('name').setValue(name);
       this.codeMirror.setValue(sql);
     }
-
   }
 
   initCodeMirror() {
@@ -101,7 +100,7 @@ export class SqlEditorComponent implements AfterViewInit {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const rows = this.parseColumns();
-    const settings  = {
+    const settings = {
       rows,
       area: Area.Source,
       expanded: false,

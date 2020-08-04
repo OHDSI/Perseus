@@ -40,7 +40,7 @@ export class StoreService {
   updateTable(storeKey, table, updates) {
     const tables = this.state[storeKey];
     if (tables && tables.length && table) {
-      const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...table, ...updates }) : new Table(table));
+      const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...it, ...updates }) : new Table(it));
       this.state = { ...this.state, [storeKey]: updatedTables };
     }
   }
