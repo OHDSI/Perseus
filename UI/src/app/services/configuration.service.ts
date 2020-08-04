@@ -11,40 +11,40 @@ import { StoreService } from './store.service';
 })
 export class ConfigurationService {
 
-    configStorageService: IStorage<Configuration>;
-    configurations = [];
+  configStorageService: IStorage<Configuration>;
+  configurations = [];
 
-    constructor(
-        private bridgeService: BridgeService,
-        private storeService: StoreService
-    ) {
-        this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
-        this.configurations = [...Object.values(this.configStorageService.configuration)];
+  constructor(
+    private bridgeService: BridgeService,
+    private storeService: StoreService
+  ) {
+    this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
+    this.configurations = [...Object.values(this.configStorageService.configuration)];
+  }
+
+  openConfiguration(configurationName: string): string {
+    const config = this.configStorageService.open(configurationName);
+    if (!config) {
+      return `Configuration ${configurationName} not found`;
+    }
+    this.bridgeService.applyConfiguration(config);
+    return `Configuration ${config.name} has been loaded`;
+  }
+
+  saveConfiguration(configurationName: string): string {
+    if (!configurationName || configurationName.trim().length === 0) {
+      return `Configuration name has not been entered`;
     }
 
-    openConfiguration(configurationName: string): string {
-        const config = this.configStorageService.open(configurationName);
-        if (!config) {
-            return `Configuration ${configurationName} not found`;
-        }
-        this.bridgeService.applyConfiguration(config);
-        return `Configuration ${config.name} has been loaded`;
-      }
+    const newConfiguration = new Configuration({
+      name: configurationName,
+      mappingsConfiguration: this.bridgeService.arrowsCache,
+      tablesConfiguration: this.storeService.state.targetConfig
+    });
 
-      saveConfiguration(configurationName: string): string {
-        if (!configurationName || configurationName.trim().length === 0) {
-            return `Configuration name has not been entered`;
-        }
+    this.configStorageService.save(newConfiguration);
+    this.configurations = [...Object.values(this.configStorageService.configuration)];
 
-        const newConfiguration = new Configuration({
-          name: configurationName,
-          mappingsConfiguration: this.bridgeService.arrowsCache,
-          tablesConfiguration: this.storeService.state.targetConfig
-        });
-
-        this.configStorageService.save(newConfiguration);
-        this.configurations = [...Object.values(this.configStorageService.configuration)];
-
-        return `Configuration ${configurationName} has been saved`;
-      }
+    return `Configuration ${configurationName} has been saved`;
+  }
 }
