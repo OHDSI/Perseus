@@ -100,7 +100,7 @@ a {
 
   &.source {
     direction: ltr;
-    width: 200px;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -186,10 +186,14 @@ div[concept="true"] {
   .mat-icon {
     font-size: 16px;
     height: 16px;
+    cursor: pointer;
   }
 
   & + & {
     margin-top: 15px;
+  }
+  &-actions {
+    display: flex;
   }
 }
 

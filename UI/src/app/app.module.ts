@@ -12,7 +12,9 @@ import { AreaComponent } from 'src/app/components/area/area.component';
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
+import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-links-warning/delete-links-warning.component';
 import { RulesPopupComponent } from 'src/app/components/popups/rules-popup/rules-popup.component';
+import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
 import { ValuesPopupComponent } from 'src/app/components/popups/values-popup/values-popup.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -28,18 +30,21 @@ import { ComfyComponent } from './components/comfy/comfy.component';
 import { HighlightConceptDirective } from './components/comfy/directives/highlight-concept.directive';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
 import { ConceptService } from './components/comfy/services/concept.service';
-import { CreateViewComponent } from './components/create-view/create-view.component';
 import { AddConstantPopupComponent } from './components/popups/add-constant-popup/add-constant-popup.component';
 import { CdmVersionDialogComponent } from './components/popups/cdm-version-dialog/cdm-version-dialog.component';
 import { OnBoardingComponent } from './components/popups/on-boarding/on-boarding.component';
+import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filter.component';
 import { OpenMappingDialogComponent } from './components/popups/open-mapping-dialog/open-mapping-dialog.component';
+import { OpenSaveDialogComponent } from './components/popups/open-save-dialog/open-save-dialog.component';
 import { PreviewPopupComponent } from './components/popups/preview-popup/preview-popup.component';
 import { PrismComponent } from './components/popups/preview-popup/prism.component';
+import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
 import { SqlFunctionsInjector } from './components/popups/rules-popup/model/sql-functions-injector';
 import { RulesPopupService } from './components/popups/rules-popup/services/rules-popup.service';
 import { SQL_FUNCTIONS } from './components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { TransformationInputComponent } from './components/popups/rules-popup/transformation-input/transformation-input.component';
 import { SampleDataPopupComponent } from './components/popups/sample-data-popup/sample-data-popup.component';
+import { SqlEditorComponent } from './components/sql-editor/sql-editor.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { VocabularyDropdownComponent } from './components/vocabulary-search-select/vocabulary-dropdown.component';
 import { ConceptConfigComponent } from './components/vocabulary-transform-configurator/concept-config/concept-config.component';
@@ -57,11 +62,6 @@ import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
-import { CdmFilterComponent } from './components/popups/open-cdm-filter/cdm-filter.component';
-import { ResetWarningComponent } from './components/popups/reset-warning/reset-warning.component';
-import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-links-warning/delete-links-warning.component';
-import { OpenSaveDialogComponent } from './components/popups/open-save-dialog/open-save-dialog.component';
 import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
 
 @NgModule({
@@ -98,7 +98,7 @@ import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.co
     ConditionDialogComponent,
     ComfySearchByNameComponent,
     CdmFilterComponent,
-    CreateViewComponent,
+    SqlEditorComponent,
     ResetWarningComponent,
     OnBoardingComponent,
     OpenSaveDialogComponent
@@ -131,7 +131,7 @@ import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.co
     VocabulariesService,
     ConceptService,
     CommonUtilsService,
-    [{provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS}],
+    [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS }],
     MappingPageSessionStorage
   ],
   bootstrap: [AppComponent]

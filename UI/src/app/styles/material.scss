@@ -93,8 +93,10 @@ button.mat-flat-button.mat-button-base {
     }
 
     &-thick {
-      color: white;
+      border-color: $cdm-grey-light;
+      color: $cdm-grey-light;
       border-radius: 2px;
+      opacity: 1;
     }
 
     &.mat-form-field-invalid &-thick {
@@ -105,8 +107,11 @@ button.mat-flat-button.mat-button-base {
 
   &.mat-focused {
     .mat-form-field-outline-thick {
-      color: white;
+      border-color: $cdm-grey-light;
+      color: $cdm-grey-light;
       border-radius: 2px;
+      opacity: 1;
+
     }
   }
 
@@ -115,6 +120,8 @@ button.mat-flat-button.mat-button-base {
       box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
 
       &-thick {
+        color: white;
+        background-color: transparent;
         box-shadow: 0 0 8px $cdm-blue-light;
       }
     }

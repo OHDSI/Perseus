@@ -1,5 +1,5 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
@@ -10,6 +10,7 @@ import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
 
 import { Area } from '../../models/area';
+import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
 
 const editorSettings = {
@@ -25,18 +26,19 @@ const editorSettings = {
 };
 
 @Component({
-  selector: 'create-view',
-  styleUrls: ['./create-view.component.scss'],
-  templateUrl: './create-view.component.html'
+  selector: 'sql-editor',
+  styleUrls: ['./sql-editor.component.scss'],
+  templateUrl: './sql-editor.component.html'
 })
-export class CreateViewComponent implements AfterViewInit {
+export class SqlEditorComponent implements OnInit {
   constructor(
     private commonUtilsService: CommonUtilsService,
-    public dialogRef: MatDialogRef<CreateViewComponent>,
+    public dialogRef: MatDialogRef<SqlEditorComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
   @ViewChild('editor', { static: true }) editor;
+  isNew = true;
   codeMirror;
   viewForm = new FormGroup({
     name: new FormControl('', Validators.required)
@@ -52,13 +54,24 @@ export class CreateViewComponent implements AfterViewInit {
     }
   };
 
-  ngAfterViewInit() {
+  ngOnInit() {
+    this.isNew = !this.data.table;
+    this.initCodeMirror();
+    if (!this.isNew) {
+      const { name, sql } = this.data.table;
+      this.viewForm.get('name').setValue(name);
+      this.codeMirror.setValue(sql);
+    }
+  }
+
+  initCodeMirror() {
     const tableColumnNamesMapping = {};
     this.tableColumnsMapping = this.data.tables.reduce((prev, cur) => {
       prev[cur.name] = cur.rows;
       tableColumnNamesMapping[cur.name] = cur.rows.map(it => it.name);
       return prev;
     }, {});
+
     editorSettings.hintOptions = { tables: tableColumnNamesMapping };
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
     this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
@@ -79,21 +92,40 @@ export class CreateViewComponent implements AfterViewInit {
     return [...aliasedColumns, ...this.tablesWithoutAliasColumns];
   }
 
+  get name() {
+    return this.viewForm.get('name').value;
+  }
 
-  sourceTable() {
+  createSourceTableData() {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
-    const viewName = this.viewForm.get('name').value;
     const rows = this.parseColumns();
-    return {
+    const settings = {
       rows,
       area: Area.Source,
       expanded: false,
       id: tableId,
-      name: viewName,
+      name: this.name,
       visible: true,
       sql: this.editorContent
     };
+    return new Table(settings);
+  }
+
+  modifySourceTableData() {
+    const settings = {
+      ...this.data.table,
+      sql: this.editorContent,
+      name: this.name
+    };
+    return new Table(settings);
+  }
+
+  apply() {
+    if (this.isNew) {
+      return this.createSourceTableData();
+    }
+    return this.modifySourceTableData();
   }
 
 
@@ -222,7 +254,7 @@ export class CreateViewComponent implements AfterViewInit {
   }
 
   openOnBoardingTip(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'create-view');
+    this.commonUtilsService.openOnBoardingTip(target, 'sql-editor');
   }
 
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ITable } from '../models/table';
+import { Table } from '../models/table';
 
 @Injectable({
   providedIn: 'root'
@@ -29,16 +29,20 @@ export class StoreService {
     this.state = { ...this.state, [key]: value };
   }
 
-  findTable(name: string): ITable {
-    const index1 = this.state.target.findIndex(t => t.name === name);
-    const index2 = this.state.source.findIndex(t => t.name === name);
-    if (index1 > -1) {
-      return this.state.target[index1];
-    } else if (index2 > -1) {
-      return this.state.source[index2];
+  removeTable(storeKey, table) {
+    const tables = this.state[storeKey];
+    if (tables && tables.length) {
+      const updatedTables = tables.filter(it => it !== table);
+      this.state = { ...this.state, [storeKey]: updatedTables };
     }
+  }
 
-    return null;
+  updateTable(storeKey, table, updates) {
+    const tables = this.state[storeKey];
+    if (tables && tables.length && table) {
+      const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...it, ...updates }) : new Table(it));
+      this.state = { ...this.state, [storeKey]: updatedTables };
+    }
   }
 
   resetAllData() {
