@@ -285,8 +285,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return !this.mappedTables.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 
-  isDeleteLinksDisabled() {
-    const a = Object.keys(this.bridgeService.arrowsCache).length;
+  isFooterButtonDisabled() {
     return Object.keys(this.bridgeService.arrowsCache).length === 0;
   }
 

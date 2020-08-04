@@ -2,14 +2,6 @@
   <div class="export-actions">
     <button
       mat-icon-button
-      matTooltip="Download ziped mappings"
-      aria-label="generate mapping xmls"
-      (click)="generateMappingJson()"
-    >
-      <mat-icon>file_download</mat-icon>
-    </button>
-    <button
-      mat-icon-button
       matTooltip="Preview mappings"
       aria-label="preview mapping xmls"
       (click)="previewMapping()"
@@ -176,8 +168,18 @@
     <footer>
       <button
         mat-flat-button
+        color="accent"
+        matTooltip="Download ziped mappings"
+        aria-label="generate mapping xmls"
+        [disabled]="isFooterButtonsDisabled()"
+        (click)="generateMappingJson()"
+      >Save
+      </button>
+      <button
+        mat-flat-button
+        color="accent"
         class="delete-links"
-        [disabled]="isDeleteLinksDisabled()"
+        [disabled]="isFooterButtonDisabled()"
         (click)="deleteLinks()"
       >Delete Links
       </button>
