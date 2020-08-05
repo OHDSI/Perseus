@@ -77,13 +77,13 @@ export class BridgeService {
     canExecute: () => {
       const connectorId = this.getConnectorId(this.sourceRow, this.targetRow);
 
-      return !this.arrowsCache[connectorId];
+      return !this.arrowsCache[ connectorId ];
     }
   });
 
   addConstant = new Command({
     execute: (row: IRow) => {
-      this.constantsCache[this.getConstantId(row)] = row;
+      this.constantsCache[ this.getConstantId(row) ] = row;
     },
     canExecute: () => true
   });
@@ -92,15 +92,21 @@ export class BridgeService {
     this.deleteAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
+    this.storeService.add('filtered', configuration.filtered);
+    this.storeService.add('version', configuration.cdmVersion);
+    this.storeService.add('target', configuration.targetTables);
+    this.storeService.add('source', configuration.sourceTables);
+    this.storeService.add('targetConfig', configuration.tables);
+    this.storeService.add('report', configuration.reportName);
 
     this.applyConfiguration$.next(configuration);
   }
 
   adjustArrowsPositions() {
-    const {list} = this.drawService;
+    const { list } = this.drawService;
 
     Object.keys(list).forEach(key => {
-      const drawEntity: IConnector = list[key];
+      const drawEntity: IConnector = list[ key ];
       drawEntity.adjustPosition();
     });
   }
@@ -138,7 +144,7 @@ export class BridgeService {
   ) {
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
-      if (table.name === arrow[table.area].tableName) {
+      if (table.name === arrow[ table.area ].tableName) {
         const source = this.findTable(arrow.source.tableName);
         const target = this.findTable(arrow.target.tableName);
 
@@ -171,13 +177,13 @@ export class BridgeService {
       arrow.type
     );
 
-    this.arrowsCache[connector.id].connector = connector;
+    this.arrowsCache[ connector.id ].connector = connector;
 
-    this.connection.next(this.arrowsCache[connector.id]);
+    this.connection.next(this.arrowsCache[ connector.id ]);
   }
 
   deleteArrow(key: string, force = false) {
-    const savedConnection = cloneDeep(this.arrowsCache[key]);
+    const savedConnection = cloneDeep(this.arrowsCache[ key ]);
 
     if (!savedConnection.connector.selected && !force) {
       return;
@@ -185,8 +191,8 @@ export class BridgeService {
 
     this.drawService.deleteConnector(key);
 
-    if (this.arrowsCache[key]) {
-      delete this.arrowsCache[key];
+    if (this.arrowsCache[ key ]) {
+      delete this.arrowsCache[ key ];
     }
 
     this.removeConnection.next(savedConnection);
@@ -194,18 +200,20 @@ export class BridgeService {
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {
     Object.keys(this.arrowsCache).forEach(key => {
+      const cache = this.arrowsCache[ key ];
+      const { target: { tableName: cachedTargetTableName }, source: { tableName: cachedSourceTableName } } = cache;
       if (
-        this.arrowsCache[key].target.tableName.toUpperCase() === targetTableName.toUpperCase() &&
-        this.arrowsCache[key].source.tableName.toUpperCase() === sourceTableName.toUpperCase()
+        cachedTargetTableName.toUpperCase() === targetTableName.toUpperCase() &&
+        cachedSourceTableName.toUpperCase() === sourceTableName.toUpperCase()
       ) {
-        delete this.arrowsCache[key];
+        delete this.arrowsCache[ key ];
 
         // If target and source are switched
       } else if (
-        this.arrowsCache[key].target.tableName.toUpperCase() === sourceTableName.toUpperCase() &&
-        this.arrowsCache[key].source.tableName.toUpperCase() === targetTableName.toUpperCase()
+        cachedTargetTableName.toUpperCase() === sourceTableName.toUpperCase() &&
+        cachedSourceTableName.toUpperCase() === targetTableName.toUpperCase()
       ) {
-        delete this.arrowsCache[key];
+        delete this.arrowsCache[ key ];
       }
     });
   }
@@ -228,7 +236,7 @@ export class BridgeService {
       type
     };
 
-    this.arrowsCache[connector.id] = connection;
+    this.arrowsCache[ connector.id ] = connection;
 
     this.connection.next(connection);
   }
@@ -250,7 +258,7 @@ export class BridgeService {
   }
 
   setArrowType(id: string, type: string) {
-    const arrow = this.arrowsCache[id];
+    const arrow = this.arrowsCache[ id ];
     arrow.connector.setEndMarkerType(type);
     arrow.type = type === 'None' ? '' : type;
   }
@@ -287,7 +295,7 @@ export class BridgeService {
   rowHasAnyConnection(row: IRow, area): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
-        return connection[area].id === row.id;
+        return connection[ area ].id === row.id;
       }).length > 0
     );
   }
@@ -308,9 +316,9 @@ export class BridgeService {
     const source = table.area === 'source' ? 'target' : 'source';
     const rows = Object.values(this.arrowsCache)
       .filter(connection => {
-        return connection[table.area].tableName === table.name;
+        return connection[ table.area ].tableName === table.name;
       })
-      .map(arrow => arrow[source]);
+      .map(arrow => arrow[ source ]);
 
     return uniqBy(rows, 'tableName').map(row => row.tableName);
   }
@@ -318,8 +326,8 @@ export class BridgeService {
   findCorrespondingConnections(table: ITable, row: IRow): IConnection[] {
     return Object.values(this.arrowsCache).filter(connection => {
       return (
-        connection[table.area].tableName === table.name &&
-        connection[table.area].id === row.id
+        connection[ table.area ].tableName === table.name &&
+        connection[ table.area ].id === row.id
       );
     });
   }
@@ -346,16 +354,16 @@ export class BridgeService {
     return `${targetTableId}-${targetRowId}`;
   }
 
- // replace this method away from store service with initial code
+  // replace this method away from store service with initial code
   // because it's not about storing and specific only for bridgeService
   findTable(name: string): ITable {
     const state = this.storeService.state;
     const index1 = state.target.findIndex(t => t.name === name);
     const index2 = state.source.findIndex(t => t.name === name);
     if (index1 > -1) {
-      return state.target[index1];
+      return state.target[ index1 ];
     } else if (index2 > -1) {
-      return state.source[index2];
+      return state.source[ index2 ];
     }
 
     return null;

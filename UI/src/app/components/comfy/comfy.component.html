@@ -134,7 +134,8 @@
       </div>
     </article>
   </div>
-  <div class="actions">
+  <div class="actions"
+       *ngIf="data.target?.length">
     <button mat-flat-button
             color="accent"
             class="right-bottom-button"

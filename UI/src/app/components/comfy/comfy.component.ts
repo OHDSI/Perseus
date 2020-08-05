@@ -82,7 +82,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private commonService: CommonService,
   ) {
     super();
-    this.commonService.alignBreadcrumb({left: '460px'});
+    this.commonService.alignBreadcrumb({ left: '460px' });
   }
 
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
@@ -183,8 +183,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(configuration => {
-        this.data.targetConfig = configuration.tables;
-        this.targetConfig = this.data.targetConfig;
+        // this.initializeData();
       });
 
     this.bridgeService.resetAllMappings$
@@ -262,13 +261,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         moveItemInArray(data, previousIndex, event.currentIndex);
       } else {
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
-        const targetname = container.id.split('-')[1];
+        const targetname = container.id.split('-')[ 1 ];
         this.setFirstElementAlwaysOnTop(targetname, event);
         this.storeService.add('targetConfig', this.targetConfig);
       }
     },
     canExecute: (event: CdkDragDrop<string[]>) => {
-      return event.container.data.findIndex(tableName => event.previousContainer.data[event.previousIndex] === tableName) === -1;
+      return event.container.data.findIndex(tableName => event.previousContainer.data[ event.previousIndex ] === tableName) === -1;
     }
   });
 
@@ -280,19 +279,19 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       return;
     }
 
-    const { data, first } = this.targetConfig[targetname];
+    const { data, first } = this.targetConfig[ targetname ];
     const index = data.findIndex(value => value === first);
     if (index) {
-      const temp = data[0];
-      data[0] = first;
-      data[index] = temp;
+      const temp = data[ 0 ];
+      data[ 0 ] = first;
+      data[ index ] = temp;
     }
   }
 
   async openMapping() {
     let sourceTablesNames = [];
     const targetTablesNames = Object.keys(this.targetConfig).filter(key => {
-      const data = this.targetConfig[key].data;
+      const data = this.targetConfig[ key ].data;
       if (data.length > 1) {
         sourceTablesNames.push(...data.slice(1, data.length));
         return true;
@@ -323,7 +322,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   getMappedTables() {
     const mappedTables = [];
     Object.keys(this.targetConfig).forEach(key => {
-      const item = this.targetConfig[key].data;
+      const item = this.targetConfig[ key ].data;
       if (item.length > 1) {
         mappedTables.push(item);
       }
@@ -339,10 +338,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
       this.data.source.forEach(table => {
         const rowNames = table.rows.map(item => item.name);
-        indexes[table.name] = tableIncludesColumns(rowNames, selectedSourceColumns);
+        indexes[ table.name ] = tableIncludesColumns(rowNames, selectedSourceColumns);
       });
 
-      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[tableName]);
+      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
 
       this.source = Object.assign([], this.source);
     } else {
@@ -357,7 +356,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   ) {
     event.stopPropagation();
 
-    const table = this.targetConfig[targetTableName];
+    const table = this.targetConfig[ targetTableName ];
     const { data } = table;
 
     const index = data.findIndex(tablename => tablename === sourceTableName);
@@ -465,9 +464,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.targetConfig[it]
-      && this.targetConfig[it].data
-      && this.targetConfig[it].data.length > 1);
+    return !!this.targetTableNames.find(it => this.targetConfig[ it ]
+      && this.targetConfig[ it ].data
+      && this.targetConfig[ it ].data.length > 1);
   }
 
 
@@ -484,10 +483,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source });
 
     matDialog.afterClosed().subscribe(res => {
-        if (res) {
-          this.storeService.add(Area.Source, [res, ...this.data.source]);
-        }
+      if (res) {
+        this.storeService.add(Area.Source, [ res, ...this.data.source ]);
       }
+    }
     );
   }
 
@@ -496,10 +495,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, table });
 
     matDialog.afterClosed().subscribe(res => {
-        if (res) {
-          this.storeService.updateTable(Area.Source, table, res);
-        }
+      if (res) {
+        this.storeService.updateTable(Area.Source, table, res);
       }
+    }
     );
   }
 
@@ -525,7 +524,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 }
 
 export function bound(target: object, propKey: string | symbol) {
-  const originalMethod = (target as any)[propKey] as Function;
+  const originalMethod = (target as any)[ propKey ] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
   if (typeof originalMethod !== 'function') {
@@ -558,7 +557,7 @@ export function bound(target: object, propKey: string | symbol) {
         // The first invocation (per instance) will return the bound method from here.
         // Subsequent calls will never reach this point, due to the way
         // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
-        return instance[propKey];
+        return instance[ propKey ];
       }
     } as PropertyDescriptor;
   }
