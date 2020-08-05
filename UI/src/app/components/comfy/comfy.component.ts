@@ -10,6 +10,7 @@ import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { CommonService } from 'src/app/services/common.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
 import { Area } from '../../models/area';
@@ -23,7 +24,6 @@ import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
-import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-comfy',
@@ -35,11 +35,28 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.storeService.state;
   }
 
-  targetTableNames: string[] = [];
-
   get highlitedTables(): string[] {
     return this.highlitedtables;
   }
+
+  constructor(
+    private vocabulariesService: VocabulariesService,
+    private storeService: StoreService,
+    private commonUtilsService: CommonUtilsService,
+    private bridgeService: BridgeService,
+    private snakbar: MatSnackBar,
+    private router: Router,
+    private mappingStorage: MappingPageSessionStorage,
+    private uploadService: UploadService,
+    private overlayService: OverlayService,
+    private matDialog: MatDialog,
+    private commonService: CommonService,
+  ) {
+    super();
+    this.commonService.alignBreadcrumb({left: '460px'});
+  }
+
+  targetTableNames: string[] = [];
 
   busy = true;
   private highlitedtables: string[] = [];
@@ -68,29 +85,38 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     filtered: undefined,
   };
 
-  constructor(
-    private vocabulariesService: VocabulariesService,
-    private storeService: StoreService,
-    private commonUtilsService: CommonUtilsService,
-    private bridgeService: BridgeService,
-    private snakbar: MatSnackBar,
-    private router: Router,
-    private mappingStorage: MappingPageSessionStorage,
-    private uploadService: UploadService,
-    private overlayService: OverlayService,
-    private matDialog: MatDialog,
-    private commonService: CommonService,
-  ) {
-    super();
-    this.commonService.alignBreadcrumb({left: '460px'});
-  }
-
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
   @ViewChild(CdmFilterComponent, { static: false }) cdmFilter: CdmFilterComponent;
 
   @ViewChildren(CdkDrag)
   dragEls: QueryList<CdkDrag>;
+
+  drop = new Command({
+    execute: (event: CdkDragDrop<string[]>) => {
+      const { container, previousContainer, previousIndex, currentIndex } = event;
+      const data = container.data;
+
+      if (previousContainer === container) {
+        if (previousIndex !== currentIndex) {
+          moveItemInArray(data, previousIndex, currentIndex);
+        }
+        return;
+      }
+
+      copyArrayItem(previousContainer.data, data, previousIndex, data.length);
+      const targetname = container.id.split('-')[1];
+      this.setFirstElementAlwaysOnTop(targetname, event);
+      this.storeService.add('targetConfig', this.targetConfig);
+    },
+    canExecute: (event: CdkDragDrop<string[]>) => {
+      const { container, previousContainer, previousIndex, currentIndex } = event;
+      if (previousContainer === container) {
+        return true;
+      }
+      return !container.data.find(tableName => previousContainer.data[previousIndex] === tableName);
+    }
+  });
 
   ngAfterViewInit() {
     const onMove$ = this.dragEls.changes.pipe(
@@ -133,6 +159,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   private scroll($event: CdkDragMove) {
     const { y } = $event.pointerPosition;
+    if (!this.scrollEl) {
+      return;
+    }
     const baseEl = this.scrollEl.nativeElement;
     const box = baseEl.getBoundingClientRect();
     const scrollTop = baseEl.scrollTop;
@@ -251,26 +280,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.initializeTargetData();
     this.initializeSourceColumns();
   }
-
-  // tslint:disable-next-line:member-ordering
-  drop = new Command({
-    execute: (event: CdkDragDrop<string[]>) => {
-      const { container, previousContainer, previousIndex } = event;
-      const data = container.data;
-
-      if (previousContainer === container) {
-        moveItemInArray(data, previousIndex, event.currentIndex);
-      } else {
-        copyArrayItem(previousContainer.data, data, previousIndex, data.length);
-        const targetname = container.id.split('-')[1];
-        this.setFirstElementAlwaysOnTop(targetname, event);
-        this.storeService.add('targetConfig', this.targetConfig);
-      }
-    },
-    canExecute: (event: CdkDragDrop<string[]>) => {
-      return event.container.data.findIndex(tableName => event.previousContainer.data[event.previousIndex] === tableName) === -1;
-    }
-  });
 
   setFirstElementAlwaysOnTop(
     targetname: string,
@@ -485,7 +494,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
     matDialog.afterClosed().subscribe(res => {
         if (res) {
-          this.storeService.add(Area.Source, [res, ...this.data.source]);
+          this.storeService.add(Area.Source, [ res, ...this.data.source ]);
         }
       }
     );

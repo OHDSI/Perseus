@@ -7,15 +7,15 @@
   position: absolute;
   display: block;
   width: 200px;
-  top: -23px;
-  left: 10px;
+  top: 95px;
+  left: 75px;
 
   span {
     color: $cdm-grey;
   }
 
   a {
-    margin-left: 30px;
+    margin-left: 32px;
   }
 }
 
@@ -44,7 +44,7 @@
 
 .data-item-caption {
   position: relative;
-  width: 100%;
+  width: 292px;
   text-transform: uppercase;
   cursor: pointer;
   background-color: $cdm-grey-lighter;
@@ -53,14 +53,15 @@
 
 mat-list-item.mat-list-item {
   direction: ltr;
+  width: 292px;
 
   & + & {
-    margin-top: 16px;
+    margin-top: 10px;
   }
 }
 
 .virtual-scroll-container {
-  height: calc(100vh - 340px);
+  height: calc(100vh - 230px);
   overflow-x: hidden;
   top: -1px;
 }
@@ -74,5 +75,3 @@ mat-list-item.mat-list-item {
     display: block;
   }
 }
-
-
