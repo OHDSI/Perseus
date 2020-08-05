@@ -3,19 +3,15 @@
   <h4>Source columns
     <ng-container *ngIf="data.source?.length">({{sourceRows.length}})</ng-container>
   </h4>
-  <app-comfy-search-by-name
-    *ngIf="data.source?.length"
-    class="filter-by-name"
-    placeholder='Search by source column'
-    (complete)="filterByName('source-column', $event)"
-    (reset)="filterByNameReset('source-column', $event)"
-  ></app-comfy-search-by-name>
-  <app-columns-list
-    *ngIf="data.source?.length"
-    class="source-columns-list"
-    [sourceRows]="sourceRows"
-    (columnsSelected)="findTables($event)"
-  ></app-columns-list>
+  <app-comfy-search-by-name *ngIf="data.source?.length"
+                            class="filter-by-name"
+                            placeholder='Search by source column'
+                            (complete)="filterByName('source-column', $event)"
+                            (reset)="filterByNameReset('source-column', $event)"></app-comfy-search-by-name>
+  <app-columns-list *ngIf="data.source?.length"
+                    class="source-columns-list"
+                    [sourceRows]="sourceRows"
+                    (columnsSelected)="findTables($event)"></app-columns-list>
 </nav>
 <main>
   <div class="articles">
@@ -23,24 +19,21 @@
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{data.source.length}})</ng-container>
       </h4>
-      <app-comfy-search-by-name
-        *ngIf="data.source?.length"
-        class="filter-by-name"
-        placeholder="Search by source table"
-        (complete)="filterByName('source', $event)"
-        (reset)="filterByNameReset('source', $event)"
-      ></app-comfy-search-by-name>
+      <app-comfy-search-by-name *ngIf="data.source?.length"
+                                class="filter-by-name"
+                                placeholder="Search by source table"
+                                (complete)="filterByName('source', $event)"
+                                (reset)="filterByNameReset('source', $event)"></app-comfy-search-by-name>
       <a *ngIf="data.source?.length"
          (click)="openCreateSqlDialog()">Create View</a>
       <div class="scrolled-items-rtl"
            *ngIf="data.source?.length">
-        <div
-          class="cdm-list"
-          cdkDropList
-          cdkDropListSortingDisabled
-          #sourceList="cdkDropList"
-          [cdkDropListData]="source"
-          [cdkDropListConnectedTo]="sourceConnectedTo">
+        <div class="cdm-list"
+             cdkDropList
+             cdkDropListSortingDisabled
+             #sourceList="cdkDropList"
+             [cdkDropListData]="source"
+             [cdkDropListConnectedTo]="sourceConnectedTo">
           <div class="cdm-box"
                highlight
                cdkDrag
@@ -48,11 +41,10 @@
                [attr.criteria]="item"
                [values]="highlitedTables">
             <mat-icon>drag_indicator</mat-icon>
-            <div
-              class="table-description source caption"
-              [matTooltip]="item"
-              matTooltipPosition="right"
-              [concept]="item">
+            <div class="table-description source caption"
+                 [matTooltip]="item"
+                 matTooltipPosition="right"
+                 [concept]="item">
               {{ item }}
             </div>
             <div class="cdm-box-actions"
@@ -73,11 +65,10 @@
       <div class="initial"
            *ngIf="!data.source.length">
         <p>Please load New Report to see Source tables</p>
-        <input
-          #sourceUpload
-          type="file"
-          (change)="onFileUpload($event)"
-          hidden/>
+        <input #sourceUpload
+               type="file"
+               (change)="onFileUpload($event)"
+               hidden />
         <button mat-flat-button
                 color="accent"
                 (click)="loadNewReport()">
@@ -88,11 +79,10 @@
     <article>
       <h4>Target tables
         <span *ngIf="data.target?.length">({{data.target.length}})</span>
-        <label
-          class="cdm-filter-label"
-          *ngIf="data.filtered?.types.length"
-          [matTooltip]="data.filtered.types"
-          matTooltipPosition="above">
+        <label class="cdm-filter-label"
+               *ngIf="data.filtered?.types.length"
+               [matTooltip]="data.filtered.types"
+               matTooltipPosition="above">
           {{data.filtered.types}}
         </label>
         <mat-icon *ngIf="data.target?.length"
@@ -103,37 +93,31 @@
                   (click)="openFilter($event.target)">sort
         </mat-icon>
       </h4>
-      <app-comfy-search-by-name
-        class="filter-by-name"
-        placeholder="Search by target table"
-        (complete)="filterByName('target', $event)"
-        (reset)="filterByNameReset('target', $event)"
-        *ngIf="data.target?.length"
-      ></app-comfy-search-by-name>
+      <app-comfy-search-by-name class="filter-by-name"
+                                placeholder="Search by target table"
+                                (complete)="filterByName('target', $event)"
+                                (reset)="filterByNameReset('target', $event)"
+                                *ngIf="data.target?.length"></app-comfy-search-by-name>
       <div class="scrolled-items"
            #scrollEl
            cdk-scrollable
            *ngIf="data.target?.length">
-        <div
-          [id]="targetConfig[targetName].name"
-          class="vertical-list"
-          *ngFor="let targetName of targetTableNames"
-          cdkDropList
-          [cdkDropListData]="targetConfig[targetName].data"
-          (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
-          <div
-            class="vertical-box"
-            *ngFor="let tableName of targetConfig[targetName].data; let i = index">
-            <div
-              class="table-description target caption"
-              [matTooltip]="tableName"
-              matTooltipPosition="right">
+        <div [id]="targetConfig[targetName].name"
+             class="vertical-list"
+             *ngFor="let targetName of targetTableNames"
+             cdkDropList
+             [cdkDropListData]="targetConfig[targetName].data"
+             (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
+          <div class="vertical-box"
+               *ngFor="let tableName of targetConfig[targetName].data; let i = index">
+            <div class="table-description target caption"
+                 [matTooltip]="tableName"
+                 matTooltipPosition="right">
               <span class="target-label">{{ tableName }}</span>
               <span class="divider"></span>
-              <mat-icon
-                *ngIf="i > 0"
-                class="remove-mapping-table"
-                (click)="removeTableMapping($event, tableName, targetName)">close
+              <mat-icon *ngIf="i > 0"
+                        class="remove-mapping-table"
+                        (click)="removeTableMapping($event, tableName, targetName)">close
               </mat-icon>
             </div>
           </div>
@@ -150,16 +134,17 @@
       </div>
     </article>
   </div>
-  <button
-    mat-flat-button
-    color="accent"
-    class="right-bottom-button"
-    [disabled]="!checkExistingMappings()"
-    (click)="openMapping()">Go To Link Fields
-  </button>
-  <button mat-flat-button
-          class="right-bottom-button-reset"
-          [disabled]="!checkExistingMappings()"
-          (click)="resetMapping()">Delete Mapping
-  </button>
+  <div class="actions">
+    <button mat-flat-button
+            color="accent"
+            class="right-bottom-button"
+            [disabled]="!checkExistingMappings()"
+            (click)="openMapping()">Go To Link Fields
+    </button>
+    <button mat-flat-button
+            class="right-bottom-button-reset"
+            [disabled]="!checkExistingMappings()"
+            (click)="resetMapping()">Delete Mapping
+    </button>
+  </div>
 </main>
