@@ -82,7 +82,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private commonService: CommonService,
   ) {
     super();
-    this.commonService.alignBreadcrumb({ left: '24%' });
+    this.commonService.alignBreadcrumb({ left: '460px' });
   }
 
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;

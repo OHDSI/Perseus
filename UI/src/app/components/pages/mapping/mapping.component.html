@@ -1,22 +1,4 @@
 <div class="app-mapping">
-  <div class="export-actions">
-    <button
-      mat-icon-button
-      matTooltip="Download ziped mappings"
-      aria-label="generate mapping xmls"
-      (click)="generateMappingJson()"
-    >
-      <mat-icon>file_download</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      matTooltip="Preview mappings"
-      aria-label="preview mapping xmls"
-      (click)="previewMapping()"
-    >
-      <mat-icon>play_circle_filled_white</mat-icon>
-    </button>
-  </div>
   <section>
     <main #maincanvas class="main">
       <div class="area-source">
@@ -173,8 +155,27 @@
     <footer>
       <button
         mat-flat-button
+        color="accent"
+        matTooltip="Download ziped mappings"
+        aria-label="Download mappings xmls"
+        [disabled]="isFooterButtonDisabled()"
+        (click)="generateMappingJson()"
+      >Generate & Save
+      </button>
+      <button
+        mat-flat-button
+        color="accent"
+        matTooltip="Preview mappings"
+        aria-label="Preview mapping xmls"
+        [disabled]="isFooterButtonDisabled()"
+        (click)="previewMapping()"
+      >Preview
+      </button>
+      <button
+        mat-flat-button
+        color="accent"
         class="delete-links"
-        [disabled]="isDeleteLinksDisabled()"
+        [disabled]="isFooterButtonDisabled()"
         (click)="deleteLinks()"
       >Delete Links
       </button>
