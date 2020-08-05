@@ -10,6 +10,14 @@ table {
     font-size: 13px;
   }
 
+  tr.mat-row, tr.mat-footer-row {
+    height: 32px;
+  }
+
+  tr.mat-header-row {
+    height: 40px;
+  }
+
   .mat-header-cell {
     padding-left: 10px;
   }

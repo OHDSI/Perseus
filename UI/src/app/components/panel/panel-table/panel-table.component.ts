@@ -121,14 +121,16 @@ export class PanelTableComponent extends BaseComponent
 
   openConstantDialog(anchor: HTMLElement, row: IRow) {
     if (!this.isRowHasConnection(row)) {
+      const value = row.constant;
+      const mode = value ? 'view' : 'add';
+      const data = {value, mode};
       const component = AddConstantPopupComponent;
-      const value = {value: row.constant};
 
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
         backdropClass: 'custom-backdrop',
         positionStrategyFor: `comments-${this._getArea()}`,
-        payload: value
+        payload: data
       };
 
       const overlayRef = this.overlayService.open(
@@ -138,7 +140,7 @@ export class PanelTableComponent extends BaseComponent
       );
 
       overlayRef.afterClosed$.subscribe(ok => {
-        row.constant = value.value;
+        row.constant = data.value;
         if (row.constant) {
           this.bridgeService.addConstant.execute(row);
         }
