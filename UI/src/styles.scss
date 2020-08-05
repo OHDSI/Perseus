@@ -19,6 +19,12 @@ body {
   margin: 0;
 }
 
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .divider {
   flex: 1 1 auto;
 }
