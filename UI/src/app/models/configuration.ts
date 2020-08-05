@@ -3,13 +3,14 @@ import { Row } from './row';
 import { IConnection } from '../services/bridge.service';
 import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import * as circularJson from 'circular-json';
+import { Table } from './table';
 
 export interface ConfigurationOptions {
   name?: string;
   tablesConfiguration?: any;
   mappingsConfiguration?: ArrowCache;
-  source?: [];
-  target?: [];
+  source?: Table[];
+  target?: Table[];
   report?: any;
   version?: any;
   filtered?: any;
@@ -31,12 +32,16 @@ export class Configuration {
     return JSON.parse(this.tablesConfiguration);
   }
 
-  get sourceTables(): any {
-    return JSON.parse(this.source);
+  get sourceTables(): Table[] {
+    const tables = [];
+    JSON.parse(this.source).map(item => tables.push(new Table(item)));
+    return tables;
   }
 
-  get targetTables(): any {
-    return JSON.parse(this.target);
+  get targetTables(): Table[] {
+    const tables = [];
+    JSON.parse(this.target).map(item => tables.push(new Table(item)));
+    return tables;
   }
 
   get reportName(): any {
