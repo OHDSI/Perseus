@@ -19,7 +19,7 @@ export class ConfigurationService {
     private storeService: StoreService
   ) {
     this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
-    this.configurations = [...Object.values(this.configStorageService.configuration)];
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
   }
 
   openConfiguration(configurationName: string): string {
@@ -39,11 +39,16 @@ export class ConfigurationService {
     const newConfiguration = new Configuration({
       name: configurationName,
       mappingsConfiguration: this.bridgeService.arrowsCache,
-      tablesConfiguration: this.storeService.state.targetConfig
+      tablesConfiguration: this.storeService.state.targetConfig,
+      source: this.storeService.state.source,
+      target: this.storeService.state.target,
+      report: this.storeService.state.report,
+      version: this.storeService.state.version,
+      filtered: this.storeService.state.filtered
     });
 
     this.configStorageService.save(newConfiguration);
-    this.configurations = [...Object.values(this.configStorageService.configuration)];
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
 
     return `Configuration ${configurationName} has been saved`;
   }
