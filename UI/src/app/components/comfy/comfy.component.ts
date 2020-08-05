@@ -53,7 +53,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private commonService: CommonService,
   ) {
     super();
-    this.commonService.alignBreadcrumb({left: '460px'});
+    this.commonService.alignBreadcrumb({ left: '460px' });
   }
 
   targetTableNames: string[] = [];
@@ -84,6 +84,23 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     version: undefined,
     filtered: undefined,
   };
+
+  constructor(
+    private vocabulariesService: VocabulariesService,
+    private storeService: StoreService,
+    private commonUtilsService: CommonUtilsService,
+    private bridgeService: BridgeService,
+    private snakbar: MatSnackBar,
+    private router: Router,
+    private mappingStorage: MappingPageSessionStorage,
+    private uploadService: UploadService,
+    private overlayService: OverlayService,
+    private matDialog: MatDialog,
+    private commonService: CommonService,
+  ) {
+    super();
+    this.commonService.alignBreadcrumb({ left: '460px' });
+  }
 
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
@@ -212,8 +229,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(configuration => {
-        this.data.targetConfig = configuration.tables;
-        this.targetConfig = this.data.targetConfig;
+        // this.initializeData();
       });
 
     this.bridgeService.resetAllMappings$
