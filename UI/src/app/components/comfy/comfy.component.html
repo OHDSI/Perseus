@@ -36,6 +36,8 @@
           <div class="cdm-box"
                highlight
                cdkDrag
+               (cdkDragStarted)="onSourceDrag($event)"
+               (click)="onSourceClick($event)"
                *ngFor="let item of source"
                [attr.criteria]="item"
                [values]="highlitedTables">
@@ -67,7 +69,7 @@
         <input #sourceUpload
                type="file"
                (change)="onFileUpload($event)"
-               hidden />
+               hidden/>
         <button mat-flat-button
                 color="accent"
                 (click)="loadNewReport()">
@@ -134,7 +136,8 @@
       </div>
     </article>
   </div>
-  <div class="actions" *ngIf="data.source?.length && data.target?.length">
+  <div class="actions"
+       *ngIf="data.source?.length && data.target?.length">
     <button mat-flat-button
             color="accent"
             class="right-bottom-button"

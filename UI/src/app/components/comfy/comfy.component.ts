@@ -1,5 +1,5 @@
-import { CdkDrag, CdkDragDrop, CdkDragMove, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDragMove, CdkDragStart, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -51,14 +51,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private overlayService: OverlayService,
     private matDialog: MatDialog,
     private commonService: CommonService,
+    private element: ElementRef
   ) {
     super();
     this.commonService.alignBreadcrumb({ left: '460px' });
   }
 
   targetTableNames: string[] = [];
-
-  busy = true;
   private highlitedtables: string[] = [];
 
   source: string[] = [];
@@ -67,6 +66,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   targetConfig = {};
   sourceConnectedTo = [];
   sourceRows: IRow[] = [];
+  sourceFocusedElement;
 
   private snakbarOptions = {
     duration: 3000
@@ -87,10 +87,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
-  @ViewChild(CdmFilterComponent, { static: false }) cdmFilter: CdmFilterComponent;
-
-  @ViewChildren(CdkDrag)
-  dragEls: QueryList<CdkDrag>;
+  @ViewChildren(CdkDrag) dragEls: QueryList<CdkDrag>;
 
   drop = new Command({
     execute: (event: CdkDragDrop<string[]>) => {
@@ -117,6 +114,21 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       return !container.data.find(tableName => previousContainer.data[previousIndex] === tableName);
     }
   });
+
+  @HostListener('document:click', [ '$event' ])
+  onClick(event) {
+    if (!event) {
+      return;
+    }
+    const target = event.target;
+    if (!target || !this.sourceFocusedElement) {
+      return;
+    }
+    const clickedOutside = !this.sourceFocusedElement.contains(target);
+    if (clickedOutside) {
+      this.unsetSourceFocus();
+    }
+  }
 
   ngAfterViewInit() {
     const onMove$ = this.dragEls.changes.pipe(
@@ -530,6 +542,30 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   findSourceTableByName(name) {
     return this.commonUtilsService.findTableByKeyValue(this.data.source, 'name', name);
   }
+
+  unsetSourceFocus() {
+    const focused: HTMLAllCollection = this.element.nativeElement.querySelectorAll('.source-focus');
+    Array.from(focused).forEach((it: HTMLElement) => it.classList.remove('source-focus'));
+    this.sourceFocusedElement = undefined;
+  }
+
+  onSourceClick($event: MouseEvent) {
+    $event.stopPropagation();
+    this.setSourceFocus($event.currentTarget);
+  }
+
+  onSourceDrag($event: CdkDragStart) {
+    this.setSourceFocus($event.source.element.nativeElement);
+  }
+
+  setSourceFocus(target) {
+    if (target) {
+      this.unsetSourceFocus();
+      this.sourceFocusedElement = target;
+      this.sourceFocusedElement.classList.add('source-focus');
+    }
+  }
+
 }
 
 export function bound(target: object, propKey: string | symbol) {
