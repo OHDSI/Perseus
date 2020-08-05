@@ -4,17 +4,18 @@
   position: relative;
   width: 35%;
   float: left;
+  height: 100%;
 }
 
 .area-target {
   position: relative;
   width: 35%;
   float: right;
+  height: 100%;
 }
 
 section {
-  margin-top: 75px;
-  height: calc(100% - 75px);
+  height: 100%;
 
   main {
     width: 100%;
@@ -73,11 +74,14 @@ footer {
     }
 }
 
+.mapping-page-button {
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .delete-links {
   color: red;
-  cursor: pointer;
   background: #E8E8E8;
-  font-weight: bold;
 }
 
 .patch {
@@ -106,10 +110,34 @@ footer {
   padding: 0 50px 0 50px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 64px);
+  height: calc(100% - 40px);
+}
+
+.filter-by-name {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.area-source {
+  ::ng-deep .search-by-name {
+    margin: 0 2px 0 8px;
+  }
+}
+
+.area-target {
+  ::ng-deep .search-by-name {
+    margin: 0 8px 0 2px;
+  }
 }
 
 ::ng-deep .mat-tab-group {
+  height: 100%;
+
+  .mat-tab-body-wrapper {
+    height: calc(100% - 58px);
+  }
+
   .mat-expansion-panel-header-title span {
     color: $cdm-grey-dark;
     font-weight: bold;
