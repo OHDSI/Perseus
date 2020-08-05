@@ -58,16 +58,6 @@
           </mat-icon>
         </button>
         <span class="divider"></span>
-        <div *ngFor="let connectorType of row.connectorTypes"
-          #bridgeButton
-          id="item-{{ row.tableName }}-{{ row.name }}"
-          class="connector-pin hide"
-          (click)="onTransformDialogOpen($event, row, bridgeButton)"
-        >
-          <div class="connector-type">
-            <span>{{ connectorType }}</span>
-          </div>
-        </div>
       </div>
     </td>
   </ng-container>
