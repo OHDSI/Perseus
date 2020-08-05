@@ -10,7 +10,7 @@ html, body {
   @extend .mat-typography;
   color: $cdm-grey-dark;
 
-  > * {
+  * {
     box-sizing: border-box;
   }
 }
@@ -112,6 +112,16 @@ path {
 
   &.selected {
     stroke: $blue;
+  }
+}
+
+article {
+  &:first-of-type {
+    margin-left: 10px !important;
+  }
+
+  & + & .search-by-name {
+    margin-left: auto !important;
   }
 }
 

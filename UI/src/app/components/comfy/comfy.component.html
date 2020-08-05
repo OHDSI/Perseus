@@ -1,6 +1,5 @@
 <nav>
-  <h3>Filter by columns</h3>
-  <h4>Source columns
+  <h4>Filter by source columns
     <ng-container *ngIf="data.source?.length">({{sourceRows.length}})</ng-container>
   </h4>
   <app-comfy-search-by-name *ngIf="data.source?.length"
@@ -30,10 +29,10 @@
            *ngIf="data.source?.length">
         <div class="cdm-list"
              cdkDropList
-             cdkDropListSortingDisabled
              #sourceList="cdkDropList"
              [cdkDropListData]="source"
-             [cdkDropListConnectedTo]="sourceConnectedTo">
+             [cdkDropListConnectedTo]="sourceConnectedTo"
+             (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
           <div class="cdm-box"
                highlight
                cdkDrag
@@ -76,7 +75,7 @@
         </button>
       </div>
     </article>
-    <article>
+    <article [class.initial-wrapper]="!data.target?.length">
       <h4>Target tables
         <span *ngIf="data.target?.length">({{data.target.length}})</span>
         <label class="cdm-filter-label"
@@ -102,14 +101,15 @@
            #scrollEl
            cdk-scrollable
            *ngIf="data.target?.length">
-        <div [id]="targetConfig[targetName].name"
-             class="vertical-list"
-             *ngFor="let targetName of targetTableNames"
+        <div *ngFor="let targetName of targetTableNames"
              cdkDropList
+             class="vertical-list"
+             [id]="targetConfig[targetName].name"
              [cdkDropListData]="targetConfig[targetName].data"
              (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
-          <div class="vertical-box"
-               *ngFor="let tableName of targetConfig[targetName].data; let i = index">
+          <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
+               class="vertical-box"
+               cdkDrag>
             <div class="table-description target caption"
                  [matTooltip]="tableName"
                  matTooltipPosition="right">
@@ -134,8 +134,7 @@
       </div>
     </article>
   </div>
-  <div class="actions"
-       *ngIf="data.target?.length">
+  <div class="actions" *ngIf="data.source?.length && data.target?.length">
     <button mat-flat-button
             color="accent"
             class="right-bottom-button"

@@ -10,6 +10,7 @@ import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { CommonService } from 'src/app/services/common.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
 import { Area } from '../../models/area';
@@ -23,7 +24,6 @@ import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
-import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-comfy',
@@ -35,11 +35,28 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.storeService.state;
   }
 
-  targetTableNames: string[] = [];
-
   get highlitedTables(): string[] {
     return this.highlitedtables;
   }
+
+  constructor(
+    private vocabulariesService: VocabulariesService,
+    private storeService: StoreService,
+    private commonUtilsService: CommonUtilsService,
+    private bridgeService: BridgeService,
+    private snakbar: MatSnackBar,
+    private router: Router,
+    private mappingStorage: MappingPageSessionStorage,
+    private uploadService: UploadService,
+    private overlayService: OverlayService,
+    private matDialog: MatDialog,
+    private commonService: CommonService,
+  ) {
+    super();
+    this.commonService.alignBreadcrumb({ left: '460px' });
+  }
+
+  targetTableNames: string[] = [];
 
   busy = true;
   private highlitedtables: string[] = [];
@@ -92,6 +109,32 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChildren(CdkDrag)
   dragEls: QueryList<CdkDrag>;
 
+  drop = new Command({
+    execute: (event: CdkDragDrop<string[]>) => {
+      const { container, previousContainer, previousIndex, currentIndex } = event;
+      const data = container.data;
+
+      if (previousContainer === container) {
+        if (previousIndex !== currentIndex) {
+          moveItemInArray(data, previousIndex, currentIndex);
+        }
+        return;
+      }
+
+      copyArrayItem(previousContainer.data, data, previousIndex, data.length);
+      const targetname = container.id.split('-')[1];
+      this.setFirstElementAlwaysOnTop(targetname, event);
+      this.storeService.add('targetConfig', this.targetConfig);
+    },
+    canExecute: (event: CdkDragDrop<string[]>) => {
+      const { container, previousContainer, previousIndex, currentIndex } = event;
+      if (previousContainer === container) {
+        return true;
+      }
+      return !container.data.find(tableName => previousContainer.data[previousIndex] === tableName);
+    }
+  });
+
   ngAfterViewInit() {
     const onMove$ = this.dragEls.changes.pipe(
       startWith(this.dragEls),
@@ -133,6 +176,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   private scroll($event: CdkDragMove) {
     const { y } = $event.pointerPosition;
+    if (!this.scrollEl) {
+      return;
+    }
     const baseEl = this.scrollEl.nativeElement;
     const box = baseEl.getBoundingClientRect();
     const scrollTop = baseEl.scrollTop;
@@ -251,26 +297,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.initializeSourceColumns();
   }
 
-  // tslint:disable-next-line:member-ordering
-  drop = new Command({
-    execute: (event: CdkDragDrop<string[]>) => {
-      const { container, previousContainer, previousIndex } = event;
-      const data = container.data;
-
-      if (previousContainer === container) {
-        moveItemInArray(data, previousIndex, event.currentIndex);
-      } else {
-        copyArrayItem(previousContainer.data, data, previousIndex, data.length);
-        const targetname = container.id.split('-')[ 1 ];
-        this.setFirstElementAlwaysOnTop(targetname, event);
-        this.storeService.add('targetConfig', this.targetConfig);
-      }
-    },
-    canExecute: (event: CdkDragDrop<string[]>) => {
-      return event.container.data.findIndex(tableName => event.previousContainer.data[ event.previousIndex ] === tableName) === -1;
-    }
-  });
-
   setFirstElementAlwaysOnTop(
     targetname: string,
     event: CdkDragDrop<string[]>
@@ -279,19 +305,19 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       return;
     }
 
-    const { data, first } = this.targetConfig[ targetname ];
+    const { data, first } = this.targetConfig[targetname];
     const index = data.findIndex(value => value === first);
     if (index) {
-      const temp = data[ 0 ];
-      data[ 0 ] = first;
-      data[ index ] = temp;
+      const temp = data[0];
+      data[0] = first;
+      data[index] = temp;
     }
   }
 
   async openMapping() {
     let sourceTablesNames = [];
     const targetTablesNames = Object.keys(this.targetConfig).filter(key => {
-      const data = this.targetConfig[ key ].data;
+      const data = this.targetConfig[key].data;
       if (data.length > 1) {
         sourceTablesNames.push(...data.slice(1, data.length));
         return true;
@@ -322,7 +348,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   getMappedTables() {
     const mappedTables = [];
     Object.keys(this.targetConfig).forEach(key => {
-      const item = this.targetConfig[ key ].data;
+      const item = this.targetConfig[key].data;
       if (item.length > 1) {
         mappedTables.push(item);
       }
@@ -338,10 +364,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
       this.data.source.forEach(table => {
         const rowNames = table.rows.map(item => item.name);
-        indexes[ table.name ] = tableIncludesColumns(rowNames, selectedSourceColumns);
+        indexes[table.name] = tableIncludesColumns(rowNames, selectedSourceColumns);
       });
 
-      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
+      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[tableName]);
 
       this.source = Object.assign([], this.source);
     } else {
@@ -356,7 +382,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   ) {
     event.stopPropagation();
 
-    const table = this.targetConfig[ targetTableName ];
+    const table = this.targetConfig[targetTableName];
     const { data } = table;
 
     const index = data.findIndex(tablename => tablename === sourceTableName);
@@ -464,9 +490,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.targetConfig[ it ]
-      && this.targetConfig[ it ].data
-      && this.targetConfig[ it ].data.length > 1);
+    return !!this.targetTableNames.find(it => this.targetConfig[it]
+      && this.targetConfig[it].data
+      && this.targetConfig[it].data.length > 1);
   }
 
 
@@ -483,10 +509,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        if (res) {
+          this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        }
       }
-    }
     );
   }
 
@@ -495,10 +521,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, table });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.updateTable(Area.Source, table, res);
+        if (res) {
+          this.storeService.updateTable(Area.Source, table, res);
+        }
       }
-    }
     );
   }
 
@@ -524,7 +550,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 }
 
 export function bound(target: object, propKey: string | symbol) {
-  const originalMethod = (target as any)[ propKey ] as Function;
+  const originalMethod = (target as any)[propKey] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
   if (typeof originalMethod !== 'function') {
@@ -557,7 +583,7 @@ export function bound(target: object, propKey: string | symbol) {
         // The first invocation (per instance) will return the bound method from here.
         // Subsequent calls will never reach this point, due to the way
         // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
-        return instance[ propKey ];
+        return instance[propKey];
       }
     } as PropertyDescriptor;
   }

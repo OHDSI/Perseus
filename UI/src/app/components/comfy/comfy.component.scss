@@ -17,11 +17,14 @@ a {
 }
 
 .vertical-list {
-  max-width: 100%;
+  width: 400px;
   display: block;
+  justify-content: flex-end;
   background: white;
   overflow: hidden;
-  padding-bottom: 16px;
+  margin-bottom: 10px;
+  margin-right: 0;
+  margin-left: auto;
 }
 
 .vertical-box {
@@ -30,6 +33,7 @@ a {
   align-items: center;
   justify-content: space-between;
   background-color: $cdm-blue-lightest;
+  width: 400px;
   padding: 10px 15px 5px 38px;
   font-size: 14px;
   border: 1px solid transparent;
@@ -138,14 +142,17 @@ a {
 }
 
 .scrolled-items {
-  height: 90vh;
+  height: calc(100vh - 260px);
   overflow-y: scroll;
-  padding-left: 8px;
+  padding-left: 0;
   padding-right: 8px;
 
   &-rtl {
     @extend .scrolled-items;
     direction: rtl;
+    margin-left: -4px;
+    padding-right: 0;
+    padding-left: 8px;
   }
 }
 
@@ -168,6 +175,7 @@ div[concept="true"] {
 }
 
 .cdm-box {
+  width: 400px;
   display: flex;
   padding: 10px 15px 5px;
   align-items: center;
@@ -184,14 +192,15 @@ div[concept="true"] {
   }
 
   .mat-icon {
-    font-size: 16px;
+    font-size: 14px;
     height: 16px;
     cursor: pointer;
   }
 
   & + & {
-    margin-top: 15px;
+    margin-top: 10px;
   }
+
   &-actions {
     display: flex;
   }
@@ -219,11 +228,10 @@ div[concept="true"] {
 }
 
 .source-columns-list {
+  display: block;
   direction: rtl;
-  height: calc(100% - 225px);
   overflow: scroll;
-  position: relative;
-  left: 20px;
+  margin-left: 36px;
 }
 
 .background {
@@ -245,7 +253,7 @@ div[concept="true"] {
 
 :host {
   display: flex;
-  height: calc(100% - 64px);
+  height: calc(100% - 40px);
 }
 
 h3 {
@@ -255,29 +263,33 @@ h3 {
 main {
   flex: 3 1 80%;
   order: 2;
-  padding: 30px 30px 10px;
-  margin-top: 53px;
+  padding: 20px 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: scroll;
 }
 
 nav {
   background: $cdm-background-grey-blue-gradient;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
-  width: 395px;
-  max-width: 395px;
+  width: 394px;
+  min-width: 394px;
   order: 1;
-  padding: 30px 30px 10px 30px;
+  padding: 20px;
   position: relative;
   z-index: 1;
+  border-radius: 0 20px 0 0;
 
-  h3,
   h4 {
-    margin-left: 35px;
+    margin-left: 56px;
   }
 
   .filter-by-name {
     display: block;
-    margin-left: 26px;
-    width: 100%;
+    margin-left: 45px;
+    width: 312px;
   }
 }
 
@@ -297,25 +309,50 @@ ul {
 
 .articles {
   display: flex;
-  height: calc(100% - 50px);
+  height: 100%;
   align-items: stretch;
-  justify-content: space-between;
-  max-width: 1046px;
+  justify-content: stretch;
+  width: 940px;
 
-  &+.actions {
-    max-width: 1046px;
+  & + .actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 940px;
+
+    button + button {
+      margin-left: 10px;
+    }
   }
 }
 
 
 article {
-  width: 40%;
-  min-width: 410px;
+  width: 470px;
   display: flex;
   flex-direction: column;
   position: relative;
+  align-items: flex-start;
+
+  & > * {
+    width: 465px;
+  }
+
+  &.initial-wrapper h4 {
+    width: 400px;
+  }
+
+  .filter-by-name {
+    width: 420px;
+
+    + a {
+      position: absolute;
+      top: 75px;
+      left: 8px;
+    }
+  }
 
   .initial {
+    width: 400px;
     background-color: rgba(231, 244, 255, 0.2);
     border: 1px dashed #cde0ef;
     border-radius: 2px;
@@ -329,6 +366,13 @@ article {
   }
 
   &:last-of-type {
+    align-items: flex-end;
+
+    h4,
+    .filter-by-name {
+      width: 412px;
+    }
+
     .initial {
       border-color: $cdm-blue-light;
       background-color: rgba(166, 210, 244, 0.4);
@@ -359,19 +403,14 @@ article {
       position: absolute;
       cursor: pointer;
       right: 0;
-      font-size: 18px;
+      font-size: 14px;
       color: $grey;
+
       &.active {
         color: $cdm-blue;
       }
     }
   }
-}
-
-.filter-by-name + a {
-  position: absolute;
-  top: 75px;
-  left: 10px;
 }
 
 .right-bottom-button {
