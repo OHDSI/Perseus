@@ -200,16 +200,18 @@ export class BridgeService {
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {
     Object.keys(this.arrowsCache).forEach(key => {
+      const cache = this.arrowsCache[ key ];
+      const { target: { tableName: cachedTargetTableName }, source: { tableName: cachedSourceTableName } } = cache;
       if (
-        this.arrowsCache[ key ].target.tableName.toUpperCase() === targetTableName.toUpperCase() &&
-        this.arrowsCache[ key ].source.tableName.toUpperCase() === sourceTableName.toUpperCase()
+        cachedTargetTableName.toUpperCase() === targetTableName.toUpperCase() &&
+        cachedSourceTableName.toUpperCase() === sourceTableName.toUpperCase()
       ) {
         delete this.arrowsCache[ key ];
 
         // If target and source are switched
       } else if (
-        this.arrowsCache[ key ].target.tableName.toUpperCase() === sourceTableName.toUpperCase() &&
-        this.arrowsCache[ key ].source.tableName.toUpperCase() === targetTableName.toUpperCase()
+        cachedTargetTableName.toUpperCase() === sourceTableName.toUpperCase() &&
+        cachedSourceTableName.toUpperCase() === targetTableName.toUpperCase()
       ) {
         delete this.arrowsCache[ key ];
       }
