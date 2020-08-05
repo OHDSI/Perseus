@@ -85,23 +85,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     filtered: undefined,
   };
 
-  constructor(
-    private vocabulariesService: VocabulariesService,
-    private storeService: StoreService,
-    private commonUtilsService: CommonUtilsService,
-    private bridgeService: BridgeService,
-    private snakbar: MatSnackBar,
-    private router: Router,
-    private mappingStorage: MappingPageSessionStorage,
-    private uploadService: UploadService,
-    private overlayService: OverlayService,
-    private matDialog: MatDialog,
-    private commonService: CommonService,
-  ) {
-    super();
-    this.commonService.alignBreadcrumb({ left: '460px' });
-  }
-
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
   @ViewChild(CdmFilterComponent, { static: false }) cdmFilter: CdmFilterComponent;
