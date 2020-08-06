@@ -2,28 +2,30 @@
 
 
 :host {
-    width: 100%;
+  width: 100%;
 }
 
 .scrollable {
-    overflow-y: scroll;
-    height: 70vh;
+  overflow-y: auto;
+  height: 70vh;
 }
 
 .scrollbarLeft {
-    direction: rtl;
+  direction: rtl;
+  height: calc(100% - 66px);
 
   ::ng-deep.mat-expansion-panel {
-        direction: ltr;
-        margin-left: 5px;
-    }
+    direction: ltr;
+    margin-left: 5px;
+  }
 }
 
 .scrollbarRight {
+  height: calc(100% - 66px);
 
   ::ng-deep.mat-expansion-panel {
-        margin-right: 5px;
-    }
+    margin-right: 5px;
+  }
 }
 
 .scrollable::-webkit-scrollbar-track
@@ -40,7 +42,7 @@
 
 .scrollable::-webkit-scrollbar-thumb
 {
-    width: 5px;
+  width: 5px;
 	border-radius: 100px;
 	-webkit-box-shadow: $cdm-grey-light;
 	background-color: #B3B3B3;

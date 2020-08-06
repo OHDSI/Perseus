@@ -1,211 +1,120 @@
 @import 'src/app/styles/variables.scss';
 
 .dialog {
-    width: 224px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding: 10px;
+  width: 272px;
+  height: 144px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px 0 22px 0;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
+  h4 {
+    color: $grey;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-left: 16px;
+  }
 
-    .input {
-        border-radius: 2px;
-        border: 0.75px solid $light-grey;
-        height: 25px;
-        background-color: $cdm-grey-lighter;
-    }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
-    .input-add {
-        @extend .input;
-        padding: 3px;
-        width: 224px;
-    }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
 
-    .input-edit {
-        @extend .input;
-        width: 208px;
-    }
+  .inputValue {
+      border-radius: 2px;
+      border: 0.75px solid $light-grey;
+      line-height: 25px;
+      width: calc(100% - 32px);
+      margin: 5px 16px 0 16px;
 
-    .mat-list {
-        width: 100%;
-        padding-top: 0;
+      background-color: $cdm-grey-lighter;
+      box-sizing: border-box;
+  }
 
-        .list-item-edit {
-            .mat-list-item-content {
-                height: 81px;
-            }
-        }
-    }
-
-    .mat-list-item {
-        height: 100%;
-        background-color: #EEEEEE;
-        margin-bottom: 5px;
-        min-height: 75px;
-        cursor: pointer;
-
-        .mat-list-item-content {
-            padding: 0 10px;
-        }
-    }
-
-    .active {
-        background-color: $light-blue;
-    }
+  .inputValue:focus {
+    outline: none;
+    border-radius: 2px;
+    border: 0.75px solid $light-blue;
+    box-shadow: 0px 0px 8px #A6D2F4;
+    background: $white;
 }
 
-.dialog-source {
-    @extend .dialog;
-
-    &:after {
-        content: "";
-        position: absolute;
-        bottom: 47px;
-        left: 1px;
-        width: 0;
-        height: 0;
-        box-sizing: border-box;
-        border: 5px solid $black;
-        border-color: transparent transparent $cdm-grey-lighter $cdm-grey-lighter;
-        transform-origin: 0 0;
-        transform: rotate(45deg);
-        box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
-    }
-}
-
-.dialog-target {
-    @extend .dialog;
-
-    &:after {
-        content: "";
-        position: absolute;
-        bottom: -2px;
-        right: 10px;
-        width: 0;
-        height: 0;
-        box-sizing: border-box;
-        border: 5px solid $black;
-        border-color: transparent white white transparent;
-        transform-origin: 0 0;
-        transform: rotate(45deg);
-        box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.15);
-    }
-}
-
-.comment {
+  .viewValue {
     width: 100%;
-    display: flex;
-    flex-direction: column;
+    height: 30px;
+    padding-top: 5px;
+    text-indent: 16px;
+    display: inline-flex;
     align-items: center;
+    background-color: $cdm-grey-lighter;
+  }
 
-    .date {
-        font-size: 12px;
-    }
+  .buttons-top {
+    position: relative;
+    width: 100%;
+    min-height: 22px;
+    padding: 0 16px 0 16px;
+    box-sizing: border-box;
 
     mat-icon {
-        font-size: 13px;
+      position: relative;
+      top: 6px;
+      width: auto;
+      height: auto;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 10px;
+      float: right;
     }
-}
+  }
 
-.read {
-    @extend .comment;
+  .buttons-top.view {
+    background-color: $cdm-grey-lighter;
+  }
 
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: $grey;
-        height: 30px;
-    }
+  &:after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      right: 10px;
+      width: 0;
+      height: 0;
+      box-sizing: border-box;
+      border: 5px solid $black;
+      border-color: transparent white white transparent;
+      transform-origin: 0 0;
+      transform: rotate(45deg);
+      box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.15);
+  }
 
-    main {
-        width: 100%;
-        word-break: break-word;
-
-        p {
-            font-size: 13px;
-        }
-    }
-
-    button {
-        width: 20px;
-        height: 20px;
-        &:active {
-            color: $blue;
-        }
-    }
-}
-
-.edit {
-    @extend .comment;
-
-    header {
-        width: 108%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: $grey;
-        margin: 4px 0;
-        height: 25px;
-
-
-        button {
-            width: 20px;
-            height: 20px;
-            line-height: 20px;
-            &:active {
-                color: $blue;
-            }
-        }
-    }
-
-    main {
-        input {
-            background-color: white;
-        }
-    }
-
-    footer {
-        position: relative;
-        width: 108%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .buttons {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            position: relative;
-        }
-    }
-
-    button {
-        width: 20px;
-        height: 30px;
-        line-height: 30px;
-        &:active {
-            color: $blue;
-        }
-    }
-}
-
-.buttons-host {
-
-}
-
-.button-add {
-    display: inline-block;
+  .buttons-bottom {
     position: relative;
-    bottom: -6px;
-    right: -6px;
-    font-size: 13px;
-    min-width: 0;
-    line-height: 23px;
-    padding: 0 6px;
+    margin-top: 5px;
+    width: 100%;
 
-    &:active {
-        color: $blue;
+    .button {
+      position: relative;
+      font-size: 13px;
+      line-height: 24px;
+      margin-top: 5px;
+      float: right;
+      font-weight: bold;
+      padding: 0 8px 0 8px;
     }
+
+    .button.button-add {
+      margin-right: 8px;
+      color: $blue;
+    }
+
+    .button.button-cancel {
+      color: $grey;
+    }
+  }
 }

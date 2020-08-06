@@ -12,12 +12,14 @@ export class AddConstantPopupComponent {
   @ViewChild('editTemplate', { static: false }) editTemplate: TemplateRef<any>;
 
   value: string;
+  mode: string;
 
   constructor(
     private dialogRef: OverlayDialogRef,
     @Inject(OVERLAY_DIALOG_DATA) public payload: any
   ) {
     this.value = this.payload.value;
+    this.mode = this.payload.mode;
   }
 
   add() {
@@ -28,7 +30,15 @@ export class AddConstantPopupComponent {
     this.close();
   }
 
-  clear() {
+  changeMode(mode) {
+    this.mode = mode;
+  }
+
+  cancel() {
+    this.close();
+  }
+
+  delete() {
     this.value = null;
     this.payload.value = this.value;
     this.close();

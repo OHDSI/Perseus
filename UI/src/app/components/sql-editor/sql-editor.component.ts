@@ -43,6 +43,7 @@ export class SqlEditorComponent implements OnInit {
   viewForm = new FormGroup({
     name: new FormControl('', Validators.required)
   });
+  chips = [];
   tablesWithoutAlias = [];
   tableColumnsMapping = {};
   aliasTableMapping = {};
@@ -55,6 +56,7 @@ export class SqlEditorComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.chips = this.data.tables.filter(it => !it.sql);
     this.isNew = !this.data.table;
     this.initCodeMirror();
     if (!this.isNew) {

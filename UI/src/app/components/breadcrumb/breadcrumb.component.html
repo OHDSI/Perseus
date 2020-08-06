@@ -1,7 +1,10 @@
 <ol class="breadcrumb" id="breadcrumb">
-  <li *ngFor="let breadcrumb of breadcrumbs">
-    <span [routerLink]="breadcrumb.url" routerLinkActive="router-link-active">
-      {{ breadcrumb.label }}
-    </span>
-  </li>
+  <ng-container *ngFor="let breadcrumb of breadcrumbs; let i = index">
+    <li>
+      <span [routerLink]="breadcrumb.url" routerLinkActive="router-link-active">
+        {{ breadcrumb.label }}
+      </span>
+    </li>
+    <mat-icon *ngIf="i !== breadcrumbs.length - 1">keyboard_arrow_right</mat-icon>
+  </ng-container>
 </ol>

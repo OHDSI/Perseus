@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
-import { OpenMappingDialog } from '../../app.component';
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { StoreService } from '../../services/store.service';
@@ -8,7 +7,7 @@ import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-toolbar',
-  styleUrls: ['./toolbar.component.scss'],
+  styleUrls: [ './toolbar.component.scss' ],
   templateUrl: './toolbar.component.html'
 })
 export class ToolbarComponent implements OnInit {
@@ -23,7 +22,6 @@ export class ToolbarComponent implements OnInit {
     private uploadService: UploadService,
     private storeService: StoreService
   ) {
-
   }
 
   ngOnInit() {
@@ -38,12 +36,12 @@ export class ToolbarComponent implements OnInit {
   }
 
   openSaveMappingDialog() {
-  this.commonUtilsService.saveMappingDialog(false);
+    this.commonUtilsService.saveMappingDialog(false);
   }
 
   openLoadMappingDialog() {
     this.commonUtilsService.loadMappingDialog();
-    }
+  }
 
   onOpenSourceClick() {
     this.uploadService.onFileInputClick(this.fileInput);
@@ -62,6 +60,6 @@ export class ToolbarComponent implements OnInit {
   }
 
   startOnBoarding(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target,  'tour-toolbar');
+    this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
   }
 }
