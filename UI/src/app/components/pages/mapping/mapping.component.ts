@@ -63,7 +63,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
-    this.commonService.alignBreadcrumb({left: '3%'});
   }
 
   ngAfterViewInit() {

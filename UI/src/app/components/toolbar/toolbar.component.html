@@ -5,12 +5,19 @@
           aria-label="cdm menu">
     <mat-icon>more_vert</mat-icon>
   </button>
+
+  <a class="logo" [routerLink]="['/comfy']">CDM ETL</a>
+
+  <app-breadcrumb></app-breadcrumb>
+
+  <span class="divider"></span>
+
+  <label class="info-label">{{reportName}} - {{cdmVersion}}</label>
+
   <button mat-icon-button (click)="startOnBoarding($event.currentTarget)">
     <mat-icon svgIcon="help"></mat-icon>
   </button>
-  <label class="info-label">{{reportName}} - {{cdmVersion}}</label>
-  <span class="divider"></span>
-  <a class="logo" [routerLink]="['/comfy']">CDM ETL</a>
+
   <mat-menu #menu="matMenu">
     <input
       #sourceUpload
