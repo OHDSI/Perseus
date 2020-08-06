@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, Inject, ElementRef } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { MatSelect } from '@angular/material/select';
+import { UploadService } from 'src/app/services/upload.service';
 
 @Component({
   selector: 'app-open-save-dialog',
   templateUrl: './open-save-dialog.component.html',
-  styleUrls: ['./open-save-dialog.component.scss']
+  styleUrls: [ './open-save-dialog.component.scss' ]
 })
 export class OpenSaveDialogComponent implements OnInit {
 
@@ -16,11 +17,10 @@ export class OpenSaveDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<OpenSaveDialogComponent>,
-    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (this.data.type === 'select') {
-      this.resultValue = this.data.items[0];
+      this.resultValue = this.data.items[ 0 ];
     }
   }
 

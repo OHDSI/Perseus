@@ -29,6 +29,12 @@ export class ToolbarComponent implements OnInit {
       this.cdmVersion = res.version ? `CDM v${res.version}` : 'CDM version';
       this.reportName = res.report || 'Report name';
     });
+
+    this.commonUtilsService.loadSourceReport$.subscribe(res => {
+      if (res) {
+        this.uploadService.onFileInputClick(this.fileInput);
+      }
+    });
   }
 
   resetAllMappings() {
@@ -44,7 +50,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   onOpenSourceClick() {
-    this.uploadService.onFileInputClick(this.fileInput);
+    this.commonUtilsService.loadNewReportWithWarning();
   }
 
   onFileUpload(event: Event) {
