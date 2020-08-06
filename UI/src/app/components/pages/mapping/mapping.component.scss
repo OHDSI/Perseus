@@ -1,5 +1,13 @@
 @import 'src/app/styles/variables.scss';
 
+:host {
+  //width: 1440px;
+  display: flex;
+  height: calc(100% - 40px);
+  align-self: stretch;
+  justify-content: stretch;
+}
+
 .area-source {
   position: relative;
   width: 35%;
@@ -59,19 +67,19 @@ section {
 }
 
 footer {
-    width: 100%;
-    float: left;
-    margin-top: 15px;
-    margin-bottom: 30px;
+  width: 100%;
+  float: left;
+  margin-top: 15px;
+  margin-bottom: 30px;
 
-    button {
-      float: right;
-      margin-left: 30px;
-    }
+  button {
+    float: right;
+    margin-left: 30px;
+  }
 
-    button:first-child {
-      margin-right: 8px;
-    }
+  button:first-child {
+    margin-right: 8px;
+  }
 }
 
 .mapping-page-button {
@@ -111,6 +119,7 @@ footer {
   display: flex;
   flex-direction: column;
   height: calc(100% - 40px);
+  width: 100%;
 }
 
 .filter-by-name {
