@@ -30,14 +30,14 @@
       #tables="cdkDropList"
       cdkDropList
       cdkDropListSortingDisabled
-      [cdkDropListData]="data.tables"
+      [cdkDropListData]="chips"
       [cdkDropListConnectedTo]="[editorArea]"
       class="table-name">
       <mat-chip
         class="table-box"
         cdkDrag
-        *ngFor="let table of data.tables">
-        {{table.name}}
+        *ngFor="let chip of chips">
+        {{chip.name}}
       </mat-chip>
     </mat-chip-list>
   </section>
