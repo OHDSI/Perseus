@@ -9,6 +9,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
 import { AreaComponent } from 'src/app/components/area/area.component';
+import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
@@ -62,7 +63,6 @@ import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
-import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
 
 @NgModule({
   declarations: [
@@ -131,10 +131,10 @@ import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.co
     VocabulariesService,
     ConceptService,
     CommonUtilsService,
-    [{ provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS }],
+    [ { provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS } ],
     MappingPageSessionStorage
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule {
 }

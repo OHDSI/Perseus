@@ -22,9 +22,11 @@ a {
   justify-content: flex-end;
   background: white;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   margin-right: 0;
   margin-left: auto;
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
 }
 
 .vertical-box {
@@ -34,7 +36,7 @@ a {
   justify-content: space-between;
   background-color: $cdm-blue-lightest;
   width: 400px;
-  padding: 10px 15px 5px 38px;
+  padding: 10px 15px 7px 38px;
   font-size: 14px;
   border: 1px solid transparent;
   border-radius: 2px;
@@ -182,9 +184,13 @@ div[concept="true"] {
   background-color: $cdm-grey-lighter;
   font-size: 14px;
   border-radius: 2px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
+
+  &.source-focus {
+    border: 2px dashed rgba(6, 107, 187, 0.6);
+  }
 
   &[highlighted="true"] {
     background-color: $cdm-blue-lightest;
@@ -198,7 +204,7 @@ div[concept="true"] {
   }
 
   & + & {
-    margin-top: 10px;
+    margin-top: 8px;
   }
 
   &-actions {
@@ -254,6 +260,8 @@ div[concept="true"] {
 :host {
   display: flex;
   height: calc(100% - 40px);
+  width: 1440px;
+  align-self: center;
 }
 
 h3 {
@@ -280,7 +288,7 @@ nav {
   padding: 20px;
   position: relative;
   z-index: 1;
-  border-radius: 0 20px 0 0;
+  border-radius: 0 20px 20px 0;
 
   h4 {
     margin-left: 56px;
@@ -371,6 +379,13 @@ article {
     h4,
     .filter-by-name {
       width: 412px;
+    }
+
+    &.initial-wrapper {
+      h4,
+      .filter-by-name {
+        width: 405px;
+      }
     }
 
     .initial {

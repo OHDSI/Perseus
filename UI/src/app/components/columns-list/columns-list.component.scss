@@ -27,8 +27,6 @@
   padding: 10px 15px 5px;
   font-size: larger;
   align-items: center;
-  @include mat-elevation-transition;
-  @include mat-elevation(1, $cdm-grey, 0.8);
 
   .mat-icon {
     font-size: 15px;
@@ -49,6 +47,8 @@
   cursor: pointer;
   background-color: $cdm-grey-lighter;
   border: 1px solid transparent;
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
 }
 
 mat-list-item.mat-list-item {
