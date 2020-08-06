@@ -66,6 +66,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     targetConfig: {},
     version: undefined,
     filtered: undefined,
+    sourceColumnsfilter: undefined,
+    sourceFilter: undefined,
+    targetFilter: undefined
   };
 
   constructor(
@@ -221,6 +224,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.data.source
         .map(table => table.name)
     );
+    this.filterAtInitialization('source', this.data.sourceFilter);
   }
 
   initializeTargetData() {
@@ -235,6 +239,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (this.data.filtered) {
       this.filterByType();
     }
+    this.filterAtInitialization('target', this.data.targetFilter);
   }
 
   initializeSourceColumns() {
@@ -243,6 +248,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     }
     const allColumns = this.data.source.reduce((prev, cur) => [ ...prev, ...cur.rows ], []);
     this.sourceRows = uniqBy(allColumns, 'name');
+    this.filterAtInitialization('source-column', this.data.sourceColumnsfilter);
   }
 
   initializeData() {
@@ -389,19 +395,32 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     switch (area) {
       case Area.Source: {
         this.source = this.data.source.map(item => item.name).filter(filterByName);
+        this.data.sourceFilter = byName.criteria;
         break;
       }
       case Area.Target: {
-        this.targetTableNames = uniq(Object.keys(this.targetConfig)).filter(filterByName);
+        this.targetTableNames = this.data.target.map(item => item.name).filter(filterByName);
+        this.data.targetFilter = byName.criteria;
         break;
       }
       case Area.SourceColumn: {
         const rows = this.data.source.reduce((prev, cur) => [ ...prev, ...cur.rows ], []);
         this.sourceRows = uniqBy(rows, 'name').filter(row => filterByName(row.name));
+        this.data.sourceColumnsfilter = byName.criteria;
         break;
       }
       default:
         break;
+    }
+  }
+
+  filterAtInitialization(area: string, filterCriteria: string) {
+    if (filterCriteria) {
+      const searchCriteria: Criteria = {
+        filtername: 'by-name',
+        criteria: filterCriteria
+      };
+      this.filterByName(area, searchCriteria);
     }
   }
 
@@ -419,14 +438,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   filterByNameReset(area: string, byName: Criteria): void {
     switch (area) {
       case Area.Source: {
+        this.data.sourceFilter = undefined;
         this.initializeSourceData();
         break;
       }
       case Area.Target: {
+        this.data.targetFilter = undefined;
         this.initializeTargetData();
         break;
       }
       case Area.SourceColumn: {
+        this.data.sourceColumnsfilter = undefined;
         this.initializeSourceColumns();
         break;
       }

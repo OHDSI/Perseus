@@ -12,7 +12,10 @@ export class StoreService {
     target: [],
     targetConfig: {},
     source: [],
-    report: undefined
+    report: undefined,
+    sourceColumnsfilter: undefined,
+    sourceFilter: undefined,
+    targetFilter: undefined
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
   readonly state$ = this.storeState.asObservable();
@@ -52,7 +55,10 @@ export class StoreService {
       target: [],
       source: [],
       targetConfig: {},
-      report: undefined
+      report: undefined,
+      sourceColumnsfilter: undefined,
+      sourceFilter: undefined,
+      targetFilter: undefined
     };
     this.storeState.next(this.initialState);
   }

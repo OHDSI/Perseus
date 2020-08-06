@@ -6,6 +6,7 @@
   <app-comfy-search-by-name *ngIf="data.source?.length"
                             class="filter-by-name"
                             placeholder='Search by source column'
+                            criteria="{{data.sourceColumnsfilter}}"
                             (complete)="filterByName('source-column', $event)"
                             (reset)="filterByNameReset('source-column', $event)"></app-comfy-search-by-name>
   <app-columns-list *ngIf="data.source?.length"
@@ -22,6 +23,7 @@
       <app-comfy-search-by-name *ngIf="data.source?.length"
                                 class="filter-by-name"
                                 placeholder="Search by source table"
+                                criteria="{{data.sourceFilter}}"
                                 (complete)="filterByName('source', $event)"
                                 (reset)="filterByNameReset('source', $event)"></app-comfy-search-by-name>
       <a *ngIf="data.source?.length"
@@ -95,6 +97,7 @@
       </h4>
       <app-comfy-search-by-name class="filter-by-name"
                                 placeholder="Search by target table"
+                                criteria="{{data.targetFilter}}"
                                 (complete)="filterByName('target', $event)"
                                 (reset)="filterByNameReset('target', $event)"
                                 *ngIf="data.target?.length"></app-comfy-search-by-name>
