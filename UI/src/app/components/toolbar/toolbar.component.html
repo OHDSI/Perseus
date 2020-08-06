@@ -6,7 +6,8 @@
     <mat-icon>more_vert</mat-icon>
   </button>
 
-  <a class="logo" [routerLink]="['/comfy']">CDM ETL</a>
+  <a class="logo"
+     [routerLink]="['/comfy']">CDM ETL</a>
 
   <app-breadcrumb></app-breadcrumb>
 
@@ -14,7 +15,8 @@
 
   <label class="info-label">{{reportName}} - {{cdmVersion}}</label>
 
-  <button mat-icon-button (click)="startOnBoarding($event.currentTarget)">
+  <button mat-icon-button
+          (click)="startOnBoarding($event.currentTarget)">
     <mat-icon svgIcon="help"></mat-icon>
   </button>
 
@@ -34,7 +36,8 @@
       <mat-icon svgIcon="folder"></mat-icon>
       <span>Load New Report</span>
     </button>
-    <button mat-menu-item (click)="openSetCDMDialog()">
+    <button mat-menu-item
+            (click)="openSetCDMDialog()">
       <mat-icon svgIcon="CDM_version"></mat-icon>
       <span>Set CDM Version</span>
     </button>

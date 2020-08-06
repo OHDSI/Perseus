@@ -2,29 +2,31 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { fromEvent } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 
 import { BridgeService } from './services/bridge.service';
 
-const ICON_NAMES = ['CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping', 'edit', 'delete'];
+const ICON_NAMES = [ 'CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping', 'edit', 'delete' ];
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: [ './app.component.scss' ]
 })
 export class AppComponent implements OnDestroy {
   mobileQuery: MediaQueryList;
-
-  private mobileQueryListener: () => void;
+  currentUrl;
+  private readonly mobileQueryListener: () => void;
 
   constructor(
     cd: ChangeDetectorRef,
     media: MediaMatcher,
     private bridgeService: BridgeService,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private router: Router
   ) {
     this.addIcons();
 
@@ -41,6 +43,8 @@ export class AppComponent implements OnDestroy {
       .subscribe(window => {
         this.bridgeService.refreshAll();
       });
+
+    this.router.events.subscribe((res) => this.currentUrl = this.router.url.replace('/', ''));
   }
 
   ngOnDestroy(): void {
