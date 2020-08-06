@@ -7,6 +7,10 @@
             [label]="table.name"
             *ngFor="let table of source; trackBy: trackByFn"
           >
+            <app-comfy-search-by-name
+              class="filter-by-name"
+              placeholder="Search by source fields">
+            </app-comfy-search-by-name>
             <app-area area="source">
               <app-panel-source
                 #sourcePanel
@@ -136,6 +140,10 @@
             *ngFor="let table of target; trackBy: trackByFn"
             [disabled]="isDisabled(table.name)"
           >
+            <app-comfy-search-by-name
+              class="filter-by-name"
+              placeholder="Search by target fields">
+            </app-comfy-search-by-name>
             <app-area area="target">
               <app-panel-target
                 #targetPanel
@@ -156,6 +164,7 @@
       <button
         mat-flat-button
         color="accent"
+        class="mapping-page-button"
         matTooltip="Download ziped mappings"
         aria-label="Download mappings xmls"
         [disabled]="isFooterButtonDisabled()"
@@ -165,6 +174,7 @@
       <button
         mat-flat-button
         color="accent"
+        class="mapping-page-button"
         matTooltip="Preview mappings"
         aria-label="Preview mapping xmls"
         [disabled]="isFooterButtonDisabled()"
@@ -173,8 +183,7 @@
       </button>
       <button
         mat-flat-button
-        color="accent"
-        class="delete-links"
+        class="mapping-page-button delete-links"
         [disabled]="isFooterButtonDisabled()"
         (click)="deleteLinks()"
       >Delete Links

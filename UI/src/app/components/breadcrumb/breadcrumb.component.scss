@@ -1,42 +1,34 @@
 @import 'src/app/styles/variables.scss';
 
 .breadcrumb {
-  position: absolute;
   background: none;
-  font-size: 18px;
-  margin: 0;
-  z-index: 2;
-  margin-top: 26px;
-  padding: 0;
+  margin: 0 20px 0 0;
 
   li {
     list-style: none;
     float: left;
-    margin: 5px;
   }
 
-  li:last-child {
-    margin-right: 20px;
+  mat-icon {
+    color: $white;
+    float: left;
+    font-size: 18px;
+    line-height: 18px;
+    margin-top: 9px;
+    margin-left: 5px;
   }
 
   li span {
-    color: $blue;
+    color: #A8A8A8;
     font-weight: bold;
     cursor: pointer;
     outline: none;
+    font-size: 16px;
+    line-height: 18px;
   }
 
   li:last-child span {
-    color: $cdm-grey-dark;
+    color: $white;
     cursor: default;
-  }
-
-  li::after {
-    content: ">";
-    color: $black;
-  }
-
-  li:last-child::after {
-    content: "";
   }
 }

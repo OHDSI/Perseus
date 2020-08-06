@@ -32,7 +32,9 @@ table {
 
   .comments-button {
     left: 100%;
-    margin-left: -80px;
+    margin-left: -70px;
+    width: 32px;
+    height: 32px;
   }
 
   .caption-item {
@@ -53,11 +55,16 @@ table {
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+
+    button {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .icon-indicator {
     margin-right: 15px;
-    padding-top: 11px;
+    padding-top: 5px;
     cursor: move;
   }
   .icon-type {
@@ -68,7 +75,7 @@ table {
     padding-top: 2px;
   }
   .icon-comment {
-    padding-top: 4px;
+    margin-top: -8px;
   }
 
   .button-filter {

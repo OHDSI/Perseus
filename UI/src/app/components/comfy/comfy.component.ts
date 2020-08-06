@@ -10,7 +10,6 @@ import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
-import { CommonService } from 'src/app/services/common.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { environment } from 'src/environments/environment';
 import { Area } from '../../models/area';
@@ -49,11 +48,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
-    private matDialog: MatDialog,
-    private commonService: CommonService,
+    private matDialog: MatDialog
   ) {
     super();
-    this.commonService.alignBreadcrumb({ left: '460px' });
   }
 
   targetTableNames: string[] = [];
