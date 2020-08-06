@@ -46,7 +46,7 @@
   text-transform: uppercase;
   cursor: pointer;
   background-color: $cdm-grey-lighter;
-  border: 1px solid transparent;
+  border: 1px solid $cdm-grey-lighter;
   @include mat-elevation-transition;
   @include mat-elevation(1, $cdm-grey, 0.8);
 }
@@ -56,7 +56,7 @@ mat-list-item.mat-list-item {
   width: 292px;
 
   & + & {
-    margin-top: 6px;
+    margin-top: 7px;
   }
 }
 
