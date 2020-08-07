@@ -60,8 +60,8 @@ export class ComfySearchByNameComponent extends BaseComponent
   }
 
   search(textCriteria: string) {
-    if (textCriteria=='') {
-      this.clear()
+    if (textCriteria === '') {
+      this.clear();
     } else {
       const searchCriteria: Criteria = {
         filtername: 'by-name',
