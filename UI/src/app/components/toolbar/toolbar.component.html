@@ -26,6 +26,11 @@
       type="file"
       (change)="onFileUpload($event)"
       hidden/>
+      <input
+      #mappingUpload
+      type="file"
+      (change)="onMappingUpload($event)"
+      hidden/>
     <button mat-menu-item
             (click)="resetSourceAndTarget()">
       <mat-icon svgIcon="new_mapping"></mat-icon>

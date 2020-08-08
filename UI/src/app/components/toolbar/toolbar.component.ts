@@ -12,6 +12,7 @@ import { UploadService } from '../../services/upload.service';
 })
 export class ToolbarComponent implements OnInit {
   @ViewChild('sourceUpload', { static: true }) fileInput: ElementRef;
+  @ViewChild('mappingUpload', { static: true }) mappingInput: ElementRef;
 
   cdmVersion: string;
   reportName: string;
@@ -42,11 +43,11 @@ export class ToolbarComponent implements OnInit {
   }
 
   openSaveMappingDialog() {
-    this.commonUtilsService.saveMappingDialog(false);
+    this.commonUtilsService.saveMappingDialog(false, false);
   }
 
   openLoadMappingDialog() {
-    this.commonUtilsService.loadMappingDialog();
+   this.uploadService.onFileInputClick(this.mappingInput);
   }
 
   onOpenSourceClick() {
@@ -55,6 +56,10 @@ export class ToolbarComponent implements OnInit {
 
   onFileUpload(event: Event) {
     this.uploadService.onFileChange(event);
+  }
+
+  onMappingUpload(event: Event) {
+    this.uploadService.onMappingChange(event);
   }
 
   openSetCDMDialog() {
