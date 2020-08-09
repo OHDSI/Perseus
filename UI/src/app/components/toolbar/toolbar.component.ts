@@ -37,6 +37,10 @@ export class ToolbarComponent implements OnInit {
     });
   }
 
+  IsCreateNewMappingDisabled() {
+    return !(this.storeService.state.source.length && this.storeService.state.target.length);
+  }
+
   resetAllMappings() {
     this.commonUtilsService.resetMappingsWithWarning();
   }
