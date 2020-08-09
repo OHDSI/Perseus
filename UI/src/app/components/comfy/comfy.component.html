@@ -125,6 +125,10 @@
                         (click)="removeTableMapping($event, tableName, targetName)">close
               </mat-icon>
             </div>
+            <div *cdkDragPreview
+                 class="table-description target preview">
+              {{ tableName }}
+            </div>
           </div>
         </div>
       </div>
