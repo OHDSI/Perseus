@@ -105,7 +105,6 @@ export class SqlEditorComponent implements OnInit {
     const settings = {
       rows,
       area: Area.Source,
-      expanded: false,
       id: tableId,
       name: this.name,
       visible: true,

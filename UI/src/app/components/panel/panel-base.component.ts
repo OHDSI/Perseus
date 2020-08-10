@@ -48,21 +48,13 @@ export class PanelBaseComponent implements AfterViewInit {
   }
 
   onOpen() {
-    this.commonService.expanded(this.area);
-    this.setExpandedFlagOnSourceAndTargetTables(true);
-
     if (!this.initializing) {
-      this.table.expanded = true;
       this.open.emit();
     }
   }
 
   onClose() {
-    this.commonService.collapsed(this.area);
-    this.setExpandedFlagOnSourceAndTargetTables(false);
-
     if (!this.initializing) {
-      this.table.expanded = false;
       this.close.emit();
     }
   }
@@ -94,10 +86,6 @@ export class PanelBaseComponent implements AfterViewInit {
       this.bridgeButtonService.init(payload, element);
       this.bridgeButtonService.openRulesDialog();
     }
-  }
-
-  setExpandedFlagOnSourceAndTargetTables(expanded: boolean) {
-    this.storeService.state[this.area].filter(t => t.id === this.table.id).forEach(t => (t.expanded = expanded));
   }
 
   onCheckboxChange(event: MatCheckboxChange) {

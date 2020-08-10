@@ -1,26 +1,7 @@
-<mat-expansion-panel (opened)="onOpen()" (closed)="onClose()" expanded="true">
-  <mat-expansion-panel-header
-    #expPanelHeader
-    class="mat-expansion-panel-header panel-header-{{ table.name }}"
-  >
-    <mat-panel-title>
-      <mat-icon
-        (click)="openSampleDataDialog($event)"
-        matTooltip="Open sample data"
-      >
-        list
-      </mat-icon>
-      <span>{{ title }}</span>
-      <div *ngIf="table.area === 'source'" class="linkSimilarItems">
-        <mat-slide-toggle (change)="onCheckboxChange($event)" (click)="$event.stopPropagation();">Link similar fields</mat-slide-toggle>
-      </div>
-    </mat-panel-title>
-  </mat-expansion-panel-header>
-  <app-panel-table
-    #panel
-    [table]="table"
-    [tabIndex]="tabIndex"
-    (openTransform)="onOpenTransfromDialog($event)"
-  >
-  </app-panel-table>
-</mat-expansion-panel>
+<app-panel-table
+  #panel
+  [table]="table"
+  [tabIndex]="tabIndex"
+  (openTransform)="onOpenTransfromDialog($event)"
+>
+</app-panel-table>

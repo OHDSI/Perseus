@@ -2,8 +2,10 @@ import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChil
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { switchMap, takeUntil } from 'rxjs/operators';
+import { uniq } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { ITable, Table } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
@@ -19,6 +21,8 @@ import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-op
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
+import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
+import { Area } from 'src/app/models/area';
 
 @Component({
   selector: 'app-mapping',
@@ -31,7 +35,16 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   sourceTabIndex = 0;
   targetTabIndex = 0;
+
+  clickArrowSubscriptions = [];
+  panelsViewInitialized = new Set();
+
+  sourceRows: IRow[] = [];
+  targetRows: IRow[] = [];
+
   mappedTables = [];
+
+  similarTableName = 'similar';
 
   get hint(): string {
     return 'no hint';
@@ -46,8 +59,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   @ViewChild('sourcePanel') sourcePanel: PanelSourceComponent;
   @ViewChild('targetPanel') targetPanel: PanelTargetComponent;
 
-  clickArrowSubscriptions = [];
-  panelsViewInitialized = new Set();
+
 
   constructor(
     private stateService: StateService,
@@ -141,23 +153,106 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return { upperLimit, lowerLimit };
   }
 
+  checkIncludesRows(rows, row) {
+    return !!rows.find(r => r.name === row.name);
+  }
+
+  collectSimilarRows(rows, area, similarRows) {
+    const rowsKey = `${area}Rows`;
+    rows.forEach(row => {
+      if (!this.checkIncludesRows(this[rowsKey], row)) {
+        this[rowsKey].push(row);
+        return;
+      }
+
+      if (!this.checkIncludesRows(similarRows, row)) {
+        const rowForSimilar = { ...row, tableName: this.similarTableName };
+        similarRows.push(rowForSimilar);
+      }
+    });
+  }
+
+  prepareTables(data, area) {
+    const similarRows = [];
+
+    const tables = data.map(table => {
+      this.collectSimilarRows(table.rows, area, similarRows);
+      return new Table(table);
+    });
+
+    if (similarRows.length) {
+      const similarSourceTable = new Table({ id: tables.length, area, name: this.similarTableName, rows: similarRows});
+      tables.push(similarSourceTable);
+    }
+
+    this[area] = tables;
+  }
+
+  prepareMappedTables(mappedTables) {
+    this.mappedTables = mappedTables;
+
+    this.addSimilar(Area.Source);
+    this.addSimilar(Area.Target);
+  }
+
+  addSimilar(area) {
+    const lastIndex = this[area].length - 1;
+    const lastTableName = this[area][lastIndex].name;
+    if (lastTableName === this.similarTableName) {
+      this[`${area}Similar`](this[area][lastIndex].rows);
+    }
+  }
+
+  sourceSimilar(rows) {
+    rows.forEach(row => {
+      this.sourceRows.forEach(sourceRow => {
+        if (sourceRow.name !== row.name) {
+          return;
+        }
+
+        this.mappedTables.forEach(item => {
+          if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
+            item.push(this.similarTableName);
+          }
+        });
+      });
+    });
+  }
+
+  targetSimilar(rows) {
+    const newItem = [];
+    rows.forEach(row => {
+      this.targetRows.forEach(targetRow => {
+        if (targetRow.name !== row.name) {
+          return;
+        }
+
+        this.mappedTables.forEach(item => {
+          if (!item.includes(targetRow.tableName)) {
+            return;
+          }
+
+          if (!newItem.length) {
+            newItem.push(this.similarTableName);
+          }
+
+          newItem.push.apply(newItem, item.slice(1));
+        });
+      });
+    });
+    this.mappedTables.push(uniq(newItem));
+  }
+
   ngOnInit() {
     this.mappingStorage.get('mappingpage').then(data => {
-      this.source = data.source.map(table => {
-        table.expanded = true;
-        return new Table(table);
-      });
-      this.target = data.target.map(table => {
-        table.expanded = true;
-        return new Table(table);
-      });
-
-      this.mappedTables = data.mappedTables;
+      this.prepareTables(data.source, Area.Source);
+      this.prepareTables(data.target, Area.Target);
+      this.prepareMappedTables(data.mappedTables);
 
       setTimeout(() => {
         this.bridgeService.refresh(this.target[this.targetTabIndex]);
         this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
-        this.targetPanel.panels.forEach(panel => panel.reflectConnectorsPin(this.source[this.sourceTabIndex]));
+        this.targetPanel.panel.reflectConnectorsPin(this.source[this.sourceTabIndex]);
         this.bridgeService.adjustArrowsPositions();
       }, 200);
     });
@@ -219,20 +314,26 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       });
   }
 
+  openFilter(target) {
+    const types = [];
+    const checkedTypes = [];
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      panelClass: 'filter-popup',
+      payload: { types, checkedTypes, cdmTypes: {Common: '', Concept: '', Individual: ''} }
+    };
+    this.overlayService.open(dialogOptions, target, CdmFilterComponent);
+  }
+
   onPanelOpen(table) {
-    if (
-      this.panelsViewInitialized.size ===
-      this.source.length + this.target.length
-    ) {
+    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
       this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
     }
   }
 
   onPanelClose(table) {
-    if (
-      this.panelsViewInitialized.size ===
-      this.source.length + this.target.length
-    ) {
+    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
       this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
     }
   }
@@ -242,14 +343,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.panelsViewInitialized.add(table);
     }
 
-    if (
-      this.panelsViewInitialized.size ===
-      this.source.length + this.target.length
-    ) {
+    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
-      this.source.forEach(panel => (panel.expanded = true));
-      this.target.forEach(panel => (panel.expanded = true));
     }
   }
 
@@ -265,8 +361,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
-        tables.forEach(table => (table.expanded = false));
-        tables[index].expanded = true;
         this.bridgeService.refresh(tables[index]);
         resolve();
       }, 500);

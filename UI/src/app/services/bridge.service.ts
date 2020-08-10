@@ -130,25 +130,21 @@ export class BridgeService {
 
     if (delayMs) {
       setTimeout(() => {
-        this._refresh(table, this.arrowsCache, this.storeService);
+        this._refresh(table, this.arrowsCache);
       }, delayMs);
     } else {
-      this._refresh(table, this.arrowsCache, this.storeService);
+      this._refresh(table, this.arrowsCache);
     }
   }
 
   private _refresh(
     table: ITable,
-    arrowsCache: ArrowCache,
-    storeService: StoreService
+    arrowsCache: ArrowCache
   ) {
 
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (table.name === arrow[ table.area ].tableName) {
-        const source = this.findTable(arrow.source.tableName);
-        const target = this.findTable(arrow.target.tableName);
-
-        this.refreshConnector(arrow, source, target);
+        this.refreshConnector(arrow);
       }
     });
   }
@@ -158,18 +154,12 @@ export class BridgeService {
 
     setTimeout(() => {
       Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
-        const source = this.findTable(arrow.source.tableName);
-        const target = this.findTable(arrow.target.tableName);
-
-        source.expanded = true;
-        target.expanded = true;
-
-        this.refreshConnector(arrow, source, target);
+        this.refreshConnector(arrow);
       });
     }, 300);
   }
 
-  refreshConnector(arrow, source, target) {
+  refreshConnector(arrow) {
     const connector = this.drawService.drawLine(
       this.getConnectorId(arrow.source, arrow.target),
       arrow.source,
@@ -284,10 +274,7 @@ export class BridgeService {
   isTableConnected(table: ITable): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
-        return (
-          connection.source.tableName === table.name ||
-          connection.target.tableName === table.name
-        );
+        return connection.source.tableName === table.name || connection.target.tableName === table.name;
       }).length > 0
     );
   }
@@ -315,9 +302,7 @@ export class BridgeService {
   findCorrespondingTables(table: ITable): string[] {
     const source = table.area === 'source' ? 'target' : 'source';
     const rows = Object.values(this.arrowsCache)
-      .filter(connection => {
-        return connection[ table.area ].tableName === table.name;
-      })
+      .filter(connection => connection[ table.area ].tableName === table.name)
       .map(arrow => arrow[ source ]);
 
     return uniqBy(rows, 'tableName').map(row => row.tableName);
@@ -325,10 +310,7 @@ export class BridgeService {
 
   findCorrespondingConnections(table: ITable, row: IRow): IConnection[] {
     return Object.values(this.arrowsCache).filter(connection => {
-      return (
-        connection[ table.area ].tableName === table.name &&
-        connection[ table.area ].id === row.id
-      );
+      return connection[ table.area ].tableName === table.name && connection[ table.area ].id === row.id;
     });
   }
 
@@ -354,8 +336,6 @@ export class BridgeService {
     return `${targetTableId}-${targetRowId}`;
   }
 
-  // replace this method away from store service with initial code
-  // because it's not about storing and specific only for bridgeService
   findTable(name: string): ITable {
     const state = this.storeService.state;
     const index1 = state.target.findIndex(t => t.name === name);
