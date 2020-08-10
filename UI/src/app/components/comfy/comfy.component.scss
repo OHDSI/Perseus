@@ -97,13 +97,6 @@ a {
     width: 100%;
   }
 
-  &.preview {
-    width: 250px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
   &.source {
     direction: ltr;
     width: 100%;
@@ -114,7 +107,21 @@ a {
 
   &.target {
     display: flex;
+
+    &.preview mat-icon.mat-icon {
+      display: none
+    }
   }
+
+  &.preview {
+    position: relative;
+    padding: 10px 15px 5px;
+    width: 250px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
 
   .remove-mapping-table {
     position: absolute;

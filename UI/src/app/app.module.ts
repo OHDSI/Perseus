@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -131,8 +132,9 @@ import { VocabulariesService } from './services/vocabularies.service';
     VocabulariesService,
     ConceptService,
     CommonUtilsService,
+    MappingPageSessionStorage,
     [ { provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS } ],
-    MappingPageSessionStorage
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } }
   ],
   bootstrap: [ AppComponent ]
 })

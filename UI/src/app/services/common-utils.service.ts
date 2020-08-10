@@ -24,11 +24,6 @@ import { UploadService } from './upload.service';
   providedIn: 'root'
 })
 export class CommonUtilsService {
-
-  private snakbarOptions = {
-    duration: 3000
-  };
-
   private renderer: Renderer2;
   private readonly loadReport = new BehaviorSubject<any>(true);
   readonly loadSourceReport$ = this.loadReport.asObservable();
@@ -41,7 +36,7 @@ export class CommonUtilsService {
     private storeService: StoreService,
     private router: Router,
     private configService: ConfigurationService,
-    private snakbar: MatSnackBar,
+    private snackbar: MatSnackBar,
     rendererFactory: RendererFactory2,
     private uploadService: UploadService,
   ) {
@@ -216,11 +211,7 @@ export class CommonUtilsService {
   }
 
   openSnackbarMessage(message: string) {
-    this.snakbar.open(
-      message,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
+    this.snackbar.open(message, ' DISMISS ');
   }
 
   openOnBoardingTip(target: EventTarget, key) {
