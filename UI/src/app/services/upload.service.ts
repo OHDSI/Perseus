@@ -33,8 +33,7 @@ export class UploadService {
     this.uploadSchema(files).subscribe(res => {
       this.snackbar.open(
         'Success file upload',
-        ' DISMISS ',
-        { duration: 3000 }
+        ' DISMISS '
       );
       this.bridgeService.resetAllMappings();
       this.dataService.prepareTables(res, 'source');
@@ -47,14 +46,13 @@ export class UploadService {
     const file = event.target.files[ 0 ];
     const fileReader: FileReader = new FileReader();
     let content;
-    const self = this;
     fileReader.onloadend = () => {
       content = fileReader.result;
       const loadedConfig = JSON.parse(content);
       const resultConfig = new Configuration();
       Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
-      self.bridgeService.applyConfiguration(resultConfig);
-    }
+      this.bridgeService.applyConfiguration(resultConfig);
+    };
     fileReader.readAsText(file);
   }
 

@@ -21,16 +21,14 @@
   </button>
 
   <mat-menu #menu="matMenu">
-    <input
-      #sourceUpload
-      type="file"
-      (change)="onFileUpload($event)"
-      hidden/>
-      <input
-      #mappingUpload
-      type="file"
-      (change)="onMappingUpload($event)"
-      hidden/>
+    <input #sourceUpload
+           type="file"
+           (change)="onFileUpload($event)"
+           hidden />
+    <input #mappingUpload
+           type="file"
+           (change)="onMappingUpload($event)"
+           hidden />
     <button mat-menu-item
             [disabled]="IsCreateNewMappingDisabled()"
             (click)="resetSourceAndTarget()">
@@ -58,9 +56,8 @@
       <mat-icon svgIcon="save"></mat-icon>
       <span>Save Mappings</span>
     </button>
-    <button
-      mat-menu-item
-      (click)="resetAllMappings()">
+    <button mat-menu-item
+            (click)="resetAllMappings()">
       <mat-icon svgIcon="reset"></mat-icon>
       <span>Delete All Mappings</span>
     </button>
