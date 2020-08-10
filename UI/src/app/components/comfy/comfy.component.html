@@ -107,8 +107,7 @@
            #scrollEl
            cdk-scrollable
            *ngIf="data.target?.length">
-        <div id="main"
-             cdkDropList
+        <div cdkDropList
              [cdkDropListData]="targetConfig"
              [cdkDropListConnectedTo]="targetTableNames"
              (cdkDropListDropped)="drop.execute($event)"
