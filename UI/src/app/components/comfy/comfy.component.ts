@@ -1,5 +1,17 @@
-import { CdkDrag, CdkDragDrop, CdkDragMove, CdkDragStart, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { CdkDrag, CdkDragMove, CdkDragStart, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DOCUMENT } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -44,7 +56,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private storeService: StoreService,
     private commonUtilsService: CommonUtilsService,
     private bridgeService: BridgeService,
-    private snakbar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private router: Router,
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
@@ -57,7 +69,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   targetTableNames: string[] = [];
-  private highlitedtables: string[] = [];
+  highlightedTables: string[] = [];
 
   source: string[] = [];
 
@@ -239,11 +251,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         });
         this.initializeData();
 
-        this.snakbar.open(
-          'Reset all mappings success',
-          ' DISMISS ',
-          this.snakbarOptions
-        );
+        this.snackBar.open('Reset all mappings success', ' DISMISS ');
       });
 
     this.bridgeService.saveAndLoadSchema$
@@ -251,11 +259,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       .subscribe(_ => {
         this.initializeData();
 
-        this.snakbar.open(
-          'New source schema loaded',
-          ' DISMISS ',
-          this.snakbarOptions
-        );
+        this.snackBar.open('New source schema loaded', ' DISMISS ');
       });
 
   }
@@ -274,9 +278,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.targetConfig = this.data.targetConfig;
     this.targetTableNames = uniq(Object.keys(this.targetConfig));
 
-    this.sourceConnectedTo = this.data.target.map(
-      table => `target-${table.name}`
-    );
+    this.sourceConnectedTo = this.data.target.map(table => `target-${table.name}`);
 
     if (this.data.filtered) {
       this.filterByType();
@@ -369,11 +371,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         indexes[ table.name ] = tableIncludesColumns(rowNames, selectedSourceColumns);
       });
 
-      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
+      this.highlightedTables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
 
       this.source = Object.assign([], this.source);
     } else {
-      this.highlitedtables = [];
+      this.highlightedTables = [];
     }
   }
 
@@ -527,10 +529,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        if (res) {
+          this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        }
       }
-    }
     );
   }
 
@@ -539,10 +541,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, table });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.updateTable(Area.Source, table, res);
+        if (res) {
+          this.storeService.updateTable(Area.Source, table, res);
+        }
       }
-    }
     );
   }
 

@@ -1,23 +1,17 @@
-import {
-  Component,
-  OnInit,
-  assertPlatform,
-  Output,
-  EventEmitter,
-  Input
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BridgeService } from 'src/app/services/bridge.service';
-import { Configuration } from 'src/app/models/configuration';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { IStorage } from 'src/app/models/interface/storage.interface';
+
+import { Configuration } from 'src/app/models/configuration';
 import { BrowserSessionConfigurationStorage } from 'src/app/models/implementation/configuration-session-storage';
+import { IStorage } from 'src/app/models/interface/storage.interface';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 
 @Component({
   selector: 'app-saved-mappings',
   templateUrl: './saved-mappings.component.html',
-  styleUrls: ['./saved-mappings.component.scss']
+  styleUrls: [ './saved-mappings.component.scss' ]
 })
 export class SavedMappingsComponent implements OnInit {
   @Input() action: string;
@@ -26,30 +20,24 @@ export class SavedMappingsComponent implements OnInit {
 
   formControl = new FormControl();
   configurationControl = new FormControl();
-
   configurations = [];
-
-  private snakbarOptions = {
-    duration: 3000
-  };
-
   configStorageService: IStorage<Configuration>;
 
   constructor(
     private bridgeService: BridgeService,
-    private snakbar: MatSnackBar
+    private snackbar: MatSnackBar
   ) {
     this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
   }
 
   ngOnInit() {
-    this.configurations = [...Object.values(this.configStorageService.configuration)];
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
   }
 
   openedChangeHandler(open: any) {
     if (open) {
       setTimeout(() => {
-        this.formControl.setValue([...this.configurations]);
+        this.formControl.setValue([ ...this.configurations ]);
       }, 0);
     }
   }
@@ -61,11 +49,7 @@ export class SavedMappingsComponent implements OnInit {
       alert('config not found');
     }
 
-    this.snakbar.open(
-      `Configuration ${config.name} has been loaded`,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
+    this.snackbar.open(`Configuration ${config.name} has been loaded`, ' DISMISS ');
 
     this.select.emit(configuration);
   }
@@ -83,13 +67,9 @@ export class SavedMappingsComponent implements OnInit {
     });
 
     this.configStorageService.save(newConfiguration);
-    this.configurations = [...Object.values(this.configStorageService.configuration)];
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
     this.configurationControl.reset();
 
-    this.snakbar.open(
-      `Configuration ${configurationName} has been saved`,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
+    this.snackbar.open(`Configuration ${configurationName} has been saved`, ' DISMISS ');
   }
 }

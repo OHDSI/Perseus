@@ -23,11 +23,6 @@ import { StoreService } from './store.service';
   providedIn: 'root'
 })
 export class CommonUtilsService {
-
-  private snakbarOptions = {
-    duration: 3000
-  };
-
   private renderer: Renderer2;
 
   constructor(
@@ -38,7 +33,7 @@ export class CommonUtilsService {
     private storeService: StoreService,
     private router: Router,
     private configService: ConfigurationService,
-    private snakbar: MatSnackBar,
+    private snackBar: MatSnackBar,
     rendererFactory: RendererFactory2
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -46,7 +41,7 @@ export class CommonUtilsService {
 
 
   findTableByKeyValue(tables, key, value) {
-    return tables.find(it => it[key] === value);
+    return tables.find(it => it[ key ] === value);
   }
 
   openSetCDMDialog() {
@@ -191,11 +186,7 @@ export class CommonUtilsService {
   }
 
   openSnackbarMessage(message: string) {
-    this.snakbar.open(
-      message,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
+    this.snackBar.open(message, ' DISMISS ');
   }
 
   openOnBoardingTip(target: EventTarget, key) {
