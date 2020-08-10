@@ -513,7 +513,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source });
 
     matDialog.afterClosed().subscribe(res => {
-        console.log(res);
         if (res) {
           this.storeService.add(Area.Source, [ res, ...this.data.source ]);
         }
@@ -526,7 +525,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, table });
 
     matDialog.afterClosed().subscribe(res => {
-        console.log(res);
         if (res) {
           this.storeService.updateTable(Area.Source, table, res);
         }
