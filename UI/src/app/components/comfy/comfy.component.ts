@@ -64,6 +64,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   ) {
     super();
   }
+
   dropTargetId: string;
   targetTableNames: string[] = [];
   highlightedTables: string[] = [];
