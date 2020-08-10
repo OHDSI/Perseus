@@ -27,8 +27,10 @@
       (change)="onFileUpload($event)"
       hidden/>
     <button mat-menu-item
+            [disabled]="IsCreateNewMappingDisabled()"
             (click)="resetSourceAndTarget()">
-      <mat-icon svgIcon="new_mapping"></mat-icon>
+      <mat-icon [ngClass]="{'new-mapping': IsCreateNewMappingDisabled()}"
+                svgIcon="new_mapping"></mat-icon>
       <span>Create New Mapping</span>
     </button>
     <button mat-menu-item
