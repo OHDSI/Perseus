@@ -107,10 +107,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       if (previousContainer === container) {
         if (area === Area.Target) {
           const draggedItemId = event.item.element.nativeElement.id;
-          const mainContainer = this.document.getElementById('main');
-          const nodes = mainContainer.querySelectorAll('.vertical-list-item');
-          const prevInd = Array.from(nodes).findIndex(it => it.id === `node-${draggedItemId}`);
-          const curInd = Array.from(nodes).findIndex(it => it.id === `node-${this.dropTargetId}`);
+          const nodes = this.element.nativeElement.querySelectorAll('.vertical-list-item');
+          const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
+          const curInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${this.dropTargetId}`);
           moveItemInArray(this.targetTableNames, prevInd, curInd);
         }
 
