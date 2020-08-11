@@ -5,6 +5,7 @@ import { BridgeService } from './bridge.service';
 import { BrowserSessionConfigurationStorage } from '../models/implementation/configuration-session-storage';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StoreService } from './store.service';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -47,9 +48,21 @@ export class ConfigurationService {
       filtered: this.storeService.state.filtered
     });
 
-    this.configStorageService.save(newConfiguration);
-    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
+    this.saveOnLocalDisk(newConfiguration);
 
     return `Configuration ${configurationName} has been saved`;
   }
+
+
+  saveInLocalStorage(newConfiguration: Configuration) {
+    this.configStorageService.save(newConfiguration);
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
+  }
+
+  saveOnLocalDisk(newConfiguration: Configuration) {
+    const config = JSON.stringify(newConfiguration);
+    const blob = new Blob([ config ], { type: 'application/json' });
+    saveAs(blob, `${newConfiguration.name}.json`);
+  }
+
 }
