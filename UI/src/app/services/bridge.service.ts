@@ -13,6 +13,7 @@ import { IConnector } from '../models/interface/connector.interface';
 import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { StoreService } from './store.service';
+import { Area } from '../models/area';
 
 export interface IConnection {
   source: IRow;
@@ -72,7 +73,31 @@ export class BridgeService {
 
   connect = new Command({
     execute: () => {
+      const similar = 'similar';
       this.drawArrow(this.sourceRow, this.targetRow);
+      const similarSourceRows = this.findSimilarRows(this.sourceRow.name, Area.Source);
+      const similarTargetRows = this.findSimilarRows(this.targetRow.name, Area.Target);
+      const config = this.storeService.state.targetConfig;
+
+      if (this.sourceRow.tableName === similar && this.targetRow.tableName !== similar) {
+        similarSourceRows.forEach(row => {
+          this.drawSimilar(config, row, this.targetRow);
+        });
+      }
+
+      if (this.targetRow.tableName === similar && this.sourceRow.tableName !== similar) {
+        similarTargetRows.forEach(row => {
+          this.drawSimilar(config, this.sourceRow, row);
+        });
+      }
+
+      if (this.sourceRow.tableName === similar && this.targetRow.tableName === similar) {
+        similarSourceRows.forEach(sourceRow => {
+          similarTargetRows.forEach(targetRow => {
+            this.drawSimilar(config, sourceRow, targetRow);
+          });
+        });
+      }
     },
     canExecute: () => {
       const connectorId = this.getConnectorId(this.sourceRow, this.targetRow);
@@ -87,6 +112,31 @@ export class BridgeService {
     },
     canExecute: () => true
   });
+
+  drawSimilar(config, sourceRow, targetRow) {
+    if (!this.canLink(config, sourceRow.tableName, targetRow.tableName)) {
+      return;
+    }
+    this.drawArrow(sourceRow, targetRow);
+  }
+
+  canLink(config, name, key) {
+    return config[key].data.includes(name);
+  }
+
+  findSimilarRows(name, area) {
+    const tables = this.storeService.state[area];
+    const similarRows = [];
+    tables.forEach(table => {
+      table.rows.forEach(row => {
+        if (row.name === name) {
+          similarRows.push(row);
+        }
+      });
+    });
+
+    return similarRows;
+  }
 
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();

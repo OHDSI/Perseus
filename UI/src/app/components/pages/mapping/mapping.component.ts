@@ -165,7 +165,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
 
       if (!this.checkIncludesRows(similarRows, row)) {
-        const rowForSimilar = { ...row, tableName: this.similarTableName };
+        const rowForSimilar = { ...row, tableName: this.similarTableName, tableId: this.storeService.state[area].length };
         similarRows.push(rowForSimilar);
       }
     });
@@ -180,7 +180,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
 
     if (similarRows.length) {
-      const similarSourceTable = new Table({ id: tables.length, area, name: this.similarTableName, rows: similarRows});
+      const similarSourceTable = new Table({
+        id: this.storeService.state[area].length,
+        area,
+        name: this.similarTableName,
+        rows: similarRows
+      });
       tables.push(similarSourceTable);
     }
 
@@ -325,13 +330,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
 
-  onPanelOpen(table) {
+  onPanelOpen() {
     if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
       this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
     }
   }
 
-  onPanelClose(table) {
+  onPanelClose() {
     if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
       this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
     }
