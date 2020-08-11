@@ -152,9 +152,19 @@
         <p>Please select CDM version to see Target tables</p>
         <button mat-flat-button
                 color="accent"
+                (click)="openCdmVersion(storeService.state.cdmVersions[0])">
+          Version {{storeService.state.cdmVersions[0]}}
+        </button><br><br>
+         <button mat-flat-button
+                color="accent"
+                (click)="openCdmVersion(storeService.state.cdmVersions[1])">
+          Version {{storeService.state.cdmVersions[1]}}
+        </button><br><br>
+        <button mat-flat-button
+                color="accent"
                 (click)="openSetCDMDialog()">
           Set CDM Version
-        </button>
+        </button> 
       </div>
     </article>
   </div>

@@ -17,7 +17,8 @@ export class StoreService {
       source: undefined,
       target: undefined,
       sourceColumns: undefined
-    }
+    },
+    cdmVersions: []
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
   readonly state$ = this.storeState.asObservable();
@@ -62,7 +63,8 @@ export class StoreService {
         source: undefined,
         target: undefined,
         sourceColumns: undefined
-      }
+      },
+      cdmVersions: this.state.cdmVersions
     };
     this.storeState.next(this.initialState);
   }
