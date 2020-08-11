@@ -13,8 +13,7 @@ import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import { StoreService } from 'src/app/services/store.service';
 import { BaseComponent } from '../../base/base.component';
-import { PanelSourceComponent } from '../../panel/panel-source.component';
-import { PanelTargetComponent } from '../../panel/panel-target.component';
+import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
@@ -56,8 +55,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
   @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
-  @ViewChild('sourcePanel') sourcePanel: PanelSourceComponent;
-  @ViewChild('targetPanel') targetPanel: PanelTargetComponent;
+  @ViewChild('sourcePanel') sourcePanel: PanelComponent;
+  @ViewChild('targetPanel') targetPanel: PanelComponent;
 
 
 

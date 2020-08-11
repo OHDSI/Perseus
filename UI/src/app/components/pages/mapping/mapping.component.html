@@ -12,7 +12,7 @@
               placeholder="Search by source fields">
             </app-comfy-search-by-name>
             <app-area area="source">
-              <app-panel-source
+              <app-panel
                 #sourcePanel
                 *ngIf="table.visible"
                 [tabIndex]="sourceTabIndex"
@@ -21,7 +21,7 @@
                 (open)="onPanelOpen(table)"
                 (close)="onPanelClose(table)"
                 (initialized)="onPanelInit(table)"
-              ></app-panel-source>
+              ></app-panel>
             </app-area>
           </mat-tab>
         </mat-tab-group>
@@ -145,7 +145,7 @@
               placeholder="Search by target fields">
             </app-comfy-search-by-name>
             <app-area area="target">
-              <app-panel-target
+              <app-panel
                 #targetPanel
                 *ngIf="table.visible"
                 [tabIndex]="targetTabIndex"
@@ -154,10 +154,16 @@
                 (open)="onPanelOpen(table)"
                 (close)="onPanelClose(table)"
                 (initialized)="onPanelInit(table)"
-              ></app-panel-target>
+              ></app-panel>
             </app-area>
           </mat-tab>
         </mat-tab-group>
+        <!-- <mat-icon matTooltip="Filters applied"
+                  matTooltipPosition="above"
+                  [matTooltipDisabled]="false"
+                  class="targetFilter"
+                  (click)="openFilter($event.target)">sort
+        </mat-icon> -->
       </div>
     </main>
     <footer>
