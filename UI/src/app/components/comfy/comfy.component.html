@@ -31,10 +31,11 @@
            *ngIf="data.source?.length">
         <div class="cdm-list"
              cdkDropList
+             id="source"
              #sourceList="cdkDropList"
              [cdkDropListData]="source"
              [cdkDropListConnectedTo]="sourceConnectedTo"
-             (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
+             (cdkDropListDropped)="drop.execute($event)">
           <div class="cdm-box"
                highlight
                cdkDrag
@@ -42,7 +43,7 @@
                (click)="onSourceClick($event)"
                *ngFor="let item of source"
                [attr.criteria]="item"
-               [values]="highlitedTables">
+               [values]="highlightedTables">
             <mat-icon>drag_indicator</mat-icon>
             <div class="table-description source caption"
                  [matTooltip]="item"
@@ -106,24 +107,42 @@
            #scrollEl
            cdk-scrollable
            *ngIf="data.target?.length">
-        <div *ngFor="let targetName of targetTableNames"
-             cdkDropList
-             class="vertical-list"
-             [id]="targetConfig[targetName].name"
-             [cdkDropListData]="targetConfig[targetName].data"
-             (cdkDropListDropped)="!drop.canExecute($event) || drop.execute($event)">
-          <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
-               class="vertical-box"
-               cdkDrag>
-            <div class="table-description target caption"
-                 [matTooltip]="tableName"
-                 matTooltipPosition="right">
-              <span class="target-label">{{ tableName }}</span>
-              <span class="divider"></span>
-              <mat-icon *ngIf="i > 0"
-                        class="remove-mapping-table"
-                        (click)="removeTableMapping($event, tableName, targetName)">close
-              </mat-icon>
+        <div cdkDropList
+             [cdkDropListData]="targetConfig"
+             [cdkDropListConnectedTo]="targetTableNames"
+             (cdkDropListDropped)="drop.execute($event)"
+             [cdkDropListSortingDisabled]="false">
+          <div *ngFor="let targetName of targetTableNames"
+               cdkDrag
+               [cdkDragData]="targetName">
+            <div class="vertical-list-item" [attr.data-id]="targetName" [attr.id]="'node-'+targetName">
+              <div cdkDropList
+                   class="vertical-list"
+                   [id]="targetConfig[targetName].name"
+                   [cdkDropListData]="targetConfig[targetName].data"
+                   (cdkDropListDropped)="drop.execute($event)"
+                   [cdkDropListSortingDisabled]="false">
+                <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
+                     class="vertical-box"
+                     [id]="tableName"
+                     cdkDrag
+                     (cdkDragMoved)="dragMoved($event)">
+                  <div class="table-description target caption"
+                       [matTooltip]="tableName"
+                       matTooltipPosition="right">
+                    <span class="target-label">{{ tableName }}</span>
+                    <span class="divider"></span>
+                    <mat-icon *ngIf="i > 0"
+                              class="remove-mapping-table"
+                              (click)="removeTableMapping($event, tableName, targetName)">close
+                    </mat-icon>
+                  </div>
+                  <div *cdkDragPreview
+                       class="table-description target preview">
+                    {{ tableName }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

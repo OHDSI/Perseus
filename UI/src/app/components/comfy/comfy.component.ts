@@ -1,5 +1,17 @@
-import { CdkDrag, CdkDragDrop, CdkDragMove, CdkDragStart, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { CdkDrag, CdkDragMove, CdkDragStart, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DOCUMENT } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -35,29 +47,27 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.storeService.state;
   }
 
-  get highlitedTables(): string[] {
-    return this.highlitedtables;
-  }
-
   constructor(
     private vocabulariesService: VocabulariesService,
     private storeService: StoreService,
     private commonUtilsService: CommonUtilsService,
     private bridgeService: BridgeService,
-    private snakbar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private router: Router,
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
     private matDialog: MatDialog,
     private commonService: CommonService,
-    private element: ElementRef
+    private element: ElementRef,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
 
+  dropTargetId: string;
   targetTableNames: string[] = [];
-  private highlitedtables: string[] = [];
+  highlightedTables: string[] = [];
 
   source: string[] = [];
 
@@ -66,11 +76,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   sourceConnectedTo = [];
   sourceRows: IRow[] = [];
   sourceFocusedElement;
-
-  private snakbarOptions = {
-    duration: 3000
-  };
-
   speed = 5;
   subs = new Subscription();
   private animationFrame: number | undefined;
@@ -94,28 +99,30 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChildren(CdkDrag) dragEls: QueryList<CdkDrag>;
 
   drop = new Command({
-    execute: (event: CdkDragDrop<string[]>) => {
+    execute: (event: any) => {
       const { container, previousContainer, previousIndex, currentIndex } = event;
       const data = container.data;
+      const [ area, targetName ] = container.id.split('-');
+      const exists = container.data.find(tableName => previousContainer.data[ previousIndex ] === tableName);
 
       if (previousContainer === container) {
-        if (previousIndex !== currentIndex) {
-          moveItemInArray(data, previousIndex, currentIndex);
+        if (area === Area.Target) {
+          const draggedItemId = event.item.element.nativeElement.id;
+          const nodes = this.element.nativeElement.querySelectorAll('.vertical-list-item');
+          const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
+          const curInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${this.dropTargetId}`);
+          moveItemInArray(this.targetTableNames, prevInd, curInd);
         }
-        return;
-      }
 
-      copyArrayItem(previousContainer.data, data, previousIndex, data.length);
-      const targetname = container.id.split('-')[ 1 ];
-      this.setFirstElementAlwaysOnTop(targetname, event);
-      this.storeService.add('targetConfig', this.targetConfig);
-    },
-    canExecute: (event: CdkDragDrop<string[]>) => {
-      const { container, previousContainer, previousIndex, currentIndex } = event;
-      if (previousContainer === container) {
-        return true;
+        if (area === Area.Source) {
+          if (previousIndex !== currentIndex) {
+            moveItemInArray(data, previousIndex, currentIndex);
+          }
+        }
+      } else if (!exists) {
+        copyArrayItem(previousContainer.data, data, previousIndex, data.length);
+        this.storeService.add('targetConfig', this.targetConfig);
       }
-      return !container.data.find(tableName => previousContainer.data[ previousIndex ] === tableName);
     }
   });
 
@@ -154,6 +161,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     );
 
     this.subs.add(onDown$.subscribe());
+  }
+
+  dragMoved(event) {
+    const e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
+    const container = e.classList.contains('vertical-list-item') ? e : e.closest('.vertical-list-item');
+    this.dropTargetId = container ? container.getAttribute('data-id') : undefined;
   }
 
   @bound
@@ -239,11 +252,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         });
         this.initializeData();
 
-        this.snakbar.open(
-          'Reset all mappings success',
-          ' DISMISS ',
-          this.snakbarOptions
-        );
+        this.snackBar.open('Reset all mappings success', ' DISMISS ');
       });
 
     this.bridgeService.saveAndLoadSchema$
@@ -251,11 +260,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       .subscribe(_ => {
         this.initializeData();
 
-        this.snakbar.open(
-          'New source schema loaded',
-          ' DISMISS ',
-          this.snakbarOptions
-        );
+        this.snackBar.open('New source schema loaded', ' DISMISS ');
       });
 
   }
@@ -274,9 +279,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.targetConfig = this.data.targetConfig;
     this.targetTableNames = uniq(Object.keys(this.targetConfig));
 
-    this.sourceConnectedTo = this.data.target.map(
-      table => `target-${table.name}`
-    );
+    this.sourceConnectedTo = this.data.target.map(table => `target-${table.name}`);
 
     if (this.data.filtered) {
       this.filterByType();
@@ -297,23 +300,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.initializeSourceData();
     this.initializeTargetData();
     this.initializeSourceColumns();
-  }
-
-  setFirstElementAlwaysOnTop(
-    targetname: string,
-    event: CdkDragDrop<string[]>
-  ): void {
-    if (!targetname) {
-      return;
-    }
-
-    const { data, first } = this.targetConfig[ targetname ];
-    const index = data.findIndex(value => value === first);
-    if (index) {
-      const temp = data[ 0 ];
-      data[ 0 ] = first;
-      data[ index ] = temp;
-    }
   }
 
   async openMapping() {
@@ -369,11 +355,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         indexes[ table.name ] = tableIncludesColumns(rowNames, selectedSourceColumns);
       });
 
-      this.highlitedtables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
+      this.highlightedTables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
 
       this.source = Object.assign([], this.source);
     } else {
-      this.highlitedtables = [];
+      this.highlightedTables = [];
     }
   }
 
@@ -527,10 +513,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        if (res) {
+          this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        }
       }
-    }
     );
   }
 
@@ -539,10 +525,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, table });
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.updateTable(Area.Source, table, res);
+        if (res) {
+          this.storeService.updateTable(Area.Source, table, res);
+        }
       }
-    }
     );
   }
 
@@ -588,7 +574,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.sourceFocusedElement.classList.add('source-focus');
     }
   }
-
 }
 
 export function bound(target: object, propKey: string | symbol) {

@@ -19,16 +19,13 @@ import { OverlayConfigOptions } from './overlay/overlay-config-options.interface
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
 import { UploadService } from './upload.service';
+import * as fileSaver from 'file-saver';
+import { Configuration } from '../models/configuration';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonUtilsService {
-
-  private snakbarOptions = {
-    duration: 3000
-  };
-
   private renderer: Renderer2;
   private readonly loadReport = new BehaviorSubject<any>(true);
   readonly loadSourceReport$ = this.loadReport.asObservable();
@@ -41,7 +38,7 @@ export class CommonUtilsService {
     private storeService: StoreService,
     private router: Router,
     private configService: ConfigurationService,
-    private snakbar: MatSnackBar,
+    private snackbar: MatSnackBar,
     rendererFactory: RendererFactory2,
     private uploadService: UploadService,
   ) {
@@ -106,7 +103,7 @@ export class CommonUtilsService {
     });
   }
 
-  saveMappingDialog(deleteSourceAndTargetAfterSave: boolean) {
+  saveMappingDialog(deleteSourceAndTargetAfterSave: boolean, loadReport: boolean) {
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -125,15 +122,17 @@ export class CommonUtilsService {
         this.openSnackbarMessage(message);
         if (deleteSourceAndTargetAfterSave) {
           this.resetMappingsAndReturnToComfy(true);
-        } else {
+        }
+        if (loadReport) {
           this.loadReportAndReturnToComfy();
         }
       }
     });
   }
 
+
   openResetWarningDialog(settings: any) {
-    const { warning, header, okButton, deleteButton, deleteSourceAndTarget } = settings;
+    const { warning, header, okButton, deleteButton, deleteSourceAndTarget, loadReport } = settings;
     const matDialog = this.matDialog.open(ResetWarningComponent, {
       data: { warning, header, okButton, deleteButton },
       closeOnNavigation: false,
@@ -150,7 +149,7 @@ export class CommonUtilsService {
           this.loadReportAndReturnToComfy();
           return;
         case 'Save':
-          this.saveMappingDialog(deleteSourceAndTarget);
+          this.saveMappingDialog(deleteSourceAndTarget, loadReport);
           break;
         default: {
           this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
@@ -200,7 +199,8 @@ export class CommonUtilsService {
       header: 'Load new report',
       okButton: 'Save',
       deleteButton: 'Don\'t save',
-      deleteSourceAndTarget: false
+      deleteSourceAndTarget: false,
+      loadReport: true
     };
     this.openResetWarningDialog(settings);
   }
@@ -216,11 +216,7 @@ export class CommonUtilsService {
   }
 
   openSnackbarMessage(message: string) {
-    this.snakbar.open(
-      message,
-      ' DISMISS ',
-      this.snakbarOptions
-    );
+    this.snackbar.open(message, ' DISMISS ');
   }
 
   openOnBoardingTip(target: EventTarget, key) {
