@@ -367,7 +367,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       setTimeout(() => {
         this.bridgeService.refresh(tables[index]);
         resolve();
-      }, 500);
+      }, 1000);
     });
   }
 

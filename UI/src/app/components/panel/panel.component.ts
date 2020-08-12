@@ -18,6 +18,7 @@ export class PanelComponent implements AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
   @Input() tables: ITable[];
+  @Input() oppositeTableId: any;
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();

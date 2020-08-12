@@ -329,10 +329,13 @@ export class BridgeService {
     );
   }
 
-  rowHasAnyConnection(row: IRow, area): boolean {
+  rowHasAnyConnection(row: IRow, area, oppositeTableId): boolean {
     return (
       Object.values(this.arrowsCache).filter(connection => {
-        return connection[ area ].id === row.id;
+        const oppositeArea = Area.Source === area ? Area.Target : Area.Source;
+        return connection[ area ].id === row.id &&
+               connection[ area ].name === row.name &&
+               connection[ oppositeArea ].tableId === oppositeTableId;
       }).length > 0
     );
   }

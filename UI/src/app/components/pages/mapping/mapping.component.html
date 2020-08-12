@@ -18,6 +18,7 @@
                 [tabIndex]="sourceTabIndex"
                 [table]="table"
                 [tables]="source"
+                [oppositeTableId]="target[targetTabIndex].id"
                 (open)="onPanelOpen(table)"
                 (close)="onPanelClose(table)"
                 (initialized)="onPanelInit(table)"
@@ -134,7 +135,7 @@
       </div>
       <!--End-of-the-Bridge-->
       <div class="area-target">
-        <mat-tab-group [selectedIndex]="targetTabIndex" (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
+        <mat-tab-group selectedIndex="{{targetTabIndex}}" (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab
             [label]="table.name"
             *ngFor="let table of target; trackBy: trackByFn"
@@ -151,6 +152,7 @@
                 [tabIndex]="targetTabIndex"
                 [table]="table"
                 [tables]="target"
+                [oppositeTableId]="source[sourceTabIndex].id"
                 (open)="onPanelOpen(table)"
                 (close)="onPanelClose(table)"
                 (initialized)="onPanelInit(table)"
