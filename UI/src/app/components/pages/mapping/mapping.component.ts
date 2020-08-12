@@ -29,8 +29,8 @@ import { Area } from 'src/app/models/area';
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() source: ITable[];
-  @Input() target: ITable[];
+  source: ITable[];
+  target: ITable[];
 
   sourceTabIndex = 0;
   targetTabIndex = 0;

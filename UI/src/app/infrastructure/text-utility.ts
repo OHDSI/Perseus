@@ -1,6 +1,6 @@
 import * as pako from 'pako';
 import * as buf from 'buffer';
-import * as circularJson from 'circular-json';
+import { stringify } from 'flatted';
 declare const Buffer;
 
 const bufferKey = 'Buffer';
@@ -121,7 +121,7 @@ const toUTF8Array = str => {
 };
 
 function compressObjectToString(obj: any): string {
-  const input = new Uint8Array(toUTF8Array(circularJson.stringify(obj)));
+  const input = new Uint8Array(toUTF8Array(stringify(obj)));
   return pako.deflate(input).toString();
 }
 

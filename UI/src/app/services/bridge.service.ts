@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { IRow } from 'src/app/models/row';
+import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
 import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
@@ -130,7 +130,7 @@ export class BridgeService {
     tables.forEach(table => {
       table.rows.forEach(row => {
         if (row.name === name) {
-          similarRows.push(row);
+          similarRows.push(new Row({...row}));
         }
       });
     });

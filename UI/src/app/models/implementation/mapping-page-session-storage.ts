@@ -1,9 +1,10 @@
-import { Injectable } from "@angular/core";
-import { isString, isObject } from "src/app/infrastructure/utility";
+import { Injectable } from '@angular/core';
+import { isString, isObject } from 'src/app/infrastructure/utility';
 import {
   compressObjectToString,
   decompressStringToObject
-} from "src/app/infrastructure/text-utility";
+} from 'src/app/infrastructure/text-utility';
+import { parse } from 'flatted';
 
 @Injectable()
 export class MappingPageSessionStorage {
@@ -18,7 +19,7 @@ export class MappingPageSessionStorage {
   add(key: string, value: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        let prepareValue = "";
+        let prepareValue = '';
         if (isString(value)) {
           prepareValue = value;
         } else if (isObject(value)) {
@@ -51,17 +52,17 @@ export class MappingPageSessionStorage {
       if (value) {
         try {
           const configText = decompressStringToObject(value);
-          const parsed = JSON.parse(configText);
+          const parsed = parse(configText);
           resolve(parsed);
         } catch (error) {
           try {
-            resolve(JSON.parse(value));
+            resolve(parse(value));
           } catch (error) {
             resolve(value);
           }
         }
       } else {
-        reject("storage has no saved items");
+        reject('storage has no saved items');
       }
     });
   }
