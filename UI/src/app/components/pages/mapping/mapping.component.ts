@@ -22,6 +22,7 @@ import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type
 import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { Area } from 'src/app/models/area';
+import { modes } from 'codemirror';
 
 @Component({
   selector: 'app-mapping',
@@ -128,7 +129,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         };
 
         const component = SetConnectionTypePopupComponent;
-        const rowIndex = child.id.split('/')[1].split('-')[1];
+        const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
         const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
         const htmlElement = document.getElementById(htmlElementId);
 
@@ -146,7 +147,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getLimits(value: string) {
     const offset = 8;
-    const point = parseInt(value.split(',')[1], 0);
+    const point = parseInt(value.split(',')[ 1 ], 0);
     const upperLimit = point - offset;
     const lowerLimit = point + offset;
     return { upperLimit, lowerLimit };
@@ -159,13 +160,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   collectSimilarRows(rows, area, similarRows) {
     const rowsKey = `${area}Rows`;
     rows.forEach(row => {
-      if (!this.checkIncludesRows(this[rowsKey], row)) {
+      if (!this.checkIncludesRows(this[ rowsKey ], row)) {
         this[rowsKey].push(row);
         return;
       }
 
       if (!this.checkIncludesRows(similarRows, row)) {
-        const rowForSimilar = { ...row, tableName: this.similarTableName, tableId: this.storeService.state[area].length };
+        const rowForSimilar = { ...row, tableName: this.similarTableName, tableId: this.storeService.state[ area ].length };
         similarRows.push(rowForSimilar);
       }
     });
@@ -181,7 +182,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (similarRows.length) {
       const similarSourceTable = new Table({
-        id: this.storeService.state[area].length,
+        id: this.storeService.state[ area ].length,
         area,
         name: this.similarTableName,
         rows: similarRows
@@ -200,10 +201,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   addSimilar(area) {
-    const lastIndex = this[area].length - 1;
-    const lastTableName = this[area][lastIndex].name;
+    const lastIndex = this[ area ].length - 1;
+    const lastTableName = this[ area ][ lastIndex ].name;
     if (lastTableName === this.similarTableName) {
-      this[`${area}Similar`](this[area][lastIndex].rows);
+      this[ `${area}Similar` ](this[ area ][ lastIndex ].rows);
     }
   }
 
@@ -247,11 +248,24 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mappedTables.push(uniq(newItem));
   }
 
+  moveSimilarTables() {
+    this.moveSimilar(Area.Source);
+    this.moveSimilar(Area.Target);
+  }
+
+  moveSimilar(area) {
+    if (this[ area ][ this[ area ].length - 1 ].name === this.similarTableName) {
+      this[ area ].unshift(this[ area ].pop());
+    }
+  }
+
   ngOnInit() {
     this.mappingStorage.get('mappingpage').then(data => {
       this.prepareTables(data.source, Area.Source);
       this.prepareTables(data.target, Area.Target);
       this.prepareMappedTables(data.mappedTables);
+
+      this.moveSimilarTables();
 
       setTimeout(() => {
         this.bridgeService.refresh(this.target[this.targetTabIndex]);
@@ -325,20 +339,20 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       panelClass: 'filter-popup',
-      payload: { types, checkedTypes, cdmTypes: {Common: '', Concept: '', Individual: ''} }
+      payload: { types, checkedTypes, cdmTypes: { Common: '', Concept: '', Individual: '' } }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
 
   onPanelOpen() {
     if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
-      this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
+      this.bridgeService.refresh(this.target[ this.targetTabIndex ], 200);
     }
   }
 
   onPanelClose() {
     if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
-      this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
+      this.bridgeService.refresh(this.target[ this.targetTabIndex ], 200);
     }
   }
 
@@ -365,17 +379,22 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
-        this.bridgeService.refresh(tables[index]);
+        this.bridgeService.refresh(tables[ index ]);
         resolve();
       }, 1000);
     });
   }
 
   changeTargetTabIndex() {
-    const tableName = this.source[this.sourceTabIndex].name;
-    const tagretTableNameIndex = 0;
-    const targetTableName = this.mappedTables.find(item => item.includes(tableName))[tagretTableNameIndex];
-    this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
+    const tableName = this.source[ this.sourceTabIndex ].name;
+
+    if (tableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
+      this.targetTabIndex = 0;
+    } else {
+      const tagretTableNameIndex = 0;
+      const targetTableName = this.mappedTables.find(item => item.includes(tableName))[ tagretTableNameIndex ];
+      this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
+    }
   }
 
   isDisabled(tableName: string): boolean {
