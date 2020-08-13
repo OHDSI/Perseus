@@ -313,10 +313,11 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
-  generateMapping() {
+  generateMapping(sourceTableName: string = '') {
     const mappingService = new MappingService(
       this.arrowsCache,
-      this.constantsCache
+      this.constantsCache,
+      sourceTableName
     );
     return mappingService.generate();
   }

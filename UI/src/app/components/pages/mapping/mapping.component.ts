@@ -302,17 +302,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   previewMapping() {
-    const mapping = this.bridgeService.generateMapping();
+    const mapping = this.bridgeService.generateMapping(this.source[this.sourceTabIndex].name);
+
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;
     }
-    const sourceTable = mapping.mapping_items[0].source_table;
+
     this.dataService
       .getXmlPreview(mapping)
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        switchMap(_ => this.dataService.getSqlPreview(sourceTable))
-      )
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(json => {
         this.matDialog.open(PreviewPopupComponent, {
           data: json,
@@ -400,6 +398,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   isDisabled(tableName: string): boolean {
     const activeTableName = this.source[this.sourceTabIndex].name;
     return !this.mappedTables.find(item => item.includes(tableName) && item.includes(activeTableName));
+  }
+
+  isSimilarTabs() {
+    if (!this.source && !this.target) {
+      return false;
+    }
+
+    return (
+      this.source[this.sourceTabIndex].name === this.similarTableName ||
+      this.target[this.targetTabIndex].name === this.similarTableName
+    );
   }
 
   isFooterButtonDisabled() {
