@@ -2,8 +2,10 @@ import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChil
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { switchMap, takeUntil } from 'rxjs/operators';
+import { uniq } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { ITable, Table } from 'src/app/models/table';
+import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
@@ -11,14 +13,16 @@ import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import { StoreService } from 'src/app/services/store.service';
 import { BaseComponent } from '../../base/base.component';
-import { PanelSourceComponent } from '../../panel/panel-source.component';
-import { PanelTargetComponent } from '../../panel/panel-target.component';
+import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
+import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
+import { Area } from 'src/app/models/area';
+import { modes } from 'codemirror';
 
 @Component({
   selector: 'app-mapping',
@@ -26,12 +30,21 @@ import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/de
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() source: ITable[];
-  @Input() target: ITable[];
+  source: ITable[];
+  target: ITable[];
 
   sourceTabIndex = 0;
   targetTabIndex = 0;
+
+  clickArrowSubscriptions = [];
+  panelsViewInitialized = new Set();
+
+  sourceRows: IRow[] = [];
+  targetRows: IRow[] = [];
+
   mappedTables = [];
+
+  similarTableName = 'similar';
 
   get hint(): string {
     return 'no hint';
@@ -43,11 +56,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
   @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
-  @ViewChild('sourcePanel') sourcePanel: PanelSourceComponent;
-  @ViewChild('targetPanel') targetPanel: PanelTargetComponent;
+  @ViewChild('sourcePanel') sourcePanel: PanelComponent;
+  @ViewChild('targetPanel') targetPanel: PanelComponent;
 
-  clickArrowSubscriptions = [];
-  panelsViewInitialized = new Set();
+
 
   constructor(
     private stateService: StateService,
@@ -117,7 +129,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         };
 
         const component = SetConnectionTypePopupComponent;
-        const rowIndex = child.id.split('/')[1].split('-')[1];
+        const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
         const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
         const htmlElement = document.getElementById(htmlElementId);
 
@@ -135,29 +147,130 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getLimits(value: string) {
     const offset = 8;
-    const point = parseInt(value.split(',')[1], 0);
+    const point = parseInt(value.split(',')[ 1 ], 0);
     const upperLimit = point - offset;
     const lowerLimit = point + offset;
     return { upperLimit, lowerLimit };
   }
 
+  checkIncludesRows(rows, row) {
+    return !!rows.find(r => r.name === row.name);
+  }
+
+  collectSimilarRows(rows, area, similarRows) {
+    const rowsKey = `${area}Rows`;
+    rows.forEach(row => {
+      if (!this.checkIncludesRows(this[ rowsKey ], row)) {
+        this[rowsKey].push(row);
+        return;
+      }
+
+      if (!this.checkIncludesRows(similarRows, row)) {
+        const rowForSimilar = { ...row, tableName: this.similarTableName, tableId: this.storeService.state[ area ].length };
+        similarRows.push(rowForSimilar);
+      }
+    });
+  }
+
+  prepareTables(data, area) {
+    const similarRows = [];
+
+    const tables = data.map(table => {
+      this.collectSimilarRows(table.rows, area, similarRows);
+      return new Table(table);
+    });
+
+    if (similarRows.length) {
+      const similarSourceTable = new Table({
+        id: this.storeService.state[ area ].length,
+        area,
+        name: this.similarTableName,
+        rows: similarRows
+      });
+      tables.push(similarSourceTable);
+    }
+
+    this[area] = tables;
+  }
+
+  prepareMappedTables(mappedTables) {
+    this.mappedTables = mappedTables;
+
+    this.addSimilar(Area.Source);
+    this.addSimilar(Area.Target);
+  }
+
+  addSimilar(area) {
+    const lastIndex = this[ area ].length - 1;
+    const lastTableName = this[ area ][ lastIndex ].name;
+    if (lastTableName === this.similarTableName) {
+      this[ `${area}Similar` ](this[ area ][ lastIndex ].rows);
+    }
+  }
+
+  sourceSimilar(rows) {
+    rows.forEach(row => {
+      this.sourceRows.forEach(sourceRow => {
+        if (sourceRow.name !== row.name) {
+          return;
+        }
+
+        this.mappedTables.forEach(item => {
+          if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
+            item.push(this.similarTableName);
+          }
+        });
+      });
+    });
+  }
+
+  targetSimilar(rows) {
+    const newItem = [];
+    rows.forEach(row => {
+      this.targetRows.forEach(targetRow => {
+        if (targetRow.name !== row.name) {
+          return;
+        }
+
+        this.mappedTables.forEach(item => {
+          if (!item.includes(targetRow.tableName)) {
+            return;
+          }
+
+          if (!newItem.length) {
+            newItem.push(this.similarTableName);
+          }
+
+          newItem.push.apply(newItem, item.slice(1));
+        });
+      });
+    });
+    this.mappedTables.push(uniq(newItem));
+  }
+
+  moveSimilarTables() {
+    this.moveSimilar(Area.Source);
+    this.moveSimilar(Area.Target);
+  }
+
+  moveSimilar(area) {
+    if (this[ area ][ this[ area ].length - 1 ].name === this.similarTableName) {
+      this[ area ].unshift(this[ area ].pop());
+    }
+  }
+
   ngOnInit() {
     this.mappingStorage.get('mappingpage').then(data => {
-      this.source = data.source.map(table => {
-        table.expanded = true;
-        return new Table(table);
-      });
-      this.target = data.target.map(table => {
-        table.expanded = true;
-        return new Table(table);
-      });
+      this.prepareTables(data.source, Area.Source);
+      this.prepareTables(data.target, Area.Target);
+      this.prepareMappedTables(data.mappedTables);
 
-      this.mappedTables = data.mappedTables;
+      this.moveSimilarTables();
 
       setTimeout(() => {
         this.bridgeService.refresh(this.target[this.targetTabIndex]);
         this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
-        this.targetPanel.panels.forEach(panel => panel.reflectConnectorsPin(this.source[this.sourceTabIndex]));
+        this.targetPanel.panel.reflectConnectorsPin(this.source[this.sourceTabIndex]);
         this.bridgeService.adjustArrowsPositions();
       }, 200);
     });
@@ -219,21 +332,27 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       });
   }
 
-  onPanelOpen(table) {
-    if (
-      this.panelsViewInitialized.size ===
-      this.source.length + this.target.length
-    ) {
-      this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
+  openFilter(target) {
+    const types = [];
+    const checkedTypes = [];
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      panelClass: 'filter-popup',
+      payload: { types, checkedTypes, cdmTypes: { Common: '', Concept: '', Individual: '' } }
+    };
+    this.overlayService.open(dialogOptions, target, CdmFilterComponent);
+  }
+
+  onPanelOpen() {
+    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
+      this.bridgeService.refresh(this.target[ this.targetTabIndex ], 200);
     }
   }
 
-  onPanelClose(table) {
-    if (
-      this.panelsViewInitialized.size ===
-      this.source.length + this.target.length
-    ) {
-      this.bridgeService.refresh(this.target[this.targetTabIndex], 200);
+  onPanelClose() {
+    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
+      this.bridgeService.refresh(this.target[ this.targetTabIndex ], 200);
     }
   }
 
@@ -242,14 +361,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.panelsViewInitialized.add(table);
     }
 
-    if (
-      this.panelsViewInitialized.size ===
-      this.source.length + this.target.length
-    ) {
+    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
-      this.source.forEach(panel => (panel.expanded = true));
-      this.target.forEach(panel => (panel.expanded = true));
     }
   }
 
@@ -265,19 +379,22 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
-        tables.forEach(table => (table.expanded = false));
-        tables[index].expanded = true;
-        this.bridgeService.refresh(tables[index]);
+        this.bridgeService.refresh(tables[ index ]);
         resolve();
-      }, 500);
+      }, 1000);
     });
   }
 
   changeTargetTabIndex() {
-    const tableName = this.source[this.sourceTabIndex].name;
-    const tagretTableNameIndex = 0;
-    const targetTableName = this.mappedTables.find(item => item.includes(tableName))[tagretTableNameIndex];
-    this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
+    const tableName = this.source[ this.sourceTabIndex ].name;
+
+    if (tableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
+      this.targetTabIndex = 0;
+    } else {
+      const tagretTableNameIndex = 0;
+      const targetTableName = this.mappedTables.find(item => item.includes(tableName))[ tagretTableNameIndex ];
+      this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
+    }
   }
 
   isDisabled(tableName: string): boolean {

@@ -26,7 +26,7 @@ export class AddConstantPopupComponent {
     if (!this.value) {
       return;
     }
-    this.payload.value = this.value;
+    this.payload.value = this.value.toString();
     this.close();
   }
 

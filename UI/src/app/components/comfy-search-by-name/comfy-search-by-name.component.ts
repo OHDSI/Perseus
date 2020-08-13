@@ -71,7 +71,7 @@ export class ComfySearchByNameComponent extends BaseComponent
       this.autoCmpltTrg.closePanel();
     }
   }
-  
+
   clear(): void {
     this.dbNameFormControl.reset();
 

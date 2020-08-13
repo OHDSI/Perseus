@@ -5,6 +5,7 @@ table {
   box-shadow: none;
   background-color: $cdm-background-grey-light;
   padding: 0;
+  direction: ltr;
 
   th {
     font-size: 13px;
@@ -176,8 +177,4 @@ tr[selected="true"] {
 
 .targetRow {
   background: #EAF2F9;
-
-  td:first-child {
-    border-left: 4px solid #4BB0FF;
-  }
 }
