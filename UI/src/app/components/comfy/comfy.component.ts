@@ -36,6 +36,7 @@ import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-comfy',
@@ -57,6 +58,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private mappingStorage: MappingPageSessionStorage,
     private uploadService: UploadService,
     private overlayService: OverlayService,
+    private dataService: DataService,
     private matDialog: MatDialog,
     private commonService: CommonService,
     private element: ElementRef,
@@ -231,6 +233,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         error => console.error(error)
       );
 
+    this.dataService.getCDMVersions().subscribe(res => {
+      res = res.sort((a, b) => (a > b ? -1 : 1));
+      this.storeService.add('cdmVersions', res);
+    });
+
     this.storeService.state$.subscribe(res => {
       if (res) {
         this.data = res;
@@ -300,6 +307,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.initializeSourceData();
     this.initializeTargetData();
     this.initializeSourceColumns();
+  }
+
+  openCdmVersion(version: string) {
+    return this.dataService.getTargetData(version).subscribe();
   }
 
   async openMapping() {
