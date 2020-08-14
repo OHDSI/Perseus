@@ -1,26 +1,31 @@
-import { AfterViewInit, EventEmitter, Input, Output, ViewChildren, QueryList } from '@angular/core';
+import { Component, AfterViewInit, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 
-import { CommonService } from 'src/app/services/common.service';
-import { StoreService } from 'src/app/services/store.service';
 import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
 import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { PanelTableComponent } from './panel-table/panel-table.component';
 
-export class PanelBaseComponent implements AfterViewInit {
+@Component({
+  selector: 'app-panel',
+  templateUrl: './panel.component.html',
+  styleUrls: ['./panel.component.scss']
+})
+export class PanelComponent implements AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
   @Input() tables: ITable[];
+  @Input() oppositeTableId: any;
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
 
-  @ViewChildren('expPanelHeader') panelHeader: QueryList<any>;
+  @ViewChild('panel') panel: PanelTableComponent;
 
   get title() {
     return this.table.name;
@@ -34,10 +39,8 @@ export class PanelBaseComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    private commonService: CommonService,
     private bridgeService: BridgeService,
-    private bridgeButtonService: BridgeButtonService,
-    private storeService: StoreService
+    private bridgeButtonService: BridgeButtonService
   ) {
     this.initializing = true;
   }
@@ -48,21 +51,13 @@ export class PanelBaseComponent implements AfterViewInit {
   }
 
   onOpen() {
-    this.commonService.expanded(this.area);
-    this.setExpandedFlagOnSourceAndTargetTables(true);
-
     if (!this.initializing) {
-      this.table.expanded = true;
       this.open.emit();
     }
   }
 
   onClose() {
-    this.commonService.collapsed(this.area);
-    this.setExpandedFlagOnSourceAndTargetTables(false);
-
     if (!this.initializing) {
-      this.table.expanded = false;
       this.close.emit();
     }
   }
@@ -94,10 +89,6 @@ export class PanelBaseComponent implements AfterViewInit {
       this.bridgeButtonService.init(payload, element);
       this.bridgeButtonService.openRulesDialog();
     }
-  }
-
-  setExpandedFlagOnSourceAndTargetTables(expanded: boolean) {
-    this.storeService.state[this.area].filter(t => t.id === this.table.id).forEach(t => (t.expanded = expanded));
   }
 
   onCheckboxChange(event: MatCheckboxChange) {

@@ -33,6 +33,7 @@ export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: any;
+  @Input() oppositeTableId: any;
   @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
@@ -99,7 +100,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   isRowHasConnection(row: IRow): boolean {
-    return this.bridgeService.rowHasAnyConnection(row, this.area);
+    return this.bridgeService.rowHasAnyConnection(row, this.area, this.oppositeTableId);
   }
 
   openCommentDialog(anchor: HTMLElement, row: IRow) {

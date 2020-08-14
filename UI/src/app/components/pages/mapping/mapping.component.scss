@@ -20,6 +20,16 @@
   width: 35%;
   float: right;
   height: 100%;
+
+  .targetFilter {
+    position: absolute;
+    float: right;
+    right: 5px;
+    top: 25px;
+    z-index: 2;
+    font-size: 20px;
+    cursor: pointer;
+  }
 }
 
 section {
@@ -118,7 +128,7 @@ footer {
   padding: 0 50px 0 50px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 40px);
+  height: 100%;
   width: 100%;
 }
 
@@ -132,16 +142,25 @@ footer {
   ::ng-deep .search-by-name {
     margin: 0 2px 0 8px;
   }
+
+  ::ng-deep .mat-tab-header {
+    padding-left: 7px;
+  }
 }
 
 .area-target {
   ::ng-deep .search-by-name {
     margin: 0 8px 0 2px;
   }
+
+  ::ng-deep .mat-tab-header {
+    width: calc(100% - 40px);
+  }
 }
 
 ::ng-deep .mat-tab-group {
-  height: 100%;
+  height: calc(100% - 15px);
+  margin-top: 15px;
 
   .mat-tab-body-wrapper {
     height: calc(100% - 58px);
@@ -162,9 +181,18 @@ footer {
     margin-bottom: 10px;
     border-bottom: none;
 
+    .mat-elevation-z4 {
+      box-shadow: none;
+    }
+
+    .mat-tab-header-pagination-disabled {
+      display: none;
+    }
+
     .mat-tab-label {
       opacity: 1;
       float: left;
+      height: 40px;
     }
 
     .mat-tab-label-active .mat-tab-label-content {
