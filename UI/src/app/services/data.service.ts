@@ -32,7 +32,8 @@ export class DataService {
       for (let j = 0; j < item.column_list.length; j++) {
         let unique;
         if (area === 'target') {
-          unique = item.column_list[j].column_name.toUpperCase().replace('_ID', '') === item.table_name.toUpperCase();
+          const upperCaseColumnName = item.column_list[j].column_name.toUpperCase();
+          unique = upperCaseColumnName.indexOf('_ID') !== -1 && upperCaseColumnName.replace('_ID', '') === item.table_name.toUpperCase();
         }
         const rowOptions: RowOptions = {
           id: j,

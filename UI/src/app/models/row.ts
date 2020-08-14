@@ -96,7 +96,7 @@ export class Row implements IRow {
   setType(type: ConnectorType) {
     const idx = this.connectorTypes.findIndex(existingType => existingType === type);
     if (idx === -1) {
-       this.connectorTypes.push(type);
+      this.connectorTypes.push(type);
     }
   }
 
