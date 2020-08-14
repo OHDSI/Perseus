@@ -14,12 +14,15 @@ export interface RowOptions {
   visible?: boolean;
   htmlElement?: any;
   constant?: string;
+  increment?: boolean;
   selected?: boolean;
+  uniqueIdentifier?: boolean;
 }
 
 export interface IRow {
   readonly key: string;
   readonly hasConstant;
+  readonly hasIncrement;
 
   id: number;
   tableId: number;
@@ -32,8 +35,10 @@ export interface IRow {
   visible?: boolean;
   htmlElement: any;
   constant: string;
+  increment: boolean;
   selected: boolean;
   connectorTypes: ConnectorType[];
+  uniqueIdentifier: boolean;
 
   removeConnections(): void;
   setType(type: ConnectorType): void;
@@ -48,15 +53,21 @@ export class Row implements IRow {
   area: string;
   comments: IComment[];
   constant: string;
+  increment: boolean;
   values: any[];
   visible = true;
   connections = [];
   htmlElement: any = null;
   selected: boolean;
   connectorTypes: ConnectorType[];
+  uniqueIdentifier: boolean;
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
+  }
+
+  get hasIncrement(): boolean {
+    return this.increment;
   }
 
   get key(): string {
@@ -72,8 +83,10 @@ export class Row implements IRow {
     this.area = options.area;
     this.comments = options.comments;
     this.constant = options.constant;
+    this.increment = options.increment;
     this.selected = options.selected || false;
     this.connectorTypes = [];
+    this.uniqueIdentifier = options.uniqueIdentifier;
   }
 
   removeConnections() {

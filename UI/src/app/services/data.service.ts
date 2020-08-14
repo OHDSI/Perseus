@@ -30,6 +30,10 @@ export class DataService {
       const rows = [];
 
       for (let j = 0; j < item.column_list.length; j++) {
+        let unique;
+        if (area === 'target') {
+          unique = item.column_list[j].column_name.toUpperCase().replace('_ID', '') === item.table_name.toUpperCase();
+        }
         const rowOptions: RowOptions = {
           id: j,
           tableId: i,
@@ -37,6 +41,7 @@ export class DataService {
           name: item.column_list[j].column_name,
           type: item.column_list[j].column_type,
           comments: [],
+          uniqueIdentifier: unique,
           area
         };
 
