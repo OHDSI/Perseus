@@ -185,7 +185,7 @@
         class="mapping-page-button"
         matTooltip="Preview mappings"
         aria-label="Preview mapping xmls"
-        [disabled]="isFooterButtonDisabled()"
+        [disabled]="isFooterButtonDisabled() || isSimilarTabs()"
         (click)="previewMapping()"
       >Preview
       </button>

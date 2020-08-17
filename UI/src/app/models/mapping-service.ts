@@ -7,38 +7,44 @@ import { IRow } from './row';
 export class MappingService {
   connections: Array<IConnection>;
   constants: Array<IRow>;
+  sourceTableName: string;
 
-  constructor(arrowCache: ArrowCache, constants: ConstantCache) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
     this.connections = Object.values(arrowCache);
     this.constants = Object.values(constants);
+    this.sourceTableName = sourceTableName;
   }
 
   generate(): Mapping {
-    const merged = this.connections.map(arrow => {
-      const merge: any = {};
-      merge.transforms = arrow.transforms;
-      merge.sourceTable = arrow.source.tableName;
-      merge.sourceColumn = arrow.source.name;
-      merge.targetTable = arrow.target.tableName;
-      merge.targetColumn = arrow.target.name;
-      return merge;
-    });
+    const merged = this.connections
+      .filter(arrow => {
+        let condition = arrow.target.tableName !== 'similar';
+        if (this.sourceTableName) {
+          condition = condition && arrow.source.tableName === this.sourceTableName;
+        }
+        return condition;
+      })
+      .map(arrow => {
+        return {
+          transforms: arrow.transforms,
+          sourceTable: arrow.source.tableName,
+          sourceColumn: arrow.source.name,
+          targetTable: arrow.target.tableName,
+          targetColumn: arrow.target.name
+        };
+      });
 
     const bySource = groupBy(merged, 'sourceTable');
 
-    const mapPairs = Object.keys(bySource).map(sourceTable => {
-      const pair: MappingPair = {
-        source_table: sourceTable,
-        target_table: '',
-        mapping: []
-      };
+    const mapPairs: MappingPair[] = [];
 
+    Object.keys(bySource).forEach(sourceTable => {
       const byTargetTable = groupBy(bySource[sourceTable], 'targetTable');
       Object.keys(byTargetTable).forEach(targetTable => {
-        pair.target_table = targetTable;
+        const mappings = [];
 
         byTargetTable[targetTable].map(arrow => {
           const node: MappingNode = {
@@ -50,11 +56,14 @@ export class MappingService {
 
           this.applyTransforms(node, arrow);
 
-          pair.mapping.push(node);
+          mappings.push(node);
+        });
+        mapPairs.push({
+          source_table: sourceTable,
+          target_table: targetTable,
+          mapping: mappings
         });
       });
-
-      return pair;
     });
 
     this.applyConstant(mapPairs, this.constants);

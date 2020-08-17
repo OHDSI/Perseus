@@ -4,7 +4,7 @@ import 'prismjs/components/prism-sql';
 
 @Component({
   selector: 'prism-block',
-  template: ``,
+  template: '',
 })
 export class PrismComponent implements AfterViewInit {
   @Input() code: string;
@@ -15,7 +15,7 @@ export class PrismComponent implements AfterViewInit {
   ngAfterViewInit () {
     this.preNode = this._renderer.createElement('pre');
     this.codeNode = this._renderer.createElement('code');
-    this._renderer.addClass(this.codeNode, 'language-' + this.language);
+    this._renderer.addClass(this.codeNode, `language-${this.language}`);
     this._renderer.appendChild(this.nativeElement, this.preNode);
     this._renderer.appendChild(this.preNode, this.codeNode);
     this.codeNode.textContent = this.code;
