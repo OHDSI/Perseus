@@ -1,6 +1,7 @@
 <div class="selected">
   Selected: <span>{{selected.length}}</span>
-  <a (click)="deselectAll()">Deselect All</a>
+  <a *ngIf="selected.length"
+     (click)="deselectAll()">Deselect All</a>
 </div>
 <mat-list class="source-columns-list" role="list" dense>
   <cdk-virtual-scroll-viewport
