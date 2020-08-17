@@ -149,6 +149,12 @@ export class PanelTableComponent extends BaseComponent
     }
   }
 
+  selectIncrement(anchor: HTMLElement, row: IRow) {
+    if (!this.isRowHasConnection(row)) {
+      row.increment = !row.increment;
+    }
+  }
+
   onTransformDialogOpen(event: any, row: IRow, element: any) {
     event.stopPropagation();
     this.openTransform.emit({row, element});

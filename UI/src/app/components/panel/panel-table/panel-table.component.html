@@ -6,12 +6,17 @@
         <mat-icon *ngIf="area === 'source'" class="icon-indicator">
           drag_indicator
         </mat-icon>
-        <button
-          mat-icon-button
-          *ngIf="area === 'target'"
-          (click)="openConstantDialog(anchor, column)"
-        >
-          <div class="constant-icon" [ngClass]="{ active: column.hasConstant }">c</div>
+        <button mat-icon-button
+                *ngIf="area === 'target' && !column.uniqueIdentifier"
+                (click)="openConstantDialog(anchor, column)">
+          <div class="constant-increment-icon"
+               [ngClass]="{ active: column.hasConstant }">C</div>
+        </button>
+        <button mat-icon-button
+                *ngIf="area === 'target' && column.uniqueIdentifier"
+                (click)="selectIncrement(anchor, column)">
+          <div class="constant-increment-icon"
+               [ngClass]="{ active: column.hasIncrement }">A</div>
         </button>
       </div>
     </td>
