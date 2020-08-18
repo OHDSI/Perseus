@@ -23,6 +23,7 @@ export class DataService {
 
   _normalize(data, area) {
     const tables = [];
+    const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       const id = i;
@@ -34,6 +35,9 @@ export class DataService {
         if (area === 'target') {
           const upperCaseColumnName = item.column_list[j].column_name.toUpperCase();
           unique = upperCaseColumnName.indexOf('_ID') !== -1 && upperCaseColumnName.replace('_ID', '') === item.table_name.toUpperCase();
+          if (unique) {
+            uniqueIdentifierFields.push(upperCaseColumnName);
+          }
         }
         const rowOptions: RowOptions = {
           id: j,
@@ -60,7 +64,23 @@ export class DataService {
 
       tables.push(new Table(tableOptions));
     }
+
+    if (area === 'target') {
+      const IsUniqueIdentifierRow = (row) => uniqueIdentifierFields.includes(row.name.toUpperCase());
+      this.updateRowsProperties(tables, IsUniqueIdentifierRow, (row: any) => { row.uniqueIdentifier = true; });
+    }
+
     return tables;
+  }
+
+  updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
+    tables.forEach(table => {
+      table.rows.forEach(row => {
+        if (filter (row)) {
+          action(row);
+        }
+      });
+    });
   }
 
   getZippedXml(mapping: Mapping): Observable<any> {

@@ -23,6 +23,8 @@ import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-op
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { BaseComponent } from '../../base/base.component';
 import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-constant-popup.component';
+import { StoreService } from 'src/app/services/store.service';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-panel-table',
@@ -31,6 +33,7 @@ import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-c
 })
 export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
+  @Input() tables: ITable [];
   @Input() table: ITable;
   @Input() tabIndex: any;
   @Input() oppositeTableId: any;
@@ -65,6 +68,8 @@ export class PanelTableComponent extends BaseComponent
 
   constructor(
     private bridgeService: BridgeService,
+    private storeService: StoreService,
+    private dataService: DataService,
     private overlayService: OverlayService,
     private renderer: Renderer2,
     private chg: ChangeDetectorRef
@@ -151,8 +156,14 @@ export class PanelTableComponent extends BaseComponent
 
   selectIncrement(anchor: HTMLElement, row: IRow) {
     if (!this.isRowHasConnection(row)) {
-      row.increment = !row.increment;
+      this.updateIncrementFields(row.name);
     }
+  }
+
+  updateIncrementFields(rowName: string) {
+    const isSameRowName = (row) => rowName.toUpperCase() === row.name.toUpperCase();
+    this.dataService.updateRowsProperties(this.tables, isSameRowName, (row: any) => { row.increment = !row.increment; });
+    this.dataService.updateRowsProperties(this.storeService.state.target, isSameRowName, (row: any) => { row.increment = !row.increment; });
   }
 
   onTransformDialogOpen(event: any, row: IRow, element: any) {
