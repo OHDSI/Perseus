@@ -76,6 +76,7 @@
     [matTooltipDisabled]="area !== 'source'"
     *matRowDef="let row; columns: displayedColumns"
     [class.draggable]="area == 'source'"
+    [hidden]="isHidden(row)"
     class="item-{{ row.tableName }}-{{ row.name }} {{area}}Row"
     [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
   ></tr>

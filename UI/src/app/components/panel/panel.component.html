@@ -1,8 +1,19 @@
-<app-panel-table
-  #panel
-  [table]="table"
-  [tabIndex]="tabIndex"
-  [oppositeTableId]="oppositeTableId"
-  (openTransform)="onOpenTransfromDialog($event)"
->
-</app-panel-table>
+<app-search-by-name
+  class="filter-by-name {{area}}"
+  placeholder="Search by {{area}} fields"
+  [criteria]="searchCriteria"
+  (complete)="filterByName($event)"
+  (reset)="filterByNameReset($event)">
+</app-search-by-name>
+
+<app-area [area]="area">
+  <app-panel-table
+    #panel
+    [table]="table"
+    [tabIndex]="tabIndex"
+    [filtered]="filtered"
+    [oppositeTableId]="oppositeTableId"
+    (openTransform)="onOpenTransfromDialog($event)"
+  >
+  </app-panel-table>
+</app-area>

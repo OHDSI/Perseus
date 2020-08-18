@@ -7,23 +7,17 @@
             [label]="table.name"
             *ngFor="let table of source; trackBy: trackByFn"
           >
-            <app-comfy-search-by-name
-              class="filter-by-name"
-              placeholder="Search by source fields">
-            </app-comfy-search-by-name>
-            <app-area area="source">
-              <app-panel
-                #sourcePanel
-                *ngIf="table.visible"
-                [tabIndex]="sourceTabIndex"
-                [table]="table"
-                [tables]="source"
-                [oppositeTableId]="target[targetTabIndex].id"
-                (open)="onPanelOpen(table)"
-                (close)="onPanelClose(table)"
-                (initialized)="onPanelInit(table)"
-              ></app-panel>
-            </app-area>
+            <app-panel
+              #sourcePanel
+              *ngIf="table.visible"
+              [tabIndex]="sourceTabIndex"
+              [table]="table"
+              [tables]="source"
+              [oppositeTableId]="target[targetTabIndex].id"
+              (open)="onPanelOpen(table)"
+              (close)="onPanelClose(table)"
+              (initialized)="onPanelInit(table)"
+            ></app-panel>
           </mat-tab>
         </mat-tab-group>
       </div>
@@ -141,23 +135,17 @@
             *ngFor="let table of target; trackBy: trackByFn"
             [disabled]="isDisabled(table.name)"
           >
-            <app-comfy-search-by-name
-              class="filter-by-name"
-              placeholder="Search by target fields">
-            </app-comfy-search-by-name>
-            <app-area area="target">
-              <app-panel
-                #targetPanel
-                *ngIf="table.visible"
-                [tabIndex]="targetTabIndex"
-                [table]="table"
-                [tables]="target"
-                [oppositeTableId]="source[sourceTabIndex].id"
-                (open)="onPanelOpen(table)"
-                (close)="onPanelClose(table)"
-                (initialized)="onPanelInit(table)"
-              ></app-panel>
-            </app-area>
+            <app-panel
+              #targetPanel
+              *ngIf="table.visible"
+              [tabIndex]="targetTabIndex"
+              [table]="table"
+              [tables]="target"
+              [oppositeTableId]="source[sourceTabIndex].id"
+              (open)="onPanelOpen(table)"
+              (close)="onPanelClose(table)"
+              (initialized)="onPanelInit(table)"
+            ></app-panel>
           </mat-tab>
         </mat-tab-group>
         <!-- <mat-icon matTooltip="Filters applied"

@@ -12,7 +12,7 @@ import { DataService } from 'src/app/services/data.service';
 
 import { StateService } from 'src/app/services/state.service';
 import { StoreService } from 'src/app/services/store.service';
-import { BaseComponent } from '../../base/base.component';
+import { BaseComponent } from '../../../common/components/base/base.component';
 import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';

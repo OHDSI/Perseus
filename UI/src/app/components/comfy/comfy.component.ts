@@ -31,8 +31,8 @@ import { OverlayConfigOptions } from '../../services/overlay/overlay-config-opti
 import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
-import { BaseComponent } from '../base/base.component';
-import { Criteria } from '../comfy-search-by-name/comfy-search-by-name.component';
+import { BaseComponent } from '../../common/components/base/base.component';
+import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
@@ -89,7 +89,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     targetConfig: {},
     version: undefined,
     filtered: undefined,
-    search: {
+    linkTablesSearch: {
       source: undefined,
       target: undefined,
       sourceColumns: undefined
@@ -278,7 +278,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.data.source
         .map(table => table.name)
     );
-    this.filterAtInitialization('source', this.data.search.source);
+    this.filterAtInitialization('source', this.data.linkTablesSearch.source);
   }
 
   initializeTargetData() {
@@ -291,7 +291,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (this.data.filtered) {
       this.filterByType();
     }
-    this.filterAtInitialization('target', this.data.search.target);
+    this.filterAtInitialization('target', this.data.linkTablesSearch.target);
   }
 
   initializeSourceColumns() {
@@ -300,7 +300,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     }
     const allColumns = this.data.source.reduce((prev, cur) => [ ...prev, ...cur.rows ], []);
     this.sourceRows = uniqBy(allColumns, 'name');
-    this.filterAtInitialization('source-column', this.data.search.sourceColumns);
+    this.filterAtInitialization('source-column', this.data.linkTablesSearch.sourceColumns);
   }
 
   initializeData() {
@@ -412,18 +412,18 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     switch (area) {
       case Area.Source: {
         this.source = this.data.source.map(item => item.name).filter(filterByName);
-        this.data.search.source = byName.criteria;
+        this.data.linkTablesSearch.source = byName.criteria;
         break;
       }
       case Area.Target: {
         this.targetTableNames = this.data.target.map(item => item.name).filter(filterByName);
-        this.data.search.target = byName.criteria;
+        this.data.linkTablesSearch.target = byName.criteria;
         break;
       }
       case Area.SourceColumn: {
         const rows = this.data.source.reduce((prev, cur) => [ ...prev, ...cur.rows ], []);
         this.sourceRows = uniqBy(rows, 'name').filter(row => filterByName(row.name));
-        this.data.search.sourceColumns = byName.criteria;
+        this.data.linkTablesSearch.sourceColumns = byName.criteria;
         break;
       }
       default:
@@ -455,17 +455,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   filterByNameReset(area: string, byName: Criteria): void {
     switch (area) {
       case Area.Source: {
-        this.data.search.source = '';
+        this.data.linkTablesSearch.source = '';
         this.initializeSourceData();
         break;
       }
       case Area.Target: {
-        this.data.search.target = '';
+        this.data.linkTablesSearch.target = '';
         this.initializeTargetData();
         break;
       }
       case Area.SourceColumn: {
-        this.data.search.sourceColumns = '';
+        this.data.linkTablesSearch.sourceColumns = '';
         this.initializeSourceColumns();
         break;
       }

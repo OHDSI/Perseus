@@ -21,7 +21,7 @@ import { ITable } from 'src/app/models/table';
 import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { BaseComponent } from '../../base/base.component';
+import { BaseComponent } from '../../../common/components/base/base.component';
 import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-constant-popup.component';
 
 @Component({
@@ -34,6 +34,8 @@ export class PanelTableComponent extends BaseComponent
   @Input() table: ITable;
   @Input() tabIndex: any;
   @Input() oppositeTableId: any;
+  @Input() filtered: any;
+
   @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
@@ -197,6 +199,13 @@ export class PanelTableComponent extends BaseComponent
         this.renderer.addClass(collection[0], 'hide');
       }
     }
+  }
+
+  isHidden(row) {
+    if (this.filtered === undefined) {
+      return false;
+    }
+    return !this.filtered.includes(row.name);
   }
 
   private _getArea() {

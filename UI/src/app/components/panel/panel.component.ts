@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -8,13 +8,15 @@ import { BridgeButtonService } from '../bridge-button/service/bridge-button.serv
 import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { PanelTableComponent } from './panel-table/panel-table.component';
+import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
+import { StoreService } from '../../services/store.service';
 
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss']
 })
-export class PanelComponent implements AfterViewInit {
+export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
   @Input() tables: ITable[];
@@ -36,18 +38,47 @@ export class PanelComponent implements AfterViewInit {
   }
 
   initializing: boolean;
+  filtered;
+  linkFieldsSearch = {};
+  linkFieldsSearchKey = '';
+  searchCriteria: string;
 
   constructor(
     public dialog: MatDialog,
     private bridgeService: BridgeService,
-    private bridgeButtonService: BridgeButtonService
+    private bridgeButtonService: BridgeButtonService,
+    private storeService: StoreService
   ) {
     this.initializing = true;
+  }
+
+  ngOnInit() {
+    this.linkFieldsSearchKey = `${this.table.name}Search`;
+    this.linkFieldsSearch = this.storeService.state.linkFieldsSearch;
+    this.searchCriteria = this.linkFieldsSearch[this.linkFieldsSearchKey];
+
+    this.filterAtInitialization();
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.linkFieldsSearch = res.linkFieldsSearch;
+      }
+    });
   }
 
   ngAfterViewInit() {
     this.initialized.emit();
     this.initializing = false;
+  }
+
+  filterAtInitialization() {
+    if (this.searchCriteria) {
+      const searchCriteria: Criteria = {
+        filtername: 'by-name',
+        criteria: this.searchCriteria
+      };
+      this.filterByName(searchCriteria);
+    }
   }
 
   onOpen() {
@@ -128,5 +159,23 @@ export class PanelComponent implements AfterViewInit {
   unLinkFields(sourceField, targetField) {
     const connectorId = this.bridgeService.getConnectorId(sourceField, targetField);
     this.bridgeService.deleteArrow(connectorId);
+  }
+
+  filterByName(byName: Criteria): void {
+    const filterByName = (name, index?) => {
+      return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
+    };
+
+    this.filtered = this.table.rows.map(item => item.name).filter(filterByName);
+    this.linkFieldsSearch[this.linkFieldsSearchKey] = byName.criteria;
+    this.searchCriteria = byName.criteria;
+    this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
+  }
+
+  filterByNameReset(byName: Criteria): void {
+    this.filtered = undefined;
+    this.linkFieldsSearch[this.linkFieldsSearchKey] = '';
+    this.searchCriteria = '';
+    this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
   }
 }

@@ -132,32 +132,6 @@ footer {
   width: 100%;
 }
 
-.filter-by-name {
-  display: block;
-  width: 100%;
-  margin-top: 5px;
-}
-
-.area-source {
-  ::ng-deep .search-by-name {
-    margin: 0 2px 0 8px;
-  }
-
-  ::ng-deep .mat-tab-header {
-    padding-left: 7px;
-  }
-}
-
-.area-target {
-  ::ng-deep .search-by-name {
-    margin: 0 8px 0 2px;
-  }
-
-  ::ng-deep .mat-tab-header {
-    width: calc(100% - 40px);
-  }
-}
-
 ::ng-deep .mat-tab-group {
   height: calc(100% - 15px);
   margin-top: 15px;
@@ -180,6 +154,7 @@ footer {
   .mat-tab-header {
     margin-bottom: 10px;
     border-bottom: none;
+    margin-left: 3px;
 
     .mat-elevation-z4 {
       box-shadow: none;

@@ -13,11 +13,12 @@ export class StoreService {
     targetConfig: {},
     source: [],
     report: undefined,
-    search: {
+    linkTablesSearch: {
       source: undefined,
       target: undefined,
       sourceColumns: undefined
     },
+    linkFieldsSearch: {},
     cdmVersions: []
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
@@ -59,11 +60,12 @@ export class StoreService {
       source: [],
       targetConfig: {},
       report: undefined,
-      search: {
+      linkTablesSearch: {
         source: undefined,
         target: undefined,
         sourceColumns: undefined
       },
+      linkFieldsSearch: {},
       cdmVersions: this.state.cdmVersions
     };
     this.storeState.next(this.initialState);
