@@ -287,6 +287,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.storeService.state$.subscribe(res => {
       if (res) {
         this.filteredFields = res.filteredFields;
+        this.bridgeService.refreshAll();
       }
     });
   }
