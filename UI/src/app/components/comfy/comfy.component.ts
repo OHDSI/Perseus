@@ -37,6 +37,7 @@ import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.compone
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
 import { DataService } from 'src/app/services/data.service';
+import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
 
 @Component({
   selector: 'app-comfy',
@@ -88,7 +89,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     target: [],
     targetConfig: {},
     version: undefined,
-    filtered: undefined,
+    filteredTables: undefined,
     linkTablesSearch: {
       source: undefined,
       target: undefined,
@@ -288,7 +289,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
     this.sourceConnectedTo = this.data.target.map(table => `target-${table.name}`);
 
-    if (this.data.filtered) {
+    if (this.data.filteredTables) {
       this.filterByType();
     }
     this.filterAtInitialization('target', this.data.linkTablesSearch.target);
@@ -443,7 +444,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   filterByType(): void {
     const uniqueTargetNames = uniq(Object.keys(this.targetConfig));
-    const { tables: selectedTables } = this.data.filtered;
+    const { tables: selectedTables } = this.data.filteredTables;
     if (selectedTables.length === 0) {
       this.targetTableNames = uniqueTargetNames;
       return;
@@ -487,13 +488,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openFilter(target) {
-    const types = this.data.filtered ? this.data.filtered.types : [];
-    const checkedTypes = this.data.filtered ? this.data.filtered.checkedTypes : [];
+    const types = this.data.filteredTables ? this.data.filteredTables.types : [];
+    const checkedTypes = this.data.filteredTables ? this.data.filteredTables.checkedTypes : [];
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       panelClass: 'filter-popup',
-      payload: { types, checkedTypes }
+      payload: { title: 'Target tables', saveKey: 'filteredTables', types, checkedTypes, options: (cdmTypes as any).default }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }

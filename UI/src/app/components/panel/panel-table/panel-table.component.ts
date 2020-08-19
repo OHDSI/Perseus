@@ -35,6 +35,7 @@ export class PanelTableComponent extends BaseComponent
   @Input() tabIndex: any;
   @Input() oppositeTableId: any;
   @Input() filtered: any;
+  @Input() filteredFields: any;
 
   @Output() openTransform = new EventEmitter<any>();
 
@@ -206,6 +207,19 @@ export class PanelTableComponent extends BaseComponent
       return false;
     }
     return !this.filtered.includes(row.name);
+  }
+
+  isFiltered(row) {
+    if (this.filteredFields === undefined) {
+      return false;
+    }
+
+    return (
+      this.filteredFields &&
+      this.filteredFields.items &&
+      this.filteredFields.items.length &&
+      !this.filteredFields.items.includes(row.name.toUpperCase())
+    );
   }
 
   private _getArea() {

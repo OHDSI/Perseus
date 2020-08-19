@@ -142,18 +142,19 @@
               [table]="table"
               [tables]="target"
               [oppositeTableId]="source[sourceTabIndex].id"
+              [filteredFields]="getFilteredFields()"
               (open)="onPanelOpen(table)"
               (close)="onPanelClose(table)"
               (initialized)="onPanelInit(table)"
             ></app-panel>
           </mat-tab>
         </mat-tab-group>
-        <!-- <mat-icon matTooltip="Filters applied"
+        <mat-icon matTooltip="Filters applied"
                   matTooltipPosition="above"
-                  [matTooltipDisabled]="false"
+                  [matTooltipDisabled]="isTooltipDisabled()"
                   class="targetFilter"
                   (click)="openFilter($event.target)">sort
-        </mat-icon> -->
+        </mat-icon>
       </div>
     </main>
     <footer>

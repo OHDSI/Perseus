@@ -1,7 +1,7 @@
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { uniq } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { ITable, Table } from 'src/app/models/table';
@@ -23,6 +23,7 @@ import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/de
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { Area } from 'src/app/models/area';
 import { modes } from 'codemirror';
+import * as groups from './groups-conf.json';
 
 @Component({
   selector: 'app-mapping',
@@ -45,6 +46,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   mappedTables = [];
 
   similarTableName = 'similar';
+
+  filteredFields;
 
   get hint(): string {
     return 'no hint';
@@ -280,6 +283,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       .subscribe(connectorKey => {
         this.bridgeService.deleteArrow(connectorKey);
       });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -331,15 +340,36 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openFilter(target) {
-    const types = [];
-    const checkedTypes = [];
+    const optionalSaveKey = this.target[this.targetTabIndex].name;
+
+    const filteredFields = this.filteredFields ? this.filteredFields[optionalSaveKey] : this.filteredFields;
+    const types = filteredFields ? filteredFields.types : [];
+    const checkedTypes = filteredFields ? filteredFields.checkedTypes : [];
+
+    const options = (groups as any).default;
+    options['individual'] = this.target[this.targetTabIndex].rows.map(row => {
+      if (!options.common.includes(row.name) && !options.concept.includes(row.name)) {
+        return row.name;
+      }
+    });
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       panelClass: 'filter-popup',
-      payload: { types, checkedTypes, cdmTypes: { Common: '', Concept: '', Individual: '' } }
+      payload: {
+        title: 'Target fields',
+        saveKey: 'filteredFields',
+        types,
+        checkedTypes,
+        options,
+        optionalSaveKey
+      }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
+  }
+
+  getFilteredFields() {
+    return this.filteredFields ? this.filteredFields[this.target[this.targetTabIndex].name] : [];
   }
 
   onPanelOpen() {
@@ -408,6 +438,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return (
       this.source[this.sourceTabIndex].name === this.similarTableName ||
       this.target[this.targetTabIndex].name === this.similarTableName
+    );
+  }
+
+  isTooltipDisabled() {
+    return !(
+      this.filteredFields &&
+      this.filteredFields[this.target[this.targetTabIndex].name] &&
+      this.filteredFields[this.target[this.targetTabIndex].name].types &&
+      this.filteredFields[this.target[this.targetTabIndex].name].types.length
     );
   }
 

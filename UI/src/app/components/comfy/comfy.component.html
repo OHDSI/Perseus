@@ -84,16 +84,16 @@
       <h4>Target tables
         <span *ngIf="data.target?.length">({{data.target.length}})</span>
         <label class="cdm-filter-label"
-               *ngIf="data.filtered?.types.length"
-               [matTooltip]="data.filtered.types"
+               *ngIf="data.filteredTables?.types.length"
+               [matTooltip]="data.filteredTables.types"
                matTooltipPosition="above">
-          {{data.filtered.types}}
+          {{data.filteredTables.types}}
         </label>
         <mat-icon *ngIf="data.target?.length"
                   matTooltip="Filters applied"
                   matTooltipPosition="above"
-                  [matTooltipDisabled]="!data.filtered?.types.length"
-                  [class]="{active: data.filtered?.types.length}"
+                  [matTooltipDisabled]="!data.filteredTables?.types.length"
+                  [class]="{active: data.filteredTables?.types.length}"
                   (click)="openFilter($event.target)">sort
         </mat-icon>
       </h4>

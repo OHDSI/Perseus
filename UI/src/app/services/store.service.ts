@@ -8,7 +8,8 @@ import { Table } from '../models/table';
 export class StoreService {
   private initialState = {
     version: undefined,
-    filtered: undefined,
+    filteredTables: undefined,
+    filteredFields: undefined,
     target: [],
     targetConfig: {},
     source: [],
@@ -55,7 +56,8 @@ export class StoreService {
   resetAllData() {
     this.initialState = {
       version: undefined,
-      filtered: undefined,
+      filteredTables: undefined,
+      filteredFields: undefined,
       target: [],
       source: [],
       targetConfig: {},
