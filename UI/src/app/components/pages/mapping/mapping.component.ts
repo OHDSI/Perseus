@@ -415,13 +415,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   changeTargetTabIndex() {
-    const tableName = this.source[ this.sourceTabIndex ].name;
+    const sourceTableName = this.source[ this.sourceTabIndex ].name;
+    let targetTableName = this.target[ this.targetTabIndex ].name;
 
-    if (tableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
+    if (this.mappedTables.find(item => item.includes(sourceTableName) && item.includes(targetTableName))) {
+      return;
+    }
+
+    if (sourceTableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
       this.targetTabIndex = 0;
     } else {
       const tagretTableNameIndex = 0;
-      const targetTableName = this.mappedTables.find(item => item.includes(tableName))[ tagretTableNameIndex ];
+      targetTableName = this.mappedTables.find(item => item.includes(sourceTableName))[ tagretTableNameIndex ];
       this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
     }
   }
