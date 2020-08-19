@@ -138,6 +138,15 @@ export class BridgeService {
     return similarRows;
   }
 
+  findSimilarLinks(connection, area1, area2) {
+    return Object.keys(this.arrowsCache).map(key => {
+      const arrow = this.arrowsCache[key];
+      if (arrow[area1].name === connection[area1].name && arrow[area2].name === connection[area2].name) {
+        return key;
+      }
+    });
+  }
+
   updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
     tables.forEach(table => {
       table.rows.forEach(row => {
@@ -239,13 +248,30 @@ export class BridgeService {
       return;
     }
 
+    this._deleteArrow(key, savedConnection);
+
+    if (savedConnection.source.tableName === 'similar' || savedConnection.target.tableName === 'similar') {
+      this.deleteSimilar(savedConnection);
+    }
+  }
+
+  deleteSimilar(connection) {
+    const keys = this.findSimilarLinks(connection, Area.Source, Area.Target);
+
+    keys.forEach(key => {
+      const similarConnection = cloneDeep(this.arrowsCache[ key ]);
+      this._deleteArrow(key, similarConnection);
+    });
+  }
+
+  _deleteArrow(key, connection) {
     this.drawService.deleteConnector(key);
 
     if (this.arrowsCache[ key ]) {
       delete this.arrowsCache[ key ];
     }
 
-    this.removeConnection.next(savedConnection);
+    this.removeConnection.next(connection);
   }
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {

@@ -123,45 +123,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onCheckboxChange(event: MatCheckboxChange) {
-    for (const row of this.table.rows) {
-      const connections = this.bridgeService.findCorrespondingConnections(this.table, row);
-      for (const connection of connections) {
-        const action = event.checked ? this.linkFields : this.unLinkFields;
-        this.similarFieldsAction(connection, action.bind(this));
-      }
-    }
-  }
-
-  similarFieldsAction(connection, action) {
-    this.tables.forEach(table => {
-      if (table.name === this.table.name) {
-        return;
-      }
-
-      table.rows.forEach(field => {
-        if (field.name !== connection[this.area].name) {
-          return;
-        }
-
-        if (this.area === 'source') {
-          action(field, connection.target, connection.type);
-        } else {
-          action(connection.source, field, connection.type);
-        }
-      });
-    });
-  }
-
-  linkFields(sourceField, targetField, type) {
-    this.bridgeService.drawArrow(sourceField, targetField, type);
-  }
-
-  unLinkFields(sourceField, targetField) {
-    const connectorId = this.bridgeService.getConnectorId(sourceField, targetField);
-    this.bridgeService.deleteArrow(connectorId);
-  }
-
   filterByName(byName: Criteria): void {
     const filterByName = (name, index?) => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
