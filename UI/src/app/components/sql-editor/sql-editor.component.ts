@@ -102,6 +102,10 @@ export class SqlEditorComponent implements OnInit {
     const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const rows = this.parseColumns();
+    rows.forEach(row => {
+      row.tableId = tableId;
+      row.tableName = this.name;
+    });
     const settings = {
       rows,
       area: Area.Source,
