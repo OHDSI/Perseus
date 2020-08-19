@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
+import { BridgeService } from './bridge.service';
 
 const URL = environment.url;
 
@@ -18,6 +19,7 @@ export class DataService {
   constructor(
     private httpService: HttpService,
     private storeService: StoreService,
+    private bridgeService: BridgeService
   ) {
   }
 
@@ -67,20 +69,10 @@ export class DataService {
 
     if (area === 'target') {
       const IsUniqueIdentifierRow = (row) => uniqueIdentifierFields.includes(row.name.toUpperCase());
-      this.updateRowsProperties(tables, IsUniqueIdentifierRow, (row: any) => { row.uniqueIdentifier = true; });
+      this.bridgeService.updateRowsProperties(tables, IsUniqueIdentifierRow, (row: any) => { row.uniqueIdentifier = true; });
     }
 
     return tables;
-  }
-
-  updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
-    tables.forEach(table => {
-      table.rows.forEach(row => {
-        if (filter (row)) {
-          action(row);
-        }
-      });
-    });
   }
 
   getZippedXml(mapping: Mapping): Observable<any> {

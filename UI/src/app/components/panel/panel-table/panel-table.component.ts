@@ -69,7 +69,6 @@ export class PanelTableComponent extends BaseComponent
   constructor(
     private bridgeService: BridgeService,
     private storeService: StoreService,
-    private dataService: DataService,
     private overlayService: OverlayService,
     private renderer: Renderer2,
     private chg: ChangeDetectorRef
@@ -162,8 +161,8 @@ export class PanelTableComponent extends BaseComponent
 
   updateIncrementFields(rowName: string) {
     const isSameRowName = (row) => rowName.toUpperCase() === row.name.toUpperCase();
-    this.dataService.updateRowsProperties(this.tables, isSameRowName, (row: any) => { row.increment = !row.increment; });
-    this.dataService.updateRowsProperties(this.storeService.state.target, isSameRowName, (row: any) => { row.increment = !row.increment; });
+    this.bridgeService.updateRowsProperties(this.tables, isSameRowName, (row: any) => { row.increment = !row.increment; });
+    this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRowName, (row: any) => { row.increment = !row.increment; });
   }
 
   onTransformDialogOpen(event: any, row: IRow, element: any) {

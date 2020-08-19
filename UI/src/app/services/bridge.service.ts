@@ -138,6 +138,16 @@ export class BridgeService {
     return similarRows;
   }
 
+  updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
+    tables.forEach(table => {
+      table.rows.forEach(row => {
+        if (filter (row)) {
+          action(row);
+        }
+      });
+    });
+  }
+
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();
 
