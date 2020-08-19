@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
+import { BridgeService } from './bridge.service';
 
 const URL = environment.url;
 
@@ -18,11 +19,13 @@ export class DataService {
   constructor(
     private httpService: HttpService,
     private storeService: StoreService,
+    private bridgeService: BridgeService
   ) {
   }
 
   _normalize(data, area) {
     const tables = [];
+    const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       const id = i;
@@ -34,6 +37,9 @@ export class DataService {
         if (area === 'target') {
           const upperCaseColumnName = item.column_list[j].column_name.toUpperCase();
           unique = upperCaseColumnName.indexOf('_ID') !== -1 && upperCaseColumnName.replace('_ID', '') === item.table_name.toUpperCase();
+          if (unique) {
+            uniqueIdentifierFields.push(upperCaseColumnName);
+          }
         }
         const rowOptions: RowOptions = {
           id: j,
@@ -60,6 +66,12 @@ export class DataService {
 
       tables.push(new Table(tableOptions));
     }
+
+    if (area === 'target') {
+      const IsUniqueIdentifierRow = (row) => uniqueIdentifierFields.includes(row.name.toUpperCase());
+      this.bridgeService.updateRowsProperties(tables, IsUniqueIdentifierRow, (row: any) => { row.uniqueIdentifier = true; });
+    }
+
     return tables;
   }
 
