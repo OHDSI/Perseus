@@ -444,7 +444,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   filterByType(): void {
     const uniqueTargetNames = uniq(Object.keys(this.targetConfig));
-    const { tables: selectedTables } = this.data.filteredTables;
+    const { items: selectedTables } = this.data.filteredTables;
     if (selectedTables.length === 0) {
       this.targetTableNames = uniqueTargetNames;
       return;
