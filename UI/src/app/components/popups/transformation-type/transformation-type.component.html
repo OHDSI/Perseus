@@ -1,0 +1,11 @@
+<div class="type">
+    <input class="form-check-input"
+           [class.hidden]="!configured"
+           type="checkbox"
+           [checked]="isTypeChecked"
+           (change)="typeChecked()">
+    <mat-label class="type-label"
+    (click)="typeSelected()">{{typeName}}</mat-label>
+    <label class="configured"
+           *ngIf=configured>configured</label>
+</div>

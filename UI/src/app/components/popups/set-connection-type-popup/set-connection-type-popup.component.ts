@@ -7,9 +7,19 @@ import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
   styleUrls: ['./set-connection-type-popup.component.scss']
 })
 export class SetConnectionTypePopupComponent {
+
+  sqlLabel = 'SQL Function';
+  lookupLabel = 'Lookup';
   constructor(public dialogRef: OverlayDialogRef) {}
 
   click(connectionType: string) {
     this.dialogRef.close({connectionType});
   }
+
+  openSqlFunctionDialog() {
+  }
+
+  openLookupDialog() {
+  }
+
 }
