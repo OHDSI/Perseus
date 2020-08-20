@@ -9,7 +9,8 @@ import {
   OnInit,
   Output,
   Renderer2,
-  ViewChild
+  ViewChild,
+  HostListener
 } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
@@ -62,6 +63,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   datasource: MatTableDataSource<IRow>;
+  rowFocusedElement;
 
   get connectionTypes(): any[] {
     return Object.keys(this.connectortype);
@@ -74,9 +76,25 @@ export class PanelTableComponent extends BaseComponent
     private storeService: StoreService,
     private overlayService: OverlayService,
     private renderer: Renderer2,
-    private chg: ChangeDetectorRef
+    private chg: ChangeDetectorRef,
+    private elementRef: ElementRef
   ) {
     super();
+  }
+
+  @HostListener('document:click', [ '$event' ])
+  onClick(event) {
+    if (!event) {
+      return;
+    }
+    const target = event.target;
+    if (!target || !this.rowFocusedElement) {
+      return;
+    }
+    const clickedOutside = !this.rowFocusedElement.contains(target);
+    if (clickedOutside) {
+      this.unsetRowFocus();
+    }
   }
 
   ngOnChanges() {
@@ -175,6 +193,25 @@ export class PanelTableComponent extends BaseComponent
 
   hasComment(row: IRow) {
     return row.comments.length;
+  }
+
+  rowClick($event: MouseEvent) {
+    $event.stopPropagation();
+    this.setRowFocus($event.currentTarget);
+  }
+
+  setRowFocus(target) {
+    if (target) {
+      this.unsetRowFocus();
+      this.rowFocusedElement = target;
+      this.rowFocusedElement.classList.add('row-focus');
+    }
+  }
+
+  unsetRowFocus() {
+    const focused: HTMLAllCollection = this.elementRef.nativeElement.querySelectorAll('.row-focus');
+    Array.from(focused).forEach((it: HTMLElement) => it.classList.remove('row-focus'));
+    this.rowFocusedElement = undefined;
   }
 
   // connectortype is not reflected in the table
