@@ -6,7 +6,6 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
 import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { StoreService } from '../../services/store.service';
@@ -22,6 +21,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Input() tables: ITable[];
   @Input() oppositeTableId: any;
   @Input() filteredFields: any;
+  @Input() mappedTables: any;
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();

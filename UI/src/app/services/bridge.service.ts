@@ -72,30 +72,34 @@ export class BridgeService {
   deleteAll = new Subject();
 
   connect = new Command({
-    execute: () => {
+    execute: (mappedTables) => {
       const similar = 'similar';
       this.drawArrow(this.sourceRow, this.targetRow);
       const similarSourceRows = this.findSimilarRows(this.sourceRow.name, Area.Source);
       const similarTargetRows = this.findSimilarRows(this.targetRow.name, Area.Target);
-      const config = this.storeService.state.targetConfig;
 
       if (this.sourceRow.tableName === similar && this.targetRow.tableName !== similar) {
         similarSourceRows.forEach(row => {
-          this.drawSimilar(config, row, this.targetRow);
+          this.drawSimilar(mappedTables, row, this.targetRow);
         });
       }
 
       if (this.targetRow.tableName === similar && this.sourceRow.tableName !== similar) {
         similarTargetRows.forEach(row => {
-          this.drawSimilar(config, this.sourceRow, row);
+          this.drawSimilar(mappedTables, this.sourceRow, row);
         });
       }
 
       if (this.sourceRow.tableName === similar && this.targetRow.tableName === similar) {
         similarSourceRows.forEach(sourceRow => {
+          this.drawSimilar(mappedTables, sourceRow, this.targetRow);
           similarTargetRows.forEach(targetRow => {
-            this.drawSimilar(config, sourceRow, targetRow);
+            this.drawSimilar(mappedTables, sourceRow, targetRow);
           });
+        });
+
+        similarTargetRows.forEach(row => {
+          this.drawSimilar(mappedTables, this.sourceRow, row);
         });
       }
     },
@@ -120,8 +124,13 @@ export class BridgeService {
     this.drawArrow(sourceRow, targetRow);
   }
 
-  canLink(config, name, key) {
-    return config[key].data.includes(name);
+  canLink(config, sourceTableName, targetTableName) {
+    for (const item of config) {
+      if (item.includes(sourceTableName) && item.includes(targetTableName)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   findSimilarRows(name, area) {

@@ -40,6 +40,7 @@ export class PanelTableComponent extends BaseComponent
   @Input() oppositeTableId: any;
   @Input() filtered: any;
   @Input() filteredFields: any;
+  @Input() mappedTables: any;
 
   @Output() openTransform = new EventEmitter<any>();
 

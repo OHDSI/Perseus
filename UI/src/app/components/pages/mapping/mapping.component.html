@@ -143,6 +143,7 @@
               [tables]="target"
               [oppositeTableId]="source[sourceTabIndex].id"
               [filteredFields]="getFilteredFields()"
+              [mappedTables]="mappedTables"
               (open)="onPanelOpen(table)"
               (close)="onPanelClose(table)"
               (initialized)="onPanelInit(table)"
