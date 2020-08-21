@@ -6,7 +6,7 @@ import { DrawService } from 'src/app/services/draw.service';
 import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
 import { Command } from '../infrastructure/command';
-import { cloneDeep, uniqBy } from '../infrastructure/utility';
+import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
 import { Configuration } from '../models/configuration';
 import { IConnector } from '../models/interface/connector.interface';
@@ -14,6 +14,7 @@ import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
+import * as similarNamesMap from '../components/pages/mapping/similar-names-map.json';
 
 export interface IConnection {
   source: IRow;
@@ -54,6 +55,7 @@ export class BridgeService {
     private drawService: DrawService,
     private storeService: StoreService
   ) {
+    console.log('XXX');
   }
 
   applyConfiguration$ = new Subject<Configuration>();
@@ -71,8 +73,13 @@ export class BridgeService {
 
   deleteAll = new Subject();
 
+  similarNamesMap = (similarNamesMap as any).default;
+
+  tables = {};
+
   connect = new Command({
-    execute: (mappedTables) => {
+    execute: (mappingConfig) => {
+      this.tables = this.storeService.getMappedTables();
       const similar = 'similar';
       this.drawArrow(this.sourceRow, this.targetRow);
       const similarSourceRows = this.findSimilarRows(this.sourceRow.name, Area.Source);
@@ -80,26 +87,26 @@ export class BridgeService {
 
       if (this.sourceRow.tableName === similar && this.targetRow.tableName !== similar) {
         similarSourceRows.forEach(row => {
-          this.drawSimilar(mappedTables, row, this.targetRow);
+          this.drawSimilar(mappingConfig, row, this.targetRow);
         });
       }
 
       if (this.targetRow.tableName === similar && this.sourceRow.tableName !== similar) {
         similarTargetRows.forEach(row => {
-          this.drawSimilar(mappedTables, this.sourceRow, row);
+          this.drawSimilar(mappingConfig, this.sourceRow, row);
         });
       }
 
       if (this.sourceRow.tableName === similar && this.targetRow.tableName === similar) {
         similarSourceRows.forEach(sourceRow => {
-          this.drawSimilar(mappedTables, sourceRow, this.targetRow);
+          this.drawSimilar(mappingConfig, sourceRow, this.targetRow);
           similarTargetRows.forEach(targetRow => {
-            this.drawSimilar(mappedTables, sourceRow, targetRow);
+            this.drawSimilar(mappingConfig, sourceRow, targetRow);
           });
         });
 
         similarTargetRows.forEach(row => {
-          this.drawSimilar(mappedTables, this.sourceRow, row);
+          this.drawSimilar(mappingConfig, this.sourceRow, row);
         });
       }
     },
@@ -116,6 +123,27 @@ export class BridgeService {
     },
     canExecute: () => true
   });
+
+  getTables() {
+    const { source, target, targetConfig } = this.storeService.state;
+
+    let sourceTablesNames = [];
+    const targetTablesNames = Object.keys(targetConfig).filter(key => {
+      const data = targetConfig[ key ].data;
+      if (data.length > 1) {
+        sourceTablesNames.push(...data.slice(1, data.length));
+        return true;
+      }
+      return false;
+    });
+    sourceTablesNames = uniq(sourceTablesNames);
+
+    const tables = {
+      source: source.filter(table => sourceTablesNames.includes(table.name)),
+      target: target.filter(table => targetTablesNames.includes(table.name))
+    }
+    return tables;
+  }
 
   drawSimilar(config, sourceRow, targetRow) {
     if (!this.canLink(config, sourceRow.tableName, targetRow.tableName)) {
@@ -134,11 +162,10 @@ export class BridgeService {
   }
 
   findSimilarRows(name, area) {
-    const tables = this.storeService.state[area];
     const similarRows = [];
-    tables.forEach(table => {
+    this.tables[area].forEach(table => {
       table.rows.forEach(row => {
-        if (row.name === name) {
+        if (this.checkSimilar(row.name, name)) {
           similarRows.push(new Row({...row}));
         }
       });
@@ -147,10 +174,18 @@ export class BridgeService {
     return similarRows;
   }
 
+  checkSimilar(name1, name2) {
+    return (
+      name1 === name2 ||
+      (this.similarNamesMap[name1] === this.similarNamesMap[name2]) &&
+      (this.similarNamesMap[name1] || this.similarNamesMap[name2])
+    );
+  }
+
   findSimilarLinks(connection, area1, area2) {
     return Object.keys(this.arrowsCache).map(key => {
       const arrow = this.arrowsCache[key];
-      if (arrow[area1].name === connection[area1].name && arrow[area2].name === connection[area2].name) {
+      if (this.checkSimilar(arrow[area1].name, connection[area1].name) && this.checkSimilar(arrow[area2].name, connection[area2].name)) {
         return key;
       }
     });

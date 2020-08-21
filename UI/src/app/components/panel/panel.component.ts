@@ -21,7 +21,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Input() tables: ITable[];
   @Input() oppositeTableId: any;
   @Input() filteredFields: any;
-  @Input() mappedTables: any;
+  @Input() mappingConfig: any;
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();

@@ -24,6 +24,7 @@ import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.comp
 import { Area } from 'src/app/models/area';
 import { modes } from 'codemirror';
 import * as groups from './groups-conf.json';
+import * as similarNamesMap from './similar-names-map.json';
 
 @Component({
   selector: 'app-mapping',
@@ -43,9 +44,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   sourceRows: IRow[] = [];
   targetRows: IRow[] = [];
 
-  mappedTables = [];
+  mappingConfig = [];
 
   similarTableName = 'similar';
+  similarNamesMap = (similarNamesMap as any).default;
 
   filteredFields;
 
@@ -157,7 +159,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   checkIncludesRows(rows, row) {
-    return !!rows.find(r => r.name === row.name);
+    return !!rows.find(r => {
+      return (
+        r.name === row.name ||
+        (this.similarNamesMap[r.name] === this.similarNamesMap[row.name]) &&
+        (this.similarNamesMap[r.name] || this.similarNamesMap[row.name])
+      );
+    });
   }
 
   collectSimilarRows(rows, area, similarRows) {
@@ -169,7 +177,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
 
       if (!this.checkIncludesRows(similarRows, row)) {
-        const rowForSimilar = { ...row, tableName: this.similarTableName, tableId: this.storeService.state[ area ].length };
+        const rowName = this.similarNamesMap[row.name] ? this.similarNamesMap[row.name] : row.name;
+        const rowForSimilar = { ...row, name: rowName, tableName: this.similarTableName, tableId: this.storeService.state[ area ].length };
         similarRows.push(rowForSimilar);
       }
     });
@@ -196,8 +205,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this[area] = tables;
   }
 
-  prepareMappedTables(mappedTables) {
-    this.mappedTables = mappedTables;
+  prepareMappedTables(mappingConfig) {
+    this.mappingConfig = mappingConfig;
 
     this.addSimilar(Area.Source);
     this.addSimilar(Area.Target);
@@ -218,7 +227,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           return;
         }
 
-        this.mappedTables.forEach(item => {
+        this.mappingConfig.forEach(item => {
           if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
             item.push(this.similarTableName);
           }
@@ -235,7 +244,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           return;
         }
 
-        this.mappedTables.forEach(item => {
+        this.mappingConfig.forEach(item => {
           if (!item.includes(targetRow.tableName)) {
             return;
           }
@@ -248,7 +257,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         });
       });
     });
-    this.mappedTables.push(uniq(newItem));
+    this.mappingConfig.push(uniq(newItem));
   }
 
   moveSimilarTables() {
@@ -266,7 +275,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mappingStorage.get('mappingpage').then(data => {
       this.prepareTables(data.source, Area.Source);
       this.prepareTables(data.target, Area.Target);
-      this.prepareMappedTables(data.mappedTables);
+      this.prepareMappedTables(data.mappingConfig);
 
       this.moveSimilarTables();
 
@@ -418,7 +427,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const sourceTableName = this.source[ this.sourceTabIndex ].name;
     let targetTableName = this.target[ this.targetTabIndex ].name;
 
-    if (this.mappedTables.find(item => item.includes(sourceTableName) && item.includes(targetTableName))) {
+    if (this.mappingConfig.find(item => item.includes(sourceTableName) && item.includes(targetTableName))) {
       return;
     }
 
@@ -426,14 +435,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.targetTabIndex = 0;
     } else {
       const tagretTableNameIndex = 0;
-      targetTableName = this.mappedTables.find(item => item.includes(sourceTableName))[ tagretTableNameIndex ];
+      targetTableName = this.mappingConfig.find(item => item.includes(sourceTableName))[ tagretTableNameIndex ];
       this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
     }
   }
 
   isDisabled(tableName: string): boolean {
     const activeTableName = this.source[this.sourceTabIndex].name;
-    return !this.mappedTables.find(item => item.includes(tableName) && item.includes(activeTableName));
+    return !this.mappingConfig.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 
   isSimilarTabs() {

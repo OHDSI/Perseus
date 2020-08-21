@@ -315,25 +315,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   async openMapping() {
-    let sourceTablesNames = [];
-    const targetTablesNames = Object.keys(this.targetConfig).filter(key => {
-      const data = this.targetConfig[ key ].data;
-      if (data.length > 1) {
-        sourceTablesNames.push(...data.slice(1, data.length));
-        return true;
-      }
-      return false;
-    });
-    sourceTablesNames = uniq(sourceTablesNames);
-
-    const targetTables = this.data.target.filter(table => targetTablesNames.includes(table.name));
-    const sourceTables = this.data.source.filter(table => sourceTablesNames.includes(table.name));
+    const { source, target } = this.storeService.getMappedTables();
 
     const payload = {
-      source: sourceTables,
-      target: targetTables,
+      source,
+      target,
       allTarget: this.data.target,
-      mappedTables: this.getMappedTables()
+      mappingConfig: this.getMappingConfig()
     };
 
     await this.mappingStorage.add('mappingtables', this.targetConfig);
@@ -343,16 +331,16 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.router.navigateByUrl('/mapping');
   }
 
-  getMappedTables() {
-    const mappedTables = [];
+  getMappingConfig() {
+    const mappingConfig = [];
     Object.keys(this.targetConfig).forEach(key => {
       const item = this.targetConfig[ key ].data;
       if (item.length > 1) {
-        mappedTables.push(item);
+        mappingConfig.push(item);
       }
     });
 
-    return mappedTables;
+    return mappingConfig;
   }
 
   findTables(selectedSourceColumns: string[]): void {

@@ -19,7 +19,7 @@ export class DraggableDirective implements OnInit {
   @Input() area: Area;
   @Input() table: ITable;
   @Input() row: IRow;
-  @Input() mappedTables: any;
+  @Input() mappingConfig: any;
 
   constructor(
     private elementRef: ElementRef,
@@ -98,7 +98,7 @@ export class DraggableDirective implements OnInit {
       this.bridgeService.targetRow = row;
 
       if (this.bridgeService.connect.canExecute()) {
-        this.bridgeService.connect.execute(this.mappedTables);
+        this.bridgeService.connect.execute(this.mappingConfig);
       }
     }
   }

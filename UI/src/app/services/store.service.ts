@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Table } from '../models/table';
 
+import { uniq } from '../infrastructure/utility';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -51,6 +53,25 @@ export class StoreService {
       const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...it, ...updates }) : new Table(it));
       this.state = { ...this.state, [storeKey]: updatedTables };
     }
+  }
+
+  getMappedTables() {
+    let sourceNames = [];
+    const targetNames = Object.keys(this.state.targetConfig).filter(key => {
+      const data = this.state.targetConfig[ key ].data;
+      if (data.length > 1) {
+        sourceNames.push(...data.slice(1, data.length));
+        return true;
+      }
+      return false;
+    });
+    sourceNames = uniq(sourceNames);
+
+    const tables = {
+      source: this.state.source.filter(table => sourceNames.includes(table.name)),
+      target: this.state.target.filter(table => targetNames.includes(table.name))
+    }
+    return tables;
   }
 
   resetAllData() {
