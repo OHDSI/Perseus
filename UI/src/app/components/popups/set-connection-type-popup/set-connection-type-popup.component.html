@@ -1,13 +1,11 @@
 <div class="dialog">
     <div class="type-div">
         <h4 class="header">Transformation</h4>
-        <app-transformation-type 
-        [typeName] = "sqlLabel"
-        (selectedType)="openSqlFunctionDialog()">
+        <app-transformation-type [typeName]="sqlLabel"
+                                 (selectedType)="openSqlFunctionDialog()">
         </app-transformation-type>
-        <app-transformation-type 
-        [typeName] = "lookupLabel"
-        (selectedType)="openLookupDialog()">
+        <app-transformation-type [typeName]="lookupLabel"
+                                 (selectedType)="openLookupDialog()">
         </app-transformation-type>
     </div>
 </div>

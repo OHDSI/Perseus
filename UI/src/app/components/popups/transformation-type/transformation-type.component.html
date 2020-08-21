@@ -5,7 +5,7 @@
            [checked]="isTypeChecked"
            (change)="typeChecked()">
     <mat-label class="type-label"
-    (click)="typeSelected()">{{typeName}}</mat-label>
+               (click)="typeSelected()">{{typeName}}</mat-label>
     <label class="configured"
            *ngIf=configured>configured</label>
 </div>
