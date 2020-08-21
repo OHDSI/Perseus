@@ -1,0 +1,36 @@
+.type {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.type-label {
+  font-size: 14px;
+  cursor: pointer;
+  padding-left: 8px;
+  vertical-align: bottom;
+}
+
+.configured {
+  font-size: 10px;
+  padding-left: 10px;
+  color: grey;
+  vertical-align: bottom;
+}
+
+.form-check-input {
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  outline: 1px solid #066bbb;
+  vertical-align: middle;
+}
+.form-check-input:checked {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAYAAACALL/6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAB3SURBVHgBlY/BCYAwDEWTQu+u4Aau4MWzG3jXi9N4dQXPInQFnUdobFoQxarNv+XnPUgAJOlNhqms7pZRkc2TBIYBqAaiEiXwPlQrSmDulCubsPiHvQBkN15cpTeY40/S7VwAonHjFOo4fAp3ifk4/HzSSV78yAEgiEZ+oFxYkQAAAABJRU5ErkJggg==");
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.form-check-input.hidden {
+  visibility: hidden;
+}

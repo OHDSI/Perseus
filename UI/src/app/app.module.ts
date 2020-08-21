@@ -64,6 +64,7 @@ import { OverlayService } from './services/overlay/overlay.service';
 import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
+import { TransformationTypeComponent } from './components/popups/transformation-type/transformation-type.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { VocabulariesService } from './services/vocabularies.service';
     SqlEditorComponent,
     ResetWarningComponent,
     OnBoardingComponent,
-    OpenSaveDialogComponent
+    OpenSaveDialogComponent,
+    TransformationTypeComponent
   ],
   imports: [
     BrowserModule,
