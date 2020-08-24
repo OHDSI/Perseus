@@ -9,7 +9,6 @@ import { ThemeModule } from 'ng2-qgrid/theme/material';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
-import { AreaComponent } from 'src/app/components/area/area.component';
 import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
@@ -23,11 +22,8 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import { CdmCommonModule } from './common/cdm-common.module';
-import { CdmCustomMaterialModule } from './common/cdm-custom-material.module';
-import { BaseComponent } from './components/base/base.component';
 import { BridgeButtonService } from './components/bridge-button/service/bridge-button.service';
 import { ColumnsListComponent } from './components/columns-list/columns-list.component';
-import { ComfySearchByNameComponent } from './components/comfy-search-by-name/comfy-search-by-name.component';
 import { ComfyComponent } from './components/comfy/comfy.component';
 import { HighlightConceptDirective } from './components/comfy/directives/highlight-concept.directive';
 import { SavedMappingsComponent } from './components/comfy/saved-mappings/saved-mappings.component';
@@ -72,7 +68,6 @@ import { TransformationTypeComponent } from './components/popups/transformation-
     ToolbarComponent,
     BreadcrumbComponent,
     MappingComponent,
-    AreaComponent,
     CommentPopupComponent,
     ValuesPopupComponent,
     SetConnectionTypePopupComponent,
@@ -92,13 +87,11 @@ import { TransformationTypeComponent } from './components/popups/transformation-
     VocabularyDropdownComponent,
     VocabularyConfigComponent,
     VocabularyBlockComponent,
-    BaseComponent,
     ConceptConfigComponent,
     VocabularyConditionComponent,
     HighlightConceptDirective,
     TransformConfigComponent,
     ConditionDialogComponent,
-    ComfySearchByNameComponent,
     CdmFilterComponent,
     SqlEditorComponent,
     ResetWarningComponent,
@@ -112,11 +105,13 @@ import { TransformationTypeComponent } from './components/popups/transformation-
     HttpClientModule,
     AppRoutingModule,
     PanelModule,
-    CdmCustomMaterialModule,
     CdmCommonModule,
     GridModule,
     ThemeModule,
     NgxMatSelectSearchModule
+  ],
+  exports: [
+    CdmCommonModule
   ],
   providers: [
     HttpService,
