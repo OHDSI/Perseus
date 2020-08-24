@@ -178,7 +178,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
       if (!this.checkIncludesRows(similarRows, row)) {
         const rowName = this.similarNamesMap[row.name] ? this.similarNamesMap[row.name] : row.name;
-        const rowForSimilar = { ...row, name: rowName, tableName: this.similarTableName, tableId: this.storeService.state[ area ].length };
+        const rowForSimilar = {
+          ...row,
+          name: rowName,
+          id: similarRows.length,
+          tableName: this.similarTableName,
+          tableId: this.storeService.state[ area ].length
+        };
         similarRows.push(rowForSimilar);
       }
     });
