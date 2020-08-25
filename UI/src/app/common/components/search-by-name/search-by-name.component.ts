@@ -13,11 +13,11 @@ import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-comfy-search-by-name',
-  templateUrl: './comfy-search-by-name.component.html',
-  styleUrls: ['./comfy-search-by-name.component.scss']
+  selector: 'app-search-by-name',
+  templateUrl: './search-by-name.component.html',
+  styleUrls: ['./search-by-name.component.scss']
 })
-export class ComfySearchByNameComponent extends BaseComponent
+export class SearchByNameComponent extends BaseComponent
   implements OnInit, OnChanges {
   @Input() criteria = '';
   @Input() placeholder = '';

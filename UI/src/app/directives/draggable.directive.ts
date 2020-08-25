@@ -23,13 +23,14 @@ export class DraggableDirective implements OnInit {
   @Input() table: ITable;
   @Input() row: IRow;
   @Output() refreshPanel: EventEmitter<any> = new EventEmitter();
+  @Input() mappingConfig: any;
 
   constructor(
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private bridgeService: BridgeService,
     private zone: NgZone
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.renderer.setAttribute(
@@ -118,12 +119,12 @@ export class DraggableDirective implements OnInit {
       row.htmlElement = element;
       this.bridgeService.targetRow = row;
       if (this.bridgeService.connect.canExecute()) {
-        this.bridgeService.connect.execute();
+        this.bridgeService.connect.execute(this.mappingConfig);
       }
     }
   }
 
-  @HostListener('dragend', ['$event'])
+  @HostListener('dragend', [ '$event' ])
   onDragEnd(e: DragEvent) {
     if (this.bridgeService.sourceRow) {
       this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');

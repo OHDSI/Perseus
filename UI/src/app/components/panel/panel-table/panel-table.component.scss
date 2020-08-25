@@ -6,6 +6,7 @@ table {
   background-color: $cdm-background-grey-light;
   padding: 0;
   direction: ltr;
+  border-collapse: collapse;
 
   th {
     font-size: 13px;
@@ -179,4 +180,10 @@ tr[selected="true"] {
 
 .targetRow {
   background: #EAF2F9;
+}
+
+.row-focus {
+  outline: 2px dashed rgba(6, 107, 187, 0.6);
+  outline-offset: -2px;
+  box-sizing: border-box;
 }

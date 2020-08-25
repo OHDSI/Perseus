@@ -24,7 +24,7 @@
 
   <ng-container matColumnDef="column_name">
     <th mat-header-cell *matHeaderCellDef class="caption-item">Field</th>
-    <td mat-cell *matCellDef="let row">{{ row.name | prettyName }}</td>
+    <td mat-cell *matCellDef="let row">{{ row.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="column_type">
@@ -76,13 +76,16 @@
     [area]="area"
     [table]="table"
     [row]="row"
+    [mappingConfig]="mappingConfig"
     mat-row
     [matTooltip]="row.tableName"
     [matTooltipDisabled]="area !== 'source'"
     *matRowDef="let row; columns: displayedColumns"
-    [class.draggable]="area == 'source' || area == 'target'"
-    class="item-{{ row.tableName }}-{{ row.name }} {{area}}Row"
+    [hidden]="isHidden(row) || isFiltered(row)"
+    class="item-{{ row.tableName }}-{{ row.name }} {{area}}Row draggable"
     [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
+    (click)="rowClick($event)"
+    (dragstart)="rowClick($event)"
     (refreshPanel)='refreshPanel()'
   ></tr>
 </table>

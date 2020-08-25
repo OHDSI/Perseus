@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ComfySearchByNameComponent } from './comfy-search-by-name.component';
+import { SearchByNameComponent } from './search-by-name.component';
 
-describe('ComfySearchByNameComponent', () => {
-  let component: ComfySearchByNameComponent;
-  let fixture: ComponentFixture<ComfySearchByNameComponent>;
+describe('SearchByNameComponent', () => {
+  let component: SearchByNameComponent;
+  let fixture: ComponentFixture<SearchByNameComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ComfySearchByNameComponent ]
+      declarations: [ SearchByNameComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ComfySearchByNameComponent);
+    fixture = TestBed.createComponent(SearchByNameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

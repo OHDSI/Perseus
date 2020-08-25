@@ -1,7 +1,7 @@
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { uniq } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { ITable, Table } from 'src/app/models/table';
@@ -12,7 +12,7 @@ import { DataService } from 'src/app/services/data.service';
 
 import { StateService } from 'src/app/services/state.service';
 import { StoreService } from 'src/app/services/store.service';
-import { BaseComponent } from '../../base/base.component';
+import { BaseComponent } from '../../../common/components/base/base.component';
 import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
@@ -23,6 +23,8 @@ import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/de
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { Area } from 'src/app/models/area';
 import { modes } from 'codemirror';
+import * as groups from './groups-conf.json';
+import * as similarNamesMap from './similar-names-map.json';
 
 @Component({
   selector: 'app-mapping',
@@ -42,9 +44,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   sourceRows: IRow[] = [];
   targetRows: IRow[] = [];
 
-  mappedTables = [];
+  mappingConfig = [];
 
   similarTableName = 'similar';
+  similarNamesMap = (similarNamesMap as any).default;
+
+  filteredFields;
 
   get hint(): string {
     return 'no hint';
@@ -154,7 +159,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   checkIncludesRows(rows, row) {
-    return !!rows.find(r => r.name === row.name);
+    return !!rows.find(r => {
+      return (
+        r.name === row.name ||
+        (this.similarNamesMap[r.name] === this.similarNamesMap[row.name]) &&
+        (this.similarNamesMap[r.name] || this.similarNamesMap[row.name])
+      );
+    });
   }
 
   collectSimilarRows(rows, area, similarRows) {
@@ -166,7 +177,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
 
       if (!this.checkIncludesRows(similarRows, row)) {
-        const rowForSimilar = { ...row, tableName: this.similarTableName, tableId: this.storeService.state[ area ].length };
+        const rowName = this.similarNamesMap[row.name] ? this.similarNamesMap[row.name] : row.name;
+        const rowForSimilar = {
+          ...row,
+          name: rowName,
+          id: similarRows.length,
+          tableName: this.similarTableName,
+          tableId: this.storeService.state[ area ].length
+        };
         similarRows.push(rowForSimilar);
       }
     });
@@ -193,8 +211,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this[area] = tables;
   }
 
-  prepareMappedTables(mappedTables) {
-    this.mappedTables = mappedTables;
+  prepareMappedTables(mappingConfig) {
+    this.mappingConfig = mappingConfig;
 
     this.addSimilar(Area.Source);
     this.addSimilar(Area.Target);
@@ -215,7 +233,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           return;
         }
 
-        this.mappedTables.forEach(item => {
+        this.mappingConfig.forEach(item => {
           if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
             item.push(this.similarTableName);
           }
@@ -232,7 +250,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           return;
         }
 
-        this.mappedTables.forEach(item => {
+        this.mappingConfig.forEach(item => {
           if (!item.includes(targetRow.tableName)) {
             return;
           }
@@ -245,7 +263,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         });
       });
     });
-    this.mappedTables.push(uniq(newItem));
+    this.mappingConfig.push(uniq(newItem));
   }
 
   moveSimilarTables() {
@@ -263,7 +281,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mappingStorage.get('mappingpage').then(data => {
       this.prepareTables(data.source, Area.Source);
       this.prepareTables(data.target, Area.Target);
-      this.prepareMappedTables(data.mappedTables);
+      this.prepareMappedTables(data.mappingConfig);
 
       this.moveSimilarTables();
 
@@ -280,6 +298,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       .subscribe(connectorKey => {
         this.bridgeService.deleteArrow(connectorKey);
       });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields;
+        this.bridgeService.refreshAll();
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -331,15 +356,36 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openFilter(target) {
-    const types = [];
-    const checkedTypes = [];
+    const optionalSaveKey = this.target[this.targetTabIndex].name;
+
+    const filteredFields = this.filteredFields ? this.filteredFields[optionalSaveKey] : this.filteredFields;
+    const types = filteredFields ? filteredFields.types : [];
+    const checkedTypes = filteredFields ? filteredFields.checkedTypes : [];
+
+    const options = (groups as any).default;
+    options['individual'] = this.target[this.targetTabIndex].rows.map(row => {
+      if (!options.common.includes(row.name) && !options.concept.includes(row.name)) {
+        return row.name;
+      }
+    });
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       panelClass: 'filter-popup',
-      payload: { types, checkedTypes, cdmTypes: { Common: '', Concept: '', Individual: '' } }
+      payload: {
+        title: 'Target fields',
+        saveKey: 'filteredFields',
+        types,
+        checkedTypes,
+        options,
+        optionalSaveKey
+      }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
+  }
+
+  getFilteredFields() {
+    return this.filteredFields ? this.filteredFields[this.target[this.targetTabIndex].name] : [];
   }
 
   onPanelOpen() {
@@ -384,20 +430,25 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   changeTargetTabIndex() {
-    const tableName = this.source[ this.sourceTabIndex ].name;
+    const sourceTableName = this.source[ this.sourceTabIndex ].name;
+    let targetTableName = this.target[ this.targetTabIndex ].name;
 
-    if (tableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
+    if (this.mappingConfig.find(item => item.includes(sourceTableName) && item.includes(targetTableName))) {
+      return;
+    }
+
+    if (sourceTableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
       this.targetTabIndex = 0;
     } else {
       const tagretTableNameIndex = 0;
-      const targetTableName = this.mappedTables.find(item => item.includes(tableName))[ tagretTableNameIndex ];
+      targetTableName = this.mappingConfig.find(item => item.includes(sourceTableName))[ tagretTableNameIndex ];
       this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
     }
   }
 
   isDisabled(tableName: string): boolean {
     const activeTableName = this.source[this.sourceTabIndex].name;
-    return !this.mappedTables.find(item => item.includes(tableName) && item.includes(activeTableName));
+    return !this.mappingConfig.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 
   isSimilarTabs() {
@@ -408,6 +459,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return (
       this.source[this.sourceTabIndex].name === this.similarTableName ||
       this.target[this.targetTabIndex].name === this.similarTableName
+    );
+  }
+
+  isTooltipDisabled() {
+    return !(
+      this.filteredFields &&
+      this.filteredFields[this.target[this.targetTabIndex].name] &&
+      this.filteredFields[this.target[this.targetTabIndex].name].types &&
+      this.filteredFields[this.target[this.targetTabIndex].name].types.length
     );
   }
 

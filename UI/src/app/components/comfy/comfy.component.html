@@ -2,12 +2,12 @@
   <h4>Filter by source columns
     <ng-container *ngIf="data.source?.length">({{sourceRows.length}})</ng-container>
   </h4>
-  <app-comfy-search-by-name *ngIf="data.source?.length"
+  <app-search-by-name *ngIf="data.source?.length"
                             class="filter-by-name"
                             placeholder='Search by source column'
-                            [criteria]="data.search.sourceColumns"
+                            [criteria]="data.linkTablesSearch.sourceColumns"
                             (complete)="filterByName('source-column', $event)"
-                            (reset)="filterByNameReset('source-column', $event)"></app-comfy-search-by-name>
+                            (reset)="filterByNameReset('source-column', $event)"></app-search-by-name>
   <app-columns-list *ngIf="data.source?.length"
                     class="source-columns-list"
                     [sourceRows]="sourceRows"
@@ -19,12 +19,12 @@
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
       </h4>
-      <app-comfy-search-by-name *ngIf="data.source?.length"
+      <app-search-by-name *ngIf="data.source?.length"
                                 class="filter-by-name"
                                 placeholder="Search by source table"
-                                [criteria]="data.search.source"
+                                [criteria]="data.linkTablesSearch.source"
                                 (complete)="filterByName('source', $event)"
-                                (reset)="filterByNameReset('source', $event)"></app-comfy-search-by-name>
+                                (reset)="filterByNameReset('source', $event)"></app-search-by-name>
       <a *ngIf="data.source?.length"
          (click)="openCreateSqlDialog()">Create View</a>
       <div class="scrolled-items-rtl"
@@ -84,25 +84,25 @@
       <h4>Target tables
         <span *ngIf="data.target?.length">({{targetTableNames.length}})</span>
         <label class="cdm-filter-label"
-               *ngIf="data.filtered?.types.length"
-               [matTooltip]="data.filtered.types"
+               *ngIf="data.filteredTables?.types.length"
+               [matTooltip]="data.filteredTables.types"
                matTooltipPosition="above">
-          {{data.filtered.types}}
+          {{data.filteredTables.types}}
         </label>
         <mat-icon *ngIf="data.target?.length"
                   matTooltip="Filters applied"
                   matTooltipPosition="above"
-                  [matTooltipDisabled]="!data.filtered?.types.length"
-                  [class]="{active: data.filtered?.types.length}"
+                  [matTooltipDisabled]="!data.filteredTables?.types.length"
+                  [class]="{active: data.filteredTables?.types.length}"
                   (click)="openFilter($event.target)">sort
         </mat-icon>
       </h4>
-      <app-comfy-search-by-name class="filter-by-name"
+      <app-search-by-name class="filter-by-name"
                                 placeholder="Search by target table"
-                                [criteria]="data.search.target"
+                                [criteria]="data.linkTablesSearch.target"
                                 (complete)="filterByName('target', $event)"
                                 (reset)="filterByNameReset('target', $event)"
-                                *ngIf="data.target?.length"></app-comfy-search-by-name>
+                                *ngIf="data.target?.length"></app-search-by-name>
       <div class="scrolled-items"
            #scrollEl
            cdk-scrollable
@@ -167,7 +167,7 @@
                 color="accent"
                 (click)="openSetCDMDialog()">
           Select Other Version
-        </button> 
+        </button>
       </div>
     </article>
   </div>

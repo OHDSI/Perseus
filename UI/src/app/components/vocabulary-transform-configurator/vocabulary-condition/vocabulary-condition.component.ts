@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BaseComponent } from '../../base/base.component';
+import { BaseComponent } from '../../../common/components/base/base.component';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

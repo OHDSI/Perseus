@@ -2,22 +2,26 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Table } from '../models/table';
 
+import { uniq } from '../infrastructure/utility';
+
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
   private initialState = {
     version: undefined,
-    filtered: undefined,
+    filteredTables: undefined,
+    filteredFields: undefined,
     target: [],
     targetConfig: {},
     source: [],
     report: undefined,
-    search: {
+    linkTablesSearch: {
       source: undefined,
       target: undefined,
       sourceColumns: undefined
     },
+    linkFieldsSearch: {},
     cdmVersions: []
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
@@ -51,19 +55,40 @@ export class StoreService {
     }
   }
 
+  getMappedTables() {
+    let sourceNames = [];
+    const targetNames = Object.keys(this.state.targetConfig).filter(key => {
+      const data = this.state.targetConfig[ key ].data;
+      if (data.length > 1) {
+        sourceNames.push(...data.slice(1, data.length));
+        return true;
+      }
+      return false;
+    });
+    sourceNames = uniq(sourceNames);
+
+    const tables = {
+      source: this.state.source.filter(table => sourceNames.includes(table.name)),
+      target: this.state.target.filter(table => targetNames.includes(table.name))
+    }
+    return tables;
+  }
+
   resetAllData() {
     this.initialState = {
       version: undefined,
-      filtered: undefined,
+      filteredTables: undefined,
+      filteredFields: undefined,
       target: [],
       source: [],
       targetConfig: {},
       report: undefined,
-      search: {
+      linkTablesSearch: {
         source: undefined,
         target: undefined,
         sourceColumns: undefined
       },
+      linkFieldsSearch: {},
       cdmVersions: this.state.cdmVersions
     };
     this.storeState.next(this.initialState);
