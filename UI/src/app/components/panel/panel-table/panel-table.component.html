@@ -80,8 +80,9 @@
     [matTooltip]="row.tableName"
     [matTooltipDisabled]="area !== 'source'"
     *matRowDef="let row; columns: displayedColumns"
-    [class.draggable]="area == 'source'"
+    [class.draggable]="area == 'source' || area == 'target'"
     class="item-{{ row.tableName }}-{{ row.name }} {{area}}Row"
     [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
+    (refreshPanel)='refreshPanel()'
   ></tr>
 </table>

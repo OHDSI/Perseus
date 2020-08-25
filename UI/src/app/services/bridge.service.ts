@@ -14,6 +14,7 @@ import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 export interface IConnection {
   source: IRow;
@@ -50,6 +51,22 @@ export class BridgeService {
     this.targetrowrlement = element;
   }
 
+  set draggedRowIndex(index: number) {
+    this.draggedrowindex = index;
+  }
+
+  get draggedRowIndex() {
+    return this.draggedrowindex;
+  }
+
+  set newRowIndex(index: number) {
+    this.newrowindex = index;
+  }
+
+  get newRowIndex() {
+    return this.newrowindex;
+  }
+
   constructor(
     private drawService: DrawService,
     private storeService: StoreService
@@ -63,6 +80,8 @@ export class BridgeService {
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
+  private draggedrowindex = null;
+  private newrowindex = null;
 
   arrowsCache: ArrowCache = {};
   constantsCache: ConstantCache = {};
@@ -412,4 +431,14 @@ export class BridgeService {
 
     return null;
   }
+
+  storeReorderedRows(tableName: string, area: string) {
+    const index = this.storeService.state[ area ].findIndex(t => t.name === tableName);
+    if (index > -1) {
+      moveItemInArray(this.storeService.state[ area ][index].rows, this.draggedRowIndex, this.newrowindex);
+      return;
+    }
+    return null;
+  }
+
 }

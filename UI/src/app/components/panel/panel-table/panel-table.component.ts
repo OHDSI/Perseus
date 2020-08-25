@@ -76,8 +76,7 @@ export class PanelTableComponent extends BaseComponent
     super();
   }
 
-  ngOnChanges() {
-  }
+  ngOnChanges() {}
 
   equals(name1: string, name2: string): boolean {
     return name1.toUpperCase() === name2.toUpperCase();
@@ -98,6 +97,11 @@ export class PanelTableComponent extends BaseComponent
       .subscribe(connection => {
         this.hideConnectorPin(connection, Area.Target);
       });
+  }
+
+  refreshPanel() {
+    this.dataSourceInit(this.table.rows);
+    this.bridgeService.refreshAll();
   }
 
   ngAfterViewInit() {
