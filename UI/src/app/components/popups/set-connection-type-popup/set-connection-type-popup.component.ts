@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 
 @Component({
@@ -7,19 +7,17 @@ import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
   styleUrls: [ './set-connection-type-popup.component.scss' ]
 })
 export class SetConnectionTypePopupComponent {
+  @Output() transformationCreated = new EventEmitter<string>();
 
   sqlLabel = 'SQL Function';
   lookupLabel = 'Lookup';
   constructor(public dialogRef: OverlayDialogRef) { }
 
-  click(connectionType: string) {
-    this.dialogRef.close({ connectionType });
-  }
-
   openSqlFunctionDialog() {
   }
 
   openLookupDialog() {
+    this.dialogRef.close({ connectionType: 'L' });
   }
 
 }

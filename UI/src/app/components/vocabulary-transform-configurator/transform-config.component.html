@@ -1,4 +1,17 @@
-<div class="mapping-component-progress" *ngIf="!vocabularies">
+<h3>Apply Transfomation <span>{{ titleInfo }}</span></h3>
+
+<mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
+  <mat-tab
+    [label]="tab"
+    *ngFor="let tab of tabs; trackBy: trackByFn"
+  >
+    <div style="width: 100%; height: 100%; background-color: green;">{{tab}}</div>
+  </mat-tab>
+</mat-tab-group>
+
+
+
+<!-- <div class="mapping-component-progress" *ngIf="!vocabularies">
   <span>Loading...</span>
 </div>
 <mat-card *ngIf="vocabularies">
@@ -105,4 +118,4 @@
       Close
     </button>
   </mat-dialog-actions>
-</mat-card>
+</mat-card> -->

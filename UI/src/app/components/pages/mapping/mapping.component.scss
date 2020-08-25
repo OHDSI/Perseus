@@ -161,7 +161,6 @@ footer {
   .mat-tab-header {
     margin-bottom: 10px;
     border-bottom: none;
-    margin-left: 3px;
 
     .mat-elevation-z4 {
       box-shadow: none;
@@ -175,6 +174,8 @@ footer {
       opacity: 1;
       float: left;
       height: 40px;
+      padding: 0 15px;
+      min-width: auto;
     }
 
     .mat-tab-label-active .mat-tab-label-content {

@@ -1,7 +1,8 @@
+@import "src/app/styles/variables.scss";
+
 .type {
   width: 100%;
   margin-top: 15px;
-  margin-bottom: 15px;
 }
 
 .type-label {
@@ -22,15 +23,19 @@
   width: 16px;
   height: 16px;
   appearance: none;
-  outline: 1px solid #066bbb;
+  outline: 1.5px solid $blue;
   vertical-align: middle;
+  cursor: pointer;
 }
+
 .form-check-input:checked {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAYAAACALL/6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAB3SURBVHgBlY/BCYAwDEWTQu+u4Aau4MWzG3jXi9N4dQXPInQFnUdobFoQxarNv+XnPUgAJOlNhqms7pZRkc2TBIYBqAaiEiXwPlQrSmDulCubsPiHvQBkN15cpTeY40/S7VwAonHjFOo4fAp3ifk4/HzSSV78yAEgiEZ+oFxYkQAAAABJRU5ErkJggg==");
   background-repeat: no-repeat;
   background-position: center center;
 }
 
-.form-check-input.hidden {
-  visibility: hidden;
+.form-check-input.disabled {
+  outline: 1px solid $cdm-grey-light;
+  opacity: 0.7;
+  cursor: not-allowed;
 }

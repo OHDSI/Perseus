@@ -21,6 +21,7 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
+import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
 import { modes } from 'codemirror';
 import * as groups from './groups-conf.json';
@@ -133,16 +134,27 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           positionStrategyFor: 'values'
         };
 
-        const component = SetConnectionTypePopupComponent;
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
         const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
         const htmlElement = document.getElementById(htmlElementId);
 
-        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, component);
+        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
           if (connectionType) {
-            this.bridgeService.setArrowType(child.id, connectionType);
+            const payload = {arrowCache: this.bridgeService.arrowsCache, connector: this.bridgeService.arrowsCache[child.id].connector};
+            const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
+              closeOnNavigation: false,
+              disableClose: false,
+              panelClass: 'sql-editor-dialog',
+              height: '680px',
+              width: '570px;',
+              data: {arrowCache: this.bridgeService.arrowsCache, connector: this.bridgeService.arrowsCache[child.id].connector}
+            });
+
+            transformDialogRef.afterClosed().subscribe((options: any) => {
+              this.bridgeService.setArrowType(child.id, connectionType);
+            });
           }
         });
         return;

@@ -1,12 +1,10 @@
 import { Component, Inject, Input, OnChanges, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Command } from 'src/app/infrastructure/command';
 import { cloneDeep, uniqBy } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
-import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
-import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { StateService } from 'src/app/services/state.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { TransformRulesData } from '../popups/rules-popup/model/transform-rules-data';
@@ -64,9 +62,15 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   busy = false;
 
+  titleInfo: string;
+
+  tabs = ['SQL Function', 'Lookup'];
+
+  activeTab = 0;
+
   constructor(
-    @Inject(OVERLAY_DIALOG_DATA) public payload: TransformRulesData,
-    private dialogRef: OverlayDialogRef,
+    @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
+    private dialogRef: MatDialogRef<TransformConfigComponent>,
     private snakbar: MatSnackBar,
     private addCondition: MatDialog,
     private stateService: StateService,
@@ -75,6 +79,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.transformationConfigs = [];
 
     const {arrowCache, connector} = this.payload;
+    this.titleInfo = `${connector.source.name} - ${connector.target.name}`;
     if (
       arrowCache[connector.id] &&
       arrowCache[connector.id].transformationConfigs
@@ -210,6 +215,14 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.init();
+  }
+
+  trackByFn(index, item) {
+    return index;
+  }
+
+  onTabIndexChanged(index: number) {
+    this.activeTab = index;
   }
 
   init() {

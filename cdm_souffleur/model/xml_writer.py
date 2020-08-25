@@ -113,7 +113,7 @@ def get_xml(json_):
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
                     target_field = row['target_field']
-                    v = SubElement(domain_definition_tag, target_field)
+                    v = SubElement(domain_definition_tag, _convert_underscore_to_camel(target_field))
                     v.text = sql_alias if sql_alias else source_field
 
             if lookup is not None:
