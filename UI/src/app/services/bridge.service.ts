@@ -14,6 +14,7 @@ import { MappingService } from '../models/mapping-service';
 import { ITable } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 import * as similarNamesMap from '../components/pages/mapping/similar-names-map.json';
 
 export interface IConnection {
@@ -51,6 +52,22 @@ export class BridgeService {
     this.targetrowrlement = element;
   }
 
+  set draggedRowIndex(index: number) {
+    this.draggedrowindex = index;
+  }
+
+  get draggedRowIndex() {
+    return this.draggedrowindex;
+  }
+
+  set newRowIndex(index: number) {
+    this.newrowindex = index;
+  }
+
+  get newRowIndex() {
+    return this.newrowindex;
+  }
+
   constructor(
     private drawService: DrawService,
     private storeService: StoreService
@@ -65,6 +82,8 @@ export class BridgeService {
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
+  private draggedrowindex = null;
+  private newrowindex = null;
 
   arrowsCache: ArrowCache = {};
   constantsCache: ConstantCache = {};
@@ -163,10 +182,10 @@ export class BridgeService {
 
   findSimilarRows(name, area) {
     const similarRows = [];
-    this.tables[area].forEach(table => {
+    this.tables[ area ].forEach(table => {
       table.rows.forEach(row => {
         if (this.checkSimilar(row.name, name)) {
-          similarRows.push(new Row({...row}));
+          similarRows.push(new Row({ ...row }));
         }
       });
     });
@@ -177,15 +196,15 @@ export class BridgeService {
   checkSimilar(name1, name2) {
     return (
       name1 === name2 ||
-      (this.similarNamesMap[name1] === this.similarNamesMap[name2]) &&
-      (this.similarNamesMap[name1] || this.similarNamesMap[name2])
+      (this.similarNamesMap[ name1 ] === this.similarNamesMap[ name2 ]) &&
+      (this.similarNamesMap[ name1 ] || this.similarNamesMap[ name2 ])
     );
   }
 
   findSimilarLinks(connection, area1, area2) {
     return Object.keys(this.arrowsCache).map(key => {
-      const arrow = this.arrowsCache[key];
-      if (this.checkSimilar(arrow[area1].name, connection[area1].name) && this.checkSimilar(arrow[area2].name, connection[area2].name)) {
+      const arrow = this.arrowsCache[ key ];
+      if (this.checkSimilar(arrow[ area1 ].name, connection[ area1 ].name) && this.checkSimilar(arrow[ area2 ].name, connection[ area2 ].name)) {
         return key;
       }
     });
@@ -194,7 +213,7 @@ export class BridgeService {
   updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
     tables.forEach(table => {
       table.rows.forEach(row => {
-        if (filter (row)) {
+        if (filter(row)) {
           action(row);
         }
       });
@@ -415,8 +434,8 @@ export class BridgeService {
       Object.values(this.arrowsCache).filter(connection => {
         const oppositeArea = Area.Source === area ? Area.Target : Area.Source;
         return connection[ area ].id === row.id &&
-               connection[ area ].name === row.name &&
-               connection[ oppositeArea ].tableId === oppositeTableId;
+          connection[ area ].name === row.name &&
+          connection[ oppositeArea ].tableId === oppositeTableId;
       }).length > 0
     );
   }
@@ -482,4 +501,14 @@ export class BridgeService {
 
     return null;
   }
+
+  storeReorderedRows(tableName: string, area: string) {
+    const index = this.storeService.state[ area ].findIndex(t => t.name === tableName);
+    if (index > -1) {
+      moveItemInArray(this.storeService.state[ area ][ index ].rows, this.draggedRowIndex, this.newrowindex);
+      return;
+    }
+    return null;
+  }
+
 }
