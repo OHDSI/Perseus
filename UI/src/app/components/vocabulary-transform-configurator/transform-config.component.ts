@@ -12,11 +12,12 @@ import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import { TransformationCondition, TransformationConfig, TransformationConfigFactory } from './model/transformation-config';
 import { VocabularyConfig } from './model/vocabulary-config';
+import { IConnector } from 'src/app/models/interface/connector.interface';
 
 @Component({
   selector: 'app-transform-config',
   templateUrl: './transform-config.component.html',
-  styleUrls: ['./transform-config.component.scss']
+  styleUrls: [ './transform-config.component.scss' ]
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() sourceFileds: string[];
@@ -63,8 +64,11 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   busy = false;
 
   titleInfo: string;
+  sourceField: string[];
+  targetField: string;
+  connector: IConnector;
 
-  tabs = ['SQL Function', 'Lookup'];
+  tabs = [ 'SQL Function', 'Lookup' ];
 
   activeTab = 0;
 
@@ -78,15 +82,19 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   ) {
     this.transformationConfigs = [];
 
-    const {arrowCache, connector} = this.payload;
-    this.titleInfo = `${connector.source.name} - ${connector.target.name}`;
+    const { arrowCache, connector } = this.payload;
+    const sourceFields = Object.values(arrowCache).map(row => row.connector.source.name);
+    this.sourceField = sourceFields;
+    this.targetField = connector.target.name;
+    this.connector = connector;
+    this.titleInfo = `(${sourceFields.join(', ')}) - ${connector.target.name}`;
     if (
-      arrowCache[connector.id] &&
-      arrowCache[connector.id].transformationConfigs
+      arrowCache[ connector.id ] &&
+      arrowCache[ connector.id ].transformationConfigs
     ) {
       this.transformationConfigs = [].concat.apply(
         this.transformationConfigs,
-        arrowCache[connector.id].transformationConfigs
+        arrowCache[ connector.id ].transformationConfigs
       );
     }
 
@@ -99,7 +107,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
     const selectedSourceTablesNames = Object.values(payload.arrowCache).map(
       arrow => {
-        return {name: arrow.source.tableName};
+        return { name: arrow.source.tableName };
       }
     );
 
@@ -134,13 +142,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       console.log(
         'Created configuration',
-        this.transformationConfig.conditions[0].vocabularyConfig.conceptConfig
+        this.transformationConfig.conditions[ 0 ].vocabularyConfig.conceptConfig
       );
 
       this.snakbar.open(
         `Configuration "${this.configurationNameControl.value}" has been created`,
         ' DISMISS ',
-        {duration: 3000}
+        { duration: 3000 }
       );
 
       this.configurationNameControl.reset();
@@ -153,7 +161,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       // Select default condition of the new configuration
       this.selectTransformationCondition(
-        this.transformationConfig.conditions[0].name
+        this.transformationConfig.conditions[ 0 ].name
       );
     },
     canExecute: () => this.configurationNameControl.valid
@@ -170,19 +178,19 @@ export class TransformConfigComponent implements OnInit, OnChanges {
         config => config.name === configCopy.name
       );
       if (idx > -1) {
-        this.transformationConfigs[idx] = configCopy;
+        this.transformationConfigs[ idx ] = configCopy;
       }
 
-      const {arrowCache, connector} = this.payload;
-      if (arrowCache[connector.id]) {
+      const { arrowCache, connector } = this.payload;
+      if (arrowCache[ connector.id ]) {
         arrowCache[
           connector.id
-          ].transformationConfigs = this.transformationConfigs;
+        ].transformationConfigs = this.transformationConfigs;
       }
 
       console.log(
         'Saved configuration',
-        configCopy.conditions[0].vocabularyConfig.conceptConfig
+        configCopy.conditions[ 0 ].vocabularyConfig.conceptConfig
       );
 
       this.updateConfigurations();
@@ -190,7 +198,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.snakbar.open(
         `Configuration "${this.transformationConfig.name}" has been saved`,
         ' DISMISS ',
-        {duration: 3000}
+        { duration: 3000 }
       );
     },
     canExecute: () => true
@@ -225,6 +233,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.activeTab = index;
   }
 
+  add() {
+  }
+
   init() {
     if (this.selectedSourceFields) {
       this.selectedSourceFieldsForHeader = this.selectedSourceFields.join(',');
@@ -252,7 +263,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.updateConditionsVariable();
       this.setLastAddedTransformatioNCondition();
       this.selectTransformationCondition(
-        this.transformationConfig.conditions[0].name
+        this.transformationConfig.conditions[ 0 ].name
       );
 
       setTimeout(() => {
@@ -273,10 +284,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
         l => l.name === vocabulary.name
       );
       if (index > -1) {
-        this.transformationConfig = this.transformationConfigs[index];
+        this.transformationConfig = this.transformationConfigs[ index ];
 
         this.selectTransformationCondition(
-          this.transformationConfig.conditions[0].name
+          this.transformationConfig.conditions[ 0 ].name
         );
       }
     }
@@ -297,7 +308,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.selectTransformationCondition(conditionName);
 
-      this.selectedCondition = [new DictionaryItem(conditionName)];
+      this.selectedCondition = [ new DictionaryItem(conditionName) ];
     }
   }
 
@@ -316,7 +327,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(_ => {
-      const {result} = data;
+      const { result } = data;
       const name = `${result.field} ${result.operator} ${result.criteria}`;
       const condition: TransformationCondition = {
         name,
@@ -332,7 +343,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.setLastAddedTransformatioNCondition();
 
-      this.selectedCondition = [new DictionaryItem(name)];
+      this.selectedCondition = [ new DictionaryItem(name) ];
     });
   }
 
@@ -341,10 +352,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       condition => condition.name === event.name
     );
     if (index > -1) {
-      this.transformationConfig.conditions[index] = event;
+      this.transformationConfig.conditions[ index ] = event;
       this.ptransformationCondition = this.transformationConfig.conditions[
         index
-        ];
+      ];
     }
   }
 
@@ -373,8 +384,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   private setLastAddedTransformatioNCondition() {
     this.ptransformationCondition = this.transformationConfig.conditions[
-    this.transformationConfig.conditions.length - 1
-      ];
+      this.transformationConfig.conditions.length - 1
+    ];
   }
 
   private selectTransformationCondition(name: string) {
@@ -384,7 +395,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     if (index > -1) {
       this.ptransformationCondition = this.transformationConfig.conditions[
         index
-        ];
+      ];
 
       this.selectedCondition = [
         new DictionaryItem(this.ptransformationCondition.name)

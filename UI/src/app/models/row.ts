@@ -17,12 +17,15 @@ export interface RowOptions {
   increment?: boolean;
   selected?: boolean;
   uniqueIdentifier?: boolean;
+  sqlTransformation?: string;
+  sqlTransformationActive?: boolean;
 }
 
 export interface IRow {
   readonly key: string;
   readonly hasConstant;
   readonly hasIncrement;
+  readonly hasSqlTransformation;
 
   id: number;
   tableId: number;
@@ -39,6 +42,8 @@ export interface IRow {
   selected: boolean;
   connectorTypes: ConnectorType[];
   uniqueIdentifier: boolean;
+  sqlTransformation: string;
+  sqlTransformationActive: boolean;
 
   removeConnections(): void;
   setType(type: ConnectorType): void;
@@ -61,6 +66,8 @@ export class Row implements IRow {
   selected: boolean;
   connectorTypes: ConnectorType[];
   uniqueIdentifier: boolean;
+  sqlTransformation: string;
+  sqlTransformationActive: boolean;
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
@@ -68,6 +75,10 @@ export class Row implements IRow {
 
   get hasIncrement(): boolean {
     return this.increment;
+  }
+
+  get hasSqlTransformation(): string {
+    return this.sqlTransformation;
   }
 
   get key(): string {

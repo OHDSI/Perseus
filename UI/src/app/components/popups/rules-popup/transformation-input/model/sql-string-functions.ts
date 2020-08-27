@@ -103,7 +103,7 @@ export class SqlFunction {
   // }
 }
 
-export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
+export const SQL_FUNCTIONS: Array<SqlFunction> = [
   new SqlFunction({
     name: 'REPLACE',
     parameters: ['value', 'old_string', 'new_string']
@@ -126,7 +126,7 @@ export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
     name: 'DATEADD',
     parameters: ['interval', 'number', 'value']
   }),
-  new SqlFunction({ name: 'ISNULL', parameters: ['expression', 'value'] }),
+  new SqlFunction({ name: 'ISNULL', parameters: ['check_expression', 'replacement_value'] }),
   new SqlFunction({
     name: 'SUBSTRING',
     parameters: ['value', 'start', 'length']
@@ -155,33 +155,20 @@ export const SQL_FUNCTIONS: Array<SqlFunctionDefinition> = [
 ];
 
 export const SQL_STRING_FUNCTIONS = [
-  'ASCII',
-  'CHAR',
-  'CHARINDEX',
+  'ABS',
+  'CAST',
+  'COALESCE',
   'CONCAT',
-  'CONCAT_WS',
-  'DATALENGTH',
-  'DIFFERENCE',
-  'FORMAT',
+  'DATEADD',
+  'DATEPART',
+  'FLOOR',
+  'ISNULL',
   'LEFT',
-  'LEN',
-  'LOWER',
   'LTRIM',
-  'NCHAR',
-  'PATINDEX',
-  'QUOTENAME',
+  'LOWER',
   'REPLACE',
-  'REPLICATE',
-  'REVERSE',
   'RIGHT',
+  'ROUND',
   'RTRIM',
-  'SOUNDEX',
-  'SPACE',
-  'STR',
-  'STUFF',
   'SUBSTRING',
-  'TRANSLATE',
-  'TRIM',
-  'UNICODE',
-  'UPPER'
-];
+  'UPPER'];

@@ -14,6 +14,7 @@ export class SetConnectionTypePopupComponent {
   constructor(public dialogRef: OverlayDialogRef) { }
 
   openSqlFunctionDialog() {
+    this.dialogRef.close({ connectionType: 'L' });
   }
 
   openLookupDialog() {
