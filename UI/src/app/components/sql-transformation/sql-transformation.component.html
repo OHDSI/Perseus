@@ -1,8 +1,7 @@
 <div [formGroup]="sqlForm">
   <section cdkDropList
            #editorArea="cdkDropList"
-           (cdkDropListDropped)="drop($event)"
-           [class.invalid]="sqlForm.touched && !editorContent">
+           (cdkDropListDropped)="drop($event)">
     <label>SQL Statement</label>
     <textarea #editor></textarea>
   </section>
@@ -21,16 +20,5 @@
       </mat-chip>
     </mat-chip-list>
   </section>
-</div>
-<div mat-dialog-actions>
-  <button mat-flat-button
-          (click)="onCancelClick()">
-    Cancel
-  </button>
-  <button mat-flat-button
-          color="accent"
-          [disabled]="sqlForm.invalid || !editorContent">
-    Apply
-  </button>
 </div>
 

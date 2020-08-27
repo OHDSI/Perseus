@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,11 +13,12 @@ import { ConditionDialogComponent } from './condition-dialog/condition-dialog.co
 import { TransformationCondition, TransformationConfig, TransformationConfigFactory } from './model/transformation-config';
 import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/interface/connector.interface';
+import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
 
 @Component({
   selector: 'app-transform-config',
   templateUrl: './transform-config.component.html',
-  styleUrls: ['./transform-config.component.scss'],
+  styleUrls: [ './transform-config.component.scss' ],
   encapsulation: ViewEncapsulation.None
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
@@ -27,6 +28,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() transformationConfigs: TransformationConfig[];
 
   @Input() sourceTables: ITable[]; // test
+
+  @ViewChild('sqlTransformationTab', { static: false }) sqlTransformation: SqlTransformationComponent;
 
   get configurations(): DictionaryItem[] {
     return this.pconfigurations;
@@ -235,6 +238,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   add() {
+    if (this.activeTab === 0) {
+      this.connector.source.sqlTransformation = this.sqlTransformation.editorContent;
+      this.connector.source.sqlTransformationActive = this.sqlTransformation.editorContent ? true : false;
+    }
   }
 
   init() {
@@ -404,5 +411,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       this.updateConditionsVariable();
     }
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 }

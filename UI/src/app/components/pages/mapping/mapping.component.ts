@@ -130,7 +130,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
-          positionStrategyFor: 'values'
+          positionStrategyFor: 'values',
+          payload: {connector: this.bridgeService.arrowsCache[child.id].connector}
         };
 
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];

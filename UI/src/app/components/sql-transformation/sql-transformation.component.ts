@@ -25,8 +25,7 @@ const editorSettings = {
 export class SqlTransformationComponent implements OnInit {
 
   @ViewChild('editor', { static: true }) editor;
-  @Input() connector: IConnector;
-  @Output() sqlApplyed = new EventEmitter();
+  @Input() savedSqlTransformation: string;
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;
@@ -41,6 +40,7 @@ export class SqlTransformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.initCodeMirror();
+    this.codeMirror.doc.replaceSelection(this.savedSqlTransformation);
   }
 
   initCodeMirror() {
@@ -59,18 +59,12 @@ export class SqlTransformationComponent implements OnInit {
     this.codeMirror.setValue('');
   }
 
-  onApplyClick() {
-    this.connector.source.sqlTransformation = this.editorContent;
-    this.connector.source.sqlTransformationActive = true;
-    this.sqlApplyed.emit();
-  }
-
   onChange(cm, event) {
-    this.sqlForm.markAsTouched();
+  // this.sqlForm.markAsTouched();
   }
 
   onCursorActivity(cm, event) {
-    this.sqlForm.markAsTouched();
+   // this.sqlForm.markAsTouched();
   }
 
 }
