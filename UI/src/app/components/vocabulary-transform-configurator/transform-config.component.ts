@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,7 +17,8 @@ import { IConnector } from 'src/app/models/interface/connector.interface';
 @Component({
   selector: 'app-transform-config',
   templateUrl: './transform-config.component.html',
-  styleUrls: [ './transform-config.component.scss' ]
+  styleUrls: ['./transform-config.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() sourceFileds: string[];

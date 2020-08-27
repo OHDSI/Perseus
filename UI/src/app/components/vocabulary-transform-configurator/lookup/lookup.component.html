@@ -1,0 +1,43 @@
+<div class="lookup">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-number">1</div>
+      <span class="stage-title">Select Lookup</span>
+    </div>
+    <div class="stage-body">
+      <mat-form-field class="select-lookup" appearance="fill">
+        <mat-label>Select Lookup</mat-label>
+        <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected">
+          <mat-option *ngFor="let item of items"
+                      [value]="item">
+            {{item.split('.')[1]}}
+            <mat-icon svgIcon="edit"
+                      (click)="edit($event, item)"
+                      *ngIf="isNotDefault(item)"></mat-icon>
+            <mat-icon svgIcon="delete"
+                      (click)="delete($event, item)"
+                      *ngIf="isNotDefault(item)"></mat-icon>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="preview-title">SQL Preview</div>
+      <mat-expansion-panel [class.hidden]="!selected" class="select-preview">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{selected.split('.')[0]}}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <textarea #disabledEditor disabled></textarea>
+      </mat-expansion-panel>
+      <textarea #editor class="ened"></textarea>
+    </div>
+  </div>
+  <div class="stage" *ngIf="editMode">
+    <div class="stage-header">
+      <div class="stage-number">2</div>
+      <span class="stage-title">Set name for modified lookup</span>
+    </div>
+    <mat-form-field class="lookup-name" appearance="fill">
+      <mat-label>Lookup Name</mat-label>
+      <input matInput [value]="lookupName">
+    </mat-form-field>
+  </div>
+</div>

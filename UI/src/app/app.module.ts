@@ -62,6 +62,7 @@ import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
 import { TransformationTypeComponent } from './components/popups/transformation-type/transformation-type.component';
 import { SqlTransformationComponent } from './components/sql-transformation/sql-transformation.component';
+import { LookupComponent } from './components/vocabulary-transform-configurator/lookup/lookup.component';
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import { SqlTransformationComponent } from './components/sql-transformation/sql-
     OnBoardingComponent,
     OpenSaveDialogComponent,
     TransformationTypeComponent,
-    SqlTransformationComponent
+    SqlTransformationComponent,
+    LookupComponent
   ],
   imports: [
     BrowserModule,
