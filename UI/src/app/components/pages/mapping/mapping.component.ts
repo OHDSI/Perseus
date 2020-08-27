@@ -23,7 +23,6 @@ import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/de
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
-import { modes } from 'codemirror';
 import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 
@@ -147,7 +146,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
               closeOnNavigation: false,
               disableClose: false,
               panelClass: 'sql-editor-dialog',
-              height: '680px',
+              maxHeight: '100%',
               width: '570px;',
               data: {arrowCache: this.bridgeService.arrowsCache, connector: this.bridgeService.arrowsCache[child.id].connector}
             });

@@ -61,6 +61,7 @@ import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
 import { TransformationTypeComponent } from './components/popups/transformation-type/transformation-type.component';
+import { LookupComponent } from './components/vocabulary-transform-configurator/lookup/lookup.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { TransformationTypeComponent } from './components/popups/transformation-
     ResetWarningComponent,
     OnBoardingComponent,
     OpenSaveDialogComponent,
-    TransformationTypeComponent
+    TransformationTypeComponent,
+    LookupComponent
   ],
   imports: [
     BrowserModule,
