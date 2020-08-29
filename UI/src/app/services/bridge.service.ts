@@ -22,6 +22,7 @@ export interface IConnection {
   connector: IConnector;
   transforms?: SqlFunction[];
   transformationConfigs?: TransformationConfig[];
+  lookup?: {};
   type?: string;
 }
 

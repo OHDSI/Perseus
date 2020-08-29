@@ -51,6 +51,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   filteredFields;
 
+  lookup;
+
   get hint(): string {
     return 'no hint';
   }
@@ -120,17 +122,20 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
+      const arrow = this.bridgeService.arrowsCache[ child.id ];
+
       const endXYAttributeIndex = 7;
       const { upperLimit, lowerLimit } = this.getLimits(child.attributes[endXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
-        if (!this.bridgeService.arrowsCache[child.id].connector.selected) {
+        if (!arrow.connector.selected) {
           return;
         }
 
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
-          positionStrategyFor: 'values'
+          positionStrategyFor: 'values',
+          payload: { lookup: arrow.lookup }
         };
 
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
@@ -141,18 +146,35 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
           if (connectionType) {
-            const payload = {arrowCache: this.bridgeService.arrowsCache, connector: this.bridgeService.arrowsCache[child.id].connector};
+            const payload = {arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector};
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
               disableClose: false,
               panelClass: 'sql-editor-dialog',
               maxHeight: '100%',
               width: '570px;',
-              data: {arrowCache: this.bridgeService.arrowsCache, connector: this.bridgeService.arrowsCache[child.id].connector}
+              data: {
+                arrowCache: this.bridgeService.arrowsCache,
+                connector: arrow.connector,
+                lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
+                tabIndex: 1
+              }
             });
 
             transformDialogRef.afterClosed().subscribe((options: any) => {
-              this.bridgeService.setArrowType(child.id, connectionType);
+              if (options && options[ 'originName' ]) {
+                this.lookup = options;
+                this.lookup[ 'applied' ] = true;
+                this.bridgeService.setArrowType(child.id, connectionType);
+                const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
+                this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
+              }
+
+              if (options && options[ 'originName' ] && options[ 'name' ] && options[ 'originName' ] !== options[ 'name' ]) {
+                this.dataService.saveLookup(this.lookup).subscribe(res => {
+                  console.log(res);
+                });
+              }
             });
           }
         });

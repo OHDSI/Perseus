@@ -1,7 +1,6 @@
-import { Component, AfterViewInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ViewEncapsulation, Input } from '@angular/core';
 
-// TODO: refactoring
-import { HttpClient } from '@angular/common/http';
+import { DataService } from 'src/app/services/data.service';
 
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
@@ -22,33 +21,21 @@ const editorSettings = {
   hintOptions: {}
 };
 
-const sourceToSource = [
-  'cvx',
-  'icd9cm',
-  'icd9proc',
-  'icd10',
-  'icd10cm',
-  'loinc',
-  'ndc',
-  'nucc',
-  'procedure',
-  'read',
-  'revenue',
-  'snomed'
-];
-const sourceToStandard = ['cms', 'cpt4_modifier', 'ucum'].concat(sourceToSource);
-
 @Component({
   selector: 'app-lookup',
   templateUrl: './lookup.component.html',
   styleUrls: ['./lookup.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class LookupComponent implements AfterViewInit {
+export class LookupComponent implements OnInit, AfterViewInit {
+  @Input() lookup;
+  @Input() name;
+
   @ViewChild('editor', { static: true }) editor;
   @ViewChild('disabledEditor', { static: true }) disabledEditor;
 
-  items = sourceToSource.map(item => `source_to_source.${item}`).concat(sourceToStandard.map(item => `source_to_standard.${item}`));
+  items;
+
   selected = '';
 
   codeMirror1;
@@ -60,10 +47,27 @@ export class LookupComponent implements AfterViewInit {
 
   originText = '';
 
-  constructor(public http: HttpClient) {}
+  lookupType = '';
+
+  constructor(private dataService: DataService) {
+    this.updateItems();
+  }
+
+  ngOnInit() {
+    if (this.name) {
+      this.selected = this.name;
+    }
+  }
 
   ngAfterViewInit() {
     this.initCodeMirror();
+    if (this.name) {
+      this.refreshCodeMirror(this.name);
+    }
+  }
+
+  updateItems() {
+    this.dataService.getLookupsList().subscribe(data => this.items = data);
   }
 
   initCodeMirror() {
@@ -74,33 +78,40 @@ export class LookupComponent implements AfterViewInit {
 
     if (!this.codeMirror2 && this.editor) {
       this.codeMirror2 = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-      this.codeMirror2.on('change', this.onChange.bind(this));
+      this.codeMirror2.on('change', this.onChangeValue.bind(this));
     }
   }
 
   refreshCodeMirror(value) {
     if (this.codeMirror1) {
-      this.http.get(`assets/txt/template_${value.split('.')[0]}.txt`, {responseType: 'text'}).subscribe(data => {
-        this.codeMirror1.setValue(data);
-      });
+      this.dataService.getLookup(`template_${value.split('.')[ 0] }`).subscribe(data => this.codeMirror1.setValue(data));
     }
 
     if (this.codeMirror2) {
-      this.http.get(`assets/txt/${value.replace('.', '/')}.txt`, {responseType: 'text'}).subscribe(data => {
+      this.dataService.getLookup(value).subscribe(data => {
         this.codeMirror2.setValue(data);
         this.originText = data;
+        this.lookupType = value.split('.')[ 0 ];
+        this.lookup[ 'originName' ] = value;
       });
     }
   }
 
-  onChange(cm, event) {
-    if (this.originText && this.originText !== event.value) {
+  onChangeValue(cm, event) {
+    const currentValue = cm.getValue();
+    if (this.originText && this.originText !== currentValue && event.origin !== 'setValue') {
       this.editMode = true;
     }
 
-    if (this.originText === event.value) {
+    if (this.originText === currentValue) {
       this.editMode = false;
     }
+
+    this.lookup['value'] = currentValue;
+  }
+
+  onChangeName(event) {
+    this.lookup['name'] = `${this.lookupType}.${event.currentTarget.value}.userDefined`;
   }
 
   selectLookup(event) {
@@ -108,29 +119,15 @@ export class LookupComponent implements AfterViewInit {
     this.refreshCodeMirror(event.value);
   }
 
-  add() {
-
-  }
-
-  isNotDefault(value) {
-    const valueParts = value.split('.');
-
-    if (valueParts.length === 2 && valueParts[0] !== 'source_to_source' && valueParts[0] !== 'source_to_standard') {
-      return true;
-    }
-
-    return false;
-  }
-
   edit(event, item) {
-    event.stopPropagation();
     this.editMode = true;
     this.selectLookup({value: item});
-    console.log('EDIT');
   }
 
-  delete(event, item) {
+  delete(event, item, index) {
     event.stopPropagation();
-    console.log('EDIT');
+    event.preventDefault();
+    this.dataService.deleteLookup(item).subscribe();
+    this.updateItems();
   }
 }
