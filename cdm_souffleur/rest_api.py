@@ -279,7 +279,6 @@ def delete_lookup():
         name = request.args['name']
         del_lookup(name)
     except Exception as error:
-        print(error)
         raise InvalidUsage(error.__str__(), 404)
     return 'OK'
 

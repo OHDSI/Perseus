@@ -9,7 +9,6 @@
       [label]="tab"
       *ngFor="let tab of tabs; trackBy: trackByFn"
     >
-      <app-lookup *ngIf="tab === 'Lookup'"></app-lookup>
       <app-sql-transformation #sqlTransformationTab
                               [savedSqlTransformation] = "connector.source.sqlTransformation"
                               *ngIf="tab === 'SQL Function'"></app-sql-transformation>
