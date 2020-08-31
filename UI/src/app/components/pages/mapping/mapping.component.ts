@@ -178,6 +178,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 });
               }
             });
+          } else {
+            if (configOptions.payload.sql) {
+              arrow.connector.source.sqlTransformationActive = configOptions.payload.sql.applied;
+            }
           }
         });
         return;

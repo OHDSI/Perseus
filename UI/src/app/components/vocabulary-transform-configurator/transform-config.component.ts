@@ -221,8 +221,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     if (this.activeTab === 0) {
       this.connector.source.sqlTransformation = this.sqlTransformation.editorContent;
       this.connector.source.sqlTransformationActive = this.sqlTransformation.editorContent ? true : false;
+      this.dialogRef.close();
+    } else {
+      this.dialogRef.close(this.lookup);
     }
-    this.dialogRef.close(this.lookup);
   }
 
   cancel() {
