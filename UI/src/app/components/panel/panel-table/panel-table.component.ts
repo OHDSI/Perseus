@@ -30,11 +30,11 @@ import { DataService } from 'src/app/services/data.service';
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
-  styleUrls: ['./panel-table.component.scss']
+  styleUrls: [ './panel-table.component.scss' ]
 })
 export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
-  @Input() tables: ITable [];
+  @Input() tables: ITable[];
   @Input() table: ITable;
   @Input() tabIndex: any;
   @Input() oppositeTableId: any;
@@ -48,7 +48,7 @@ export class PanelTableComponent extends BaseComponent
   @ViewChild('tableComponent', { static: true }) tableComponent: MatTable<IRow[]>;
 
   get displayedColumns() {
-    return ['column_indicator', 'column_name', 'column_type', 'comments'];
+    return [ 'column_indicator', 'column_name', 'column_type', 'comments' ];
   }
 
   get area() {
@@ -122,6 +122,11 @@ export class PanelTableComponent extends BaseComponent
       });
   }
 
+  refreshPanel() {
+    this.dataSourceInit(this.table.rows);
+    this.bridgeService.refreshAll();
+  }
+
   ngAfterViewInit() {
   }
 
@@ -150,7 +155,7 @@ export class PanelTableComponent extends BaseComponent
     if (!this.isRowHasConnection(row)) {
       const value = row.constant;
       const mode = value ? 'view' : 'add';
-      const data = {value, mode};
+      const data = { value, mode };
       const component = AddConstantPopupComponent;
 
       const dialogOptions: OverlayConfigOptions = {
@@ -189,7 +194,7 @@ export class PanelTableComponent extends BaseComponent
 
   onTransformDialogOpen(event: any, row: IRow, element: any) {
     event.stopPropagation();
-    this.openTransform.emit({row, element});
+    this.openTransform.emit({ row, element });
   }
 
   hasComment(row: IRow) {
@@ -220,7 +225,7 @@ export class PanelTableComponent extends BaseComponent
     this.connectortype = {};
     Object.values(this.bridgeService.arrowsCache)
       .filter(connection => {
-        return this.equals(connection[table.area].tableName, table.name);
+        return this.equals(connection[ table.area ].tableName, table.name);
       })
       .forEach(connection => {
         this.showConnectorPinElement(connection, table.area);
@@ -228,12 +233,12 @@ export class PanelTableComponent extends BaseComponent
   }
 
   showConnectorPinElement(connection: IConnection, area: Area) {
-    const rowId = connection[area].name;
+    const rowId = connection[ area ].name;
     const element = document.getElementById(rowId);
     if (element) {
       const collection = element.getElementsByClassName('connector-pin');
       for (let i = 0; i < collection.length; i++) {
-        this.renderer.removeClass(collection[i], 'hide');
+        this.renderer.removeClass(collection[ i ], 'hide');
       }
     }
   }
@@ -241,17 +246,17 @@ export class PanelTableComponent extends BaseComponent
   hideAllConnectorPin(element) {
     const collection = element.getElementsByClassName('connector-pin');
     for (let i = 0; i < collection.length; i++) {
-      this.renderer.addClass(collection[i], 'hide');
+      this.renderer.addClass(collection[ i ], 'hide');
     }
   }
 
   hideConnectorPin(connection: IConnection, area: Area) {
-    const rowId = connection[area].name;
+    const rowId = connection[ area ].name;
     const element = document.getElementById(rowId);
     if (element) {
       const collection = element.getElementsByClassName('connector-pin');
       for (let i = 0; i < collection.length; i++) {
-        this.renderer.addClass(collection[0], 'hide');
+        this.renderer.addClass(collection[ 0 ], 'hide');
       }
     }
   }
