@@ -22,7 +22,7 @@ export class SetConnectionTypePopupComponent implements OnInit {
   }
 
   openSqlFunctionDialog() {
-    this.dialogRef.close({ connectionType: 'L' });
+    this.dialogRef.close({ connectionType: 'T' });
   }
 
   openLookupDialog() {
