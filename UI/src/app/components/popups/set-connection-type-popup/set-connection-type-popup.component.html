@@ -5,7 +5,9 @@
                                  (selectedType)="openSqlFunctionDialog()">
         </app-transformation-type>
         <app-transformation-type [typeName]="lookupLabel"
-                                 (selectedType)="openLookupDialog()">
+                                 [data]="payload.lookup"
+                                 (selectedType)="openLookupDialog()"
+                                 (toggleCheckbox)="toggleCheckbox()">
         </app-transformation-type>
     </div>
 </div>

@@ -4,7 +4,7 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_sql, delete_generated_sql
+    delete_generated_xml, get_lookups_sql, delete_generated_sql, get_lookups_list, get_lookup, add_lookup, del_lookup
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
@@ -185,11 +185,11 @@ def zip_xml_call():
         zip_xml()
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
-    return send_from_directory(GENERATE_CDM_XML_ARCHIVE_PATH,
-                               filename='.'.join((
-                                            GENERATE_CDM_XML_ARCHIVE_FILENAME,
-                                            GENERATE_CDM_XML_ARCHIVE_FORMAT)),
-                               as_attachment=True)
+    return send_from_directory(
+        GENERATE_CDM_XML_ARCHIVE_PATH,
+        filename='.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
+        as_attachment=True
+    )
 
 
 @app.route('/api/clear_xml_dir')
@@ -252,6 +252,35 @@ def load_vocabulary_call():
     start_new_thread(load_vocabulary, (path,))
     return 'OK'
 
+@app.route('/api/get_lookup')
+def get_lookup_by_name():
+    name = request.args['name']
+    lookup = get_lookup(name)
+    return jsonify(lookup)
+
+@app.route('/api/get_lookups_list')
+def get_lookups():
+    lookups_list = get_lookups_list()
+    return jsonify(lookups_list)
+
+@app.route('/api/save_lookup', methods=['POST'])
+def save_lookup():
+    try:
+        lookup = request.json
+        add_lookup(lookup)
+    except Exception as error:
+        print(error)
+        raise InvalidUsage(error.__str__(), 400)
+    return 'OK'
+
+@app.route('/api/delete_lookup', methods=['DELETE'])
+def delete_lookup():
+    try:
+        name = request.args['name']
+        del_lookup(name)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
+    return 'OK'
 
 @app.route('/api/set_db_connection')
 def set_db_connection_call():

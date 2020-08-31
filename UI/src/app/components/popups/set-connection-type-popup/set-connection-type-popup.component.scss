@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
 
   &:after {
     width: auto;
@@ -26,13 +26,13 @@
   }
 
   .type-div {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 20px;
+    min-width: 150px;
+    height: 150px;
   }
 
   .header {
     width: 100%;
-    margin-top: 15px;
     font-size: 14px;
   }
 }

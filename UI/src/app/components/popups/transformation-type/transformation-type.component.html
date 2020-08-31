@@ -1,6 +1,7 @@
 <div class="type">
     <input class="form-check-input"
-           [class.hidden]="!configured"
+           [disabled]="!configured"
+           [class.disabled]="!configured"
            type="checkbox"
            [checked]="isTypeChecked"
            (change)="typeChecked()">

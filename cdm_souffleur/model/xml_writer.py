@@ -5,7 +5,9 @@ from cdm_souffleur.utils.constants import \
     GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, \
     GENERATE_CDM_XML_ARCHIVE_FORMAT, \
-    GENERATE_CDM_LOOKUP_SQL_PATH
+    GENERATE_CDM_LOOKUP_SQL_PATH, \
+    PREDEFINED_LOOKUPS_PATH, \
+    INCOME_LOOKUPS_PATH
 import pandas as pd
 from shutil import rmtree
 import zipfile
@@ -113,7 +115,7 @@ def get_xml(json_):
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
                     target_field = row['target_field']
-                    v = SubElement(domain_definition_tag, target_field)
+                    v = SubElement(domain_definition_tag, _convert_underscore_to_camel(target_field))
                     v.text = sql_alias if sql_alias else source_field
 
             if lookup is not None:
@@ -275,6 +277,54 @@ def delete_generated_sql():
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
     except FileNotFoundError:
         raise
+
+def get_lookups_list():
+    lookups_list = []
+    folders = ['source_to_source', 'source_to_standard']
+
+    def updateList(base_path, is_user_defined=False):
+        for folder in folders:
+            path = os.path.join(base_path, folder)
+            if os.path.isdir(path):
+                files = os.listdir(path)
+                lookups_list.extend(
+                    map(lambda x: f"{folder}.{x.replace('.txt', '')}.{'userDefined' if is_user_defined else 'predefined'}", files)
+                )
+
+    updateList(PREDEFINED_LOOKUPS_PATH)
+    updateList(INCOME_LOOKUPS_PATH, True)
+
+    return lookups_list
+
+def get_lookup(name):
+    lookup = ''
+    parts = name.split('.')
+    if len(parts) > 1:
+        basepath = INCOME_LOOKUPS_PATH if parts[-1] == 'userDefined' else PREDEFINED_LOOKUPS_PATH
+        path = os.path.join(basepath, parts[0], f"{parts[1]}.txt")
+    else:
+        path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
+    if os.path.isfile(path):
+        with open(path, mode='r') as f:
+            lookup = f.readlines()
+    return ''.join(lookup)
+
+def add_lookup(lookup):
+    parts = lookup['name'].split('.')
+    folder, name = parts[0], parts[1]
+    filepath = os.path.join(INCOME_LOOKUPS_PATH, folder)
+    filename = os.path.join(filepath, f'{name}.txt')
+    if not os.path.isdir(filepath):
+        os.makedirs(filepath)
+
+    with open(filename, mode='w') as f:
+        f.write(lookup['value'])
+
+def del_lookup(name):
+    parts = name.split('.')
+    path = os.path.join(INCOME_LOOKUPS_PATH, parts[0], f"{parts[1]}.txt")
+    if os.path.isfile(path):
+        os.remove(path)
 
 
 if __name__ == '__main__':

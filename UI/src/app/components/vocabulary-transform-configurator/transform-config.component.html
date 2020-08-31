@@ -1,4 +1,36 @@
-<div class="mapping-component-progress" *ngIf="!vocabularies">
+<div class="apply-transformation">
+  <h3>Apply Transfomation <span>{{ titleInfo }}</span></h3>
+  <mat-icon class="close"
+          mat-dialog-close>close
+  </mat-icon>
+
+  <mat-tab-group selectedIndex="{{activeTab}}" (selectedIndexChange)="onTabIndexChanged($event)">
+    <mat-tab
+      [label]="tab"
+      *ngFor="let tab of tabs; trackBy: trackByFn"
+    >
+      <app-lookup *ngIf="tab === 'Lookup'" [lookup]="lookup" [name]="lookupName"></app-lookup>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="buttons">
+    <button
+      mat-button
+      (click)="dialogRef.close()"
+      class="button-cancel">Cancel
+    </button>
+    <button
+      [disabled]="!lookup['value']"
+      mat-button
+      mat-flat-button
+      color="accent"
+      (click)="add()"
+      class="button-add">Apply
+    </button>
+  </div>
+</div>
+
+<!-- <div class="mapping-component-progress" *ngIf="!vocabularies">
   <span>Loading...</span>
 </div>
 <mat-card *ngIf="vocabularies">
@@ -105,4 +137,4 @@
       Close
     </button>
   </mat-dialog-actions>
-</mat-card>
+</mat-card> -->

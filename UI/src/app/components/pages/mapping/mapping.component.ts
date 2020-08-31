@@ -21,8 +21,8 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
+import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
-import { modes } from 'codemirror';
 import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 
@@ -50,6 +50,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   similarNamesMap = (similarNamesMap as any).default;
 
   filteredFields;
+
+  lookup;
 
   get hint(): string {
     return 'no hint';
@@ -120,29 +122,60 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
+      const arrow = this.bridgeService.arrowsCache[ child.id ];
+
       const endXYAttributeIndex = 7;
       const { upperLimit, lowerLimit } = this.getLimits(child.attributes[endXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
-        if (!this.bridgeService.arrowsCache[child.id].connector.selected) {
+        if (!arrow.connector.selected) {
           return;
         }
 
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
-          positionStrategyFor: 'values'
+          positionStrategyFor: 'values',
+          payload: { lookup: arrow.lookup }
         };
 
-        const component = SetConnectionTypePopupComponent;
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
         const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
         const htmlElement = document.getElementById(htmlElementId);
 
-        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, component);
+        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
           if (connectionType) {
-            this.bridgeService.setArrowType(child.id, connectionType);
+            const payload = {arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector};
+            const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
+              closeOnNavigation: false,
+              disableClose: false,
+              panelClass: 'sql-editor-dialog',
+              maxHeight: '100%',
+              width: '570px;',
+              data: {
+                arrowCache: this.bridgeService.arrowsCache,
+                connector: arrow.connector,
+                lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
+                tabIndex: 1
+              }
+            });
+
+            transformDialogRef.afterClosed().subscribe((options: any) => {
+              if (options && options[ 'originName' ]) {
+                this.lookup = options;
+                this.lookup[ 'applied' ] = true;
+                this.bridgeService.setArrowType(child.id, connectionType);
+                const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
+                this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
+              }
+
+              if (options && options[ 'originName' ] && options[ 'name' ] && options[ 'originName' ] !== options[ 'name' ]) {
+                this.dataService.saveLookup(this.lookup).subscribe(res => {
+                  console.log(res);
+                });
+              }
+            });
           }
         });
         return;

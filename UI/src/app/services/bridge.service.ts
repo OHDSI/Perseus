@@ -23,6 +23,7 @@ export interface IConnection {
   connector: IConnector;
   transforms?: SqlFunction[];
   transformationConfigs?: TransformationConfig[];
+  lookup?: {};
   type?: string;
 }
 
@@ -71,9 +72,7 @@ export class BridgeService {
   constructor(
     private drawService: DrawService,
     private storeService: StoreService
-  ) {
-    console.log('XXX');
-  }
+  ) { }
 
   applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
