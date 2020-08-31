@@ -25,22 +25,23 @@ const editorSettings = {
 export class SqlTransformationComponent implements OnInit {
 
   @ViewChild('editor', { static: true }) editor;
-  @Input() savedSqlTransformation: string;
+  @Input() sql: {};
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;
   codeMirror;
   sqlForm = new FormGroup({});
 
-  constructor() {}
+  constructor() { }
 
   get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
   ngOnInit(): void {
+    this.sql['sql'] = true;
     this.initCodeMirror();
-    this.codeMirror.doc.replaceSelection(this.savedSqlTransformation);
+    this.codeMirror.doc.replaceSelection(this.sql['name']);
   }
 
   initCodeMirror() {
@@ -53,6 +54,7 @@ export class SqlTransformationComponent implements OnInit {
     const text = event.item.element.nativeElement.textContent.trim();
     const selectedFunction = this.sqlFunctions.filter(func => func.name === text );
     this.codeMirror.doc.replaceSelection(selectedFunction[0].getTemplate());
+    this.sql['name'] = this.editorContent;
   }
 
   onCancelClick() {
