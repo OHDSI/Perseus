@@ -29,8 +29,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   @Input() sourceTables: ITable[]; // test
 
-  @ViewChild('sqlTransformationTab', { static: false }) sqlTransformation: SqlTransformationComponent;
-
   get configurations(): DictionaryItem[] {
     return this.pconfigurations;
   }
@@ -78,6 +76,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   lookupName;
 
   lookup = {};
+  sql = {};
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
@@ -90,6 +89,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.activeTab = payload[ 'tabIndex' ];
     this.lookupName = payload[ 'lookupName' ];
     this.transformationConfigs = [];
+    this.sql = payload['sql']? payload['sql']: {};
 
     const { arrowCache, connector } = this.payload;
     const sourceFields = Object.values(arrowCache).map(row => row.connector.source.name);
@@ -219,9 +219,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   add() {
     if (this.activeTab === 0) {
-      this.connector.source.sqlTransformation = this.sqlTransformation.editorContent;
-      this.connector.source.sqlTransformationActive = this.sqlTransformation.editorContent ? true : false;
-      this.dialogRef.close();
+      this.dialogRef.close(this.sql);
     } else {
       this.dialogRef.close(this.lookup);
     }

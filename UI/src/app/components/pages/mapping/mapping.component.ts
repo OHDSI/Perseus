@@ -136,7 +136,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           backdropClass: 'custom-backdrop',
           positionStrategyFor: 'values',
           payload: { lookup: arrow.lookup,
-                     sql: {name: arrow.connector.source.sqlTransformation, applied: arrow.connector.source.sqlTransformationActive} }
+                     sql: arrow.sql }
         };
 
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
@@ -159,6 +159,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 arrowCache: this.bridgeService.arrowsCache,
                 connector: arrow.connector,
                 lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
+                sql: arrow.sql,
                 tabIndex: selectedtabIndex
               }
             });
@@ -177,11 +178,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                   console.log(res);
                 });
               }
+
+              if (options && options[ 'sql' ]) {
+                arrow.sql = options;
+                arrow.sql['applied'] = true;
+              }
             });
-          } else {
-            if (configOptions.payload.sql) {
-              arrow.connector.source.sqlTransformationActive = configOptions.payload.sql.applied;
-            }
           }
         });
         return;
