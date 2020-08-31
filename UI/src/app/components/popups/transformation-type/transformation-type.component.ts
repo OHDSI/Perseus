@@ -9,16 +9,22 @@ import { IConnector } from 'src/app/models/interface/connector.interface';
 export class TransformationTypeComponent {
 
   @Input() typeName: string;
-  @Input() configured: boolean;
-  @Input() isTypeChecked: boolean;
+  @Input() data;
   @Output() selectedType = new EventEmitter<string>();
-  @Output() TypeCheckedEvent = new EventEmitter<boolean>();
+  @Output() toggleCheckbox = new EventEmitter<string>();
+  configured = false;
+  isTypeChecked = false;
 
   constructor() { }
 
+  ngOnInit(): void {
+    this.configured = this.data && !!this.data[ 'name' ];
+    this.isTypeChecked = this.data && !!this.data[ 'applied' ];
+  }
+
   typeChecked() {
     this.isTypeChecked = !this.isTypeChecked;
-    this.TypeCheckedEvent.emit(this.isTypeChecked);
+    this.toggleCheckbox.emit();
   }
 
   typeSelected() {

@@ -18,7 +18,11 @@ const API_URLS = {
   getXmlPreview: () => `${URL}/get_xml`,
   getSqlPreview: (name) => `${URL}/get_generated_sql?source_table_name=${name}`,
   postLoadSchema: () => `${URL}/load_schema`,
-  postSaveLoadSchema: () => `${URL}/save_and_load_schema`
+  postSaveLoadSchema: () => `${URL}/save_and_load_schema`,
+  getLookupsList: () => `${URL}/get_lookups_list`,
+  getLookup: () => `${URL}/get_lookup`,
+  saveLookup: () => `${URL}/save_lookup`,
+  deleteLookup: () => `${URL}/delete_lookup`
 
 };
 
@@ -68,4 +72,19 @@ export class HttpService {
     // return of(schemaData.data);
   }
 
+  getLookupsList() {
+    return this.httpClient.get<any>(API_URLS.getLookupsList());
+  }
+
+  getLookup(name) {
+    return this.httpClient.get<any>(API_URLS.getLookup(), { params: { name } });
+  }
+
+  saveLookup(lookup) {
+    return this.httpClient.post(API_URLS.saveLookup(), lookup);
+  }
+
+  deleteLookup(name) {
+    return this.httpClient.delete(API_URLS.deleteLookup(), { params: { name } });
+  }
 }

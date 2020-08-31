@@ -14,9 +14,12 @@
 
 .configured {
   font-size: 10px;
-  padding-left: 10px;
-  color: grey;
+  margin-left: 10px;
+  padding: 2px 5px 2px 5px;
   vertical-align: bottom;
+  background-color: rgba(6, 107, 187, 0.1);
+  border-radius: 2px;
+  color: rgba(64, 64, 64, 0.8);
 }
 
 .form-check-input {

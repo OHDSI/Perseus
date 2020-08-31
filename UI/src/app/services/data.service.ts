@@ -142,6 +142,23 @@ export class DataService {
     return this.httpService.getTopValues(tableName, columnName);
   }
 
+  getLookupsList(): Observable<any> {
+    return this.httpService.getLookupsList();
+  }
+
+  getLookup(name): Observable<any> {
+    return this.httpService.getLookup(name);
+  }
+
+  saveLookup(lookup): Observable<any> {
+    const { name, value } = lookup;
+    return this.httpService.saveLookup({ name, value });
+  }
+
+  deleteLookup(name): Observable<any> {
+    return this.httpService.deleteLookup(name);
+  }
+
   prepareTargetConfig(data) {
     const COLUMNS_TO_EXCLUDE_FROM_TARGET = ['CONCEPT', 'COMMON'];
     const targetConfig = {};

@@ -58,10 +58,15 @@
       width: 50%;
       margin-left: 10px;
 
+      .mat-select-arrow {
+        color: $black;
+      }
+
       .mat-form-field-wrapper .mat-form-field-flex {
         background-color: transparent;
         height: 32px;
         padding-left: 0;
+        padding-right: 0;
       }
     }
 
@@ -80,6 +85,15 @@
         height: 30px !important;
         padding: 0 10px 0 10px;
 
+        .mat-expansion-indicator::after {
+          padding: 0;
+          transform: none;
+          border-color: $blue transparent transparent transparent;
+          border-style: solid;
+          border-width: 5px;
+          vertical-align: middle;
+        }
+
         .mat-expansion-panel-header-title {
           color: $cdm-grey-dark;
           font-weight: 300;
@@ -90,7 +104,8 @@
         border: none;
         box-shadow: none;
         background: transparent;
-        padding: 10px;
+        padding: 0;
+        margin:10px;
       }
     }
 
@@ -100,7 +115,8 @@
       border-radius: 2px;
       background: $white;
       padding: 10px;
-      margin: 10px 10px 0 10px;
+      margin: 10px;
+      height: 150px;
     }
   }
 }

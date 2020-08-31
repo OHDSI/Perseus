@@ -1,6 +1,6 @@
-import { Component, Output, EventEmitter, Inject, OnInit } from '@angular/core';
-import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { Component, Output, EventEmitter, Inject } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
+import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 
 @Component({
@@ -8,18 +8,14 @@ import { IConnector } from 'src/app/models/interface/connector.interface';
   templateUrl: './set-connection-type-popup.component.html',
   styleUrls: [ './set-connection-type-popup.component.scss' ]
 })
-export class SetConnectionTypePopupComponent implements OnInit {
+export class SetConnectionTypePopupComponent {
   @Output() transformationCreated = new EventEmitter<string>();
 
   sqlLabel = 'SQL Function';
   lookupLabel = 'Lookup';
-  connector: IConnector;
-  constructor(public dialogRef: OverlayDialogRef,
-              @Inject(OVERLAY_DIALOG_DATA) public payload: any) {}
-
-  ngOnInit() {
-    this.connector = this.payload.connector;
-  }
+  constructor(
+    public dialogRef: OverlayDialogRef,
+    @Inject(OVERLAY_DIALOG_DATA) public payload: any) { }
 
   openSqlFunctionDialog() {
     this.dialogRef.close({ connectionType: 'T' });
@@ -29,8 +25,8 @@ export class SetConnectionTypePopupComponent implements OnInit {
     this.dialogRef.close({ connectionType: 'L' });
   }
 
-  onSqlChecked(isChecked: boolean){
-    this.connector.source.sqlTransformationActive = isChecked;
+  toggleCheckbox() {
+    this.payload.lookup.applied = false;
   }
 
 }
