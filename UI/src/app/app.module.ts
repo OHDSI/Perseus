@@ -61,6 +61,7 @@ import { UploadService } from './services/upload.service';
 import { UserSettings } from './services/user-settings.service';
 import { VocabulariesService } from './services/vocabularies.service';
 import { TransformationTypeComponent } from './components/popups/transformation-type/transformation-type.component';
+import { SqlTransformationComponent } from './components/sql-transformation/sql-transformation.component';
 import { LookupComponent } from './components/vocabulary-transform-configurator/lookup/lookup.component';
 
 @NgModule({
@@ -99,6 +100,7 @@ import { LookupComponent } from './components/vocabulary-transform-configurator/
     OnBoardingComponent,
     OpenSaveDialogComponent,
     TransformationTypeComponent,
+    SqlTransformationComponent,
     LookupComponent
   ],
   imports: [

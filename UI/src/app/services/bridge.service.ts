@@ -25,6 +25,7 @@ export interface IConnection {
   transformationConfigs?: TransformationConfig[];
   lookup?: {};
   type?: string;
+  sql?: {};
 }
 
 @Injectable()

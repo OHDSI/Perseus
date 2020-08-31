@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,11 +12,13 @@ import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
 import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import { TransformationCondition, TransformationConfig, TransformationConfigFactory } from './model/transformation-config';
 import { VocabularyConfig } from './model/vocabulary-config';
+import { IConnector } from 'src/app/models/interface/connector.interface';
+import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
 
 @Component({
   selector: 'app-transform-config',
   templateUrl: './transform-config.component.html',
-  styleUrls: ['./transform-config.component.scss'],
+  styleUrls: [ './transform-config.component.scss' ],
   encapsulation: ViewEncapsulation.None
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
@@ -26,6 +28,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   @Input() transformationConfigs: TransformationConfig[];
 
   @Input() sourceTables: ITable[]; // test
+
+  @ViewChild('sqlTransformationTab', { static: false }) sqlTransformation: SqlTransformationComponent;
 
   get configurations(): DictionaryItem[] {
     return this.pconfigurations;
@@ -64,6 +68,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   busy = false;
 
   titleInfo: string;
+  sourceField: string[];
+  targetField: string;
+  connector: IConnector;
 
   tabs = [ 'SQL Function', 'Lookup' ];
 
@@ -84,9 +91,16 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.lookupName = payload[ 'lookupName' ];
     this.transformationConfigs = [];
 
-    const {arrowCache, connector} = this.payload;
-    this.titleInfo = `${connector.source.name} - ${connector.target.name}`;
-    if (arrowCache[ connector.id ] && arrowCache[ connector.id ].transformationConfigs) {
+    const { arrowCache, connector } = this.payload;
+    const sourceFields = Object.values(arrowCache).map(row => row.connector.source.name);
+    this.sourceField = sourceFields;
+    this.targetField = connector.target.name;
+    this.connector = connector;
+    this.titleInfo = `(${sourceFields.join(', ')}) - ${connector.target.name}`;
+    if (
+      arrowCache[ connector.id ] &&
+      arrowCache[ connector.id ].transformationConfigs
+    ) {
       this.transformationConfigs = [].concat.apply(
         this.transformationConfigs,
         arrowCache[ connector.id ].transformationConfigs
@@ -129,7 +143,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.snakbar.open(
         `Configuration "${this.configurationNameControl.value}" has been created`,
         ' DISMISS ',
-        {duration: 3000}
+        { duration: 3000 }
       );
 
       this.configurationNameControl.reset();
@@ -151,7 +165,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       // TODO Update existed
       const idx = this.transformationConfigs.findIndex(config => config.name === configCopy.name);
       if (idx > -1) {
-        this.transformationConfigs[idx] = configCopy;
+        this.transformationConfigs[ idx ] = configCopy;
       }
 
       const { arrowCache, connector } = this.payload;
@@ -169,7 +183,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.snakbar.open(
         `Configuration "${this.transformationConfig.name}" has been saved`,
         ' DISMISS ',
-        {duration: 3000}
+        { duration: 3000 }
       );
     },
     canExecute: () => true
@@ -204,7 +218,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   add() {
-    this.dialogRef.close(this.lookup);
+    if (this.activeTab === 0) {
+      this.connector.source.sqlTransformation = this.sqlTransformation.editorContent;
+      this.connector.source.sqlTransformationActive = this.sqlTransformation.editorContent ? true : false;
+      this.dialogRef.close();
+    } else {
+      this.dialogRef.close(this.lookup);
+    }
   }
 
   cancel() {
@@ -332,5 +352,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       this.selectedCondition = [ new DictionaryItem(this.ptransformationCondition.name) ];
       this.updateConditionsVariable();
     }
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 }

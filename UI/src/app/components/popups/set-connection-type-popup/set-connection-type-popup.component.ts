@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Inject } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { IConnector } from 'src/app/models/interface/connector.interface';
 
 @Component({
   selector: 'app-set-connection-type-popup',
@@ -17,6 +18,7 @@ export class SetConnectionTypePopupComponent {
     @Inject(OVERLAY_DIALOG_DATA) public payload: any) { }
 
   openSqlFunctionDialog() {
+    this.dialogRef.close({ connectionType: 'T' });
   }
 
   openLookupDialog() {
@@ -26,5 +28,11 @@ export class SetConnectionTypePopupComponent {
   toggleCheckbox() {
     this.payload.lookup.applied = false;
   }
+
+  toggleSqlCheckbox() {
+    this.payload.sql.applied = !this.payload.sql.applied;
+  }
+
+
 
 }
