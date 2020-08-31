@@ -22,7 +22,7 @@
       class="button-cancel">Cancel
     </button>
     <button
-      [disabled]="!lookup['value'] && activeTab !== 0"
+      [disabled]="!lookup['value'] && !sql['name']"
       mat-button
       mat-flat-button
       color="accent"
