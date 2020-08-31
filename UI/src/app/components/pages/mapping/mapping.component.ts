@@ -521,7 +521,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'warning-dialog'
+      panelClass: 'warning-dialog',
+      data: {
+        header: 'Delete Links',
+        message: 'You want to delete all links. This action cannot be undone',
+      }
     });
 
     dialog.afterClosed().subscribe(res => {

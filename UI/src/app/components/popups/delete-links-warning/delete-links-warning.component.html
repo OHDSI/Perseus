@@ -1,6 +1,6 @@
-<h3>Delete Links</h3>
-<mat-icon class="close">close</mat-icon>
-<mat-label class="label">You want to delete all links. This action cannot be undone</mat-label>
+<h3>{{data.header}}</h3>
+<mat-icon class="close" [mat-dialog-close]="false">close</mat-icon>
+<mat-label class="label">{{data.message}}</mat-label>
 <mat-dialog-actions>
   <button
     mat-flat-button
