@@ -29,4 +29,10 @@ export class SetConnectionTypePopupComponent {
     this.payload.lookup.applied = false;
   }
 
+  toggleSqlCheckbox() {
+    this.payload.sql.applied = !this.payload.sql.applied;
+  }
+
+
+
 }

@@ -2,10 +2,10 @@
     <div class="type-div">
         <h4 class="header">Transformation</h4>
         <app-transformation-type [typeName]="sqlLabel"
-                                 [configured]="connector.source.sqlTransformation"
-                                 [isTypeChecked]="connector.source.sqlTransformationActive"
+                                 [data]="payload.sql"
                                  (selectedType)="openSqlFunctionDialog()"
-                                 (TypeCheckedEvent)="onSqlChecked($event)">
+                                 (toggleCheckbox)="toggleSqlCheckbox()">
+
         </app-transformation-type>
         <app-transformation-type [typeName]="lookupLabel"
                                  [data]="payload.lookup"

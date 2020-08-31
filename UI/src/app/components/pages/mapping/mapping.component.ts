@@ -135,7 +135,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
           positionStrategyFor: 'values',
-          payload: { lookup: arrow.lookup }
+          payload: { lookup: arrow.lookup,
+                     sql: {name: arrow.connector.source.sqlTransformation, applied: arrow.connector.source.sqlTransformationActive} }
         };
 
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
@@ -147,6 +148,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           const { connectionType } = configOptions;
           if (connectionType) {
             const payload = {arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector};
+            const selectedtabIndex = connectionType === 'L' ? 1 : 0;
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
               disableClose: false,
@@ -157,7 +159,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 arrowCache: this.bridgeService.arrowsCache,
                 connector: arrow.connector,
                 lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
-                tabIndex: 1
+                tabIndex: selectedtabIndex
               }
             });
 
