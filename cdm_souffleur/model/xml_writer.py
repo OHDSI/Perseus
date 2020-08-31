@@ -315,7 +315,7 @@ def add_lookup(lookup):
     filepath = os.path.join(INCOME_LOOKUPS_PATH, folder)
     filename = os.path.join(filepath, f'{name}.txt')
     if not os.path.isdir(filepath):
-        os.mkdir(filepath)
+        os.makedirs(filepath)
 
     with open(filename, mode='w') as f:
         f.write(lookup['value'])
