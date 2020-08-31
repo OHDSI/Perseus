@@ -182,6 +182,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
               if (options && options[ 'sql' ]) {
                 arrow.sql = options;
                 arrow.sql['applied'] = true;
+                this.bridgeService.setArrowType(child.id, connectionType);
               }
             });
           }
