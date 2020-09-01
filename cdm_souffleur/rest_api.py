@@ -273,7 +273,7 @@ def save_lookup():
     except Exception as error:
         print(error)
         raise InvalidUsage(error.__str__(), 400)
-    return 'OK'
+    return jsonify(success=True)
 
 @app.route('/api/delete_lookup', methods=['DELETE'])
 def delete_lookup():

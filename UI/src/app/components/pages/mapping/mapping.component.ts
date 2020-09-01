@@ -175,9 +175,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
               }
 
               if (options && options[ 'originName' ] && options[ 'name' ] && options[ 'originName' ] !== options[ 'name' ]) {
-                this.dataService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                  console.log(res);
-                });
+                this.dataService.saveLookup(this.lookup, lookupType).subscribe();
               }
 
               if (options && options[ 'sql' ]) {
