@@ -282,7 +282,7 @@ def delete_lookup():
         del_lookup(name)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
-    return 'OK'
+    return jsonify(success=True)
 
 @app.route('/api/set_db_connection')
 def set_db_connection_call():
