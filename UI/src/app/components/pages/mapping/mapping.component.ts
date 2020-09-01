@@ -19,7 +19,7 @@ import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
+import { DeleteWarningComponent} from '../../popups/delete-warning/delete-warning.component';
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
@@ -518,10 +518,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   deleteLinks() {
-    const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+    const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'warning-dialog'
+      panelClass: 'warning-dialog',
+      data: {
+        title: 'Links',
+        message: 'You want to delete all links'
+      }
     });
 
     dialog.afterClosed().subscribe(res => {

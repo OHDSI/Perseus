@@ -13,7 +13,7 @@ import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.co
 import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
-import { DeleteLinksWarningComponent } from 'src/app/components/popups/delete-links-warning/delete-links-warning.component';
+import { DeleteWarningComponent } from 'src/app/components/popups/delete-warning/delete-warning.component';
 import { RulesPopupComponent } from 'src/app/components/popups/rules-popup/rules-popup.component';
 import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
 import { ValuesPopupComponent } from 'src/app/components/popups/values-popup/values-popup.component';
@@ -73,7 +73,7 @@ import { LookupComponent } from './components/vocabulary-transform-configurator/
     CommentPopupComponent,
     ValuesPopupComponent,
     SetConnectionTypePopupComponent,
-    DeleteLinksWarningComponent,
+    DeleteWarningComponent,
     SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,

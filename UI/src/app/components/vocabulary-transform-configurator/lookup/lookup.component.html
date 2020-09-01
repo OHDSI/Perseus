@@ -37,7 +37,7 @@
     </div>
     <mat-form-field class="lookup-name" appearance="fill">
       <mat-label>Lookup Name</mat-label>
-      <input matInput (input)="onChangeName($event)" [value]="lookupName">
+      <input matInput (input)="onChangeName($event)" [value]="selected.split('.')[1]">
     </mat-form-field>
   </div>
 </div>

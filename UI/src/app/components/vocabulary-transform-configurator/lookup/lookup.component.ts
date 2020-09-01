@@ -1,6 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ViewEncapsulation, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import { DataService } from 'src/app/services/data.service';
+import { DeleteWarningComponent} from '../../popups/delete-warning/delete-warning.component';
 
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
@@ -49,7 +51,9 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
   lookupType = '';
 
-  constructor(private dataService: DataService) {
+  constructor(
+    private dataService: DataService,
+    private matDialog: MatDialog) {
     this.updateItems();
   }
 
@@ -127,7 +131,22 @@ export class LookupComponent implements OnInit, AfterViewInit {
   delete(event, item, index) {
     event.stopPropagation();
     event.preventDefault();
-    this.dataService.deleteLookup(item).subscribe();
-    this.updateItems();
+
+    const dialog = this.matDialog.open(DeleteWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog',
+      data: {
+        title: 'Lookup',
+        message: 'You want to delete lookup'
+      }
+    });
+
+    dialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.dataService.deleteLookup(item).subscribe();
+        this.updateItems();
+      }
+    });
   }
 }
