@@ -138,8 +138,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           }
         };
 
-        const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
-        const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
+        const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
 
         const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);

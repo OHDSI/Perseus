@@ -14,6 +14,7 @@ import { TransformationCondition, TransformationConfig, TransformationConfigFact
 import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
+import { DeleteLinksWarningComponent } from '../popups/delete-links-warning/delete-links-warning.component';
 
 @Component({
   selector: 'app-transform-config',
@@ -78,10 +79,12 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   lookup = {};
   sql = {};
+  savedSql: {};
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
     public dialogRef: MatDialogRef<TransformConfigComponent>,
+    private matDialog: MatDialog,
     private snakbar: MatSnackBar,
     private addCondition: MatDialog,
     private stateService: StateService,
@@ -91,7 +94,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.lookupName = payload[ 'lookupName' ];
     this.lookupType = payload['lookupType']
     this.transformationConfigs = [];
-    this.sql = payload['sql']? payload['sql']: {};
+    this.sql = payload['sql'] ? payload['sql'] : {};
+    this.savedSql = {...this.sql};
 
     const { arrowCache, connector } = this.payload;
     const sourceFields = Object.values(arrowCache).map(row => row.connector.source.name);
@@ -227,9 +231,32 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     }
   }
 
+  closeDialog() {
+    if (this.activeTab === 0) {
+      const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+        closeOnNavigation: false,
+        disableClose: false,
+        panelClass: 'warning-dialog',
+        data: {
+          header: 'Delete changes',
+          message: 'Unsaved changes to SQL Functions will be deleted. This action cannot be undone',
+        }
+      });
+      dialog.afterClosed().subscribe(res => {
+        if (res) {
+          this.dialogRef.close(this.savedSql);
+        }
+      });
+    } else {
+      this.dialogRef.close();
+    }
+
+  }
+
   cancel() {
     this.dialogRef.close();
   }
+
 
   init() {
     if (this.selectedSourceFields) {
@@ -354,7 +381,4 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     }
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
 }
