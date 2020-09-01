@@ -62,7 +62,9 @@ export class SqlTransformationComponent implements OnInit {
   }
 
   onChange(cm, event) {
-  // this.sqlForm.markAsTouched();
+    if (event.text[0].length === 1) {
+      this.sql['name'] = this.editorContent;
+    }
   }
 
   onCursorActivity(cm, event) {

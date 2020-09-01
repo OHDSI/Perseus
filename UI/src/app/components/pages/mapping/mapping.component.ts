@@ -139,8 +139,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                      sql: arrow.sql }
         };
 
-        const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
-        const htmlElementId = this.targetPanel.table.rows[rowIndex].name;
+        const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
 
         const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
@@ -521,7 +520,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'warning-dialog'
+      panelClass: 'warning-dialog',
+      data: {
+        header: 'Delete Links',
+        message: 'You want to delete all links. This action cannot be undone',
+      }
     });
 
     dialog.afterClosed().subscribe(res => {
