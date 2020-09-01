@@ -66,8 +66,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   @ViewChild('sourcePanel') sourcePanel: PanelComponent;
   @ViewChild('targetPanel') targetPanel: PanelComponent;
 
-
-
   constructor(
     private stateService: StateService,
     private storeService: StoreService,
@@ -135,8 +133,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
           positionStrategyFor: 'values',
-          payload: { lookup: arrow.lookup,
-                     sql: arrow.sql }
+          payload: {
+            arrow
+          }
         };
 
         const rowIndex = child.id.split('/')[ 1 ].split('-')[ 1 ];
@@ -149,6 +148,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           if (connectionType) {
             const payload = {arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector};
             const selectedtabIndex = connectionType === 'L' ? 1 : 0;
+            const lookupType = arrow.connector.target.name.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
               disableClose: false,
@@ -159,6 +159,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 arrowCache: this.bridgeService.arrowsCache,
                 connector: arrow.connector,
                 lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
+                lookupType,
                 sql: arrow.sql,
                 tabIndex: selectedtabIndex
               }
@@ -174,7 +175,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
               }
 
               if (options && options[ 'originName' ] && options[ 'name' ] && options[ 'originName' ] !== options[ 'name' ]) {
-                this.dataService.saveLookup(this.lookup).subscribe(res => {
+                this.dataService.saveLookup(this.lookup, lookupType).subscribe(res => {
                   console.log(res);
                 });
               }

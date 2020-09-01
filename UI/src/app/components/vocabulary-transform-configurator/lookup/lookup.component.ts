@@ -32,6 +32,7 @@ const editorSettings = {
 export class LookupComponent implements OnInit, AfterViewInit {
   @Input() lookup;
   @Input() name;
+  @Input() lookupType;
 
   @ViewChild('editor', { static: true }) editor;
   @ViewChild('disabledEditor', { static: true }) disabledEditor;
@@ -49,18 +50,17 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
   originText = '';
 
-  lookupType = '';
-
   constructor(
     private dataService: DataService,
     private matDialog: MatDialog) {
-    this.updateItems();
   }
 
   ngOnInit() {
     if (this.name) {
       this.selected = this.name;
     }
+
+    this.updateItems();
   }
 
   ngAfterViewInit() {
@@ -71,7 +71,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   updateItems() {
-    this.dataService.getLookupsList().subscribe(data => this.items = data);
+    this.dataService.getLookupsList(this.lookupType).subscribe(data => this.items = data);
   }
 
   initCodeMirror() {
@@ -88,14 +88,14 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
   refreshCodeMirror(value) {
     if (this.codeMirror1) {
-      this.dataService.getLookup(`template_${value.split('.')[ 0] }`).subscribe(data => this.codeMirror1.setValue(data));
+      const name = `template_${this.lookupType}`;
+      this.dataService.getLookup(name, this.lookupType).subscribe(data => this.codeMirror1.setValue(data));
     }
 
     if (this.codeMirror2) {
-      this.dataService.getLookup(value).subscribe(data => {
+      this.dataService.getLookup(value, this.lookupType).subscribe(data => {
         this.codeMirror2.setValue(data);
         this.originText = data;
-        this.lookupType = value.split('.')[ 0 ];
         this.lookup[ 'originName' ] = value;
       });
     }
@@ -115,7 +115,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   onChangeName(event) {
-    this.lookup['name'] = `${this.lookupType}.${event.currentTarget.value}.userDefined`;
+    this.lookup['name'] = `${event.currentTarget.value}.userDefined`;
   }
 
   selectLookup(event) {

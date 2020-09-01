@@ -2,13 +2,14 @@
     <div class="type-div">
         <h4 class="header">Transformation</h4>
         <app-transformation-type [typeName]="sqlLabel"
-                                 [data]="payload.sql"
+                                 [data]="payload.arrow.sql"
                                  (selectedType)="openSqlFunctionDialog()"
                                  (toggleCheckbox)="toggleSqlCheckbox()">
 
         </app-transformation-type>
         <app-transformation-type [typeName]="lookupLabel"
-                                 [data]="payload.lookup"
+                                 [data]="payload.arrow.lookup"
+                                 [isDisabled]="isDisabledLookup"
                                  (selectedType)="openLookupDialog()"
                                  (toggleCheckbox)="toggleCheckbox()">
         </app-transformation-type>

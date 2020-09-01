@@ -142,17 +142,17 @@ export class DataService {
     return this.httpService.getTopValues(tableName, columnName);
   }
 
-  getLookupsList(): Observable<any> {
-    return this.httpService.getLookupsList();
+  getLookupsList(lookupType): Observable<any> {
+    return this.httpService.getLookupsList(lookupType);
   }
 
-  getLookup(name): Observable<any> {
-    return this.httpService.getLookup(name);
+  getLookup(name, lookupType): Observable<any> {
+    return this.httpService.getLookup(name, lookupType);
   }
 
-  saveLookup(lookup): Observable<any> {
+  saveLookup(lookup, lookupType): Observable<any> {
     const { name, value } = lookup;
-    return this.httpService.saveLookup({ name, value });
+    return this.httpService.saveLookup({ name, value, lookupType });
   }
 
   deleteLookup(name): Observable<any> {

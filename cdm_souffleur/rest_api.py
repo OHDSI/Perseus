@@ -255,12 +255,14 @@ def load_vocabulary_call():
 @app.route('/api/get_lookup')
 def get_lookup_by_name():
     name = request.args['name']
-    lookup = get_lookup(name)
+    lookup_type = request.args['lookupType']
+    lookup = get_lookup(name, lookup_type)
     return jsonify(lookup)
 
 @app.route('/api/get_lookups_list')
 def get_lookups():
-    lookups_list = get_lookups_list()
+    lookup_type = request.args['lookupType']
+    lookups_list = get_lookups_list(lookup_type)
     return jsonify(lookups_list)
 
 @app.route('/api/save_lookup', methods=['POST'])

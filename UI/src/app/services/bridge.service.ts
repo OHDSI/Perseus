@@ -204,7 +204,9 @@ export class BridgeService {
   findSimilarLinks(connection, area1, area2) {
     return Object.keys(this.arrowsCache).map(key => {
       const arrow = this.arrowsCache[ key ];
-      if (this.checkSimilar(arrow[ area1 ].name, connection[ area1 ].name) && this.checkSimilar(arrow[ area2 ].name, connection[ area2 ].name)) {
+      if (
+        this.checkSimilar(arrow[ area1 ].name, connection[ area1 ].name) &&
+        this.checkSimilar(arrow[ area2 ].name, connection[ area2 ].name)) {
         return key;
       }
     });
@@ -224,6 +226,8 @@ export class BridgeService {
     this.deleteAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
+    Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[arrowKey].connector.selected = false);
+
     this.storeService.add('filtered', configuration.filtered);
     this.storeService.add('version', configuration.cdmVersion);
     this.storeService.add('target', configuration.targetTables);

@@ -74,6 +74,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   activeTab = 0;
   lookupName;
+  lookupType;
 
   lookup = {};
   sql = {};
@@ -88,6 +89,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   ) {
     this.activeTab = payload[ 'tabIndex' ];
     this.lookupName = payload[ 'lookupName' ];
+    this.lookupType = payload['lookupType']
     this.transformationConfigs = [];
     this.sql = payload['sql']? payload['sql']: {};
 

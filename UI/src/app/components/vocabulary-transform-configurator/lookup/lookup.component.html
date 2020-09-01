@@ -10,20 +10,20 @@
         <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected">
           <mat-option *ngFor="let item of items; index as i"
                       [value]="item">
-            {{item.split('.')[1]}}
+            {{item.split('.')[0]}}
             <mat-icon svgIcon="edit"
                       (click)="edit($event, item)"
-                      *ngIf="item.split('.')[2] == 'userDefined'"></mat-icon>
+                      *ngIf="item.includes('userDefined')"></mat-icon>
             <mat-icon svgIcon="delete"
                       (click)="delete($event, item, i)"
-                      *ngIf="item.split('.')[2] == 'userDefined'"></mat-icon>
+                      *ngIf="item.includes('userDefined')"></mat-icon>
           </mat-option>
         </mat-select>
       </mat-form-field>
       <div class="preview-title">SQL Preview</div>
       <mat-expansion-panel [class.hidden]="!selected" class="select-preview">
         <mat-expansion-panel-header>
-          <mat-panel-title>{{selected.split('.')[0] | prettyName}}</mat-panel-title>
+          <mat-panel-title>{{lookupType | prettyName}}</mat-panel-title>
         </mat-expansion-panel-header>
         <textarea #disabledEditor disabled></textarea>
       </mat-expansion-panel>
@@ -37,7 +37,7 @@
     </div>
     <mat-form-field class="lookup-name" appearance="fill">
       <mat-label>Lookup Name</mat-label>
-      <input matInput (input)="onChangeName($event)" [value]="selected.split('.')[1]">
+      <input matInput (input)="onChangeName($event)" [value]="selected.split('.')[0]">
     </mat-form-field>
   </div>
 </div>
