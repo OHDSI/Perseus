@@ -14,7 +14,7 @@ import { TransformationCondition, TransformationConfig, TransformationConfigFact
 import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
-import { DeleteLinksWarningComponent } from '../popups/delete-links-warning/delete-links-warning.component';
+import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
 
 @Component({
   selector: 'app-transform-config',
@@ -75,6 +75,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   activeTab = 0;
   lookupName;
+  lookupType;
 
   lookup = {};
   sql = {};
@@ -91,6 +92,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   ) {
     this.activeTab = payload[ 'tabIndex' ];
     this.lookupName = payload[ 'lookupName' ];
+    this.lookupType = payload['lookupType']
     this.transformationConfigs = [];
     this.sql = payload['sql'] ? payload['sql'] : {};
     this.savedSql = {...this.sql};
@@ -231,13 +233,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   closeDialog() {
     if (this.activeTab === 0) {
-      const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+      const dialog = this.matDialog.open(DeleteWarningComponent, {
         closeOnNavigation: false,
         disableClose: false,
         panelClass: 'warning-dialog',
         data: {
-          header: 'Delete changes',
-          message: 'Unsaved changes to SQL Functions will be deleted. This action cannot be undone',
+          title: 'Changes',
+          message: 'Unsaved changes to SQL Functions will be deleted',
         }
       });
       dialog.afterClosed().subscribe(res => {

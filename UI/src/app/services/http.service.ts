@@ -72,12 +72,12 @@ export class HttpService {
     // return of(schemaData.data);
   }
 
-  getLookupsList() {
-    return this.httpClient.get<any>(API_URLS.getLookupsList());
+  getLookupsList(lookupType) {
+    return this.httpClient.get<any>(API_URLS.getLookupsList(), { params: { lookupType } });
   }
 
-  getLookup(name) {
-    return this.httpClient.get<any>(API_URLS.getLookup(), { params: { name } });
+  getLookup(name, lookupType) {
+    return this.httpClient.get<any>(API_URLS.getLookup(), { params: { name , lookupType} });
   }
 
   saveLookup(lookup) {

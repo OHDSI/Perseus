@@ -19,7 +19,7 @@ import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteLinksWarningComponent} from '../../popups/delete-links-warning/delete-links-warning.component';
+import { DeleteWarningComponent} from '../../popups/delete-warning/delete-warning.component';
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
@@ -65,8 +65,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
   @ViewChild('sourcePanel') sourcePanel: PanelComponent;
   @ViewChild('targetPanel') targetPanel: PanelComponent;
-
-
 
   constructor(
     private stateService: StateService,
@@ -135,8 +133,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
           positionStrategyFor: 'values',
-          payload: { lookup: arrow.lookup,
-                     sql: arrow.sql }
+          payload: {
+            arrow
+          }
         };
 
         const htmlElementId = arrow.target.name;
@@ -148,6 +147,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           if (connectionType) {
             const payload = {arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector};
             const selectedtabIndex = connectionType === 'L' ? 1 : 0;
+            const lookupType = arrow.connector.target.name.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
               disableClose: false,
@@ -158,6 +158,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 arrowCache: this.bridgeService.arrowsCache,
                 connector: arrow.connector,
                 lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
+                lookupType,
                 sql: arrow.sql,
                 tabIndex: selectedtabIndex
               }
@@ -173,9 +174,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
               }
 
               if (options && options[ 'originName' ] && options[ 'name' ] && options[ 'originName' ] !== options[ 'name' ]) {
-                this.dataService.saveLookup(this.lookup).subscribe(res => {
-                  console.log(res);
-                });
+                this.dataService.saveLookup(this.lookup, lookupType).subscribe();
               }
 
               if (options && options[ 'sql' ]) {
@@ -517,13 +516,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   deleteLinks() {
-    const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+    const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog',
       data: {
-        header: 'Delete Links',
-        message: 'You want to delete all links. This action cannot be undone',
+        title: 'Links',
+        message: 'You want to delete all links'
       }
     });
 

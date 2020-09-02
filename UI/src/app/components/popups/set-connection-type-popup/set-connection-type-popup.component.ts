@@ -13,9 +13,14 @@ export class SetConnectionTypePopupComponent {
 
   sqlLabel = 'SQL Function';
   lookupLabel = 'Lookup';
+  isDisabledLookup;
+
   constructor(
     public dialogRef: OverlayDialogRef,
-    @Inject(OVERLAY_DIALOG_DATA) public payload: any) { }
+    @Inject(OVERLAY_DIALOG_DATA) public payload: any
+    ) {
+      this.isDisabledLookup = !this.payload.arrow.target.name.endsWith('concept_id');
+    }
 
   openSqlFunctionDialog() {
     this.dialogRef.close({ connectionType: 'T' });
@@ -32,7 +37,4 @@ export class SetConnectionTypePopupComponent {
   toggleSqlCheckbox() {
     this.payload.sql.applied = !this.payload.sql.applied;
   }
-
-
-
 }

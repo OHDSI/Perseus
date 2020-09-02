@@ -255,12 +255,14 @@ def load_vocabulary_call():
 @app.route('/api/get_lookup')
 def get_lookup_by_name():
     name = request.args['name']
-    lookup = get_lookup(name)
+    lookup_type = request.args['lookupType']
+    lookup = get_lookup(name, lookup_type)
     return jsonify(lookup)
 
 @app.route('/api/get_lookups_list')
 def get_lookups():
-    lookups_list = get_lookups_list()
+    lookup_type = request.args['lookupType']
+    lookups_list = get_lookups_list(lookup_type)
     return jsonify(lookups_list)
 
 @app.route('/api/save_lookup', methods=['POST'])
@@ -271,7 +273,7 @@ def save_lookup():
     except Exception as error:
         print(error)
         raise InvalidUsage(error.__str__(), 400)
-    return 'OK'
+    return jsonify(success=True)
 
 @app.route('/api/delete_lookup', methods=['DELETE'])
 def delete_lookup():
@@ -280,7 +282,7 @@ def delete_lookup():
         del_lookup(name)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
-    return 'OK'
+    return jsonify(success=True)
 
 @app.route('/api/set_db_connection')
 def set_db_connection_call():

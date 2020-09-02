@@ -1,6 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ViewEncapsulation, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import { DataService } from 'src/app/services/data.service';
+import { DeleteWarningComponent} from '../../popups/delete-warning/delete-warning.component';
 
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
@@ -30,6 +32,7 @@ const editorSettings = {
 export class LookupComponent implements OnInit, AfterViewInit {
   @Input() lookup;
   @Input() name;
+  @Input() lookupType;
 
   @ViewChild('editor', { static: true }) editor;
   @ViewChild('disabledEditor', { static: true }) disabledEditor;
@@ -47,16 +50,17 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
   originText = '';
 
-  lookupType = '';
-
-  constructor(private dataService: DataService) {
-    this.updateItems();
+  constructor(
+    private dataService: DataService,
+    private matDialog: MatDialog) {
   }
 
   ngOnInit() {
     if (this.name) {
       this.selected = this.name;
     }
+
+    this.updateItems();
   }
 
   ngAfterViewInit() {
@@ -67,7 +71,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   updateItems() {
-    this.dataService.getLookupsList().subscribe(data => this.items = data);
+    this.dataService.getLookupsList(this.lookupType).subscribe(data => this.items = data);
   }
 
   initCodeMirror() {
@@ -84,14 +88,14 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
   refreshCodeMirror(value) {
     if (this.codeMirror1) {
-      this.dataService.getLookup(`template_${value.split('.')[ 0] }`).subscribe(data => this.codeMirror1.setValue(data));
+      const name = `template_${this.lookupType}`;
+      this.dataService.getLookup(name, this.lookupType).subscribe(data => this.codeMirror1.setValue(data));
     }
 
     if (this.codeMirror2) {
-      this.dataService.getLookup(value).subscribe(data => {
+      this.dataService.getLookup(value, this.lookupType).subscribe(data => {
         this.codeMirror2.setValue(data);
         this.originText = data;
-        this.lookupType = value.split('.')[ 0 ];
         this.lookup[ 'originName' ] = value;
       });
     }
@@ -111,7 +115,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   onChangeName(event) {
-    this.lookup['name'] = `${this.lookupType}.${event.currentTarget.value}.userDefined`;
+    this.lookup['name'] = `${event.currentTarget.value}.userDefined`;
   }
 
   selectLookup(event) {
@@ -127,7 +131,22 @@ export class LookupComponent implements OnInit, AfterViewInit {
   delete(event, item, index) {
     event.stopPropagation();
     event.preventDefault();
-    this.dataService.deleteLookup(item).subscribe();
-    this.updateItems();
+
+    const dialog = this.matDialog.open(DeleteWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog',
+      data: {
+        title: 'Lookup',
+        message: 'You want to delete lookup'
+      }
+    });
+
+    dialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.dataService.deleteLookup(item).subscribe();
+        this.updateItems();
+      }
+    });
   }
 }

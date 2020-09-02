@@ -1,12 +1,13 @@
 <div class="type">
     <input class="form-check-input"
            [disabled]="!configured"
-           [class.disabled]="!configured"
+           [class.disabled]="!configured || isDisabled"
            type="checkbox"
            [checked]="isTypeChecked"
            (change)="typeChecked()">
     <mat-label class="type-label"
-               (click)="typeSelected()">{{typeName}}</mat-label>
+               (click)="typeSelected()"
+               [class.disabled]="isDisabled">{{typeName}}</mat-label>
     <label class="configured"
            *ngIf=configured>configured</label>
 </div>
