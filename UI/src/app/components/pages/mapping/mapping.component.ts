@@ -127,9 +127,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       const endXYAttributeIndex = 7;
       const { upperLimit, lowerLimit } = this.getLimits(child.attributes[endXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
-        if (!arrow.connector.selected) {
-          return;
-        }
 
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
