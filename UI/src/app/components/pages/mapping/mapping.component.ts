@@ -164,24 +164,30 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             });
 
             transformDialogRef.afterClosed().subscribe((options: any) => {
-              if (options && options[ 'originName' ]) {
-                this.lookup = options;
-                this.lookup[ 'applied' ] = true;
-                this.bridgeService.setArrowType(child.id, connectionType);
-                const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
-                this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
-              }
+              if (options) {
+                const { lookup, sql } = options;
+                if (lookup[ 'originName' ]) {
+                  this.lookup = lookup;
+                  this.lookup[ 'applied' ] = true;
+                  const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
+                  this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
+                }
 
-              if (options && options[ 'originName' ] && options[ 'name' ] && options[ 'originName' ] !== options[ 'name' ]) {
-                this.dataService.saveLookup(this.lookup).subscribe(res => {
-                  console.log(res);
-                });
-              }
+                if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
+                  this.dataService.saveLookup(this.lookup).subscribe(res => {
+                    console.log(res);
+                  });
+                }
 
-              if (options && options[ 'sql' ]) {
-                arrow.sql = options;
-                arrow.sql['applied'] = true;
-                this.bridgeService.setArrowType(child.id, connectionType);
+                if (sql['name']) {
+                  arrow.sql = sql;
+                  arrow.sql[ 'applied' ] = true;
+                }
+                const appliedTransformations = lookup[ 'originName' ] && sql['name'] ? 'M' :
+                lookup[ 'originName' ] || sql['name'] ? lookup[ 'originName' ] ? 'L' : 'T' : '';
+                if (appliedTransformations) {
+                  this.bridgeService.setArrowType(child.id, appliedTransformations);
+                }
               }
             });
           }

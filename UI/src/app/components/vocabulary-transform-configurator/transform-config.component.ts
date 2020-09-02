@@ -78,7 +78,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   lookup = {};
   sql = {};
-  savedSql: {};
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
@@ -92,8 +91,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.activeTab = payload[ 'tabIndex' ];
     this.lookupName = payload[ 'lookupName' ];
     this.transformationConfigs = [];
-    this.sql = payload['sql'] ? payload['sql'] : {};
-    this.savedSql = {...this.sql};
+    this.sql = payload[ 'sql' ] ? {...payload[ 'sql' ]} : {};
 
     const { arrowCache, connector } = this.payload;
     const sourceFields = Object.values(arrowCache).map(row => row.connector.source.name);
@@ -194,7 +192,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   });
 
   delete = new Command({
-    execute: () => {},
+    execute: () => { },
     canExecute: () => true
   });
 
@@ -222,33 +220,24 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   add() {
-    if (this.activeTab === 0) {
-      this.dialogRef.close(this.sql);
-    } else {
-      this.dialogRef.close(this.lookup);
-    }
+    this.dialogRef.close({ lookup: this.lookup, sql: this.sql });
   }
 
   closeDialog() {
-    if (this.activeTab === 0) {
-      const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
-        closeOnNavigation: false,
-        disableClose: false,
-        panelClass: 'warning-dialog',
-        data: {
-          header: 'Delete changes',
-          message: 'Unsaved changes to SQL Functions will be deleted. This action cannot be undone',
-        }
-      });
-      dialog.afterClosed().subscribe(res => {
-        if (res) {
-          this.dialogRef.close(this.savedSql);
-        }
-      });
-    } else {
-      this.dialogRef.close();
-    }
-
+    const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog',
+      data: {
+        header: 'Delete changes',
+        message: 'Unsaved changes will be deleted. This action cannot be undone',
+      }
+    });
+    dialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.dialogRef.close();
+      }
+    });
   }
 
   cancel() {
