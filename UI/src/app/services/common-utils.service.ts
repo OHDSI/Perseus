@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 
 import { OpenMappingDialog } from '../app.component';
 import { CdmVersionDialogComponent } from '../components/popups/cdm-version-dialog/cdm-version-dialog.component';
-import { DeleteLinksWarningComponent } from '../components/popups/delete-links-warning/delete-links-warning.component';
+import { DeleteWarningComponent } from '../components/popups/delete-warning/delete-warning.component';
 import { OnBoardingComponent } from '../components/popups/on-boarding/on-boarding.component';
 import { OpenMappingDialogComponent } from '../components/popups/open-mapping-dialog/open-mapping-dialog.component';
 import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
@@ -206,7 +206,7 @@ export class CommonUtilsService {
   }
 
   deleteTableWithWarning() {
-    const dialog = this.matDialog.open(DeleteLinksWarningComponent, {
+    const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog'

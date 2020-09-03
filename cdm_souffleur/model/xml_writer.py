@@ -278,30 +278,29 @@ def delete_generated_sql():
     except FileNotFoundError:
         raise
 
-def get_lookups_list():
+def get_lookups_list(lookup_type):
     lookups_list = []
     folders = ['source_to_source', 'source_to_standard']
 
     def updateList(base_path, is_user_defined=False):
-        for folder in folders:
-            path = os.path.join(base_path, folder)
-            if os.path.isdir(path):
-                files = os.listdir(path)
-                lookups_list.extend(
-                    map(lambda x: f"{folder}.{x.replace('.txt', '')}.{'userDefined' if is_user_defined else 'predefined'}", files)
-                )
+        path = os.path.join(base_path, lookup_type)
+        if os.path.isdir(path):
+            files = os.listdir(path)
+            lookups_list.extend(
+                map(lambda x: f"{x.replace('.txt', '')}.{'userDefined' if is_user_defined else 'predefined'}", files)
+            )
 
     updateList(PREDEFINED_LOOKUPS_PATH)
     updateList(INCOME_LOOKUPS_PATH, True)
 
     return lookups_list
 
-def get_lookup(name):
+def get_lookup(name, lookup_type):
     lookup = ''
     parts = name.split('.')
     if len(parts) > 1:
         basepath = INCOME_LOOKUPS_PATH if parts[-1] == 'userDefined' else PREDEFINED_LOOKUPS_PATH
-        path = os.path.join(basepath, parts[0], f"{parts[1]}.txt")
+        path = os.path.join(basepath, lookup_type, f"{parts[0]}.txt")
     else:
         path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
     if os.path.isfile(path):
@@ -310,9 +309,9 @@ def get_lookup(name):
     return ''.join(lookup)
 
 def add_lookup(lookup):
-    parts = lookup['name'].split('.')
-    folder, name = parts[0], parts[1]
-    filepath = os.path.join(INCOME_LOOKUPS_PATH, folder)
+    name = lookup['name']
+    lookup_type = lookup['lookupType']
+    filepath = os.path.join(INCOME_LOOKUPS_PATH, lookup_type)
     filename = os.path.join(filepath, f'{name}.txt')
     if not os.path.isdir(filepath):
         os.makedirs(filepath)

@@ -10,6 +10,7 @@ export class TransformationTypeComponent {
 
   @Input() typeName: string;
   @Input() data;
+  @Input() isDisabled;
   @Output() selectedType = new EventEmitter<string>();
   @Output() toggleCheckbox = new EventEmitter<string>();
   configured = false;
@@ -28,6 +29,9 @@ export class TransformationTypeComponent {
   }
 
   typeSelected() {
+    if (this.isDisabled) {
+      return;
+    }
     this.selectedType.emit(this.typeName);
   }
 }
