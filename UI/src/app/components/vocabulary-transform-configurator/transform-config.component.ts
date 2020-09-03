@@ -232,7 +232,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       panelClass: 'warning-dialog',
       data: {
         title: 'changes',
-        message: 'Unsaved changes will be deleted. This action cannot be undone',
+        message: 'Unsaved changes will be deleted.',
       }
     });
     dialog.afterClosed().subscribe(res => {

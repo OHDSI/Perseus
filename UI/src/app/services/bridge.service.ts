@@ -380,8 +380,19 @@ export class BridgeService {
     };
 
     this.arrowsCache[ connector.id ] = connection;
+    this.copyTransformations(this.arrowsCache[ connector.id ]);
 
     this.connection.next(connection);
+  }
+
+  copyTransformations(arrow: any) {
+    const isSameTargetRow = (item) => item.connector.target.name.toUpperCase() === arrow.connector.target.name.toUpperCase();
+    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(isSameTargetRow)[ 0 ];
+    if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
+      if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
+      if (arrowWithSameTarget.sql) { arrow.sql = arrowWithSameTarget.sql; }
+      this.setArrowType(arrow.connector.id, arrowWithSameTarget.connector.type);
+    }
   }
 
   hideAllArrows(): void {

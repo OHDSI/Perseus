@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
@@ -18,8 +18,8 @@ import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SetConnectionTypePopupComponent} from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteWarningComponent} from '../../popups/delete-warning/delete-warning.component';
+import { SetConnectionTypePopupComponent } from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
+import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
 import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
@@ -29,7 +29,7 @@ import * as similarNamesMap from './similar-names-map.json';
 @Component({
   selector: 'app-mapping',
   templateUrl: './mapping.component.html',
-  styleUrls: ['./mapping.component.scss']
+  styleUrls: [ './mapping.component.scss' ]
 })
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   source: ITable[];
@@ -100,14 +100,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   startMarkerClick(offset: number, currentTarget: any) {
     let i = currentTarget.children.length - 1;
     while (i >= 0) {
-      const child = currentTarget.children[i];
+      const child = currentTarget.children[ i ];
       i--;
       if (child.localName !== 'path') {
         continue;
       }
 
       const startXYAttributeIndex = 6;
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[startXYAttributeIndex].value);
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[ startXYAttributeIndex ].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
         this.bridgeService.deleteArrow(child.id);
       }
@@ -123,7 +123,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       const arrow = this.bridgeService.arrowsCache[ child.id ];
 
       const endXYAttributeIndex = 7;
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[endXYAttributeIndex].value);
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[ endXYAttributeIndex ].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
 
         const dialogOptions: OverlayConfigOptions = {
@@ -142,7 +142,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
           if (connectionType) {
-            const payload = {arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector};
+            const payload = { arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector };
             const selectedtabIndex = connectionType === 'L' ? 1 : 0;
             const lookupType = arrow.connector.target.name.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
@@ -177,15 +177,20 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                   });
                 }
 
-                if (sql['name']) {
+                if (sql[ 'name' ] || sql[ 'name' ] === '') {
                   arrow.sql = sql;
-                  arrow.sql[ 'applied' ] = true;
+                  arrow.sql[ 'applied' ] = sql[ 'name' ] === '' ? false : true;
                 }
-                const appliedTransformations = lookup[ 'originName' ] && sql['name'] ? 'M' :
-                lookup[ 'originName' ] || sql['name'] ? lookup[ 'originName' ] ? 'L' : 'T' : '';
-                if (appliedTransformations) {
-                  this.bridgeService.setArrowType(child.id, appliedTransformations);
-                }
+
+                const isSameTargetRow = (item) => item.connector.target.name.toUpperCase() === arrow.connector.target.name.toUpperCase();
+                const connectedToSameTraget = Object.values(this.bridgeService.arrowsCache).filter(isSameTargetRow);
+                connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; });
+
+                const appliedTransformations = lookup[ 'originName' ] && sql[ 'name' ].length ? 'M' :
+                  lookup[ 'originName' ] || sql[ 'name' ].length ? lookup[ 'originName' ] ? 'L' : 'T' : 'None';
+                connectedToSameTraget.forEach(item => {
+                  this.bridgeService.setArrowType(item.connector.id, appliedTransformations);
+                });
               }
             });
           }
@@ -207,8 +212,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return !!rows.find(r => {
       return (
         r.name === row.name ||
-        (this.similarNamesMap[r.name] === this.similarNamesMap[row.name]) &&
-        (this.similarNamesMap[r.name] || this.similarNamesMap[row.name])
+        (this.similarNamesMap[ r.name ] === this.similarNamesMap[ row.name ]) &&
+        (this.similarNamesMap[ r.name ] || this.similarNamesMap[ row.name ])
       );
     });
   }
@@ -217,12 +222,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const rowsKey = `${area}Rows`;
     rows.forEach(row => {
       if (!this.checkIncludesRows(this[ rowsKey ], row)) {
-        this[rowsKey].push(row);
+        this[ rowsKey ].push(row);
         return;
       }
 
       if (!this.checkIncludesRows(similarRows, row)) {
-        const rowName = this.similarNamesMap[row.name] ? this.similarNamesMap[row.name] : row.name;
+        const rowName = this.similarNamesMap[ row.name ] ? this.similarNamesMap[ row.name ] : row.name;
         const rowForSimilar = {
           ...row,
           name: rowName,
@@ -253,7 +258,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       tables.push(similarSourceTable);
     }
 
-    this[area] = tables;
+    this[ area ] = tables;
   }
 
   prepareMappedTables(mappingConfig) {
@@ -331,9 +336,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.moveSimilarTables();
 
       setTimeout(() => {
-        this.bridgeService.refresh(this.target[this.targetTabIndex]);
-        this.sourcePanel.panel.reflectConnectorsPin(this.target[this.targetTabIndex]);
-        this.targetPanel.panel.reflectConnectorsPin(this.source[this.sourceTabIndex]);
+        this.bridgeService.refresh(this.target[ this.targetTabIndex ]);
+        this.sourcePanel.panel.reflectConnectorsPin(this.target[ this.targetTabIndex ]);
+        this.targetPanel.panel.reflectConnectorsPin(this.source[ this.sourceTabIndex ]);
         this.bridgeService.adjustArrowsPositions();
       }, 200);
     });
@@ -360,7 +365,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     super.ngOnDestroy();
   }
 
-  @HostListener('document:keyup', ['$event'])
+  @HostListener('document:keyup', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
       this.bridgeService.deleteSelectedArrows();
@@ -372,7 +377,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   previewMapping() {
-    const mapping = this.bridgeService.generateMapping(this.source[this.sourceTabIndex].name);
+    const mapping = this.bridgeService.generateMapping(this.source[ this.sourceTabIndex ].name);
 
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;
@@ -401,14 +406,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openFilter(target) {
-    const optionalSaveKey = this.target[this.targetTabIndex].name;
+    const optionalSaveKey = this.target[ this.targetTabIndex ].name;
 
-    const filteredFields = this.filteredFields ? this.filteredFields[optionalSaveKey] : this.filteredFields;
+    const filteredFields = this.filteredFields ? this.filteredFields[ optionalSaveKey ] : this.filteredFields;
     const types = filteredFields ? filteredFields.types : [];
     const checkedTypes = filteredFields ? filteredFields.checkedTypes : [];
 
     const options = (groups as any).default;
-    options['individual'] = this.target[this.targetTabIndex].rows.map(row => {
+    options[ 'individual' ] = this.target[ this.targetTabIndex ].rows.map(row => {
       if (!options.common.includes(row.name) && !options.concept.includes(row.name)) {
         return row.name;
       }
@@ -430,7 +435,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   getFilteredFields() {
-    return this.filteredFields ? this.filteredFields[this.target[this.targetTabIndex].name] : [];
+    return this.filteredFields ? this.filteredFields[ this.target[ this.targetTabIndex ].name ] : [];
   }
 
   onPanelOpen() {
@@ -492,7 +497,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isDisabled(tableName: string): boolean {
-    const activeTableName = this.source[this.sourceTabIndex].name;
+    const activeTableName = this.source[ this.sourceTabIndex ].name;
     return !this.mappingConfig.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 
@@ -502,17 +507,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     return (
-      this.source[this.sourceTabIndex].name === this.similarTableName ||
-      this.target[this.targetTabIndex].name === this.similarTableName
+      this.source[ this.sourceTabIndex ].name === this.similarTableName ||
+      this.target[ this.targetTabIndex ].name === this.similarTableName
     );
   }
 
   isTooltipDisabled() {
     return !(
       this.filteredFields &&
-      this.filteredFields[this.target[this.targetTabIndex].name] &&
-      this.filteredFields[this.target[this.targetTabIndex].name].types &&
-      this.filteredFields[this.target[this.targetTabIndex].name].types.length
+      this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
+      this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
+      this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
     );
   }
 
