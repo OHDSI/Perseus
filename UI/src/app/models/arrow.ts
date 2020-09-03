@@ -152,7 +152,8 @@ export class Arrow implements IConnector {
 
     const isTypeT = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-T)');
     const isTypeL = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-L)');
-    const markerType = isTypeL ? '-L' : isTypeT ? '-T' : '';
+    const isTypeM = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-M)');
+    const markerType = isTypeL ? '-L' : isTypeT ? '-T' : isTypeM ? '-M' : '';
     const markerState = state ? '-active' : '';
 
     this.renderer.removeAttribute(this.svgPath, `marker-start`);
