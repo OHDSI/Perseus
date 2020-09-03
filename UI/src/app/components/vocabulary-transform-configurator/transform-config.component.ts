@@ -231,7 +231,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       disableClose: false,
       panelClass: 'warning-dialog',
       data: {
-        header: 'changes',
+        title: 'changes',
         message: 'Unsaved changes will be deleted. This action cannot be undone',
       }
     });
