@@ -310,15 +310,16 @@ export class BridgeService {
 
   deleteArrow(key: string, force = false) {
     const savedConnection = cloneDeep(this.arrowsCache[ key ]);
+    if (savedConnection) {
+      if (!savedConnection.connector.selected && !force) {
+        return;
+      }
 
-    if (!savedConnection.connector.selected && !force) {
-      return;
-    }
+      this._deleteArrow(key, savedConnection);
 
-    this._deleteArrow(key, savedConnection);
-
-    if (savedConnection.source.tableName === 'similar' || savedConnection.target.tableName === 'similar') {
-      this.deleteSimilar(savedConnection);
+      if (savedConnection.source.tableName === 'similar' || savedConnection.target.tableName === 'similar') {
+        this.deleteSimilar(savedConnection);
+      }
     }
   }
 
