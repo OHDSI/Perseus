@@ -182,8 +182,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                   arrow.sql[ 'applied' ] = sql[ 'name' ] === '' ? false : true;
                 }
 
-                const isSameTargetRow = (item) => item.connector.target.name.toUpperCase() === arrow.connector.target.name.toUpperCase();
-                const connectedToSameTraget = Object.values(this.bridgeService.arrowsCache).filter(isSameTargetRow);
+                const connectedToSameTraget = Object.values(this.bridgeService.arrowsCache).
+                filter(this.bridgeService.sourceConnectedToSameTarget(arrow));
                 connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; });
 
                 const appliedTransformations = lookup[ 'originName' ] && sql[ 'name' ].length ? 'M' :
@@ -199,6 +199,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
     }
   }
+
 
   getLimits(value: string) {
     const offset = 8;

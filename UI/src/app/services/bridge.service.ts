@@ -385,9 +385,14 @@ export class BridgeService {
     this.connection.next(connection);
   }
 
+  sourceConnectedToSameTarget(value: any) {
+    return (item: any ) => {
+      return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase()
+    }
+  }
+
   copyTransformations(arrow: any) {
-    const isSameTargetRow = (item) => item.connector.target.name.toUpperCase() === arrow.connector.target.name.toUpperCase();
-    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(isSameTargetRow)[ 0 ];
+    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow))[ 0 ];
     if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
       if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
       if (arrowWithSameTarget.sql) { arrow.sql = arrowWithSameTarget.sql; }
