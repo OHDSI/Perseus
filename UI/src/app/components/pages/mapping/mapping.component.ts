@@ -183,8 +183,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 }
 
                 const connectedToSameTraget = Object.values(this.bridgeService.arrowsCache).
-                filter(this.bridgeService.sourceConnectedToSameTarget(arrow));
-                connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; });
+                filter(this.bridgeService.sourceConnectedToSameTarget(arrow, false));
+                connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; }); 
 
                 const appliedTransformations = lookup[ 'originName' ] && sql[ 'name' ].length ? 'M' :
                   lookup[ 'originName' ] || sql[ 'name' ].length ? lookup[ 'originName' ] ? 'L' : 'T' : 'None';

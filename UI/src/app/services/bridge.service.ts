@@ -226,7 +226,7 @@ export class BridgeService {
     this.deleteAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
-    Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[arrowKey].connector.selected = false);
+    Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
 
     this.storeService.add('filtered', configuration.filtered);
     this.storeService.add('version', configuration.cdmVersion);
@@ -385,18 +385,25 @@ export class BridgeService {
     this.connection.next(connection);
   }
 
-  sourceConnectedToSameTarget(value: any) {
-    return (item: any ) => {
-      return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase()
+  sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
+    return (item: IConnection) => {
+      const tableName = value.connector.target.tableName.toUpperCase();
+      if (tableName === 'SIMILAR' && !draw) {
+        return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase();
+      } else {
+        return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
+          item.connector.target.tableName.toUpperCase() === tableName;
+      }
     }
   }
 
   copyTransformations(arrow: any) {
-    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow))[ 0 ];
+    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
     if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
       if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
       if (arrowWithSameTarget.sql) { arrow.sql = arrowWithSameTarget.sql; }
-      this.setArrowType(arrow.connector.id, arrowWithSameTarget.connector.type);
+      const connectorType = arrowWithSameTarget.connector.type ? arrowWithSameTarget.connector.type : 'None';
+      this.setArrowType(arrow.connector.id, connectorType);
     }
   }
 

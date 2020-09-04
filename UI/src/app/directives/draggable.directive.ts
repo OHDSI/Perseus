@@ -103,7 +103,8 @@ export class DraggableDirective implements OnInit {
     if (element) {
       const row = this.row;
 
-      if (this.area === 'source' && this.bridgeService.sourceRow || this.area === 'target' && this.bridgeService.targetRow) {
+      if (this.area === 'source' && this.bridgeService.sourceRow && !this.bridgeService.targetRow
+      || this.area === 'target' && this.bridgeService.targetRow && !this.bridgeService.sourceRow) {
         const replacerowindex = this.table.rows.findIndex(selectedRow => selectedRow.name === row.name);
         moveItemInArray(this.table.rows, this.bridgeService.draggedRowIndex, replacerowindex);
         this.bridgeService.newRowIndex = replacerowindex;

@@ -99,7 +99,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
     const { arrowCache, connector } = this.payload;
     const sourceFields = Object.values(arrowCache).
-    filter(this.bridgeService.sourceConnectedToSameTarget(arrowCache[connector.id])).map(item => item.source.name);
+    filter(this.bridgeService.sourceConnectedToSameTarget(arrowCache[connector.id], true)).map(item => item.source.name);
+
     this.sourceField = sourceFields;
     this.targetField = connector.target.name;
     this.connector = connector;
