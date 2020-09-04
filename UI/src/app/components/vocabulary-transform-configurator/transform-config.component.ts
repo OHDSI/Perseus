@@ -15,6 +15,7 @@ import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/interface/connector.interface';
 import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
 import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-transform-config',
@@ -87,6 +88,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     private snakbar: MatSnackBar,
     private addCondition: MatDialog,
     private stateService: StateService,
+    private bridgeService: BridgeService,
     vocabulariesService: VocabulariesService
   ) {
     this.activeTab = payload[ 'tabIndex' ];
@@ -96,7 +98,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.sql = payload[ 'sql' ] ? {...payload[ 'sql' ]} : {};
 
     const { arrowCache, connector } = this.payload;
-    const sourceFields = Object.values(arrowCache).map(row => row.connector.source.name);
+    const sourceFields = Object.values(arrowCache).
+    filter(this.bridgeService.sourceConnectedToSameTarget(arrowCache[connector.id])).map(item => item.source.name);
     this.sourceField = sourceFields;
     this.targetField = connector.target.name;
     this.connector = connector;
