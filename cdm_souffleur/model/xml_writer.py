@@ -280,29 +280,29 @@ def delete_generated_sql():
 
 def get_lookups_list(lookup_type):
     lookups_list = []
-    folders = ['source_to_source', 'source_to_standard']
 
-    def updateList(base_path, is_user_defined=False):
+    def updateList(base_path):
         path = os.path.join(base_path, lookup_type)
         if os.path.isdir(path):
             files = os.listdir(path)
             lookups_list.extend(
-                map(lambda x: f"{x.replace('.txt', '')}.{'userDefined' if is_user_defined else 'predefined'}", files)
+                map(lambda x: f"{x.replace('.txt', '')}", files)
             )
 
     updateList(PREDEFINED_LOOKUPS_PATH)
-    updateList(INCOME_LOOKUPS_PATH, True)
+    updateList(INCOME_LOOKUPS_PATH)
 
     return lookups_list
 
 def get_lookup(name, lookup_type):
     lookup = ''
-    parts = name.split('.')
-    if len(parts) > 1:
-        basepath = INCOME_LOOKUPS_PATH if parts[-1] == 'userDefined' else PREDEFINED_LOOKUPS_PATH
-        path = os.path.join(basepath, lookup_type, f"{parts[0]}.txt")
+    if len(name.split('.')) > 1:
+        path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
     else:
-        path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
+        if 'template' in name:
+            path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
+        else:
+            path = os.path.join(PREDEFINED_LOOKUPS_PATH, lookup_type, f"{name}.txt")
     if os.path.isfile(path):
         with open(path, mode='r') as f:
             lookup = f.readlines()
@@ -319,9 +319,8 @@ def add_lookup(lookup):
     with open(filename, mode='w') as f:
         f.write(lookup['value'])
 
-def del_lookup(name):
-    parts = name.split('.')
-    path = os.path.join(INCOME_LOOKUPS_PATH, parts[0], f"{parts[1]}.txt")
+def del_lookup(name, lookup_type):
+    path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
     if os.path.isfile(path):
         os.remove(path)
 
