@@ -12,6 +12,7 @@ import pandas as pd
 from shutil import rmtree
 import zipfile
 import os
+import shutil
 from pathlib import Path
 
 
@@ -82,6 +83,10 @@ def get_lookup_data(filepath):
 
 
 def create_lookup(lookup, target_field, mapping):
+
+    if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
+        shutil.rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
+
     try:
         os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)
         print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created')
@@ -135,7 +140,7 @@ def create_lookup(lookup, target_field, mapping):
         lookup_body_data = get_lookup_data(lookup_body_filepath)
         parts = lookup_body_data.split('\n\n')
 
-        lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
+        lookup_filepath = os.path.join(basepath, folder, f'{lookup}.txt')
         lookup_body_data = get_lookup_data(lookup_filepath)
 
         results_data = template_data.replace('{base}', parts[0]).replace('{source_to_standard}', f'{parts[1]}\n{lookup_body_data}')

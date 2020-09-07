@@ -119,6 +119,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   selectLookup(event) {
+    this.lookup['name'] = event.value;
     this.initCodeMirror();
     this.refreshCodeMirror(event.value);
   }

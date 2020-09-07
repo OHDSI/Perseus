@@ -171,7 +171,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                   this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
                 }
 
-                if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
+                if (
+                  lookup[ 'name' ] && lookup[ 'name' ].includes('userDefined') ||
+                  lookup[ 'originName' ] && lookup[ 'originName' ].includes('userDefined')
+                ) {
                   this.dataService.saveLookup(this.lookup, lookupType).subscribe(res => {
                     console.log(res);
                   });
@@ -184,7 +187,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
                 const connectedToSameTraget = Object.values(this.bridgeService.arrowsCache).
                 filter(this.bridgeService.sourceConnectedToSameTarget(arrow, false));
-                connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; }); 
+                connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; });
 
                 const appliedTransformations = lookup[ 'originName' ] && sql[ 'name' ].length ? 'M' :
                   lookup[ 'originName' ] || sql[ 'name' ].length ? lookup[ 'originName' ] ? 'L' : 'T' : 'None';
