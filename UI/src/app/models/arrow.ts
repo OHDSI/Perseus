@@ -125,18 +125,22 @@ export class Arrow implements IConnector {
   }
 
   setEndMarkerType(type): void {
-    this.refreshPathHtmlElement();
+    if (this.svgPath) {
+      this.refreshPathHtmlElement();
+      if (this.svgPath) {
 
-    const isActive = this.svgPath.attributes[markerEndAttributeIndex].value.includes('active');
+        const isActive = this.svgPath.attributes[ markerEndAttributeIndex ].value.includes('active');
 
-    this.renderer.removeAttribute(this.svgPath, 'marker-end');
+        this.renderer.removeAttribute(this.svgPath, 'marker-end');
 
-    this.type = type === 'None' ? '' : type;
-    const markerType = type === 'None' ? '' : `-${type}`;
-    const markerState = isActive ? '-active' : '';
-    const markerEnd = `url(#marker-end${markerState}${markerType})`;
+        this.type = type === 'None' ? '' : type;
+        const markerType = type === 'None' ? '' : `-${type}`;
+        const markerState = isActive ? '-active' : '';
+        const markerEnd = `url(#marker-end${markerState}${markerType})`;
 
-    this.renderer.setAttribute(this.svgPath, 'marker-end', markerEnd);
+        this.renderer.setAttribute(this.svgPath, 'marker-end', markerEnd);
+      }
+    }
   }
 
   select() {

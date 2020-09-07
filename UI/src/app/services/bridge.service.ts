@@ -226,7 +226,7 @@ export class BridgeService {
     this.deleteAllArrows();
 
     this.arrowsCache = Object.assign(configuration.arrows);
-    Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[arrowKey].connector.selected = false);
+    Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
 
     this.storeService.add('filtered', configuration.filtered);
     this.storeService.add('version', configuration.cdmVersion);
@@ -310,15 +310,16 @@ export class BridgeService {
 
   deleteArrow(key: string, force = false) {
     const savedConnection = cloneDeep(this.arrowsCache[ key ]);
+    if (savedConnection) {
+      if (!savedConnection.connector.selected && !force) {
+        return;
+      }
 
-    if (!savedConnection.connector.selected && !force) {
-      return;
-    }
+      this._deleteArrow(key, savedConnection);
 
-    this._deleteArrow(key, savedConnection);
-
-    if (savedConnection.source.tableName === 'similar' || savedConnection.target.tableName === 'similar') {
-      this.deleteSimilar(savedConnection);
+      if (savedConnection.source.tableName === 'similar' || savedConnection.target.tableName === 'similar') {
+        this.deleteSimilar(savedConnection);
+      }
     }
   }
 
@@ -380,8 +381,31 @@ export class BridgeService {
     };
 
     this.arrowsCache[ connector.id ] = connection;
+    this.copyTransformations(this.arrowsCache[ connector.id ]);
 
     this.connection.next(connection);
+  }
+
+  sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
+    return (item: IConnection) => {
+      const tableName = value.connector.target.tableName.toUpperCase();
+      if (tableName === 'SIMILAR' && !draw) {
+        return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase();
+      } else {
+        return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
+          item.connector.target.tableName.toUpperCase() === tableName;
+      }
+    }
+  }
+
+  copyTransformations(arrow: any) {
+    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
+    if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
+      if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
+      if (arrowWithSameTarget.sql) { arrow.sql = arrowWithSameTarget.sql; }
+      const connectorType = arrowWithSameTarget.connector.type ? arrowWithSameTarget.connector.type : 'None';
+      this.setArrowType(arrow.connector.id, connectorType);
+    }
   }
 
   hideAllArrows(): void {
