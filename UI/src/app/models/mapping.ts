@@ -22,6 +22,7 @@ export interface MappingNode {
   target_field: string;
   sql_field: string;
   sql_alias: string;
+  lookup: string;
 }
 
 export interface MappingPair {
