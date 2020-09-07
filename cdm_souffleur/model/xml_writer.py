@@ -70,6 +70,79 @@ def prepare_sql(mapping_items, source_table):
            'ORDER BY PERSON_ID'
     return sql
 
+def has_pair(field_name, mapping):
+    for item in mapping:
+        if item['target_field'] == field_name:
+            return True
+    return False
+
+def get_lookup_data(filepath):
+    with open(filepath, mode='r') as f:
+        return f.read()
+
+
+def create_lookup(lookup, target_field, mapping):
+    try:
+        os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)
+        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created')
+    except FileExistsError:
+        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist')
+
+    if target_field.endswith('source_concept_id'):
+        return
+    else:
+        pair_target_field = target_field.replace('concept_id', 'source_concept_id')
+
+    folder = 'source_to_standard'
+
+    if lookup.endswith('userDefined'):
+        basepath = INCOME_LOOKUPS_PATH
+    else:
+        basepath = PREDEFINED_LOOKUPS_PATH
+
+    if has_pair(pair_target_field, mapping):
+        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, 'template_result.txt')
+        template_data = get_lookup_data(template_filepath)
+
+        lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
+        lookup_body_data = get_lookup_data(lookup_body_filepath)
+        parts = lookup_body_data.split('\n\n')
+
+        lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
+        lookup_data = get_lookup_data(lookup_filepath)
+
+        replace_key_0 = '{base}'.replace('base', f'base_{folder}')
+        replace_key_1 = '{_}'.replace('_', folder)
+        results_data = template_data.replace(replace_key_0, parts[0]).replace(replace_key_1, f'{parts[1]}\n{lookup_data}')
+
+        folder = 'source_to_source'
+
+        lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
+        lookup_body_data = get_lookup_data(lookup_body_filepath)
+        parts = lookup_body_data.split('\n\n')
+
+        lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
+        lookup_data = get_lookup_data(lookup_filepath)
+
+        replace_key_0 = '{base}'.replace('base', f'base_{folder}')
+        replace_key_1 = '{_}'.replace('_', folder)
+        results_data = results_data.replace(replace_key_0, parts[0]).replace(replace_key_1, f'{parts[1]}\n{lookup_data}')
+    else:
+        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, 'template_result_only_source_to_standard.txt')
+        template_data = get_lookup_data(template_filepath)
+
+        lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
+        lookup_body_data = get_lookup_data(lookup_body_filepath)
+        parts = lookup_body_data.split('\n\n')
+
+        lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
+        lookup_body_data = get_lookup_data(lookup_filepath)
+
+        results_data = template_data.replace('{base}', parts[0]).replace('{source_to_standard}', f'{parts[1]}\n{lookup_body_data}')
+
+    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
+    with open(result_filepath, mode='w') as f:
+        f.write(results_data)
 
 def get_xml(json_):
     """prepare XML for CDM"""
@@ -88,8 +161,8 @@ def get_xml(json_):
 
         for index, record_data in target_tables.iterrows():
             option = record_data.get('option')
-            lookup = record_data.get('lookup')
             mapping = record_data.get('mapping')
+            lookup = mapping[0].get('lookup', None)
             condition = record_data.get('condition')
             target_table_name = record_data.get('target_table')
             tag_name = _convert_underscore_to_camel(target_table_name)
@@ -119,33 +192,36 @@ def get_xml(json_):
                     v.text = sql_alias if sql_alias else source_field
 
             if lookup is not None:
-                for row in lookup:
-                    if row:
-                        concepts_tag = SubElement(domain_definition_tag, 'Concepts')
-                        concept_tag = SubElement(concepts_tag, 'Concept')
-                        options = row.get('options')
-                        if options is not None:
-                            for key, value in options.items():
-                                SubElement(concept_tag, key).text = value
-                        vocabulary = row.get('lookup')
-                        if vocabulary:
-                            concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
-                            mapper = SubElement(concept_id_mapper, 'Mapper')
-                            lookup = SubElement(mapper, 'Lookup')
-                            lookup.text = vocabulary
-                        fields = row.get('fields')
-                        if fields:
-                            fields_tag = SubElement(concept_tag, 'Fields')
-                            # TODO: field is dict with default value and other optional parameters and add validation
-                            # typeId - значение пойдет в ConceptTypeId
-                            # conceptId - значение пойдет в ConceptId
-                            # eventDate - дата из поля будет влиять на маппинг(у концептов есть валидные даты в словаре)
-                            # defaultTypeId - если не смапилось, будет использовано это значение в ConceptTypeId
-                            # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
-                            # defaultSource - занечение пойдет в SourceValue
-                            # isNullable - запись создасться, даже если в raw был NULL
-                            for field in fields:
-                                SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
+                create_lookup(lookup, mapping[0]['target_field'], mapping)
+
+
+                # for row in lookup:
+                #     if row:
+                #         concepts_tag = SubElement(domain_definition_tag, 'Concepts')
+                #         concept_tag = SubElement(concepts_tag, 'Concept')
+                #         options = row.get('options')
+                #         if options is not None:
+                #             for key, value in options.items():
+                #                 SubElement(concept_tag, key).text = value
+                #         vocabulary = row.get('lookup')
+                #         if vocabulary:
+                #             concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
+                #             mapper = SubElement(concept_id_mapper, 'Mapper')
+                #             lookup = SubElement(mapper, 'Lookup')
+                #             lookup.text = vocabulary
+                #         fields = row.get('fields')
+                #         if fields:
+                #             fields_tag = SubElement(concept_tag, 'Fields')
+                #             # TODO: field is dict with default value and other optional parameters and add validation
+                #             # typeId - значение пойдет в ConceptTypeId
+                #             # conceptId - значение пойдет в ConceptId
+                #             # eventDate - дата из поля будет влиять на маппинг(у концептов есть валидные даты в словаре)
+                #             # defaultTypeId - если не смапилось, будет использовано это значение в ConceptTypeId
+                #             # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
+                #             # defaultSource - занечение пойдет в SourceValue
+                #             # isNullable - запись создасться, даже если в raw был NULL
+                #             for field in fields:
+                #                 SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
             previous_target_table_name = target_table_name
         xml = ElementTree(query_definition_tag)
         try:
