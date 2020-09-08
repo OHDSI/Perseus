@@ -72,7 +72,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   targetField: string;
   connector: IConnector;
 
-  tabs = [ 'SQL Function', 'Lookup' ];
+  tab: string;
 
   activeTab = 0;
   lookupName;
@@ -91,11 +91,11 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     private bridgeService: BridgeService,
     vocabulariesService: VocabulariesService
   ) {
-    this.activeTab = payload[ 'tabIndex' ];
     this.lookupName = payload[ 'lookupName' ];
     this.lookupType = payload['lookupType']
     this.transformationConfigs = [];
     this.sql = payload[ 'sql' ] ? {...payload[ 'sql' ]} : {};
+    this.tab = payload['tab'];
 
     const { arrowCache, connector } = this.payload;
     const sourceFields = Object.values(arrowCache).
@@ -104,7 +104,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.sourceField = sourceFields;
     this.targetField = connector.target.name;
     this.connector = connector;
-    this.titleInfo = `(${sourceFields.join(', ')}) - ${connector.target.name}`;
+    this.titleInfo = `(${[ ...new Set(sourceFields) ].join(',')}) - ${connector.target.name}`;
     if (
       arrowCache[ connector.id ] &&
       arrowCache[ connector.id ].transformationConfigs
@@ -217,16 +217,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.init();
   }
 
-  trackByFn(index, item) {
-    return index;
-  }
-
-  onTabIndexChanged(index: number) {
-    this.activeTab = index;
-  }
-
   add() {
-    this.dialogRef.close({ lookup: this.lookup, sql: this.sql });
+    this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup}) : this.dialogRef.close({sql: this.sql });
   }
 
   closeDialog() {

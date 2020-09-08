@@ -539,4 +539,15 @@ export class BridgeService {
     return null;
   }
 
+  updateConnectedRows(arrow: IConnection) {
+    const connectedToSameTraget = Object.values(this.arrowsCache).
+      filter(this.sourceConnectedToSameTarget(arrow, false));
+    connectedToSameTraget.forEach(item => { item.lookup = { ...arrow.lookup }; item.sql = { ...arrow.sql }; });
+    const applyedL = arrow.lookup ? arrow.lookup[ 'applied' ] ? true : false : false;
+    const applyedT = arrow.sql ? arrow.sql[ 'applied' ] ? true : false : false;
+    const appliedTransformations = applyedL && applyedT ? 'M' : applyedL || applyedT ? applyedL ? 'L' : 'T' : 'None';
+    connectedToSameTraget.forEach(item => {
+      this.setArrowType(item.connector.id, appliedTransformations);
+    });
+  }
 }

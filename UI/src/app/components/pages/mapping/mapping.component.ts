@@ -143,7 +143,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           const { connectionType } = configOptions;
           if (connectionType) {
             const payload = { arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector };
-            const selectedtabIndex = connectionType === 'L' ? 1 : 0;
+            const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
             const lookupType = arrow.connector.target.name.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
@@ -157,40 +157,34 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
                 lookupType,
                 sql: arrow.sql,
-                tabIndex: selectedtabIndex
+                tab: selectedtab
               }
             });
 
             transformDialogRef.afterClosed().subscribe((options: any) => {
               if (options) {
                 const { lookup, sql } = options;
-                if (lookup[ 'originName' ]) {
-                  this.lookup = lookup;
-                  this.lookup[ 'applied' ] = true;
-                  const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
-                  this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
+                if (lookup) {
+                  if (lookup[ 'originName' ]) {
+                    this.lookup = lookup;
+                    this.lookup[ 'applied' ] = true;
+                    const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
+                    this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
+                  }
+
+                  if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
+                    this.dataService.saveLookup(this.lookup, lookupType).subscribe(res => {
+                      console.log(res);
+                    });
+                  }
                 }
-
-                if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
-                  this.dataService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                    console.log(res);
-                  });
+                if (sql) {
+                  if (sql[ 'name' ] || sql[ 'name' ] === '') {
+                    arrow.sql = sql;
+                    arrow.sql[ 'applied' ] = sql[ 'name' ] === '' ? false : true;
+                  }
                 }
-
-                if (sql[ 'name' ] || sql[ 'name' ] === '') {
-                  arrow.sql = sql;
-                  arrow.sql[ 'applied' ] = sql[ 'name' ] === '' ? false : true;
-                }
-
-                const connectedToSameTraget = Object.values(this.bridgeService.arrowsCache).
-                filter(this.bridgeService.sourceConnectedToSameTarget(arrow, false));
-                connectedToSameTraget.forEach(item => { item.lookup = arrow.lookup; item.sql = arrow.sql; }); 
-
-                const appliedTransformations = lookup[ 'originName' ] && sql[ 'name' ].length ? 'M' :
-                  lookup[ 'originName' ] || sql[ 'name' ].length ? lookup[ 'originName' ] ? 'L' : 'T' : 'None';
-                connectedToSameTraget.forEach(item => {
-                  this.bridgeService.setArrowType(item.connector.id, appliedTransformations);
-                });
+                this.bridgeService.updateConnectedRows(arrow);
               }
             });
           }

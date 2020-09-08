@@ -4,14 +4,14 @@
           mat-dialog-close>close
   </mat-icon>
 
-  <mat-tab-group selectedIndex="{{activeTab}}" (selectedIndexChange)="onTabIndexChanged($event)">
-    <mat-tab
-      [label]="tab"
-      *ngFor="let tab of tabs; trackBy: trackByFn"
-    >
+  <mat-tab-group >
+    <mat-tab [label]="tab">
       <app-sql-transformation [sql]="sql"
                               *ngIf="tab === 'SQL Function'"></app-sql-transformation>
-      <app-lookup *ngIf="tab === 'Lookup'" [lookupType]="lookupType" [lookup]="lookup" [name]="lookupName"></app-lookup>
+      <app-lookup *ngIf="tab === 'Lookup'"
+                  [lookupType]="lookupType"
+                  [lookup]="lookup"
+                  [name]="lookupName"></app-lookup>
     </mat-tab>
   </mat-tab-group>
 
