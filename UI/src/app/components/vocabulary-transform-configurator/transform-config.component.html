@@ -1,20 +1,14 @@
 <div class="apply-transformation">
-  <h3>Apply Transfomation <span>{{ titleInfo }}</span></h3>
+  <h3>Apply {{tab}} Transfomation <span>{{ titleInfo }}</span></h3>
   <mat-icon class="close"
           mat-dialog-close>close
   </mat-icon>
-
-  <mat-tab-group >
-    <mat-tab [label]="tab">
       <app-sql-transformation [sql]="sql"
                               *ngIf="tab === 'SQL Function'"></app-sql-transformation>
       <app-lookup *ngIf="tab === 'Lookup'"
                   [lookupType]="lookupType"
                   [lookup]="lookup"
                   [name]="lookupName"></app-lookup>
-    </mat-tab>
-  </mat-tab-group>
-
   <div class="buttons">
     <button
       mat-button
