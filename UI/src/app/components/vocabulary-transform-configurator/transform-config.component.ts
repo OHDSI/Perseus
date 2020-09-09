@@ -104,7 +104,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.sourceField = sourceFields;
     this.targetField = connector.target.name;
     this.connector = connector;
-    this.titleInfo = `(${[ ...new Set(sourceFields) ].join(',')}) - ${connector.target.name}`;
+    this.titleInfo = `${[ ...new Set(sourceFields) ].join(',')} - ${connector.target.name}`;
     if (
       arrowCache[ connector.id ] &&
       arrowCache[ connector.id ].transformationConfigs
