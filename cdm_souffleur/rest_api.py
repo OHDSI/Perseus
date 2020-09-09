@@ -279,7 +279,8 @@ def save_lookup():
 def delete_lookup():
     try:
         name = request.args['name']
-        del_lookup(name)
+        lookup_type = request.args['lookupType']
+        del_lookup(name, lookup_type)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(success=True)

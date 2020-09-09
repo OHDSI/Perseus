@@ -119,6 +119,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   selectLookup(event) {
+    this.lookup['name'] = event.value;
     this.initCodeMirror();
     this.refreshCodeMirror(event.value);
   }
@@ -144,8 +145,9 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
     dialog.afterClosed().subscribe(res => {
       if (res) {
-        this.dataService.deleteLookup(item).subscribe();
-        this.updateItems();
+        this.dataService.deleteLookup(item, this.lookupType).subscribe(_ => {
+          this.updateItems();
+        });
       }
     });
   }

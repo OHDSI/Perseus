@@ -37,9 +37,9 @@ WITH source_to_source AS (
 		c2.standard_concept AS TARGET_STANDARD_CONCEPT
 	FROM source_to_concept_map stcm
 	LEFT OUTER JOIN CONCEPT c1
-    ON c1.concept_id = stcm.source_concept_id
+    ON c1.concept_id=stcm.source_concept_id
 	LEFT OUTER JOIN CONCEPT c2
-    ON c2.CONCEPT_ID = stcm.target_concept_id
+    ON c2.CONCEPT_ID=stcm.target_concept_id
 	WHERE stcm.INVALID_REASON IS NULL
 )
 

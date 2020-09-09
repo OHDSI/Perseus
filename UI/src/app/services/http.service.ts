@@ -84,7 +84,7 @@ export class HttpService {
     return this.httpClient.post(API_URLS.saveLookup(), lookup);
   }
 
-  deleteLookup(name) {
-    return this.httpClient.delete(API_URLS.deleteLookup(), { params: { name } });
+  deleteLookup(name, lookupType) {
+    return this.httpClient.delete(API_URLS.deleteLookup(), { params: { name , lookupType } });
   }
 }

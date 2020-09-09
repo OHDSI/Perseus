@@ -11,11 +11,11 @@
           <mat-option *ngFor="let item of items; index as i"
                       [value]="item">
             {{item.split('.')[0]}}
-            <mat-icon svgIcon="edit"
-                      (click)="edit($event, item)"
-                      *ngIf="item.includes('userDefined')"></mat-icon>
             <mat-icon svgIcon="delete"
                       (click)="delete($event, item, i)"
+                      *ngIf="item.includes('userDefined')"></mat-icon>
+            <mat-icon svgIcon="edit"
+                      (click)="edit($event, item)"
                       *ngIf="item.includes('userDefined')"></mat-icon>
           </mat-option>
         </mat-select>
@@ -35,9 +35,17 @@
       <div class="stage-number">2</div>
       <span class="stage-title">Set name for modified lookup</span>
     </div>
-    <mat-form-field class="lookup-name" appearance="fill">
+    <mat-form-field
+      class="lookup-name"
+      appearance="fill"
+      [class.invalid]="lookup['name'] === ''"
+    >
       <mat-label>Lookup Name</mat-label>
-      <input matInput (input)="onChangeName($event)" [value]="selected.split('.')[0]">
+      <input
+        matInput
+        (input)="onChangeName($event)"
+        [value]="selected.split('.')[0]"
+      >
     </mat-form-field>
   </div>
 </div>

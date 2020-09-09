@@ -16,6 +16,6 @@ VOCABULARY_DESCRIPTION_PATH = Path('model/sources/VOCABULARY.csv')
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5', '6', ]
 UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema')
 PREDEFINED_LOOKUPS_PATH = Path(f'model/Lookups')
-INCOME_LOOKUPS_PATH = Path(f'model/generate/Lookups')
+INCOME_LOOKUPS_PATH = Path(f'model/UserDefinedLookups')
 
 
