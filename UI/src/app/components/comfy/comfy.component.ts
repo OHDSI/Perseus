@@ -508,7 +508,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openCreateSqlDialog() {
-    const matDialog = this.openSqlDialog({ tables: this.data.source });
+    const matDialog = this.openSqlDialog({ tables: this.data.source, action: 'Create' });
 
     matDialog.afterClosed().subscribe(res => {
         if (res) {
@@ -520,7 +520,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   openEditSqlDialog(name) {
     const table = this.findSourceTableByName(name);
-    const matDialog = this.openSqlDialog({ tables: this.data.source, table });
+    const matDialog = this.openSqlDialog({ tables: this.data.source, table, action: 'Edit' });
 
     matDialog.afterClosed().subscribe(res => {
         if (res) {
