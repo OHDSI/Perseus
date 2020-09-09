@@ -155,8 +155,8 @@ export class DataService {
     return this.httpService.saveLookup({ name, value, lookupType });
   }
 
-  deleteLookup(name): Observable<any> {
-    return this.httpService.deleteLookup(name);
+  deleteLookup(name, lookupType): Observable<any> {
+    return this.httpService.deleteLookup(name, lookupType);
   }
 
   prepareTargetConfig(data) {
