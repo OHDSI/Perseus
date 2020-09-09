@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, Inject } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { IConnector } from 'src/app/models/interface/connector.interface';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 @Component({
   selector: 'app-set-connection-type-popup',
@@ -17,6 +18,7 @@ export class SetConnectionTypePopupComponent {
 
   constructor(
     public dialogRef: OverlayDialogRef,
+    private bridgeService: BridgeService,
     @Inject(OVERLAY_DIALOG_DATA) public payload: any
     ) {
       this.isDisabledLookup = !this.payload.arrow.target.name.endsWith('concept_id');
@@ -32,9 +34,11 @@ export class SetConnectionTypePopupComponent {
 
   toggleCheckbox() {
     this.payload.arrow.lookup.applied = !this.payload.arrow.lookup.applied;
+    this.bridgeService.updateConnectedRows(this.payload.arrow);
   }
 
   toggleSqlCheckbox() {
     this.payload.arrow.sql.applied = !this.payload.arrow.sql.applied;
+    this.bridgeService.updateConnectedRows(this.payload.arrow);
   }
 }
