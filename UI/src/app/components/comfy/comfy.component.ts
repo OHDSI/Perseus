@@ -74,7 +74,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   source: string[] = [];
 
-  target = {};
+  target = [];
   targetConfig = {};
   sourceConnectedTo = [];
   sourceRows: IRow[] = [];
@@ -115,11 +115,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
           const curInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${this.dropTargetId}`);
           moveItemInArray(this.targetTableNames, prevInd, curInd);
+          moveItemInArray(this.storeService.state.target, prevInd, curInd);
         }
 
         if (area === Area.Source) {
           if (previousIndex !== currentIndex) {
             moveItemInArray(data, previousIndex, currentIndex);
+            moveItemInArray(this.storeService.state.source, previousIndex, currentIndex);
           }
         }
       } else if (!exists) {
@@ -285,7 +287,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   initializeTargetData() {
     this.target = this.data.target;
     this.targetConfig = this.data.targetConfig;
-    this.targetTableNames = uniq(Object.keys(this.targetConfig));
+    this.targetTableNames = this.data.target.map(table => table.name);
 
     this.sourceConnectedTo = this.data.target.map(table => `target-${table.name}`);
 
@@ -511,10 +513,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, action: 'Create' });
 
     matDialog.afterClosed().subscribe(res => {
-        if (res) {
-          this.storeService.add(Area.Source, [ res, ...this.data.source ]);
-        }
+      if (res) {
+        this.storeService.add(Area.Source, [ res, ...this.data.source ]);
       }
+    }
     );
   }
 
@@ -523,10 +525,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     const matDialog = this.openSqlDialog({ tables: this.data.source, table, action: 'Edit' });
 
     matDialog.afterClosed().subscribe(res => {
-        if (res) {
-          this.storeService.updateTable(Area.Source, table, res);
-        }
+      if (res) {
+        this.storeService.updateTable(Area.Source, table, res);
       }
+    }
     );
   }
 
