@@ -271,7 +271,6 @@ def save_lookup():
         lookup = request.json
         add_lookup(lookup)
     except Exception as error:
-        print(error)
         raise InvalidUsage(error.__str__(), 400)
     return jsonify(success=True)
 

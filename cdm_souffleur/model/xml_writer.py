@@ -15,12 +15,15 @@ from shutil import rmtree, copyfile
 import zipfile
 import os
 from pathlib import Path
+from cdm_souffleur.model.similar_names_map import similar_names_map
 
 
 def _convert_underscore_to_camel(word: str):
     """get tag name from target table names"""
     return ''.join(x.capitalize() for x in word.split('_'))
 
+def _replace_with_similar_name(name: str):
+    return similar_names_map[name] if similar_names_map[name] else name
 
 def _prettify(elem):
     """Return a pretty-printed XML string for the Element."""
@@ -194,7 +197,10 @@ def get_xml(json_):
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
                     target_field = row['target_field']
-                    v = SubElement(domain_definition_tag, _convert_underscore_to_camel(target_field))
+                    v = SubElement(
+                        domain_definition_tag,
+                        _convert_underscore_to_camel(_replace_with_similar_name(target_field))
+                    )
                     v.text = sql_alias if sql_alias else source_field
 
             if lookup:
