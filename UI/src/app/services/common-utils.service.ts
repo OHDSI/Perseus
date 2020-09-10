@@ -209,7 +209,11 @@ export class CommonUtilsService {
     const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'warning-dialog'
+      panelClass: 'warning-dialog',
+      data: {
+        title: 'View',
+        message: 'You want to delete view.'
+      }
     });
 
     return dialog;
