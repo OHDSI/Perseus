@@ -212,7 +212,7 @@ export class CommonUtilsService {
       panelClass: 'warning-dialog',
       data: {
         title: 'View',
-        message: 'You want to delete view. This action cannot be undone'
+        message: 'You want to delete view.'
       }
     });
 
