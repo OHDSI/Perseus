@@ -24,7 +24,8 @@ def _convert_underscore_to_camel(word: str):
     return ''.join(x.capitalize() for x in word.split('_'))
 
 def _replace_with_similar_name(name: str):
-    return similar_names_map[name] if similar_names_map[name] else name
+    new_name = similar_names_map.get(name)
+    return new_name if new_name else name
 
 def _prettify(elem):
     """Return a pretty-printed XML string for the Element."""
