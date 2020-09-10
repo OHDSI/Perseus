@@ -23,6 +23,7 @@ export interface MappingNode {
   sql_field: string;
   sql_alias: string;
   lookup: string;
+  sqlTransformation: string;
 }
 
 export interface MappingPair {
@@ -30,6 +31,7 @@ export interface MappingPair {
   target_table: string;
   mapping: Array<MappingNode>;
   lookup?: Array<MappingLookup>;
+  sqlTransformation?: string;
 }
 
 export interface Mapping {

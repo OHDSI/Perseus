@@ -4,6 +4,7 @@ GENERATE_CDM_SOURCE_DATA_PATH = Path('model/generate/CDM_source_data')
 GENERATE_CDM_SOURCE_METADATA_PATH = Path('model/generate/CDM_source_data/metadata')
 GENERATE_CDM_XML_PATH = Path('model/generate/Definitions')
 GENERATE_CDM_LOOKUP_SQL_PATH = Path('model/generate/Lookups')
+GENERATE_CDM_SQL_TRANSFORMATION_PATH = Path('model/generate/SqlTransformations')
 GENERATE_BATCH_SQL_PATH = Path('model/generate/Batch.sql')
 GENERATE_CDM_XML_ARCHIVE_PATH = Path('model/generate')
 GENERATE_CDM_XML_ARCHIVE_FILENAME = 'CDM_xml'

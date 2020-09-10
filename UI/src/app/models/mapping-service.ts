@@ -34,7 +34,8 @@ export class MappingService {
           sourceColumn: arrow.source.name,
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
-          lookup: arrow.lookup ? arrow.lookup['name'] : ''
+          lookup: arrow.lookup ? arrow.lookup['name'] : '',
+          sqlTransformation: arrow.sql ? arrow.sql['name'] : ''
         };
       });
 
@@ -53,7 +54,8 @@ export class MappingService {
             target_field: arrow.targetColumn,
             sql_field: arrow.sourceColumn,
             sql_alias: arrow.targetColumn,
-            lookup: arrow.lookup
+            lookup: arrow.lookup,
+            sqlTransformation: arrow.sqlTransformation
           };
 
           this.applyTransforms(node, arrow);

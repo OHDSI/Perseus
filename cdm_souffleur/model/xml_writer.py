@@ -9,7 +9,8 @@ from cdm_souffleur.utils.constants import \
     PREDEFINED_LOOKUPS_PATH, \
     INCOME_LOOKUPS_PATH, \
     GENERATE_BATCH_SQL_PATH, \
-    BATCH_SQL_PATH
+    BATCH_SQL_PATH, \
+    GENERATE_CDM_SQL_TRANSFORMATION_PATH
 import pandas as pd
 from shutil import rmtree, copyfile
 import zipfile
@@ -153,6 +154,22 @@ def create_lookup(lookup, target_field, mapping):
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
 
+def create_sql_transformation(sql_transformation, source, target):
+    if os.path.isdir(GENERATE_CDM_SQL_TRANSFORMATION_PATH):
+        rmtree(GENERATE_CDM_SQL_TRANSFORMATION_PATH)
+
+    try:
+        os.makedirs(GENERATE_CDM_SQL_TRANSFORMATION_PATH)
+        print(f'Directory {GENERATE_CDM_SQL_TRANSFORMATION_PATH} created')
+    except FileExistsError:
+        print(f'Directory {GENERATE_CDM_SQL_TRANSFORMATION_PATH} already exist')
+    filepath = os.path.join(
+        GENERATE_CDM_SQL_TRANSFORMATION_PATH,
+        f"{source['table']}_{source['field']}-{target['table']}_{target['field']}.sql"
+    )
+    with open(filepath, mode='w') as f:
+        f.write(sql_transformation)
+
 def get_xml(json_):
     """prepare XML for CDM"""
     result = {}
@@ -172,6 +189,7 @@ def get_xml(json_):
             option = record_data.get('option')
             mapping = record_data.get('mapping')
             lookup = mapping[0].get('lookup', None)
+            sql_transformation = mapping[0].get('sqlTransformation', None)
             condition = record_data.get('condition')
             target_table_name = record_data.get('target_table')
             tag_name = _convert_underscore_to_camel(target_table_name)
@@ -234,6 +252,12 @@ def get_xml(json_):
                 #             # isNullable - запись создасться, даже если в raw был NULL
                 #             for field in fields:
                 #                 SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
+            if sql_transformation:
+                create_sql_transformation(
+                    sql_transformation,
+                    {'table': source_table, 'field': mapping[0]['source_field']},
+                    {'table': target_table_name, 'field': mapping[0]['target_field']}
+                )
             previous_target_table_name = target_table_name
             if target_table_name == 'person':
                 copyfile(BATCH_SQL_PATH, GENERATE_BATCH_SQL_PATH)
@@ -335,6 +359,10 @@ def get_lookups_sql(cond: dict):
             result.update({k: sql})
     return result
 
+def add_files_to_zip(zip_file, path):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
 
 def zip_xml():
     """add mapping XMLs and lookup sql's to archive"""
@@ -342,12 +370,11 @@ def zip_xml():
         zip_file = zipfile.ZipFile(
             GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
-        for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
-            for file in files:
-                zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
-        for root, dirs, files in os.walk(GENERATE_CDM_LOOKUP_SQL_PATH):
-            for file in files:
-                zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+
+        add_files_to_zip(zip_file, GENERATE_CDM_XML_PATH)
+        add_files_to_zip(zip_file, GENERATE_CDM_LOOKUP_SQL_PATH)
+        add_files_to_zip(zip_file, GENERATE_CDM_SQL_TRANSFORMATION_PATH)
+
         if os.path.isfile(GENERATE_BATCH_SQL_PATH):
             zip_file.write(GENERATE_BATCH_SQL_PATH, arcname='Batch.sql')
         zip_file.close()
