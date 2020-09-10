@@ -9,8 +9,7 @@ from cdm_souffleur.utils.constants import \
     PREDEFINED_LOOKUPS_PATH, \
     INCOME_LOOKUPS_PATH, \
     GENERATE_BATCH_SQL_PATH, \
-    BATCH_SQL_PATH, \
-    GENERATE_CDM_SQL_TRANSFORMATION_PATH
+    BATCH_SQL_PATH
 import pandas as pd
 from shutil import rmtree, copyfile
 import zipfile
@@ -155,22 +154,6 @@ def create_lookup(lookup, target_field, mapping):
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
 
-def create_sql_transformation(sql_transformation, source, target):
-    if os.path.isdir(GENERATE_CDM_SQL_TRANSFORMATION_PATH):
-        rmtree(GENERATE_CDM_SQL_TRANSFORMATION_PATH)
-
-    try:
-        os.makedirs(GENERATE_CDM_SQL_TRANSFORMATION_PATH)
-        print(f'Directory {GENERATE_CDM_SQL_TRANSFORMATION_PATH} created')
-    except FileExistsError:
-        print(f'Directory {GENERATE_CDM_SQL_TRANSFORMATION_PATH} already exist')
-    filepath = os.path.join(
-        GENERATE_CDM_SQL_TRANSFORMATION_PATH,
-        f"{source['table']}_{source['field']}-{target['table']}_{target['field']}.sql"
-    )
-    with open(filepath, mode='w') as f:
-        f.write(sql_transformation)
-
 def get_xml(json_):
     """prepare XML for CDM"""
     result = {}
@@ -254,10 +237,9 @@ def get_xml(json_):
                 #             for field in fields:
                 #                 SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
             if sql_transformation:
-                create_sql_transformation(
-                    sql_transformation,
-                    {'table': source_table, 'field': mapping[0]['source_field']},
-                    {'table': target_table_name, 'field': mapping[0]['target_field']}
+                query_tag.text = sql.replace(
+                    f"{mapping[0]['source_field']} as {mapping[0]['target_field']}",
+                    f"{sql_transformation} as {mapping[0]['target_field']}",
                 )
             previous_target_table_name = target_table_name
             if target_table_name == 'person':
@@ -374,7 +356,6 @@ def zip_xml():
 
         add_files_to_zip(zip_file, GENERATE_CDM_XML_PATH)
         add_files_to_zip(zip_file, GENERATE_CDM_LOOKUP_SQL_PATH)
-        add_files_to_zip(zip_file, GENERATE_CDM_SQL_TRANSFORMATION_PATH)
 
         if os.path.isfile(GENERATE_BATCH_SQL_PATH):
             zip_file.write(GENERATE_BATCH_SQL_PATH, arcname='Batch.sql')
