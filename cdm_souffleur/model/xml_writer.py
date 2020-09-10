@@ -7,12 +7,13 @@ from cdm_souffleur.utils.constants import \
     GENERATE_CDM_XML_ARCHIVE_FORMAT, \
     GENERATE_CDM_LOOKUP_SQL_PATH, \
     PREDEFINED_LOOKUPS_PATH, \
-    INCOME_LOOKUPS_PATH
+    INCOME_LOOKUPS_PATH, \
+    GENERATE_BATCH_SQL_PATH, \
+    BATCH_SQL_PATH
 import pandas as pd
-from shutil import rmtree
+from shutil import rmtree, copyfile
 import zipfile
 import os
-import shutil
 from pathlib import Path
 
 
@@ -85,7 +86,7 @@ def get_lookup_data(filepath):
 def create_lookup(lookup, target_field, mapping):
 
     if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
-        shutil.rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
+        rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
 
     try:
         os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)
@@ -196,7 +197,7 @@ def get_xml(json_):
                     v = SubElement(domain_definition_tag, _convert_underscore_to_camel(target_field))
                     v.text = sql_alias if sql_alias else source_field
 
-            if lookup is not None:
+            if lookup:
                 create_lookup(lookup, mapping[0]['target_field'], mapping)
 
 
@@ -228,6 +229,9 @@ def get_xml(json_):
                 #             for field in fields:
                 #                 SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
             previous_target_table_name = target_table_name
+            if target_table_name == 'person':
+                copyfile(BATCH_SQL_PATH, GENERATE_BATCH_SQL_PATH)
+
         xml = ElementTree(query_definition_tag)
         try:
             os.mkdir(GENERATE_CDM_XML_PATH)
@@ -331,14 +335,15 @@ def zip_xml():
     try:
         zip_file = zipfile.ZipFile(
             GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
-                (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
-            'w', zipfile.ZIP_DEFLATED)
+                (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
             for file in files:
                 zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
         for root, dirs, files in os.walk(GENERATE_CDM_LOOKUP_SQL_PATH):
             for file in files:
                 zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+        if os.path.isfile(GENERATE_BATCH_SQL_PATH):
+            zip_file.write(GENERATE_BATCH_SQL_PATH, arcname='Batch.sql')
         zip_file.close()
     except FileNotFoundError:
         raise
