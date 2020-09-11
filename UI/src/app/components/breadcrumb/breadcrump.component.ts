@@ -38,7 +38,7 @@ export class BreadcrumbComponent implements OnInit {
 
     const nextUrl = path ? `${url}/${path}` : url;
 
-    const existedBreadcrumb = this.breadcrumbs.find(item => item.label === label && item.url === nextUrl);
+    const existedBreadcrumb = this.breadcrumbs ? this.breadcrumbs.find(item => item.label === label && item.url === nextUrl) : undefined;
     if (existedBreadcrumb) {
       return [existedBreadcrumb];
     }
@@ -48,6 +48,9 @@ export class BreadcrumbComponent implements OnInit {
         url: nextUrl,
     };
 
+    if (label === 'Link Fields' && this.breadcrumbs.length === 0) {
+      return;
+    }
     const newBreadcrumbs = breadcrumb.label ? [ ...breadcrumbs, breadcrumb ] : [ ...breadcrumbs];
     if (route.firstChild) {
         return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);
