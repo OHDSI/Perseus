@@ -120,6 +120,12 @@ export class PanelTableComponent extends BaseComponent
       .subscribe(connection => {
         this.hideConnectorPin(connection, Area.Target);
       });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields ? res.filteredFields[ this.table.name ] : res.filteredFields;
+      }
+    });
   }
 
   refreshPanel() {
@@ -272,13 +278,11 @@ export class PanelTableComponent extends BaseComponent
     if (this.filteredFields === undefined) {
       return false;
     }
-
-    return (
-      this.filteredFields &&
+    return (this.filteredFields &&
       this.filteredFields.items &&
       this.filteredFields.items.length &&
-      !this.filteredFields.items.includes(row.name.toUpperCase())
-    );
+      (!this.filteredFields.items.includes(row.name.toUpperCase()) &&
+        !this.filteredFields.items.includes(row.name)));
   }
 
   private _getArea() {
