@@ -25,6 +25,7 @@ import { TransformConfigComponent } from '../../vocabulary-transform-configurato
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mapping',
@@ -76,7 +77,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private rulesPoupService: RulesPopupService,
     mappingElementRef: ElementRef,
     private mappingStorage: MappingPageSessionStorage,
-    private overlayService: OverlayService
+    private overlayService: OverlayService,
+    private router: Router,
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -323,6 +325,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   ngOnInit() {
+    if (this.storeService.state.target.length === 0) {
+      this.router.navigateByUrl('/comfy');
+      return;
+    }
     this.mappingStorage.get('mappingpage').then(data => {
       this.prepareTables(data.source, Area.Source);
       this.prepareTables(data.target, Area.Target);

@@ -1,5 +1,5 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ const ICON_NAMES = [ 'CDM_version', 'folder', 'mapping', 'reset', 'save', 'help'
   templateUrl: './app.component.html',
   styleUrls: [ './app.component.scss' ]
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   mobileQuery: MediaQueryList;
   currentUrl;
   private readonly mobileQueryListener: () => void;
@@ -45,6 +45,13 @@ export class AppComponent implements OnDestroy {
       });
 
     this.router.events.subscribe((res) => this.currentUrl = this.router.url.replace('/', ''));
+  }
+
+  ngOnInit() {
+    window.addEventListener("beforeunload", event => {
+      event.preventDefault();
+      event.returnValue = false;
+    });
   }
 
   ngOnDestroy(): void {
