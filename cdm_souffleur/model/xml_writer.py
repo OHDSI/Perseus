@@ -183,6 +183,8 @@ def get_xml(json_):
 
             domain_definition_tag = SubElement(domain_tag, f'{tag_name}Definition')
 
+
+
             if condition is not None:
                 for row in condition:
                     if row:
@@ -195,15 +197,50 @@ def get_xml(json_):
                             SubElement(domain_definition_tag, key).text = value
 
             if mapping is not None:
+                existed_fields_tag = None
+                counter = 1
                 for row in mapping:
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
                     target_field = row['target_field']
-                    v = SubElement(
-                        domain_definition_tag,
-                        _convert_underscore_to_camel(_replace_with_similar_name(target_field))
-                    )
-                    v.text = sql_alias if sql_alias else source_field
+                    if target_field.endswith('concept_id'):
+                        fields_tag = None
+                        if existed_fields_tag is not None:
+                            if counter == 1:
+                                for elem in existed_fields_tag:
+                                    elem.attrib['conceptId'] = f"{elem.attrib['conceptId']}_{counter}"
+                                    elem.attrib['sourceKey'] = f"{elem.attrib['sourceKey']}_{counter}"
+                                    break
+                                counter += 1
+                            SubElement(
+                                existed_fields_tag,
+                                'Field',
+                                attrib={
+                                    'conceptId': f'CONCEPT_ID_{counter}',
+                                    'sourceKey': f'SOURCE_VALUE_{counter}',
+                                    'typeId': 'TYPE_ID'
+                                }
+                            )
+                            if counter > 1:
+                                counter += 1
+                        else:
+                            concepts_tag = SubElement(domain_definition_tag, 'Concepts')
+                            concept_tag = SubElement(concepts_tag, 'Concept')
+                            fields_tag = SubElement(concept_tag, 'Fields')
+                            SubElement(
+                                fields_tag,
+                                'Field',
+                                attrib={'conceptId': 'CONCEPT_ID', 'sourceKey': 'SOURCE_VALUE', 'typeId': 'TYPE_ID'}
+                            )
+
+                        if existed_fields_tag is None:
+                            existed_fields_tag = fields_tag
+                    else:
+                        v = SubElement(
+                            domain_definition_tag,
+                            _convert_underscore_to_camel(_replace_with_similar_name(target_field))
+                        )
+                        v.text = sql_alias if sql_alias else source_field
 
             if lookup:
                 create_lookup(lookup, mapping[0]['target_field'], mapping)
