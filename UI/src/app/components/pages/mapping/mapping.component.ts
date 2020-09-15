@@ -415,7 +415,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     const options = (groups as any).default;
     options[ 'individual' ] = this.target[ this.targetTabIndex ].rows.map(row => {
-      if (!options.common.includes(row.name) && !options.concept.includes(row.name)) {
+      if (!options.common.includes(row.name.toUpperCase()) && !options.concept.includes(row.name.toUpperCase())) {
         return row.name;
       }
     });
@@ -514,12 +514,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isTooltipDisabled() {
+    if(this.target && this.filteredFields){
     return !(
       this.filteredFields &&
       this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
       this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
       this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
     );
+    }
   }
 
   isFooterButtonDisabled() {
