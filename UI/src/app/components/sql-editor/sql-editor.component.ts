@@ -12,6 +12,7 @@ import 'codemirror/mode/sql/sql';
 import { Area } from '../../models/area';
 import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
+import { SqlNameValidatorService } from 'src/app/services/sql-name-validator';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -41,7 +42,8 @@ export class SqlEditorComponent implements OnInit {
   isNew = true;
   codeMirror;
   viewForm = new FormGroup({
-    name: new FormControl('', Validators.required)
+    name: new FormControl('', Validators.compose(
+      [Validators.maxLength(50), Validators.required, SqlNameValidatorService.checkExistingName(this.data.tables)]))
   });
   chips = [];
   tablesWithoutAlias = [];
@@ -132,7 +134,6 @@ export class SqlEditorComponent implements OnInit {
     }
     return this.modifySourceTableData();
   }
-
 
   aliasedTablesColumns(prefix = false) {
     return Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
