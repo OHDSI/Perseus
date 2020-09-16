@@ -71,6 +71,7 @@
         <p>Please load New Report to see Source tables</p>
         <input #sourceUpload
                type="file"
+               accept=".xlsx, .xls"
                (change)="onFileUpload($event)"
                hidden/>
         <button mat-flat-button
