@@ -8,7 +8,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
-
+import { cloneDeep } from 'src/app/infrastructure/utility';
 import { Area } from '../../models/area';
 import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
@@ -40,10 +40,12 @@ export class SqlEditorComponent implements OnInit {
 
   @ViewChild('editor', { static: true }) editor;
   isNew = true;
+  tables: any;
+  table: any;
   codeMirror;
   viewForm = new FormGroup({
     name: new FormControl('', Validators.compose(
-      [Validators.maxLength(50), Validators.required, SqlNameValidatorService.checkExistingName(this.data.tables)]))
+      [Validators.maxLength(50), Validators.required, SqlNameValidatorService.checkExistingName(this.data.tables, this.data.action)]))
   });
   chips = [];
   tablesWithoutAlias = [];
@@ -60,9 +62,11 @@ export class SqlEditorComponent implements OnInit {
   ngOnInit() {
     this.chips = this.data.tables.filter(it => !it.sql);
     this.isNew = !this.data.table;
+    this.tables = cloneDeep(this.data.tables);
+    this.table = {...this.table};
     this.initCodeMirror();
     if (!this.isNew) {
-      const { name, sql } = this.data.table;
+      const { name, sql } = this.table;
       this.viewForm.get('name').setValue(name);
       this.codeMirror.setValue(sql);
     }
@@ -70,7 +74,7 @@ export class SqlEditorComponent implements OnInit {
 
   initCodeMirror() {
     const tableColumnNamesMapping = {};
-    this.tableColumnsMapping = this.data.tables.reduce((prev, cur) => {
+    this.tableColumnsMapping = this.tables.reduce((prev, cur) => {
       prev[cur.name] = cur.rows;
       tableColumnNamesMapping[cur.name] = cur.rows.map(it => it.name);
       return prev;
@@ -101,7 +105,7 @@ export class SqlEditorComponent implements OnInit {
   }
 
   createSourceTableData() {
-    const maxId = this.data.tables.reduce((a, b) => a.id > b.id ? a : b).id;
+    const maxId = this.tables.reduce((a, b) => a.id > b.id ? a : b).id;
     const tableId = maxId + 1;
     const rows = this.parseColumns();
     rows.forEach(row => {
@@ -121,7 +125,7 @@ export class SqlEditorComponent implements OnInit {
 
   modifySourceTableData() {
     const settings = {
-      ...this.data.table,
+      ...this.table,
       sql: this.editorContent,
       name: this.name
     };
