@@ -78,7 +78,7 @@ export class PanelTableComponent extends BaseComponent
     private overlayService: OverlayService,
     private renderer: Renderer2,
     private chg: ChangeDetectorRef,
-    private elementRef: ElementRef,
+    private elementRef: ElementRef
   ) {
     super();
   }
