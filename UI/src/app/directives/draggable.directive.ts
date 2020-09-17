@@ -44,6 +44,9 @@ export class DraggableDirective implements OnInit {
         this.onDragOver.bind(this)
       );
     });
+
+    setInterval( () => {this.bridgeService.recalculateConnectorsPositions(); }, 250 );
+
   }
 
   @HostListener('dragstart', [ '$event' ])

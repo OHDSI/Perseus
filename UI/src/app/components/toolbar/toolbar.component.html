@@ -23,10 +23,12 @@
   <mat-menu #menu="matMenu">
     <input #sourceUpload
            type="file"
+           accept=".xlsx, .xls"
            (change)="onFileUpload($event)"
            hidden />
     <input #mappingUpload
            type="file"
+           accept=".json"
            (change)="onMappingUpload($event)"
            hidden />
     <button mat-menu-item
