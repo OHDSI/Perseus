@@ -72,7 +72,7 @@ def prepare_sql(mapping_items, source_table):
             sql += f"{row['sql_field']} as {row['sql_alias']},\n"
     sql = f'{sql[:-2]}\n'
     sql += 'FROM ' + source_table + \
-           ' JOIN _CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
+           ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
            'ORDER BY PERSON_ID'
     return sql
 
