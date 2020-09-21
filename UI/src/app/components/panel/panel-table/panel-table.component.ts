@@ -161,7 +161,8 @@ export class PanelTableComponent extends BaseComponent
     if (!this.isRowHasConnection(row)) {
       const value = row.constant;
       const mode = value ? 'view' : 'add';
-      const data = { value, mode };
+      const type = row.type;
+      const data = { value, mode, type };
       const component = AddConstantPopupComponent;
 
       const dialogOptions: OverlayConfigOptions = {

@@ -45,7 +45,7 @@ export class SqlEditorComponent implements OnInit {
   codeMirror;
   viewForm = new FormGroup({
     name: new FormControl('', Validators.compose(
-      [Validators.maxLength(50), Validators.required, SqlNameValidatorService.checkExistingName(this.data.tables, this.data.action)]))
+      [Validators.maxLength(50), Validators.required]))
   });
   chips = [];
   tablesWithoutAlias = [];
@@ -265,6 +265,11 @@ export class SqlEditorComponent implements OnInit {
 
   openOnBoardingTip(target: EventTarget) {
     this.commonUtilsService.openOnBoardingTip(target, 'sql-editor');
+  }
+
+  viewNameExists() {
+    return (this.tables.findIndex((item: any) => item.name.toUpperCase() === this.name.toUpperCase()) !== -1 &&
+      this.data.action === 'Create');
   }
 
 }
