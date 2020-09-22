@@ -17,6 +17,7 @@
     [(ngModel)]="value"
     placeholder="Input value"
   />
+  <label class="validation-error" *ngIf="validationError">{{validationError}}</label>
   <span class="viewValue" *ngIf="mode === 'view'">{{value}}</span>
   <div class="buttons-bottom" *ngIf="mode !== 'view'">
     <button

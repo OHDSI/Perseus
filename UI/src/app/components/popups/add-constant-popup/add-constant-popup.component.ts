@@ -1,6 +1,7 @@
 import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 @Component({
   selector: 'app-add-constant-popup',
@@ -13,17 +14,25 @@ export class AddConstantPopupComponent {
 
   value: string;
   mode: string;
+  type: string;
+  validationError: string;
 
   constructor(
     private dialogRef: OverlayDialogRef,
+    private validationService: ValidationService,
     @Inject(OVERLAY_DIALOG_DATA) public payload: any
   ) {
     this.value = this.payload.value;
     this.mode = this.payload.mode;
+    this.type = this.payload.type;
   }
 
   add() {
     if (!this.value) {
+      return;
+    }
+    this.validationError = this.validationService.validateInput(this.type, this.value);
+    if (this.validationError) {
       return;
     }
     this.payload.value = this.value.toString();
