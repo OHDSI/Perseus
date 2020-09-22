@@ -216,6 +216,9 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       }
       const tableName = this.aliasTableMapping[ aliasPrefix ];
       const columns = this.tableColumnsMapping[ tableName ];
+      if (trimmed.slice(aliasPrefix.length + 1) === '*') {
+        return columns;
+      }
       const column = columns.find(it => it.name === trimmed.slice(aliasPrefix.length + 1));
       return [ ...prev, column ];
     }
