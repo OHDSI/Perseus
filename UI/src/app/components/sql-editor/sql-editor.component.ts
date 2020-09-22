@@ -1,5 +1,5 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
@@ -13,6 +13,7 @@ import { Area } from '../../models/area';
 import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { SqlNameValidatorService } from 'src/app/services/sql-name-validator';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -28,13 +29,15 @@ const editorSettings = {
 
 @Component({
   selector: 'sql-editor',
-  styleUrls: ['./sql-editor.component.scss'],
+  styleUrls: [ './sql-editor.component.scss' ],
   templateUrl: './sql-editor.component.html'
 })
-export class SqlEditorComponent implements OnInit {
+export class SqlEditorComponent implements OnInit, AfterViewChecked {
   constructor(
     private commonUtilsService: CommonUtilsService,
     public dialogRef: MatDialogRef<SqlEditorComponent>,
+    private cdRef: ChangeDetectorRef,
+    private bridgeService: BridgeService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -42,20 +45,21 @@ export class SqlEditorComponent implements OnInit {
   isNew = true;
   tables: any;
   table: any;
+  viewHasSimilarRows: boolean;
   codeMirror;
   viewForm = new FormGroup({
     name: new FormControl('', Validators.compose(
-      [Validators.maxLength(50), Validators.required]))
+      [ Validators.maxLength(50), Validators.required ]))
   });
   chips = [];
   tablesWithoutAlias = [];
   tableColumnsMapping = {};
   aliasTableMapping = {};
   tokenReplaceMapping = {
-    join: (context) => ['left join', 'right join', 'inner join', 'outer join'],
+    join: (context) => [ 'left join', 'right join', 'inner join', 'outer join' ],
     '*': (context) => {
       const columnsWithoutAlias = this.tablesWithoutAliasColumns.map(it => it.name);
-      return [...this.aliasedTablesColumns(true), ...columnsWithoutAlias];
+      return [ ...this.aliasedTablesColumns(true), ...columnsWithoutAlias ];
     }
   };
 
@@ -63,7 +67,7 @@ export class SqlEditorComponent implements OnInit {
     this.chips = this.data.tables.filter(it => !it.sql);
     this.isNew = !this.data.table;
     this.tables = cloneDeep(this.data.tables);
-    this.table = {...this.table};
+    this.table = { ...this.data.table };
     this.initCodeMirror();
     if (!this.isNew) {
       const { name, sql } = this.table;
@@ -72,11 +76,15 @@ export class SqlEditorComponent implements OnInit {
     }
   }
 
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
+  }
+
   initCodeMirror() {
     const tableColumnNamesMapping = {};
     this.tableColumnsMapping = this.tables.reduce((prev, cur) => {
-      prev[cur.name] = cur.rows;
-      tableColumnNamesMapping[cur.name] = cur.rows.map(it => it.name);
+      prev[ cur.name ] = cur.rows;
+      tableColumnNamesMapping[ cur.name ] = cur.rows.map(it => it.name);
       return prev;
     }, {});
 
@@ -92,12 +100,12 @@ export class SqlEditorComponent implements OnInit {
   }
 
   get tablesWithoutAliasColumns() {
-    return this.tablesWithoutAlias.reduce((prev, cur) => [...prev, ...this.tableColumnsMapping[cur]], []);
+    return this.tablesWithoutAlias.reduce((prev, cur) => [ ...prev, ...this.tableColumnsMapping[ cur ] ], []);
   }
 
   get allColumns() {
     const aliasedColumns = this.aliasedTablesColumns();
-    return [...aliasedColumns, ...this.tablesWithoutAliasColumns];
+    return [ ...aliasedColumns, ...this.tablesWithoutAliasColumns ];
   }
 
   get name() {
@@ -105,12 +113,17 @@ export class SqlEditorComponent implements OnInit {
   }
 
   createSourceTableData() {
-    const maxId = this.tables.reduce((a, b) => a.id > b.id ? a : b).id;
-    const tableId = maxId + 1;
+    const tableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
     const rows = this.parseColumns();
-    rows.forEach(row => {
+    const uniqueRowNames = new Set(rows.map(v => v.name));
+    this.viewHasSimilarRows = uniqueRowNames.size < rows.length;
+    if (this.viewHasSimilarRows) {
+      return null;
+    }
+    rows.forEach((row, index) => {
       row.tableId = tableId;
       row.tableName = this.name;
+      row.id = index;
     });
     const settings = {
       rows,
@@ -120,7 +133,21 @@ export class SqlEditorComponent implements OnInit {
       visible: true,
       sql: this.editorContent
     };
-    return new Table(settings);
+    const newTable = new Table(settings);
+    this.removeLinksForDeletedRows(newTable);
+    return newTable;
+  }
+
+  removeLinksForDeletedRows(newTable: Table) {
+    Object.keys(this.bridgeService.arrowsCache).forEach(key => {
+      const arrowSourceTableId = Number(key.substr(0, key.indexOf('-')));
+      if (arrowSourceTableId === newTable.id) {
+        const arrowSourceRowId = Number(key.substring(key.indexOf('-') + 1, key.indexOf('/')));
+        if (newTable.rows[ arrowSourceRowId ].name !== this.bridgeService.arrowsCache[ key ].source.name) {
+          this.bridgeService.deleteArrow(key, true);
+        }
+      }
+    });
   }
 
   modifySourceTableData() {
@@ -133,23 +160,23 @@ export class SqlEditorComponent implements OnInit {
   }
 
   apply() {
-    if (this.isNew) {
-      return this.createSourceTableData();
+    const createdView = this.createSourceTableData();
+    if (createdView) {
+      this.dialogRef.close(createdView);
     }
-    return this.modifySourceTableData();
   }
 
   aliasedTablesColumns(prefix = false) {
     return Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
-      const tableName = this.aliasTableMapping[cur];
-      const columns = this.tableColumnsMapping[tableName];
+      const tableName = this.aliasTableMapping[ cur ];
+      const columns = this.tableColumnsMapping[ tableName ];
       const tableColumns = prefix ? columns.map(it => `${cur}.${it.name}`) : columns;
-      return [...prev, ...tableColumns];
+      return [ ...prev, ...tableColumns ];
     }, []);
   }
 
   hintOptions(token) {
-    const getList = this.tokenReplaceMapping[token.string];
+    const getList = this.tokenReplaceMapping[ token.string ];
     return {
       completeSingle: false,
       hint: () => ({
@@ -171,7 +198,7 @@ export class SqlEditorComponent implements OnInit {
     if (!columnsMatch) {
       return [];
     }
-    const columnsRow = columnsMatch[1].trim();
+    const columnsRow = columnsMatch[ 1 ].trim();
     if (columnsRow === '*') {
       return this.allColumns;
     }
@@ -187,10 +214,13 @@ export class SqlEditorComponent implements OnInit {
         // case if we have column name string like t2.column_name and at the same time we have no t2 alias
         return prev;
       }
-      const tableName = this.aliasTableMapping[aliasPrefix];
-      const columns = this.tableColumnsMapping[tableName];
+      const tableName = this.aliasTableMapping[ aliasPrefix ];
+      const columns = this.tableColumnsMapping[ tableName ];
+      if (trimmed.slice(aliasPrefix.length + 1) === '*') {
+        return columns;
+      }
       const column = columns.find(it => it.name === trimmed.slice(aliasPrefix.length + 1));
-      return [...prev, column];
+      return [ ...prev, column ];
     }
     return prev;
   }
@@ -211,22 +241,22 @@ export class SqlEditorComponent implements OnInit {
 
     if (matches) {
       this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
-        const isFrom = cur[1] && cur[1] === 'from';
-        const isJoin = cur[5] && cur[5] === 'join';
+        const isFrom = cur[ 1 ] && cur[ 1 ] === 'from';
+        const isJoin = cur[ 5 ] && cur[ 5 ] === 'join';
         let aliasName;
         let tableName;
         if (isFrom) {
-          tableName = cur[2];
-          aliasName = cur[4];
+          tableName = cur[ 2 ];
+          aliasName = cur[ 4 ];
         } else if (isJoin) {
-          tableName = cur[6];
-          aliasName = cur[8];
+          tableName = cur[ 6 ];
+          aliasName = cur[ 8 ];
         }
         if (aliasName && tableName) {
-          prev[aliasName] = tableName;
+          prev[ aliasName ] = tableName;
         }
         if (!aliasName && tableName) {
-          this.tablesWithoutAlias = [...this.tablesWithoutAlias, tableName];
+          this.tablesWithoutAlias = [ ...this.tablesWithoutAlias, tableName ];
         }
         return prev;
       }, {});
@@ -239,7 +269,7 @@ export class SqlEditorComponent implements OnInit {
     this.viewForm.markAsTouched();
     const cursor = cm.getCursor();
     const token = cm.getTokenAt(cursor);
-    const hasReplaceHints = !!this.tokenReplaceMapping[token.string];
+    const hasReplaceHints = !!this.tokenReplaceMapping[ token.string ];
     if (hasReplaceHints) {
       cm.showHint(this.hintOptions(token) as any);
       if (cm.state.completionActive) {
@@ -268,8 +298,11 @@ export class SqlEditorComponent implements OnInit {
   }
 
   viewNameExists() {
-    return (this.tables.findIndex((item: any) => item.name.toUpperCase() === this.name.toUpperCase()) !== -1 &&
-      this.data.action === 'Create');
+    if (this.tables) {
+      return (this.tables.findIndex((item: any) => item.name.toUpperCase() === this.name.toUpperCase()) !== -1 &&
+        this.data.action === 'Create');
+    }
+    return false;
   }
 
 }
