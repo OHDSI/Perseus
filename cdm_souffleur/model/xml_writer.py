@@ -32,6 +32,17 @@ def _prettify(elem):
     reparsed = minidom.parseString(raw_string)
     return reparsed.toprettyxml(indent="  ")
 
+def add_concept_id_data(field, alias, sql, counter):
+    match_str = f' as {alias},'
+    value = f'{field}{match_str}'
+    if match_str in sql:
+        if counter == 1:
+            sql = sql.replace(match_str, match_str.replace(alias, f'{alias}_{counter}'))
+        counter += 1
+        sql += f"{field} as {alias}_{counter},"
+    else:
+        sql += value
+    return sql, counter
 
 def prepare_sql(mapping_items, source_table):
     """prepare sql from mapping json"""
@@ -45,12 +56,15 @@ def prepare_sql(mapping_items, source_table):
         condition_data = mapping_items_for_table.get('condition', pd.Series())
         lookup = mapping_items_for_table.get('lookup', pd.Series())
 
-        lookup_data = lookup.fillna('').map(
-            lambda el_list: list(
-                map(lambda el: el.get('sql_field', ''), el_list))).map(
-            lambda li: [item for sublist in li for item in
-                        sublist]) if isinstance(
-            lookup, pd.Series) else lookup
+        if isinstance(lookup, pd.Series):
+            lookup = lookup.fillna('')
+            lookup_data = lookup.map(
+                lambda el_list: list(map(lambda el: el.get('sql_field', ''), el_list))
+            ).map(
+                lambda li: [item for sublist in li for item in sublist]
+            )
+        else:
+            lookup_data = lookup
 
         result_data = pd.concat([mapping_data, condition_data, lookup_data]).fillna('')
 
@@ -62,14 +76,42 @@ def prepare_sql(mapping_items, source_table):
         ]
         return pd.DataFrame(all_fields_unique)
 
+    target_table = mapping_items.get('target_table')[0]
+
     data_ = get_sql_data_items(mapping_items, source_table)
     fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias']]
     sql = 'SELECT '
+    concept_id_counter = 1
+    source_value_counter = 1
+    type_concept_id_counter = 1
+    source_concept_id_counter = 1
     for index, row in fields.iterrows():
-        if not row['sql_field']:
+        source_field = row['sql_field']
+        target_field = row['sql_alias']
+        if not source_field:
             sql += f"{row['source_field']},\n"
         else:
-            sql += f"{row['sql_field']} as {row['sql_alias']},\n"
+            if is_concept_id(target_table, target_field):
+                sql, concept_id_counter = add_concept_id_data(source_field, 'CONCEPT_ID', sql, concept_id_counter)
+            elif is_source_value(target_table, target_field):
+                sql, source_value_counter = add_concept_id_data(source_field, 'SOURCE_VALUE', sql, source_value_counter)
+            elif is_type_concept_id(target_table, target_field):
+                sql, type_concept_id_counter = add_concept_id_data(
+                    source_field,
+                    'TYPE_ID',
+                    sql,
+                    type_concept_id_counter
+                )
+            elif is_source_concept_id(target_table, target_field):
+                sql, source_concept_id_counter = add_concept_id_data(
+                    source_field,
+                    'SOURCE_CONCEPT_ID',
+                    sql,
+                    source_concept_id_counter
+                )
+            else:
+                sql += f"{source_field} as {target_field},"
+            sql += '\n'
     sql = f'{sql[:-2]}\n'
     sql += 'FROM ' + source_table + \
            ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
@@ -154,10 +196,22 @@ def create_lookup(lookup, target_field, mapping):
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
 
+def is_concept_id(table_name: str, field: str):
+    return field.lower() == f'{table_name.lower()}_concept_id'
+
+def is_source_value(table_name: str, field: str):
+    return field.lower() == f'{table_name.lower()}_source_value'
+
+def is_type_concept_id(table_name: str, field: str):
+    return field.lower() == f'{table_name.lower()}_type_concept_id'
+
+def is_source_concept_id(table_name: str, field: str):
+    return field.lower() == f'{table_name.lower()}_source_concept_id'
+
 def get_xml(json_):
     """prepare XML for CDM"""
     result = {}
-    previous_target_table_name = ''
+    previous_target_table = ''
     domain_tag = ''
     mapping_items = pd.DataFrame(json_['mapping_items'])
     source_tables = pd.unique(mapping_items.get('source_table'))
@@ -175,15 +229,13 @@ def get_xml(json_):
             lookup = mapping[0].get('lookup', None)
             sql_transformation = mapping[0].get('sqlTransformation', None)
             condition = record_data.get('condition')
-            target_table_name = record_data.get('target_table')
-            tag_name = _convert_underscore_to_camel(target_table_name)
+            target_table = record_data.get('target_table')
+            tag_name = _convert_underscore_to_camel(target_table)
 
-            if previous_target_table_name != target_table_name:
+            if previous_target_table != target_table:
                 domain_tag = SubElement(query_definition_tag, tag_name)
 
             domain_definition_tag = SubElement(domain_tag, f'{tag_name}Definition')
-
-
 
             if condition is not None:
                 for row in condition:
@@ -203,29 +255,28 @@ def get_xml(json_):
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
                     target_field = row['target_field']
-                    if target_field.endswith('concept_id'):
+                    if is_concept_id(target_table, target_field):
                         fields_tag = None
                         if existed_fields_tag is not None:
                             if counter == 1:
-                                for elem in existed_fields_tag:
-                                    elem.attrib['conceptId'] = f"{elem.attrib['conceptId']}_{counter}"
-                                    elem.attrib['sourceKey'] = f"{elem.attrib['sourceKey']}_{counter}"
-                                    break
-                                counter += 1
+                                existed_fields_tag[-1].attrib['conceptId'] = f'CONCEPT_ID_{counter}'
+                            counter += 1
                             SubElement(
                                 existed_fields_tag,
                                 'Field',
                                 attrib={
                                     'conceptId': f'CONCEPT_ID_{counter}',
-                                    'sourceKey': f'SOURCE_VALUE_{counter}',
+                                    'sourceKey': 'SOURCE_VALUE',
                                     'typeId': 'TYPE_ID'
                                 }
                             )
-                            if counter > 1:
-                                counter += 1
+
                         else:
                             concepts_tag = SubElement(domain_definition_tag, 'Concepts')
-                            concept_tag = SubElement(concepts_tag, 'Concept')
+                            concept_tag = SubElement(
+                                concepts_tag,
+                                'Concept',
+                                attrib={'name': f'{_convert_underscore_to_camel(target_table)}ConceptId'})
                             fields_tag = SubElement(concept_tag, 'Fields')
                             SubElement(
                                 fields_tag,
@@ -236,6 +287,12 @@ def get_xml(json_):
                         if existed_fields_tag is None:
                             existed_fields_tag = fields_tag
                     else:
+                        if (
+                            is_type_concept_id(target_table, target_field) or
+                            is_source_value(target_table, target_field) or
+                            is_source_concept_id(target_table, target_field)
+                        ):
+                            continue
                         v = SubElement(
                             domain_definition_tag,
                             _convert_underscore_to_camel(_replace_with_similar_name(target_field))
@@ -278,8 +335,8 @@ def get_xml(json_):
                     f"{mapping[0]['source_field']} as {mapping[0]['target_field']}",
                     f"{sql_transformation} as {mapping[0]['target_field']}",
                 )
-            previous_target_table_name = target_table_name
-            if target_table_name == 'person':
+            previous_target_table = target_table
+            if target_table == 'person':
                 copyfile(BATCH_SQL_PATH, GENERATE_BATCH_SQL_PATH)
 
         xml = ElementTree(query_definition_tag)
