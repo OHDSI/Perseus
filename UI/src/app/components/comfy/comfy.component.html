@@ -1,5 +1,5 @@
 <nav>
-  <h4>Filter by source columns
+  <h4>Source columns
     <ng-container *ngIf="data.source?.length">({{sourceRows.length}})</ng-container>
   </h4>
   <app-search-by-name *ngIf="data.source?.length"
@@ -28,7 +28,8 @@
       <a *ngIf="data.source?.length"
          (click)="openCreateSqlDialog()">Create View</a>
       <div class="scrolled-items-rtl"
-           *ngIf="data.source?.length">
+           *ngIf="data.source?.length"
+           cdk-scrollable>
         <div class="cdm-list"
              cdkDropList
              id="source"
