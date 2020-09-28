@@ -1,5 +1,5 @@
 <nav>
-  <h4>Filter by source columns
+  <h4>Source columns
     <ng-container *ngIf="data.source?.length">({{sourceRows.length}})</ng-container>
   </h4>
   <app-search-by-name *ngIf="data.source?.length"
@@ -14,7 +14,8 @@
                     (columnsSelected)="findTables($event)"></app-columns-list>
 </nav>
 <main>
-  <div class="articles">
+  <div class="articles"
+  cdkDropListGroup>
     <article>
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
@@ -28,7 +29,8 @@
       <a *ngIf="data.source?.length"
          (click)="openCreateSqlDialog()">Create View</a>
       <div class="scrolled-items-rtl"
-           *ngIf="data.source?.length">
+           *ngIf="data.source?.length"
+           cdkScrollable>
         <div class="cdm-list"
              cdkDropList
              id="source"
@@ -106,13 +108,8 @@
                                 *ngIf="data.target?.length"></app-search-by-name>
       <div class="scrolled-items"
            #scrollEl
-           cdk-scrollable
+           cdkScrollable
            *ngIf="data.target?.length">
-        <div cdkDropList
-             [cdkDropListData]="targetConfig"
-             [cdkDropListConnectedTo]="targetTableNames"
-             (cdkDropListDropped)="drop.execute($event)"
-             [cdkDropListSortingDisabled]="false">
           <div *ngFor="let targetName of targetTableNames"
                cdkDrag
                [cdkDragData]="targetName">
@@ -122,7 +119,8 @@
                    [id]="targetConfig[targetName].name"
                    [cdkDropListData]="targetConfig[targetName].data"
                    (cdkDropListDropped)="drop.execute($event)"
-                   [cdkDropListSortingDisabled]="false">
+                   [cdkDropListSortingDisabled]="false"
+                   [cdkDropListConnectedTo]="targetTableNames">
                 <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
                      class="vertical-box"
                      [id]="tableName"
@@ -146,7 +144,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
       <div class="initial"
            *ngIf="!data.target.length">

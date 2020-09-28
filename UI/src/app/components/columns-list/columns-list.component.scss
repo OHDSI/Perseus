@@ -75,3 +75,9 @@ mat-list-item.mat-list-item {
     display: block;
   }
 }
+
+.rotate{
+  transform: rotate(270deg) !important;
+  text-align: center;
+  font-size: 14px !important;
+}

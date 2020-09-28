@@ -106,16 +106,19 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       const { container, previousContainer, previousIndex, currentIndex } = event;
       const data = container.data;
       const [ area, targetName ] = container.id.split('-');
+      const [ previousArea, previousTargetName ] = previousContainer.id.split('-');
       const exists = container.data.find(tableName => previousContainer.data[ previousIndex ] === tableName);
 
-      if (previousContainer === container) {
+      if (area === previousArea) {
         if (area === Area.Target) {
           const draggedItemId = event.item.element.nativeElement.id;
           const nodes = this.element.nativeElement.querySelectorAll('.vertical-list-item');
           const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
           const curInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${this.dropTargetId}`);
+          const prevTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[prevInd]);
+          const curTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[curInd]);
           moveItemInArray(this.targetTableNames, prevInd, curInd);
-          moveItemInArray(this.storeService.state.target, prevInd, curInd);
+          moveItemInArray(this.storeService.state.target, prevTargetIndex, curTargetIndex);
         }
 
         if (area === Area.Source) {
@@ -433,7 +436,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByType(): void {
-    const uniqueTargetNames = uniq(Object.keys(this.targetConfig));
+    const uniqueTargetNames = this.data.target.map(item => item.name);
     const { items: selectedTables } = this.data.filteredTables;
     if (selectedTables.length === 0) {
       this.targetTableNames = uniqueTargetNames;
