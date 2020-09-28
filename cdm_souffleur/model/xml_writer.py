@@ -41,7 +41,11 @@ def add_concept_id_data(field, alias, sql, counter):
         counter += 1
         sql += f"{field} as {alias}_{counter},"
     else:
-        sql += value
+        if counter == 1:
+            sql += value
+        else:
+            counter += 1
+            sql += value.replace(',', f'_{counter},')
     return sql, counter
 
 def prepare_sql(mapping_items, source_table):
@@ -76,8 +80,6 @@ def prepare_sql(mapping_items, source_table):
         ]
         return pd.DataFrame(all_fields_unique)
 
-    target_table = mapping_items.get('target_table')[0]
-
     data_ = get_sql_data_items(mapping_items, source_table)
     fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias']]
     sql = 'SELECT '
@@ -91,18 +93,18 @@ def prepare_sql(mapping_items, source_table):
         if not source_field:
             sql += f"{row['source_field']},\n"
         else:
-            if is_concept_id(target_table, target_field):
+            if is_concept_id(target_field):
                 sql, concept_id_counter = add_concept_id_data(source_field, 'CONCEPT_ID', sql, concept_id_counter)
-            elif is_source_value(target_table, target_field):
+            elif is_source_value(target_field):
                 sql, source_value_counter = add_concept_id_data(source_field, 'SOURCE_VALUE', sql, source_value_counter)
-            elif is_type_concept_id(target_table, target_field):
+            elif is_type_concept_id(target_field):
                 sql, type_concept_id_counter = add_concept_id_data(
                     source_field,
                     'TYPE_ID',
                     sql,
                     type_concept_id_counter
                 )
-            elif is_source_concept_id(target_table, target_field):
+            elif is_source_concept_id(target_field):
                 sql, source_concept_id_counter = add_concept_id_data(
                     source_field,
                     'SOURCE_CONCEPT_ID',
@@ -130,7 +132,6 @@ def get_lookup_data(filepath):
 
 
 def create_lookup(lookup, target_field, mapping):
-
     if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
 
@@ -167,8 +168,6 @@ def create_lookup(lookup, target_field, mapping):
         replace_key_1 = '{_}'.replace('_', folder)
         results_data = template_data.replace(replace_key_0, parts[0]).replace(replace_key_1, f'{parts[1]}\n{lookup_data}')
 
-        folder = 'source_to_source'
-
         lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
         lookup_body_data = get_lookup_data(lookup_body_filepath)
         parts = lookup_body_data.split('\n\n')
@@ -176,11 +175,13 @@ def create_lookup(lookup, target_field, mapping):
         lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
         lookup_data = get_lookup_data(lookup_filepath)
 
+        folder = 'source_to_source'
+
         replace_key_0 = '{base}'.replace('base', f'base_{folder}')
         replace_key_1 = '{_}'.replace('_', folder)
         results_data = results_data.replace(replace_key_0, parts[0]).replace(replace_key_1, f'{parts[1]}\n{lookup_data}')
     else:
-        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, 'template_result_only_source_to_standard.txt')
+        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_result_only_{folder}.txt')
         template_data = get_lookup_data(template_filepath)
 
         lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
@@ -196,17 +197,78 @@ def create_lookup(lookup, target_field, mapping):
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
 
-def is_concept_id(table_name: str, field: str):
-    return field.lower() == f'{table_name.lower()}_concept_id'
+def is_concept_id(field: str):
+    field = field.lower()
+    return field.endswith('concept_id') and not (is_source_concept_id(field) or is_type_concept_id(field))
 
-def is_source_value(table_name: str, field: str):
-    return field.lower() == f'{table_name.lower()}_source_value'
+def is_source_value(field: str):
+    field = field.lower()
+    return field.endswith('source_value')
 
-def is_type_concept_id(table_name: str, field: str):
-    return field.lower() == f'{table_name.lower()}_type_concept_id'
+def is_type_concept_id(field: str):
+    field = field.lower()
+    return field.endswith('type_concept_id')
 
-def is_source_concept_id(table_name: str, field: str):
-    return field.lower() == f'{table_name.lower()}_source_concept_id'
+def is_source_concept_id(field: str):
+    field = field.lower()
+    return field.endswith('source_concept_id')
+
+def prepare_concepts_tag(concept_tags, concepts_tag, domain_definition_tag, concept_tag_key, target_field):
+    if concepts_tag is None:
+        concepts_tag = SubElement(domain_definition_tag, 'Concepts')
+
+    if concept_tags.get(concept_tag_key, None) is None:
+        concept_tag = SubElement(
+            concepts_tag,
+            'Concept',
+            attrib={'name': _convert_underscore_to_camel(target_field)}
+        )
+        concept_tags[concept_tag_key] = concept_tag
+
+    return concepts_tag
+
+def is_mapping_contains_type_concept_id(field, mapping):
+    return is_mapping_contains(field, 'type_concept_id', mapping)
+
+def is_mapping_contains_source_value(field, mapping):
+    return is_mapping_contains(field, 'source_value', mapping)
+
+def is_mapping_contains(field, key, mapping):
+    for row in mapping:
+        target_field = row['target_field']
+        if target_field.startswith('value_as'):
+            continue
+        if target_field == field.replace('concept_id', key):
+            return True
+    return False
+
+
+def is_mapping_contains_source_value_once(mapping):
+    counter = 0
+    for row in mapping:
+        target_field = row['target_field']
+        if target_field.startswith('value_as'):
+            continue
+
+        if target_field.endswith('source_value'):
+            counter += 1
+        if counter > 1:
+            return False
+    return True
+
+
+def find_all_concept_id_fields(mapping):
+    concept_ids_fields = []
+
+    for row in mapping:
+        target_field = row['target_field']
+        if target_field.startswith('value_as'):
+            continue
+        if is_concept_id(target_field):
+            if target_field in concept_ids_fields:
+                continue
+            concept_ids_fields.append(target_field)
+    return concept_ids_fields
 
 def get_xml(json_):
     """prepare XML for CDM"""
@@ -224,117 +286,142 @@ def get_xml(json_):
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
 
         for index, record_data in target_tables.iterrows():
-            option = record_data.get('option')
             mapping = record_data.get('mapping')
-            lookup = mapping[0].get('lookup', None)
-            sql_transformation = mapping[0].get('sqlTransformation', None)
-            condition = record_data.get('condition')
             target_table = record_data.get('target_table')
             tag_name = _convert_underscore_to_camel(target_table)
+            if mapping is None:
+                continue
 
             if previous_target_table != target_table:
                 domain_tag = SubElement(query_definition_tag, tag_name)
 
             domain_definition_tag = SubElement(domain_tag, f'{tag_name}Definition')
 
-            if condition is not None:
-                for row in condition:
-                    if row:
-                        SubElement(domain_definition_tag, 'Condition').text = row['condition']
+            existed_fields_tag = None
+            counter = 1
 
-            if option is not None:
-                for row in option:
-                    if row:
-                        for key, value in row['options'].items():
-                            SubElement(domain_definition_tag, key).text = value
+            concepts_tag = None
+            concept_tags = {}
 
-            if mapping is not None:
-                existed_fields_tag = None
-                counter = 1
-                for row in mapping:
-                    source_field = row['source_field']
-                    sql_alias = row['sql_alias']
-                    target_field = row['target_field']
-                    if is_concept_id(target_table, target_field):
-                        fields_tag = None
-                        if existed_fields_tag is not None:
-                            if counter == 1:
-                                existed_fields_tag[-1].attrib['conceptId'] = f'CONCEPT_ID_{counter}'
-                            counter += 1
-                            SubElement(
-                                existed_fields_tag,
-                                'Field',
-                                attrib={
-                                    'conceptId': f'CONCEPT_ID_{counter}',
-                                    'sourceKey': 'SOURCE_VALUE',
-                                    'typeId': 'TYPE_ID'
-                                }
-                            )
+            mapping_contains_source_value_once = is_mapping_contains_source_value_once(mapping)
+            concept_ids_fields = find_all_concept_id_fields(mapping)
+            for row in mapping:
+                lookup_name = row.get('lookup', None)
+                sql_transformation = row.get('sqlTransformation', None)
+                target_field = row.get('target_field', None)
+                concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else target_field
 
-                        else:
-                            concepts_tag = SubElement(domain_definition_tag, 'Concepts')
-                            concept_tag = SubElement(
-                                concepts_tag,
-                                'Concept',
-                                attrib={'name': f'{_convert_underscore_to_camel(target_table)}ConceptId'})
-                            fields_tag = SubElement(concept_tag, 'Fields')
-                            SubElement(
-                                fields_tag,
-                                'Field',
-                                attrib={'conceptId': 'CONCEPT_ID', 'sourceKey': 'SOURCE_VALUE', 'typeId': 'TYPE_ID'}
-                            )
+                if lookup_name:
+                    create_lookup(lookup_name, target_field, mapping)
 
-                        if existed_fields_tag is None:
-                            existed_fields_tag = fields_tag
+                    concepts_tag = prepare_concepts_tag(
+                        concept_tags,
+                        concepts_tag,
+                        domain_definition_tag,
+                        concept_tag_key,
+                        target_field
+                    )
+
+                    concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
+
+                    mapper = SubElement(concept_id_mapper, 'Mapper')
+                    lookup = SubElement(mapper, 'Lookup')
+                    lookup.text = lookup_name
+
+
+                source_field = row['source_field']
+                sql_alias = row['sql_alias']
+                target_field = row['target_field']
+
+                if is_concept_id(target_field):
+                    concepts_tag = prepare_concepts_tag(
+                        concept_tags,
+                        concepts_tag,
+                        domain_definition_tag,
+                        concept_tag_key,
+                        target_field
+                    )
+
+                    fields_tag = None
+                    if existed_fields_tag is not None:
+                        if counter == 1:
+                            for item in existed_fields_tag:
+                                if item.attrib.get('conceptId', None) is None:
+                                    continue
+                                item.attrib['conceptId'] = f'CONCEPT_ID_{counter}'
+
+                                if not is_mapping_contains_source_value(target_field, mapping):
+                                    continue
+
+                                if mapping_contains_source_value_once:
+                                    continue
+
+                                for index, concept_id_field in enumerate(concept_ids_fields):
+                                    if target_field == concept_id_field:
+                                        item.attrib['sourceKey'] = f'SOURCE_VALUE_{index + 1}'
+                                        break
+                        counter += 1
+
+                        attrib = {
+                            'conceptId': f'CONCEPT_ID_{counter}',
+                        }
+
+                        if is_mapping_contains_source_value(target_field, mapping):
+                            if mapping_contains_source_value_once:
+                                attrib['sourceKey'] = f'SOURCE_VALUE'
+                            else:
+                                for index, concept_id_field in enumerate(concept_ids_fields):
+                                    if target_field == concept_id_field:
+                                        attrib['sourceKey'] = f'SOURCE_VALUE_{index + 1}'
+                                        break
+
+                        if is_mapping_contains_type_concept_id(target_field, mapping):
+                          attrib['typeId'] = 'TYPE_ID'
+
+                        SubElement(existed_fields_tag, 'Field', attrib)
+
                     else:
-                        if (
-                            is_type_concept_id(target_table, target_field) or
-                            is_source_value(target_table, target_field) or
-                            is_source_concept_id(target_table, target_field)
-                        ):
-                            continue
-                        v = SubElement(
+                        concepts_tag = prepare_concepts_tag(
+                            concept_tags,
+                            concepts_tag,
                             domain_definition_tag,
-                            _convert_underscore_to_camel(_replace_with_similar_name(target_field))
+                            concept_tag_key,
+                            target_field
                         )
-                        v.text = sql_alias if sql_alias else source_field
 
-            if lookup:
-                create_lookup(lookup, mapping[0]['target_field'], mapping)
+                        fields_tag = SubElement(concept_tags[concept_tag_key], 'Fields')
 
+                        attrib = {
+                            'conceptId': f'CONCEPT_ID',
+                        }
 
-                # for row in lookup:
-                #     if row:
-                #         concepts_tag = SubElement(domain_definition_tag, 'Concepts')
-                #         concept_tag = SubElement(concepts_tag, 'Concept')
-                #         options = row.get('options')
-                #         if options is not None:
-                #             for key, value in options.items():
-                #                 SubElement(concept_tag, key).text = value
-                #         vocabulary = row.get('lookup')
-                #         if vocabulary:
-                #             concept_id_mapper = SubElement(concept_tag, 'ConceptIdMapper')
-                #             mapper = SubElement(concept_id_mapper, 'Mapper')
-                #             lookup = SubElement(mapper, 'Lookup')
-                #             lookup.text = vocabulary
-                #         fields = row.get('fields')
-                #         if fields:
-                #             fields_tag = SubElement(concept_tag, 'Fields')
-                #             # TODO: field is dict with default value and other optional parameters and add validation
-                #             # typeId - значение пойдет в ConceptTypeId
-                #             # conceptId - значение пойдет в ConceptId
-                #             # eventDate - дата из поля будет влиять на маппинг(у концептов есть валидные даты в словаре)
-                #             # defaultTypeId - если не смапилось, будет использовано это значение в ConceptTypeId
-                #             # defaultConceptId - если не смапилось, будет использовано это значение в ConceptId
-                #             # defaultSource - занечение пойдет в SourceValue
-                #             # isNullable - запись создасться, даже если в raw был NULL
-                #             for field in fields:
-                #                 SubElement(fields_tag, 'Field', attrib={key: value for key, value in field.items()})
-            if sql_transformation:
-                query_tag.text = sql.replace(
-                    f"{mapping[0]['source_field']} as {mapping[0]['target_field']}",
-                    f"{sql_transformation} as {mapping[0]['target_field']}",
-                )
+                        if is_mapping_contains(target_field, 'source_value', mapping):
+                            attrib['sourceKey'] = 'SOURCE_VALUE'
+
+                        if is_mapping_contains(target_field, 'type_concept_id', mapping):
+                            attrib['typeId'] = 'TYPE_ID'
+
+                        SubElement(fields_tag, 'Field', attrib)
+
+                    if existed_fields_tag is None:
+                        existed_fields_tag = fields_tag
+                else:
+                    if (
+                            is_type_concept_id(target_field) or
+                            is_source_value(target_field) or
+                            is_source_concept_id(target_field)
+                    ):
+                        continue
+                    v = SubElement(
+                        domain_definition_tag,
+                        _convert_underscore_to_camel(_replace_with_similar_name(target_field))
+                    )
+                    v.text = sql_alias if sql_alias else source_field
+                if sql_transformation:
+                    query_tag.text = sql.replace(
+                        f"{mapping[0]['source_field']} as {mapping[0]['target_field']}",
+                        f"{sql_transformation} as {mapping[0]['target_field']}",
+                    )
             previous_target_table = target_table
             if target_table == 'person':
                 copyfile(BATCH_SQL_PATH, GENERATE_BATCH_SQL_PATH)
