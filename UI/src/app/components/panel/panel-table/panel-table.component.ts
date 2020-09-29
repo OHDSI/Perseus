@@ -181,6 +181,7 @@ export class PanelTableComponent extends BaseComponent
       overlayRef.afterClosed$.subscribe(ok => {
         row.constant = data.value;
         if (row.constant) {
+          this.updateIncrementOrConstantFields(row, 'constant');
           this.bridgeService.addConstant.execute(row);
         }
       });
@@ -189,14 +190,36 @@ export class PanelTableComponent extends BaseComponent
 
   selectIncrement(anchor: HTMLElement, row: IRow) {
     if (!this.isRowHasConnection(row)) {
-      this.updateIncrementFields(row.name);
+      this.updateIncrementOrConstantFields(row, 'increment');
     }
   }
 
-  updateIncrementFields(rowName: string) {
-    const isSameRowName = (row) => rowName.toUpperCase() === row.name.toUpperCase();
-    this.bridgeService.updateRowsProperties(this.tables, isSameRowName, (row: any) => { row.increment = !row.increment; });
-    this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRowName, (row: any) => { row.increment = !row.increment; });
+  updateIncrementOrConstantFields(row: IRow, type: string) {
+    let similarRows = [];
+    if (row.tableName.toUpperCase() === 'SIMILAR') {
+      similarRows = this.bridgeService.findSimilarRows(this.tables, row.name);
+    } else {
+      similarRows.push(row);
+    }
+    const isSameRow = (item: IRow) => {
+      let found = false;
+      similarRows.forEach(similarItem => {
+        if (item.tableName.toUpperCase() === similarItem.tableName.toUpperCase() &&
+          item.name.toUpperCase() === similarItem.name.toUpperCase()) {
+          found = true;
+        }
+      });
+      return found;
+    };
+    if (type === 'increment') {
+      const value = !row.increment;
+      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
+      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+    } else {
+      const value = row.constant;
+      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.constant = value; });
+      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.constant = value; });
+    }
   }
 
   onTransformDialogOpen(event: any, row: IRow, element: any) {
