@@ -14,6 +14,7 @@ export interface ConfigurationOptions {
   report?: any;
   version?: any;
   filtered?: any;
+  constants?: any;
 }
 
 export class Configuration {
@@ -56,6 +57,10 @@ export class Configuration {
     return JSON.parse(this.filtered);
   }
 
+  get constantsCache(): any {
+    return JSON.parse(this.constants);
+  }
+
   name: string;
   mappingsConfiguration: string;
   tablesConfiguration: string;
@@ -64,6 +69,7 @@ export class Configuration {
   report: string;
   version: string;
   filtered: string;
+  constants: string;
 
   constructor(options: ConfigurationOptions = {}) {
     this.name = options.name;
@@ -74,5 +80,6 @@ export class Configuration {
     this.report = JSON.stringify(options.report);
     this.version = JSON.stringify(options.version);
     this.filtered = JSON.stringify(options.filtered);
+    this.constants = JSON.stringify(options.constants);
   }
 }

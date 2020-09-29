@@ -182,7 +182,6 @@ export class PanelTableComponent extends BaseComponent
         row.constant = data.value;
         if (row.constant) {
           this.updateIncrementOrConstantFields(row, 'constant');
-          this.bridgeService.addConstant.execute(row);
         }
       });
     }
@@ -217,8 +216,13 @@ export class PanelTableComponent extends BaseComponent
       this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
     } else {
       const value = row.constant;
-      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.constant = value; });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.constant = value; });
+      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
+        item.constant = value;
+        this.bridgeService.addConstant.execute(item);
+      });
+      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => {
+        item.constant = value;
+      });
     }
   }
 

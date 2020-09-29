@@ -226,6 +226,7 @@ export class BridgeService {
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();
 
+    this.constantsCache = Object.assign(configuration.constantsCache);
     this.arrowsCache = Object.assign(configuration.arrows);
     Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
 
