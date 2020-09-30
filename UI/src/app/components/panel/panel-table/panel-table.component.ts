@@ -182,6 +182,8 @@ export class PanelTableComponent extends BaseComponent
         row.constant = data.value;
         if (row.constant) {
           this.bridgeService.addConstant.execute(row);
+        } else {
+          this.bridgeService.dropConstant.execute(row);
         }
       });
     }

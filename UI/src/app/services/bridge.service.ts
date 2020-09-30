@@ -143,6 +143,13 @@ export class BridgeService {
     canExecute: () => true
   });
 
+  dropConstant = new Command({
+    execute: (row: IRow) => {
+      delete this.constantsCache[ this.getConstantId(row) ];
+    },
+    canExecute: () => true
+  });
+
   getTables() {
     const { source, target, targetConfig } = this.storeService.state;
 
