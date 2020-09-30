@@ -59,6 +59,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   onFileUpload(event: Event) {
+    this.bridgeService.reportLoading();
     this.uploadService.onFileChange(event);
   }
 

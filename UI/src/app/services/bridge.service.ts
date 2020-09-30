@@ -79,6 +79,7 @@ export class BridgeService {
   resetAllMappings$ = new Subject<any>();
   loadSavedSchema$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
+  reportLoading$ = new Subject<boolean>();
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -497,6 +498,14 @@ export class BridgeService {
     this.deleteAllArrows();
 
     this.resetAllMappings$.next();
+  }
+
+  reportLoading() {
+    this.reportLoading$.next(true);
+  }
+
+  reportLoaded() {
+    this.reportLoading$.next(false);
   }
 
   getConnectorId(source: IRow, target: IRow): string {
