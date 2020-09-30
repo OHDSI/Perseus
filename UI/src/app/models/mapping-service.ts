@@ -8,14 +8,16 @@ export class MappingService {
   connections: Array<IConnection>;
   constants: Array<IRow>;
   sourceTableName: string;
+  targetTableName: string;
 
-  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
     this.connections = Object.values(arrowCache);
     this.constants = Object.values(constants);
     this.sourceTableName = sourceTableName;
+    this.targetTableName = targetTableName;
   }
 
   generate(): Mapping {
@@ -44,8 +46,14 @@ export class MappingService {
     const mapPairs: MappingPair[] = [];
 
     Object.keys(bySource).forEach(sourceTable => {
+      if (this.sourceTableName && this.sourceTableName !== sourceTable) {
+        return;
+      }
       const byTargetTable = groupBy(bySource[sourceTable], 'targetTable');
       Object.keys(byTargetTable).forEach(targetTable => {
+        if (this.targetTableName && this.targetTableName !== targetTable) {
+          return;
+        }
         const mappings = [];
 
         byTargetTable[targetTable].map(arrow => {

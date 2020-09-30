@@ -378,7 +378,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   previewMapping() {
-    const mapping = this.bridgeService.generateMapping(this.source[ this.sourceTabIndex ].name);
+    const mapping = this.bridgeService.generateMapping(this.source[ this.sourceTabIndex ].name, this.target[ this.targetTabIndex ].name);
 
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;

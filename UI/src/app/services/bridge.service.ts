@@ -440,11 +440,12 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
-  generateMapping(sourceTableName: string = '') {
+  generateMapping(sourceTableName: string = '', targetTableName: string = '') {
     const mappingService = new MappingService(
       this.arrowsCache,
       this.constantsCache,
-      sourceTableName
+      sourceTableName,
+      targetTableName
     );
     return mappingService.generate();
   }

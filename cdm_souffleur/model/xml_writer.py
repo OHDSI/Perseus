@@ -14,6 +14,7 @@ import pandas as pd
 from shutil import rmtree, copyfile
 import zipfile
 import os
+import re
 from pathlib import Path
 from cdm_souffleur.model.similar_names_map import similar_names_map
 
@@ -94,20 +95,20 @@ def prepare_sql(mapping_items, source_table):
             sql += f"{row['source_field']},\n"
         else:
             if is_concept_id(target_field):
-                sql, concept_id_counter = add_concept_id_data(source_field, 'CONCEPT_ID', sql, concept_id_counter)
+                sql, concept_id_counter = add_concept_id_data(source_field, target_field, sql, concept_id_counter)
             elif is_source_value(target_field):
-                sql, source_value_counter = add_concept_id_data(source_field, 'SOURCE_VALUE', sql, source_value_counter)
+                sql, source_value_counter = add_concept_id_data(source_field, target_field, sql, source_value_counter)
             elif is_type_concept_id(target_field):
                 sql, type_concept_id_counter = add_concept_id_data(
                     source_field,
-                    'TYPE_ID',
+                    target_field,
                     sql,
                     type_concept_id_counter
                 )
             elif is_source_concept_id(target_field):
                 sql, source_concept_id_counter = add_concept_id_data(
                     source_field,
-                    'SOURCE_CONCEPT_ID',
+                    target_field,
                     sql,
                     source_concept_id_counter
                 )
@@ -239,22 +240,22 @@ def is_mapping_contains(field, key, mapping):
         if target_field.startswith('value_as'):
             continue
         if target_field == field.replace('concept_id', key):
-            return True
-    return False
+            return target_field
+    return None
 
 
-def is_mapping_contains_source_value_once(mapping):
-    counter = 0
+def get_mapping_source_values(mapping):
+    source_values = []
     for row in mapping:
         target_field = row['target_field']
         if target_field.startswith('value_as'):
             continue
 
         if target_field.endswith('source_value'):
-            counter += 1
-        if counter > 1:
-            return False
-    return True
+            if target_field in source_values:
+                continue
+            source_values.append(target_field)
+    return source_values
 
 
 def find_all_concept_id_fields(mapping):
@@ -302,16 +303,18 @@ def get_xml(json_):
 
             concepts_tag = None
             concept_tags = {}
+            definitions = []
 
-            mapping_contains_source_value_once = is_mapping_contains_source_value_once(mapping)
-            concept_ids_fields = find_all_concept_id_fields(mapping)
+            mapping_source_values = get_mapping_source_values(mapping)
+            # concept_ids_fields = find_all_concept_id_fields(mapping)
+            lookups = []
             for row in mapping:
                 lookup_name = row.get('lookup', None)
                 sql_transformation = row.get('sqlTransformation', None)
                 target_field = row.get('target_field', None)
                 concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else target_field
 
-                if lookup_name:
+                if lookup_name and lookup_name not in lookups:
                     create_lookup(lookup_name, target_field, mapping)
 
                     concepts_tag = prepare_concepts_tag(
@@ -328,6 +331,7 @@ def get_xml(json_):
                     lookup = SubElement(mapper, 'Lookup')
                     lookup.text = lookup_name
 
+                    lookups.append(lookup_name)
 
                 source_field = row['source_field']
                 sql_alias = row['sql_alias']
@@ -348,35 +352,38 @@ def get_xml(json_):
                             for item in existed_fields_tag:
                                 if item.attrib.get('conceptId', None) is None:
                                     continue
-                                item.attrib['conceptId'] = f'CONCEPT_ID_{counter}'
+                                item.attrib['conceptId'] = f'{target_field}_{counter}'
 
-                                if not is_mapping_contains_source_value(target_field, mapping):
+
+                                if not mapping_source_values:
                                     continue
 
-                                if mapping_contains_source_value_once:
-                                    continue
+                                if is_mapping_contains_source_value(target_field, mapping):
+                                    item.attrib['sourceKey'] = f"{target_field.replace('concept_id', 'source_value')}"
 
-                                for index, concept_id_field in enumerate(concept_ids_fields):
-                                    if target_field == concept_id_field:
-                                        item.attrib['sourceKey'] = f'SOURCE_VALUE_{index + 1}'
-                                        break
+
+                                # for index, concept_id_field in enumerate(concept_ids_fields):
+                                #     if target_field == concept_id_field:
+                                #         item.attrib['sourceKey'] = f'{target_field}_{index + 1}'
+                                #         break
                         counter += 1
 
                         attrib = {
-                            'conceptId': f'CONCEPT_ID_{counter}',
+                            'conceptId': f'{target_field}_{counter}',
                         }
 
                         if is_mapping_contains_source_value(target_field, mapping):
-                            if mapping_contains_source_value_once:
-                                attrib['sourceKey'] = f'SOURCE_VALUE'
-                            else:
-                                for index, concept_id_field in enumerate(concept_ids_fields):
-                                    if target_field == concept_id_field:
-                                        attrib['sourceKey'] = f'SOURCE_VALUE_{index + 1}'
-                                        break
+                            attrib['sourceKey'] = target_field.replace('concept_id', 'source_value')
+                            # if len(mapping_source_values) == 1:
+                            #     attrib['sourceKey'] = mapping_source_values[0]
+                            # else:
+                            #     for index, concept_id_field in enumerate(concept_ids_fields):
+                            #         if target_field == concept_id_field:
+                            #             attrib['sourceKey'] = f'{target_field}_{index + 1}'
+                            #             break
 
                         if is_mapping_contains_type_concept_id(target_field, mapping):
-                          attrib['typeId'] = 'TYPE_ID'
+                          attrib['typeId'] = target_field.replace('concept_id', 'type_concept_id')
 
                         SubElement(existed_fields_tag, 'Field', attrib)
 
@@ -392,14 +399,14 @@ def get_xml(json_):
                         fields_tag = SubElement(concept_tags[concept_tag_key], 'Fields')
 
                         attrib = {
-                            'conceptId': f'CONCEPT_ID',
+                            'conceptId': target_field,
                         }
 
                         if is_mapping_contains(target_field, 'source_value', mapping):
-                            attrib['sourceKey'] = 'SOURCE_VALUE'
+                            attrib['sourceKey'] = target_field.replace('concept_id', 'source_value')
 
                         if is_mapping_contains(target_field, 'type_concept_id', mapping):
-                            attrib['typeId'] = 'TYPE_ID'
+                            attrib['typeId'] = target_field.replace('concept_id', 'type_concept_id')
 
                         SubElement(fields_tag, 'Field', attrib)
 
@@ -412,15 +419,24 @@ def get_xml(json_):
                             is_source_concept_id(target_field)
                     ):
                         continue
-                    v = SubElement(
-                        domain_definition_tag,
-                        _convert_underscore_to_camel(_replace_with_similar_name(target_field))
-                    )
-                    v.text = sql_alias if sql_alias else source_field
+
+                    if target_field not in definitions:
+                        v = SubElement(
+                            domain_definition_tag,
+                            _convert_underscore_to_camel(_replace_with_similar_name(target_field))
+                        )
+                        v.text = sql_alias if sql_alias else source_field
+
+                        definitions.append(target_field)
                 if sql_transformation:
-                    query_tag.text = sql.replace(
-                        f"{mapping[0]['source_field']} as {mapping[0]['target_field']}",
-                        f"{sql_transformation} as {mapping[0]['target_field']}",
+                    match_item = f"{source_field} as {target_field}"
+                    if sql_transformation in query_tag.text:
+                        query_tag.text = query_tag.text.replace(f'{match_item},\n', '')
+                        query_tag.text = query_tag.text.replace(f'{match_item}\n', '')
+                        continue
+                    query_tag.text = query_tag.text.replace(
+                        match_item,
+                        sql_transformation,
                     )
             previous_target_table = target_table
             if target_table == 'person':
