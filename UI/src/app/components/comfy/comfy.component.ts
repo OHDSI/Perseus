@@ -83,6 +83,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   subs = new Subscription();
   private animationFrame: number | undefined;
 
+  reportLoading = false;
   vocabularies: IVocabulary[] = [];
   data = {
     source: [],
@@ -271,8 +272,16 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.saveAndLoadSchema$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
+        this.bridgeService.reportLoaded();
         this.initializeData();
 
+        this.snackBar.open('New source schema loaded', ' DISMISS ');
+      });
+
+    this.bridgeService.reportLoading$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(res => {
+        this.reportLoading = res;
         this.snackBar.open('New source schema loaded', ' DISMISS ');
       });
 
@@ -477,6 +486,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   onFileUpload(event: Event) {
+    this.bridgeService.reportLoading();
     this.uploadService.onFileChange(event);
   }
 

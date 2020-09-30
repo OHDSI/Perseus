@@ -37,7 +37,7 @@ export class UploadService {
       );
       this.bridgeService.resetAllMappings();
       this.dataService.prepareTables(res, 'source');
-      this.dataService.saveReportName(files[ 0 ].name.slice(0, dotPosition), 'report')
+      this.dataService.saveReportName(files[ 0 ].name.slice(0, dotPosition), 'report');
       this.bridgeService.saveAndLoadSchema$.next();
     });
   }
