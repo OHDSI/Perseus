@@ -79,6 +79,7 @@ export class BridgeService {
   resetAllMappings$ = new Subject<any>();
   loadSavedSchema$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
+  reportLoading$ = new Subject<boolean>();
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -101,8 +102,8 @@ export class BridgeService {
       this.tables = this.storeService.getMappedTables();
       const similar = 'similar';
       this.drawArrow(this.sourceRow, this.targetRow);
-      const similarSourceRows = this.findSimilarRows(this.sourceRow.name, Area.Source);
-      const similarTargetRows = this.findSimilarRows(this.targetRow.name, Area.Target);
+      const similarSourceRows = this.findSimilarRows(this.tables, this.sourceRow.name, Area.Source);
+      const similarTargetRows = this.findSimilarRows(this.tables, this.targetRow.name, Area.Target);
 
       if (this.sourceRow.tableName === similar && this.targetRow.tableName !== similar) {
         similarSourceRows.forEach(row => {
@@ -180,9 +181,10 @@ export class BridgeService {
     return false;
   }
 
-  findSimilarRows(name, area) {
+  findSimilarRows(tables, name, area?) {
     const similarRows = [];
-    this.tables[ area ].forEach(table => {
+    const tablesToSearch = area ? tables[ area ] : tables;
+    tablesToSearch.forEach(table => {
       table.rows.forEach(row => {
         if (this.checkSimilar(row.name, name)) {
           similarRows.push(new Row({ ...row }));
@@ -225,6 +227,7 @@ export class BridgeService {
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();
 
+    this.constantsCache = Object.assign(configuration.constantsCache);
     this.arrowsCache = Object.assign(configuration.arrows);
     Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
 
@@ -389,12 +392,8 @@ export class BridgeService {
   sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
     return (item: IConnection) => {
       const tableName = value.connector.target.tableName.toUpperCase();
-      if (tableName === 'SIMILAR' && !draw) {
-        return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase();
-      } else {
-        return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
-          item.connector.target.tableName.toUpperCase() === tableName;
-      }
+      return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
+        item.connector.target.tableName.toUpperCase() === tableName;
     }
   }
 
@@ -501,6 +500,14 @@ export class BridgeService {
     this.resetAllMappings$.next();
   }
 
+  reportLoading() {
+    this.reportLoading$.next(true);
+  }
+
+  reportLoaded() {
+    this.reportLoading$.next(false);
+  }
+
   getConnectorId(source: IRow, target: IRow): string {
     const sourceRowId = source.id;
     const targetRowId = target.id;
@@ -540,8 +547,17 @@ export class BridgeService {
   }
 
   updateConnectedRows(arrow: IConnection) {
-    const connectedToSameTraget = Object.values(this.arrowsCache).
+    let connectedToSameTraget = Object.values(this.arrowsCache).
       filter(this.sourceConnectedToSameTarget(arrow, false));
+    if (arrow.connector.target.tableName.toUpperCase() === 'SIMILAR') {
+      let similarLinks = [];
+      connectedToSameTraget.forEach(item => {
+        similarLinks = similarLinks.concat(this.findSimilarLinks(item.connector, Area.Source, Area.Target)).
+          filter(e => e !== undefined);
+      });
+      connectedToSameTraget = [];
+      similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[item]));
+    }
     connectedToSameTraget.forEach(item => { item.lookup = { ...arrow.lookup }; item.sql = { ...arrow.sql }; });
     const applyedL = arrow.lookup ? arrow.lookup[ 'applied' ] ? true : false : false;
     const applyedT = arrow.sql ? arrow.sql[ 'applied' ] ? true : false : false;

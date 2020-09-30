@@ -19,6 +19,7 @@
     <article>
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
+        <p class="saving" *ngIf="reportLoading">Loading report<span>.</span><span>.</span><span>.</span></p>
       </h4>
       <app-search-by-name *ngIf="data.source?.length"
                                 class="filter-by-name"

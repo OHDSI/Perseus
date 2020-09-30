@@ -137,3 +137,19 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   padding-right: 55px;
 }
 
+.mat-pseudo-checkbox.mat-pseudo-checkbox-checked {
+  color: #066BBB !important;
+  background: rgba(6, 107, 187, 0.2) !important;
+}
+
+.mat-pseudo-checkbox::after {
+  color: #066BBB !important;
+  padding-left: 2px !important;
+  padding-top: 1px !important;
+  border-width: 1.5px !important;
+}
+
+.mat-pseudo-checkbox {
+  border: 1px solid !important;
+  border-radius: 0px !important;
+}
