@@ -58,7 +58,10 @@ export class Configuration {
   }
 
   get constantsCache(): any {
-    return JSON.parse(this.constants);
+    if (this.constants) {
+      return JSON.parse(this.constants);
+    }
+    return {};
   }
 
   name: string;
