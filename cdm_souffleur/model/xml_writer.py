@@ -8,8 +8,7 @@ from cdm_souffleur.utils.constants import \
     GENERATE_CDM_LOOKUP_SQL_PATH, \
     PREDEFINED_LOOKUPS_PATH, \
     INCOME_LOOKUPS_PATH, \
-    GENERATE_BATCH_SQL_PATH, \
-    BATCH_SQL_PATH
+    GENERATE_BATCH_SQL_PATH
 import pandas as pd
 from shutil import rmtree, copyfile
 import zipfile
@@ -277,6 +276,21 @@ def find_all_concept_id_fields(mapping):
             concept_ids_fields.append(target_field)
     return concept_ids_fields
 
+def generate_bath_sql_file(mapping, source_table):
+    sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM {sc}.{table} ORDER BY 1'
+    sql = sql.replace('{table}', source_table)
+    for row in mapping:
+        source_field = row['source_field']
+        target_field = row['target_field']
+        if target_field == 'person_id':
+            sql = sql.replace('{person_id}', source_field)
+        if target_field == 'person_source':
+            sql = sql.replace('{person_source}', source_field)
+    with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
+        f.write(sql)
+
+
+
 def get_xml(json_):
     """prepare XML for CDM"""
     result = {}
@@ -459,7 +473,7 @@ def get_xml(json_):
                     )
             previous_target_table = target_table
             if target_table == 'person':
-                copyfile(BATCH_SQL_PATH, GENERATE_BATCH_SQL_PATH)
+                generate_bath_sql_file(mapping, source_table)
 
         xml = ElementTree(query_definition_tag)
         try:
