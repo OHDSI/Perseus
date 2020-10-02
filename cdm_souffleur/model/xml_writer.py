@@ -116,7 +116,7 @@ def prepare_sql(mapping_items, source_table):
                 sql += f"{source_field} as {target_field},"
             sql += '\n'
     sql = f'{sql[:-2]}\n'
-    sql += 'FROM ' + source_table + \
+    sql += 'FROM {sc}.' + source_table + \
            ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
            'ORDER BY PERSON_ID'
     return sql
@@ -165,9 +165,8 @@ def create_lookup(lookup, target_field, mapping):
         lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
         lookup_data = get_lookup_data(lookup_filepath)
 
-        replace_key_0 = '{base}'.replace('base', f'base_{folder}')
-        replace_key_1 = '{_}'.replace('_', folder)
-        results_data = template_data.replace(replace_key_0, parts[0]).replace(replace_key_1, f'{parts[1]}\n{lookup_data}')
+        replace_key = '{_}'.replace('_', folder)
+        results_data = template_data.replace(replace_key, f'{parts[1]}\n{lookup_data}')
 
         lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
         lookup_body_data = get_lookup_data(lookup_body_filepath)
@@ -178,9 +177,8 @@ def create_lookup(lookup, target_field, mapping):
 
         folder = 'source_to_source'
 
-        replace_key_0 = '{base}'.replace('base', f'base_{folder}')
-        replace_key_1 = '{_}'.replace('_', folder)
-        results_data = results_data.replace(replace_key_0, parts[0]).replace(replace_key_1, f'{parts[1]}\n{lookup_data}')
+        replace_key = '{_}'.replace('_', folder)
+        results_data = results_data.replace(replace_key, f'{parts[1]}\n{lookup_data}')
     else:
         template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_result_only_{folder}.txt')
         template_data = get_lookup_data(template_filepath)
@@ -192,7 +190,7 @@ def create_lookup(lookup, target_field, mapping):
         lookup_filepath = os.path.join(basepath, folder, f'{lookup}.txt')
         lookup_body_data = get_lookup_data(lookup_filepath)
 
-        results_data = template_data.replace('{base}', parts[0]).replace('{source_to_standard}', f'{parts[1]}\n{lookup_body_data}')
+        results_data = template_data.replace('{source_to_standard}', f'{parts[1]}\n{lookup_body_data}')
 
     result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
     with open(result_filepath, mode='w') as f:
@@ -243,6 +241,14 @@ def is_mapping_contains(field, key, mapping):
             return target_field
     return None
 
+def is_mapping_contains_concept_id(field, replace_key, key, mapping):
+    for row in mapping:
+        target_field = row['target_field']
+        if target_field.startswith('value_as'):
+            continue
+        if target_field == field.replace(replace_key, key):
+            return target_field
+    return None
 
 def get_mapping_source_values(mapping):
     source_values = []
@@ -314,24 +320,28 @@ def get_xml(json_):
                 target_field = row.get('target_field', None)
                 concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else target_field
 
-                if lookup_name and lookup_name not in lookups:
-                    create_lookup(lookup_name, target_field, mapping)
+                if lookup_name:
+                    attrib_key = 'key'
+                    if lookup_name not in lookups:
+                        create_lookup(lookup_name, target_field, mapping)
 
-                    concepts_tag = prepare_concepts_tag(
-                        concept_tags,
-                        concepts_tag,
-                        domain_definition_tag,
-                        concept_tag_key,
-                        target_field
-                    )
+                        concepts_tag = prepare_concepts_tag(
+                            concept_tags,
+                            concepts_tag,
+                            domain_definition_tag,
+                            concept_tag_key,
+                            target_field
+                        )
 
-                    concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
+                        concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
 
-                    mapper = SubElement(concept_id_mapper, 'Mapper')
-                    lookup = SubElement(mapper, 'Lookup')
-                    lookup.text = lookup_name
+                        mapper = SubElement(concept_id_mapper, 'Mapper')
+                        lookup = SubElement(mapper, 'Lookup')
+                        lookup.text = lookup_name
 
-                    lookups.append(lookup_name)
+                        lookups.append(lookup_name)
+                else:
+                    attrib_key = 'conceptId'
 
                 source_field = row['source_field']
                 sql_alias = row['sql_alias']
@@ -350,9 +360,9 @@ def get_xml(json_):
                     if existed_fields_tag is not None:
                         if counter == 1:
                             for item in existed_fields_tag:
-                                if item.attrib.get('conceptId', None) is None:
+                                if item.attrib.get(attrib_key, None) is None:
                                     continue
-                                item.attrib['conceptId'] = f'{target_field}_{counter}'
+                                item.attrib[attrib_key] = f'{target_field}_{counter}'
 
 
                                 if not mapping_source_values:
@@ -369,7 +379,7 @@ def get_xml(json_):
                         counter += 1
 
                         attrib = {
-                            'conceptId': f'{target_field}_{counter}',
+                            attrib_key: f'{target_field}_{counter}',
                         }
 
                         if is_mapping_contains_source_value(target_field, mapping):
@@ -399,7 +409,7 @@ def get_xml(json_):
                         fields_tag = SubElement(concept_tags[concept_tag_key], 'Fields')
 
                         attrib = {
-                            'conceptId': target_field,
+                            attrib_key: target_field,
                         }
 
                         if is_mapping_contains(target_field, 'source_value', mapping):
@@ -414,9 +424,18 @@ def get_xml(json_):
                         existed_fields_tag = fields_tag
                 else:
                     if (
-                            is_type_concept_id(target_field) or
-                            is_source_value(target_field) or
-                            is_source_concept_id(target_field)
+                        is_type_concept_id(target_field) and
+                        is_mapping_contains_concept_id(target_field, 'type_concept_id', 'concept_id', mapping)
+                    ):
+                        continue
+                    if (
+                        is_source_value(target_field) and
+                        is_mapping_contains_concept_id(target_field, 'source_value', 'concept_id', mapping)
+                    ):
+                        continue
+                    if (
+                        is_source_concept_id(target_field) and
+                        is_mapping_contains_concept_id(target_field, 'source_concept_id', 'concept_id', mapping)
                     ):
                         continue
 
