@@ -276,6 +276,7 @@ def find_all_concept_id_fields(mapping):
             concept_ids_fields.append(target_field)
     return concept_ids_fields
 
+
 def generate_bath_sql_file(mapping, source_table):
     sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM {sc}.{table} ORDER BY 1'
     sql = sql.replace('{table}', source_table)
@@ -288,7 +289,6 @@ def generate_bath_sql_file(mapping, source_table):
             sql = sql.replace('{person_source}', source_field)
     with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
         f.write(sql)
-
 
 
 def get_xml(json_):
@@ -318,7 +318,7 @@ def get_xml(json_):
 
             domain_definition_tag = SubElement(domain_tag, f'{tag_name}Definition')
 
-            existed_fields_tag = None
+            fields_tags = {}
             counter = 1
 
             concepts_tag = None
@@ -326,7 +326,6 @@ def get_xml(json_):
             definitions = []
 
             mapping_source_values = get_mapping_source_values(mapping)
-            # concept_ids_fields = find_all_concept_id_fields(mapping)
             lookups = []
             for row in mapping:
                 lookup_name = row.get('lookup', None)
@@ -371,13 +370,12 @@ def get_xml(json_):
                     )
 
                     fields_tag = None
-                    if existed_fields_tag is not None:
+                    if fields_tags.get(concept_tag_key, None) is not None:
                         if counter == 1:
-                            for item in existed_fields_tag:
+                            for item in fields_tags[concept_tag_key]:
                                 if item.attrib.get(attrib_key, None) is None:
                                     continue
                                 item.attrib[attrib_key] = f'{target_field}_{counter}'
-
 
                                 if not mapping_source_values:
                                     continue
@@ -385,11 +383,6 @@ def get_xml(json_):
                                 if is_mapping_contains_source_value(target_field, mapping):
                                     item.attrib['sourceKey'] = f"{target_field.replace('concept_id', 'source_value')}"
 
-
-                                # for index, concept_id_field in enumerate(concept_ids_fields):
-                                #     if target_field == concept_id_field:
-                                #         item.attrib['sourceKey'] = f'{target_field}_{index + 1}'
-                                #         break
                         counter += 1
 
                         attrib = {
@@ -398,18 +391,11 @@ def get_xml(json_):
 
                         if is_mapping_contains_source_value(target_field, mapping):
                             attrib['sourceKey'] = target_field.replace('concept_id', 'source_value')
-                            # if len(mapping_source_values) == 1:
-                            #     attrib['sourceKey'] = mapping_source_values[0]
-                            # else:
-                            #     for index, concept_id_field in enumerate(concept_ids_fields):
-                            #         if target_field == concept_id_field:
-                            #             attrib['sourceKey'] = f'{target_field}_{index + 1}'
-                            #             break
 
                         if is_mapping_contains_type_concept_id(target_field, mapping):
                           attrib['typeId'] = target_field.replace('concept_id', 'type_concept_id')
 
-                        SubElement(existed_fields_tag, 'Field', attrib)
+                        SubElement(fields_tags[concept_tag_key], 'Field', attrib)
 
                     else:
                         concepts_tag = prepare_concepts_tag(
@@ -434,8 +420,8 @@ def get_xml(json_):
 
                         SubElement(fields_tag, 'Field', attrib)
 
-                    if existed_fields_tag is None:
-                        existed_fields_tag = fields_tag
+                    if fields_tags.get(concept_tag_key, None) is None:
+                        fields_tags[concept_tag_key] = fields_tag
                 else:
                     if (
                         is_type_concept_id(target_field) and
