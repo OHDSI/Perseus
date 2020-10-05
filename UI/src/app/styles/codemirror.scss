@@ -13,7 +13,11 @@
 }
 
 .invalid .CodeMirror.cm-s-default {
-  border-color: red;
+  border-color: red !important;
+}
+
+.invalid-with-border .CodeMirror.cm-s-default {
+  border: 1px solid red !important;
 }
 
 .CodeMirror-hints.default {

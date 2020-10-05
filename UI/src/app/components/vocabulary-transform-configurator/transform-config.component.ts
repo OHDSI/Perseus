@@ -221,6 +221,11 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup}) : this.dialogRef.close({sql: this.sql });
   }
 
+addDisabled(){
+  return this.tab === 'Lookup' &&
+  (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
+}
+
   closeDialog() {
     const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
@@ -228,7 +233,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       panelClass: 'warning-dialog',
       data: {
         title: 'changes',
-        message: 'Unsaved changes will be deleted.',
+        message: 'Unsaved changes will be deleted',
       }
     });
     dialog.afterClosed().subscribe(res => {
