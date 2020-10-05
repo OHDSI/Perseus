@@ -4,7 +4,8 @@
       <div class="stage-number">1</div>
       <span class="stage-title">Select Lookup</span>
     </div>
-    <div class="stage-body">
+    <div class="stage-body"
+    [class.invalid-with-border]="lookup['value'] === ''">
       <mat-form-field class="select-lookup" appearance="fill">
         <mat-label>Select Lookup</mat-label>
         <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected">
@@ -20,7 +21,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="flex-div">
       <div class="preview-title">SQL Preview</div>
+      <div class="invalid-label" *ngIf="lookup['value'] === ''"> &mdash; Please type SQL here</div>
+      </div>
       <mat-expansion-panel [class.hidden]="!selected" class="select-preview">
         <mat-expansion-panel-header>
           <mat-panel-title>{{lookupType | prettyName}}</mat-panel-title>
@@ -38,9 +42,11 @@
     <mat-form-field
       class="lookup-name"
       appearance="fill"
-      [class.invalid]="lookup['name'] === ''"
-    >
-      <mat-label>Lookup Name</mat-label>
+      [ngClass]="{'invalid-name': lookup['name'] === '.userDefined'}">
+      <mat-label>
+        <mat-label>Lookup Name</mat-label>
+        <mat-label class="invalid-label" *ngIf="lookup['name'] === '.userDefined'">&mdash; Please set name</mat-label>
+      </mat-label>
       <input
         matInput
         (input)="onChangeName($event)"
