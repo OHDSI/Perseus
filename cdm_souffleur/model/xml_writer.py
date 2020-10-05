@@ -48,7 +48,7 @@ def add_concept_id_data(field, alias, sql, counter):
             sql += value.replace(',', f'_{counter},')
     return sql, counter
 
-def prepare_sql(mapping_items, source_table):
+def prepare_sql(mapping_items, source_table, views):
     """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
@@ -115,8 +115,15 @@ def prepare_sql(mapping_items, source_table):
                 sql += f"{source_field} as {target_field},"
             sql += '\n'
     sql = f'{sql[:-2]}\n'
-    sql += 'FROM {sc}.' + source_table + \
-           ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
+    view = None
+    if views:
+        view = views.get(source_table, None)
+
+    if view:
+        sql  = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
+    else:
+        sql += 'FROM {sc}.' + source_table
+    sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
            'ORDER BY PERSON_ID'
     return sql
 
@@ -285,7 +292,7 @@ def generate_bath_sql_file(mapping, source_table):
         target_field = row['target_field']
         if target_field == 'person_id':
             sql = sql.replace('{person_id}', source_field)
-        if target_field == 'person_source':
+        if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
     with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
         f.write(sql)
@@ -298,11 +305,12 @@ def get_xml(json_):
     domain_tag = ''
     mapping_items = pd.DataFrame(json_['mapping_items'])
     source_tables = pd.unique(mapping_items.get('source_table'))
+    views = json_.get('views', None)
 
     for source_table in source_tables:
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
-        sql = prepare_sql(mapping_items, source_table)
+        sql = prepare_sql(mapping_items, source_table, views)
         query_tag.text = sql
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
 

@@ -378,7 +378,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   previewMapping() {
-    const mapping = this.bridgeService.generateMapping(this.source[ this.sourceTabIndex ].name, this.target[ this.targetTabIndex ].name);
+    const source = this.source[ this.sourceTabIndex ];
+    const name = this.source[ this.sourceTabIndex ].name;
+    let mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
+
+    const sql = source['sql'];
+    if (sql) {
+      if (!mapping['views']) {
+        mapping['views'] = {};
+      }
+      mapping['views'][name] = sql;
+    }
 
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;
@@ -398,6 +408,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   generateMappingJson() {
     const mappingJSON = this.bridgeService.generateMapping();
+
+    this.source.forEach(source => {
+      const name = source.name;
+      const sql = source['sql'];
+      if (sql) {
+        if (!mappingJSON['views']) {
+          mappingJSON['views'] = {};
+        }
+        mappingJSON['views'][name] = sql;
+      }
+    });
+
     this.dataService
       .getZippedXml(mappingJSON)
       .pipe(takeUntil(this.ngUnsubscribe))

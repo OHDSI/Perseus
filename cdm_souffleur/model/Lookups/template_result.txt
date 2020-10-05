@@ -1,5 +1,4 @@
-{base_source_to_standard},
-{base_source_to_source},
+{base},
 Standard AS
 (
     {source_to_standard}
