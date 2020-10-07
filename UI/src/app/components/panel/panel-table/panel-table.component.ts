@@ -140,6 +140,10 @@ export class PanelTableComponent extends BaseComponent
     return this.bridgeService.rowHasAnyConnection(row, this.area, this.oppositeTableId);
   }
 
+  getRowNameTooltip(row: IRow): string {
+    return this.table.sql ? `${row.tableName}.${row.name}` : row.name;
+  }
+
   openCommentDialog(anchor: HTMLElement, row: IRow) {
     const component = CommentPopupComponent;
 
