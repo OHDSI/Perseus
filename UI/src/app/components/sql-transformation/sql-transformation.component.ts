@@ -61,9 +61,7 @@ export class SqlTransformationComponent implements OnInit {
   }
 
   onChange(cm, event) {
-    if (event.text[0].length === 1 || event.text[0].length === 0) {
       this.sql['name'] = this.editorContent;
-    }
   }
 
   onCursorActivity(cm, event) {

@@ -134,7 +134,7 @@
                     <span class="divider"></span>
                     <mat-icon *ngIf="i > 0"
                               class="remove-mapping-table"
-                              (click)="removeTableMapping($event, tableName, targetName)">close
+                              (click)="removeTableMapping(tableName, targetName, $event)">close
                     </mat-icon>
                   </div>
                   <div *cdkDragPreview

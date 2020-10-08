@@ -376,11 +376,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   removeTableMapping(
-    event: any,
     sourceTableName: string,
-    targetTableName: string
+    targetTableName: string,
+    event?: any
   ) {
+    if (event) {
     event.stopPropagation();
+    }
 
     const table = this.targetConfig[ targetTableName ];
     const { data } = table;
@@ -551,6 +553,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       if (res) {
         const table = this.findSourceTableByName(tableName);
         this.storeService.removeTable(Area.Source, table);
+        Object.keys(this.targetConfig).forEach(source => {
+          if (this.targetConfig[ source ].data.includes(tableName)) {
+            this.removeTableMapping(tableName, source);
+          }
+        });
       }
     });
 
