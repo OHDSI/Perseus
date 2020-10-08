@@ -1,5 +1,8 @@
 from pathlib import Path
+from os.path import dirname
+import sys
 
+ROOT_DIR = Path(dirname(sys.modules['__main__'].__file__))
 GENERATE_CDM_SOURCE_DATA_PATH = Path('model/generate/CDM_source_data')
 GENERATE_CDM_SOURCE_METADATA_PATH = Path('model/generate/CDM_source_data/metadata')
 GENERATE_CDM_XML_PATH = Path('model/generate/Definitions')

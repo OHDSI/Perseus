@@ -8,12 +8,12 @@ from cdm_souffleur.utils.constants import \
     GENERATE_CDM_LOOKUP_SQL_PATH, \
     PREDEFINED_LOOKUPS_PATH, \
     INCOME_LOOKUPS_PATH, \
-    GENERATE_BATCH_SQL_PATH
+    GENERATE_BATCH_SQL_PATH, \
+    ROOT_DIR
 import pandas as pd
-from shutil import rmtree, copyfile
+from shutil import rmtree
 import zipfile
 import os
-import re
 from pathlib import Path
 from cdm_souffleur.model.similar_names_map import similar_names_map
 
@@ -120,6 +120,7 @@ def prepare_sql(mapping_items, source_table, views):
         view = views.get(source_table, None)
 
     if view:
+        view.replace('FROM ', 'FROM {sc}.').replace('JOIN ', 'JOIN {sc}.')
         sql  = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
@@ -297,9 +298,30 @@ def generate_bath_sql_file(mapping, source_table):
     with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
         f.write(sql)
 
+def remove_file(root, folder, filename):
+    file_path = os.path.join(root, folder, filename)
+    try:
+        os.unlink(file_path)
+    except Exception as err:
+        print(f'Failed to delete {file_path}. Reason: {err}')
+
+# def clear_folder(folder):
+#     for filename in os.listdir(folder):
+#         remove_file(folder, filename)
+
+def clear():
+    delete_generated_xml()
+    delete_generated_sql()
+
+    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH)
+    try:
+        os.unlink(file_path)
+    except Exception as err:
+        print(f'Failed to delete {file_path}. Reason: {err}')
 
 def get_xml(json_):
     """prepare XML for CDM"""
+    clear()
     result = {}
     previous_target_table = ''
     domain_tag = ''
@@ -587,21 +609,19 @@ def zip_xml():
     except FileNotFoundError:
         raise
 
+def delete_generated(path):
+    try:
+        rmtree(path)
+    except Exception:
+        print(f'Directory {path} does not exist')
 
 def delete_generated_xml():
     """clean mapping folder"""
-    try:
-        rmtree(GENERATE_CDM_XML_PATH)
-    except FileNotFoundError:
-        print(f'Directory {GENERATE_CDM_XML_PATH} does not exist')
-
+    delete_generated(GENERATE_CDM_XML_PATH)
 
 def delete_generated_sql():
     """clean lookup sql folder"""
-    try:
-        rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
-    except FileNotFoundError:
-        raise
+    delete_generated(GENERATE_CDM_LOOKUP_SQL_PATH)
 
 def get_lookups_list(lookup_type):
     lookups_list = []
