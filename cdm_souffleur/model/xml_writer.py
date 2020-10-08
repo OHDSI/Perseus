@@ -120,7 +120,7 @@ def prepare_sql(mapping_items, source_table, views):
         view = views.get(source_table, None)
 
     if view:
-        view.replace('FROM ', 'FROM {sc}.').replace('JOIN ', 'JOIN {sc}.')
+        view = view.replace('from ', 'from {sc}.').replace('join ', 'join {sc}.')
         sql  = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
