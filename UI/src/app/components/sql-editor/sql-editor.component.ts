@@ -182,7 +182,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   }
 
   parseColumns() {
-    const test = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ')
     const columnsMatch = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').match(/select (.*\b)from\b/im);
     if (!columnsMatch) {
       return [];
