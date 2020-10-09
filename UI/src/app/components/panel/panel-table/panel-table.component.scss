@@ -187,3 +187,11 @@ tr[selected="true"] {
   outline-offset: -2px;
   box-sizing: border-box;
 }
+
+.required-field{
+  display: flex !important;
+}
+
+.red{
+  color: red;
+}

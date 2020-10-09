@@ -130,7 +130,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       area: Area.Source,
       id: tableId,
       name: this.name,
-      visible: true,
       sql: this.editorContent
     };
     const newTable = new Table(settings);
@@ -175,18 +174,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     }, []);
   }
 
-  hintOptions(token) {
-    const getList = this.tokenReplaceMapping[ token.string ];
-    return {
-      completeSingle: false,
-      hint: () => ({
-        from: token.start,
-        to: token.end,
-        list: getList(token)
-      })
-    };
-  }
-
   joinTemplate(text) {
     const joinCount = (this.editorContent.match(/join/gi) || []).length;
     return `${this.editorContent}
@@ -194,7 +181,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   }
 
   parseColumns() {
-    const columnsMatch = this.editorContent.match(/select (.*\b)from\b/im);
+    const columnsMatch = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').match(/select (.*\b)from\b/im);
     if (!columnsMatch) {
       return [];
     }
@@ -236,7 +223,8 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
 
   onChange(cm, event) {
     this.tablesWithoutAlias = [];
-    const matches = this.editorContent.matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
+    const matches = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').
+    matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
     this.viewForm.markAsTouched();
 
     if (matches) {
@@ -271,11 +259,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     const token = cm.getTokenAt(cursor);
     const hasReplaceHints = !!this.tokenReplaceMapping[ token.string ];
     if (hasReplaceHints) {
-      cm.showHint(this.hintOptions(token) as any);
-      if (cm.state.completionActive) {
-        const { data: hintMenu } = cm.state.completionActive;
-        CodeMirror.on(hintMenu, 'select', this.onHintSelect.bind(this));
-      }
+      cm.showHint(this.hintOptions(token, cursor) as any);
     }
   }
 
@@ -285,12 +269,16 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  onHintSelect(optionSelected, element) {
-    const cm = this.codeMirror;
-    const cursor = cm.getCursor();
-    const { line } = cursor;
-    const token = cm.getTokenAt(cursor);
-    cm.replaceRange(optionSelected, { line, ch: token.start }, { line, ch: token.end });
+  hintOptions(token, cursor) {
+    const getList = this.tokenReplaceMapping[ token.string ];
+    return {
+      completeSingle: false,
+      hint: () => ({
+        from: {line: cursor.line, ch: token.start },
+        to: {line: cursor.line, ch: token.end },
+        list: getList(token)
+      })
+    };
   }
 
   openOnBoardingTip(target: EventTarget) {

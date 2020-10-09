@@ -47,6 +47,8 @@ export class DataService {
           tableName: item.table_name,
           name: item.column_list[j].column_name,
           type: item.column_list[j].column_type,
+          isNullable: item.column_list[j].is_column_nullable ?
+          item.column_list[j].is_column_nullable.toUpperCase() === 'YES' ? true : false : true,
           comments: [],
           uniqueIdentifier: unique,
           area
