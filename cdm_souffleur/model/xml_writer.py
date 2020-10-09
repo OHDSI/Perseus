@@ -22,15 +22,18 @@ def _convert_underscore_to_camel(word: str):
     """get tag name from target table names"""
     return ''.join(x.capitalize() for x in word.split('_'))
 
+
 def _replace_with_similar_name(name: str):
     new_name = similar_names_map.get(name)
     return new_name if new_name else name
+
 
 def _prettify(elem):
     """Return a pretty-printed XML string for the Element."""
     raw_string = tostring(elem, 'utf-8')
     reparsed = minidom.parseString(raw_string)
     return reparsed.toprettyxml(indent="  ")
+
 
 def add_concept_id_data(field, alias, sql, counter):
     match_str = f' as {alias},'
@@ -48,7 +51,15 @@ def add_concept_id_data(field, alias, sql, counter):
             sql += value.replace(',', f'_{counter},')
     return sql, counter
 
-def prepare_sql(mapping_items, source_table, views):
+
+def check_lookup_tables(tables):
+    for table in tables:
+        if table.lower() in ('location', 'car_site', 'provider'):
+            return True
+    return False
+
+
+def prepare_sql(mapping_items, source_table, views, tagret_tables):
     """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
@@ -87,9 +98,12 @@ def prepare_sql(mapping_items, source_table, views):
     source_value_counter = 1
     type_concept_id_counter = 1
     source_concept_id_counter = 1
+    mapped_to_person_id_field = ''
     for index, row in fields.iterrows():
         source_field = row['sql_field']
         target_field = row['sql_alias']
+        if target_field == 'person_id':
+            mapped_to_person_id_field = source_field
         if not source_field:
             sql += f"{row['source_field']},\n"
         else:
@@ -124,15 +138,19 @@ def prepare_sql(mapping_items, source_table, views):
         sql  = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
-    sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ' \
-           'ORDER BY PERSON_ID'
+    if not check_lookup_tables(tagret_tables):
+        sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID'
+        if mapped_to_person_id_field:
+            sql = sql.replace('ENROLID = CH.PERSON_ID', f'{mapped_to_person_id_field} = CH.PERSON_ID')
     return sql
+
 
 def has_pair(field_name, mapping):
     for item in mapping:
         if item['target_field'] == field_name:
             return True
     return False
+
 
 def get_lookup_data(filepath):
     with open(filepath, mode='r') as f:
@@ -203,21 +221,26 @@ def create_lookup(lookup, target_field, mapping):
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
 
+
 def is_concept_id(field: str):
     field = field.lower()
     return field.endswith('concept_id') and not (is_source_concept_id(field) or is_type_concept_id(field))
+
 
 def is_source_value(field: str):
     field = field.lower()
     return field.endswith('source_value')
 
+
 def is_type_concept_id(field: str):
     field = field.lower()
     return field.endswith('type_concept_id')
 
+
 def is_source_concept_id(field: str):
     field = field.lower()
     return field.endswith('source_concept_id')
+
 
 def prepare_concepts_tag(concept_tags, concepts_tag, domain_definition_tag, concept_tag_key, target_field):
     if concepts_tag is None:
@@ -233,11 +256,14 @@ def prepare_concepts_tag(concept_tags, concepts_tag, domain_definition_tag, conc
 
     return concepts_tag
 
+
 def is_mapping_contains_type_concept_id(field, mapping):
     return is_mapping_contains(field, 'type_concept_id', mapping)
 
+
 def is_mapping_contains_source_value(field, mapping):
     return is_mapping_contains(field, 'source_value', mapping)
+
 
 def is_mapping_contains(field, key, mapping):
     for row in mapping:
@@ -247,6 +273,7 @@ def is_mapping_contains(field, key, mapping):
         if target_field == field.replace('concept_id', key):
             return target_field
     return None
+
 
 def is_mapping_contains_concept_id(field, replace_key, key, mapping):
     for row in mapping:
@@ -285,8 +312,18 @@ def find_all_concept_id_fields(mapping):
     return concept_ids_fields
 
 
-def generate_bath_sql_file(mapping, source_table):
-    sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM {sc}.{table} ORDER BY 1'
+def generate_bath_sql_file(mapping, source_table, views):
+    view = ''
+    sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM '
+    if views:
+        view = views.get(source_table, None)
+
+    if view:
+        view = view.replace('from ', 'from {sc}.').replace('join ', 'join {sc}.')
+        sql = f'WITH {source_table} AS (\n{view})\n{sql}'
+        sql += '{table} ORDER BY 1'
+    else:
+        sql += '{sc}.{table} ORDER BY 1'
     sql = sql.replace('{table}', source_table)
     for row in mapping:
         source_field = row['source_field']
@@ -298,16 +335,6 @@ def generate_bath_sql_file(mapping, source_table):
     with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
         f.write(sql)
 
-def remove_file(root, folder, filename):
-    file_path = os.path.join(root, folder, filename)
-    try:
-        os.unlink(file_path)
-    except Exception as err:
-        print(f'Failed to delete {file_path}. Reason: {err}')
-
-# def clear_folder(folder):
-#     for filename in os.listdir(folder):
-#         remove_file(folder, filename)
 
 def clear():
     delete_generated_xml()
@@ -318,6 +345,7 @@ def clear():
         os.unlink(file_path)
     except Exception as err:
         print(f'Failed to delete {file_path}. Reason: {err}')
+
 
 def get_xml(json_):
     """prepare XML for CDM"""
@@ -332,13 +360,19 @@ def get_xml(json_):
     for source_table in source_tables:
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
-        sql = prepare_sql(mapping_items, source_table, views)
-        query_tag.text = sql
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
+        sql = prepare_sql(mapping_items, source_table, views, pd.unique(mapping_items.get('target_table')))
+        query_tag.text = sql
+
+        filename = source_table
 
         for index, record_data in target_tables.iterrows():
             mapping = record_data.get('mapping')
             target_table = record_data.get('target_table')
+
+            if target_table.lower() in ('location', 'car_site', 'provider'):
+                filename = f'L_{target_table}'
+
             tag_name = _convert_underscore_to_camel(target_table)
             if mapping is None:
                 continue
@@ -480,7 +514,7 @@ def get_xml(json_):
                     )
             previous_target_table = target_table
             if target_table == 'person':
-                generate_bath_sql_file(mapping, source_table)
+                generate_bath_sql_file(mapping, source_table, views)
 
         xml = ElementTree(query_definition_tag)
         try:
@@ -488,10 +522,11 @@ def get_xml(json_):
             print(f'Directory {GENERATE_CDM_XML_PATH} created')
         except FileExistsError:
             print(f'Directory {GENERATE_CDM_XML_PATH} already exist')
-        xml.write(GENERATE_CDM_XML_PATH / (source_table + '.xml'))
+
+        xml.write(GENERATE_CDM_XML_PATH / (filename + '.xml'))
         # result += '{}: \n {} + \n'.format(source_table, prettify(
         #     query_definition_tag))
-        result.update({source_table: _prettify(query_definition_tag)})
+        result.update({filename: _prettify(query_definition_tag)})
     return result
 
 
@@ -579,10 +614,12 @@ def get_lookups_sql(cond: dict):
             result.update({k: sql})
     return result
 
+
 def add_files_to_zip(zip_file, path):
     for root, dirs, files in os.walk(path):
         for file in files:
             zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+
 
 def zip_xml():
     """add mapping XMLs and lookup sql's to archive"""

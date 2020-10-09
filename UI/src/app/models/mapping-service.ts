@@ -93,16 +93,21 @@ export class MappingService {
   }
 
   applyConstant(mapPairs: any[], rows: IRow[]) {
-    const mappings = mapPairs.map(x => x.mapping);
-    mappings.forEach((mapping: any[]) => {
+    const mappings = mapPairs.map(x => {
+      return { table: x.target_table, mapping: x.mapping };
+    });
+    mappings.forEach((mapping: {}) => {
       rows.forEach(row => {
+        if (mapping['table'] !== row.tableName) {
+          return;
+        }
         const constantObj = {
           source_field: '',
           sql_field: row.constant,
           sql_alias: row.name,
           target_field: row.name
         };
-        mapping.push(constantObj);
+        mapping['mapping'].push(constantObj);
       });
     });
   }
