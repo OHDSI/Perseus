@@ -454,18 +454,9 @@ def get_xml(json_):
                         fields_tags[concept_tag_key] = fields_tag
                 else:
                     if (
-                        is_type_concept_id(target_field) and
-                        is_mapping_contains_concept_id(target_field, 'type_concept_id', 'concept_id', mapping)
-                    ):
-                        continue
-                    if (
-                        is_source_value(target_field) and
-                        is_mapping_contains_concept_id(target_field, 'source_value', 'concept_id', mapping)
-                    ):
-                        continue
-                    if (
-                        is_source_concept_id(target_field) and
-                        is_mapping_contains_concept_id(target_field, 'source_concept_id', 'concept_id', mapping)
+                        is_type_concept_id(target_field) or
+                        is_source_value(target_field) or
+                        is_source_concept_id(target_field)
                     ):
                         continue
 
