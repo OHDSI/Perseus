@@ -84,7 +84,7 @@ export class Row implements IRow {
     return this.sqlTransformation;
   }
 
-  get isRowNUllable(): boolean {
+  get isRowNullable(): boolean {
     return this.isNullable;
   }
 
