@@ -130,7 +130,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       area: Area.Source,
       id: tableId,
       name: this.name,
-      visible: true,
       sql: this.editorContent
     };
     const newTable = new Table(settings);
