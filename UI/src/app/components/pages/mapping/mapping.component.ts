@@ -150,7 +150,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
               disableClose: false,
-              panelClass: 'sql-editor-dialog',
+              panelClass: 'sql-editor-dialog-padding-15',
               maxHeight: '100%',
               width: '570px;',
               data: {

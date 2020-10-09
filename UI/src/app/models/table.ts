@@ -7,6 +7,7 @@ export interface ITable {
   name: string;
   rows: IRow[];
   visible: boolean;
+  sql: string;
 }
 
 

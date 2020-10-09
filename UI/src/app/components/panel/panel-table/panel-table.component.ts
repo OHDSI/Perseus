@@ -140,6 +140,7 @@ export class PanelTableComponent extends BaseComponent
     return this.bridgeService.rowHasAnyConnection(row, this.area, this.oppositeTableId);
   }
 
+
   openCommentDialog(anchor: HTMLElement, row: IRow) {
     const component = CommentPopupComponent;
 

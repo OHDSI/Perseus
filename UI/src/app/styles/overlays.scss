@@ -85,6 +85,15 @@
   }
 }
 
+.sql-editor-dialog-padding-15 {
+  @extend .sql-editor-dialog;
+
+  .mat-dialog-container {
+    background: $cdm-grey-lighter;
+    padding-bottom: 15px;
+  }
+}
+
 .filter-popup {
   @include mat-elevation-transition;
   @include mat-elevation(4);

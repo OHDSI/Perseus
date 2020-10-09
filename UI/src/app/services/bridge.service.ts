@@ -470,6 +470,7 @@ export class BridgeService {
         const oppositeArea = Area.Source === area ? Area.Target : Area.Source;
         return connection[ area ].id === row.id &&
           connection[ area ].name === row.name &&
+          connection[ area ].tableName === row.tableName &&
           connection[ oppositeArea ].tableId === oppositeTableId;
       }).length > 0
     );
@@ -564,7 +565,7 @@ export class BridgeService {
           filter(e => e !== undefined);
       });
       connectedToSameTraget = [];
-      similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[item]));
+      similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[ item ]));
     }
     connectedToSameTraget.forEach(item => { item.lookup = { ...arrow.lookup }; item.sql = { ...arrow.sql }; });
     const applyedL = arrow.lookup ? arrow.lookup[ 'applied' ] ? true : false : false;

@@ -45,7 +45,6 @@ export class DraggableDirective implements OnInit {
       );
     });
 
-    setInterval( () => {this.bridgeService.recalculateConnectorsPositions(); }, 250 );
 
   }
 
@@ -72,7 +71,7 @@ export class DraggableDirective implements OnInit {
 
   onDragOver(e: any) {
     e.stopPropagation();
-    e.preventDefault()
+    e.preventDefault();
     if (e.currentTarget.nodeName === 'TR') {
       const row = e.currentTarget;
 
