@@ -54,7 +54,7 @@ def add_concept_id_data(field, alias, sql, counter):
 
 def check_lookup_tables(tables):
     for table in tables:
-        if table.lower() in ('location', 'car_site', 'provider'):
+        if table.lower() in ('location', 'care_site', 'provider'):
             return True
     return False
 
@@ -364,14 +364,11 @@ def get_xml(json_):
         sql = prepare_sql(mapping_items, source_table, views, pd.unique(mapping_items.get('target_table')))
         query_tag.text = sql
 
-        filename = source_table
+        skip_write_file = False
 
         for index, record_data in target_tables.iterrows():
             mapping = record_data.get('mapping')
             target_table = record_data.get('target_table')
-
-            if target_table.lower() in ('location', 'car_site', 'provider'):
-                filename = f'L_{target_table}'
 
             tag_name = _convert_underscore_to_camel(target_table)
             if mapping is None:
@@ -516,18 +513,26 @@ def get_xml(json_):
             if target_table == 'person':
                 generate_bath_sql_file(mapping, source_table, views)
 
-        xml = ElementTree(query_definition_tag)
-        try:
-            os.mkdir(GENERATE_CDM_XML_PATH)
-            print(f'Directory {GENERATE_CDM_XML_PATH} created')
-        except FileExistsError:
-            print(f'Directory {GENERATE_CDM_XML_PATH} already exist')
+            if target_table.lower() in ('location', 'care_site', 'provider'):
+                skip_write_file = True
+                write_xml(query_definition_tag, f'L_{target_table}', result)
 
-        xml.write(GENERATE_CDM_XML_PATH / (filename + '.xml'))
-        # result += '{}: \n {} + \n'.format(source_table, prettify(
-        #     query_definition_tag))
-        result.update({filename: _prettify(query_definition_tag)})
+        if skip_write_file:
+            continue
+
+        write_xml(query_definition_tag, source_table, result)
     return result
+
+def write_xml(tag, filename, result):
+    xml = ElementTree(tag)
+    try:
+        os.mkdir(GENERATE_CDM_XML_PATH)
+        print(f'Directory {GENERATE_CDM_XML_PATH} created')
+    except FileExistsError:
+        print(f'Directory {GENERATE_CDM_XML_PATH} already exist')
+
+    xml.write(GENERATE_CDM_XML_PATH / (filename + '.xml'))
+    result.update({filename: _prettify(tag)})
 
 
 def get_lookups_sql(cond: dict):
