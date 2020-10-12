@@ -45,7 +45,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   isNew = true;
   tables: any;
   table: any;
-  viewHasSimilarRows: boolean;
   codeMirror;
   viewForm = new FormGroup({
     name: new FormControl('', Validators.compose(
@@ -115,11 +114,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   createSourceTableData() {
     const tableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
     const rows = this.parseColumns();
-    const uniqueRowNames = new Set(rows.map(v => v.name));
-    this.viewHasSimilarRows = uniqueRowNames.size < rows.length;
-    if (this.viewHasSimilarRows) {
-      return null;
-    }
     rows.forEach((row, index) => {
       row.tableId = tableId;
       row.tableName = this.name;
