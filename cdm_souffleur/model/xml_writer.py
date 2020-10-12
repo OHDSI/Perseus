@@ -157,6 +157,17 @@ def get_lookup_data(filepath):
         return f.read()
 
 
+def add_lookup_data(folder, basepath, lookup, template):
+    lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
+    lookup_body_data = get_lookup_data(lookup_body_filepath)
+
+    lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
+    lookup_data = get_lookup_data(lookup_filepath)
+
+    replace_key = '{_}'.replace('_', folder)
+    return template.replace(replace_key, f'{lookup_body_data}\n{lookup_data}')
+
+
 def create_lookup(lookup, target_field, mapping):
     if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
@@ -172,8 +183,6 @@ def create_lookup(lookup, target_field, mapping):
     else:
         pair_target_field = target_field.replace('concept_id', 'source_concept_id')
 
-    folder = 'source_to_standard'
-
     if lookup.endswith('userDefined'):
         basepath = INCOME_LOOKUPS_PATH
     else:
@@ -183,39 +192,13 @@ def create_lookup(lookup, target_field, mapping):
         template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, 'template_result.txt')
         template_data = get_lookup_data(template_filepath)
 
-        lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
-        lookup_body_data = get_lookup_data(lookup_body_filepath)
-        parts = lookup_body_data.split('\n\n')
-
-        lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
-        lookup_data = get_lookup_data(lookup_filepath)
-
-        replace_key = '{_}'.replace('_', folder)
-        results_data = template_data.replace(replace_key, f'{parts[1]}\n{lookup_data}')
-
-        lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
-        lookup_body_data = get_lookup_data(lookup_body_filepath)
-        parts = lookup_body_data.split('\n\n')
-
-        lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
-        lookup_data = get_lookup_data(lookup_filepath)
-
-        folder = 'source_to_source'
-
-        replace_key = '{_}'.replace('_', folder)
-        results_data = results_data.replace(replace_key, f'{parts[1]}\n{lookup_data}')
+        results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
+        results_data = add_lookup_data('source_to_source', basepath, lookup, results_data)
     else:
-        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_result_only_{folder}.txt')
+        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_result_only_source_to_standard.txt')
         template_data = get_lookup_data(template_filepath)
 
-        lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
-        lookup_body_data = get_lookup_data(lookup_body_filepath)
-        parts = lookup_body_data.split('\n\n')
-
-        lookup_filepath = os.path.join(basepath, folder, f'{lookup}.txt')
-        lookup_body_data = get_lookup_data(lookup_filepath)
-
-        results_data = template_data.replace('{source_to_standard}', f'{parts[1]}\n{lookup_body_data}')
+        results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
 
     result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
     with open(result_filepath, mode='w') as f:
