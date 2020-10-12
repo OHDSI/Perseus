@@ -175,11 +175,12 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   }
 
   parseColumns() {
-    const columnsMatch = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').match(/select (.*\b)from\b/im);
+    const columnsMatch = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').
+    match(/(select){1}\s(distinct\s)?(.*\b)from\b/im);
     if (!columnsMatch) {
       return [];
     }
-    const columnsRow = columnsMatch[ 1 ].trim();
+    const columnsRow = columnsMatch[ 3 ].trim();
     if (columnsRow === '*') {
       return this.allColumns;
     }
