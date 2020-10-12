@@ -501,14 +501,14 @@ def get_xml(json_):
                         definitions.append(target_field)
                 if sql_transformation:
                     match_item = f"{source_field} as {target_field}"
-                    if sql_transformation in query_tag.text:
+                    if sql_transformation not in query_tag.text:
+                        query_tag.text = query_tag.text.replace(
+                            match_item,
+                            sql_transformation,
+                        )
+                    else:
                         query_tag.text = query_tag.text.replace(f'{match_item},\n', '')
                         query_tag.text = query_tag.text.replace(f'{match_item}\n', '')
-                        continue
-                    query_tag.text = query_tag.text.replace(
-                        match_item,
-                        sql_transformation,
-                    )
             previous_target_table = target_table
             if target_table == 'person':
                 generate_bath_sql_file(mapping, source_table, views)
