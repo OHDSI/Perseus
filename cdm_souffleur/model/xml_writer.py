@@ -159,13 +159,13 @@ def get_lookup_data(filepath):
 
 def add_lookup_data(folder, basepath, lookup, template):
     lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
-    lookup_body_data = get_lookup_data(lookup_body_filepath)
+    lookup_body_data = get_lookup_data(lookup_body_filepath).split('\n\n')[1]
 
     lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
     lookup_data = get_lookup_data(lookup_filepath)
 
     replace_key = '{_}'.replace('_', folder)
-    return template.replace(replace_key, f'{lookup_body_data}\n{lookup_data}')
+    return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
 
 
 def create_lookup(lookup, target_field, mapping):
