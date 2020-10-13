@@ -344,7 +344,7 @@ def get_xml(json_):
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
-        sql = prepare_sql(mapping_items, source_table, views, pd.unique(mapping_items.get('target_table')))
+        sql = prepare_sql(mapping_items, source_table, views, pd.unique(target_tables.get('target_table')))
         query_tag.text = sql
 
         skip_write_file = False
