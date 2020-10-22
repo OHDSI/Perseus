@@ -8,14 +8,16 @@ export class MappingService {
   connections: Array<IConnection>;
   constants: Array<IRow>;
   sourceTableName: string;
+  targetTableName: string;
 
-  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
     this.connections = Object.values(arrowCache);
     this.constants = Object.values(constants);
     this.sourceTableName = sourceTableName;
+    this.targetTableName = targetTableName;
   }
 
   generate(): Mapping {
@@ -34,7 +36,8 @@ export class MappingService {
           sourceColumn: arrow.source.name,
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
-          lookup: arrow.lookup ? arrow.lookup['name'] : ''
+          lookup: arrow.lookup ? arrow.lookup['name'] : '',
+          sqlTransformation: arrow.sql ? arrow.sql['name'] : ''
         };
       });
 
@@ -43,8 +46,14 @@ export class MappingService {
     const mapPairs: MappingPair[] = [];
 
     Object.keys(bySource).forEach(sourceTable => {
+      if (this.sourceTableName && this.sourceTableName !== sourceTable) {
+        return;
+      }
       const byTargetTable = groupBy(bySource[sourceTable], 'targetTable');
       Object.keys(byTargetTable).forEach(targetTable => {
+        if (this.targetTableName && this.targetTableName !== targetTable) {
+          return;
+        }
         const mappings = [];
 
         byTargetTable[targetTable].map(arrow => {
@@ -53,7 +62,8 @@ export class MappingService {
             target_field: arrow.targetColumn,
             sql_field: arrow.sourceColumn,
             sql_alias: arrow.targetColumn,
-            lookup: arrow.lookup
+            lookup: arrow.lookup,
+            sqlTransformation: arrow.sqlTransformation
           };
 
           this.applyTransforms(node, arrow);
@@ -83,16 +93,21 @@ export class MappingService {
   }
 
   applyConstant(mapPairs: any[], rows: IRow[]) {
-    const mappings = mapPairs.map(x => x.mapping);
-    mappings.forEach((mapping: any[]) => {
+    const mappings = mapPairs.map(x => {
+      return { table: x.target_table, mapping: x.mapping };
+    });
+    mappings.forEach((mapping: {}) => {
       rows.forEach(row => {
+        if (mapping['table'] !== row.tableName) {
+          return;
+        }
         const constantObj = {
           source_field: '',
           sql_field: row.constant,
           sql_alias: row.name,
           target_field: row.name
         };
-        mapping.push(constantObj);
+        mapping['mapping'].push(constantObj);
       });
     });
   }

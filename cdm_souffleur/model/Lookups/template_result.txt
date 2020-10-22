@@ -1,11 +1,12 @@
-{base_source_to_standard},
-{base_source_to_source},
+{base},
 Standard AS
 (
     {source_to_standard}
-), Source AS (
+),
+Source AS (
     {source_to_source}
-), S_S AS
+),
+S_S AS
 (
     SELECT SOURCE_CODE FROM Standard
     UNION

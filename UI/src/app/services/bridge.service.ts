@@ -144,6 +144,13 @@ export class BridgeService {
     canExecute: () => true
   });
 
+  dropConstant = new Command({
+    execute: (row: IRow) => {
+      delete this.constantsCache[ this.getConstantId(row) ];
+    },
+    canExecute: () => true
+  });
+
   getTables() {
     const { source, target, targetConfig } = this.storeService.state;
 
@@ -439,11 +446,12 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
-  generateMapping(sourceTableName: string = '') {
+  generateMapping(sourceTableName: string = '', targetTableName: string = '') {
     const mappingService = new MappingService(
       this.arrowsCache,
       this.constantsCache,
-      sourceTableName
+      sourceTableName,
+      targetTableName
     );
     return mappingService.generate();
   }

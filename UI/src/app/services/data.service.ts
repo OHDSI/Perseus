@@ -82,6 +82,9 @@ export class DataService {
       switchMap(jsonMapping => {
         const headers = new Headers();
         headers.set('Content-type', 'application/json; charset=UTF-8');
+        headers.set('Cache-Control',  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0');
+        headers.set('Pragma', 'no-cache');
+        headers.set('Expires', '0');
 
         const init = {
           method: 'GET',
