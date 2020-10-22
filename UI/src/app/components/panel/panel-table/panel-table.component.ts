@@ -118,7 +118,9 @@ export class PanelTableComponent extends BaseComponent
     this.bridgeService.removeConnection
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
-        this.hideConnectorPin(connection, Area.Target);
+        if (connection) {
+         this.hideConnectorPin(connection, Area.Target);
+        }
       });
 
     this.storeService.state$.subscribe(res => {
