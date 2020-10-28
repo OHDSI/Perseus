@@ -1,4 +1,4 @@
-import { ArrowCache, Arrow, ConstantCache } from './arrow-cache';
+import { ArrowCache, ConstantCache } from './arrow-cache';
 import { groupBy } from '../infrastructure/utility';
 import { MappingPair, MappingNode, Mapping } from './mapping';
 import { IConnection } from '../services/bridge.service';
@@ -37,7 +37,8 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
-          sqlTransformation: arrow.sql ? arrow.sql['name'] : ''
+          sqlTransformation: arrow.sql ? arrow.sql['name'] : '',
+          comments: arrow.source.comments
         };
       });
 
@@ -63,7 +64,8 @@ export class MappingService {
             sql_field: arrow.sourceColumn,
             sql_alias: arrow.targetColumn,
             lookup: arrow.lookup,
-            sqlTransformation: arrow.sqlTransformation
+            sqlTransformation: arrow.sqlTransformation,
+            comments: arrow.comments
           };
 
           this.applyTransforms(node, arrow);

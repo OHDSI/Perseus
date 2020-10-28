@@ -24,6 +24,7 @@ export interface MappingNode {
   sql_alias: string;
   lookup: string;
   sqlTransformation: string;
+  comments: string[];
 }
 
 export interface MappingPair {

@@ -26,6 +26,8 @@ import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
+import { WordReportCreator } from '../../../services/report/word-report-creator';
+import { Packer } from 'docx';
 
 @Component({
   selector: 'app-mapping',
@@ -380,7 +382,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   previewMapping() {
     const source = this.source[ this.sourceTabIndex ];
     const name = this.source[ this.sourceTabIndex ].name;
-    let mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
+    const mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
 
     const sql = source['sql'];
     if (sql) {
@@ -536,13 +538,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isTooltipDisabled() {
-    if(this.target && this.filteredFields){
-    return !(
-      this.filteredFields &&
-      this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
-      this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
-      this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
-    );
+    if (this.target && this.filteredFields) {
+      return !(
+        this.filteredFields &&
+        this.filteredFields[this.target[this.targetTabIndex].name] &&
+        this.filteredFields[this.target[this.targetTabIndex].name].types &&
+        this.filteredFields[this.target[this.targetTabIndex].name].types.length
+      );
     }
   }
 
@@ -565,6 +567,32 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       if (res) {
         this.bridgeService.deleteAllArrows();
       }
+    });
+  }
+
+  getMapping() {
+    const name = this.source[this.sourceTabIndex].name;
+    return this.bridgeService.generateMapping(name, this.target[this.targetTabIndex].name);
+  }
+
+  generateReport() {
+    const mapping = this.getMapping();
+    const mappingItem = mapping.mapping_items[0];
+
+    const reportCreator = new WordReportCreator();
+
+    const report = reportCreator
+      .createHeader(
+        `${mappingItem.source_table.toUpperCase()} to ${mappingItem.target_table.toUpperCase()}`
+      )
+      .createParagraph('')
+      .createTablesMappingImage(mappingItem)
+      .createParagraph('')
+      .createDescriptionTable(mappingItem.mapping)
+      .generateReport();
+
+    Packer.toBlob(report).then(blob => {
+      saveAs(blob, 'report.docx');
     });
   }
 }

@@ -204,6 +204,13 @@
       </button>
       <button
         mat-flat-button
+        color="accent"
+        class="mapping-page-button"
+        (click)="generateReport()"
+      >Report
+      </button>
+      <button
+        mat-flat-button
         class="mapping-page-button delete-links"
         [disabled]="isFooterButtonDisabled()"
         (click)="deleteLinks()"
