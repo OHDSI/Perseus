@@ -107,7 +107,8 @@ export class MappingService {
           source_field: '',
           sql_field: row.constant,
           sql_alias: row.name,
-          target_field: row.name
+          target_field: row.name,
+          comments: row.comments
         };
         mapping['mapping'].push(constantObj);
       });

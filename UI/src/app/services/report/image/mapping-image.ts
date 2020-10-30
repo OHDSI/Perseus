@@ -1,10 +1,15 @@
-export interface MappingPairImage {
+export interface MappingImage {
   height: number;
   width: number;
-  content: string;
+  base64: string;
 }
 
-export interface MappingPairImageStyles {
+export interface MappingForImage {
+  source: string;
+  target: string;
+}
+
+export interface MappingImageStyles {
   width: number;
 
   fieldWidth: number;

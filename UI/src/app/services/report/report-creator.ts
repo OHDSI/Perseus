@@ -1,12 +1,19 @@
-import { MappingNode, MappingPair } from '../../models/mapping';
+import { MappingNode } from '../../models/mapping';
+import { MappingForImage } from './image/mapping-image';
 
 export interface ReportCreator {
 
   generateReport: () => any;
 
-  createHeader: (text: string) => ReportCreator;
+  createHeader1: (text: string) => ReportCreator;
 
-  createTablesMappingImage: (mappingPair: MappingPair) => ReportCreator;
+  createHeader2: (text: string) => ReportCreator;
+
+  createHeader3: (text: string) => ReportCreator;
+
+  createTablesMappingImage: (header: MappingForImage, mappingConfig: string[][]) => ReportCreator;
+
+  createFieldsMappingImage: (header: MappingForImage, mapping: MappingNode[]) => ReportCreator;
 
   createDescriptionTable: (mapping: MappingNode[]) => ReportCreator;
 

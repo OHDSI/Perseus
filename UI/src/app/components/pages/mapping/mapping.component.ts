@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
@@ -570,26 +570,45 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
-  getMapping() {
-    const name = this.source[this.sourceTabIndex].name;
-    return this.bridgeService.generateMapping(name, this.target[this.targetTabIndex].name);
-  }
-
   generateReport() {
-    const mapping = this.getMapping();
-    const mappingItem = mapping.mapping_items[0];
-
     const reportCreator = new WordReportCreator();
 
-    const report = reportCreator
-      .createHeader(
-        `${mappingItem.source_table.toUpperCase()} to ${mappingItem.target_table.toUpperCase()}`
-      )
-      .createParagraph('')
-      .createTablesMappingImage(mappingItem)
-      .createParagraph('')
-      .createDescriptionTable(mappingItem.mapping)
-      .generateReport();
+    reportCreator
+      .createHeader1('Source Data Mapping Approach to CDMV6')
+      .createTablesMappingImage({source: 'Source', target: 'SDMV6'}, this.mappingConfig);
+
+    const mappingFieldsHeader = {
+      source: 'Source',
+      target: 'Target',
+    };
+
+    this.mappingConfig
+      .filter(tables => tables[0] !== this.similarTableName)
+      .forEach(tables => {
+        const targetTable = tables[0];
+        reportCreator
+          .createHeader2(`Table name: ${targetTable}`);
+        tables
+          .filter((tableName, index) => index !== 0 && tableName !== this.similarTableName )
+          .map(sourceTable => ({
+            mappingNodes: this.bridgeService.generateMapping(sourceTable, targetTable)
+              .mapping_items[0]
+              .mapping,
+            sourceTable
+          }))
+          .filter(mapping => mapping)
+          .forEach(mapping => {
+              reportCreator
+                .createHeader3(`Reading from ${mapping.sourceTable}`)
+                .createParagraph('')
+                .createFieldsMappingImage(mappingFieldsHeader, mapping.mappingNodes)
+                .createParagraph('')
+                .createDescriptionTable(mapping.mappingNodes);
+            }
+          );
+      });
+
+    const report = reportCreator.generateReport();
 
     Packer.toBlob(report).then(blob => {
       saveAs(blob, 'report.docx');

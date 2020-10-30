@@ -1,8 +1,16 @@
 import { ReportCreator } from './report-creator';
-import { Document, Paragraph, Media, TableRow, TableCell, Table, HeadingLevel, WidthType } from 'docx';
+import { AlignmentType, Document, HeadingLevel, Media, Paragraph, Table, TableCell, TableRow, WidthType } from 'docx';
 import { MappingNode, MappingPair } from '../../models/mapping';
-import { createMappingPairImage } from './image/draw-image-util';
-import { MappingPairImageStyles } from './image/mapping-pair-image';
+import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
+import { MappingImage, MappingForImage, MappingImageStyles } from './image/mapping-image';
+import { logic } from './logic';
+
+const paragraph = {
+  spacing: {
+    before: 120,
+    after: 120
+  }
+};
 
 export class WordReportCreator implements ReportCreator {
   document = new Document({
@@ -15,25 +23,63 @@ export class WordReportCreator implements ReportCreator {
           next: 'Normal',
           quickFormat: true,
           run: {
-            size: 28,
-            bold: true,
-          }
+            size: 32,
+            bold: true
+          },
+          paragraph
         },
         {
-          id: '',
+          id: 'Heading2',
+          name: 'Heading 2',
+          basedOn: 'Normal',
+          next: 'Normal',
+          quickFormat: true,
+          run: {
+            size: 28,
+            bold: true
+          },
+          paragraph
+        },
+        {
+          id: 'Heading3',
+          name: 'Heading 3',
+          basedOn: 'Normal',
+          next: 'Normal',
+          quickFormat: true,
+          run: {
+            size: 24,
+            bold: true
+          },
+          paragraph
+        },
+        {
+          id: 'Default',
           name: 'Default',
           basedOn: 'Normal',
           next: 'Normal',
           run: {
             size: 24
-          }
+          },
+          paragraph
+        },
+        {
+          id: 'TableHeader',
+          name: 'TableHeader',
+          basedOn: 'Normal',
+          next: 'Normal',
+          run: {
+            size: 24,
+            bold: true
+          },
+          paragraph
         }
       ]
     }
   });
+
   documentChildren = [];
 
-  mappingPairImageStyles: MappingPairImageStyles = {
+  mappingPairImageStyles: MappingImageStyles = {
     width: 600,
     fieldWidth: 200,
     fieldHeight: 40,
@@ -54,53 +100,46 @@ export class WordReportCreator implements ReportCreator {
     return this.document;
   }
 
-  createHeader(text: string): ReportCreator {
-    this.documentChildren.push(new Paragraph({
-      text,
-      heading: HeadingLevel.HEADING_1,
-    }));
-
-    return this;
+  createHeader1(text: string): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_1);
   }
 
-  createTablesMappingImage(mappingPair: MappingPair): ReportCreator {
-    const imageForReport = createMappingPairImage(mappingPair, this.mappingPairImageStyles);
+  createHeader2(text: string): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_2);
+  }
 
-    const size = imageForReport.width < 600 ?
-      {width: imageForReport.width, height: imageForReport.height} :
-      {width: 600, height: imageForReport.height * 600 / imageForReport.width};
+  createHeader3(text: string): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_3);
+  }
 
-    const image = Media.addImage(
-      this.document,
-      imageForReport.content,
-      size.width,
-      size.height
-    );
+  createTablesMappingImage(header: MappingForImage, mappingConfig: string[][]) {
+    const imageForReport = createMappingTablesImage(header, mappingConfig, this.mappingPairImageStyles);
+    return this.createImage(imageForReport);
+  }
 
-    this.documentChildren.push(new Paragraph(image));
-
-    return this;
+  createFieldsMappingImage(header: MappingForImage, mapping: MappingNode[]): ReportCreator {
+    const imageForReport = createMappingFieldsImage(header, mapping, this.mappingPairImageStyles);
+    return this.createImage(imageForReport);
   }
 
   createDescriptionTable(mapping: MappingNode[]): ReportCreator {
-    const header = new TableRow({
-      children: [
-        createTableCell('Destination Field'),
-        createTableCell('Source field'),
-        createTableCell('Logic'),
-        createTableCell('Comment field')
-      ]
-    });
+    const header = createTableRow([
+      createTableCell('Destination Field', 'TableHeader'),
+      createTableCell('Source field', 'TableHeader'),
+      createTableCell('Logic', 'TableHeader'),
+      createTableCell('Comment field', 'TableHeader')
+    ], true);
 
     const rows = mapping
-      .map(node => new TableRow({
-        children: [
-          createTableCell(node.target_field),
-          createTableCell(node.source_field),
-          createTableCell(getLogic(node)),
-          createTableCell(node.comments.join('\n'))
-        ]
-      }));
+      .map(node => createTableRow([
+        createTableCell(node.target_field),
+        createTableCell(node.source_field),
+        createTableCell(logic(node)),
+        createTableCell(node.comments
+          .map(c => c.text)
+          .join('\n')
+        )
+      ]));
 
     this.documentChildren.push(new Table({
       rows: [
@@ -110,7 +149,11 @@ export class WordReportCreator implements ReportCreator {
       width: {
         size: 100,
         type: WidthType.PERCENTAGE
-      }
+      },
+      margins: {
+        left: 100
+      },
+      alignment: AlignmentType.CENTER,
     }));
 
     return this;
@@ -124,18 +167,48 @@ export class WordReportCreator implements ReportCreator {
 
     return this;
   }
+
+  private createHeader(text: string, heading: HeadingLevel) {
+    this.documentChildren.push(new Paragraph({
+      text,
+      heading,
+      pageBreakBefore: true
+    }));
+
+    return this;
+  }
+
+  private createImage(imageForReport: MappingImage) {
+    const size = imageForReport.width < 600 ?
+      {width: imageForReport.width, height: imageForReport.height} :
+      {width: 600, height: imageForReport.height * 600 / imageForReport.width};
+
+    const image = Media.addImage(
+      this.document,
+      imageForReport.base64,
+      size.width,
+      size.height
+    );
+
+    this.documentChildren.push(new Paragraph(image));
+
+    return this;
+  }
 }
 
-function createTableCell(text: string): TableCell {
-  return new TableCell({
-    children: [new Paragraph({
-      text,
-      style: 'Default'
-    })]
+function createTableRow(cells: TableCell[], isHeader = false) {
+  return new TableRow({
+    children: cells,
+    tableHeader: isHeader
   });
 }
 
-function getLogic(mappingNode: MappingNode): string {
-  return '';
+function createTableCell(text: string, style = 'Default'): TableCell {
+  return new TableCell({
+    children: [new Paragraph({
+      text,
+      style
+    })]
+  });
 }
 

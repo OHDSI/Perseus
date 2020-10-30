@@ -1,16 +1,45 @@
-import { MappingPair } from '../../../models/mapping';
-import { MappingPairImage, MappingPairImageStyles } from './mapping-pair-image';
+import { MappingNode } from '../../../models/mapping';
+import { MappingForImage, MappingImage, MappingImageStyles } from './mapping-image';
 import { CanvasWrapper } from './canvas-wrapper';
 
 const imageType = 'png';
 
-const sourceFieldColor = '#F9F9F9';
-const targetFieldColor = 'rgba(218, 235, 249, 0.5)';
+const sourceBlockColor = '#F9F9F9';
+const targetBlockColor = 'rgba(218, 235, 249, 0.5)';
 const fontColor = '#2C2C2C';
 const borderColor = '#BDBDBD';
 const arrowColor = '#D4D4D4';
 
-export function createMappingPairImage(mappingPair: MappingPair, styles: MappingPairImageStyles): MappingPairImage {
+const similarTableName = 'similar';
+
+export function createMappingTablesImage(header: MappingForImage, mappingConfig: string[][], styles: MappingImageStyles): MappingImage {
+  const mappingTables: MappingForImage[] = mappingConfig
+    .filter(tables => tables[0] !== similarTableName)
+    // @ts-ignore
+    .flatMap(tables => {
+      const targetTable = tables[0];
+      return tables
+        .filter((tableName, index) => index !== 0 && tableName !== similarTableName)
+        .map(sourceTable => ({
+          source: sourceTable,
+          target: targetTable
+        }));
+    });
+
+  return createMappingImage(header, mappingTables, styles);
+}
+
+export function createMappingFieldsImage(header: MappingForImage, mapping: MappingNode[], styles: MappingImageStyles): MappingImage {
+  const mappingFields: MappingForImage[] = mapping
+    .map(mappingNode => ({
+      source: mappingNode.source_field,
+      target: mappingNode.target_field
+    }));
+
+  return createMappingImage(header, mappingFields, styles);
+}
+
+function createMappingImage(header: MappingForImage, mappings: MappingForImage[], styles: MappingImageStyles): MappingImage {
   const {
     width,
     fieldWidth,
@@ -26,12 +55,14 @@ export function createMappingPairImage(mappingPair: MappingPair, styles: Mapping
 
   const canvas = new CanvasWrapper();
 
-  const uniqueSourceFieldsCount = new Set(mappingPair.mapping
-    .map(m => m.source_field))
-    .size;
-  const uniqueTargetFieldsCount = new Set(mappingPair.mapping
-    .map(m => m.target_field))
-    .size;
+  const uniqueSourceFieldsCount = new Set(mappings
+    .filter(m => m.source)
+    .map(m => m.source)
+  ).size;
+  const uniqueTargetFieldsCount = new Set(mappings
+    .filter(m => m.source)
+    .map(m => m.target)
+  ).size;
 
   canvas.height = fieldsMarginTop + marginBottom + fieldHeight * Math.max(uniqueSourceFieldsCount, uniqueTargetFieldsCount);
   canvas.width = width || (marginLeft * 2 + fieldWidth * 2 + distanceBetweenSourceAndTarget);
@@ -44,8 +75,8 @@ export function createMappingPairImage(mappingPair: MappingPair, styles: Mapping
     color: fontColor
   };
 
-  canvas.fillText(mappingPair.source_table.toUpperCase(), sourceXCoordinate, textMarginTop, headerFontStyles);
-  canvas.fillText(mappingPair.target_table.toUpperCase(), targetXCoordinate, textMarginTop, headerFontStyles);
+  canvas.fillText(header.source.toUpperCase(), sourceXCoordinate, textMarginTop, headerFontStyles);
+  canvas.fillText(header.target.toUpperCase(), targetXCoordinate, textMarginTop, headerFontStyles);
 
   const drawnSourceFieldsIndexes = {};
   const drawnTargetFieldsIndexes = {};
@@ -59,33 +90,38 @@ export function createMappingPairImage(mappingPair: MappingPair, styles: Mapping
     fontColor
   };
 
-  for (const mappingItem of mappingPair.mapping) {
-    const sourceFieldDrawn = drawnSourceFieldsIndexes.hasOwnProperty(mappingItem.source_field);
-    const targetFieldDrawn = drawnTargetFieldsIndexes.hasOwnProperty(mappingItem.target_field);
+  for (const mappingItem of mappings) {
+    const isConstMapping = !mappingItem.source;
+    if (isConstMapping) {
+      continue;
+    }
+
+    const sourceFieldDrawn = drawnSourceFieldsIndexes.hasOwnProperty(mappingItem.source);
+    const targetFieldDrawn = drawnTargetFieldsIndexes.hasOwnProperty(mappingItem.target);
 
     const sourceYCoordinate = fieldsMarginTop +
-      (sourceFieldDrawn ? drawnSourceFieldsIndexes[mappingItem.source_field] : sourceIndex) * fieldHeight;
+      (sourceFieldDrawn ? drawnSourceFieldsIndexes[mappingItem.source] : sourceIndex) * fieldHeight;
     const targetYCoordinate = fieldsMarginTop +
-      (targetFieldDrawn ? drawnTargetFieldsIndexes[mappingItem.target_field] : targetIndex) * fieldHeight;
+      (targetFieldDrawn ? drawnTargetFieldsIndexes[mappingItem.target] : targetIndex) * fieldHeight;
 
     if (!sourceFieldDrawn) {
       canvas.fillRectangle(sourceXCoordinate, sourceYCoordinate, fieldWidth, fieldHeight, {
-        text: mappingItem.source_field,
-        fillColor: sourceFieldColor,
+        text: mappingItem.source,
+        fillColor: sourceBlockColor,
         ...fieldStyles
       });
 
-      drawnSourceFieldsIndexes[mappingItem.source_field] = sourceIndex++;
+      drawnSourceFieldsIndexes[mappingItem.source] = sourceIndex++;
     }
 
     if (!targetFieldDrawn) {
       canvas.fillRectangle(targetXCoordinate, targetYCoordinate, fieldWidth, fieldHeight, {
-        text: mappingItem.target_field,
-        fillColor: targetFieldColor,
+        text: mappingItem.target,
+        fillColor: targetBlockColor,
         ...fieldStyles
       });
 
-      drawnTargetFieldsIndexes[mappingItem.target_field] = targetIndex++;
+      drawnTargetFieldsIndexes[mappingItem.target] = targetIndex++;
     }
 
     const arrowBeginCoordinates = {
@@ -109,7 +145,7 @@ export function createMappingPairImage(mappingPair: MappingPair, styles: Mapping
   const result = {
     height: canvas.height,
     width: canvas.width,
-    content: canvas.image(imageType)
+    base64: canvas.image(imageType)
   };
 
   canvas.destroy();

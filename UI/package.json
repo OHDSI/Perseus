@@ -50,7 +50,7 @@
     "@types/codemirror": "0.0.97",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^12.11.1",
+    "@types/node": "^12.19.3",
     "codelyzer": "^5.1.2",
     "copy-files-from-to": "^1.4.0",
     "jasmine-core": "~2.99.1",

@@ -206,6 +206,7 @@
         mat-flat-button
         color="accent"
         class="mapping-page-button"
+        [disabled]="isFooterButtonDisabled()"
         (click)="generateReport()"
       >Report
       </button>
