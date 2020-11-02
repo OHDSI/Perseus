@@ -116,8 +116,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           const nodes = this.element.nativeElement.querySelectorAll('.vertical-list-item');
           const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
           const curInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${this.dropTargetId}`);
-          const prevTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[prevInd]);
-          const curTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[curInd]);
+          const prevTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[ prevInd ]);
+          const curTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[ curInd ]);
           moveItemInArray(this.targetTableNames, prevInd, curInd);
           moveItemInArray(this.storeService.state.target, prevTargetIndex, curTargetIndex);
         }
@@ -252,11 +252,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       }
     });
 
-    this.bridgeService.applyConfiguration$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(configuration => {
-        // this.initializeData();
-      });
+    this.bridgeService.applyConfiguration$.pipe(switchMap(configuration => {
+      return this.dataService.saveSourceSchemaToDb(configuration.sourceTables);
+    }))
+    .subscribe(( res ) => {
+      res !== 'OK'? 
+      this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS '):
+      this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
+    });
 
     this.bridgeService.resetAllMappings$
       .pipe(takeUntil(this.ngUnsubscribe))

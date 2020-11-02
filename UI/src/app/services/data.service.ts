@@ -160,6 +160,10 @@ export class DataService {
     return this.httpService.saveLookup({ name, value, lookupType });
   }
 
+  saveSourceSchemaToDb(sourceTables: any): Observable<any> {
+    return this.httpService.saveSourceSchemaToDb(sourceTables);
+  }
+
   deleteLookup(name, lookupType): Observable<any> {
     return this.httpService.deleteLookup(name, lookupType);
   }
