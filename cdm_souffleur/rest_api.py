@@ -9,7 +9,7 @@ from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
-    get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, load_saved_source_schema_from_server
+    get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, load_saved_source_schema_from_server, save_source_schema_in_db
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 from cdm_souffleur.utils.utils import Database
@@ -18,6 +18,9 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequestKeyError
 import os
 from cdm_souffleur.model.source_schema import set_book_to_none
+from peewee import *
+import psycopg2
+import psycopg2.extras
 
 app = Flask(__name__)
 CORS(app)
@@ -64,6 +67,15 @@ def save_and_load_schema_call():
         return jsonify([s.to_json() for s in saved_schema])
     else:
         raise InvalidUsage('Schema was not loaded', 404)
+
+@app.route('/api/save_source_schema_to_db', methods=['POST'])
+def save_source_schema_to_db_call():
+    try:
+        source_tables = request.json
+        save_source_schema_in_db(source_tables)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
+    return jsonify('OK')
 
 
 @app.route('/api/delete_saved_source_schema', methods=['GET'])
@@ -286,8 +298,8 @@ def delete_lookup():
 
 @app.route('/api/set_db_connection')
 def set_db_connection_call():
-    connection_string = request.headers['connection-string']
-    Database().get_engine(connection_string)
+    #connection_string = request.headers['connection-string']
+    #Database().get_engine(connection_string)
     return 'OK'
 
 
