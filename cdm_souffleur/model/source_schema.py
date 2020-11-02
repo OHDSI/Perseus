@@ -89,15 +89,16 @@ def save_source_schema_in_db(source_tables):
     reset_schema(pg_db)
 
     for row in source_tables:
-        create_table_sql='';
-        table_name = row['name']
-        create_table_sql+='CREATE TABLE public.{0} ('.format(table_name)
-        for field in row['rows']:
-            create_column_sql = '{0} {1},'.format(field['name'], field['type'])
-            create_table_sql += create_column_sql
-        create_table_sql = create_table_sql.rstrip(',')
-        create_table_sql += ' );'
-        cursor = pg_db.execute_sql(create_table_sql)
+        if row['sql'] == '':
+            create_table_sql = '';
+            table_name = row['name']
+            create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
+            for field in row['rows']:
+                create_column_sql = '{0} {1},'.format(field['name'], field['type'])
+                create_table_sql += create_column_sql
+            create_table_sql = create_table_sql.rstrip(',')
+            create_table_sql += ' );'
+            cursor = pg_db.execute_sql(create_table_sql)
     pg_db.close()
 
 
