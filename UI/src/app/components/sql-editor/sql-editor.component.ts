@@ -218,8 +218,8 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
 
   onChange(cm, event) {
     this.tablesWithoutAlias = [];
-    const matches = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').
-    matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
+    const matches = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ')
+      .matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
     this.viewForm.markAsTouched();
 
     if (matches) {

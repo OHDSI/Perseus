@@ -7,9 +7,9 @@ export interface ReportCreator {
 
   createHeader1: (text: string) => ReportCreator;
 
-  createHeader2: (text: string) => ReportCreator;
+  createHeader2: (text: string, onNewPage: boolean) => ReportCreator;
 
-  createHeader3: (text: string) => ReportCreator;
+  createHeader3: (text: string, onNewPage: boolean) => ReportCreator;
 
   createTablesMappingImage: (header: MappingForImage, mappingConfig: string[][]) => ReportCreator;
 
@@ -17,5 +17,7 @@ export interface ReportCreator {
 
   createDescriptionTable: (mapping: MappingNode[]) => ReportCreator;
 
-  createParagraph: (text: string) => ReportCreator;
+  createParagraph: (text?: string) => ReportCreator;
+
+  createTextBlock: (text: string) => ReportCreator;
 }

@@ -3,6 +3,7 @@ import { groupBy } from '../infrastructure/utility';
 import { MappingPair, MappingNode, Mapping } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
+import { ITable } from './table';
 
 export class MappingService {
   connections: Array<IConnection>;
@@ -114,4 +115,16 @@ export class MappingService {
       });
     });
   }
+}
+
+export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
+  const sql = source['sql'];
+  if (sql) {
+    if (!mapping['views']) {
+      mapping['views'] = {};
+    }
+    mapping['views'][source.name] = sql;
+  }
+
+  return mapping;
 }

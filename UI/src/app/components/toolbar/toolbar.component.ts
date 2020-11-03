@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { StoreService } from '../../services/store.service';
+import { stateToInfo, StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 
 @Component({
@@ -27,8 +27,9 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit() {
     this.storeService.state$.subscribe((res: any) => {
-      this.cdmVersion = res.version ? `CDM v${res.version}` : 'CDM version';
-      this.reportName = res.report || 'Report name';
+      const info = stateToInfo(res);
+      this.cdmVersion = info.cdmVersion;
+      this.reportName = info.reportName;
     });
 
     this.commonUtilsService.loadSourceReport$.subscribe(res => {

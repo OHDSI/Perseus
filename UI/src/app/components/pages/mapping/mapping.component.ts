@@ -11,7 +11,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 
 import { StateService } from 'src/app/services/state.service';
-import { StoreService } from 'src/app/services/store.service';
+import { stateToInfo, StoreService } from 'src/app/services/store.service';
 import { BaseComponent } from '../../../common/components/base/base.component';
 import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
@@ -28,6 +28,7 @@ import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
+import { addViewsToMapping } from '../../../models/mapping-service';
 
 @Component({
   selector: 'app-mapping',
@@ -197,7 +198,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
     }
   }
-
 
   getLimits(value: string) {
     const offset = 8;
@@ -381,16 +381,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   previewMapping() {
     const source = this.source[ this.sourceTabIndex ];
-    const name = this.source[ this.sourceTabIndex ].name;
+    const name = source.name;
     const mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
 
-    const sql = source['sql'];
-    if (sql) {
-      if (!mapping['views']) {
-        mapping['views'] = {};
-      }
-      mapping['views'][name] = sql;
-    }
+    addViewsToMapping(mapping, source);
 
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;
@@ -412,14 +406,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const mappingJSON = this.bridgeService.generateMapping();
 
     this.source.forEach(source => {
-      const name = source.name;
-      const sql = source['sql'];
-      if (sql) {
-        if (!mappingJSON['views']) {
-          mappingJSON['views'] = {};
-        }
-        mappingJSON['views'][name] = sql;
-      }
+      addViewsToMapping(mappingJSON, source);
     });
 
     this.dataService
@@ -572,41 +559,50 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   generateReport() {
     const reportCreator = new WordReportCreator();
+    const info = stateToInfo(this.storeService.state);
+    const mappingHeader = {source: info.reportName, target: info.cdmVersion};
+    const mapping = this.bridgeService.generateMapping();
+
+    this.source.forEach(source => {
+      addViewsToMapping(mapping, source);
+    });
 
     reportCreator
-      .createHeader1('Source Data Mapping Approach to CDMV6')
-      .createTablesMappingImage({source: 'Source', target: 'SDMV6'}, this.mappingConfig);
+      .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
+      .createTablesMappingImage(mappingHeader, this.mappingConfig);
 
-    const mappingFieldsHeader = {
-      source: 'Source',
-      target: 'Target',
-    };
-
-    this.mappingConfig
-      .filter(tables => tables[0] !== this.similarTableName)
-      .forEach(tables => {
-        const targetTable = tables[0];
+    let currentTargetTable: string = null;
+    mapping.mapping_items
+      .sort((a, b) =>
+        a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1)
+      )
+      .forEach(mappingItem => {
+        let header3OnNewPage = true;
+        if (currentTargetTable !== mappingItem.target_table) {
+          currentTargetTable = mappingItem.target_table;
+          header3OnNewPage = false;
+          reportCreator
+            .createHeader2(`Table name: ${currentTargetTable}`, true);
+        }
         reportCreator
-          .createHeader2(`Table name: ${targetTable}`);
-        tables
-          .filter((tableName, index) => index !== 0 && tableName !== this.similarTableName )
-          .map(sourceTable => ({
-            mappingNodes: this.bridgeService.generateMapping(sourceTable, targetTable)
-              .mapping_items[0]
-              .mapping,
-            sourceTable
-          }))
-          .filter(mapping => mapping)
-          .forEach(mapping => {
-              reportCreator
-                .createHeader3(`Reading from ${mapping.sourceTable}`)
-                .createParagraph('')
-                .createFieldsMappingImage(mappingFieldsHeader, mapping.mappingNodes)
-                .createParagraph('')
-                .createDescriptionTable(mapping.mappingNodes);
-            }
-          );
+          .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage)
+          .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
+          .createParagraph()
+          .createDescriptionTable(mappingItem.mapping);
       });
+
+    const viewKeys = Object.keys(mapping.views);
+    if (viewKeys.length > 0) {
+      reportCreator
+        .createHeader1('Appendix')
+        .createHeader2('View mapping', false);
+      viewKeys.forEach((key, index) => {
+        reportCreator
+          .createHeader3(`${info.reportName.toUpperCase()} to ${key}`, false)
+          .createTextBlock(mapping.views[key])
+          .createParagraph();
+      });
+    }
 
     const report = reportCreator.generateReport();
 

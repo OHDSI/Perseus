@@ -9,9 +9,8 @@ describe('WordReportCreator', () => {
 
     const report = reportCreator
       .createHeader1('Source Data Mapping Approach to CDMV6')
-      .createParagraph('')
       .createFieldsMappingImage({source: 'Source', target: 'CDMV6'}, testMapping)
-      .createParagraph('')
+      .createParagraph()
       .createDescriptionTable(testMapping)
       .generateReport();
 

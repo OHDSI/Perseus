@@ -39,7 +39,7 @@ export interface MappingPair {
 
 export interface Mapping {
   mapping_items: Array<MappingPair>;
-  views: object;
+  views?: object;
 }
 
 

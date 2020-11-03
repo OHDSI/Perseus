@@ -1,6 +1,6 @@
 import { ReportCreator } from './report-creator';
 import { AlignmentType, Document, HeadingLevel, Media, Paragraph, Table, TableCell, TableRow, WidthType } from 'docx';
-import { MappingNode, MappingPair } from '../../models/mapping';
+import { MappingNode } from '../../models/mapping';
 import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
 import { MappingImage, MappingForImage, MappingImageStyles } from './image/mapping-image';
 import { logic } from './logic';
@@ -8,7 +8,7 @@ import { logic } from './logic';
 const paragraph = {
   spacing: {
     before: 120,
-    after: 120
+    after: 240
   }
 };
 
@@ -101,15 +101,15 @@ export class WordReportCreator implements ReportCreator {
   }
 
   createHeader1(text: string): ReportCreator {
-    return this.createHeader(text, HeadingLevel.HEADING_1);
+    return this.createHeader(text, HeadingLevel.HEADING_1, true);
   }
 
-  createHeader2(text: string): ReportCreator {
-    return this.createHeader(text, HeadingLevel.HEADING_2);
+  createHeader2(text: string, onNewPage: boolean): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_2, onNewPage);
   }
 
-  createHeader3(text: string): ReportCreator {
-    return this.createHeader(text, HeadingLevel.HEADING_3);
+  createHeader3(text: string, onNewPage: boolean): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_3, onNewPage);
   }
 
   createTablesMappingImage(header: MappingForImage, mappingConfig: string[][]) {
@@ -159,20 +159,26 @@ export class WordReportCreator implements ReportCreator {
     return this;
   }
 
-  createParagraph(text = ''): ReportCreator {
+  createParagraph(text?: string): ReportCreator {
     this.documentChildren.push(new Paragraph({
-      text,
+      text: text ? text : '',
       style: 'Default'
     }));
 
     return this;
   }
 
-  private createHeader(text: string, heading: HeadingLevel) {
+  createTextBlock(text: string): ReportCreator {
+    this.documentChildren.push(...mapTextToParagraphs(text));
+
+    return this;
+  }
+
+  private createHeader(text: string, heading: HeadingLevel, pageBreakBefore: boolean) {
     this.documentChildren.push(new Paragraph({
       text,
       heading,
-      pageBreakBefore: true
+      pageBreakBefore
     }));
 
     return this;
@@ -196,7 +202,7 @@ export class WordReportCreator implements ReportCreator {
   }
 }
 
-function createTableRow(cells: TableCell[], isHeader = false) {
+function createTableRow(cells: TableCell[], isHeader = false): TableRow {
   return new TableRow({
     children: cells,
     tableHeader: isHeader
@@ -205,10 +211,16 @@ function createTableRow(cells: TableCell[], isHeader = false) {
 
 function createTableCell(text: string, style = 'Default'): TableCell {
   return new TableCell({
-    children: [new Paragraph({
+    children: mapTextToParagraphs(text, style)
+  });
+}
+
+function mapTextToParagraphs(content: string, style = 'Default'): Paragraph[] {
+  return content
+    .split('\n')
+    .map(text => new Paragraph({
       text,
       style
-    })]
-  });
+    }));
 }
 
