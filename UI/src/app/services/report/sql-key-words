@@ -1,0 +1,7 @@
+// todo extract sql key word from CodeMirror
+// tslint:disable-next-line:max-line-length
+const sqlKeyWords = 'alter and as asc between by count create delete desc distinct drop from group having in insert into is join like not on or order select set table union update values where limit ';
+
+export function sqlKeyWord() {
+  return sqlKeyWords.split(' ');
+}

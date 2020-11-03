@@ -18,9 +18,11 @@ export interface ReportCreator {
 
   createDescriptionTable: (mapping: MappingNode[]) => ReportCreator;
 
+  createSourceInformationTable: (rows: IRow[]) => ReportCreator;
+
   createParagraph: (text?: string) => ReportCreator;
 
   createTextBlock: (text: string) => ReportCreator;
 
-  createSourceInformationTable: (rows: IRow[]) => ReportCreator;
+  createSqlTextBlock: (sql: string) => ReportCreator;
 }

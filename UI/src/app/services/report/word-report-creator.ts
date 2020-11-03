@@ -1,11 +1,12 @@
 import { ReportCreator } from './report-creator';
-import { AlignmentType, Document, HeadingLevel, Media, Paragraph, Table, TableCell, TableRow, WidthType } from 'docx';
+import { AlignmentType, Document, HeadingLevel, Media, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
 import { MappingNode } from '../../models/mapping';
 import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
 import { MappingImage, MappingForImage, MappingImageStyles } from './image/mapping-image';
 import { logicForReport } from './logic-for-report';
 import { IRow } from '../../models/row';
 import { commentsForReport } from './comments-for-report';
+import { sqlKeyWord } from './sql-key-words';
 
 const paragraph = {
   spacing: {
@@ -125,24 +126,44 @@ export class WordReportCreator implements ReportCreator {
   }
 
   createDescriptionTable(mapping: MappingNode[]): ReportCreator {
-    const header = createTableRow([
-      createTableCell('Destination Field', 'TableHeader'),
-      createTableCell('Source field', 'TableHeader'),
-      createTableCell('Logic', 'TableHeader'),
-      createTableCell('Comment field', 'TableHeader')
+    const header = getTableRow([
+      getTableCell('Destination Field', 'TableHeader'),
+      getTableCell('Source field', 'TableHeader'),
+      getTableCell('Logic', 'TableHeader'),
+      getTableCell('Comment field', 'TableHeader')
     ], true);
 
     const rows = mapping
-      .map(node => createTableRow([
-        createTableCell(node.target_field),
-        createTableCell(node.source_field),
-        createTableCell(logicForReport(node)),
-        createTableCell(commentsForReport(node.comments))
+      .map(node => getTableRow([
+        getTableCell(node.target_field),
+        getTableCell(node.source_field),
+        getTableCell(logicForReport(node), 'Default', true),
+        getTableCell(commentsForReport(node.comments))
       ]));
 
     return this.createTable([
       header,
       ...rows
+    ]);
+  }
+
+  createSourceInformationTable(rows: IRow[]): ReportCreator {
+    const tableHeader = getTableRow([
+      getTableCell('Field', 'TableHeader'),
+      getTableCell('Type', 'TableHeader'),
+      getTableCell('Comment', 'TableHeader')
+    ], true);
+
+    const tableRows = rows
+      .map(row => getTableRow([
+        getTableCell(row.name),
+        getTableCell(row.type),
+        getTableCell(commentsForReport(row.comments))
+      ]));
+
+    return this.createTable([
+      tableHeader,
+      ...tableRows
     ]);
   }
 
@@ -161,24 +182,10 @@ export class WordReportCreator implements ReportCreator {
     return this;
   }
 
-  createSourceInformationTable(rows: IRow[]): ReportCreator {
-    const tableHeader = createTableRow([
-      createTableCell('Field', 'TableHeader'),
-      createTableCell('Type', 'TableHeader'),
-      createTableCell('Comment', 'TableHeader')
-    ], true);
+  createSqlTextBlock(sql: string): ReportCreator {
+    this.documentChildren.push(...mapSqlTextToParagraphs(sql));
 
-    const tableRows = rows
-      .map(row => createTableRow([
-        createTableCell(row.name),
-        createTableCell(row.type),
-        createTableCell(commentsForReport(row.comments))
-      ]));
-
-    return this.createTable([
-      tableHeader,
-      ...tableRows
-    ]);
+    return this;
   }
 
   private createHeader(text: string, heading: HeadingLevel, pageBreakBefore: boolean): ReportCreator {
@@ -225,16 +232,16 @@ export class WordReportCreator implements ReportCreator {
   }
 }
 
-function createTableRow(cells: TableCell[], isHeader = false): TableRow {
+function getTableRow(cells: TableCell[], isHeader = false): TableRow {
   return new TableRow({
     children: cells,
     tableHeader: isHeader
   });
 }
 
-function createTableCell(text: string, style = 'Default'): TableCell {
+function getTableCell(text: string, style = 'Default', sql = false): TableCell {
   return new TableCell({
-    children: mapTextToParagraphs(text, style)
+    children: sql ? mapSqlTextToParagraphs(text, style) : mapTextToParagraphs(text, style)
   });
 }
 
@@ -245,5 +252,23 @@ function mapTextToParagraphs(content: string, style = 'Default'): Paragraph[] {
       text,
       style
     }));
+}
+
+function mapSqlTextToParagraphs(sql: string, style = 'Default'): Paragraph[] {
+  const keyWords = sqlKeyWord();
+
+  const textRun = (text: string) => keyWords.includes(text) ?
+    new TextRun({text, color: '#066BBB'}) :
+    new TextRun({text});
+
+  return sql
+    .split('\n')
+    .map(line => new Paragraph({
+        children: line
+          .split(/( )/g)
+          .map(word => textRun(word)),
+        style
+      })
+    );
 }
 

@@ -597,10 +597,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const viewKeys = Object.keys(mapping.views);
     if (viewKeys.length > 0) {
       reportCreator.createHeader2('View mapping', false);
-      viewKeys.forEach((key, index) => {
+      viewKeys.forEach(key => {
         reportCreator
           .createHeader3(`${info.reportName.toUpperCase()} to ${key}`, false)
-          .createTextBlock(mapping.views[key])
+          .createSqlTextBlock(mapping.views[key])
           .createParagraph();
       });
     }
