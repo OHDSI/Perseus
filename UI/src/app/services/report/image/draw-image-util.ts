@@ -15,7 +15,6 @@ const similarTableName = 'similar';
 export function createMappingTablesImage(header: MappingForImage, mappingConfig: string[][], styles: MappingImageStyles): MappingImage {
   const mappingTables: MappingForImage[] = mappingConfig
     .filter(tables => tables[0] !== similarTableName)
-    // @ts-ignore
     .flatMap(tables => {
       const targetTable = tables[0];
       return tables
