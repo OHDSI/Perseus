@@ -29,6 +29,7 @@ import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
 import { addViewsToMapping } from '../../../models/mapping-service';
+import { similarTableName } from '../../../app.constants';
 
 @Component({
   selector: 'app-mapping',
@@ -50,7 +51,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   mappingConfig = [];
 
-  similarTableName = 'similar';
+  similarTableName = similarTableName;
   similarNamesMap = (similarNamesMap as any).default;
 
   filteredFields;
@@ -591,11 +592,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           .createDescriptionTable(mappingItem.mapping);
       });
 
+    reportCreator.createHeader1('Appendix');
+
     const viewKeys = Object.keys(mapping.views);
     if (viewKeys.length > 0) {
-      reportCreator
-        .createHeader1('Appendix')
-        .createHeader2('View mapping', false);
+      reportCreator.createHeader2('View mapping', false);
       viewKeys.forEach((key, index) => {
         reportCreator
           .createHeader3(`${info.reportName.toUpperCase()} to ${key}`, false)
@@ -603,6 +604,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           .createParagraph();
       });
     }
+
+    reportCreator.createHeader2('Source tables', viewKeys.length > 0);
+    this.source
+      .filter(table => table.name !== this.similarTableName)
+      .forEach((table, index) => reportCreator
+        .createHeader3(`Table: ${table.name}`, index !== 0)
+        .createSourceInformationTable(table.rows)
+      );
 
     const report = reportCreator.generateReport();
 

@@ -12,7 +12,6 @@ import { cloneDeep } from 'src/app/infrastructure/utility';
 import { Area } from '../../models/area';
 import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { SqlNameValidatorService } from 'src/app/services/sql-name-validator';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 const editorSettings = {

@@ -1,6 +1,7 @@
 import { MappingNode } from '../../../models/mapping';
 import { MappingForImage, MappingImage, MappingImageStyles } from './mapping-image';
 import { CanvasWrapper } from './canvas-wrapper';
+import { similarTableName } from '../../../app.constants';
 
 const imageType = 'png';
 
@@ -9,8 +10,6 @@ const targetBlockColor = 'rgba(218, 235, 249, 0.5)';
 const fontColor = '#2C2C2C';
 const borderColor = '#BDBDBD';
 const arrowColor = '#D4D4D4';
-
-const similarTableName = 'similar';
 
 export function createMappingTablesImage(header: MappingForImage, mappingConfig: string[][], styles: MappingImageStyles): MappingImage {
   const mappingTables: MappingForImage[] = mappingConfig

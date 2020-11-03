@@ -3,7 +3,9 @@ import { AlignmentType, Document, HeadingLevel, Media, Paragraph, Table, TableCe
 import { MappingNode } from '../../models/mapping';
 import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
 import { MappingImage, MappingForImage, MappingImageStyles } from './image/mapping-image';
-import { logic } from './logic';
+import { logicForReport } from './logic-for-report';
+import { IRow } from '../../models/row';
+import { commentsForReport } from './comments-for-report';
 
 const paragraph = {
   spacing: {
@@ -134,29 +136,14 @@ export class WordReportCreator implements ReportCreator {
       .map(node => createTableRow([
         createTableCell(node.target_field),
         createTableCell(node.source_field),
-        createTableCell(logic(node)),
-        createTableCell(node.comments
-          .map(c => c.text)
-          .join('\n')
-        )
+        createTableCell(logicForReport(node)),
+        createTableCell(commentsForReport(node.comments))
       ]));
 
-    this.documentChildren.push(new Table({
-      rows: [
-        header,
-        ...rows
-      ],
-      width: {
-        size: 100,
-        type: WidthType.PERCENTAGE
-      },
-      margins: {
-        left: 100
-      },
-      alignment: AlignmentType.CENTER,
-    }));
-
-    return this;
+    return this.createTable([
+      header,
+      ...rows
+    ]);
   }
 
   createParagraph(text?: string): ReportCreator {
@@ -174,7 +161,27 @@ export class WordReportCreator implements ReportCreator {
     return this;
   }
 
-  private createHeader(text: string, heading: HeadingLevel, pageBreakBefore: boolean) {
+  createSourceInformationTable(rows: IRow[]): ReportCreator {
+    const tableHeader = createTableRow([
+      createTableCell('Field', 'TableHeader'),
+      createTableCell('Type', 'TableHeader'),
+      createTableCell('Comment', 'TableHeader')
+    ], true);
+
+    const tableRows = rows
+      .map(row => createTableRow([
+        createTableCell(row.name),
+        createTableCell(row.type),
+        createTableCell(commentsForReport(row.comments))
+      ]));
+
+    return this.createTable([
+      tableHeader,
+      ...tableRows
+    ]);
+  }
+
+  private createHeader(text: string, heading: HeadingLevel, pageBreakBefore: boolean): ReportCreator {
     this.documentChildren.push(new Paragraph({
       text,
       heading,
@@ -184,7 +191,7 @@ export class WordReportCreator implements ReportCreator {
     return this;
   }
 
-  private createImage(imageForReport: MappingImage) {
+  private createImage(imageForReport: MappingImage): ReportCreator {
     const size = imageForReport.width < 600 ?
       {width: imageForReport.width, height: imageForReport.height} :
       {width: 600, height: imageForReport.height * 600 / imageForReport.width};
@@ -197,6 +204,22 @@ export class WordReportCreator implements ReportCreator {
     );
 
     this.documentChildren.push(new Paragraph(image));
+
+    return this;
+  }
+
+  private createTable(rows: TableRow[]): ReportCreator {
+    this.documentChildren.push(new Table({
+      rows,
+      width: {
+        size: 100,
+        type: WidthType.PERCENTAGE
+      },
+      margins: {
+        left: 100
+      },
+      alignment: AlignmentType.CENTER,
+    }));
 
     return this;
   }

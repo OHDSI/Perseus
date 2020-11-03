@@ -1,6 +1,6 @@
 import { MappingNode } from '../../models/mapping';
 
-export function logic(mappingNode: MappingNode): string {
+export function logicForReport(mappingNode: MappingNode): string {
   const logics = [];
 
   if (mappingNode.sqlTransformation) {
