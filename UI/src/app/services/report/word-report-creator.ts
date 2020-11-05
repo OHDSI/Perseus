@@ -6,7 +6,7 @@ import { MappingImage, MappingForImage, MappingImageStyles } from './image/mappi
 import { logicForReport } from './logic-for-report';
 import { IRow } from '../../models/row';
 import { commentsForReport } from './comments-for-report';
-import { sqlKeyWord } from './sql-key-words';
+import { doubleQuote, singleQuote, sqlKeyWords } from './sql-key-words';
 
 const paragraph = {
   spacing: {
@@ -255,20 +255,34 @@ function mapTextToParagraphs(content: string, style = 'Default'): Paragraph[] {
 }
 
 function mapSqlTextToParagraphs(sql: string, style = 'Default'): Paragraph[] {
-  const keyWords = sqlKeyWord();
-
-  const textRun = (text: string) => keyWords.includes(text) ?
+  const textRun = (text: string, wasQuote: boolean) => !wasQuote && sqlKeyWords.includes(text) ?
     new TextRun({text, color: '#066BBB'}) :
     new TextRun({text});
 
+  const hasQuote = (word: string, quote: string) =>
+    word === quote || word.startsWith(quote) || word.endsWith(quote);
+
   return sql
     .split('\n')
-    .map(line => new Paragraph({
+    .map(line => {
+      let wasSingleQuote = false;
+      let wasDoubleQuote = false;
+
+      return new Paragraph({
         children: line
           .split(/( )/g)
-          .map(word => textRun(word)),
+          .map(word => {
+            if (hasQuote(word, singleQuote)) {
+              wasSingleQuote = !wasSingleQuote;
+            }
+            if (hasQuote(word, doubleQuote)) {
+              wasDoubleQuote = !wasDoubleQuote;
+            }
+
+            return textRun(word, wasSingleQuote || wasDoubleQuote);
+          }),
         style
-      })
-    );
+      });
+    });
 }
 
