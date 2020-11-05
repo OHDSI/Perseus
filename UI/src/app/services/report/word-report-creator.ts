@@ -125,20 +125,20 @@ export class WordReportCreator implements ReportCreator {
     return this.createImage(imageForReport);
   }
 
-  createDescriptionTable(mapping: MappingNode[]): ReportCreator {
-    const header = getTableRow([
-      getTableCell('Destination Field', 'TableHeader'),
-      getTableCell('Source field', 'TableHeader'),
-      getTableCell('Logic', 'TableHeader'),
-      getTableCell('Comment field', 'TableHeader')
+  createFieldsDescriptionTable(mapping: MappingNode[]): ReportCreator {
+    const header = createTableRow([
+      createTableCell('Destination Field', 'TableHeader'),
+      createTableCell('Source field', 'TableHeader'),
+      createTableCell('Logic', 'TableHeader'),
+      createTableCell('Comment field', 'TableHeader')
     ], true);
 
     const rows = mapping
-      .map(node => getTableRow([
-        getTableCell(node.target_field),
-        getTableCell(node.source_field),
-        getTableCell(logicForReport(node), 'Default', true),
-        getTableCell(commentsForReport(node.comments))
+      .map(node => createTableRow([
+        createTableCell(node.target_field),
+        createTableCell(node.source_field),
+        createTableCell(logicForReport(node), 'Default', true),
+        createTableCell(commentsForReport(node.comments))
       ]));
 
     return this.createTable([
@@ -148,17 +148,17 @@ export class WordReportCreator implements ReportCreator {
   }
 
   createSourceInformationTable(rows: IRow[]): ReportCreator {
-    const tableHeader = getTableRow([
-      getTableCell('Field', 'TableHeader'),
-      getTableCell('Type', 'TableHeader'),
-      getTableCell('Comment', 'TableHeader')
+    const tableHeader = createTableRow([
+      createTableCell('Field', 'TableHeader'),
+      createTableCell('Type', 'TableHeader'),
+      createTableCell('Comment', 'TableHeader')
     ], true);
 
     const tableRows = rows
-      .map(row => getTableRow([
-        getTableCell(row.name),
-        getTableCell(row.type),
-        getTableCell(commentsForReport(row.comments))
+      .map(row => createTableRow([
+        createTableCell(row.name),
+        createTableCell(row.type),
+        createTableCell(commentsForReport(row.comments))
       ]));
 
     return this.createTable([
@@ -232,14 +232,14 @@ export class WordReportCreator implements ReportCreator {
   }
 }
 
-function getTableRow(cells: TableCell[], isHeader = false): TableRow {
+function createTableRow(cells: TableCell[], isHeader = false): TableRow {
   return new TableRow({
     children: cells,
     tableHeader: isHeader
   });
 }
 
-function getTableCell(text: string, style = 'Default', sql = false): TableCell {
+function createTableCell(text: string, style = 'Default', sql = false): TableCell {
   return new TableCell({
     children: sql ? mapSqlTextToParagraphs(text, style) : mapTextToParagraphs(text, style)
   });

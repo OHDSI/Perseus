@@ -589,7 +589,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage)
           .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
           .createParagraph()
-          .createDescriptionTable(mappingItem.mapping);
+          .createFieldsDescriptionTable(mappingItem.mapping);
       });
 
     reportCreator.createHeader1('Appendix');

@@ -11,7 +11,7 @@ describe('WordReportCreator', () => {
       .createHeader1('Source Data Mapping Approach to CDMV6')
       .createFieldsMappingImage({source: 'Source', target: 'CDMV6'}, testMapping)
       .createParagraph()
-      .createDescriptionTable(testMapping)
+      .createFieldsDescriptionTable(testMapping)
       .generateReport();
 
     Packer.toBlob(report).then(blob => {

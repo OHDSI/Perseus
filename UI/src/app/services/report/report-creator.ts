@@ -16,7 +16,7 @@ export interface ReportCreator {
 
   createFieldsMappingImage: (header: MappingForImage, mapping: MappingNode[]) => ReportCreator;
 
-  createDescriptionTable: (mapping: MappingNode[]) => ReportCreator;
+  createFieldsDescriptionTable: (mapping: MappingNode[]) => ReportCreator;
 
   createSourceInformationTable: (rows: IRow[]) => ReportCreator;
 
