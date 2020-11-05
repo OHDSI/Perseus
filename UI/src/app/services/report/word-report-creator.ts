@@ -6,7 +6,7 @@ import { MappingImage, MappingForImage, MappingImageStyles } from './image/mappi
 import { logicForReport } from './logic-for-report';
 import { IRow } from '../../models/row';
 import { commentsForReport } from './comments-for-report';
-import { doubleQuote, singleQuote, sqlKeyWords } from './sql-key-words';
+import { doubleQuote, singleQuote, sqlKeyWords } from './sql-keywords';
 
 const paragraph = {
   spacing: {
