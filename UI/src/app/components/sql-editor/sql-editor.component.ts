@@ -12,7 +12,6 @@ import { cloneDeep } from 'src/app/infrastructure/utility';
 import { Area } from '../../models/area';
 import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
-import { SqlNameValidatorService } from 'src/app/services/sql-name-validator';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 const editorSettings = {
@@ -218,8 +217,8 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
 
   onChange(cm, event) {
     this.tablesWithoutAlias = [];
-    const matches = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').
-    matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
+    const matches = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ')
+      .matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
     this.viewForm.markAsTouched();
 
     if (matches) {

@@ -67,11 +67,10 @@ export class StoreService {
     });
     sourceNames = uniq(sourceNames);
 
-    const tables = {
+    return {
       source: this.state.source.filter(table => sourceNames.includes(table.name)),
       target: this.state.target.filter(table => targetNames.includes(table.name))
-    }
-    return tables;
+    };
   }
 
   resetAllData() {
@@ -93,4 +92,11 @@ export class StoreService {
     };
     this.storeState.next(this.initialState);
   }
+}
+
+export function stateToInfo(state: any): {cdmVersion: string, reportName: string} {
+  return {
+    cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
+    reportName: state.report || 'Report name'
+  };
 }

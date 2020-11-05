@@ -1,8 +1,9 @@
-import { ArrowCache, Arrow, ConstantCache } from './arrow-cache';
+import { ArrowCache, ConstantCache } from './arrow-cache';
 import { groupBy } from '../infrastructure/utility';
 import { MappingPair, MappingNode, Mapping } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
+import { ITable } from './table';
 
 export class MappingService {
   connections: Array<IConnection>;
@@ -37,7 +38,8 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
-          sqlTransformation: arrow.sql ? arrow.sql['name'] : ''
+          sqlTransformation: arrow.sql ? arrow.sql['name'] : '',
+          comments: arrow.source.comments
         };
       });
 
@@ -63,7 +65,8 @@ export class MappingService {
             sql_field: arrow.sourceColumn,
             sql_alias: arrow.targetColumn,
             lookup: arrow.lookup,
-            sqlTransformation: arrow.sqlTransformation
+            sqlTransformation: arrow.sqlTransformation,
+            comments: arrow.comments
           };
 
           this.applyTransforms(node, arrow);
@@ -105,10 +108,23 @@ export class MappingService {
           source_field: '',
           sql_field: row.constant,
           sql_alias: row.name,
-          target_field: row.name
+          target_field: row.name,
+          comments: row.comments
         };
         mapping['mapping'].push(constantObj);
       });
     });
   }
+}
+
+export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
+  const sql = source['sql'];
+  if (sql) {
+    if (!mapping['views']) {
+      mapping['views'] = {};
+    }
+    mapping['views'][source.name] = sql;
+  }
+
+  return mapping;
 }
