@@ -57,11 +57,11 @@ def get_source_schema(schemaname):
          from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
     for index, row in tables_pd.iterrows():
-        create_table_sql='';
+        create_table_sql = '';
         table_name = row['Table']
         fields = row['fields'].split(',')
         table_ = Table(table_name)
-        create_table_sql+='CREATE TABLE public.{0} ('.format(table_name)
+        create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
@@ -77,12 +77,16 @@ def get_source_schema(schemaname):
     pg_db.close()
     return schema
 
-def reset_schema(pg_db):
-    drop_create_schema_sql = 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'
-    pg_db.execute_sql(drop_create_schema_sql)
+
+def reset_schema(pg_db, name='public'):
+    exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)
+    cursor = pg_db.execute_sql(exists_sql)
+    if cursor.rowcount:
+        drop_create_schema_sql = 'DROP SCHEMA {0} CASCADE; CREATE SCHEMA {0};'.format(name)
+        pg_db.execute_sql(drop_create_schema_sql)
+
 
 def save_source_schema_in_db(source_tables):
-
     pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
                                host='localhost', port=5432)
     pg_db.connect()
