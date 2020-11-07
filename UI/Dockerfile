@@ -16,6 +16,6 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-RUN npm install node-sass
+RUN npm install node-sass@4.14.1
 
 CMD ng serve --c $CDM_CONFIG --port $CDM_PORT
