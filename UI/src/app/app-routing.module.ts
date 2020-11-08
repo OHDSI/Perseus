@@ -3,11 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ComfyComponent } from './components/comfy/comfy.component';
 import { MappingComponent } from './components/pages/mapping/mapping.component';
+import { environment } from '../environments/environment';
 
-
+const {config: config} = environment;
 const routes: Routes = [
   {
-    path: ``,
+    path: `${config}`,
     redirectTo: `/comfy`,
     pathMatch: 'full'
   },
