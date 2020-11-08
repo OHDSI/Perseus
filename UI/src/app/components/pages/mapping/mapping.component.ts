@@ -26,6 +26,9 @@ import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+
+const {prefix: prefix} = environment;
 
 @Component({
   selector: 'app-mapping',
@@ -326,7 +329,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   ngOnInit() {
     if (this.storeService.state.target.length === 0) {
-      this.router.navigateByUrl('/comfy');
+      this.router.navigateByUrl(`/${prefix}comfy`);
       return;
     }
     this.mappingStorage.get('mappingpage').then(data => {
