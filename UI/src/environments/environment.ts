@@ -18,8 +18,6 @@ export const environment = {
   production: false,
   url: 'http://10.110.1.7/api',
   conceptTables: CONCEPT_TABLES,
-  prefix: '',
-  initialPath: ''
 };
 
 /*

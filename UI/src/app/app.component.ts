@@ -62,7 +62,7 @@ export class AppComponent implements OnDestroy, OnInit {
     ICON_NAMES.forEach(key => {
       this.matIconRegistry.addSvgIcon(
         key,
-        this.domSanitizer.bypassSecurityTrustResourceUrl(`../assets/icons/${key}.svg`)
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`./assets/icons/${key}.svg`)
       );
     });
   }

@@ -39,8 +39,6 @@ import { isConceptTable } from './services/concept.service';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
 
-const {prefix: prefix} = environment;
-
 @Component({
   selector: 'app-comfy',
   templateUrl: './comfy.component.html',
@@ -347,7 +345,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
     await this.mappingStorage.add('mappingpage', payload);
 
-    this.router.navigateByUrl(`/${prefix}mapping`);
+    this.router.navigateByUrl(`/mapping`);
   }
 
   getMappingConfig() {
