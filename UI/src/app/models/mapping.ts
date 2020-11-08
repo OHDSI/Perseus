@@ -1,3 +1,5 @@
+import { IComment } from './comment';
+
 export interface MappingLookupSqlFiled {
   source_field: string;
   sql_field: string;
@@ -22,8 +24,9 @@ export interface MappingNode {
   target_field: string;
   sql_field: string;
   sql_alias: string;
-  lookup: string;
-  sqlTransformation: string;
+  lookup?: string;
+  sqlTransformation?: string;
+  comments?: IComment[];
 }
 
 export interface MappingPair {
@@ -36,7 +39,7 @@ export interface MappingPair {
 
 export interface Mapping {
   mapping_items: Array<MappingPair>;
-  views: object;
+  views?: object;
 }
 
 

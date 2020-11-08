@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 
 import { StateService } from 'src/app/services/state.service';
-import { StoreService } from 'src/app/services/store.service';
+import { stateToInfo, StoreService } from 'src/app/services/store.service';
 import { BaseComponent } from '../../../common/components/base/base.component';
 import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
@@ -28,7 +28,11 @@ import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
-const {prefix: prefix} = environment;
+const { prefix: prefix } = environment;
+import { WordReportCreator } from '../../../services/report/word-report-creator';
+import { Packer } from 'docx';
+import { addViewsToMapping } from '../../../models/mapping-service';
+import { similarTableName } from '../../../app.constants';
 
 @Component({
   selector: 'app-mapping',
@@ -50,7 +54,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   mappingConfig = [];
 
-  similarTableName = 'similar';
+  similarTableName = similarTableName;
   similarNamesMap = (similarNamesMap as any).default;
 
   filteredFields;
@@ -198,7 +202,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
     }
   }
-
 
   getLimits(value: string) {
     const offset = 8;
@@ -382,16 +385,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   previewMapping() {
     const source = this.source[ this.sourceTabIndex ];
-    const name = this.source[ this.sourceTabIndex ].name;
-    let mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
+    const name = source.name;
+    const mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
 
-    const sql = source['sql'];
-    if (sql) {
-      if (!mapping['views']) {
-        mapping['views'] = {};
-      }
-      mapping['views'][name] = sql;
-    }
+    addViewsToMapping(mapping, source);
 
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;
@@ -413,14 +410,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const mappingJSON = this.bridgeService.generateMapping();
 
     this.source.forEach(source => {
-      const name = source.name;
-      const sql = source['sql'];
-      if (sql) {
-        if (!mappingJSON['views']) {
-          mappingJSON['views'] = {};
-        }
-        mappingJSON['views'][name] = sql;
-      }
+      addViewsToMapping(mappingJSON, source);
     });
 
     this.dataService
@@ -539,13 +529,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isTooltipDisabled() {
-    if(this.target && this.filteredFields){
-    return !(
-      this.filteredFields &&
-      this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
-      this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
-      this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
-    );
+    if (this.target && this.filteredFields) {
+      return !(
+        this.filteredFields &&
+        this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
+        this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
+        this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
+      );
     }
   }
 
@@ -568,6 +558,68 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       if (res) {
         this.bridgeService.deleteAllArrows();
       }
+    });
+  }
+
+  generateReport() {
+    const reportCreator = new WordReportCreator();
+    const info = stateToInfo(this.storeService.state);
+    const mappingHeader = { source: info.reportName, target: info.cdmVersion };
+    const mapping = this.bridgeService.generateMapping();
+
+    this.source.forEach(source => {
+      addViewsToMapping(mapping, source);
+    });
+
+    reportCreator
+      .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
+      .createTablesMappingImage(mappingHeader, this.mappingConfig);
+
+    let currentTargetTable: string = null;
+    mapping.mapping_items
+      .sort((a, b) =>
+        a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1)
+      )
+      .forEach(mappingItem => {
+        let header3OnNewPage = true;
+        if (currentTargetTable !== mappingItem.target_table) {
+          currentTargetTable = mappingItem.target_table;
+          header3OnNewPage = false;
+          reportCreator
+            .createHeader2(`Table name: ${currentTargetTable}`, true);
+        }
+        reportCreator
+          .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage)
+          .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
+          .createParagraph()
+          .createFieldsDescriptionTable(mappingItem.mapping);
+      });
+
+    reportCreator.createHeader1('Appendix');
+
+    const viewKeys = Object.keys(mapping.views);
+    if (viewKeys.length > 0) {
+      reportCreator.createHeader2('View mapping', false);
+      viewKeys.forEach(key => {
+        reportCreator
+          .createHeader3(`${info.reportName.toUpperCase()} to ${key}`, false)
+          .createSqlTextBlock(mapping.views[ key ])
+          .createParagraph();
+      });
+    }
+
+    reportCreator.createHeader2('Source tables', viewKeys.length > 0);
+    this.source
+      .filter(table => table.name !== this.similarTableName)
+      .forEach((table, index) => reportCreator
+        .createHeader3(`Table: ${table.name}`, index !== 0)
+        .createSourceInformationTable(table.rows)
+      );
+
+    const report = reportCreator.generateReport();
+
+    Packer.toBlob(report).then(blob => {
+      saveAs(blob, 'report.docx');
     });
   }
 }

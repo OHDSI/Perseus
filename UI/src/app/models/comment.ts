@@ -3,6 +3,7 @@ export interface IComment {
   date: Date;
   hasBeenEdited: boolean;
   active: boolean;
+  text: string;
 
   updateDate(): void;
   setAsEdited(): void;
@@ -14,14 +15,16 @@ export class Comment {
   date: Date;
   hasBeenEdited: boolean;
   active: boolean;
+  text: string;
 
   constructor(
-    private text: string
+    text: string
   ) {
     this.id = Math.floor(Math.random() * 1000000);
     this.date = new Date(Date.now());
     this.hasBeenEdited = false;
     this.active = false;
+    this.text = text;
   }
 
   updateDate() {
