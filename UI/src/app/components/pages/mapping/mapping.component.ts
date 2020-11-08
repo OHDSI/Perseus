@@ -27,12 +27,12 @@ import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-
-const { prefix: prefix } = environment;
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
 import { addViewsToMapping } from '../../../models/mapping-service';
 import { similarTableName } from '../../../app.constants';
+
+const { prefix: prefix } = environment;
 
 @Component({
   selector: 'app-mapping',

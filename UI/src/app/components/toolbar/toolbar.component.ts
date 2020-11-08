@@ -4,6 +4,10 @@ import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { stateToInfo, StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
+import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
+
+const { prefix: prefix } = environment;
 
 @Component({
   selector: 'app-toolbar',
@@ -21,7 +25,8 @@ export class ToolbarComponent implements OnInit {
     private bridgeService: BridgeService,
     private commonUtilsService: CommonUtilsService,
     private uploadService: UploadService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router
   ) {
   }
 
@@ -37,6 +42,10 @@ export class ToolbarComponent implements OnInit {
         this.uploadService.onFileInputClick(this.fileInput);
       }
     });
+  }
+
+  goToComfy() {
+    this.router.navigateByUrl(`/${prefix}comfy`);
   }
 
   IsCreateNewMappingDisabled() {
