@@ -164,6 +164,10 @@ export class DataService {
     return this.httpService.saveSourceSchemaToDb(sourceTables);
   }
 
+  getView(sql: string): Observable<any> {
+    return this.httpService.getView(sql);
+  }
+
   deleteLookup(name, lookupType): Observable<any> {
     return this.httpService.deleteLookup(name, lookupType);
   }

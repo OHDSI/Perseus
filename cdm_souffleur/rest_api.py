@@ -11,7 +11,7 @@ from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, \
-    load_saved_source_schema_from_server, save_source_schema_in_db
+    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
@@ -76,6 +76,15 @@ def save_source_schema_to_db_call():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify('OK')
+
+@bp.route('/api/get_view', methods=['GET'])
+def get_View():
+    try:
+        view_sql = request.args['sql']
+        view_result=get_view_from_db(view_sql)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
+    return jsonify(view_result)
 
 
 @bp.route('/api/get_view', methods=['GET'])

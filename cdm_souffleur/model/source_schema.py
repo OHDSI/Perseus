@@ -6,7 +6,7 @@ import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
@@ -20,8 +20,7 @@ from cdm_souffleur.utils.exceptions import InvalidUsage, WrongReportStructure
 import json
 from werkzeug.utils import secure_filename
 from peewee import PostgresqlDatabase
-import psycopg2
-import psycopg2.extras
+from itertools import groupby
 
 book = None
 ALLOWED_EXTENSIONS = {'xlsx'}
@@ -104,6 +103,31 @@ def save_source_schema_in_db(source_tables):
             create_table_sql += ' );'
             cursor = pg_db.execute_sql(create_table_sql)
     pg_db.close()
+
+
+def get_view_from_db(view_sql):
+    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
+                               host='localhost', port=5432)
+    pg_db.connect()
+
+    view_cursor = pg_db.execute_sql(view_sql).description
+    view_key= lambda a: a.name
+    view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
+    view_res=[]
+    for key, group in view_groups:
+        for index, item in enumerate(list(group)):
+            res_item={}
+            res_item['type'] = COLUMN_TYPES_MAPPING[item.type_code]
+            if res_item['type'] == 'varchar' and item.internal_size > 0:
+                res_item['type'] = '{0}({1})'.format(res_item['type'], item.internal_size)
+            if index>0:
+                res_item['name'] = '{0}_{1}'.format(item.name, index)
+            else:
+                res_item['name'] = item.name
+            view_res.append(res_item)
+
+    pg_db.close()
+    return view_res;
 
 
 def _open_book(filepath=None):

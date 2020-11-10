@@ -22,4 +22,23 @@ UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema')
 PREDEFINED_LOOKUPS_PATH = Path('model/Lookups')
 INCOME_LOOKUPS_PATH = Path('model/UserDefinedLookups')
 
+COLUMN_TYPES_MAPPING = {
+     16: 'bool',
+     17: 'blob',
+     20: 'bigint',
+     21: 'smallint',
+     23: 'int',
+     25: 'text',
+     700: 'real',
+     701: 'double precision',
+     1042: 'char',
+     1043: 'varchar',
+     1082: 'date',
+     1114: 'datetime',
+     1184: 'datetime',
+     1083: 'time',
+     1266: 'time',
+     1700: 'decimal',
+     2950: 'uuid',
+}
 
