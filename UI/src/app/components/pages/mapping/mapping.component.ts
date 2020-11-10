@@ -595,7 +595,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     reportCreator.createHeader1('Appendix');
 
-    const viewKeys = Object.keys(mapping.views);
+    const viewKeys = Object.keys(mapping.views ? mapping.views : {});
     if (viewKeys.length > 0) {
       reportCreator.createHeader2('View mapping', false);
       viewKeys.forEach(key => {
