@@ -23,7 +23,8 @@ const API_URLS = {
   getLookup: () => `${URL}/get_lookup`,
   saveLookup: () => `${URL}/save_lookup`,
   deleteLookup: () => `${URL}/delete_lookup`,
-  saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`
+  saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`,
+  getView: (sql) => `${URL}/get_view?sql=${sql}`
 
 };
 
@@ -91,5 +92,9 @@ export class HttpService {
 
   saveSourceSchemaToDb(sourceTables: any) {
     return this.httpClient.post(API_URLS.saveSourceSchemaToDb(), sourceTables);
+  }
+
+  getView(sql: string): Observable<any> {
+    return this.httpClient.get<any>(API_URLS.getView(sql));
   }
 }

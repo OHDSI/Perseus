@@ -13,6 +13,8 @@ import { Area } from '../../models/area';
 import { Table } from '../../models/table';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { DataService } from 'src/app/services/data.service';
+import { Row, RowOptions } from 'src/app/models/row';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -37,6 +39,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     public dialogRef: MatDialogRef<SqlEditorComponent>,
     private cdRef: ChangeDetectorRef,
     private bridgeService: BridgeService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -111,23 +114,36 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   }
 
   createSourceTableData() {
-    const tableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
-    const rows = this.parseColumns();
-    rows.forEach((row, index) => {
-      row.tableId = tableId;
-      row.tableName = this.name;
-      row.id = index;
+    const viewTableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
+    const viewResultColumns = [];
+    const viewSql = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
+    this.dataService.getView(viewSql).subscribe(res => {
+      res.forEach((row, index) => {
+        const rowOptions: RowOptions = {
+          id: index,
+          tableId: viewTableId,
+          tableName: this.name,
+          name: row.name,
+          type: row.type,
+          isNullable: true,
+          comments: [],
+          uniqueIdentifier: false,
+          area: Area.Source
+        };
+        const viewRow = new Row(rowOptions);
+        viewResultColumns.push(viewRow);
+      });
+      const settings = {
+        rows: viewResultColumns,
+        area: Area.Source,
+        id: viewTableId,
+        name: this.name,
+        sql: this.editorContent
+      };
+      const newTable = new Table(settings);
+      this.removeLinksForDeletedRows(newTable);
+      this.dialogRef.close(newTable);
     });
-    const settings = {
-      rows,
-      area: Area.Source,
-      id: tableId,
-      name: this.name,
-      sql: this.editorContent
-    };
-    const newTable = new Table(settings);
-    this.removeLinksForDeletedRows(newTable);
-    return newTable;
   }
 
   removeLinksForDeletedRows(newTable: Table) {
@@ -152,10 +168,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   }
 
   apply() {
-    const createdView = this.createSourceTableData();
-    if (createdView) {
-      this.dialogRef.close(createdView);
-    }
+    this.createSourceTableData();
   }
 
   aliasedTablesColumns(prefix = false) {
@@ -173,18 +186,6 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       join ${text} as t${joinCount + 2} on`;
   }
 
-  parseColumns() {
-    const columnsMatch = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ').
-    match(/(select){1}\s(distinct\s)?(.*\b)from\b/im);
-    if (!columnsMatch) {
-      return [];
-    }
-    const columnsRow = columnsMatch[ 3 ].trim();
-    if (columnsRow === '*') {
-      return this.allColumns;
-    }
-    return columnsRow.split(',').reduce(this.columnsReducer.bind(this), []);
-  }
 
   columnsReducer(prev, cur) {
     const trimmed = cur.trim();
