@@ -19,6 +19,9 @@ from cdm_souffleur.utils.utils import Database
 from cdm_souffleur.utils.exceptions import InvalidUsage, WrongReportStructure
 import json
 from werkzeug.utils import secure_filename
+from peewee import PostgresqlDatabase
+import psycopg2
+import psycopg2.extras
 
 book = None
 ALLOWED_EXTENSIONS = {'xlsx'}
@@ -34,6 +37,11 @@ def get_source_schema(schemaname):
      """
     print("schema name: " + str(schemaname))
 
+    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
+                               host='localhost', port=5432)
+    pg_db.connect()
+
+    reset_schema(pg_db)
     if schemaname == configuration['schema']['name']:
         filepath = configuration['schema']['path']
     else:
@@ -49,17 +57,53 @@ def get_source_schema(schemaname):
          from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
     for index, row in tables_pd.iterrows():
+        create_table_sql = '';
         table_name = row['Table']
         fields = row['fields'].split(',')
         table_ = Table(table_name)
+        create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
             column_type = column_description[1]
             column = Column(column_name, column_type)
             table_.column_list.append(column)
+            create_column_sql = '{0} {1},'.format(column_name, column_type)
+            create_table_sql += create_column_sql
+        create_table_sql = create_table_sql.rstrip(',')
+        create_table_sql += ' );'
+        cursor = pg_db.execute_sql(create_table_sql)
         schema.append(table_)
+    pg_db.close()
     return schema
+
+
+def reset_schema(pg_db, name='public'):
+    exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)
+    cursor = pg_db.execute_sql(exists_sql)
+    if cursor.rowcount:
+        drop_create_schema_sql = 'DROP SCHEMA {0} CASCADE; CREATE SCHEMA {0};'.format(name)
+        pg_db.execute_sql(drop_create_schema_sql)
+
+
+def save_source_schema_in_db(source_tables):
+    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
+                               host='localhost', port=5432)
+    pg_db.connect()
+    reset_schema(pg_db)
+
+    for row in source_tables:
+        if row['sql'] == '':
+            create_table_sql = '';
+            table_name = row['name']
+            create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
+            for field in row['rows']:
+                create_column_sql = '{0} {1},'.format(field['name'], field['type'])
+                create_table_sql += create_column_sql
+            create_table_sql = create_table_sql.rstrip(',')
+            create_table_sql += ' );'
+            cursor = pg_db.execute_sql(create_table_sql)
+    pg_db.close()
 
 
 def _open_book(filepath=None):

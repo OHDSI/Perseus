@@ -31,6 +31,7 @@ import { Packer } from 'docx';
 import { addViewsToMapping } from '../../../models/mapping-service';
 import { similarTableName } from '../../../app.constants';
 
+
 @Component({
   selector: 'app-mapping',
   templateUrl: './mapping.component.html',
@@ -329,7 +330,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   ngOnInit() {
     if (this.storeService.state.target.length === 0) {
-      this.router.navigateByUrl('/comfy');
+      this.router.navigateByUrl(`/comfy`);
       return;
     }
     this.mappingStorage.get('mappingpage').then(data => {
@@ -529,9 +530,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     if (this.target && this.filteredFields) {
       return !(
         this.filteredFields &&
-        this.filteredFields[this.target[this.targetTabIndex].name] &&
-        this.filteredFields[this.target[this.targetTabIndex].name].types &&
-        this.filteredFields[this.target[this.targetTabIndex].name].types.length
+        this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
+        this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
+        this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
       );
     }
   }
@@ -561,7 +562,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   generateReport() {
     const reportCreator = new WordReportCreator();
     const info = stateToInfo(this.storeService.state);
-    const mappingHeader = {source: info.reportName, target: info.cdmVersion};
+    const mappingHeader = { source: info.reportName, target: info.cdmVersion };
     const mapping = this.bridgeService.generateMapping();
 
     this.source.forEach(source => {
@@ -600,7 +601,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       viewKeys.forEach(key => {
         reportCreator
           .createHeader3(`${info.reportName.toUpperCase()} to ${key}`, false)
-          .createSqlTextBlock(mapping.views[key])
+          .createSqlTextBlock(mapping.views[ key ])
           .createParagraph();
       });
     }

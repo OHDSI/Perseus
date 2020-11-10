@@ -22,7 +22,8 @@ const API_URLS = {
   getLookupsList: () => `${URL}/get_lookups_list`,
   getLookup: () => `${URL}/get_lookup`,
   saveLookup: () => `${URL}/save_lookup`,
-  deleteLookup: () => `${URL}/delete_lookup`
+  deleteLookup: () => `${URL}/delete_lookup`,
+  saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`
 
 };
 
@@ -86,5 +87,9 @@ export class HttpService {
 
   deleteLookup(name, lookupType) {
     return this.httpClient.delete(API_URLS.deleteLookup(), { params: { name , lookupType } });
+  }
+
+  saveSourceSchemaToDb(sourceTables: any) {
+    return this.httpClient.post(API_URLS.saveSourceSchemaToDb(), sourceTables);
   }
 }

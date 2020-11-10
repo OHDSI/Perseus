@@ -22,6 +22,8 @@ import { UploadService } from './upload.service';
 import * as fileSaver from 'file-saver';
 import { Configuration } from '../models/configuration';
 
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -78,7 +80,7 @@ export class CommonUtilsService {
         this.bridgeService.resetAllMappings();
         this.storeService.resetAllData();
       }
-      this.router.navigateByUrl('/comfy');
+      this.router.navigateByUrl(`/comfy`);
     });
   }
 
@@ -162,12 +164,12 @@ export class CommonUtilsService {
     this.bridgeService.resetAllMappings();
     if (deleteSourceAndTarget) {
       this.storeService.resetAllData();
-      this.router.navigateByUrl('/comfy');
+      this.router.navigateByUrl(`/comfy`);
     }
   }
 
   loadReportAndReturnToComfy() {
-    this.router.navigateByUrl('/comfy');
+    this.router.navigateByUrl(`/comfy`);
     this.loadReport.next(true);
   }
 

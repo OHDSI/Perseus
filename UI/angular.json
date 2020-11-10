@@ -67,6 +67,15 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "dev"
             }
           }
         },
@@ -78,6 +87,9 @@
           "configurations": {
             "production": {
               "browserTarget": "UI:build:production"
+            },
+            "development": {
+              "browserTarget": "UI:build:development"
             }
           }
         },
@@ -97,8 +109,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [
-            ],
+            "scripts": [],
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -148,5 +159,8 @@
       }
     }
   },
-  "defaultProject": "UI"
+  "defaultProject": "UI",
+  "cli": {
+    "analytics": false
+  }
 }
