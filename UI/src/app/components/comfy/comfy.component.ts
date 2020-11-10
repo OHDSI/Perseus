@@ -252,7 +252,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       }
     });
 
-    this.bridgeService.applyConfiguration$.pipe(switchMap(configuration => {
+    this.bridgeService.applyConfiguration$.pipe(
+      takeUntil(this.ngUnsubscribe),
+      switchMap(configuration => {
       return this.dataService.saveSourceSchemaToDb(configuration.sourceTables);
     }))
     .subscribe(( res ) => {
