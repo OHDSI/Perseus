@@ -367,6 +367,10 @@ article {
   }
 
   .initial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     width: 400px;
     background-color: rgba(231, 244, 255, 0.2);
     border: 1px dashed #cde0ef;
@@ -450,7 +454,12 @@ article {
 
 .cdm-button {
   width: 160px;
-  text-align: center;
+  height: 33px;
+  margin-bottom: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .saving {

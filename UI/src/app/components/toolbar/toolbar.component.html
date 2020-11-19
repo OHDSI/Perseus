@@ -49,6 +49,11 @@
       <span>Set CDM Version</span>
     </button>
     <button mat-menu-item
+            (click)="scanData()">
+      <mat-icon svgIcon="scan_data"></mat-icon>
+      <span>Scan Data</span>
+    </button>
+    <button mat-menu-item
             (click)="openLoadMappingDialog()">
       <mat-icon svgIcon="mapping"></mat-icon>
       <span>Open Mappings</span>

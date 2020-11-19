@@ -258,8 +258,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       return this.dataService.saveSourceSchemaToDb(configuration.sourceTables);
     }))
     .subscribe(( res ) => {
-      res !== 'OK'? 
-      this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS '):
+      res !== 'OK' ?
+      this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ') :
       this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
     });
 
@@ -519,7 +519,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       && this.targetConfig[ it ].data.length > 1);
   }
 
-
   openSqlDialog(data) {
     return this.matDialog.open(SqlEditorComponent, {
       closeOnNavigation: false,
@@ -598,6 +597,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.sourceFocusedElement = target;
       this.sourceFocusedElement.classList.add('source-focus');
     }
+  }
+
+  scanData() {
   }
 }
 

@@ -79,8 +79,16 @@
                hidden/>
         <button mat-flat-button
                 color="accent"
+                class="cdm-button"
                 (click)="loadNewReport()">
           Load New Report
+        </button>
+
+        <button mat-flat-button
+                color="accent"
+                class="cdm-button"
+                (click)="scanData()">
+          Scan Data
         </button>
       </div>
     </article>
@@ -154,13 +162,15 @@
                 color="accent"
                 (click)="openCdmVersion(storeService.state.cdmVersions[0])">
           Version {{storeService.state.cdmVersions[0]}}
-        </button><br><br>
-         <button mat-flat-button
+        </button>
+
+        <button mat-flat-button
                 class="cdm-button"
                 color="accent"
                 (click)="openCdmVersion(storeService.state.cdmVersions[1])">
           Version {{storeService.state.cdmVersions[1]}}
-        </button><br><br>
+        </button>
+
         <button mat-flat-button
                 class="cdm-button"
                 color="accent"
