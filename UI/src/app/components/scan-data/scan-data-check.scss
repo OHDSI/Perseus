@@ -1,0 +1,25 @@
+.scan-data-check {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #FFFFFF;
+  border: 1px solid #066BBB;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  svg {
+    display: none;
+  }
+
+  &.selected {
+    svg {
+      display: block;
+    }
+  }
+}

@@ -38,6 +38,7 @@ import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
+import { ScanDataComponent } from '../scan-data/scan-data.component';
 
 @Component({
   selector: 'app-comfy',
@@ -600,6 +601,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   scanData() {
+    this.matDialog.open(ScanDataComponent, {
+      width: '700',
+      height: '674',
+      disableClose: true
+    });
   }
 }
 

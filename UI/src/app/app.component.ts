@@ -8,7 +8,7 @@ import { debounceTime, map } from 'rxjs/operators';
 
 import { BridgeService } from './services/bridge.service';
 
-const ICON_NAMES = [ 'CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping', 'edit', 'delete', 'scan_data' ];
+const ICON_NAMES = [ 'CDM_version', 'folder', 'mapping', 'reset', 'save', 'help', 'new_mapping', 'edit', 'delete', 'scan_data', 'search' ];
 
 @Component({
   selector: 'app-root',

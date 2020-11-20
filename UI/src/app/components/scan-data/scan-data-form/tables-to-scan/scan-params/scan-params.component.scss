@@ -1,0 +1,83 @@
+.scan-params {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin: 28px 20px 20px;
+  width: 360px;
+  height: 150px;
+
+  &__check {
+    display: flex;
+    margin-bottom: 23px;
+
+    &-control {
+      display: flex;
+      margin-right: 30px;
+
+      p {
+        font-size: 14px;
+        line-height: 14px;
+
+        color: #404040;
+      }
+    }
+  }
+
+  &__input {
+    display: flex;
+
+    &-control {
+      display: flex;
+      flex-direction: column;
+
+      $inputControlWidth: 105px;
+
+      width: $inputControlWidth;
+      margin-right: 25px;
+      margin-bottom: 15px;
+
+      input {
+        width: $inputControlWidth;
+      }
+
+      &.long {
+        $longInputControlWidth: 180px;
+
+        width: $longInputControlWidth;
+
+        input, .mat-select {
+          width: $longInputControlWidth;
+        }
+      }
+
+      label {
+        font-size: 12px;
+        line-height: 15px;
+        color: #808080;
+      }
+
+      input, .mat-select {
+        border: 0;
+        border-bottom: 1px solid #2C2C2C;
+        padding: 5px 0;
+
+        font-size: 14px;
+        line-height: 15px;
+        color: #404040;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      input[type=number]::-webkit-inner-spin-button {
+        opacity: 1;
+        background: #ffffff;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+}

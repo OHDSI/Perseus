@@ -1,0 +1,58 @@
+<div class="scan-params">
+  <div class="scan-params__check">
+    <div class="scan-params__check-control">
+      <div class="scan-params__check-control-check scan-data-check">
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.0001 7.7799L1.2201 4.9999L0.273438 5.9399L4.0001 9.66656L12.0001 1.66656L11.0601 0.726562L4.0001 7.7799Z" fill="#066BBB"/>
+        </svg>
+      </div>
+      <p>Scan Field Values</p>
+    </div>
+
+    <div class="scan-params__check-control">
+      <div class="scan-params__check-control-check scan-data-check">
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.0001 7.7799L1.2201 4.9999L0.273438 5.9399L4.0001 9.66656L12.0001 1.66656L11.0601 0.726562L4.0001 7.7799Z" fill="#066BBB"/>
+        </svg>
+      </div>
+      <p>Numeric Stats</p>
+    </div>
+  </div>
+
+  <div class="scan-params__input">
+    <div class="scan-params__input-control">
+      <label>Min Cell Count</label>
+      <input type="number" min="1">
+    </div>
+
+    <mat-form-field class="scan-params__input-control" floatLabel="never" appearance="none">
+      <label>Max Distinct Values</label>
+      <mat-select>
+        <mat-option *ngFor="let option of maxDistinctValues" [value]="option.value">
+          {{option.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="scan-params__input-control" floatLabel="never" appearance="none">
+      <label>Rows per Table</label>
+      <mat-select>
+        <mat-option *ngFor="let option of rowsPerTableValues" [value]="option.value">
+          {{option.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="scan-params__input">
+    <mat-form-field class="scan-params__input-control long" floatLabel="never" appearance="none">
+      <label>Numeric Stats Reservoir Size</label>
+      <mat-select>
+        <mat-option *ngFor="let option of numericStatsReservoirSize" [value]="option.value">
+          {{option.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
