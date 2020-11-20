@@ -27,9 +27,13 @@
       color: #404040;
     }
 
-    svg {
-      margin-right: 9px;
-      cursor: pointer;
+    &-settings {
+      &-scan-params {
+        svg {
+          margin-right: 9px;
+          cursor: pointer;
+        }
+      }
     }
   }
 

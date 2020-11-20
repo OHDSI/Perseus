@@ -11,7 +11,7 @@
   </div>
 
   <div class="scan-data-form__action">
-    <button class="scan-data-form__action-cancel" (click)="close()">Cancel</button>
+    <button class="scan-data-form__action-cancel" (click)="cancel.emit()">Cancel</button>
     <button class="scan-data-form__action-scan"
             [disabled]="tablesToScan.length === 0">Scan Tables</button>
   </div>

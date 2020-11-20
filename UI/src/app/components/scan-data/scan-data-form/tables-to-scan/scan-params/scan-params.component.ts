@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-scan-params',
   templateUrl: './scan-params.component.html',
-  styleUrls: ['./scan-params.component.scss', '../../../scan-data-check.scss']
+  styleUrls: ['./scan-params.component.scss']
 })
 export class ScanParamsComponent implements OnInit {
+
+  @Input()
+  scanParamsForm: FormGroup;
 
   maxDistinctValues = [
     {

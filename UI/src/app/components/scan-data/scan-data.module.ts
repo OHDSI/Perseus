@@ -10,6 +10,7 @@ import { ScanDataFormComponent } from './scan-data-form/scan-data-form.component
 import { ScanParamsComponent } from './scan-data-form/tables-to-scan/scan-params/scan-params.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ScanDataCheckboxComponent } from './scan-data-form/scan-data-checkbox/scan-data-checkbox.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     TablesToScanComponent,
     TableToScanComponent,
     ScanParamsComponent,
-    ScanDataFormComponent
+    ScanDataFormComponent,
+    ScanDataCheckboxComponent
   ],
   imports: [
     CommonModule,

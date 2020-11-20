@@ -35,7 +35,13 @@ export class SourceFormComponent implements OnInit, OnDestroy {
     'BigQuery'
   ];
 
-  private subscription: Subscription;
+  private dbSettingChangeSubscription: Subscription;
+
+  private dbTypeChangeSubscription: Subscription;
+
+  get dbSettings() {
+    return this.form.value;
+  }
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -44,8 +50,12 @@ export class SourceFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription && !this.subscription.closed) {
-      this.subscription.unsubscribe();
+    if (this.dbSettingChangeSubscription && !this.dbSettingChangeSubscription.closed) {
+      this.dbSettingChangeSubscription.unsubscribe();
+    }
+
+    if (this.dbTypeChangeSubscription && !this.dbTypeChangeSubscription.closed) {
+      this.dbTypeChangeSubscription.unsubscribe();
     }
   }
 
@@ -54,20 +64,38 @@ export class SourceFormComponent implements OnInit, OnDestroy {
   }
 
   subscribeFormChange(): void {
-    this.subscription = this.form.valueChanges
+    this.dbSettingChangeSubscription = this.form.valueChanges
       .subscribe(() => {
         this.connectionPropsChanged.emit();
-        this.subscription.unsubscribe();
+        this.dbSettingChangeSubscription.unsubscribe();
       });
   }
 
   private initForm(): void {
+    // this.form = this.formBuilder.group({
+    //   dbType: ['SQL Server', [Validators.required]],
+    //   server: ['822JNJ16S03V', [Validators.required]],
+    //   user: ['cdm_builder', [Validators.required]],
+    //   password: ['builder1!', [Validators.required]],
+    //   database: ['CPRD', [Validators.required]]
+    // });
+
     this.form = this.formBuilder.group({
-      dbType: ['SQL Server', [Validators.required]],
-      server: ['822JNJ16S03V', [Validators.required]],
-      user: ['cdm_builder', [Validators.required]],
-      password: ['builder1!', [Validators.required]],
-      database: ['CPRD', [Validators.required]]
+      dbType: [null, [Validators.required]],
+      server: [{value: null, disabled: true}, [Validators.required]],
+      user: [{value: null, disabled: true}, [Validators.required]],
+      password: [{value: null, disabled: true}, [Validators.required]],
+      database: [{value: null, disabled: true}, [Validators.required]]
     });
+
+    this.dbTypeChangeSubscription = this.form.get('dbType').valueChanges
+      .subscribe(() => {
+        const controlNames = ['server', 'user', 'password', 'database'];
+        for (const name of controlNames) {
+          console.log(this.form.get(name));
+          this.form.get(name).enable();
+        }
+        this.dbTypeChangeSubscription.unsubscribe();
+      });
   }
 }

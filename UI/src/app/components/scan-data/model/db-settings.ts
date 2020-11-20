@@ -1,4 +1,4 @@
-import { ScanParameters } from './scanParameters';
+import { ScanParams } from './scanParams';
 
 export interface DbSettings {
   dbType: string;
@@ -8,5 +8,5 @@ export interface DbSettings {
   server: string;
   domain?: string;
   tablesToScan?: string;
-  scanParameters?: ScanParameters;
+  scanParameters?: ScanParams;
 }

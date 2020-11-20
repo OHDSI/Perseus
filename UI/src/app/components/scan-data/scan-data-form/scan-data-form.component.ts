@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { ConnectionResult } from '../model/connection-result';
 import { TableToScan } from '../model/table-to-scan';
 import { WhiteRabbitService } from '../../../services/white-rabbit.service';
@@ -20,6 +28,9 @@ export class ScanDataFormComponent implements OnInit {
   tablesToScan: TableToScan[] = [];
 
   connecting = false;
+
+  @Output()
+  cancel = new EventEmitter<void>();
 
   @ViewChild(SourceFormComponent)
   sourceFormComponent: SourceFormComponent;
@@ -58,9 +69,5 @@ export class ScanDataFormComponent implements OnInit {
     if (this.tablesToScan.length > 0) {
       this.tablesToScan = [];
     }
-  }
-
-  close(): void {
-
   }
 }

@@ -1,4 +1,4 @@
-export interface ScanParameters {
+export interface ScanParams {
   sampleSize: number;
 
   scanValues: boolean;
