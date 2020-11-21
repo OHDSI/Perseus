@@ -21,7 +21,9 @@
   </button>
   <button [mat-dialog-close]="{action: data.okButton, value: resultValue}"
           mat-flat-button
-          color="accent">
+          color="accent"
+          [disabled]="data.type === 'input' && (!resultValue || resultValue === '' || inputNameError())">
     {{data.okButton}}
   </button>
 </div>
+<div class="error-message" *ngIf="inputNameError()">{{data.errorMessage}}</div>

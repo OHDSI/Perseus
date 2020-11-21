@@ -71,6 +71,14 @@
       "originY": "bottom",
       "overlayX": "end",
       "overlayY": "bottom"
+    },
+    "create-group": {
+      "offsetX": -35,
+      "offsetY": 30,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
     }
   }
 }

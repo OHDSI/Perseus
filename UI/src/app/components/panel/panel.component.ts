@@ -9,6 +9,7 @@ import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-dat
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { StoreService } from '../../services/store.service';
+import { CommonUtilsService } from 'src/app/services/common-utils.service';
 
 @Component({
   selector: 'app-panel',
@@ -48,7 +49,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private bridgeService: BridgeService,
     private bridgeButtonService: BridgeButtonService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private commonUtilsService: CommonUtilsService
   ) {
     this.initializing = true;
   }
@@ -85,6 +87,12 @@ export class PanelComponent implements OnInit, AfterViewInit {
   onOpen() {
     if (!this.initializing) {
       this.open.emit();
+    }
+  }
+
+  createGroup() {
+    if(this.panel.rowFocusedElements.length){
+    this.panel.createGroup();
     }
   }
 
@@ -139,5 +147,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.linkFieldsSearch[this.linkFieldsSearchKey] = '';
     this.searchCriteria = '';
     this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
+  }
+
+  openOnBoardingTip(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target, 'create-group');
   }
 }

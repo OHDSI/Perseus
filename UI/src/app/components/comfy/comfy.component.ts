@@ -318,7 +318,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (!this.data.source.length) {
       return;
     }
-    const allColumns = this.data.source.reduce((prev, cur) => [ ...prev, ...cur.rows ], []);
+    const allColumns = this.data.source.reduce((prev, cur) => {
+      let ar = [];
+      cur.rows.forEach(item => {
+        item.grouppedFields.length > 0 ? ar = ar.concat(item.grouppedFields) : ar.push(item);
+      });
+      return prev.concat(ar);
+    }, []);
     this.sourceRows = uniqBy(allColumns, 'name');
     this.filterAtInitialization('source-column', this.data.linkTablesSearch.sourceColumns);
   }
@@ -334,23 +340,23 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   async openMapping() {
-    const { source, target } = this.storeService.getMappedTables();
+  //  const { source, target } = this.storeService.getMappedTables();
 
-    const payload = {
+/*     const payload = {
       source,
       target,
       allTarget: this.data.target,
       mappingConfig: this.getMappingConfig()
-    };
+    }; */
 
-    await this.mappingStorage.add('mappingtables', this.targetConfig);
+   // await this.mappingStorage.add('mappingtables', this.targetConfig);
 
-    await this.mappingStorage.add('mappingpage', payload);
+   // await this.mappingStorage.add('mappingpage', payload);
 
     this.router.navigateByUrl(`/mapping`);
   }
 
-  getMappingConfig() {
+   getMappingConfig() {
     const mappingConfig = [];
     Object.keys(this.targetConfig).forEach(key => {
       const item = this.targetConfig[ key ].data;
@@ -368,8 +374,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       const tableIncludesColumns = (arr, target) => target.every(v => arr.includes(v));
 
       this.data.source.forEach(table => {
-        const rowNames = table.rows.map(item => item.name);
-        indexes[ table.name ] = tableIncludesColumns(rowNames, selectedSourceColumns);
+
+        let rowNames = [];
+        table.rows.forEach(item => {
+          item.grouppedFields.length > 0 ? rowNames = rowNames.concat(item.grouppedFields) : rowNames.push(item);
+          });
+
+        indexes[ table.name ] = tableIncludesColumns(rowNames.map(item => item.name), selectedSourceColumns);
       });
 
       this.highlightedTables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);

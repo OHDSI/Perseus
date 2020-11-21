@@ -34,7 +34,7 @@ table {
 
   .comments-button {
     left: 100%;
-    margin-left: -70px;
+    margin-left: -50px;
     width: 32px;
     height: 32px;
   }
@@ -190,8 +190,37 @@ tr[selected="true"] {
 
 .required-field{
   display: flex !important;
+  align-items: center;
+}
+
+.group-icon{
+  margin-top: -3px;
+  margin-right: 5px;
+}
+
+.remove-from-group-icon{
+  margin-top: 10px;
+  margin-left: 7px;
 }
 
 .red{
   color: red;
+}
+
+.inner-table{
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.remove-group-icon{
+  margin-top: 6px;
+  font-size: 19px !important;
+}
+
+.remove-group-icon:hover { 
+  color: red;
+}
+
+.remove-group{
+  text-align: center;
 }

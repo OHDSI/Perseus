@@ -97,8 +97,13 @@ def save_source_schema_in_db(source_tables):
             table_name = row['name']
             create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
             for field in row['rows']:
-                create_column_sql = '{0} {1},'.format(field['name'], field['type'])
-                create_table_sql += create_column_sql
+                if len(field['grouppedFields']):
+                    for item in field['grouppedFields']:
+                        create_column_sql = '{0} {1},'.format(item['name'], item['type'])
+                        create_table_sql += create_column_sql
+                else:
+                    create_column_sql = '{0} {1},'.format(field['name'], field['type'])
+                    create_table_sql += create_column_sql
             create_table_sql = create_table_sql.rstrip(',')
             create_table_sql += ' );'
             cursor = pg_db.execute_sql(create_table_sql)
