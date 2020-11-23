@@ -286,42 +286,41 @@ export class PanelTableComponent extends BaseComponent
     }
   }
 
-checkLinks() {
-  return this.rowFocusedElements.some(item => 
-    this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, this.oppositeTableId));
-}
-
-checkGrouppedFields() {
-  return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id).grouppedFields.length);
-}
-
-checkDifferentTypes(groupType?: string) {
-  let typesArray = [];
-  if (groupType) {
-    typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-  filter(([ k, v ]) => v.includes(groupType))));
-  } else {
-    typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-  filter(([ k, v ]) => v.includes(this.table.rows.find(r => r.name === this.rowFocusedElements[0].id).type))));
+  checkLinks() {
+    return this.rowFocusedElements.some(item =>
+      this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, this.oppositeTableId));
   }
-  return this.rowFocusedElements.some(item => !typesArray[0].includes(this.table.rows.find(r => r.name === item.id).type.toLowerCase()));
-}
 
- addRowToGroup(rows: IRow []){
-  const group = rows[0];
-  const rowToAdd = rows[1];
-  if (!this.validateGroupFields(group.type)){
-    return;
-  };
-  this.table.rows.find(item => item.name === group.name).grouppedFields.splice(0, 0, rowToAdd);
-  this.table.rows.splice(this.bridgeService.draggedRowIndex, 1);
-  this.bridgeService.saveChangesInGroup(group.tableName, this.table.rows);
-  this.removeRowsFromSimilarTable([rowToAdd.name]);
-  this.refreshPanel();
- }
+  checkGrouppedFields() {
+    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id).grouppedFields.length);
+  }
 
-  removeGroup(row: IRow){
+  checkDifferentTypes(groupType?: string) {
+    let typesArray = [];
+    if (groupType) {
+      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
+        filter(([ k, v ]) => v.includes(groupType))));
+    } else {
+      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
+        filter(([ k, v ]) => v.includes(this.table.rows.find(r => r.name === this.rowFocusedElements[ 0 ].id).type))));
+    }
+    return this.rowFocusedElements.some(item => !typesArray[ 0 ].includes(this.table.rows.find(r => r.name === item.id).type.toLowerCase()));
+  }
 
+  addRowToGroup(rows: IRow[]) {
+    const group = rows[ 0 ];
+    const rowToAdd = rows[ 1 ];
+    if (!this.validateGroupFields(group.type)) {
+      return;
+    };
+    this.table.rows.find(item => item.name === group.name).grouppedFields.splice(0, 0, rowToAdd);
+    this.table.rows.splice(this.bridgeService.draggedRowIndex, 1);
+    this.bridgeService.saveChangesInGroup(group.tableName, this.table.rows);
+    this.removeRowsFromSimilarTable([ rowToAdd.name ]);
+    this.refreshPanel();
+  }
+
+  removeGroup(row: IRow) {
     const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -334,10 +333,10 @@ checkDifferentTypes(groupType?: string) {
     dialog.afterClosed().subscribe(res => {
       if (res) {
         while (row.grouppedFields.length) {
-          this.removeFromGroup(row, row.grouppedFields[0]);
+          this.removeFromGroup(row, row.grouppedFields[ 0 ]);
         }
         this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
-        filter(([ k, v ]) => !(v.source.tableName === row.tableName && v.source.name === row.name)));
+          filter(([ k, v ]) => !(v.source.tableName === row.tableName && v.source.name === row.name)));
       }
     });
   }
