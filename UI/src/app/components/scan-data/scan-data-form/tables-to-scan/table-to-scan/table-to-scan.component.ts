@@ -11,21 +11,20 @@ export class TableToScanComponent {
   @Input()
   private table: TableToScan;
 
+  @Output()
+  checkTable = new EventEmitter<TableToScan>();
+
   get tableName() {
     return this.table.tableName;
   }
 
   get selected() {
-    console.log('Change detected');
     return this.table.selected;
   }
 
-  set selected(selected: boolean) {
-    if (this.table.selected !== selected) {
-      this.table = {...this.table, selected};
+  set selected(value: boolean) {
+    if (value !== this.table.selected) {
+      this.checkTable.emit({tableName: this.table.tableName, selected: value});
     }
   }
-
-  @Output()
-  checkTable = new EventEmitter<string>();
 }

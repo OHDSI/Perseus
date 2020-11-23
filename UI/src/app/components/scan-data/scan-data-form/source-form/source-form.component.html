@@ -6,7 +6,7 @@
     <h5 class="source-form__header-name">Source Data Location</h5>
   </div>
 
-  <mat-form-field class="source-form-control" floatLabel="never" appearance="none">
+  <mat-form-field class="source-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
     <mat-select formControlName="dbType">
       <mat-option *ngFor="let type of databaseTypes" [value]="type">
@@ -15,22 +15,22 @@
     </mat-select>
   </mat-form-field>
 
-  <div class="source-form-control">
-    <label>Server location</label>
-    <input type="text" formControlName="server">
+  <div class="source-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('server').disabled}">
+    <label for="server">Server location</label>
+    <input class="test" type="text" id="server" formControlName="server">
   </div>
 
-  <div class="source-form-control">
+  <div class="source-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('user').disabled}">
     <label>User name</label>
     <input type="text" formControlName="user">
   </div>
 
-  <div class="source-form-control">
+  <div class="source-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('password').disabled}">
     <label>Password</label>
     <input type="password" formControlName="password">
   </div>
 
-  <div class="source-form-control">
+  <div class="source-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('database').disabled}">
     <label>Database Name</label>
     <input type="text" formControlName="database">
   </div>

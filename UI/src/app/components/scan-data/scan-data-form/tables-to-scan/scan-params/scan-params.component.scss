@@ -40,6 +40,10 @@
         width: $inputControlWidth;
       }
 
+      .mat-select-disabled {
+        opacity: 0.6;
+      }
+
       &.long {
         $longInputControlWidth: 180px;
 
@@ -50,24 +54,8 @@
         }
       }
 
-      label {
-        font-size: 12px;
-        line-height: 15px;
-        color: #808080;
-      }
-
-      input, .mat-select {
-        border: 0;
-        border-bottom: 1px solid #2C2C2C;
-        padding: 5px 0;
-
-        font-size: 14px;
-        line-height: 15px;
-        color: #404040;
-
-        &:focus {
-          outline: none;
-        }
+      input {
+        background: #ffffff;
       }
 
       input[type=number]::-webkit-inner-spin-button {

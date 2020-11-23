@@ -10,6 +10,13 @@
   </div>
 
   <div class="scan-data__content">
-    <app-scan-data-form style="width: 100%" (cancel)="close()"></app-scan-data-form>
+    <app-scan-data-stepper style="width: 100%" [selectedIndex]="1">
+      <cdk-step>
+        <app-scan-data-form style="width: 100%" (cancel)="close()"></app-scan-data-form>
+      </cdk-step>
+      <cdk-step>
+        <app-scan-data-progress [dbSettings]="dbSettings"></app-scan-data-progress>
+      </cdk-step>
+    </app-scan-data-stepper>
   </div>
 </div>

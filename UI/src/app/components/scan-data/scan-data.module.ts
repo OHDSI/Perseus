@@ -11,6 +11,9 @@ import { ScanParamsComponent } from './scan-data-form/tables-to-scan/scan-params
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScanDataCheckboxComponent } from './scan-data-form/scan-data-checkbox/scan-data-checkbox.component';
+import { CdkStepperModule } from '@angular/cdk/stepper';
+import { ScanDataStepperComponent } from './scan-data-stepper/scan-data-stepper.component';
+import { ScanDataProgressComponent } from './scan-data-progress/scan-data-progress.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,9 @@ import { ScanDataCheckboxComponent } from './scan-data-form/scan-data-checkbox/s
     TableToScanComponent,
     ScanParamsComponent,
     ScanDataFormComponent,
-    ScanDataCheckboxComponent
+    ScanDataCheckboxComponent,
+    ScanDataStepperComponent,
+    ScanDataProgressComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +33,8 @@ import { ScanDataCheckboxComponent } from './scan-data-form/scan-data-checkbox/s
     ReactiveFormsModule,
     MatSelectModule,
     MatIconModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    CdkStepperModule
   ],
   exports: [
     ScanDataComponent

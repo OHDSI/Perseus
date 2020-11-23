@@ -30,9 +30,11 @@ export class ScanDataCheckboxComponent implements ControlValueAccessor {
   }
 
   writeValue(state: boolean): void {
-    this.state = state;
-    this.onChange(state);
-    this.onTouched();
+    if (state !== null) {
+      this.state = state;
+      this.onChange(state);
+      this.onTouched();
+    }
   }
 
   setState() {

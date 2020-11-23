@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DbSettings } from './model/db-settings';
 
 @Component({
   selector: 'app-scan-data',
@@ -9,7 +10,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class ScanDataComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<ScanDataComponent>) { }
+  dbSettings: DbSettings;
+
+  constructor(private dialogRef: MatDialogRef<ScanDataComponent>) {
+  }
 
   ngOnInit(): void {
   }

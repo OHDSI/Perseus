@@ -19,10 +19,12 @@
     </div>
   </div>
 
-  <div class="scan-tables-content" *ngIf="tablesToScan.length > 0; else disconnectBlock">
+  <div class="scan-tables-content" *ngIf="connectionResult && connectionResult.canConnect; else disconnectBlock">
     <label class="scan-tables-content__search-input">
       <mat-icon>search</mat-icon>
-      <input type="text" placeholder="Search by Tables">
+      <input type="text" placeholder="Search by Tables"
+             [ngModel]="searchTableName"
+             (ngModelChange)="onSearchByTableName($event)">
     </label>
 
     <div class="scan-tables-content__select-values-buttons">
@@ -31,7 +33,7 @@
     </div>
 
     <div class="scan-tables-content__list">
-      <app-table-to-scan *ngFor="let table of tablesToScan"
+      <app-table-to-scan *ngFor="let table of filteredTablesToScan"
                          [table]="table"
                          (checkTable)="onCheckTable($event)"></app-table-to-scan>
     </div>

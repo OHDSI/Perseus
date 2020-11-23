@@ -14,6 +14,7 @@ import { DbSettings } from '../model/db-settings';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SourceFormComponent } from './source-form/source-form.component';
+import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -26,6 +27,7 @@ export class ScanDataFormComponent implements OnInit {
   connectionResult: ConnectionResult = null;
 
   tablesToScan: TableToScan[] = [];
+  filteredTablesToScan: TableToScan[] = [];
 
   connecting = false;
 
@@ -35,6 +37,9 @@ export class ScanDataFormComponent implements OnInit {
   @ViewChild(SourceFormComponent)
   sourceFormComponent: SourceFormComponent;
 
+  @ViewChild(TablesToScanComponent)
+  tablesToScanComponent: TablesToScanComponent;
+
   constructor(private whiteRabbitService: WhiteRabbitService,
               private cdr: ChangeDetectorRef) { }
 
@@ -43,6 +48,7 @@ export class ScanDataFormComponent implements OnInit {
 
   onTestConnection(dbSettings: DbSettings): void {
     this.connecting = true;
+    this.tablesToScanComponent.reset();
     this.whiteRabbitService.testConnection(dbSettings)
       .pipe(
         switchMap(connectionResult => {
@@ -59,9 +65,13 @@ export class ScanDataFormComponent implements OnInit {
       )
       .subscribe(tablesToScan => {
         this.tablesToScan = tablesToScan;
+        this.filteredTablesToScan = this.tablesToScan;
         this.cdr.detectChanges();
       }, error => {
         this.tablesToScan = [];
+        this.filteredTablesToScan = this.tablesToScan;
+        this.connecting = false;
+        this.cdr.detectChanges();
       });
   }
 
@@ -69,5 +79,9 @@ export class ScanDataFormComponent implements OnInit {
     if (this.tablesToScan.length > 0) {
       this.tablesToScan = [];
     }
+  }
+
+  scanTables(): void {
+    console.log(this.tablesToScanComponent.filteredTablesToScan);
   }
 }

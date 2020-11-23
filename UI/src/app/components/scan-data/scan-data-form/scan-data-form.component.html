@@ -7,12 +7,16 @@
     <app-source-form [connectionResult]="connectionResult"
                      (testConnection)="onTestConnection($event)"
                      (connectionPropsChanged)="reset()"></app-source-form>
-    <app-tables-to-scan [tablesToScan]="tablesToScan"></app-tables-to-scan>
+
+    <app-tables-to-scan [tablesToScan]="tablesToScan"
+                        [filteredTablesToScan]="filteredTablesToScan"
+                        [connectionResult]="connectionResult"></app-tables-to-scan>
   </div>
 
   <div class="scan-data-form__action">
     <button class="scan-data-form__action-cancel" (click)="cancel.emit()">Cancel</button>
     <button class="scan-data-form__action-scan"
-            [disabled]="tablesToScan.length === 0">Scan Tables</button>
+            [disabled]="tablesToScan.length === 0"
+            (click)="scanTables()">Scan Tables</button>
   </div>
 </div>

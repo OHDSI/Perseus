@@ -1,4 +1,4 @@
-import { ScanParams } from './scanParams';
+import { ScanParams } from './scan-params';
 
 export interface DbSettings {
   dbType: string;

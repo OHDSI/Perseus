@@ -7,7 +7,7 @@ import { DbSettings } from '../../model/db-settings';
 @Component({
   selector: 'app-source-form',
   templateUrl: './source-form.component.html',
-  styleUrls: ['./source-form.component.scss', '../../scan-data-step.scss', '../../scan-data-normalize.scss'],
+  styleUrls: ['./source-form.component.scss', '../../scan-data-form.scss', '../../scan-data-step.scss', '../../scan-data-normalize.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SourceFormComponent implements OnInit, OnDestroy {
@@ -72,21 +72,21 @@ export class SourceFormComponent implements OnInit, OnDestroy {
   }
 
   private initForm(): void {
-    // this.form = this.formBuilder.group({
-    //   dbType: ['SQL Server', [Validators.required]],
-    //   server: ['822JNJ16S03V', [Validators.required]],
-    //   user: ['cdm_builder', [Validators.required]],
-    //   password: ['builder1!', [Validators.required]],
-    //   database: ['CPRD', [Validators.required]]
-    // });
-
     this.form = this.formBuilder.group({
-      dbType: [null, [Validators.required]],
-      server: [{value: null, disabled: true}, [Validators.required]],
-      user: [{value: null, disabled: true}, [Validators.required]],
-      password: [{value: null, disabled: true}, [Validators.required]],
-      database: [{value: null, disabled: true}, [Validators.required]]
+      dbType: ['SQL Server', [Validators.required]],
+      server: ['822JNJ16S03V', [Validators.required]],
+      user: ['cdm_builder', [Validators.required]],
+      password: ['builder1!', [Validators.required]],
+      database: ['CPRD', [Validators.required]]
     });
+
+    // this.form = this.formBuilder.group({
+    //   dbType: [null, [Validators.required]],
+    //   server: [{value: null, disabled: true}, [Validators.required]],
+    //   user: [{value: null, disabled: true}, [Validators.required]],
+    //   password: [{value: null, disabled: true}, [Validators.required]],
+    //   database: [{value: null, disabled: true}, [Validators.required]]
+    // });
 
     this.dbTypeChangeSubscription = this.form.get('dbType').valueChanges
       .subscribe(() => {
