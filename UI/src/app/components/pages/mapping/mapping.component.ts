@@ -337,21 +337,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.router.navigateByUrl(`/comfy`);
       return;
     }
-      /*       this.mappingStorage.get('mappingpage').then(data => {
-          this.prepareTables(data.source, Area.Source);
-          this.prepareTables(data.target, Area.Target);
-          this.prepareMappedTables(data.mappingConfig);
-    
-          this.moveSimilarTables();
-    
-          setTimeout(() => {
-            this.bridgeService.refresh(this.target[ this.targetTabIndex ]);
-            this.sourcePanel.panel.reflectConnectorsPin(this.target[ this.targetTabIndex ]);
-            this.targetPanel.panel.reflectConnectorsPin(this.source[ this.sourceTabIndex ]);
-            this.bridgeService.adjustArrowsPositions();
-          }, 200);
-        });     */
- 
     const { source, target } = this.storeService.getMappedTables();
 
     this.prepareTables(source, Area.Source);

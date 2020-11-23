@@ -340,19 +340,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   async openMapping() {
-  //  const { source, target } = this.storeService.getMappedTables();
-
-/*     const payload = {
-      source,
-      target,
-      allTarget: this.data.target,
-      mappingConfig: this.getMappingConfig()
-    }; */
-
-   // await this.mappingStorage.add('mappingtables', this.targetConfig);
-
-   // await this.mappingStorage.add('mappingpage', payload);
-
     this.router.navigateByUrl(`/mapping`);
   }
 
