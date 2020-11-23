@@ -20,6 +20,7 @@ export interface RowOptions {
   sqlTransformation?: string;
   sqlTransformationActive?: boolean;
   isNullable?: boolean;
+  grouppedFields?: IRow[];
 }
 
 export interface IRow {
@@ -46,6 +47,7 @@ export interface IRow {
   sqlTransformation: string;
   sqlTransformationActive: boolean;
   isNullable: boolean;
+  grouppedFields: IRow[];
 
   removeConnections(): void;
   setType(type: ConnectorType): void;
@@ -71,6 +73,7 @@ export class Row implements IRow {
   sqlTransformation: string;
   sqlTransformationActive: boolean;
   isNullable: boolean;
+  grouppedFields: IRow[];
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
@@ -106,6 +109,7 @@ export class Row implements IRow {
     this.connectorTypes = [];
     this.uniqueIdentifier = options.uniqueIdentifier;
     this.isNullable = options.isNullable;
+    this.grouppedFields = options.grouppedFields ? options.grouppedFields.map((row: any) => new Row(row)) : [];
   }
 
   removeConnections() {

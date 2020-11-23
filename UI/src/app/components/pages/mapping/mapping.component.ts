@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, 
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
-import { uniq } from 'src/app/infrastructure/utility';
+import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
 import { ITable, Table } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
@@ -28,7 +28,7 @@ import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
-import { addViewsToMapping } from '../../../models/mapping-service';
+import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
 import { similarTableName } from '../../../app.constants';
 
 
@@ -222,21 +222,25 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   collectSimilarRows(rows, area, similarRows) {
     const rowsKey = `${area}Rows`;
     rows.forEach(row => {
-      if (!this.checkIncludesRows(this[ rowsKey ], row)) {
-        this[ rowsKey ].push(row);
-        return;
-      }
+      if (!row.grouppedFields || !row.grouppedFields.length) {
 
-      if (!this.checkIncludesRows(similarRows, row)) {
-        const rowName = this.similarNamesMap[ row.name ] ? this.similarNamesMap[ row.name ] : row.name;
-        const rowForSimilar = {
-          ...row,
-          name: rowName,
-          id: similarRows.length,
-          tableName: this.similarTableName,
-          tableId: this.storeService.state[ area ].length
-        };
-        similarRows.push(rowForSimilar);
+        if (!this.checkIncludesRows(this[ rowsKey ], row)) {
+          this[ rowsKey ].push(row);
+          return;
+        }
+
+        if (!this.checkIncludesRows(similarRows, row)) {
+          const rowName = this.similarNamesMap[ row.name ] ? this.similarNamesMap[ row.name ] : row.name;
+          const rowForSimilar = {
+            ...row,
+            name: rowName,
+            id: similarRows.length,
+            tableName: this.similarTableName,
+            tableId: this.storeService.state[ area ].length
+          };
+          similarRows.push(rowForSimilar);
+        }
+
       }
     });
   }
@@ -333,20 +337,19 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.router.navigateByUrl(`/comfy`);
       return;
     }
-    this.mappingStorage.get('mappingpage').then(data => {
-      this.prepareTables(data.source, Area.Source);
-      this.prepareTables(data.target, Area.Target);
-      this.prepareMappedTables(data.mappingConfig);
+    const { source, target } = this.storeService.getMappedTables();
 
-      this.moveSimilarTables();
+    this.prepareTables(source, Area.Source);
+    this.prepareTables(target, Area.Target);
+    this.prepareMappedTables(this.getMappingConfig());
+    this.moveSimilarTables();
 
-      setTimeout(() => {
-        this.bridgeService.refresh(this.target[ this.targetTabIndex ]);
-        this.sourcePanel.panel.reflectConnectorsPin(this.target[ this.targetTabIndex ]);
-        this.targetPanel.panel.reflectConnectorsPin(this.source[ this.sourceTabIndex ]);
-        this.bridgeService.adjustArrowsPositions();
-      }, 200);
-    });
+    setTimeout(() => {
+      this.bridgeService.refresh(this.target[ this.targetTabIndex ]);
+      this.sourcePanel.panel.reflectConnectorsPin(this.target[ this.targetTabIndex ]);
+      this.targetPanel.panel.reflectConnectorsPin(this.source[ this.sourceTabIndex ]);
+      this.bridgeService.adjustArrowsPositions();
+    }, 200);
 
     this.rulesPoupService.deleteConnector$
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -361,6 +364,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
     });
   }
+
+  getMappingConfig() {
+    const mappingConfig = [];
+    Object.keys(this.storeService.state.targetConfig).forEach(key => {
+      const item = this.storeService.state.targetConfig[ key ].data;
+      if (item.length > 1) {
+        mappingConfig.push(cloneDeep(item));
+      }
+    });
+    return mappingConfig;
+  }
+
 
   ngOnDestroy() {
     this.clickArrowSubscriptions.forEach(subscription => {
@@ -388,6 +403,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     addViewsToMapping(mapping, source);
 
+    addGroupMappings(mapping, source);
+
     if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
       return;
     }
@@ -409,6 +426,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     this.source.forEach(source => {
       addViewsToMapping(mappingJSON, source);
+    });
+
+    this.source.forEach(source => {
+      addGroupMappings(mappingJSON, source);
     });
 
     this.dataService
@@ -488,6 +509,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
         this.bridgeService.refresh(tables[ index ]);
+        this.sourcePanel.panel.refreshPanel();
         resolve();
       }, 1000);
     });

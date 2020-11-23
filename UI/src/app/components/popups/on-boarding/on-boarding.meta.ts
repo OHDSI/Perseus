@@ -18,5 +18,17 @@ export const ON_BOARDING_META = [
       key: 'close'
     },
     bullets: []
+  },
+
+  {
+    key: 'create-group',
+    title: 'Create Group',
+    content: 'Use Ctrl to select multiple fields and then click on Create group',
+    action: {
+      title: 'Got it!',
+      key: 'close'
+    },
+    bullets: []
   }
+
 ];

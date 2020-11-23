@@ -17,7 +17,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
 import { Area } from 'src/app/models/area';
-import { IRow } from 'src/app/models/row';
+import { Row, IRow, RowOptions } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
 import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
@@ -26,11 +26,25 @@ import { BaseComponent } from '../../../common/components/base/base.component';
 import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-constant-popup.component';
 import { StoreService } from 'src/app/services/store.service';
 import { DataService } from 'src/app/services/data.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
+import { OpenSaveDialogComponent } from '../../popups/open-save-dialog/open-save-dialog.component';
+import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
+import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
+import * as fieldTypes from './similar-types.json';
+import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
-  styleUrls: [ './panel-table.component.scss' ]
+  styleUrls: [ './panel-table.component.scss' ],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', display: 'none' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class PanelTableComponent extends BaseComponent
   implements OnInit, OnChanges, AfterViewInit {
@@ -41,6 +55,7 @@ export class PanelTableComponent extends BaseComponent
   @Input() filtered: any;
   @Input() filteredFields: any;
   @Input() mappingConfig: any;
+  @Input() createGroupElementId: string;
 
   @Output() openTransform = new EventEmitter<any>();
 
@@ -48,7 +63,7 @@ export class PanelTableComponent extends BaseComponent
   @ViewChild('tableComponent', { static: true }) tableComponent: MatTable<IRow[]>;
 
   get displayedColumns() {
-    return [ 'column_indicator', 'column_name', 'column_type', 'comments' ];
+    return [ 'column_indicator', 'column_name', 'column_type', 'comments', 'remove_group' ];
   }
 
   get area() {
@@ -64,13 +79,17 @@ export class PanelTableComponent extends BaseComponent
   }
 
   datasource: MatTableDataSource<IRow>;
-  rowFocusedElement;
+  rowFocusedElements: any[] = [];
+  focusedRowsNames: string[] = [];
+  fieldTypes = (fieldTypes as any).default as Map<string, string[]>;
 
   get connectionTypes(): any[] {
     return Object.keys(this.connectortype);
   }
 
   connectortype = {};
+  expandedElement: any = undefined;
+  groupDialogOpened = false;
 
   constructor(
     private bridgeService: BridgeService,
@@ -78,7 +97,8 @@ export class PanelTableComponent extends BaseComponent
     private overlayService: OverlayService,
     private renderer: Renderer2,
     private chg: ChangeDetectorRef,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private matDialog: MatDialog
   ) {
     super();
   }
@@ -89,10 +109,11 @@ export class PanelTableComponent extends BaseComponent
       return;
     }
     const target = event.target;
-    if (!target || !this.rowFocusedElement) {
+    if (!target || !this.rowFocusedElements || !this.rowFocusedElements.length) {
       return;
     }
-    const clickedOutside = !this.rowFocusedElement.contains(target);
+    const clickedOutside = !this.rowFocusedElements[ 0 ].contains(target) &&
+      target.id !== this.createGroupElementId && !this.groupDialogOpened;
     if (clickedOutside) {
       this.unsetRowFocus();
     }
@@ -105,10 +126,29 @@ export class PanelTableComponent extends BaseComponent
     return name1.toUpperCase() === name2.toUpperCase();
   }
 
+  expandRow(row: Row) {
+    this.expandedElement = this.expandedElement === row ? undefined : row;
+    this.bridgeService.adjustArrowsPositions();
+    this.refreshPanel();
+  }
+
+  isExpansionDetailRow = (i: number, row: IRow) => {
+    return row.grouppedFields && row.grouppedFields.length;
+  }
+
+  checkExpanded(row: IRow) {
+    const res = row === this.expandedElement ? 'expanded' : 'collapsed';
+    return res;
+  }
+
   dataSourceInit(data: any[]) {
     this.datasource = new MatTableDataSource(
       data.filter((row: IRow) => row.visible)
     );
+  }
+
+  getDataSourceForExpandedPanel(detail: any) {
+    return new MatTableDataSource(this.datasource.data.filter(item => item.name === detail.name)[ 0 ].grouppedFields);
   }
 
   ngOnInit(): void {
@@ -119,7 +159,7 @@ export class PanelTableComponent extends BaseComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
         if (connection) {
-         this.hideConnectorPin(connection, Area.Target);
+          this.hideConnectorPin(connection, Area.Target);
         }
       });
 
@@ -130,12 +170,224 @@ export class PanelTableComponent extends BaseComponent
     });
   }
 
-  refreshPanel() {
+  refreshPanel(event?: any) {
     this.dataSourceInit(this.table.rows);
     this.bridgeService.refreshAll();
   }
 
   ngAfterViewInit() {
+  }
+
+  getAllPanelRowNames(){
+    let existingRowNames = [];
+    this.tables.forEach(tbl => {
+      const tblRowNames = tbl.rows.reduce((prev, cur) => {
+        prev.push(cur.name);
+        return prev.concat(cur.grouppedFields.map(item => item.name));
+      }, []);
+      existingRowNames = existingRowNames.concat(tblRowNames);
+    });
+    return uniq(existingRowNames);
+  }
+
+  createGroup() {
+    if (!this.validateGroupFields()){
+      return;
+    };
+    const existingRowNames =  this.getAllPanelRowNames();
+    this.groupDialogOpened = true;
+    const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'cdm-version-dialog',
+      data: {
+        header: 'Create Group',
+        label: 'Name',
+        okButton: 'Save',
+        type: 'input',
+        existingNames: existingRowNames,
+        errorMessage: 'This name already exists'
+      }
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (res.action) {
+        const fieldsToGroup = this.rowFocusedElements.map(item => item.id);
+        const groupType = this.table.rows.find(item => item.name === fieldsToGroup[ 0 ]).type;
+        const groupRows = this.table.rows.filter(item => fieldsToGroup.includes(item.name)) as Row[];
+        const rowOptions: RowOptions = {
+          id: 0,
+          tableId: this.table.id,
+          tableName: this.table.name,
+          name: res.value,
+          type: groupType,
+          isNullable: true,
+          comments: [],
+          uniqueIdentifier: false,
+          area: Area.Source,
+          grouppedFields: groupRows,
+          visible: true
+        };
+        const groupRow = new Row(rowOptions);
+        this.table.rows = this.table.rows.filter(item => !fieldsToGroup.includes(item.name));
+        this.table.rows.unshift(groupRow);
+
+        this.removeRowsFromSimilarTable(fieldsToGroup);
+        this.updateRowsIndexesAnsSaveChanges();
+      }
+      this.groupDialogOpened = false;
+    });
+  }
+
+  validateGroupFields(groupType?: string) {
+    if (this.checkLinks()) {
+      const dialog = this.matDialog.open(ErrorPopupComponent, {
+        closeOnNavigation: false,
+        disableClose: false,
+        data: {
+          title: 'Groupping error',
+          message: 'You cannot add linked fields to group'
+        }
+      });
+
+      dialog.afterClosed().subscribe(res => {
+        return false;
+      });
+    } else if (this.checkGrouppedFields()) {
+
+      const dialog = this.matDialog.open(ErrorPopupComponent, {
+        closeOnNavigation: false,
+        disableClose: false,
+        data: {
+          title: 'Groupping error',
+          message: 'You cannot add groupped field to group'
+        }
+      });
+
+      dialog.afterClosed().subscribe(res => {
+        return false;
+      });
+
+    } else if (this.checkDifferentTypes(groupType)) {
+
+      const dialog = this.matDialog.open(ErrorPopupComponent, {
+        closeOnNavigation: false,
+        disableClose: false,
+        data: {
+          title: 'Groupping error',
+          message: 'You cannot add fields of different types group'
+        }
+      });
+
+      dialog.afterClosed().subscribe(res => {
+        return false;
+      });
+    } else {
+      return true;
+    }
+  }
+
+  checkLinks() {
+    return this.rowFocusedElements.some(item =>
+      this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, this.oppositeTableId));
+  }
+
+  checkGrouppedFields() {
+    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id).grouppedFields.length);
+  }
+
+  checkDifferentTypes(groupType?: string) {
+    let typesArray = [];
+    if (groupType) {
+      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
+        filter(([ k, v ]) => v.includes(groupType))));
+    } else {
+      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
+        filter(([ k, v ]) => v.includes(this.table.rows.find(r => r.name === this.rowFocusedElements[ 0 ].id).type))));
+    }
+    return this.rowFocusedElements.some(item => !typesArray[ 0 ].includes(this.table.rows.find(r => r.name === item.id).type.toLowerCase()));
+  }
+
+  addRowToGroup(rows: IRow[]) {
+    const group = rows[ 0 ];
+    const rowToAdd = rows[ 1 ];
+    if (!this.validateGroupFields(group.type)) {
+      return;
+    };
+    this.table.rows.find(item => item.name === group.name).grouppedFields.splice(0, 0, rowToAdd);
+    this.table.rows.splice(this.bridgeService.draggedRowIndex, 1);
+    this.bridgeService.saveChangesInGroup(group.tableName, this.table.rows);
+    this.removeRowsFromSimilarTable([ rowToAdd.name ]);
+    this.refreshPanel();
+  }
+
+  removeGroup(row: IRow) {
+    const dialog = this.matDialog.open(DeleteWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog',
+      data: {
+        title: 'group',
+        message: `Group ${row.name} will be deleted`,
+      }
+    });
+    dialog.afterClosed().subscribe(res => {
+      if (res) {
+        while (row.grouppedFields.length) {
+          this.removeFromGroup(row, row.grouppedFields[ 0 ]);
+        }
+        this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
+          filter(([ k, v ]) => !(v.source.tableName === row.tableName && v.source.name === row.name)));
+      }
+    });
+  }
+
+  removeRowsFromSimilarTable(fieldsToGroup: string[]) {
+    const similarTableIndex = this.tables.findIndex(item => item.name === 'similar');
+    if (similarTableIndex !== -1) {
+      fieldsToGroup.forEach(item => {
+        const srows = this.bridgeService.findSimilarRows(this.tables.
+          filter(tbl => tbl.name !== 'similar' && tbl.name !== this.table.name), item);
+
+        if (srows.length <= 1) {
+          this.tables[ similarTableIndex ].rows = this.tables[ similarTableIndex ].rows.filter(r => r.name !== item);
+          this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
+            filter(([ k, v ]) => !(v.source.tableName === 'similar' && v.source.name === item)));
+        }
+      })
+    }
+  }
+
+  addRowsToSimilarTable(rowToAdd: IRow) {
+    const similarTable = this.tables.find(item => item.name === 'similar');
+    if (similarTable) {
+      const srows = this.bridgeService.findSimilarRows(this.tables.
+        filter(tbl => tbl.name !== 'similar'), rowToAdd.name);
+      if (srows.length > 1) {
+        rowToAdd.tableName = 'similar';
+        rowToAdd.tableId = similarTable.id;
+        similarTable.rows.push(rowToAdd);
+      }
+    }
+  }
+
+  removeFromGroup(detail: IRow, row: IRow) {
+    const removedRow = detail.grouppedFields.find(item => item.name === row.name);
+    const removedRowIdx = detail.grouppedFields.findIndex(item => item.name === row.name);
+    const rowIndex = this.table.rows.findIndex(item => item.name === detail.name);
+    this.table.rows[ rowIndex ].grouppedFields.splice(removedRowIdx, 1);
+    if (this.table.rows[ rowIndex ].grouppedFields.length === 0) {
+      this.table.rows.splice(rowIndex, 1);
+    }
+    const insertIndex = this.table.rows.findIndex(item => item.grouppedFields.length === 0);
+    this.table.rows.splice(insertIndex, 0, removedRow);
+    this.addRowsToSimilarTable(cloneDeep(removedRow));
+    this.updateRowsIndexesAnsSaveChanges();
+
+  }
+
+  updateRowsIndexesAnsSaveChanges() {
+    this.storeService.state.source.find(item => item.name === this.table.name).rows = this.table.rows;
+    this.refreshPanel();
   }
 
   isRowHasConnection(row: IRow): boolean {
@@ -243,21 +495,26 @@ export class PanelTableComponent extends BaseComponent
 
   rowClick($event: MouseEvent) {
     $event.stopPropagation();
-    this.setRowFocus($event.currentTarget);
+    this.setRowFocus($event.currentTarget, $event.ctrlKey);
   }
 
-  setRowFocus(target) {
+  setRowFocus(target, ctrlKey) {
     if (target) {
-      this.unsetRowFocus();
-      this.rowFocusedElement = target;
-      this.rowFocusedElement.classList.add('row-focus');
+      if (!ctrlKey) {
+        this.unsetRowFocus();
+      }
+      if (!this.rowFocusedElements) {
+        this.rowFocusedElements = [];
+      }
+      this.rowFocusedElements.push(target);
+      this.rowFocusedElements[ this.rowFocusedElements.length - 1 ].classList.add('row-focus');
     }
   }
 
   unsetRowFocus() {
     const focused: HTMLAllCollection = this.elementRef.nativeElement.querySelectorAll('.row-focus');
     Array.from(focused).forEach((it: HTMLElement) => it.classList.remove('row-focus'));
-    this.rowFocusedElement = undefined;
+    this.rowFocusedElements = undefined;
   }
 
   // connectortype is not reflected in the table

@@ -575,4 +575,8 @@ export class BridgeService {
       this.setArrowType(item.connector.id, appliedTransformations);
     });
   }
+
+  saveChangesInGroup(groupTableName: string, rows: IRow[]) {
+    this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
+  }
 }

@@ -1,0 +1,26 @@
+.error-icon {
+  color: red;
+}
+
+.error-title {
+  margin-top: 3px;
+  margin-left: 5px;
+}
+
+.error-header {
+  display: flex;
+}
+
+ .close {
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  float: right;
+  margin-top: -50px;
+  margin-right: -10px;
+}
+
+.error-message{
+  width: 200px;
+  display: block;
+}

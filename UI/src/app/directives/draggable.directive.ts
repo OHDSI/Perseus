@@ -23,7 +23,9 @@ export class DraggableDirective implements OnInit {
   @Input() table: ITable;
   @Input() row: IRow;
   @Output() refreshPanel: EventEmitter<any> = new EventEmitter();
+  @Output() addToGroup: EventEmitter<any> = new EventEmitter();
   @Input() mappingConfig: any;
+  @Input() group: IRow;
 
   constructor(
     private elementRef: ElementRef,
@@ -104,6 +106,12 @@ export class DraggableDirective implements OnInit {
     const element = e.currentTarget;
     if (element) {
       const row = this.row;
+
+      if (this.group) {
+        const rowToAdd = this.table.rows[this.bridgeService.draggedRowIndex];
+        this.addToGroup.emit([this.group, rowToAdd]);
+        return;
+      }
 
       if (this.area === 'source' && this.bridgeService.sourceRow && !this.bridgeService.targetRow
       || this.area === 'target' && this.bridgeService.targetRow && !this.bridgeService.sourceRow) {
