@@ -77,6 +77,14 @@ app-dialog {
   outline: $blue auto;
 }
 
+.drag-between-bottom {
+  border-bottom: 3px solid;
+}
+
+.drag-between-top {
+  border-top: 3px solid;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 7px;
