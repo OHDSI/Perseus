@@ -112,8 +112,7 @@ export class PanelTableComponent extends BaseComponent
     if (!target || !this.rowFocusedElements || !this.rowFocusedElements.length) {
       return;
     }
-    const clickedOutside = !this.rowFocusedElements[ 0 ].contains(target) &&
-      target.id !== this.createGroupElementId && !this.groupDialogOpened;
+    const clickedOutside = target.id !== this.createGroupElementId && !this.groupDialogOpened;
     if (clickedOutside) {
       this.unsetRowFocus();
     }
