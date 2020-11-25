@@ -10,11 +10,13 @@ import {
 import { ConnectionResult } from '../model/connection-result';
 import { TableToScan } from '../model/table-to-scan';
 import { WhiteRabbitService } from '../../../services/white-rabbit.service';
-import { DbSettings } from '../model/db-settings';
+import { DbSettings, DbSettingsBuilder } from '../model/db-settings';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SourceFormComponent } from './source-form/source-form.component';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
+import { ScanParams } from '../model/scan-params';
+import { ScanDataStateService } from '../scan-data-state.service';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -24,10 +26,15 @@ import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component
 })
 export class ScanDataFormComponent implements OnInit {
 
-  connectionResult: ConnectionResult = null;
+  dbSettings: DbSettings;
 
-  tablesToScan: TableToScan[] = [];
-  filteredTablesToScan: TableToScan[] = [];
+  scanParams: ScanParams;
+
+  tablesToScan: TableToScan[];
+
+  filteredTablesToScan: TableToScan[];
+
+  connectionResult: ConnectionResult;
 
   connecting = false;
 
@@ -44,9 +51,12 @@ export class ScanDataFormComponent implements OnInit {
   tablesToScanComponent: TablesToScanComponent;
 
   constructor(private whiteRabbitService: WhiteRabbitService,
-              private cdr: ChangeDetectorRef) { }
+              private stateService: ScanDataStateService,
+              private cdr: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
+    this.loadState();
   }
 
   onTestConnection(dbSettings: DbSettings): void {
@@ -79,14 +89,13 @@ export class ScanDataFormComponent implements OnInit {
   }
 
   onScanTables(): void {
-    const dbSettings = this.sourceFormComponent.dbSettings;
-    const tablesToScan = this.tablesToScanComponent.scanTables;
-    dbSettings.scanParameters = this.tablesToScanComponent.scanParams;
-    dbSettings.tablesToScanCount = tablesToScan.length;
-    dbSettings.tablesToScan = tablesToScan
-      .filter(table => table.selected)
-      .map(table => table.tableName)
-      .join(',');
+    this.saveState();
+
+    const dbSettings = new DbSettingsBuilder()
+      .setDbSettings(this.sourceFormComponent.dbSettings)
+      .setScanParams(this.tablesToScanComponent.scanParams)
+      .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
+      .build();
 
     this.scanTables.emit(dbSettings);
   }
@@ -95,5 +104,25 @@ export class ScanDataFormComponent implements OnInit {
     if (this.tablesToScan.length > 0) {
       this.tablesToScan = [];
     }
+  }
+
+  private loadState(): void {
+    const state = this.stateService.state;
+
+    this.dbSettings = state.dbSettings;
+    this.scanParams = state.scanParams;
+    this.tablesToScan = state.tablesToScan;
+    this.filteredTablesToScan = state.filteredTablesToScan;
+    this.connectionResult = state.connectionResult;
+  }
+
+  private saveState(): void {
+    this.stateService.state = {
+      dbSettings: this.dbSettings,
+      scanParams: this.scanParams,
+      tablesToScan: this.tablesToScan,
+      filteredTablesToScan: this.filteredTablesToScan,
+      connectionResult: this.connectionResult
+    };
   }
 }

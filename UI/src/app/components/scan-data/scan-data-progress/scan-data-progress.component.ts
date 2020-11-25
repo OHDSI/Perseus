@@ -94,12 +94,15 @@ export class ScanDataProgressComponent implements OnInit {
             break;
           }
           case ProgressNotificationStatusCode.SCAN_REPORT_GENERATED: {
+            this.progressValue = 100;
+            this.scanningFinished = true;
             this.showNotificationMessage(notification);
             this.whiteRabbitWebsocketService.disconnect();
             // todo download report
             break;
           }
           case ProgressNotificationStatusCode.FAILED_TO_SCAN: {
+            this.progressValue = 0;
             this.showNotificationMessage(notification);
             this.whiteRabbitWebsocketService.disconnect();
             break;

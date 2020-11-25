@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { TableToScan } from '../../model/table-to-scan';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { ConnectionResult } from '../../model/connection-result';
 import { takeUntil } from 'rxjs/operators';
@@ -13,6 +13,9 @@ import { ScanParams } from '../../model/scan-params';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TablesToScanComponent implements OnInit, OnDestroy {
+
+  @Input()
+  scanParams: ScanParams;
 
   @Input()
   tablesToScan: TableToScan[];
@@ -30,14 +33,6 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
   searchTableName = '';
 
   private destroy$: ReplaySubject<void> = new ReplaySubject<void>(1);
-
-  get scanTables() {
-    return this.filteredTablesToScan;
-  }
-
-  get scanParams() {
-    return this.scanParamsForm.value as ScanParams;
-  }
 
   constructor(private formBuilder: FormBuilder) {
   }
@@ -86,13 +81,15 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
   }
 
   private initScanParamsForm(): void {
+    const {sampleSize, scanValues, minCellCount, maxValues, calculateNumericStats, numericStatsSamplerSize} = this.scanParams;
+
     this.scanParamsForm = this.formBuilder.group({
-      sampleSize: [100e3, [Validators.required]],
-      scanValues: [true, [Validators.required]],
-      minCellCount: [5, [Validators.required]],
-      maxValues: [1e3, [Validators.required]],
-      calculateNumericStats: [false, [Validators.required]],
-      numericStatsSamplerSize: [{value: 100e3, disabled: true}, [Validators.required]]
+      sampleSize: {value: sampleSize, disabled: scanValues},
+      scanValues,
+      minCellCount: {value: minCellCount, disabled: scanValues},
+      maxValues: {value: maxValues, disabled: scanValues},
+      calculateNumericStats,
+      numericStatsSamplerSize: {value: numericStatsSamplerSize, disabled: calculateNumericStats}
     });
 
     this.scanParamsForm.get('calculateNumericStats').valueChanges

@@ -4,11 +4,13 @@
   </div>
 
   <div class="scan-data-form__content">
-    <app-source-form [connectionResult]="connectionResult"
+    <app-source-form [dbSettings]="dbSettings"
+                     [connectionResult]="connectionResult"
                      (testConnection)="onTestConnection($event)"
                      (connectionPropsChanged)="reset()"></app-source-form>
 
-    <app-tables-to-scan [tablesToScan]="tablesToScan"
+    <app-tables-to-scan [scanParams]="scanParams"
+                        [tablesToScan]="tablesToScan"
                         [filteredTablesToScan]="filteredTablesToScan"
                         [connectionResult]="connectionResult"></app-tables-to-scan>
   </div>
