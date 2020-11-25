@@ -17,7 +17,10 @@ const ICON_NAMES = [ 'CDM_version',
   'help',
   'new_mapping',
   'edit',
-  'delete'];
+  'delete',
+  'scan_data',
+  'search'
+];
 
 @Component({
   selector: 'app-root',

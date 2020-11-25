@@ -63,6 +63,7 @@ import { VocabulariesService } from './services/vocabularies.service';
 import { TransformationTypeComponent } from './components/popups/transformation-type/transformation-type.component';
 import { SqlTransformationComponent } from './components/sql-transformation/sql-transformation.component';
 import { LookupComponent } from './components/vocabulary-transform-configurator/lookup/lookup.component';
+import { ScanDataModule } from './components/scan-data/scan-data.module';
 import { ErrorPopupComponent } from './components/popups/error-popup/error-popup.component';
 import { SelectTableDropdownComponent } from './components/popups/select-table-dropdown/select-table-dropdown.component';
 
@@ -116,7 +117,8 @@ import { SelectTableDropdownComponent } from './components/popups/select-table-d
     CdmCommonModule,
     GridModule,
     ThemeModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    ScanDataModule
   ],
   exports: [
     CdmCommonModule

@@ -153,3 +153,38 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   border: 1px solid !important;
   border-radius: 0px !important;
 }
+
+.source-form-control, .scan-params__input-control {
+  .mat-form-field-wrapper {
+    padding: 0 !important;
+  }
+
+  .mat-form-field-infix {
+    border: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+.scan-data-form__progress-bar {
+  .mat-progress-bar-buffer {
+    background-color: #F9F9F9;
+  }
+
+  .mat-progress-bar-fill::after {
+    background-color: #066BBB;
+  }
+}
+
+.scan-data-progress__bar {
+  .mat-progress-bar {
+    height: 10px;
+  }
+
+  .mat-progress-bar-buffer {
+    background-color: #E5E5E5;
+  }
+
+  .mat-progress-bar-fill::after {
+    background-color: #42980E;
+  }
+}

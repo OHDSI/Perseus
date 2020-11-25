@@ -86,4 +86,7 @@ export class ToolbarComponent implements OnInit {
   startOnBoarding(target: EventTarget) {
     this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
   }
+
+  scanData() {
+  }
 }

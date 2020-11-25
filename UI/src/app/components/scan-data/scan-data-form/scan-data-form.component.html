@@ -1,0 +1,24 @@
+<div class="scan-data-form">
+  <div class="scan-data-form__progress-bar" *ngIf="connecting">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <div class="scan-data-form__content">
+    <app-source-form [dbSettings]="dbSettings"
+                     [connectionResult]="connectionResult"
+                     (testConnection)="onTestConnection($event)"
+                     (connectionPropsChanged)="reset()"></app-source-form>
+
+    <app-tables-to-scan [scanParams]="scanParams"
+                        [tablesToScan]="tablesToScan"
+                        [filteredTablesToScan]="filteredTablesToScan"
+                        [connectionResult]="connectionResult"></app-tables-to-scan>
+  </div>
+
+  <div class="scan-data-form__action">
+    <button class="scan-data-form__action-cancel" (click)="cancel.emit()">Cancel</button>
+    <button class="scan-data-form__action-scan"
+            [disabled]="tablesToScan.length === 0"
+            (click)="onScanTables()">Scan Tables</button>
+  </div>
+</div>
