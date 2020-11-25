@@ -92,7 +92,7 @@ export class ScanDataFormComponent implements OnInit {
     this.saveState();
 
     const dbSettings = new DbSettingsBuilder()
-      .setDbSettings(this.sourceFormComponent.dbSettings)
+      .setDbSettings(this.sourceFormComponent.form.value)
       .setScanParams(this.tablesToScanComponent.scanParams)
       .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
       .build();
@@ -118,10 +118,10 @@ export class ScanDataFormComponent implements OnInit {
 
   private saveState(): void {
     this.stateService.state = {
-      dbSettings: this.dbSettings,
-      scanParams: this.scanParams,
-      tablesToScan: this.tablesToScan,
-      filteredTablesToScan: this.filteredTablesToScan,
+      dbSettings: this.sourceFormComponent.form.value,
+      scanParams: this.tablesToScanComponent.scanParams,
+      tablesToScan: this.tablesToScanComponent.tablesToScan,
+      filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
       connectionResult: this.connectionResult
     };
   }
