@@ -64,6 +64,7 @@ import { TransformationTypeComponent } from './components/popups/transformation-
 import { SqlTransformationComponent } from './components/sql-transformation/sql-transformation.component';
 import { LookupComponent } from './components/vocabulary-transform-configurator/lookup/lookup.component';
 import { ScanDataModule } from './components/scan-data/scan-data.module';
+import { ErrorPopupComponent } from './components/popups/error-popup/error-popup.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { ScanDataModule } from './components/scan-data/scan-data.module';
     OpenSaveDialogComponent,
     TransformationTypeComponent,
     SqlTransformationComponent,
-    LookupComponent
+    LookupComponent,
+    ErrorPopupComponent
   ],
   imports: [
     BrowserModule,

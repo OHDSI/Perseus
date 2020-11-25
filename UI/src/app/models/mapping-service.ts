@@ -128,3 +128,38 @@ export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
 
   return mapping;
 }
+
+export function addGroupMappings(mapping: Mapping, source: ITable){
+
+  const mappingIndex =  mapping.mapping_items.findIndex(item => item.source_table === source.name);
+  let mappingItems = mapping.mapping_items[ mappingIndex ].mapping;
+  const indexesToRemove = [];
+
+  mappingItems.forEach((item, index) => {
+    const field = source.rows.filter(row => row.name === item.source_field)[ 0 ];
+    if (field.grouppedFields && field.grouppedFields.length) {
+      const mappingsToAdd = field.grouppedFields.map(grouppedField => {
+        return {
+          source_field: grouppedField.name,
+          target_field: item.target_field,
+          sql_field: grouppedField.name,
+          sql_alias: item.sql_alias,
+          lookup: item.lookup,
+          sqlTransformation: item.sqlTransformation,
+          comments: item.comments
+        };
+      });
+
+      mappingItems = mappingItems.concat(mappingsToAdd);
+      indexesToRemove.push(index);
+    }
+
+  });
+
+  while (indexesToRemove.length) {
+    mappingItems.splice(indexesToRemove.pop(), 1);
+  }
+
+  mapping.mapping_items[ mappingIndex ].mapping = mappingItems;
+
+}

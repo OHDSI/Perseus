@@ -30,5 +30,9 @@ export class OpenSaveDialogComponent implements OnInit {
     }
   }
 
+  inputNameError() {
+    return this.data.existingNames && this.data.existingNames.includes(this.resultValue);
+  }
+
 
 }

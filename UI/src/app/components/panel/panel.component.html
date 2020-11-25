@@ -5,10 +5,18 @@
   (complete)="filterByName($event)"
   (reset)="filterByNameReset($event)">
 </app-search-by-name>
-
+<div class="create-group"
+     *ngIf="area === 'source' && table.name !== 'similar'"> <a id="createGroup"
+  (click)="createGroup()"
+  [ngClass]="{'create-group-disabled': !(this.panel && this.panel.rowFocusedElements && this.panel.rowFocusedElements.length)}">
+  Create Group</a>
+  <mat-icon class="info-icon"
+            (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>
+</div>
 <app-area [area]="area">
   <app-panel-table
     #panel
+    [createGroupElementId]="'createGroup'"
     [table]="table"
     [tables]="tables"
     [tabIndex]="tabIndex"

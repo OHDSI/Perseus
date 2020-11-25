@@ -11,3 +11,20 @@
     margin: 0 3px 0 3px;
   }
 }
+
+.create-group{
+  display: flex;
+}
+
+.create-group-disabled{
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.info-icon{
+  color: #066BBB;
+  font-size: 15px;
+  cursor: pointer;
+}
+
