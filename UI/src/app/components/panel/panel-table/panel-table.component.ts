@@ -197,7 +197,7 @@ export class PanelTableComponent extends BaseComponent
     this.groupDialogOpened = true;
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
-      disableClose: false,
+      disableClose: true,
       panelClass: 'cdm-version-dialog',
       data: {
         header: 'Create Group',
