@@ -27,9 +27,10 @@ import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
-import { Packer } from 'docx';
+import { Packer, TableShading } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
 import { similarTableName } from '../../../app.constants';
+import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
 
 
 @Component({
@@ -40,6 +41,9 @@ import { similarTableName } from '../../../app.constants';
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   source: ITable[];
   target: ITable[];
+  similarSourceTable: ITable;
+  sourceTablesWithoutSimilar: ITable[];
+  selectedSourceTable: ITable;
 
   sourceTabIndex = 0;
   targetTabIndex = 0;
@@ -209,6 +213,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return { upperLimit, lowerLimit };
   }
 
+  getSimilarTable(){
+    return this.source.filter(item=>item.name ==='similar');
+  }
+
   checkIncludesRows(rows, row) {
     return !!rows.find(r => {
       return (
@@ -343,6 +351,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.prepareTables(target, Area.Target);
     this.prepareMappedTables(this.getMappingConfig());
     this.moveSimilarTables();
+    this.similarSourceTable = this.source.find(item => item.name === 'similar');
+    this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
+    this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
 
     setTimeout(() => {
       this.bridgeService.refresh(this.target[ this.targetTabIndex ]);
@@ -376,6 +387,26 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return mappingConfig;
   }
 
+  openTablesDropdown(target){
+    const data = { tables: this.sourceTablesWithoutSimilar, selected: this.selectedSourceTable };
+
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      panelClass: 'filter-popup',
+      positionStrategyFor: 'table-dropdown',
+      payload: data
+    };
+    const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
+
+    overlayRef.afterClosed$.subscribe(tbl => {
+      this.bridgeService.hideAllArrows();
+      this.selectedSourceTable = data.selected;
+      this.bridgeService.refresh(this.selectedSourceTable);
+      this.sourcePanel.panel.refreshPanel();
+    });
+
+  }
 
   ngOnDestroy() {
     this.clickArrowSubscriptions.forEach(subscription => {
@@ -489,8 +520,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     if (!this.panelsViewInitialized.has(table)) {
       this.panelsViewInitialized.add(table);
     }
-
-    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
+    const numberOfPanelTables = this.source.find(item => item.name === 'similar') ?
+    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2;
+    if (this.panelsViewInitialized.size === numberOfPanelTables) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
     }

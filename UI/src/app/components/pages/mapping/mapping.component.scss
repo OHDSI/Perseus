@@ -191,4 +191,9 @@ footer {
   .mat-tab-body-content {
     overflow-y: hidden;
   }
+
+  .drop-down-label{
+    display: flex;
+    align-items: center;
+  }
 }

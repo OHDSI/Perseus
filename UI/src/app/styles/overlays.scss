@@ -95,6 +95,7 @@
 }
 
 .filter-popup {
+  background: white;
   @include mat-elevation-transition;
   @include mat-elevation(4);
 }

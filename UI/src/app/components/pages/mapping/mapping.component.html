@@ -4,19 +4,38 @@
       <div class="area-source">
         <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')" mat-align-tabs="start">
           <mat-tab
-            [label]="table.name"
-            *ngFor="let table of source; trackBy: trackByFn"
-          >
+          [label]="'similar'"
+          *ngIf="similarSourceTable"
+        >
+          <app-panel
+            #sourcePanel
+            *ngIf="similarSourceTable.visible"
+            [tabIndex]="sourceTabIndex"
+            [table]="similarSourceTable"
+            [tables]="source"
+            [oppositeTableId]="target[targetTabIndex].id"
+            (open)="onPanelOpen(similarSourceTable)"
+            (close)="onPanelClose(similarSourceTable)"
+            (initialized)="onPanelInit(similarSourceTable)"
+          ></app-panel>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+           <div class="drop-down-label">
+             <div>{{selectedSourceTable.name}}</div>
+             <mat-icon (click)="openTablesDropdown($event.target)">arrow_drop_down</mat-icon>
+           </div>
+          </ng-template>
             <app-panel
               #sourcePanel
-              *ngIf="table.visible"
+              *ngIf="selectedSourceTable.visible"
               [tabIndex]="sourceTabIndex"
-              [table]="table"
+              [table]="selectedSourceTable"
               [tables]="source"
               [oppositeTableId]="target[targetTabIndex].id"
-              (open)="onPanelOpen(table)"
-              (close)="onPanelClose(table)"
-              (initialized)="onPanelInit(table)"
+              (open)="onPanelOpen(selectedSourceTable)"
+              (close)="onPanelClose(selectedSourceTable)"
+              (initialized)="onPanelInit(selectedSourceTable)"
             ></app-panel>
           </mat-tab>
         </mat-tab-group>
