@@ -1,50 +1,22 @@
 <div class="scan-data-progress">
-  <div class="scan-data-progress__bar mat-app-background">
+  <div class="scan-data-progress__bar">
+    <p>Scanning... Estimated time depends on selected database</p>
     <mat-progress-bar mode="determinate" [value]="progressValue"></mat-progress-bar>
   </div>
 
   <div class="scan-data-progress__content">
     <p>Console</p>
     <div class="scan-data-progress__content-console">
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p><p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
-      <p>Nov 12, 2020 7:54:29 PM    Started new scan of 19 tables...</p>
-      <p>Nov 12, 2020 7:54:29 PM    Scanning table dbo._chunks</p>
-      <p>Stopped after 100000 rows</p>
+      <p *ngFor="let notification of progressNotifications">{{notification.message}}</p>
     </div>
   </div>
 
   <div class="scan-data-progress__action">
-    <button class="scan-data-progress__action-abort-and-cancel">Abort and cancel</button>
+    <button *ngIf="scanningFinished; else scanningBlock" class="scan-data-progress__action-abort-and-cancel"
+            (click)="onClose()">Close</button>
+    <ng-template #scanningBlock>
+      <button class="scan-data-progress__action-abort-and-cancel"
+              (click)="onAbortAndCancel()">Abort and cancel</button>
+    </ng-template>
   </div>
 </div>

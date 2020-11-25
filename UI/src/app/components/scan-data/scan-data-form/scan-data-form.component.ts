@@ -34,6 +34,9 @@ export class ScanDataFormComponent implements OnInit {
   @Output()
   cancel = new EventEmitter<void>();
 
+  @Output()
+  scanTables = new EventEmitter<DbSettings>();
+
   @ViewChild(SourceFormComponent)
   sourceFormComponent: SourceFormComponent;
 
@@ -75,13 +78,22 @@ export class ScanDataFormComponent implements OnInit {
       });
   }
 
+  onScanTables(): void {
+    const dbSettings = this.sourceFormComponent.dbSettings;
+    const tablesToScan = this.tablesToScanComponent.scanTables;
+    dbSettings.scanParameters = this.tablesToScanComponent.scanParams;
+    dbSettings.tablesToScanCount = tablesToScan.length;
+    dbSettings.tablesToScan = tablesToScan
+      .filter(table => table.selected)
+      .map(table => table.tableName)
+      .join(',');
+
+    this.scanTables.emit(dbSettings);
+  }
+
   reset(): void {
     if (this.tablesToScan.length > 0) {
       this.tablesToScan = [];
     }
-  }
-
-  scanTables(): void {
-    console.log(this.tablesToScanComponent.filteredTablesToScan);
   }
 }

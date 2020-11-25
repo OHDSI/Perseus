@@ -19,7 +19,7 @@ export const environment = {
   url: 'http://10.110.1.7/api',
   conceptTables: CONCEPT_TABLES,
   config: '',
-  whiteRabbitServiceUrl: 'http://localhost:8000/white-rabbit-service/api'
+  whiteRabbitUrl: 'http://localhost:8000'
 };
 
 /*

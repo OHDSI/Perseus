@@ -7,7 +7,7 @@ import { DbSettings } from '../../model/db-settings';
 @Component({
   selector: 'app-source-form',
   templateUrl: './source-form.component.html',
-  styleUrls: ['./source-form.component.scss', '../../scan-data-form.scss', '../../scan-data-step.scss', '../../scan-data-normalize.scss'],
+  styleUrls: ['./source-form.component.scss', '../../styles/scan-data-form.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SourceFormComponent implements OnInit, OnDestroy {
@@ -40,7 +40,7 @@ export class SourceFormComponent implements OnInit, OnDestroy {
   private dbTypeChangeSubscription: Subscription;
 
   get dbSettings() {
-    return this.form.value;
+    return this.form.value as DbSettings;
   }
 
   constructor(private formBuilder: FormBuilder) { }

@@ -15,5 +15,5 @@ export const environment = {
   url: 'http://10.110.1.7/dev/api',
   conceptTables: CONCEPT_TABLES,
   config: 'dev',
-  whiteRabbitServiceUrl: 'http://10.110.1.7/white-rabbit-service/api'
+  whiteRabbitUrl: 'http://10.110.1.7'
 };

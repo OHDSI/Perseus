@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { ConnectionResult } from '../../model/connection-result';
 import { takeUntil } from 'rxjs/operators';
+import { ScanParams } from '../../model/scan-params';
 
 @Component({
   selector: 'app-tables-to-scan',
   templateUrl: './tables-to-scan.component.html',
-  styleUrls: ['./tables-to-scan.component.scss', '../../scan-data-step.scss', '../../scan-data-normalize.scss', '../../scan-data-popup.scss'],
+  styleUrls: ['./tables-to-scan.component.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss', '../../styles/scan-data-popup.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TablesToScanComponent implements OnInit, OnDestroy {
@@ -30,8 +31,12 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
 
   private destroy$: ReplaySubject<void> = new ReplaySubject<void>(1);
 
-  get scanTable() {
+  get scanTables() {
     return this.filteredTablesToScan;
+  }
+
+  get scanParams() {
+    return this.scanParamsForm.value as ScanParams;
   }
 
   constructor(private formBuilder: FormBuilder) {

@@ -14,6 +14,8 @@ import { ScanDataCheckboxComponent } from './scan-data-form/scan-data-checkbox/s
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import { ScanDataStepperComponent } from './scan-data-stepper/scan-data-stepper.component';
 import { ScanDataProgressComponent } from './scan-data-progress/scan-data-progress.component';
+import { WebsocketModule } from '../../websocket/websocket.module';
+import { whiteRabbitPrefix, whiteRabbitUrl } from '../../app.constants';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { ScanDataProgressComponent } from './scan-data-progress/scan-data-progre
     MatSelectModule,
     MatIconModule,
     MatProgressBarModule,
-    CdkStepperModule
+    CdkStepperModule,
+    WebsocketModule
   ],
   exports: [
     ScanDataComponent

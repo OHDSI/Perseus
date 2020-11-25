@@ -1,6 +1,6 @@
 <div class="scan-tables">
   <div class="scan-tables__header">
-    <div class="scan-tables__header-number scan-step" [ngClass]="{'disconnected': !tablesToScan}">
+    <div class="scan-tables__header-number scan-step" [ngClass]="{'disconnected': !connectionResult || !connectionResult.canConnect}">
       <h5 class="scan-step__number">2</h5>
     </div>
 

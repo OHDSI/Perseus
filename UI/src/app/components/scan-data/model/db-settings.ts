@@ -7,6 +7,7 @@ export interface DbSettings {
   database: string;
   server: string;
   domain?: string;
+  tablesToScanCount?: number;
   tablesToScan?: string;
   scanParameters?: ScanParams;
 }
