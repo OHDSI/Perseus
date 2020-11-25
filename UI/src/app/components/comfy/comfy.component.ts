@@ -38,6 +38,7 @@ import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { isConceptTable } from './services/concept.service';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
+import { ScanDataComponent } from '../scan-data/scan-data.component';
 
 @Component({
   selector: 'app-comfy',
@@ -258,8 +259,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       return this.dataService.saveSourceSchemaToDb(configuration.sourceTables);
     }))
     .subscribe(( res ) => {
-      res !== 'OK'? 
-      this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS '):
+      res !== 'OK' ?
+      this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ') :
       this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
     });
 
@@ -289,7 +290,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         this.reportLoading = res;
         this.snackBar.open('New source schema loaded', ' DISMISS ');
       });
-
   }
 
   initializeSourceData() {
@@ -517,7 +517,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       && this.targetConfig[ it ].data.length > 1);
   }
 
-
   openSqlDialog(data) {
     return this.matDialog.open(SqlEditorComponent, {
       closeOnNavigation: false,
@@ -596,6 +595,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.sourceFocusedElement = target;
       this.sourceFocusedElement.classList.add('source-focus');
     }
+  }
+
+  scanData() {
+    this.matDialog.open(ScanDataComponent, {
+      width: '700',
+      height: '674',
+      disableClose: true
+    });
   }
 }
 
