@@ -12,10 +12,19 @@
   </div>
 
   <div class="scan-data-progress__action">
-    <button *ngIf="scanningFinished; else scanningBlock" class="scan-data-progress__action-abort-and-cancel"
-            (click)="onClose()">Close</button>
+    <div *ngIf="scanningFinished; then scanningFinishedBlock; else scanningBlock"></div>
+
+    <ng-template #scanningFinishedBlock>
+      <button class="scan-data-progress__action-back"
+              (click)="back()">Back</button>
+      <button class="scan-data-progress__action-save"
+              (click)="saveReport()">Save report</button>
+      <button class="scan-data-progress__action-link"
+              (click)="uploadReport()">Link tables</button>
+    </ng-template>
+
     <ng-template #scanningBlock>
-      <button class="scan-data-progress__action-abort-and-cancel"
+      <button class="scan-data-progress__action-abort"
               (click)="onAbortAndCancel()">Abort and cancel</button>
     </ng-template>
   </div>

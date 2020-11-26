@@ -65,14 +65,28 @@
       text-align: center;
       border: 0;
       cursor: pointer;
+      margin-right: 15px;
 
       &:focus {
         outline: none;
       }
     }
 
-    &-abort-and-cancel {
+    &-save, &-link {
+      background: #066BBB;
+      color: #FFFFFF;
+      width: 120px;
+    }
+
+    &-abort {
       width: 130px;
+    }
+
+    &-back {
+      width: 70px;
+    }
+
+    &-abort, &-back {
       background: #E5E5E5;
       color: #404040;
     }

@@ -601,7 +601,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.matDialog.open(ScanDataComponent, {
       width: '700',
       height: '674',
-      disableClose: true
+      disableClose: true,
+      panelClass: 'scan-data-dialog'
     });
   }
 }

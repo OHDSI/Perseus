@@ -8,7 +8,7 @@
 <div class="create-group"
      *ngIf="area === 'source' && table.name !== 'similar'"> <a id="createGroup"
   (click)="createGroup()"
-  [ngClass]="{'create-group-disabled': !(this.panel && this.panel.rowFocusedElements && this.panel.rowFocusedElements.length)}">
+  [ngClass]="{'create-group-disabled': !(this.panel && this.panel.rowFocusedElements && this.panel.rowFocusedElements.length>1)}">
   Create Group</a>
   <mat-icon class="info-icon"
             (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>

@@ -33,6 +33,7 @@ import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
 import * as fieldTypes from './similar-types.json';
 import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-panel-table',
@@ -176,6 +177,12 @@ export class PanelTableComponent extends BaseComponent
     }
   }
 
+  reorderRows(row: IRow) {
+    const replacerowindex = this.table.rows.findIndex(selectedRow => selectedRow.name === row.name);
+    moveItemInArray(this.table.rows, this.bridgeService.draggedRowIndex, replacerowindex);
+    this.updateRowsIndexesAnsSaveChanges();
+  }
+  
   ngAfterViewInit() {
   }
 
@@ -387,7 +394,8 @@ export class PanelTableComponent extends BaseComponent
   }
 
   updateRowsIndexesAnsSaveChanges() {
-    this.storeService.state.source.find(item => item.name === this.table.name).rows = this.table.rows;
+    this.area === 'source' ? this.storeService.state.source.find(item => item.name === this.table.name).rows = this.table.rows:
+    this.storeService.state.target.find(item => item.name === this.table.name).rows = this.table.rows;
     this.refreshPanel();
   }
 

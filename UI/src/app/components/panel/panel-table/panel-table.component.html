@@ -140,11 +140,6 @@
         </ng-container>
   
         <tr mat-row
-        [area]="area"
-        [group]="detail"
-        [table]="table"
-        (addToGroup)='addRowToGroup($event)'
-        appDraggable
             *matRowDef="let inner_row; columns: ['inner_column_indicator', 'inner_column_name', 'inner_column_type', 'remove_from_group']">
         </tr>
       </table>
@@ -170,7 +165,9 @@
     [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
     (click)="rowClick($event)"
     (dragstart)="rowClick($event)"
-    (refreshPanel)='refreshPanel($event)'
+    (refreshPanel)='refreshPanelAfterDrag($event)'
+    (addToGroup)='addRowToGroup($event)'
+    (reorderRows)='reorderRows($event)'
   ></tr>
   <tr mat-row 
   class="inner-table"

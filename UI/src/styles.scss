@@ -77,6 +77,14 @@ app-dialog {
   outline: $blue auto;
 }
 
+.drag-between-bottom {
+  border-bottom: 3px solid;
+}
+
+.drag-between-top {
+  border-top: 3px solid;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 7px;
@@ -186,5 +194,11 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
 
   .mat-progress-bar-fill::after {
     background-color: #42980E;
+  }
+}
+
+.scan-data-dialog {
+  .mat-dialog-container {
+    padding: 0;
   }
 }
