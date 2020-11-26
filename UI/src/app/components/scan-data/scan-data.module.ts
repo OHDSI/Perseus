@@ -12,10 +12,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScanDataCheckboxComponent } from './scan-data-form/scan-data-checkbox/scan-data-checkbox.component';
 import { CdkStepperModule } from '@angular/cdk/stepper';
-import { ScanDataStepperComponent } from './scan-data-stepper/scan-data-stepper.component';
 import { ScanDataProgressComponent } from './scan-data-progress/scan-data-progress.component';
 import { WebsocketModule } from '../../websocket/websocket.module';
-import { whiteRabbitPrefix, whiteRabbitUrl } from '../../app.constants';
+import { ConnectionErrorPopupComponent } from './scan-data-form/connection-error-popup/connection-error-popup.component';
 
 @NgModule({
   declarations: [
@@ -26,8 +25,8 @@ import { whiteRabbitPrefix, whiteRabbitUrl } from '../../app.constants';
     ScanParamsComponent,
     ScanDataFormComponent,
     ScanDataCheckboxComponent,
-    ScanDataStepperComponent,
-    ScanDataProgressComponent
+    ScanDataProgressComponent,
+    ConnectionErrorPopupComponent
   ],
   imports: [
     CommonModule,
