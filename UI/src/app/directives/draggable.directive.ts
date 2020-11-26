@@ -24,6 +24,7 @@ export class DraggableDirective implements OnInit {
   @Input() row: IRow;
   @Output() refreshPanel: EventEmitter<any> = new EventEmitter();
   @Output() addToGroup: EventEmitter<any> = new EventEmitter();
+  @Output() reorderRows: EventEmitter<any> = new EventEmitter();
   @Input() mappingConfig: any;
   @Input() group: IRow;
 
@@ -59,6 +60,7 @@ export class DraggableDirective implements OnInit {
       row.htmlElement = element;
       const draggedRowIndex = this.table.rows.findIndex(selectedRow => selectedRow.name === row.name);
       this.bridgeService.draggedRowIndex = draggedRowIndex;
+      this.bridgeService.draggedRowY = e.clientY;
 
       if (this.area === 'source') {
         this.bridgeService.sourceRow = row;
@@ -74,27 +76,45 @@ export class DraggableDirective implements OnInit {
   onDragOver(e: any) {
     e.stopPropagation();
     e.preventDefault();
+
+    if (this.bridgeService.sourceRow) {
+      this.bridgeService.sourceRow.htmlElement.classList.remove(this.bridgeService.draggedRowClass);
+    }
+
+    if (this.bridgeService.targetRow) {
+      this.bridgeService.targetRow.htmlElement.classList.remove(this.bridgeService.draggedRowClass);
+    }
+
     if (e.currentTarget.nodeName === 'TR') {
       const row = e.currentTarget;
+      const targetRow = this.table.rows.find(item => item.name === row.id);
+      const classToAdd = (this.area === 'source' && this.bridgeService.sourceRow && !this.bridgeService.targetRow
+        || this.area === 'target' && this.bridgeService.targetRow && !this.bridgeService.sourceRow) &&
+        (!targetRow.grouppedFields || !targetRow.grouppedFields.length) ?
+        this.bridgeService.draggedRowY < e.clientY ? 'drag-between-bottom' : 'drag-between-top' : 'drag-over';
+
+      this.bridgeService.draggedRowY = e.clientY;
 
       if (!this.bridgeService.targetRowElement) {
         this.bridgeService.targetRowElement = row;
-        this.bridgeService.targetRowElement.classList.add('drag-over');
+        this.bridgeService.targetRowElement.classList.add(classToAdd);
         return;
       }
 
       if (this.bridgeService.targetRowElement !== row) {
-        this.bridgeService.targetRowElement.classList.remove('drag-over');
+        this.bridgeService.targetRowElement.classList.remove(this.bridgeService.draggedRowClass);
+        this.bridgeService.draggedRowClass = classToAdd;
         this.bridgeService.targetRowElement = row;
-        this.bridgeService.targetRowElement.classList.add('drag-over');
+        this.bridgeService.targetRowElement.classList.add(classToAdd);
       }
+
     }
 
   }
 
   // TODO Dont manipulate htmlElement directly
   @HostListener('drop', [ '$event' ])
-  onDrop(e: DragEvent) {
+  onDrop(e: any) {
     if (this.bridgeService.sourceRow) {
       this.bridgeService.sourceRow.htmlElement.classList.remove('drag-start');
     }
@@ -106,20 +126,18 @@ export class DraggableDirective implements OnInit {
     const element = e.currentTarget;
     if (element) {
       const row = this.row;
+      const targetRow = this.table.rows.find(item => item.name === element.id);
 
-      if (this.group) {
+      if (targetRow.grouppedFields.length) {
         const rowToAdd = this.table.rows[this.bridgeService.draggedRowIndex];
-        this.addToGroup.emit([this.group, rowToAdd]);
+        this.addToGroup.emit([targetRow, rowToAdd]);
+        this.onDragEnd(e);
         return;
       }
 
       if (this.area === 'source' && this.bridgeService.sourceRow && !this.bridgeService.targetRow
       || this.area === 'target' && this.bridgeService.targetRow && !this.bridgeService.sourceRow) {
-        const replacerowindex = this.table.rows.findIndex(selectedRow => selectedRow.name === row.name);
-        moveItemInArray(this.table.rows, this.bridgeService.draggedRowIndex, replacerowindex);
-        this.bridgeService.newRowIndex = replacerowindex;
-        this.bridgeService.storeReorderedRows(this.table.name, this.area);
-        this.refreshPanel.emit();
+        this.reorderRows.emit(row);
         return;
       }
 
@@ -148,7 +166,7 @@ export class DraggableDirective implements OnInit {
     }
 
     if (this.bridgeService.targetRowElement) {
-      this.bridgeService.targetRowElement.classList.remove('drag-over');
+      this.bridgeService.targetRowElement.classList.remove(this.bridgeService.draggedRowClass);
     }
   }
 

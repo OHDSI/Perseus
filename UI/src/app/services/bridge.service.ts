@@ -62,6 +62,22 @@ export class BridgeService {
     return this.draggedrowindex;
   }
 
+  set draggedRowY(y: number) {
+    this.draggedrowy = y;
+  }
+
+  get draggedRowY() {
+    return this.draggedrowy;
+  }
+
+  set draggedRowClass(cls: string) {
+    this.draggedrowclass = cls;
+  }
+
+  get draggedRowClass() {
+    return this.draggedrowclass;
+  }
+
   set newRowIndex(index: number) {
     this.newrowindex = index;
   }
@@ -85,6 +101,8 @@ export class BridgeService {
   private targetrowrlement = null;
   private draggedrowindex = null;
   private newrowindex = null;
+  private draggedrowy = null;
+  private draggedrowclass = null;
 
   arrowsCache: ArrowCache = {};
   constantsCache: ConstantCache = {};
