@@ -401,9 +401,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     overlayRef.afterClosed$.subscribe(tbl => {
       this.bridgeService.hideAllArrows();
-      this.selectedSourceTable = data.selected;
-      this.bridgeService.refresh(this.selectedSourceTable);
-      this.sourcePanel.panel.table = data.selected;
+      const selectedTable = cloneDeep(data.selected);
+      this.selectedSourceTable = selectedTable;
+      this.sourcePanel.panel.table = selectedTable;
       this.sourcePanel.panel.refreshPanel();
     });
 
