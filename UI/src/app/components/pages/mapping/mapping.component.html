@@ -2,7 +2,8 @@
   <section>
     <main #maincanvas class="main">
       <div class="area-source">
-        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')" mat-align-tabs="start">
+        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')" 
+                       mat-align-tabs="start">
           <mat-tab
           [label]="'similar'"
           *ngIf="similarSourceTable"

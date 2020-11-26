@@ -82,7 +82,7 @@
     },
     "table-dropdown":{
       "offsetX": 40,
-      "offsetY": 40,
+      "offsetY": 30,
       "originX": "end",
       "originY": "top",
       "overlayX": "end",

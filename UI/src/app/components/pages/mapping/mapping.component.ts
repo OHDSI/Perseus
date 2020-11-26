@@ -403,6 +403,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.bridgeService.hideAllArrows();
       this.selectedSourceTable = data.selected;
       this.bridgeService.refresh(this.selectedSourceTable);
+      this.sourcePanel.panel.table = data.selected;
       this.sourcePanel.panel.refreshPanel();
     });
 
