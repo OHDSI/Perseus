@@ -44,6 +44,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   similarSourceTable: ITable;
   sourceTablesWithoutSimilar: ITable[];
   selectedSourceTable: ITable;
+  similarTargetTable: ITable;
+  selectedTargetTable: ITable;
 
   sourceTabIndex = 0;
   targetTabIndex = 0;
@@ -63,12 +65,21 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   lookup;
 
+  numberOfPanels: number;
   get hint(): string {
     return 'no hint';
   }
 
   get state() {
     return this.stateService.state;
+  }
+
+  get currentTargetTable() {
+    return this.targetTabIndex === 0 && this.similarTargetTable ? this.similarTargetTable : this.selectedTargetTable;
+  }
+
+  get currentSourceTable(){
+    return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
   }
 
   @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
@@ -355,10 +366,16 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
     this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
 
+    this.similarTargetTable = this.target.find(item => item.name === 'similar');
+    this.selectedTargetTable = this.getEnabledTargetTables()[0];
+
+    this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
+    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2
+
     setTimeout(() => {
-      this.bridgeService.refresh(this.target[ this.targetTabIndex ]);
-      this.sourcePanel.panel.reflectConnectorsPin(this.target[ this.targetTabIndex ]);
-      this.targetPanel.panel.reflectConnectorsPin(this.source[ this.sourceTabIndex ]);
+      this.bridgeService.refresh(this.currentTargetTable);
+      this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
+      this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
       this.bridgeService.adjustArrowsPositions();
     }, 200);
 
@@ -387,8 +404,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return mappingConfig;
   }
 
-  openTablesDropdown(target){
-    const data = { tables: this.sourceTablesWithoutSimilar, selected: this.selectedSourceTable };
+  getEnabledTargetTables(){
+    const isEnabledTargetTable = (table) => this.mappingConfig.
+    find(item => item.includes(table.name) && item.includes(this.selectedSourceTable.name) && table.name !== 'similar');
+
+    const enabledTargetTables = this.target.filter(isEnabledTargetTable);
+
+    return enabledTargetTables;
+  }
+
+  openTablesDropdown(target: any, area: string){
+    const data = area === 'source' ? { tables: this.sourceTablesWithoutSimilar, selected: this.selectedSourceTable } :
+    { tables: this.getEnabledTargetTables(), selected: this.selectedTargetTable };
 
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
@@ -401,12 +428,51 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     overlayRef.afterClosed$.subscribe(tbl => {
       this.bridgeService.hideAllArrows();
-      const selectedTable = cloneDeep(data.selected);
-      this.selectedSourceTable = selectedTable;
-      this.sourcePanel.panel.table = selectedTable;
-      this.sourcePanel.panel.refreshPanel();
+
+      if (area === 'source') {
+        this.refreshSourcePanel(data.selected);
+      } else {
+        this.refreshTargetPanel(data.selected);
+      }
+
     });
 
+  }
+
+  refreshTargetPanel(data: any) {
+    this.selectedTargetTable = data;
+    this.targetPanel.panel.table = data;
+    this.sourcePanel.panel.refreshPanel();
+    this.targetPanel.panel.refreshPanel(true);
+  }
+
+  refreshSourcePanel(data: any){
+    this.selectedSourceTable = data;
+    this.sourcePanel.panel.table = data;
+    this.refreshTargetPanel(this.getEnabledTargetTables()[0]);
+  }
+
+  onWheel(event: any, area: string) {
+    const up = event.deltaY < 0;
+    let newIndex;
+    if (area === 'source' && this.currentSourceTable.name !== 'similar') {
+      const index = this.source.indexOf(this.currentSourceTable);
+      if (up) {
+        newIndex = index === this.source.length - 1 ? this.similarSourceTable ? 1 : 0 : index + 1;
+      } else {
+        newIndex = index === 1 ? this.similarSourceTable ? this.source.length - 1 : 0 : index === 0 ? this.source.length - 1 : index - 1;
+      }
+      this.refreshSourcePanel(this.source[ newIndex ]);
+    }
+    if (area === 'target' && this.currentTargetTable.name !== 'similar') {
+      const index = this.getEnabledTargetTables().indexOf(this.currentTargetTable);
+      if (up) {
+        newIndex = index === this.getEnabledTargetTables().length - 1 ? 0 : index + 1;
+      } else {
+        newIndex = index === 0 ? this.getEnabledTargetTables().length - 1 : index - 1;
+      }
+      this.refreshTargetPanel(this.getEnabledTargetTables()[ newIndex ]);
+    }
   }
 
   ngOnDestroy() {
@@ -429,9 +495,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   previewMapping() {
-    const source = this.source[ this.sourceTabIndex ];
+    const source = this.currentSourceTable;
+    const target = this.currentTargetTable;
     const name = source.name;
-    const mapping = this.bridgeService.generateMapping(name, this.target[ this.targetTabIndex ].name);
+    const mapping = this.bridgeService.generateMapping(name, target.name);
 
     addViewsToMapping(mapping, source);
 
@@ -473,14 +540,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openFilter(target) {
-    const optionalSaveKey = this.target[ this.targetTabIndex ].name;
+
+    const optionalSaveKey = this.currentTargetTable.name;
 
     const filteredFields = this.filteredFields ? this.filteredFields[ optionalSaveKey ] : this.filteredFields;
     const types = filteredFields ? filteredFields.types : [];
     const checkedTypes = filteredFields ? filteredFields.checkedTypes : [];
 
     const options = (groups as any).default;
-    options[ 'individual' ] = this.target[ this.targetTabIndex ].rows.map(row => {
+    options[ 'individual' ] = this.currentTargetTable.rows.map(row => {
       if (!options.common.includes(row.name.toUpperCase()) && !options.concept.includes(row.name.toUpperCase())) {
         return row.name;
       }
@@ -502,18 +570,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   getFilteredFields() {
-    return this.filteredFields ? this.filteredFields[ this.target[ this.targetTabIndex ].name ] : [];
+    return this.filteredFields ? this.filteredFields[ this.currentTargetTable.name ] : [];
   }
 
   onPanelOpen() {
-    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
-      this.bridgeService.refresh(this.target[ this.targetTabIndex ], 200);
+    if (this.panelsViewInitialized.size === this.numberOfPanels) {
+      this.bridgeService.refresh(this.currentTargetTable, 200);
     }
   }
 
   onPanelClose() {
-    if (this.panelsViewInitialized.size === this.source.length + this.target.length) {
-      this.bridgeService.refresh(this.target[ this.targetTabIndex ], 200);
+    if (this.panelsViewInitialized.size === this.numberOfPanels) {
+      this.bridgeService.refresh(this.currentTargetTable, 200);
     }
   }
 
@@ -521,9 +589,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     if (!this.panelsViewInitialized.has(table)) {
       this.panelsViewInitialized.add(table);
     }
-    const numberOfPanelTables = this.source.find(item => item.name === 'similar') ?
-    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2;
-    if (this.panelsViewInitialized.size === numberOfPanelTables) {
+
+    if (this.panelsViewInitialized.size === this.numberOfPanels) {
       this.commonService.setSvg(this.svgCanvas);
       this.commonService.setMain(this.mainCanvas);
     }
@@ -534,15 +601,19 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (area === 'source') {
       this.sourceTabIndex = index;
-      this.changeTargetTabIndex();
     } else {
       this.targetTabIndex = index;
     }
 
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
-        this.bridgeService.refresh(tables[ index ]);
-        this.sourcePanel.panel.refreshPanel();
+        if (area === 'source') {
+          this.bridgeService.refresh(this.selectedSourceTable);
+          this.sourcePanel.panel.refreshPanel();
+        } else {
+          this.bridgeService.refresh(this.selectedTargetTable);
+          this.targetPanel.panel.refreshPanel(true);
+        }
         resolve();
       }, 1000);
     });
@@ -566,7 +637,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isDisabled(tableName: string): boolean {
-    const activeTableName = this.source[ this.sourceTabIndex ].name;
+    const activeTableName = this.currentSourceTable.name;
     return !this.mappingConfig.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 
@@ -576,8 +647,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     return (
-      this.source[ this.sourceTabIndex ].name === this.similarTableName ||
-      this.target[ this.targetTabIndex ].name === this.similarTableName
+      this.currentSourceTable.name === this.similarTableName ||
+      this.currentTargetTable.name === this.similarTableName
     );
   }
 
@@ -585,9 +656,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     if (this.target && this.filteredFields) {
       return !(
         this.filteredFields &&
-        this.filteredFields[ this.target[ this.targetTabIndex ].name ] &&
-        this.filteredFields[ this.target[ this.targetTabIndex ].name ].types &&
-        this.filteredFields[ this.target[ this.targetTabIndex ].name ].types.length
+        this.filteredFields[ this.currentTargetTable.name ] &&
+        this.filteredFields[ this.currentTargetTable.name ].types &&
+        this.filteredFields[ this.currentTargetTable.name ].types.length
       );
     }
   }

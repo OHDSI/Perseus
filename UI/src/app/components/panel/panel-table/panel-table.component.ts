@@ -171,7 +171,9 @@ export class PanelTableComponent extends BaseComponent
 
   refreshPanel(event?: any) {
     this.dataSourceInit(this.table.rows);
-    this.bridgeService.refreshAll();
+    if (!event) {
+      this.bridgeService.refreshAll();
+    }
   }
 
   ngAfterViewInit() {
