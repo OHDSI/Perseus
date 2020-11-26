@@ -6,9 +6,6 @@ export class BaseComponent implements OnDestroy {
 
     protected ngUnsubscribe: Subject<void> = new Subject<void>();
 
-    constructor() {
-    }
-
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();

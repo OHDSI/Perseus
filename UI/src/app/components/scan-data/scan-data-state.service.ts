@@ -20,6 +20,13 @@ const initialState: ScanDataState = {
     password: null,
     database: null,
   },
+  // dbSettings: {
+  //   dbType: 'SQL Server',
+  //   server: '822JNJ16S03V',
+  //   user: 'cdm_builder',
+  //   password: 'builder1!',
+  //   database: 'CPRD',
+  // },
   scanParams: {
     sampleSize: 100e3,
     scanValues: true,

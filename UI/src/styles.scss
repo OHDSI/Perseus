@@ -196,3 +196,9 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
     background-color: #42980E;
   }
 }
+
+.scan-data-dialog {
+  .mat-dialog-container {
+    padding: 0;
+  }
+}
