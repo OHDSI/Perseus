@@ -1,18 +1,35 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { TableToScan } from '../../model/table-to-scan';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component, ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  Type,
+  ViewChild
+} from '@angular/core';
+import { TableToScan } from '../../../model/table-to-scan';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
-import { ConnectionResult } from '../../model/connection-result';
+import { ConnectionResult } from '../../../model/connection-result';
 import { takeUntil } from 'rxjs/operators';
-import { ScanParams } from '../../model/scan-params';
+import { ScanParams } from '../../../model/scan-params';
+import { BaseComponent } from '../../../shared/base/base.component';
+import { ScanParamsComponent } from './scan-params/scan-params.component';
+import { not } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'app-tables-to-scan',
   templateUrl: './tables-to-scan.component.html',
-  styleUrls: ['./tables-to-scan.component.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss', '../../styles/scan-data-popup.scss'],
+  styleUrls: [
+    './tables-to-scan.component.scss',
+    '../../../styles/scan-data-step.scss',
+    '../../../styles/scan-data-normalize.scss',
+    '../../../styles/scan-data-popup.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TablesToScanComponent implements OnInit, OnDestroy {
+export class TablesToScanComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @Input()
   scanParams: ScanParams;
@@ -32,9 +49,17 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
 
   searchTableName = '';
 
-  private destroy$: ReplaySubject<void> = new ReplaySubject<void>(1);
+  @ViewChild(ScanParamsComponent, {read: ElementRef})
+  scanParamsPopup: ElementRef;
 
-  constructor(private formBuilder: FormBuilder) {
+  @ViewChild('scanParamsButton')
+  scanParamsButton: ElementRef;
+
+  private clickOutsideScanParamsListener: () => void;
+
+  constructor(private formBuilder: FormBuilder,
+              private renderer: Renderer2) {
+    super();
   }
 
   ngOnInit(): void {
@@ -42,8 +67,9 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    if (this.clickOutsideScanParamsListener) {
+      this.clickOutsideScanParamsListener();
+    }
   }
 
   onCheckTable(checkedTable: TableToScan): void {
@@ -76,6 +102,29 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
     );
   }
 
+  onShowScanParams() {
+    if (this.showScanParamsPopup) {
+      this.clickOutsideScanParamsListener();
+      this.clickOutsideScanParamsListener = null;
+      this.showScanParamsPopup = false;
+    } else {
+      this.showScanParamsPopup = true;
+      this.clickOutsideScanParamsListener = this.renderer
+        .listen('document', 'click', event => {
+          const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
+          const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
+
+          // todo check click on material dropdown
+
+          if (notClickedInside && notClickedScanParamsButton) {
+            this.showScanParamsPopup = false;
+            this.clickOutsideScanParamsListener();
+            this.clickOutsideScanParamsListener = null;
+          }
+        });
+    }
+  }
+
   reset(): void {
     this.searchTableName = '';
   }
@@ -84,17 +133,17 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
     const {sampleSize, scanValues, minCellCount, maxValues, calculateNumericStats, numericStatsSamplerSize} = this.scanParams;
 
     this.scanParamsForm = this.formBuilder.group({
-      sampleSize: {value: sampleSize, disabled: scanValues},
+      sampleSize: {value: sampleSize, disabled: !scanValues},
       scanValues,
-      minCellCount: {value: minCellCount, disabled: scanValues},
-      maxValues: {value: maxValues, disabled: scanValues},
+      minCellCount: {value: minCellCount, disabled: !scanValues},
+      maxValues: {value: maxValues, disabled: !scanValues},
       calculateNumericStats,
-      numericStatsSamplerSize: {value: numericStatsSamplerSize, disabled: calculateNumericStats}
+      numericStatsSamplerSize: {value: numericStatsSamplerSize, disabled: !calculateNumericStats}
     });
 
     this.scanParamsForm.get('calculateNumericStats').valueChanges
       .pipe(
-        takeUntil(this.destroy$)
+        takeUntil(this.ngUnsubscribe)
       )
       .subscribe(value => value ?
         this.scanParamsForm.get('numericStatsSamplerSize').enable() : this.scanParamsForm.get('numericStatsSamplerSize').disable());
@@ -102,12 +151,12 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
     const controlsDependentOnScanValues = ['sampleSize', 'minCellCount', 'maxValues'];
     this.scanParamsForm.get('scanValues').valueChanges
       .pipe(
-        takeUntil(this.destroy$)
+        takeUntil(this.ngUnsubscribe)
       )
       .subscribe(value => {
         if (value) {
-          controlsDependentOnScanValues.forEach(control =>
-            this.scanParamsForm.get(control).enable()
+          controlsDependentOnScanValues.forEach(controlName =>
+            this.scanParamsForm.get(controlName).enable()
           );
         } else {
           controlsDependentOnScanValues.forEach(control =>
@@ -120,7 +169,6 @@ export class TablesToScanComponent implements OnInit, OnDestroy {
   private changeValueInAllTablesAndReturn(newValue: TableToScan): TableToScan {
     this.tablesToScan = this.tablesToScan
       .map(table => table.tableName === newValue.tableName ? newValue : table);
-
     return newValue;
   }
 }

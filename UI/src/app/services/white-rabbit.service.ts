@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConnectionResult } from '../components/scan-data/model/connection-result';
-import { DbSettings } from '../components/scan-data/model/db-settings';
+import { ConnectionResult } from '../scan-data/model/connection-result';
+import { DbSettings } from '../scan-data/model/db-settings';
 import { HttpClient } from '@angular/common/http';
 import { whiteRabbitApiUrl } from '../app.constants';
-import { TableToScan } from '../components/scan-data/model/table-to-scan';
+import { TableToScan } from '../scan-data/model/table-to-scan';
 import { map } from 'rxjs/operators';
 
 @Injectable({

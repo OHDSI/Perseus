@@ -16,11 +16,11 @@
 
     <ng-template #scanningFinishedBlock>
       <button class="scan-data-progress__action-back"
-              (click)="back()">Back</button>
+              (click)="cancel.emit()">Back</button>
       <button class="scan-data-progress__action-save"
-              (click)="saveReport()">Save report</button>
+              (click)="onSaveReport()">Save report</button>
       <button class="scan-data-progress__action-link"
-              (click)="uploadReport()">Link tables</button>
+              (click)="onUploadReport()">Link tables</button>
     </ng-template>
 
     <ng-template #scanningBlock>

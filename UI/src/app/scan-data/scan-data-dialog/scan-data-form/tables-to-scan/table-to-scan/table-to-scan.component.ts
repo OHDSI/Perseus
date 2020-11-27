@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { TableToScan } from '../../../model/table-to-scan';
+import { TableToScan } from '../../../../model/table-to-scan';
 
 @Component({
   selector: 'app-table-to-scan',
@@ -8,11 +8,11 @@ import { TableToScan } from '../../../model/table-to-scan';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableToScanComponent {
-  @Input()
-  private table: TableToScan;
-
   @Output()
   checkTable = new EventEmitter<TableToScan>();
+
+  @Input()
+  private table: TableToScan;
 
   get tableName() {
     return this.table.tableName;

@@ -1,29 +1,26 @@
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnInit,
   Output
 } from '@angular/core';
-import { DbSettings } from '../model/db-settings';
+import { DbSettings } from '../../model/db-settings';
 import { WhiteRabbitWebsocketService } from '../../../websocket/white-rabbit/white-rabbit-websocket.service';
-import { ProgressNotification, ProgressNotificationStatusCode } from '../model/progress-notification';
+import { ProgressNotification, ProgressNotificationStatusCode } from '../../model/progress-notification';
 import { whiteRabbitPrefix, whiteRabbitUrl } from '../../../app.constants';
 import { saveAs } from 'file-saver';
-import { base64ToFile, getBase64Header, MediaType } from '../../../util/base64-util';
-import { ScanDataUploadService } from '../scan-data-upload.service';
-import { BaseComponent } from '../../../common/components/base/base.component';
+import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../util/base64-util';
+import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
 import { takeUntil } from 'rxjs/operators';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
-  selector: 'app-scan-data-progress',
-  templateUrl: './scan-data-progress.component.html',
-  styleUrls: ['./scan-data-progress.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-scan-data-console',
+  templateUrl: './scan-data-console.component.html',
+  styleUrls: ['./scan-data-console.component.scss']
 })
-export class ScanDataProgressComponent extends BaseComponent implements OnInit {
+export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
   @Input()
   dbSettings: DbSettings;
@@ -44,9 +41,7 @@ export class ScanDataProgressComponent extends BaseComponent implements OnInit {
   // With header
   private reportBase64: string;
 
-  private reportName = 'ScanReport';
-
-  private reportExtension = '.xlsx';
+  private reportName = 'ScanReport.xlsx';
 
   private webSocketConfig = {
     url: whiteRabbitUrl,
@@ -57,13 +52,15 @@ export class ScanDataProgressComponent extends BaseComponent implements OnInit {
   private scannedTablesCount = -1;
 
   constructor(private whiteRabbitWebsocketService: WhiteRabbitWebsocketService,
-              private scanDataUploadService: ScanDataUploadService,
-              private cdr: ChangeDetectorRef) {
+              private scanDataUploadService: ScanDataUploadService) {
     super();
   }
 
   ngOnInit(): void {
     this.whiteRabbitWebsocketService.connect(this.webSocketConfig)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(result => {
         if (result) {
           this.sendScanConfig();
@@ -73,32 +70,19 @@ export class ScanDataProgressComponent extends BaseComponent implements OnInit {
       });
   }
 
-  abort() {
-    this.whiteRabbitWebsocketService.disconnect();
-  }
-
-  onClose() {
-    this.close.emit();
-  }
-
   onAbortAndCancel() {
-    this.abort();
+    this.whiteRabbitWebsocketService.disconnect();
     this.cancel.emit();
   }
 
-  back() {
-    this.cancel.emit();
-  }
-
-
-  async saveReport() {
-    const file = await base64ToFile(this.reportBase64, this.reportName + this.reportExtension);
-    saveAs(file);
-  }
-
-  uploadReport() {
-    this.scanDataUploadService.uploadScanReport(this.reportBase64, this.reportName + this.reportExtension)
+  onUploadReport() {
+    this.scanDataUploadService.uploadScanReport(this.reportBase64, this.reportName)
       .subscribe(() => this.close.emit());
+  }
+
+  onSaveReport() {
+    base64ToFileAsObservable(this.reportBase64, this.reportName)
+      .subscribe(file => saveAs(file));
   }
 
   private sendScanConfig(): void {
@@ -117,7 +101,8 @@ export class ScanDataProgressComponent extends BaseComponent implements OnInit {
 
         switch (notification.status.code) {
           case ProgressNotificationStatusCode.STARTED_SCANNING:
-          case ProgressNotificationStatusCode.ERROR: {
+          case ProgressNotificationStatusCode.ERROR:
+          case ProgressNotificationStatusCode.NONE: {
             this.showNotificationMessage(notification);
             break;
           }
@@ -134,11 +119,7 @@ export class ScanDataProgressComponent extends BaseComponent implements OnInit {
           }
           case ProgressNotificationStatusCode.FAILED_TO_SCAN: {
             this.progressValue = 0;
-            this.showNotificationMessage(notification);
             this.whiteRabbitWebsocketService.disconnect();
-            break;
-          }
-          case ProgressNotificationStatusCode.NONE: {
             this.showNotificationMessage(notification);
             break;
           }
@@ -156,12 +137,10 @@ export class ScanDataProgressComponent extends BaseComponent implements OnInit {
         this.reportBase64 = getBase64Header(MediaType.XLSX) + reportBase64;
         this.scanningFinished = true;
         this.whiteRabbitWebsocketService.disconnect();
-        this.cdr.detectChanges();
       });
   }
 
   private showNotificationMessage(notification: ProgressNotification) {
     this.progressNotifications.push(notification);
-    this.cdr.detectChanges();
   }
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Observer} from 'rxjs';
 import { WebsocketService } from '../webscoket.service';
 import { distinctUntilChanged, share } from 'rxjs/operators';
@@ -26,8 +26,12 @@ export class WhiteRabbitWebsocketService implements WebsocketService, OnDestroy 
   }
 
   ngOnDestroy(): void {
-    if (this.stompClient.active) {
+    if (this.stompClient && this.stompClient.active) {
       this.stompClient.disconnect();
+    }
+
+    if (this.connection$ && !this.connection$.closed) {
+      this.connection$.complete();
     }
   }
 
@@ -46,6 +50,8 @@ export class WhiteRabbitWebsocketService implements WebsocketService, OnDestroy 
 
   disconnect() {
     this.stompClient.disconnect();
+    this.connection$.next(false);
+    this.connection$.complete();
   }
 
   on(destination: string): Observable<string> {

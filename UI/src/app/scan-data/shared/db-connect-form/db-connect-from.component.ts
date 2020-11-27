@@ -5,12 +5,12 @@ import { ConnectionResult } from '../../model/connection-result';
 import { DbSettings } from '../../model/db-settings';
 
 @Component({
-  selector: 'app-source-form',
-  templateUrl: './source-form.component.html',
-  styleUrls: ['./source-form.component.scss', '../../styles/scan-data-form.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss'],
+  selector: 'app-db-connect-form',
+  templateUrl: './db-connect-from.component.html',
+  styleUrls: ['./db-connect-from.component.scss', '../../styles/scan-data-form.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SourceFormComponent implements OnInit, OnDestroy {
+export class DbConnectFromComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 

@@ -7,16 +7,18 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { ConnectionResult } from '../model/connection-result';
-import { TableToScan } from '../model/table-to-scan';
+import { ConnectionResult } from '../../model/connection-result';
+import { TableToScan } from '../../model/table-to-scan';
 import { WhiteRabbitService } from '../../../services/white-rabbit.service';
-import { DbSettings, DbSettingsBuilder } from '../model/db-settings';
+import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { SourceFormComponent } from './source-form/source-form.component';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
-import { ScanParams } from '../model/scan-params';
-import { ScanDataStateService } from '../scan-data-state.service';
+import { ScanParams } from '../../model/scan-params';
+import { ScanDataStateService } from '../../../services/scan-data-state.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConnectionErrorPopupComponent } from '../../shared/connection-error-popup/connection-error-popup.component';
+import { DbConnectFromComponent } from '../../shared/db-connect-form/db-connect-from.component';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -44,15 +46,16 @@ export class ScanDataFormComponent implements OnInit {
   @Output()
   scanTables = new EventEmitter<DbSettings>();
 
-  @ViewChild(SourceFormComponent)
-  sourceFormComponent: SourceFormComponent;
+  @ViewChild(DbConnectFromComponent)
+  sourceFormComponent: DbConnectFromComponent;
 
   @ViewChild(TablesToScanComponent)
   tablesToScanComponent: TablesToScanComponent;
 
   constructor(private whiteRabbitService: WhiteRabbitService,
               private stateService: ScanDataStateService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private matDialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -71,7 +74,7 @@ export class ScanDataFormComponent implements OnInit {
             this.sourceFormComponent.subscribeFormChange();
             return this.whiteRabbitService.tablesInfo(dbSettings);
           } else {
-            // todo open popup window with error message
+            this.showErrorPopup(connectionResult.message);
             return of([]);
           }
         })
@@ -124,5 +127,15 @@ export class ScanDataFormComponent implements OnInit {
       filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
       connectionResult: this.connectionResult
     };
+  }
+
+  private showErrorPopup(message: string): void {
+    this.matDialog.open(ConnectionErrorPopupComponent, {
+      width: '502',
+      height: '358',
+      disableClose: true,
+      panelClass: 'scan-data-dialog',
+      data: message
+    });
   }
 }

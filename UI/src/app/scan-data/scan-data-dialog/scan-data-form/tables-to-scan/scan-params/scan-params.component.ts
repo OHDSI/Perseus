@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-scan-params',
   templateUrl: './scan-params.component.html',
-  styleUrls: ['./scan-params.component.scss', '../../../styles/scan-data-form.scss'],
+  styleUrls: ['./scan-params.component.scss', '../../../../styles/scan-data-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScanParamsComponent implements OnInit {
+export class ScanParamsComponent {
 
   @Input()
   scanParamsForm: FormGroup;
@@ -60,10 +60,4 @@ export class ScanParamsComponent implements OnInit {
       viewValue: '1 million'
     }
   ];
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

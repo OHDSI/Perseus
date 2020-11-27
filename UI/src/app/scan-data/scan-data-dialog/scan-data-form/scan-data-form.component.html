@@ -4,10 +4,10 @@
   </div>
 
   <div class="scan-data-form__content">
-    <app-source-form [dbSettings]="dbSettings"
-                     [connectionResult]="connectionResult"
-                     (testConnection)="onTestConnection($event)"
-                     (connectionPropsChanged)="reset()"></app-source-form>
+    <app-db-connect-form [dbSettings]="dbSettings"
+                         [connectionResult]="connectionResult"
+                         (testConnection)="onTestConnection($event)"
+                         (connectionPropsChanged)="reset()"></app-db-connect-form>
 
     <app-tables-to-scan [scanParams]="scanParams"
                         [tablesToScan]="tablesToScan"

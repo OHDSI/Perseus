@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from './model/db-settings';
-import { TableToScan } from './model/table-to-scan';
-import { ConnectionResult } from './model/connection-result';
-import { ScanParams } from './model/scan-params';
+import { DbSettings } from '../scan-data/model/db-settings';
+import { TableToScan } from '../scan-data/model/table-to-scan';
+import { ConnectionResult } from '../scan-data/model/connection-result';
+import { ScanParams } from '../scan-data/model/scan-params';
 
 export interface ScanDataState {
   dbSettings: DbSettings;
@@ -13,20 +13,20 @@ export interface ScanDataState {
 }
 
 const initialState: ScanDataState = {
-  dbSettings: {
-    dbType: null,
-    server: null,
-    user: null,
-    password: null,
-    database: null,
-  },
   // dbSettings: {
-  //   dbType: 'SQL Server',
-  //   server: '822JNJ16S03V',
-  //   user: 'cdm_builder',
-  //   password: 'builder1!',
-  //   database: 'CPRD',
+  //   dbType: null,
+  //   server: null,
+  //   user: null,
+  //   password: null,
+  //   database: null,
   // },
+  dbSettings: {
+    dbType: 'SQL Server',
+    server: '822JNJ16S03V',
+    user: 'cdm_builder',
+    password: 'builder1!',
+    database: 'CPRD',
+  },
   scanParams: {
     sampleSize: 100e3,
     scanValues: true,
