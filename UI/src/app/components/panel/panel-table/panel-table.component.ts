@@ -172,7 +172,9 @@ export class PanelTableComponent extends BaseComponent
 
   refreshPanel(event?: any) {
     this.dataSourceInit(this.table.rows);
-    this.bridgeService.refreshAll();
+    if (!event) {
+      this.bridgeService.refreshAll();
+    }
   }
 
   reorderRows(row: IRow) {
@@ -250,8 +252,8 @@ export class PanelTableComponent extends BaseComponent
         closeOnNavigation: false,
         disableClose: false,
         data: {
-          title: 'Groupping error',
-          message: 'You cannot add linked fields to group'
+          title: 'Grouping error',
+          message: 'You cannot add linked fields to Group.'
         }
       });
 
@@ -264,8 +266,8 @@ export class PanelTableComponent extends BaseComponent
         closeOnNavigation: false,
         disableClose: false,
         data: {
-          title: 'Groupping error',
-          message: 'You cannot add groupped field to group'
+          title: 'Grouping error',
+          message: 'You cannot add groupped field to Group.'
         }
       });
 
@@ -279,8 +281,8 @@ export class PanelTableComponent extends BaseComponent
         closeOnNavigation: false,
         disableClose: false,
         data: {
-          title: 'Groupping error',
-          message: 'You cannot add fields of different types group'
+          title: 'Grouping error',
+          message: 'You cannot add fields of different types to Group. Types should be similar.'
         }
       });
 

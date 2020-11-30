@@ -1,0 +1,19 @@
+.tables-select{
+    background: white;
+    overflow-y: scroll;
+    width: 250px;
+    height: 150px;
+    margin: 10px 10px 10px 10px;
+}
+
+.table-select-option{
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: "Akzidenz-Grotesk Pro", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    height: 32px;
+}
+
+.mat-list-item.active {
+    color: #066BBB;
+  }

@@ -35,13 +35,13 @@ export class Configuration {
 
   get sourceTables(): Table[] {
     const tables = [];
-    JSON.parse(this.source).map(item => tables.push(new Table(item)));
+    parse(this.source).map(item => tables.push(new Table(item)));
     return tables;
   }
 
   get targetTables(): Table[] {
     const tables = [];
-    JSON.parse(this.target).map(item => tables.push(new Table(item)));
+    parse(this.target).map(item => tables.push(new Table(item)));
     return tables;
   }
 
@@ -78,8 +78,8 @@ export class Configuration {
     this.name = options.name;
     this.mappingsConfiguration = stringify(options.mappingsConfiguration);
     this.tablesConfiguration = JSON.stringify(options.tablesConfiguration);
-    this.source = JSON.stringify(options.source);
-    this.target = JSON.stringify(options.target);
+    this.source = stringify(options.source);
+    this.target = stringify(options.target);
     this.report = JSON.stringify(options.report);
     this.version = JSON.stringify(options.version);
     this.filtered = JSON.stringify(options.filtered);

@@ -2,22 +2,36 @@
   <section>
     <main #maincanvas class="main">
       <div class="area-source">
-        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')" mat-align-tabs="start">
-          <mat-tab
-            [label]="table.name"
-            *ngFor="let table of source; trackBy: trackByFn"
-          >
-            <app-panel
-              #sourcePanel
-              *ngIf="table.visible"
-              [tabIndex]="sourceTabIndex"
-              [table]="table"
-              [tables]="source"
-              [oppositeTableId]="target[targetTabIndex].id"
-              (open)="onPanelOpen(table)"
-              (close)="onPanelClose(table)"
-              (initialized)="onPanelInit(table)"
-            ></app-panel>
+        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')"
+                       mat-align-tabs="start">
+          <mat-tab [label]="'similar'"
+                   *ngIf="similarSourceTable">
+            <app-panel #sourcePanelSimilar
+                       *ngIf="similarSourceTable.visible"
+                       [tabIndex]="sourceTabIndex"
+                       [table]="similarSourceTable"
+                       [tables]="source"
+                       [oppositeTableId]="currentTargetTable.id"
+                       (open)="onPanelOpen(similarSourceTable)"
+                       (close)="onPanelClose(similarSourceTable)"
+                       (initialized)="onPanelInit(similarSourceTable)"></app-panel>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="drop-down-label" (wheel) = "onWheel($event, 'source')">
+                <div>{{selectedSourceTable.name}}</div>
+                <mat-icon (click)="openTablesDropdown($event.target, 'source')">arrow_drop_down</mat-icon>
+              </div>
+            </ng-template>
+            <app-panel #sourcePanel
+                       *ngIf="selectedSourceTable.visible"
+                       [tabIndex]="sourceTabIndex"
+                       [table]="selectedSourceTable"
+                       [tables]="source"
+                       [oppositeTableId]="currentTargetTable.id"
+                       (open)="onPanelOpen(selectedSourceTable)"
+                       (close)="onPanelClose(selectedSourceTable)"
+                       (initialized)="onPanelInit(selectedSourceTable)"></app-panel>
           </mat-tab>
         </mat-tab-group>
       </div>
@@ -152,25 +166,40 @@
       </div>
       <!--End-of-the-Bridge-->
       <div class="area-target">
-        <mat-tab-group selectedIndex="{{targetTabIndex}}" (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
-          <mat-tab
-            [label]="table.name"
-            *ngFor="let table of target; trackBy: trackByFn"
-            [disabled]="isDisabled(table.name)"
-          >
-            <app-panel
-              #targetPanel
-              *ngIf="table.visible"
-              [tabIndex]="targetTabIndex"
-              [table]="table"
-              [tables]="target"
-              [oppositeTableId]="source[sourceTabIndex].id"
-              [filteredFields]="getFilteredFields()"
-              [mappingConfig]="mappingConfig"
-              (open)="onPanelOpen(table)"
-              (close)="onPanelClose(table)"
-              (initialized)="onPanelInit(table)"
-            ></app-panel>
+        <mat-tab-group selectedIndex="{{targetTabIndex}}"
+                       (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
+          <mat-tab [label]="'similar'"
+                   *ngIf="similarTargetTable">
+            <app-panel #similarTargetPanel
+                       *ngIf="similarTargetTable.visible"
+                       [tabIndex]="targetTabIndex"
+                       [table]="similarTargetTable"
+                       [tables]="target"
+                       [oppositeTableId]="currentSourceTable.id"
+                       [filteredFields]="getFilteredFields()"
+                       [mappingConfig]="mappingConfig"
+                       (open)="onPanelOpen(similarTargetTable)"
+                       (close)="onPanelClose(similarTargetTable)"
+                       (initialized)="onPanelInit(similarTargetTable)"></app-panel>
+          </mat-tab>
+          <mat-tab>
+          <ng-template mat-tab-label>
+            <div class="drop-down-label" (wheel) = "onWheel($event, 'target')">
+              <div>{{selectedTargetTable.name}}</div>
+              <mat-icon (click)="openTablesDropdown($event.target, 'target')">arrow_drop_down</mat-icon>
+            </div>
+          </ng-template>
+            <app-panel #targetPanel
+                       *ngIf="selectedTargetTable.visible"
+                       [tabIndex]="targetTabIndex"
+                       [table]="selectedTargetTable"
+                       [tables]="target"
+                       [oppositeTableId]="currentSourceTable.id"
+                       [filteredFields]="getFilteredFields()"
+                       [mappingConfig]="mappingConfig"
+                       (open)="onPanelOpen(selectedTargetTable)"
+                       (close)="onPanelClose(selectedTargetTable)"
+                       (initialized)="onPanelInit(selectedTargetTable)"></app-panel>
           </mat-tab>
         </mat-tab-group>
         <mat-icon matTooltip="Filters applied"

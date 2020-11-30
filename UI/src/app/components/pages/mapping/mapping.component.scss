@@ -154,13 +154,13 @@ footer {
   }
 
   .mat-ink-bar {
-    background-color: $blue !important;
+    background-color: transparent !important;
     height: 3px;
   }
 
   .mat-tab-header {
     margin-bottom: 10px;
-    border-bottom: none;
+    border-bottom: none !important;
 
     .mat-elevation-z4 {
       box-shadow: none;
@@ -191,4 +191,10 @@ footer {
   .mat-tab-body-content {
     overflow-y: hidden;
   }
+
+  .drop-down-label{
+    display: flex;
+    align-items: center;
+  }
 }
+
