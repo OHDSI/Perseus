@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-close-dialog-button',
@@ -10,14 +10,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
     </div>
   `,
 })
-export class CloseDialogButtonComponent implements OnInit {
+export class CloseDialogButtonComponent {
 
   @Output()
   click = new EventEmitter<void>();
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }
