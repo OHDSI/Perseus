@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
@@ -7,14 +7,19 @@ import { UploadService } from '../../services/upload.service';
 import { Router } from '@angular/router';
 import { ScanDataComponent } from '../scan-data/scan-data.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DataService } from 'src/app/services/data.service';
+import { BaseComponent } from 'src/app/common/components/base/base.component';
+import { takeUntil } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
+import { Area } from 'src/app/models/area';
 
 
 @Component({
   selector: 'app-toolbar',
   styleUrls: [ './toolbar.component.scss' ],
-  templateUrl: './toolbar.component.html'
+  templateUrl: './toolbar.component.html',
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild('sourceUpload', { static: true }) fileInput: ElementRef;
   @ViewChild('mappingUpload', { static: true }) mappingInput: ElementRef;
 
@@ -27,8 +32,10 @@ export class ToolbarComponent implements OnInit {
     private uploadService: UploadService,
     private storeService: StoreService,
     private router: Router,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private dataService: DataService
   ) {
+    super();
   }
 
   ngOnInit() {
@@ -43,6 +50,10 @@ export class ToolbarComponent implements OnInit {
         this.uploadService.onFileInputClick(this.fileInput);
       }
     });
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
   goToComfy() {
@@ -88,6 +99,23 @@ export class ToolbarComponent implements OnInit {
 
   startOnBoarding(target: EventTarget) {
     this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
+  }
+
+  GenerateAndSave(){
+    const { source } = this.storeService.getMappedTables();
+
+    const areaRows = [];
+
+    const sourceTables = this.bridgeService.prepareTables(source, Area.Source, areaRows);
+
+    const mappingJSON = this.bridgeService.getMappingWithViewsAndGroups(sourceTables);
+
+    this.dataService
+      .getZippedXml(mappingJSON)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(file => {
+        saveAs(file);
+      });
   }
 
   scanData() {

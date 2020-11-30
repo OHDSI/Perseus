@@ -19,7 +19,14 @@ const ICON_NAMES = [ 'CDM_version',
   'edit',
   'delete',
   'scan_data',
-  'search'
+  'search',
+  'convert_data',
+  'generate_and_save',
+  'generate_fake',
+  'generate_report',
+  'generate_word',
+  'generate_html',
+  'generate_md'
 ];
 
 @Component({
