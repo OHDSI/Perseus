@@ -16,7 +16,7 @@ const CONCEPT_TABLES = [
 
 export const environment = {
   production: false,
-  url: 'http://10.110.1.7/api',
+  url: 'http://10.110.1.7/dev/api',
   conceptTables: CONCEPT_TABLES,
   config: '',
   whiteRabbitUrl: 'http://localhost:8000'

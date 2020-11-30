@@ -5,8 +5,8 @@ import { CommonUtilsService } from '../../services/common-utils.service';
 import { stateToInfo, StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { Router } from '@angular/router';
-import { ScanDataComponent } from '../scan-data/scan-data.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 
 
 @Component({
@@ -91,7 +91,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   scanData() {
-    this.matDialog.open(ScanDataComponent, {
+    this.matDialog.open(ScanDataDialogComponent, {
       width: '700',
       height: '674',
       disableClose: true,
