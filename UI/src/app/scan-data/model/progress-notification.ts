@@ -4,7 +4,8 @@ export enum ProgressNotificationStatusCode {
   SCAN_REPORT_GENERATED = 2,
   ERROR = 3,
   FAILED_TO_SCAN = 4,
-  NONE = 5
+  CANCELED = 5,
+  NONE = 6
 }
 
 export interface ProgressNotificationStatus {

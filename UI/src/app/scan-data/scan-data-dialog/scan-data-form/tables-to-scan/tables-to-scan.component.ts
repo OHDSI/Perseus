@@ -5,18 +5,15 @@ import {
   OnDestroy,
   OnInit,
   Renderer2,
-  Type,
   ViewChild
 } from '@angular/core';
 import { TableToScan } from '../../../model/table-to-scan';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ReplaySubject } from 'rxjs';
 import { ConnectionResult } from '../../../model/connection-result';
 import { takeUntil } from 'rxjs/operators';
 import { ScanParams } from '../../../model/scan-params';
 import { BaseComponent } from '../../../shared/base/base.component';
 import { ScanParamsComponent } from './scan-params/scan-params.component';
-import { not } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'app-tables-to-scan',
@@ -58,7 +55,8 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   private clickOutsideScanParamsListener: () => void;
 
   constructor(private formBuilder: FormBuilder,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -113,13 +111,13 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
         .listen('document', 'click', event => {
           const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
           const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
+          const dropdown = document.querySelector('.mat-select-panel');
 
-          // todo check click on material dropdown
-
-          if (notClickedInside && notClickedScanParamsButton) {
+          if (notClickedInside && notClickedScanParamsButton && dropdown === null) {
             this.showScanParamsPopup = false;
             this.clickOutsideScanParamsListener();
             this.clickOutsideScanParamsListener = null;
+            this.cdr.detectChanges();
           }
         });
     }

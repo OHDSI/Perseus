@@ -11,7 +11,7 @@ import { ConnectionResult } from '../../model/connection-result';
 import { TableToScan } from '../../model/table-to-scan';
 import { WhiteRabbitService } from '../../../services/white-rabbit.service';
 import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
 import { ScanParams } from '../../model/scan-params';
@@ -65,11 +65,11 @@ export class ScanDataFormComponent implements OnInit {
   onTestConnection(dbSettings: DbSettings): void {
     this.connecting = true;
     this.tablesToScanComponent.reset();
+
     this.whiteRabbitService.testConnection(dbSettings)
       .pipe(
         switchMap(connectionResult => {
           this.connectionResult = connectionResult;
-          this.connecting = false;
           if (connectionResult.canConnect) {
             this.sourceFormComponent.subscribeFormChange();
             return this.whiteRabbitService.tablesInfo(dbSettings);
@@ -77,6 +77,10 @@ export class ScanDataFormComponent implements OnInit {
             this.showErrorPopup(connectionResult.message);
             return of([]);
           }
+        }),
+        tap(() => {
+          this.connecting = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe(tablesToScan => {
@@ -86,8 +90,10 @@ export class ScanDataFormComponent implements OnInit {
       }, error => {
         this.tablesToScan = [];
         this.filteredTablesToScan = this.tablesToScan;
+        this.connectionResult = {canConnect: false, message: error.message};
         this.connecting = false;
         this.cdr.detectChanges();
+        this.showErrorPopup(this.connectionResult.message);
       });
   }
 
