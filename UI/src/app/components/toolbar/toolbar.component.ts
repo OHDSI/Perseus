@@ -5,13 +5,13 @@ import { CommonUtilsService } from '../../services/common-utils.service';
 import { stateToInfo, StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
 import { Router } from '@angular/router';
-import { ScanDataComponent } from '../scan-data/scan-data.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { BaseComponent } from 'src/app/common/components/base/base.component';
 import { takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
+import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 
 
 @Component({
@@ -119,7 +119,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   scanData() {
-    this.matDialog.open(ScanDataComponent, {
+    this.matDialog.open(ScanDataDialogComponent, {
       width: '700',
       height: '674',
       disableClose: true,
