@@ -65,6 +65,7 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.clickOutsideScanParamsListener) {
       this.clickOutsideScanParamsListener();
     }
