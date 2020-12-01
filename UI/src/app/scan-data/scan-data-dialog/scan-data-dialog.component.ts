@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { DbSettings } from '../model/db-settings';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ScanSettingsWrapper } from '../model/scan-settings-wrapper';
 
 @Component({
   selector: 'app-scan-data-dialog',
@@ -9,7 +9,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class ScanDataDialogComponent {
 
-  dbSettings: DbSettings;
+  scanSettings: ScanSettingsWrapper;
 
   selectedIndex = 0;
 
@@ -24,8 +24,8 @@ export class ScanDataDialogComponent {
     this.selectedIndex = 0;
   }
 
-  onScanTables(dbSettings: DbSettings): void {
-    this.dbSettings = dbSettings;
+  onScanTables(scanSettings: ScanSettingsWrapper): void {
+    this.scanSettings = scanSettings;
     this.selectedIndex = 1;
   }
 }

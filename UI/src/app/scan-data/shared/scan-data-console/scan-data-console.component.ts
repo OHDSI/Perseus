@@ -5,7 +5,6 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { DbSettings } from '../../model/db-settings';
 import { WhiteRabbitWebsocketService } from '../../../websocket/white-rabbit/white-rabbit-websocket.service';
 import { ProgressNotification, ProgressNotificationStatusCode } from '../../model/progress-notification';
 import { whiteRabbitPrefix, whiteRabbitUrl } from '../../../app.constants';
@@ -14,6 +13,7 @@ import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../u
 import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
+import { ScanSettingsWrapper } from '../../model/scan-settings-wrapper';
 
 @Component({
   selector: 'app-scan-data-console',
@@ -23,7 +23,7 @@ import { BaseComponent } from '../base/base.component';
 export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
   @Input()
-  dbSettings: DbSettings;
+  scanSettingsWrapper: ScanSettingsWrapper;
 
   @Output()
   cancel = new EventEmitter<void>();
@@ -45,8 +45,7 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
   private webSocketConfig = {
     url: whiteRabbitUrl,
-    prefix: whiteRabbitPrefix,
-    endPoint: '/scan-report/db'
+    prefix: whiteRabbitPrefix
   };
 
   private scannedTablesCount = -1;
@@ -57,7 +56,9 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.whiteRabbitWebsocketService.connect(this.webSocketConfig)
+    this.whiteRabbitWebsocketService.connect({
+      ...this.webSocketConfig, endPoint: this.scanSettingsWrapper.getScanServiceDestination()
+    })
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
@@ -87,7 +88,7 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
   private sendScanConfig(): void {
     this.whiteRabbitWebsocketService
-      .send('/scan-report/db', JSON.stringify(this.dbSettings));
+      .send(this.scanSettingsWrapper.getScanServiceDestination(), JSON.stringify(this.scanSettingsWrapper.scanSettings));
   }
 
   private subscribeOnProgressMessages(): void {
@@ -108,7 +109,7 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
           }
           case ProgressNotificationStatusCode.TABLE_SCANNING: {
             this.scannedTablesCount++;
-            this.progressValue = this.scannedTablesCount / this.dbSettings.tablesToScanCount * 100;
+            this.progressValue = this.scannedTablesCount / this.scanSettingsWrapper.scanSettings.itemsToScanCount * 100;
             this.showNotificationMessage(notification);
             break;
           }

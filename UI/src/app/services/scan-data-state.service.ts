@@ -3,22 +3,39 @@ import { DbSettings } from '../scan-data/model/db-settings';
 import { TableToScan } from '../scan-data/model/table-to-scan';
 import { ConnectionResult } from '../scan-data/model/connection-result';
 import { ScanParams } from '../scan-data/model/scan-params';
+import { DelimitedTextFileSettings } from '../scan-data/model/delimited-text-file-settings';
+import { FileToScan } from '../scan-data/model/file-to-scan';
 
 export interface ScanDataState {
+  dataType: string;
   dbSettings: DbSettings;
+  fileSettings: DelimitedTextFileSettings;
   scanParams: ScanParams;
   tablesToScan: TableToScan[];
   filteredTablesToScan: TableToScan[];
+  filesToScan: FileToScan[];
   connectionResult: ConnectionResult;
 }
 
 const initialState: ScanDataState = {
+  // dataType: null
+  // dbSettings: {
+  //   dbType: null,
+  //   server: null,
+  //   user: null,
+  //   password: null,
+  //   database: null,
+  // },
+  dataType: 'CSV files',
   dbSettings: {
-    dbType: null,
-    server: null,
-    user: null,
-    password: null,
-    database: null,
+    server: '822JNJ16S03V',
+    user: 'cdm_builder',
+    password: 'builder1!',
+    database: 'CPRD',
+  },
+  fileSettings: {
+    fileType: null,
+    delimiter: ','
   },
   scanParams: {
     sampleSize: 100e3,
@@ -30,6 +47,7 @@ const initialState: ScanDataState = {
   },
   tablesToScan: [],
   filteredTablesToScan: [],
+  filesToScan: [],
   connectionResult: null
 };
 
@@ -38,41 +56,17 @@ const initialState: ScanDataState = {
 })
 export class ScanDataStateService {
 
-  private dbSettings: DbSettings;
-
-  private scanParams: ScanParams;
-
-  private tablesToScan: TableToScan[];
-
-  private filteredTablesToScan: TableToScan[];
-
-  private connectionResult: ConnectionResult;
+  private scanDataState: ScanDataState;
 
   get state() {
-    return {
-      dbSettings: this.dbSettings,
-      scanParams: this.scanParams,
-      tablesToScan: this.tablesToScan,
-      filteredTablesToScan: this.filteredTablesToScan,
-      connectionResult: this.connectionResult
-    };
+    return this.scanDataState;
   }
 
   set state(state: ScanDataState) {
-    this.dbSettings = state.dbSettings;
-    this.scanParams = state.scanParams;
-    this.tablesToScan = state.tablesToScan;
-    this.filteredTablesToScan = state.filteredTablesToScan;
-    this.connectionResult = state.connectionResult;
+    this.scanDataState = state;
   }
 
   constructor() {
-    const state: ScanDataState = Object.assign({}, initialState);
-
-    this.dbSettings = state.dbSettings;
-    this.scanParams = state.scanParams;
-    this.tablesToScan = state.tablesToScan;
-    this.filteredTablesToScan = state.filteredTablesToScan;
-    this.connectionResult = state.connectionResult;
+    this.scanDataState = Object.assign({}, initialState) as ScanDataState;
   }
 }
