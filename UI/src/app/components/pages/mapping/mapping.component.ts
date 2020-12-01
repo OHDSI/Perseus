@@ -86,6 +86,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
   @ViewChild('sourcePanel') sourcePanel: PanelComponent;
   @ViewChild('targetPanel') targetPanel: PanelComponent;
+  @ViewChild('sourcePanelSimilar') sourcePanelSimilar: PanelComponent;
+  @ViewChild('targetPanelSimilar') targetPanelSimilar: PanelComponent;
 
   constructor(
     private stateService: StateService,
@@ -224,65 +226,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return { upperLimit, lowerLimit };
   }
 
-  getSimilarTable(){
-    return this.source.filter(item=>item.name ==='similar');
-  }
-
-  checkIncludesRows(rows, row) {
-    return !!rows.find(r => {
-      return (
-        r.name === row.name ||
-        (this.similarNamesMap[ r.name ] === this.similarNamesMap[ row.name ]) &&
-        (this.similarNamesMap[ r.name ] || this.similarNamesMap[ row.name ])
-      );
-    });
-  }
-
-  collectSimilarRows(rows, area, similarRows) {
-    const rowsKey = `${area}Rows`;
-    rows.forEach(row => {
-      if (!row.grouppedFields || !row.grouppedFields.length) {
-
-        if (!this.checkIncludesRows(this[ rowsKey ], row)) {
-          this[ rowsKey ].push(row);
-          return;
-        }
-
-        if (!this.checkIncludesRows(similarRows, row)) {
-          const rowName = this.similarNamesMap[ row.name ] ? this.similarNamesMap[ row.name ] : row.name;
-          const rowForSimilar = {
-            ...row,
-            name: rowName,
-            id: similarRows.length,
-            tableName: this.similarTableName,
-            tableId: this.storeService.state[ area ].length
-          };
-          similarRows.push(rowForSimilar);
-        }
-
-      }
-    });
+  getSimilarTable() {
+    return this.source.filter(item => item.name === 'similar' );
   }
 
   prepareTables(data, area) {
-    const similarRows = [];
-
-    const tables = data.map(table => {
-      this.collectSimilarRows(table.rows, area, similarRows);
-      return new Table(table);
-    });
-
-    if (similarRows.length) {
-      const similarSourceTable = new Table({
-        id: this.storeService.state[ area ].length,
-        area,
-        name: this.similarTableName,
-        rows: similarRows
-      });
-      tables.push(similarSourceTable);
-    }
-
-    this[ area ] = tables;
+    const rowsKey = `${area}Rows`;
+    this[ area ] = this.bridgeService.prepareTables(data, area, this[ rowsKey ]);
   }
 
   prepareMappedTables(mappingConfig) {
@@ -521,15 +471,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   generateMappingJson() {
-    const mappingJSON = this.bridgeService.generateMapping();
-
-    this.source.forEach(source => {
-      addViewsToMapping(mappingJSON, source);
-    });
-
-    this.source.forEach(source => {
-      addGroupMappings(mappingJSON, source);
-    });
+    const mappingJSON = this.bridgeService.getMappingWithViewsAndGroups(this.source);
 
     this.dataService
       .getZippedXml(mappingJSON)
@@ -608,11 +550,21 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const wait = new Promise((resolve, reject) => {
       setTimeout(() => {
         if (area === 'source') {
-          this.bridgeService.refresh(this.selectedSourceTable);
-          this.sourcePanel.panel.refreshPanel();
+          if (index === 0 && this.similarSourceTable) {
+            this.sourcePanelSimilar.panel.table = this.similarSourceTable;
+            this.sourcePanelSimilar.panel.refreshPanel();
+            this.targetPanel.panel.refreshPanel(true);
+          } else {
+            this.refreshSourcePanel(this.selectedSourceTable);
+          }
         } else {
-          this.bridgeService.refresh(this.selectedTargetTable);
-          this.targetPanel.panel.refreshPanel(true);
+          if (index === 0 && this.similarTargetTable) {
+            this.targetPanelSimilar.panel.table = this.similarSourceTable;
+            this.targetPanelSimilar.panel.refreshPanel();
+          } else {
+            this.refreshTargetPanel(this.selectedTargetTable);
+          }
+
         }
         resolve();
       }, 1000);

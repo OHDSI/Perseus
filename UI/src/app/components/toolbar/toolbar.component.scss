@@ -24,3 +24,15 @@ mat-toolbar.app-toolbar {
 .new-mapping {
   opacity: 0.6;
 }
+
+div[id="cdk-overlay-1"] {
+  transform: translateY(0px) !important;
+}
+
+div[id="cdk-overlay-2"] {
+  transform: translateY(0px) !important;
+}
+
+div[id="cdk-overlay-3"] {
+  transform: translateY(0px) !important;
+}
