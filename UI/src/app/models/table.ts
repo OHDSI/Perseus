@@ -8,6 +8,7 @@ export interface ITable {
   rows: IRow[];
   visible: boolean;
   sql: string;
+  cloneName: string;
 }
 
 
@@ -18,6 +19,7 @@ export interface ITableOptions {
   rows?: IRow[];
   visible?: boolean;
   sql?: string;
+  cloneName?: string;
 }
 
 export class Table {
@@ -27,6 +29,7 @@ export class Table {
   rows: IRow[];
   visible = true;
   sql: string;
+  cloneName: string;
 
   constructor(options: ITableOptions = {}) {
     this.id = options.id;
@@ -35,5 +38,6 @@ export class Table {
     this.rows = options.rows ? options.rows.map((row: any) => new Row(row)) : [];
     this.visible = options.visible || true;
     this.sql = options.sql || '';
+    this.cloneName = options.cloneName;
   }
 }

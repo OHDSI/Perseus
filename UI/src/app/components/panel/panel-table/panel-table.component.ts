@@ -91,6 +91,7 @@ export class PanelTableComponent extends BaseComponent
   connectortype = {};
   expandedElement: any = undefined;
   groupDialogOpened = false;
+  cloneName = 'test';
 
   constructor(
     private bridgeService: BridgeService,
