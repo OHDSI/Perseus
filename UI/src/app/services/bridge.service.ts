@@ -11,11 +11,13 @@ import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
 import { Configuration } from '../models/configuration';
 import { IConnector } from '../models/interface/connector.interface';
 import { MappingService } from '../models/mapping-service';
-import { ITable } from '../models/table';
+import { ITable, Table } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import * as similarNamesMap from '../components/pages/mapping/similar-names-map.json';
+import { addGroupMappings, addViewsToMapping } from '../models/mapping-service';
+import { similarTableName } from '../app.constants';
 
 export interface IConnection {
   source: IRow;
@@ -112,6 +114,7 @@ export class BridgeService {
   deleteAll = new Subject();
 
   similarNamesMap = (similarNamesMap as any).default;
+  similarTableName = similarTableName;
 
   tables = {};
 
@@ -597,4 +600,75 @@ export class BridgeService {
   saveChangesInGroup(groupTableName: string, rows: IRow[]) {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
+
+  getMappingWithViewsAndGroups(sourceTables: any){
+    const mappingJSON = this.generateMapping();
+
+    sourceTables.forEach(source => {
+      addViewsToMapping(mappingJSON, source);
+    });
+
+    sourceTables.forEach(source => {
+      addGroupMappings(mappingJSON, source);
+    });
+
+    return mappingJSON;
+  }
+
+  prepareTables(data, area, areaRows) {
+    const similarRows = [];
+
+    const tables = data.map(table => {
+      this.collectSimilarRows(table.rows, area, areaRows, similarRows);
+      return new Table(table);
+    });
+
+    if (similarRows.length) {
+      const similarSourceTable = new Table({
+        id: this.storeService.state[ area ].length,
+        area,
+        name: this.similarTableName,
+        rows: similarRows
+      });
+      tables.push(similarSourceTable);
+    }
+
+    return tables;
+  }
+
+  collectSimilarRows(rows, area, areaRows, similarRows) {
+    rows.forEach(row => {
+      if (!row.grouppedFields || !row.grouppedFields.length) {
+
+        if (!this.checkIncludesRows(areaRows, row)) {
+          areaRows.push(row);
+          return;
+        }
+
+        if (!this.checkIncludesRows(similarRows, row)) {
+          const rowName = this.similarNamesMap[ row.name ] ? this.similarNamesMap[ row.name ] : row.name;
+          const rowForSimilar = {
+            ...row,
+            name: rowName,
+            id: similarRows.length,
+            tableName: this.similarTableName,
+            tableId: this.storeService.state[ area ].length
+          };
+          similarRows.push(rowForSimilar);
+        }
+
+      }
+    });
+  }
+
+  checkIncludesRows(rows, row) {
+    return !!rows.find(r => {
+      return (
+        r.name === row.name ||
+        (this.similarNamesMap[ r.name ] === this.similarNamesMap[ row.name ]) &&
+        (this.similarNamesMap[ r.name ] || this.similarNamesMap[ row.name ])
+      );
+    });
+  }
+
 }
