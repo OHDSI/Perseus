@@ -208,3 +208,11 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
     padding-bottom: 15px !important;
   }
 }
+
+.condition-text{
+  margin-bottom: 20px;
+  
+  .CodeMirror.cm-s-default{
+      height: 130px;
+  }
+}

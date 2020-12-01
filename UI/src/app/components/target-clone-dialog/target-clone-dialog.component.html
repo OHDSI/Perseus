@@ -1,0 +1,45 @@
+<h3>Add Condition</h3>
+  <mat-icon class="close"
+            mat-dialog-close>close
+  </mat-icon>
+  <div class="flex">
+      <span class="margin">Apply</span>
+      <span class="margin">{{tableName}}</span>
+      <span class="margin upper-blue">if</span>
+      <span class="margin">expression below</span>
+      <span class="margin upper-blue">is true</span>
+  </div>
+<div [formGroup]="conditionForm">
+    <section class="condition-text"
+             cdkDropList
+             #editorArea="cdkDropList"
+             (cdkDropListDropped)="drop($event)">
+      <label>Conditional Expression</label>
+      <textarea #editor></textarea>
+    </section>
+    <section>
+      <label>Available Fields</label>
+      <mat-chip-list #tables="cdkDropList"
+                     cdkDropList
+                     cdkDropListSortingDisabled
+                     [cdkDropListData]="chips"
+                     [cdkDropListConnectedTo]="[editorArea]"
+                     class="table-name  height-85">
+        <mat-chip class="table-box"
+                  cdkDrag
+                  *ngFor="let chip of chips">
+          {{chip}}
+        </mat-chip>
+      </mat-chip-list>
+    </section>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-dialog-close
+            mat-flat-button>
+      Reset
+    </button>
+    <button mat-flat-button
+            color="accent">
+      Apply
+    </button>
+  </div>

@@ -66,6 +66,7 @@ import { LookupComponent } from './components/vocabulary-transform-configurator/
 import { ScanDataModule } from './scan-data/scan-data.module';
 import { ErrorPopupComponent } from './components/popups/error-popup/error-popup.component';
 import { SelectTableDropdownComponent } from './components/popups/select-table-dropdown/select-table-dropdown.component';
+import { TargetCloneDialogComponent } from './components/target-clone-dialog/target-clone-dialog.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { SelectTableDropdownComponent } from './components/popups/select-table-d
     SqlTransformationComponent,
     LookupComponent,
     ErrorPopupComponent,
-    SelectTableDropdownComponent
+    SelectTableDropdownComponent,
+    TargetCloneDialogComponent
   ],
   imports: [
     BrowserModule,

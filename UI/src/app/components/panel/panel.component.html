@@ -18,9 +18,10 @@
   <a id="createGroup">Test</a>
   <div class="margin-left">
   <a id="clone">Clone</a>
-  <mat-icon class="info-icon"
-            (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>
-  <a id="condition" class="condition">Add Condition</a> 
+  <mat-icon class="info-icon">info</mat-icon>
+  <a id="condition" 
+     class="condition"
+     (click)="openCloneDialog()">Add Condition</a> 
   </div>     
 </div>
 <app-area [area]="area">
