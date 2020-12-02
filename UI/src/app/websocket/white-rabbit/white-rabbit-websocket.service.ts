@@ -45,7 +45,7 @@ export class WhiteRabbitWebsocketService implements WebsocketService, OnDestroy 
     };
 
     this.stompClient.onWebSocketClose = event => {
-      if (event.code !== 1000) { // Normal close
+      if (event.code !== 1000) { // 1000 = Normal close
         fromPromise(this.stompClient.deactivate())
           .subscribe(() => this.connection$.error(event));
       }
