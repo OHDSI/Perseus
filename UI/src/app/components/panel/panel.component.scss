@@ -16,6 +16,10 @@
   display: flex;
 }
 
+.margin-left{
+  margin-left: auto;
+}
+
 .create-group-disabled{
   cursor: not-allowed;
   opacity: 0.5;
@@ -26,5 +30,10 @@
   color: #066BBB;
   font-size: 15px;
   cursor: pointer;
+  margin-left: 3px;
+}
+
+.condition{
+  margin-left: 10px;
 }
 

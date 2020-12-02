@@ -202,3 +202,22 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
     padding: 0;
   }
 }
+
+.filter-by-name{
+  .mat-form-field-wrapper {
+    padding-bottom: 15px !important;
+  }
+}
+
+.condition-text{
+  margin-bottom: 20px;
+  
+  .CodeMirror.cm-s-default{
+      height: 130px;
+  }
+}
+
+div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
+  transform: translateY(0px) !important;
+}
+

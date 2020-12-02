@@ -10,6 +10,7 @@ import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { StoreService } from '../../services/store.service';
 import { CommonUtilsService } from 'src/app/services/common-utils.service';
+import { TargetCloneDialogComponent } from '../target-clone-dialog/target-clone-dialog.component';
 
 @Component({
   selector: 'app-panel',
@@ -50,7 +51,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private bridgeService: BridgeService,
     private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
-    private commonUtilsService: CommonUtilsService
+    private commonUtilsService: CommonUtilsService,
+    private matDialog: MatDialog
   ) {
     this.initializing = true;
   }
@@ -151,5 +153,15 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
   openOnBoardingTip(target: EventTarget) {
     this.commonUtilsService.openOnBoardingTip(target, 'create-group');
+  }
+
+  openCloneDialog(data) {
+
+    const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'sql-editor-dialog',
+      data : {table: this.table}
+    });
   }
 }
