@@ -290,8 +290,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         this.reportLoading = res;
         this.snackBar.open('New source schema loaded', ' DISMISS ');
       });
-
-    this.scanData();
   }
 
   initializeSourceData() {

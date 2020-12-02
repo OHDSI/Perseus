@@ -2,11 +2,13 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Observer} from 'rxjs';
 import { WebsocketService } from '../webscoket.service';
 import { distinctUntilChanged, share } from 'rxjs/operators';
-import { Stomp } from '@stomp/stompjs';
+import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import { CompatClient } from '@stomp/stompjs/esm6/compatibility/compat-client';
 import { WebsocketModule } from '../websocket.module';
 import { WebsocketConfig } from '../websocket.config';
+import { isProd } from '../../app.constants';
+import { Client } from '@stomp/stompjs/esm6/client';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Injectable({
   providedIn: WebsocketModule
@@ -17,7 +19,7 @@ export class WhiteRabbitWebsocketService implements WebsocketService, OnDestroy 
 
   private connection$: Observer<boolean>;
 
-  private stompClient: CompatClient;
+  private stompClient: Client;
 
   private websocketConfig: WebsocketConfig;
 
@@ -27,31 +29,37 @@ export class WhiteRabbitWebsocketService implements WebsocketService, OnDestroy 
 
   ngOnDestroy(): void {
     if (this.stompClient && this.stompClient.active) {
-      this.stompClient.disconnect();
-    }
-
-    if (this.connection$ && !this.connection$.closed) {
-      this.connection$.complete();
+      this.disconnect();
     }
   }
 
   connect(config: WebsocketConfig): Observable<boolean> {
     this.websocketConfig = config;
+
     this.initStompClient();
 
-    this.stompClient.connect({}, frame => {
-      this.connection$.next(true);
-    }, error => {
-      this.connection$.next(false);
-    });
+    this.stompClient.activate();
+
+    this.stompClient.onConnect = (frame: IFrame) => {
+      this.connection$.next(frame.command === 'CONNECTED');
+    };
+
+    this.stompClient.onWebSocketClose = event => {
+      if (event.code !== 1000) { // Normal close
+        fromPromise(this.stompClient.deactivate())
+          .subscribe(() => this.connection$.error(event));
+      }
+    };
 
     return this.status$;
   }
 
   disconnect() {
-    this.stompClient.disconnect();
-    this.connection$.next(false);
-    this.connection$.complete();
+    fromPromise(this.stompClient.deactivate())
+      .subscribe(() => {
+        this.connection$.next(false);
+        this.connection$.complete();
+      });
   }
 
   on(destination: string): Observable<string> {
@@ -64,15 +72,28 @@ export class WhiteRabbitWebsocketService implements WebsocketService, OnDestroy 
 
   send(destination: string, data: string): void {
     const {prefix} = this.websocketConfig;
-    this.stompClient.send(prefix + destination, {}, data);
+
+    this.stompClient.publish({
+      destination: prefix + destination,
+      body: data
+    });
   }
 
   private initStompClient(): void {
     const {url, prefix, endPoint} = this.websocketConfig;
-    const socket = new SockJS(url + prefix + endPoint);
-    this.stompClient = Stomp.over(socket);
-    this.stompClient.debug = msg => {
-    };
+
+    this.stompClient = Stomp.over(() => {
+      return new SockJS(url + prefix + endPoint);
+    });
+
+    this.stompClient.splitLargeFrames = true;
+
+    // todo reconnect
+    // this.stompClient.reconnectDelay = 1000;
+
+    if (isProd) {
+      this.stompClient.debug = msg => {};
+    }
   }
 
   private initStatusStream(): void {

@@ -33,6 +33,8 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
   scanningFinished = false;
 
+  scanningStarted = false;
+
   progressNotifications: ProgressNotification[] = [];
 
   // Percent
@@ -62,13 +64,21 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(result => {
-        if (result) {
-          this.sendScanConfig();
-          this.subscribeOnProgressMessages();
-          this.subscribeOnScanReport();
+      .subscribe(
+        result => {
+          if (result && !this.scanningStarted) {
+            this.scanningStarted = true;
+            this.sendScanConfig();
+            this.subscribeOnProgressMessages();
+            this.subscribeOnScanReport();
+          }
+        }, error => {
+          this.showNotificationMessage({
+            message: `Error: ${error.reason}`,
+            status: null
+          });
         }
-      });
+      );
   }
 
   onAbortAndCancel() {

@@ -18,20 +18,13 @@ export interface ScanDataState {
 }
 
 const initialState: ScanDataState = {
-  // dataType: null
-  // dbSettings: {
-  //   dbType: null,
-  //   server: null,
-  //   user: null,
-  //   password: null,
-  //   database: null,
-  // },
-  dataType: 'CSV files',
+  dataType: null,
   dbSettings: {
-    server: '822JNJ16S03V',
-    user: 'cdm_builder',
-    password: 'builder1!',
-    database: 'CPRD',
+    dbType: null,
+    server: null,
+    user: null,
+    password: null,
+    database: null,
   },
   fileSettings: {
     fileType: null,

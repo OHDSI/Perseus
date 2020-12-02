@@ -56,9 +56,12 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
   ];
 
   get fileInputText() {
-    return this.filesToScan
+    const result = this.filesToScan
       .map(fileToScan => fileToScan.fileName)
       .join(', ');
+
+    // 37 - max length
+    return result.length > 37 ? result.substring(0, 37) + '...' : result;
   }
 
   private dataTypeChange$ = new Subject<string>();
@@ -133,7 +136,7 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
 
     if (disabled) {
       this.subscribeOnDataTypeChange(this.fileSettingsForm, [
-        'files', 'delimiter'
+        'delimiter'
       ]);
     }
 
