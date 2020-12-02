@@ -14,9 +14,11 @@ import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/c
 import { CloseDialogButtonComponent } from './shared/close-dialog-button/close-dialog-button.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
-import { DbConnectFromComponent } from './shared/db-connect-form/db-connect-from.component';
+import { ConnectFormComponent } from './shared/connect-form/connect-form.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ClickOutsideDirective } from './shared/click-outside/click-outside.directive';
+import { DbSettingsFormComponent } from './shared/connect-form/db-settings-form/db-settings-form.component';
+import { FileSettingsFormComponent } from './shared/connect-form/file-settings-form/file-settings-form.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +31,10 @@ import { ClickOutsideDirective } from './shared/click-outside/click-outside.dire
     ConnectionErrorPopupComponent,
     CloseDialogButtonComponent,
     ScanDataDialogComponent,
-    DbConnectFromComponent,
-    ClickOutsideDirective
+    ConnectFormComponent,
+    ClickOutsideDirective,
+    DbSettingsFormComponent,
+    FileSettingsFormComponent
   ],
   imports: [
     CommonModule,

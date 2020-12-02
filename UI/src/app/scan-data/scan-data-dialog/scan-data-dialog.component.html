@@ -11,7 +11,7 @@
 
     <ng-template #scanProgressBlock>
       <app-scan-data-console style="width: 100%"
-                             [dbSettings]="dbSettings"
+                             [scanSettingsWrapper]="scanSettings"
                              (cancel)="onScanningCancel()"
                              (close)="onClose()"></app-scan-data-console>
     </ng-template>

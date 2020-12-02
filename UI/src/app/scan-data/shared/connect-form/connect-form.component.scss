@@ -1,4 +1,7 @@
 .source-form {
+  display: flex;
+  flex-direction: column;
+
   width: 296px;
   height: 485px;
 
@@ -13,7 +16,6 @@
     border-bottom: 1px solid rgba(#066BBB, 0.1);
     border-radius: 2px;
 
-    margin-bottom: 18px;
     padding-left: 9px;
 
     &-name {
@@ -40,8 +42,15 @@
     }
   }
 
+  .mat-form-field {
+    margin: 15px 9px 0 9px;
+  }
+
   &__test-connection {
-    margin-top: 81px;
+    box-sizing: content-box;
+    height: 54px;
+    margin-top: auto;
+    padding-bottom: 23px;
     display: flex;
     flex-direction: column;
     align-items: center;

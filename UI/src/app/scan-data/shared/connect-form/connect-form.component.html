@@ -1,0 +1,49 @@
+<div class="source-form">
+  <div class="source-form__header">
+    <div class="source-form__header-number scan-step">
+      <h5 class="scan-step__number">1</h5>
+    </div>
+    <h5 class="source-form__header-name">Source Data Location</h5>
+  </div>
+
+  <mat-form-field class="source-form-control scan-data-form-control" floatLabel="never" appearance="none">
+    <label>Data type</label>
+    <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
+      <mat-option *ngFor="let type of dataTypes" [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <app-db-settings-form [form]="dbSettingsForm" *ngIf="isDbSettings; else delimitedFileBlock"></app-db-settings-form>
+
+  <ng-template #delimitedFileBlock>
+    <app-file-settings-form [form]="fileSettingsForm"
+                            [fileInputText]="fileInputText"
+                            (fileToScanChanged)="filesToScan = $event"></app-file-settings-form>
+  </ng-template>
+
+  <div class="source-form__test-connection">
+    <button class="source-form__test-connection-submit-button" type="submit" (click)="onSubmit()"
+            [disabled]="testConnectionDisabled">
+      Test Connection
+    </button>
+
+    <div class="source-form__test-connection-result" [hidden]="!connectionResult">
+      <div class="source-form__test-connection-result-success" *ngIf="connectionResult && connectionResult.canConnect; else errorBlock">
+        <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.81353 7.10067L0.968732 4.30201L0 5.24832L3.81353 9L12 0.946309L11.0381 0L3.81353 7.10067Z" fill="#42980E"/>
+        </svg>
+        <span>Connected</span>
+      </div>
+      <ng-template #errorBlock>
+        <div class="source-form__test-connection-result-error">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 1.00714L8.99286 0L5 3.99286L1.00714 0L0 1.00714L3.99286 5L0 8.99286L1.00714 10L5 6.00714L8.99286 10L10 8.99286L6.00714 5L10 1.00714Z" fill="#FF4646"/>
+          </svg>
+          <span>Connection failed</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

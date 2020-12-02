@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 export async function base64ToBlob(base64: string): Promise<Blob> {
   const response = await fetch(base64);
@@ -11,16 +12,7 @@ export async function base64ToFile(base64: string, fileName: string): Promise<Fi
 }
 
 export function base64ToFileAsObservable(base64: string, fileName: string): Observable<File> {
-  return new Observable<File>(subscriber => {
-    base64ToFile(base64, fileName)
-      .then(file => {
-        subscriber.next(file);
-        subscriber.complete();
-      })
-      .catch(error =>
-        subscriber.error(error)
-      );
-  });
+  return fromPromise(base64ToFile(base64, fileName));
 }
 
 export enum MediaType {
@@ -30,3 +22,18 @@ export enum MediaType {
 export function getBase64Header(mediaType: string): string {
   return `data:${mediaType};base64,`;
 }
+
+export const fileToBase64 = file => new Promise<{fileName: string, base64: string}>((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve({
+    fileName: file.name,
+    base64: reader.result as string
+  });
+  reader.onerror = error => reject(error);
+});
+
+export function fileToBase64AsObservable(file: File): Observable<{fileName: string, base64: string}> {
+  return fromPromise(fileToBase64(file));
+}
+
