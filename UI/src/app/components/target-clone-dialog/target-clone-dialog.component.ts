@@ -46,7 +46,6 @@ export class TargetCloneDialogComponent implements OnInit {
 
   initCodeMirror() {
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-    this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
     this.codeMirror.on('change', this.onChange.bind(this));
     setInterval(() => { this.codeMirror.refresh(); }, 250);
   }
@@ -63,10 +62,6 @@ export class TargetCloneDialogComponent implements OnInit {
 
   onChange(cm, event) {
     this.data.table.condition = this.editorContent;
-  }
-
-  onCursorActivity(cm, event) {
-    // this.sqlForm.markAsTouched();
   }
 
 }

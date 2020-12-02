@@ -217,15 +217,7 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   }
 }
 
-div[id="cdk-overlay-1"] {
-  transform: translateY(0px) !important;
-}
-
-div[id="cdk-overlay-2"] {
-  transform: translateY(0px) !important;
-}
-
-div[id="cdk-overlay-3"] {
+div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
   transform: translateY(0px) !important;
 }
 

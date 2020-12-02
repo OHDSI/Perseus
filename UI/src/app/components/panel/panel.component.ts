@@ -163,11 +163,5 @@ export class PanelComponent implements OnInit, AfterViewInit {
       panelClass: 'sql-editor-dialog',
       data : {table: this.table}
     });
-
-    matDialog.afterClosed().subscribe(res => {
-      if (res) {
-      }
-    }
-    );
   }
 }
