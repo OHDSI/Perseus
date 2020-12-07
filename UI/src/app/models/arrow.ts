@@ -50,10 +50,21 @@ export class Arrow implements IConnector {
   }
 
   draw(): void {
-    const source = this.checkAndChangeHtmlElement(this.source);
-    const target = this.checkAndChangeHtmlElement(this.target);
 
-    // TODO Check htmlElement for existance
+    let source;
+    let target;
+
+    if (!this.target.cloneDisabled) {
+      source = this.checkAndChangeHtmlElement(this.source);
+      target = this.checkAndChangeHtmlElement(this.target);
+
+    } else {
+      source = this.source;
+      target = this.target;
+
+    }
+
+      // TODO Check htmlElement for existance
     this.sourceSVGPoint = getSVGPoint(source, this.canvas);
     this.targetSVGPoint = getSVGPoint(target, this.canvas);
 

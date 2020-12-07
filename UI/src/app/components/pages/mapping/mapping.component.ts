@@ -317,7 +317,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
 
     this.similarTargetTable = this.target.find(item => item.name === 'similar');
-    this.selectedTargetTable = this.getEnabledTargetTables()[0];
+    const selectedTarget = this.getEnabledTargetTables()[0];
+
+    if (this.storeService.state.targetClones[ selectedTarget.name ]) {
+      const enabledClone = this.storeService.state.targetClones[ selectedTarget.name ].
+        find(item => item.rows[ 0 ].cloneDisabled === false);
+      this.selectedTargetTable = enabledClone ? enabledClone : this.getEnabledTargetTables()[ 0 ];
+    } else {
+      this.selectedTargetTable = this.getEnabledTargetTables()[ 0 ];
+    }
 
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
     this.target.find(item => item.name === 'similar') ? 4 : 3 : 2
@@ -364,8 +372,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openTablesDropdown(target: any, area: string){
-    const data = area === 'source' ? { tables: this.sourceTablesWithoutSimilar, selected: this.selectedSourceTable } :
-    { tables: this.getEnabledTargetTables(), selected: this.selectedTargetTable };
+    const data = area === 'source' ? {
+      tables: this.sourceTablesWithoutSimilar,
+      selected: this.selectedSourceTable,
+      uppercase : true} :
+    { tables: this.getEnabledTargetTables(), selected: this.selectedTargetTable, uppercase : true };
 
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
@@ -423,6 +434,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
       this.refreshTargetPanel(this.getEnabledTargetTables()[ newIndex ]);
     }
+  }
+
+  changeTargetClone(table: any) {
+    this.bridgeService.hideAllArrows();
+    this.refreshTargetPanel(table);
   }
 
   ngOnDestroy() {
@@ -554,18 +570,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             this.sourcePanelSimilar.panel.table = this.similarSourceTable;
             this.sourcePanelSimilar.panel.refreshPanel();
             this.targetPanel.panel.refreshPanel(true);
-          } else {
-            this.refreshSourcePanel(this.selectedSourceTable);
           }
         } else {
           if (index === 0 && this.similarTargetTable) {
-            this.targetPanelSimilar.panel.table = this.similarSourceTable;
+            this.targetPanelSimilar.panel.table = this.similarTargetTable;
             this.targetPanelSimilar.panel.refreshPanel();
-          } else {
-            this.refreshTargetPanel(this.selectedTargetTable);
           }
-
         }
+        this.refreshSourcePanel(this.selectedSourceTable);
+        this.refreshTargetPanel(this.selectedTargetTable);
         resolve();
       }, 1000);
     });

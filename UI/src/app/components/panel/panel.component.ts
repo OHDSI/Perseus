@@ -11,6 +11,11 @@ import { Criteria } from '../../common/components/search-by-name/search-by-name.
 import { StoreService } from '../../services/store.service';
 import { CommonUtilsService } from 'src/app/services/common-utils.service';
 import { TargetCloneDialogComponent } from '../target-clone-dialog/target-clone-dialog.component';
+import { cloneDeep } from 'src/app/infrastructure/utility';
+import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-dialog.component';
+import { SelectTableDropdownComponent } from '../popups/select-table-dropdown/select-table-dropdown.component';
+import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
 
 @Component({
   selector: 'app-panel',
@@ -29,6 +34,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   @Output() close = new EventEmitter();
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
+  @Output() changeClone = new EventEmitter<any>();
 
   @ViewChild('panel') panel: PanelTableComponent;
 
@@ -52,7 +58,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
     private commonUtilsService: CommonUtilsService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private overlayService: OverlayService
   ) {
     this.initializing = true;
   }
@@ -155,7 +162,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.commonUtilsService.openOnBoardingTip(target, 'create-group');
   }
 
-  openCloneDialog(data) {
+  openConditionDialog(data) {
 
     const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
       closeOnNavigation: false,
@@ -164,4 +171,107 @@ export class PanelComponent implements OnInit, AfterViewInit {
       data : {table: this.table}
     });
   }
+
+  createClone() {
+    const existingCloneNames = this.getTableCloneNames();
+    const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
+      closeOnNavigation: false,
+      disableClose: true,
+      panelClass: 'cdm-version-dialog',
+      data: {
+        header: 'Clone Mapping',
+        label: 'Name',
+        okButton: 'Clone',
+        type: 'input',
+        existingNames: existingCloneNames,
+        errorMessage: 'This name already exists'
+      }
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (res.action) {
+
+        const cloneTargetTable = cloneDeep(this.table) as ITable;
+        cloneTargetTable.cloneName = res.value;
+        const cloneTableId = this.storeService.state.targetClones[ this.table.name ] ?
+          this.storeService.state.target.length + this.storeService.state.targetClones[ this.table.name ].length : this.storeService.state.target.length;
+        cloneTargetTable.id = cloneTableId;
+        cloneTargetTable.rows.forEach(item => {
+          item.tableId = cloneTableId;
+          item.htmlElement = null;
+          item.cloneTableName = cloneTargetTable.cloneName;
+          item.cloneDisabled = true;
+        });
+        if (!this.storeService.state.targetClones[ this.table.name ]) {
+          this.storeService.state.targetClones[ this.table.name ] = [ cloneTargetTable ];
+          this.table.cloneName = 'Default';
+          this.table.rows.forEach(element => {
+            element.cloneDisabled = false;
+            element.cloneTableName = 'Default';
+          });
+          this.storeService.state.target.find(item => item.name === this.table.name).cloneName = 'Default';
+          this.storeService.state.target.find(item => item.name === this.table.name).rows.forEach(element => {
+            element.cloneDisabled = false;
+            element.cloneTableName = 'Default';
+          });
+        } else {
+          this.storeService.state.targetClones[ this.table.name ].push(cloneTargetTable);
+        }
+
+        this.bridgeService.drawCloneArrows(cloneTargetTable, this.table);
+
+      }
+
+    });
+  }
+
+  getTableCloneNames() {
+    if (this.storeService.state.targetClones[ this.table.name ]) {
+      return this.storeService.state.targetClones[ this.table.name ].map(item => item.cloneName).
+      concat([this.tables.find(item => item.name === this.table.name).cloneName]);
+    }
+  }
+
+  openClonesDropdown(target: any, area: string) {
+    const data = {
+      tables: [ this.tables.find(item => item.name === this.table.name) ].concat(this.storeService.state.targetClones[ this.table.name ]),
+      selected: this.table,
+      clone: true,
+      previous: undefined
+    };
+
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      panelClass: 'filter-popup',
+      positionStrategyFor: 'table-dropdown',
+      payload: data
+    };
+    const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
+
+    overlayRef.afterClosed$.subscribe( tbl => {
+      const storedTarget = this.storeService.state.targetClones[ data.previous.name ].find(item => item.id === data.previous.id) ?
+      this.storeService.state.targetClones[ data.previous.name ].find(item => item.id === data.previous.id):
+      this.storeService.state.target.find(item => item.id === data.previous.id);
+      storedTarget.rows.forEach(element => {
+          element.cloneDisabled = true;
+        });
+      this.updateArrowCache(storedTarget.name, storedTarget.cloneName, true);
+
+      data.selected.rows.forEach(element => {
+        element.cloneDisabled = false;
+      });
+      this.updateArrowCache(data.selected.name, data.selected.cloneName, false);
+
+      this.table = data.selected;
+      this.changeClone.emit(data.selected);
+    });
+
+  }
+
+  updateArrowCache(targetTableName: string, cloneName: string, disabledStatus: boolean) {
+      Object.values(this.bridgeService.arrowsCache).
+      filter(item => item.target.tableName === targetTableName && item.target.cloneTableName === cloneName).
+      forEach(it => it.target.cloneDisabled = disabledStatus);
+  }
+
 }

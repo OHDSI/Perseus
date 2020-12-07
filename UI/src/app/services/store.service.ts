@@ -22,7 +22,8 @@ export class StoreService {
       sourceColumns: undefined
     },
     linkFieldsSearch: {},
-    cdmVersions: []
+    cdmVersions: [],
+    targetClones: {}
   };
   private readonly storeState = new BehaviorSubject<any>(this.initialState);
   readonly state$ = this.storeState.asObservable();
@@ -88,7 +89,8 @@ export class StoreService {
         sourceColumns: undefined
       },
       linkFieldsSearch: {},
-      cdmVersions: this.state.cdmVersions
+      cdmVersions: this.state.cdmVersions,
+      targetClones: {}
     };
     this.storeState.next(this.initialState);
   }

@@ -138,6 +138,7 @@ export class DraggableDirective implements OnInit {
       if (this.area === 'source' && this.bridgeService.sourceRow && !this.bridgeService.targetRow
       || this.area === 'target' && this.bridgeService.targetRow && !this.bridgeService.sourceRow) {
         this.reorderRows.emit(row);
+        this.onDragEnd(e);
         return;
       }
 
@@ -149,6 +150,7 @@ export class DraggableDirective implements OnInit {
       this.bridgeService.targetRow = row;
       if (this.bridgeService.connect.canExecute()) {
         this.bridgeService.connect.execute(this.mappingConfig);
+        this.onDragEnd(e);
       }
     }
   }

@@ -417,15 +417,24 @@ export class BridgeService {
     this.connection.next(connection);
   }
 
+  sourceConnectedToSameTargetClone(value: IConnection, draw: boolean) {
+    return (item: IConnection) => {
+      const tableName = value.connector.target.tableName.toUpperCase();
+      return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
+        item.connector.target.tableName.toUpperCase() === tableName &&
+        item.connector.target.cloneTableName === value.connector.target.cloneTableName;
+    };
+  }
+
   sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
     return (item: IConnection) => {
       const tableName = value.connector.target.tableName.toUpperCase();
       return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
         item.connector.target.tableName.toUpperCase() === tableName;
-    }
+    };
   }
 
-  copyTransformations(arrow: any) {
+  copyTransformations(arrow: any, clone?: boolean) {
     const arrowWithSameTarget = Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
     if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
       if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
@@ -433,6 +442,15 @@ export class BridgeService {
       const connectorType = arrowWithSameTarget.connector.type ? arrowWithSameTarget.connector.type : 'None';
       this.setArrowType(arrow.connector.id, connectorType);
     }
+  }
+
+  drawCloneArrows(cloneTable: ITable, targetTable: ITable){
+    const arrowConnectedToTarget = Object.values(this.arrowsCache).filter(it => it.target.tableName === targetTable.name);
+    arrowConnectedToTarget.forEach(item => {
+      const sourceRow = item.source;
+      const targetRow = cloneTable.rows.find(it => it.name === item.target.name);
+      this.drawArrow(sourceRow, targetRow, item.type);
+    });
   }
 
   hideAllArrows(): void {
@@ -578,7 +596,7 @@ export class BridgeService {
 
   updateConnectedRows(arrow: IConnection) {
     let connectedToSameTraget = Object.values(this.arrowsCache).
-      filter(this.sourceConnectedToSameTarget(arrow, false));
+      filter(this.sourceConnectedToSameTargetClone(arrow, false));
     if (arrow.connector.target.tableName.toUpperCase() === 'SIMILAR') {
       let similarLinks = [];
       connectedToSameTraget.forEach(item => {

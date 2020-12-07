@@ -20,8 +20,10 @@ export class SelectTableDropdownComponent implements OnInit {
   }
 
   onSelectionChange(event: any) {
-    this.payload.selected = event;
-    this.dialogRef.close();
+      if (this.payload.clone) {
+        this.payload.previous = this.payload.tables.find(item => item.id === this.payload.selected.id);
+      }
+      this.payload.selected = event;
+      this.dialogRef.close();
   }
-
 }

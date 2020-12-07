@@ -3,10 +3,11 @@
                       [multiple]="false"
                       (selectionChange)="onSelectionChange($event.option.value)">
     <mat-list-option class="table-select-option"
+                     [ngClass]="{'uppercase': payload.uppercase}"
                      [class.active]="table === payload.selected"
                      *ngFor="let table of payload.tables"
                      [value]="table">
-      {{table.name}}
+      {{payload.clone ? table.cloneName : table.name}}
     </mat-list-option>
   </mat-selection-list>
 </div>

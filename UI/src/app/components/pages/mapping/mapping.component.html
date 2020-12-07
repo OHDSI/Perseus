@@ -170,7 +170,7 @@
                        (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
           <mat-tab [label]="'similar'"
                    *ngIf="similarTargetTable">
-            <app-panel #similarTargetPanel
+            <app-panel #targetPanelSimilar
                        *ngIf="similarTargetTable.visible"
                        [tabIndex]="targetTabIndex"
                        [table]="similarTargetTable"
@@ -199,7 +199,8 @@
                        [mappingConfig]="mappingConfig"
                        (open)="onPanelOpen(selectedTargetTable)"
                        (close)="onPanelClose(selectedTargetTable)"
-                       (initialized)="onPanelInit(selectedTargetTable)"></app-panel>
+                       (initialized)="onPanelInit(selectedTargetTable)"
+                       (changeClone)="changeTargetClone($event)"></app-panel>
           </mat-tab>
         </mat-tab-group>
         <mat-icon matTooltip="Filters applied"
