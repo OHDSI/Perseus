@@ -1,36 +1,8 @@
-.scan-data {
+.scan-dialog {
   width: 700px;
   height: 674px;
-  background: #F9F9F9;
-  border-radius: 2px;
-  padding: 42px 33px 35px 38px;
-  box-sizing: border-box;
 
   &__header {
-    display: flex;
-    justify-content: space-between;
-    height: 23px;
     margin-bottom: 21px;
-
-    h4 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      color: #404040;
-
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 23px;
-    }
-
-    &-close {
-      cursor: pointer;
-    }
-  }
-
-  &__content {
-    display: flex;
-    justify-content: space-between;
   }
 }

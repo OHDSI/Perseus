@@ -22,14 +22,12 @@ import { ConnectFormComponent } from '../../shared/connect-form/connect-form.com
 import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../../model/delimited-text-file-settings';
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
-import { DbSettingsWrapper } from '../../model/db-settings-wrapper';
-import { FileSettingsWrapper } from '../../model/file-settings-wrapper';
-import { ScanSettingsWrapper } from '../../model/scan-settings-wrapper';
+import { WebsocketParams } from '../../model/websocket-params';
 
 @Component({
   selector: 'app-scan-data-form',
   templateUrl: './scan-data-form.component.html',
-  styleUrls: ['./scan-data-form.component.scss'],
+  styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScanDataFormComponent implements OnInit {
@@ -56,7 +54,7 @@ export class ScanDataFormComponent implements OnInit {
   cancel = new EventEmitter<void>();
 
   @Output()
-  scanTables = new EventEmitter<ScanSettingsWrapper>();
+  scanTables = new EventEmitter<WebsocketParams>();
 
   @ViewChild(ConnectFormComponent)
   connectFormComponent: ConnectFormComponent;
@@ -136,7 +134,7 @@ export class ScanDataFormComponent implements OnInit {
   onScanTables(): void {
     this.saveState();
 
-    this.scanTables.emit(this.createScanSettingsWrapper());
+    this.scanTables.emit(this.createWebSocketParams());
   }
 
   reset(): void {
@@ -182,18 +180,21 @@ export class ScanDataFormComponent implements OnInit {
     });
   }
 
-  private createScanSettingsWrapper() {
+  private createWebSocketParams(): WebsocketParams {
+    let payload: ScanSettings;
+    let destination: string;
+
     if (this.connectFormComponent.isDbSettings) {
-      const dbSettings = new DbSettingsBuilder()
+      payload = new DbSettingsBuilder()
         .setDbType(this.connectFormComponent.dataType)
         .setDbSettings(this.connectFormComponent.dbSettingsForm.value)
         .setScanParams(this.tablesToScanComponent.scanParams)
         .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
         .build();
 
-      return new DbSettingsWrapper(dbSettings);
+      destination = '/scan-report/db';
     } else {
-      const fileSettings = new DelimitedTextFileSettingsBuilder()
+      payload = new DelimitedTextFileSettingsBuilder()
         .setFileType(this.connectFormComponent.dataType)
         .setFileSettings(this.connectFormComponent.fileSettingsForm.value)
         .setScanParams(this.tablesToScanComponent.scanParams)
@@ -201,8 +202,14 @@ export class ScanDataFormComponent implements OnInit {
         .setFilesToScan(this.connectFormComponent.filesToScan)
         .build();
 
-      return new FileSettingsWrapper(fileSettings);
+      destination = '/scan-report/file';
     }
+
+    return {
+      payload,
+      destination,
+      itemsToScanCount: payload.itemsToScanCount
+    };
   }
 
   private getTestConnectionStrategy() {

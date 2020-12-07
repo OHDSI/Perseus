@@ -1,0 +1,29 @@
+.scan-dialog {
+  background: #F9F9F9;
+  border-radius: 2px;
+  padding: 42px 33px 35px 38px;
+  box-sizing: border-box;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    height: 23px;
+
+    h4 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      color: #404040;
+
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 23px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+  }
+}

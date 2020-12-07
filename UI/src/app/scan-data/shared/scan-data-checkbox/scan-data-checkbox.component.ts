@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Provider } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, Provider } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {
@@ -15,6 +15,9 @@ const VALUE_ACCESSOR: Provider = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScanDataCheckboxComponent implements ControlValueAccessor {
+
+  @Input()
+  background = '#FFFFFF';
 
   state: boolean;
 

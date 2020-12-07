@@ -1,0 +1,38 @@
+.fake-data-form {
+
+  form {
+    margin-bottom: 35px;
+  }
+
+  &__control {
+    input {
+      background: #F9F9F9;
+      width: 100%;
+    }
+
+    &.checkbox {
+      margin-top: 27px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__action {
+    display: flex;
+    justify-content: space-between;
+    height: 33px;
+
+    &-cancel {
+      width: 80px;
+      margin-right: 15px;
+    }
+
+    &-confirm {
+      width: 80px;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+}

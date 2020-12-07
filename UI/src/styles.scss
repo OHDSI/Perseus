@@ -159,7 +159,7 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
 
 .mat-pseudo-checkbox {
   border: 1px solid !important;
-  border-radius: 0px !important;
+  border-radius: 0 !important;
 }
 
 .source-form-control, .scan-params__input-control {
@@ -183,7 +183,7 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   }
 }
 
-.scan-data-progress__bar {
+.scan-data-console__bar {
   .mat-progress-bar {
     height: 10px;
   }
@@ -211,7 +211,7 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
 
 .condition-text{
   margin-bottom: 20px;
-  
+
   .CodeMirror.cm-s-default{
       height: 130px;
   }

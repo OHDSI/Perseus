@@ -8,7 +8,7 @@ import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-da
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
-import { ScanDataConsoleComponent } from './shared/scan-data-console/scan-data-console.component';
+import { ScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/scan-data-console.component';
 import { WebsocketModule } from '../websocket/websocket.module';
 import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
 import { CloseDialogButtonComponent } from './shared/close-dialog-button/close-dialog-button.component';
@@ -19,6 +19,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { ClickOutsideDirective } from './shared/click-outside/click-outside.directive';
 import { DbSettingsFormComponent } from './shared/connect-form/db-settings-form/db-settings-form.component';
 import { FileSettingsFormComponent } from './shared/connect-form/file-settings-form/file-settings-form.component';
+import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.component';
+import { FakeDataConsoleWrapperComponent } from './fake-data-dialog/fake-console-wrapper/fake-data-console-wrapper.component';
+import { FakeDataFormComponent } from './fake-data-dialog/fake-data-form/fake-data-form.component';
+import { ScanDataConsoleWrapperComponent } from './scan-data-dialog/scan-console-wrapper/scan-data-console-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +38,11 @@ import { FileSettingsFormComponent } from './shared/connect-form/file-settings-f
     ConnectFormComponent,
     ClickOutsideDirective,
     DbSettingsFormComponent,
-    FileSettingsFormComponent
+    FileSettingsFormComponent,
+    FakeDataDialogComponent,
+    FakeDataConsoleWrapperComponent,
+    FakeDataFormComponent,
+    ScanDataConsoleWrapperComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +55,8 @@ import { FileSettingsFormComponent } from './shared/connect-form/file-settings-f
     WebsocketModule
   ],
   exports: [
-    ScanDataDialogComponent
+    ScanDataDialogComponent,
+    FakeDataDialogComponent
   ],
 })
 export class ScanDataModule { }

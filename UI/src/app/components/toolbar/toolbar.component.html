@@ -81,18 +81,18 @@
     </button>
   </mat-menu>
 
-
   <mat-menu #convertData="matMenu">
     <button mat-menu-item>
       <mat-icon svgIcon="convert_data"></mat-icon>
       <span>Convert to CDM</span>
     </button>
     <button mat-menu-item
-            (click)="GenerateAndSave()">
+            (click)="generateAndSave()">
       <mat-icon svgIcon="generate_and_save"></mat-icon>
       <span>Generate & Save Files</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item
+            (click)="generateFakeData()">
       <mat-icon svgIcon="generate_fake"></mat-icon>
       <span>Generate Fake Data</span>
     </button>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
@@ -12,6 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
+import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
 
 
 @Component({
@@ -50,6 +51,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
         this.uploadService.onFileInputClick(this.fileInput);
       }
     });
+
+    this.generateFakeData();
   }
 
   ngOnDestroy() {
@@ -101,7 +104,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
   }
 
-  GenerateAndSave(){
+  generateAndSave() {
     const { source } = this.storeService.getMappedTables();
 
     const areaRows = [];
@@ -122,6 +125,15 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(ScanDataDialogComponent, {
       width: '700',
       height: '674',
+      disableClose: true,
+      panelClass: 'scan-data-dialog'
+    });
+  }
+
+  generateFakeData() {
+    this.matDialog.open(FakeDataDialogComponent, {
+      width: '253',
+      height: '270',
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });

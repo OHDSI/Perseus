@@ -1,19 +1,14 @@
 import {
-  Component,
-  EventEmitter,
+  Component, EventEmitter,
   Input,
-  OnInit,
-  Output
+  OnInit, Output
 } from '@angular/core';
-import { WhiteRabbitWebsocketService } from '../../../websocket/white-rabbit/white-rabbit-websocket.service';
-import { ProgressNotification, ProgressNotificationStatusCode } from '../../model/progress-notification';
-import { whiteRabbitPrefix, whiteRabbitUrl } from '../../../app.constants';
-import { saveAs } from 'file-saver';
-import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../util/base64-util';
-import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
+import { WhiteRabbitWebsocketService } from '../../../../websocket/white-rabbit/white-rabbit-websocket.service';
+import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
+import { whiteRabbitPrefix, whiteRabbitUrl } from '../../../../app.constants';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../base/base.component';
-import { ScanSettingsWrapper } from '../../model/scan-settings-wrapper';
+import { BaseComponent } from '../../base/base.component';
+import { WebsocketParams } from '../../../model/websocket-params';
 
 @Component({
   selector: 'app-scan-data-console',
@@ -21,15 +16,6 @@ import { ScanSettingsWrapper } from '../../model/scan-settings-wrapper';
   styleUrls: ['./scan-data-console.component.scss']
 })
 export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
-
-  @Input()
-  scanSettingsWrapper: ScanSettingsWrapper;
-
-  @Output()
-  cancel = new EventEmitter<void>();
-
-  @Output()
-  close = new EventEmitter<void>();
 
   scanningFinished = false;
 
@@ -40,26 +26,28 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
   // Percent
   progressValue = 0;
 
-  // With header
-  private reportBase64: string;
+  @Input()
+  params: WebsocketParams;
 
-  private reportName = 'ScanReport.xlsx';
+  @Output()
+  finish = new EventEmitter<string>();
 
   private webSocketConfig = {
     url: whiteRabbitUrl,
-    prefix: whiteRabbitPrefix
+    prefix: whiteRabbitPrefix,
+    progressMessagesDestination: '/user/queue/reply',
+    resultDestination: '/user/queue/scan-report'
   };
 
-  private scannedTablesCount = -1;
+  private scannedItemsCount = 0;
 
-  constructor(private whiteRabbitWebsocketService: WhiteRabbitWebsocketService,
-              private scanDataUploadService: ScanDataUploadService) {
+  constructor(private whiteRabbitWebsocketService: WhiteRabbitWebsocketService) {
     super();
   }
 
   ngOnInit(): void {
     this.whiteRabbitWebsocketService.connect({
-      ...this.webSocketConfig, endPoint: this.scanSettingsWrapper.getScanServiceDestination()
+      ...this.webSocketConfig, endPoint: this.params.destination
     })
       .pipe(
         takeUntil(this.ngUnsubscribe)
@@ -68,9 +56,9 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
         result => {
           if (result && !this.scanningStarted) {
             this.scanningStarted = true;
-            this.sendScanConfig();
+            this.sendData();
             this.subscribeOnProgressMessages();
-            this.subscribeOnScanReport();
+            this.subscribeOnResult();
           }
         }, error => {
           this.showNotificationMessage({
@@ -81,29 +69,18 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
       );
   }
 
-  onAbortAndCancel() {
+  abortAndCancel() {
     this.whiteRabbitWebsocketService.disconnect();
-    this.cancel.emit();
   }
 
-  onUploadReport() {
-    this.scanDataUploadService.uploadScanReport(this.reportBase64, this.reportName)
-      .subscribe(() => this.close.emit());
-  }
-
-  onSaveReport() {
-    base64ToFileAsObservable(this.reportBase64, this.reportName)
-      .subscribe(file => saveAs(file));
-  }
-
-  private sendScanConfig(): void {
+  private sendData(): void {
     this.whiteRabbitWebsocketService
-      .send(this.scanSettingsWrapper.getScanServiceDestination(), JSON.stringify(this.scanSettingsWrapper.scanSettings));
+      .send(this.params.destination, JSON.stringify(this.params.payload));
   }
 
   private subscribeOnProgressMessages(): void {
     this.whiteRabbitWebsocketService
-      .on('/user/queue/reply')
+      .on(this.webSocketConfig.progressMessagesDestination)
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
@@ -111,24 +88,24 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
         const notification = JSON.parse(message) as ProgressNotification;
 
         switch (notification.status.code) {
-          case ProgressNotificationStatusCode.STARTED_SCANNING:
+          case ProgressNotificationStatusCode.STARTED:
           case ProgressNotificationStatusCode.ERROR:
           case ProgressNotificationStatusCode.NONE: {
             this.showNotificationMessage(notification);
             break;
           }
           case ProgressNotificationStatusCode.TABLE_SCANNING: {
-            this.scannedTablesCount++;
-            this.progressValue = this.scannedTablesCount / this.scanSettingsWrapper.scanSettings.itemsToScanCount * 100;
+            this.progressValue = this.scannedItemsCount / this.params.itemsToScanCount * 100;
+            this.scannedItemsCount++;
             this.showNotificationMessage(notification);
             break;
           }
-          case ProgressNotificationStatusCode.SCAN_REPORT_GENERATED: {
+          case ProgressNotificationStatusCode.FINISHED: {
             this.progressValue = 100;
             this.showNotificationMessage(notification);
             break;
           }
-          case ProgressNotificationStatusCode.FAILED_TO_SCAN: {
+          case ProgressNotificationStatusCode.FAILED: {
             this.progressValue = 0;
             this.whiteRabbitWebsocketService.disconnect();
             this.showNotificationMessage(notification);
@@ -138,16 +115,16 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
       });
   }
 
-  private subscribeOnScanReport(): void {
+  private subscribeOnResult(): void {
     this.whiteRabbitWebsocketService
-      .on('/user/queue/scan-report')
+      .on(this.webSocketConfig.resultDestination)
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(reportBase64 => {
-        this.reportBase64 = getBase64Header(MediaType.XLSX) + reportBase64;
+      .subscribe(result => {
         this.scanningFinished = true;
         this.whiteRabbitWebsocketService.disconnect();
+        this.finish.emit(result);
       });
   }
 
