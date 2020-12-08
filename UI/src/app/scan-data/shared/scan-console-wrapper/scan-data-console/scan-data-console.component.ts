@@ -17,8 +17,6 @@ import { WebsocketParams } from '../../../model/websocket-params';
 })
 export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
-  scanningFinished = false;
-
   scanningStarted = false;
 
   progressNotifications: ProgressNotification[] = [];
@@ -36,7 +34,6 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
     url: whiteRabbitUrl,
     prefix: whiteRabbitPrefix,
     progressMessagesDestination: '/user/queue/reply',
-    resultDestination: '/user/queue/scan-report'
   };
 
   private scannedItemsCount = 0;
@@ -117,14 +114,13 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
   private subscribeOnResult(): void {
     this.whiteRabbitWebsocketService
-      .on(this.webSocketConfig.resultDestination)
+      .on(this.params.resultDestination)
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(result => {
-        this.scanningFinished = true;
+      .subscribe(() => {
         this.whiteRabbitWebsocketService.disconnect();
-        this.finish.emit(result);
+        this.finish.emit('succeeded');
       });
   }
 

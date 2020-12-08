@@ -1,37 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { WebsocketParams } from '../model/websocket-params';
+import { AbstractScanDialog } from '../abstract-scan-dialog';
+import { ScanConsoleWrapperComponent } from './scan-console-wrapper/scan-console-wrapper.component';
 
 @Component({
   selector: 'app-scan-data-dialog',
   templateUrl: './scan-data-dialog.component.html',
-  styleUrls: ['./scan-data-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
+  styleUrls: ['./scan-data-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss'],
 })
-export class ScanDataDialogComponent {
+export class ScanDataDialogComponent extends AbstractScanDialog {
 
-  websocketParams: WebsocketParams;
+  @ViewChild(ScanConsoleWrapperComponent)
+  consoleWrapperComponent: ScanConsoleWrapperComponent;
 
-  selectedIndex = 0;
-
-  constructor(private dialogRef: MatDialogRef<ScanDataDialogComponent>) {
-  }
-
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
-  onCloseByDagger() {
-    if (this.selectedIndex === 0) {
-      this.onClose();
-    }
-  }
-
-  onScanningCancel(): void {
-    this.selectedIndex = 0;
-  }
-
-  onScanTables(websocketParams: WebsocketParams): void {
-    this.websocketParams = websocketParams;
-    this.selectedIndex = 1;
+  constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>) {
+    super(dialogRef);
   }
 }

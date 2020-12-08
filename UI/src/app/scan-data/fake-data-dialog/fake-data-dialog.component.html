@@ -5,11 +5,14 @@
   </div>
 
   <div class="scan-dialog__content">
-    <app-fake-data-form *ngIf="selectedIndex === 0; else consoleBlock" style="width: 100%"
+    <app-fake-data-form *ngIf="index === 0; else consoleBlock" style="width: 100%"
                         (generate)="onGenerate($event)" (cancel)="onClose()"></app-fake-data-form>
 
     <ng-template #consoleBlock>
-      <app-fake-data-console-wrapper></app-fake-data-console-wrapper>
+      <app-fake-data-console-wrapper style="width: 100%"
+                                     [params]="websocketParams"
+                                     (cancel)="onGenerationCancel()"
+                                     (close)="onClose()"></app-fake-data-console-wrapper>
     </ng-template>
   </div>
 </div>

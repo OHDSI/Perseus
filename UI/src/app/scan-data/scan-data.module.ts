@@ -20,9 +20,9 @@ import { ClickOutsideDirective } from './shared/click-outside/click-outside.dire
 import { DbSettingsFormComponent } from './shared/connect-form/db-settings-form/db-settings-form.component';
 import { FileSettingsFormComponent } from './shared/connect-form/file-settings-form/file-settings-form.component';
 import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.component';
-import { FakeDataConsoleWrapperComponent } from './fake-data-dialog/fake-console-wrapper/fake-data-console-wrapper.component';
+import { FakeConsoleWrapperComponent } from './fake-data-dialog/fake-console-wrapper/fake-console-wrapper.component';
 import { FakeDataFormComponent } from './fake-data-dialog/fake-data-form/fake-data-form.component';
-import { ScanDataConsoleWrapperComponent } from './scan-data-dialog/scan-console-wrapper/scan-data-console-wrapper.component';
+import { ScanConsoleWrapperComponent } from './scan-data-dialog/scan-console-wrapper/scan-console-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -40,9 +40,9 @@ import { ScanDataConsoleWrapperComponent } from './scan-data-dialog/scan-console
     DbSettingsFormComponent,
     FileSettingsFormComponent,
     FakeDataDialogComponent,
-    FakeDataConsoleWrapperComponent,
+    FakeConsoleWrapperComponent,
     FakeDataFormComponent,
-    ScanDataConsoleWrapperComponent
+    ScanConsoleWrapperComponent
   ],
   imports: [
     CommonModule,

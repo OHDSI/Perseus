@@ -4,11 +4,11 @@
                          (finish)="onFinish($event)"></app-scan-data-console>
 
   <div class="console-wrapper__action">
-    <ng-container *ngIf="reportBase64; then scanningFinishedBlock; else scanningBlock"></ng-container>
+    <ng-container *ngIf="result; then scanningFinishedBlock; else scanningBlock"></ng-container>
 
     <ng-template #scanningFinishedBlock>
       <button class="console-wrapper__action-back cancel"
-              (click)="onCancel()">Back</button>
+              (click)="onBack()">Back</button>
       <button class="console-wrapper__action-save confirm"
               (click)="onSaveReport()">Save report</button>
       <button class="console-wrapper__action-link confirm"

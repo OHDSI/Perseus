@@ -208,7 +208,8 @@ export class ScanDataFormComponent implements OnInit {
     return {
       payload,
       destination,
-      itemsToScanCount: payload.itemsToScanCount
+      itemsToScanCount: payload.itemsToScanCount,
+      resultDestination: '/user/queue/scan-report'
     };
   }
 
