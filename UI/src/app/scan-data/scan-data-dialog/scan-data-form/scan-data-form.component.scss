@@ -17,30 +17,13 @@
 
     height: 33px;
 
-    button {
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 18px;
-      text-align: center;
-      border: 0;
-      cursor: pointer;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
     &-cancel {
       width: 80px;
-      background: #E5E5E5;
-      color: #404040;
       margin-right: 15px;
     }
 
     &-scan {
-      background: #066BBB;
       width: 129px;
-      color: #FFFFFF;
 
       &:disabled {
         opacity: 0.5;

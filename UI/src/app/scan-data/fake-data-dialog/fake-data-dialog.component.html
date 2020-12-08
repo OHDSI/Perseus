@@ -1,0 +1,18 @@
+<div class="scan-dialog">
+  <div class="scan-dialog__header">
+    <h4>Fake Data Generation</h4>
+    <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
+  </div>
+
+  <div class="scan-dialog__content">
+    <app-fake-data-form *ngIf="index === 0; else consoleBlock" style="width: 100%"
+                        (generate)="onGenerate($event)" (cancel)="onClose()"></app-fake-data-form>
+
+    <ng-template #consoleBlock>
+      <app-fake-data-console-wrapper style="width: 100%"
+                                     [params]="websocketParams"
+                                     (cancel)="onGenerationCancel()"
+                                     (close)="onClose()"></app-fake-data-console-wrapper>
+    </ng-template>
+  </div>
+</div>

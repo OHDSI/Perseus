@@ -1,0 +1,22 @@
+button {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  border: 0;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.confirm {
+    background: #066BBB;
+    color: #FFFFFF;
+  }
+
+  &.cancel {
+    background: #E5E5E5;
+    color: #404040;
+  }
+}

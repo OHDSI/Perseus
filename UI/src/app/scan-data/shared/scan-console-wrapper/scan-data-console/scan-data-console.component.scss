@@ -1,4 +1,4 @@
-.scan-data-progress {
+.scan-data-console {
   width: 100%;
 
   display: flex;
@@ -48,47 +48,6 @@
         text-transform: uppercase;
         color: #000000;
       }
-    }
-  }
-
-  &__action {
-    display: flex;
-    justify-content: center;
-    margin-top: 35px;
-
-    height: 33px;
-
-    button {
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 18px;
-      text-align: center;
-      border: 0;
-      cursor: pointer;
-      margin-right: 15px;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    &-save, &-link {
-      background: #066BBB;
-      color: #FFFFFF;
-      width: 120px;
-    }
-
-    &-abort {
-      width: 130px;
-    }
-
-    &-back {
-      width: 70px;
-    }
-
-    &-abort, &-back {
-      background: #E5E5E5;
-      color: #404040;
     }
   }
 }

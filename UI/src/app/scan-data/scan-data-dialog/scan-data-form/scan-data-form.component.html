@@ -19,8 +19,8 @@
   </div>
 
   <div class="scan-data-form__action">
-    <button class="scan-data-form__action-cancel" (click)="cancel.emit()">Cancel</button>
-    <button class="scan-data-form__action-scan"
+    <button class="scan-data-form__action-cancel cancel" (click)="cancel.emit()">Cancel</button>
+    <button class="scan-data-form__action-scan confirm"
             [disabled]="tablesToScan.length === 0"
             (click)="onScanTables()">Scan Tables</button>
   </div>

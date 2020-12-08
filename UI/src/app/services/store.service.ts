@@ -22,9 +22,10 @@ export class StoreService {
       sourceColumns: undefined
     },
     linkFieldsSearch: {},
-    cdmVersions: []
+    cdmVersions: [],
+    reportFile: undefined
   };
-  private readonly storeState = new BehaviorSubject<any>(this.initialState);
+  private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
   readonly state$ = this.storeState.asObservable();
 
   get state() {
@@ -74,23 +75,7 @@ export class StoreService {
   }
 
   resetAllData() {
-    this.initialState = {
-      version: undefined,
-      filteredTables: undefined,
-      filteredFields: undefined,
-      target: [],
-      source: [],
-      targetConfig: {},
-      report: undefined,
-      linkTablesSearch: {
-        source: undefined,
-        target: undefined,
-        sourceColumns: undefined
-      },
-      linkFieldsSearch: {},
-      cdmVersions: this.state.cdmVersions
-    };
-    this.storeState.next(this.initialState);
+    this.storeState.next(Object.assign({}, this.initialState));
   }
 }
 

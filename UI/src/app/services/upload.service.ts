@@ -5,6 +5,7 @@ import { BridgeService } from './bridge.service';
 import { DataService } from './data.service';
 import { HttpService } from './http.service';
 import { Configuration } from '../models/configuration';
+import { StoreService } from './store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class UploadService {
     private snackbar: MatSnackBar,
     private bridgeService: BridgeService,
     private httpService: HttpService,
-    private dataService: DataService
+    private dataService: DataService,
+    private storeService: StoreService
   ) {
   }
 
@@ -30,6 +32,7 @@ export class UploadService {
   onFileChange(event: any): void {
     const files = event.target.files;
     const dotPosition = files[ 0 ].name.lastIndexOf('.');
+    this.storeService.add('reportFile', files[0]);
     this.uploadSchema(files).subscribe(res => {
       this.snackbar.open(
         'Success file upload',
