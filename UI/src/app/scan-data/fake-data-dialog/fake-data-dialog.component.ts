@@ -48,7 +48,7 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
 
   private changeSize() {
     if (this.selectedIndex === 0) {
-      this.dialogRef.updateSize('253px', '270px');
+      this.dialogRef.updateSize('265px', '280px');
     } else {
       this.dialogRef.updateSize('700px', '674px');
     }

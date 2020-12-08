@@ -201,6 +201,10 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   .mat-dialog-container {
     padding: 0;
   }
+
+  .mat-dialog-container {
+    overflow: hidden;
+  }
 }
 
 .filter-by-name{
