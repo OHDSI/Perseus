@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer, TableShading } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
-import { similarTableName } from '../../../app.constants';
+import { numberOfPanelsWithOneSimilar, numberOfPanelsWithoutSimilar, numberOfPanelsWithTwoSimilar, similarTableName } from '../../../app.constants';
 import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
 
 
@@ -321,7 +321,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
 
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
-    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2;
+    this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
 
     setTimeout(() => {
       this.bridgeService.refresh(this.currentTargetTable);
