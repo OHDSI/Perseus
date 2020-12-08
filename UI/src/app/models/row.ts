@@ -22,7 +22,7 @@ export interface RowOptions {
   isNullable?: boolean;
   grouppedFields?: IRow[];
   cloneTableName?: string;
-  cloneDisabled?: boolean;
+  cloneConnectedToSourceName?: string;
 }
 
 export interface IRow {
@@ -51,7 +51,7 @@ export interface IRow {
   isNullable: boolean;
   grouppedFields: IRow[];
   cloneTableName: string;
-  cloneDisabled: boolean;
+  cloneConnectedToSourceName: string;
 
   removeConnections(): void;
   setType(type: ConnectorType): void;
@@ -79,7 +79,7 @@ export class Row implements IRow {
   isNullable: boolean;
   grouppedFields: IRow[];
   cloneTableName: string;
-  cloneDisabled: boolean;
+  cloneConnectedToSourceName: string;
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
@@ -117,7 +117,7 @@ export class Row implements IRow {
     this.isNullable = options.isNullable;
     this.grouppedFields = options.grouppedFields ? options.grouppedFields.map((row: any) => new Row(row)) : [];
     this.cloneTableName = options.cloneTableName;
-    this.cloneDisabled = options.cloneDisabled;
+    this.cloneConnectedToSourceName = options.cloneConnectedToSourceName;
   }
 
   removeConnections() {

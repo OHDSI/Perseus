@@ -13,9 +13,9 @@
             (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>
 </div>
 <div class="flex-div"
-     *ngIf="area === 'target' && table.name !== 'similar'">
+     *ngIf="area === 'target' && table.name !== 'similar' && oppositeTableName">
   <div class="flex-div-align-center"
-       *ngIf="this.storeService.state.targetClones[table.name]">
+       *ngIf="existingClones && existingClones.length">
     <div id="clonesDropdown">{{table.cloneName}}</div>
     <mat-icon (click)="openClonesDropdown($event.target)">arrow_drop_down</mat-icon>
   </div>

@@ -317,18 +317,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
 
     this.similarTargetTable = this.target.find(item => item.name === 'similar');
-    const selectedTarget = this.getEnabledTargetTables()[0];
+    this.selectedTargetTable = this.getSelectedTargetTable();
 
-    if (this.storeService.state.targetClones[ selectedTarget.name ]) {
-      const enabledClone = this.storeService.state.targetClones[ selectedTarget.name ].
-        find(item => item.rows[ 0 ].cloneDisabled === false);
-      this.selectedTargetTable = enabledClone ? enabledClone : this.getEnabledTargetTables()[ 0 ];
-    } else {
-      this.selectedTargetTable = this.getEnabledTargetTables()[ 0 ];
-    }
 
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
-    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2
+    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2;
 
     setTimeout(() => {
       this.bridgeService.refresh(this.currentTargetTable);
@@ -410,7 +403,19 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   refreshSourcePanel(data: any){
     this.selectedSourceTable = data;
     this.sourcePanel.panel.table = data;
-    this.refreshTargetPanel(this.getEnabledTargetTables()[0]);
+    this.refreshTargetPanel(this.getSelectedTargetTable());
+  }
+
+  getSelectedTargetTable() {
+    const enabledTargetTable = this.getEnabledTargetTables()[ 0 ];
+    const clones = this.storeService.state.targetClones[ enabledTargetTable.name ]
+    if (clones) {
+      const enabledClones = clones.filter(item => item.cloneConnectedToSourceName === this.currentSourceTable.name);
+      if (enabledClones && enabledClones.length) {
+        return enabledClones[ 0 ];
+      }
+    }
+    return enabledTargetTable;
   }
 
   onWheel(event: any, area: string) {

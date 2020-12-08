@@ -46,7 +46,8 @@ export class ConfigurationService {
       report: this.storeService.state.report,
       version: this.storeService.state.version,
       filtered: this.storeService.state.filtered,
-      constants: this.bridgeService.constantsCache
+      constants: this.bridgeService.constantsCache,
+      targetClones: this.storeService.state.targetClones
     });
 
     this.saveOnLocalDisk(newConfiguration);

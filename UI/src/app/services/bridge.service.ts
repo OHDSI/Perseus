@@ -265,6 +265,7 @@ export class BridgeService {
     this.storeService.add('source', configuration.sourceTables);
     this.storeService.add('targetConfig', configuration.tables);
     this.storeService.add('report', configuration.reportName);
+    this.storeService.add('targetClones', configuration.targetClones);
 
     this.applyConfiguration$.next(configuration);
   }
@@ -393,7 +394,7 @@ export class BridgeService {
     });
   }
 
-  drawArrow(sourceRow, targetRow, type = '') {
+  drawArrow(sourceRow, targetRow, type = '', cloneTable?) {
     const entityId = this.getConnectorId(sourceRow, targetRow);
 
     const connector = this.drawService.drawLine(
@@ -412,12 +413,12 @@ export class BridgeService {
     };
 
     this.arrowsCache[ connector.id ] = connection;
-    this.copyTransformations(this.arrowsCache[ connector.id ]);
+    this.copyTransformations(this.arrowsCache[ connector.id ], cloneTable);
 
     this.connection.next(connection);
   }
 
-  sourceConnectedToSameTargetClone(value: IConnection, draw: boolean) {
+  sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
     return (item: IConnection) => {
       const tableName = value.connector.target.tableName.toUpperCase();
       return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
@@ -426,16 +427,12 @@ export class BridgeService {
     };
   }
 
-  sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
-    return (item: IConnection) => {
-      const tableName = value.connector.target.tableName.toUpperCase();
-      return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
-        item.connector.target.tableName.toUpperCase() === tableName;
-    };
-  }
 
-  copyTransformations(arrow: any, clone?: boolean) {
-    const arrowWithSameTarget = Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
+  copyTransformations(arrow: any, cloneTable?: any) {
+    const arrowWithSameTarget = cloneTable ? Object.values(this.arrowsCache).
+    filter(item => item.target.tableName === cloneTable.name && item.target.cloneTableName === cloneTable.cloneName)[ 0 ] :
+    Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
+
     if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
       if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
       if (arrowWithSameTarget.sql) { arrow.sql = arrowWithSameTarget.sql; }
@@ -445,11 +442,12 @@ export class BridgeService {
   }
 
   drawCloneArrows(cloneTable: ITable, targetTable: ITable){
-    const arrowConnectedToTarget = Object.values(this.arrowsCache).filter(it => it.target.tableName === targetTable.name);
+    const arrowConnectedToTarget = Object.values(this.arrowsCache).filter(it => it.target.tableName === targetTable.name &&
+      it.target.cloneTableName === targetTable.cloneName);
     arrowConnectedToTarget.forEach(item => {
       const sourceRow = item.source;
       const targetRow = cloneTable.rows.find(it => it.name === item.target.name);
-      this.drawArrow(sourceRow, targetRow, item.type);
+      this.drawArrow(sourceRow, targetRow, item.type, targetTable);
     });
   }
 
@@ -596,7 +594,7 @@ export class BridgeService {
 
   updateConnectedRows(arrow: IConnection) {
     let connectedToSameTraget = Object.values(this.arrowsCache).
-      filter(this.sourceConnectedToSameTargetClone(arrow, false));
+      filter(this.sourceConnectedToSameTarget(arrow, false));
     if (arrow.connector.target.tableName.toUpperCase() === 'SIMILAR') {
       let similarLinks = [];
       connectedToSameTraget.forEach(item => {

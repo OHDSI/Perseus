@@ -16,6 +16,7 @@ import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-di
 import { SelectTableDropdownComponent } from '../popups/select-table-dropdown/select-table-dropdown.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { ColumnFilterTriggerComponent } from 'ng2-qgrid';
 
 @Component({
   selector: 'app-panel',
@@ -44,6 +45,21 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
   get area() {
     return this.table.area;
+  }
+
+  get oppositeTableName() {
+    const oppositeTable = this.storeService.state.source.find(item => item.id === this.oppositeTableId);
+    if(oppositeTable){
+      return oppositeTable.name;
+    }
+    return undefined;
+  }
+
+  get existingClones() {
+    const clones = this.storeService.state.targetClones[ this.table.name ];
+    if (clones) {
+      return clones.filter(item => item.cloneConnectedToSourceName === this.oppositeTableName);
+    }
   }
 
   initializing: boolean;
@@ -162,13 +178,22 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.commonUtilsService.openOnBoardingTip(target, 'create-group');
   }
 
-  openConditionDialog(data) {
+  openConditionDialog() {
 
     const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'sql-editor-dialog',
-      data : {table: this.table}
+      data: { table: this.table }
+    });
+
+    matDialog.afterClosed().subscribe(res => {
+      if (this.existingClones && this.existingClones.length) {
+        this.storeService.state.targetClones[ this.table.name ].
+          find(item => item.id === this.table.id).condition = this.table.condition;
+      } else {
+        this.storeService.state.target.find(item => item.id === this.table.id).condition = this.table.condition;
+      }
     });
   }
 
@@ -189,51 +214,69 @@ export class PanelComponent implements OnInit, AfterViewInit {
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
-
-        const cloneTargetTable = cloneDeep(this.table) as ITable;
-        cloneTargetTable.cloneName = res.value;
-        const cloneTableId = this.storeService.state.targetClones[ this.table.name ] ?
-          this.storeService.state.target.length + this.storeService.state.targetClones[ this.table.name ].length : this.storeService.state.target.length;
-        cloneTargetTable.id = cloneTableId;
-        cloneTargetTable.rows.forEach(item => {
-          item.tableId = cloneTableId;
-          item.htmlElement = null;
-          item.cloneTableName = cloneTargetTable.cloneName;
-          item.cloneDisabled = true;
-        });
-        if (!this.storeService.state.targetClones[ this.table.name ]) {
-          this.storeService.state.targetClones[ this.table.name ] = [ cloneTargetTable ];
-          this.table.cloneName = 'Default';
-          this.table.rows.forEach(element => {
-            element.cloneDisabled = false;
-            element.cloneTableName = 'Default';
-          });
-          this.storeService.state.target.find(item => item.name === this.table.name).cloneName = 'Default';
-          this.storeService.state.target.find(item => item.name === this.table.name).rows.forEach(element => {
-            element.cloneDisabled = false;
-            element.cloneTableName = 'Default';
-          });
-        } else {
-          this.storeService.state.targetClones[ this.table.name ].push(cloneTargetTable);
+        if (!this.storeService.state.targetClones[this.table.name]) {
+          this.storeService.state.targetClones[this.table.name] = [];
         }
-
-        this.bridgeService.drawCloneArrows(cloneTargetTable, this.table);
-
+        let cloneToSet;
+        const cloneConnectedToSourceName = this.oppositeTableName;
+        const cloneId = this.storeService.state.targetClones[ this.table.name ] ?
+          this.storeService.state.target.length + Object.values(this.storeService.state.targetClones).length : this.storeService.state.target.length;
+        if (this.existingClones && this.existingClones.length) {
+          cloneToSet = this.createClonedTable(this.table, res.value, cloneId, cloneConnectedToSourceName);
+          this.storeService.state.targetClones[ this.table.name ].
+            push(cloneToSet);
+        } else {
+          cloneToSet = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName)
+          this.storeService.state.targetClones[ this.table.name ].push(cloneToSet);
+          this.storeService.state.targetClones[ this.table.name ].
+            push(this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName));
+        }
+        this.setCloneTable(cloneToSet);
       }
-
     });
   }
 
+  updateClonedTableProperties(table: ITable, cloneName: string, cloneConnectedToSourceName: string) {
+    table.cloneName = cloneName;
+    table.cloneConnectedToSourceName = cloneConnectedToSourceName;
+    this.table.rows.forEach(element => {
+      element.cloneTableName = cloneName;
+      element.cloneConnectedToSourceName = cloneConnectedToSourceName;
+    });
+  }
+
+
+  createClonedTable(table: ITable, cloneName: string, cloneId: number, cloneConnectedToSourceName: string) {
+    const cloneTargetTable = cloneDeep(table) as ITable;
+    cloneTargetTable.cloneName = cloneName;
+    cloneTargetTable.cloneConnectedToSourceName = cloneConnectedToSourceName;
+    cloneTargetTable.id = cloneId;
+    cloneTargetTable.rows.forEach(item => {
+      item.tableId = cloneId;
+      item.cloneTableName = cloneName;
+      item.cloneConnectedToSourceName = cloneConnectedToSourceName;
+    });
+    this.bridgeService.drawCloneArrows(cloneTargetTable, table);
+    return cloneTargetTable;
+  }
+
   getTableCloneNames() {
+    const tableClones = this.getTableClones();
+    if (tableClones) {
+      return tableClones.map(item => item.cloneName)
+    }
+  }
+
+  getTableClones() {
     if (this.storeService.state.targetClones[ this.table.name ]) {
-      return this.storeService.state.targetClones[ this.table.name ].map(item => item.cloneName).
-      concat([this.tables.find(item => item.name === this.table.name).cloneName]);
+      return this.storeService.state.targetClones[ this.table.name ].
+      filter(it => it.cloneConnectedToSourceName === this.oppositeTableName);
     }
   }
 
   openClonesDropdown(target: any, area: string) {
     const data = {
-      tables: [ this.tables.find(item => item.name === this.table.name) ].concat(this.storeService.state.targetClones[ this.table.name ]),
+      tables: this.getTableClones(),
       selected: this.table,
       clone: true,
       previous: undefined
@@ -249,29 +292,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
     const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
 
     overlayRef.afterClosed$.subscribe( tbl => {
-      const storedTarget = this.storeService.state.targetClones[ data.previous.name ].find(item => item.id === data.previous.id) ?
-      this.storeService.state.targetClones[ data.previous.name ].find(item => item.id === data.previous.id):
-      this.storeService.state.target.find(item => item.id === data.previous.id);
-      storedTarget.rows.forEach(element => {
-          element.cloneDisabled = true;
-        });
-      this.updateArrowCache(storedTarget.name, storedTarget.cloneName, true);
-
-      data.selected.rows.forEach(element => {
-        element.cloneDisabled = false;
-      });
-      this.updateArrowCache(data.selected.name, data.selected.cloneName, false);
-
-      this.table = data.selected;
-      this.changeClone.emit(data.selected);
+      this.setCloneTable(data.selected);
     });
 
   }
 
-  updateArrowCache(targetTableName: string, cloneName: string, disabledStatus: boolean) {
-      Object.values(this.bridgeService.arrowsCache).
-      filter(item => item.target.tableName === targetTableName && item.target.cloneTableName === cloneName).
-      forEach(it => it.target.cloneDisabled = disabledStatus);
+  setCloneTable(table) {
+    this.table = table;
+    this.changeClone.emit(table);
   }
 
 }

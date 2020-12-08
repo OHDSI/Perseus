@@ -54,15 +54,8 @@ export class Arrow implements IConnector {
     let source;
     let target;
 
-    if (!this.target.cloneDisabled) {
-      source = this.checkAndChangeHtmlElement(this.source);
-      target = this.checkAndChangeHtmlElement(this.target);
-
-    } else {
-      source = this.source;
-      target = this.target;
-
-    }
+    source = this.checkAndChangeHtmlElement(this.source);
+    target = this.checkAndChangeHtmlElement(this.target);
 
       // TODO Check htmlElement for existance
     this.sourceSVGPoint = getSVGPoint(source, this.canvas);
@@ -230,7 +223,7 @@ export class Arrow implements IConnector {
 
   private checkAndChangeHtmlElement(row: IRow): IRow {
     const foundElements = document.getElementsByClassName(
-      `item-${row.tableName}-${row.name}`
+      `item-${row.tableName}-${row.cloneTableName ? row.cloneTableName : ''}-${row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}-${row.name}`
     );
     const foundElement = extractHtmlElement(foundElements, null);
 
