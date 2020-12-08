@@ -1,41 +1,43 @@
-<app-search-by-name
-  class="filter-by-name {{area}}"
-  placeholder="Search by {{area}} fields"
-  [criteria]="searchCriteria"
-  (complete)="filterByName($event)"
-  (reset)="filterByNameReset($event)">
+<app-search-by-name class="filter-by-name {{area}} panel-filter"
+                    placeholder="Search by {{area}} fields"
+                    [criteria]="searchCriteria"
+                    (complete)="filterByName($event)"
+                    (reset)="filterByNameReset($event)">
 </app-search-by-name>
-<div class="create-group"
+<div class="flex-div"
      *ngIf="area === 'source' && table.name !== 'similar'"> <a id="createGroup"
-  (click)="createGroup()"
-  [ngClass]="{'create-group-disabled': !(this.panel && this.panel.rowFocusedElements && this.panel.rowFocusedElements.length>1)}">
-  Create Group</a>
+     (click)="createGroup()"
+     [ngClass]="{'create-group-disabled': !(this.panel && this.panel.rowFocusedElements && this.panel.rowFocusedElements.length>1)}">
+    Create Group</a>
   <mat-icon class="info-icon"
             (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>
 </div>
-<div class="create-group"
-     *ngIf="area === 'target' && table.name !== 'similar'"> 
-  <a id="createGroup">Test</a>
+<div class="flex-div"
+     *ngIf="area === 'target' && table.name !== 'similar' && oppositeTableName">
+  <div class="flex-div-align-center"
+       *ngIf="existingClones && existingClones.length">
+    <div id="clonesDropdown">{{table.cloneName}}</div>
+    <mat-icon (click)="openClonesDropdown($event.target)">arrow_drop_down</mat-icon>
+  </div>
   <div class="margin-left">
-  <a id="clone">Clone</a>
-  <mat-icon class="info-icon">info</mat-icon>
-  <a id="condition" 
-     class="condition"
-     (click)="openCloneDialog()">Add Condition</a> 
-  </div>     
+    <a id="clone"
+       (click)="createClone()">Clone</a>
+    <mat-icon class="info-icon">info</mat-icon>
+    <a id="condition"
+       class="condition"
+       (click)="openConditionDialog()">Add Condition</a>
+  </div>
 </div>
 <app-area [area]="area">
-  <app-panel-table
-    #panel
-    [createGroupElementId]="'createGroup'"
-    [table]="table"
-    [tables]="tables"
-    [tabIndex]="tabIndex"
-    [filtered]="filtered"
-    [filteredFields]="filteredFields"
-    [oppositeTableId]="oppositeTableId"
-    [mappingConfig]="mappingConfig"
-    (openTransform)="onOpenTransfromDialog($event)"
-  >
+  <app-panel-table #panel
+                   [createGroupElementId]="'createGroup'"
+                   [table]="table"
+                   [tables]="tables"
+                   [tabIndex]="tabIndex"
+                   [filtered]="filtered"
+                   [filteredFields]="filteredFields"
+                   [oppositeTableId]="oppositeTableId"
+                   [mappingConfig]="mappingConfig"
+                   (openTransform)="onOpenTransfromDialog($event)">
   </app-panel-table>
 </app-area>

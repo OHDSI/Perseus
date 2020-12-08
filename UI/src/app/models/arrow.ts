@@ -50,10 +50,14 @@ export class Arrow implements IConnector {
   }
 
   draw(): void {
-    const source = this.checkAndChangeHtmlElement(this.source);
-    const target = this.checkAndChangeHtmlElement(this.target);
 
-    // TODO Check htmlElement for existance
+    let source;
+    let target;
+
+    source = this.checkAndChangeHtmlElement(this.source);
+    target = this.checkAndChangeHtmlElement(this.target);
+
+      // TODO Check htmlElement for existance
     this.sourceSVGPoint = getSVGPoint(source, this.canvas);
     this.targetSVGPoint = getSVGPoint(target, this.canvas);
 
@@ -219,7 +223,7 @@ export class Arrow implements IConnector {
 
   private checkAndChangeHtmlElement(row: IRow): IRow {
     const foundElements = document.getElementsByClassName(
-      `item-${row.tableName}-${row.name}`
+      `item-${row.tableName}-${row.cloneTableName ? row.cloneTableName : ''}-${row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}-${row.name}`
     );
     const foundElement = extractHtmlElement(foundElements, null);
 

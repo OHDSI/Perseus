@@ -1,17 +1,20 @@
 .tables-select{
     background: white;
     overflow-y: scroll;
-    width: 250px;
-    height: 150px;
+    max-width: 250px;
+    max-height: 150px;
     margin: 10px 10px 10px 10px;
 }
 
 .table-select-option{
-    text-transform: uppercase;
-    font-weight: bold;
     font-family: "Akzidenz-Grotesk Pro", Arial, Helvetica, sans-serif;
     font-size: 14px;
     height: 32px;
+    font-weight: bold;
+}
+
+.uppercase{
+    text-transform: uppercase;
 }
 
 .mat-list-item.active {

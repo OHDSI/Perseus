@@ -23,6 +23,7 @@ export class StoreService {
     },
     linkFieldsSearch: {},
     cdmVersions: [],
+    targetClones: {},
     reportFile: undefined
   };
   private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
@@ -37,22 +38,22 @@ export class StoreService {
   }
 
   add(key, value) {
-    this.state = { ...this.state, [key]: value };
+    this.state = { ...this.state, [ key ]: value };
   }
 
   removeTable(storeKey, table) {
-    const tables = this.state[storeKey];
+    const tables = this.state[ storeKey ];
     if (tables && tables.length) {
       const updatedTables = tables.filter(it => it !== table);
-      this.state = { ...this.state, [storeKey]: updatedTables };
+      this.state = { ...this.state, [ storeKey ]: updatedTables };
     }
   }
 
   updateTable(storeKey, table, updates) {
-    const tables = this.state[storeKey];
+    const tables = this.state[ storeKey ];
     if (tables && tables.length && table) {
       const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...it, ...updates }) : new Table(it));
-      this.state = { ...this.state, [storeKey]: updatedTables };
+      this.state = { ...this.state, [ storeKey ]: updatedTables };
     }
   }
 
@@ -79,7 +80,7 @@ export class StoreService {
   }
 }
 
-export function stateToInfo(state: any): {cdmVersion: string, reportName: string} {
+export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
   return {
     cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
     reportName: state.report || 'Report name'

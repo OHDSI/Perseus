@@ -12,8 +12,19 @@
   }
 }
 
-.create-group{
+.flex-div{
   display: flex;
+}
+
+.flex-div-align-center {
+  @extend .flex-div;
+  align-items: center;
+  color: #066BBB;
+  font-size: 15px;
+  font-weight: bold;
+  .mat-icon{
+    cursor: pointer;
+  }
 }
 
 .margin-left{
@@ -36,4 +47,3 @@
 .condition{
   margin-left: 10px;
 }
-

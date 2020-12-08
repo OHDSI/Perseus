@@ -161,7 +161,7 @@
     [matTooltipDisabled]="area !== 'source'"
     *matRowDef="let row; columns: displayedColumns"
     [hidden]="isHidden(row) || isFiltered(row)"
-    class="item-{{ row.tableName }}-{{ row.name }} {{area}}Row draggable"
+    class="item-{{ row.tableName }}-{{row.cloneTableName?row.cloneTableName:''}}-{{row.cloneConnectedToSourceName?row.cloneConnectedToSourceName:''}}-{{ row.name }} {{area}}Row draggable"
     [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
     (click)="rowClick($event)"
     (dragstart)="rowClick($event)"

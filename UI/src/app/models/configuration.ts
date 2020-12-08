@@ -15,6 +15,7 @@ export interface ConfigurationOptions {
   version?: any;
   filtered?: any;
   constants?: any;
+  targetClones?: any;
 }
 
 export class Configuration {
@@ -64,6 +65,11 @@ export class Configuration {
     return {};
   }
 
+  get targetClones(): any {
+    return  parse(this.targetTablesClones);
+  }
+
+
   name: string;
   mappingsConfiguration: string;
   tablesConfiguration: string;
@@ -73,6 +79,7 @@ export class Configuration {
   version: string;
   filtered: string;
   constants: string;
+  targetTablesClones: string;
 
   constructor(options: ConfigurationOptions = {}) {
     this.name = options.name;
@@ -84,5 +91,6 @@ export class Configuration {
     this.version = JSON.stringify(options.version);
     this.filtered = JSON.stringify(options.filtered);
     this.constants = JSON.stringify(options.constants);
+    this.targetTablesClones = stringify(options.targetClones);
   }
 }

@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer, TableShading } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
-import { similarTableName } from '../../../app.constants';
+import { numberOfPanelsWithOneSimilar, numberOfPanelsWithoutSimilar, numberOfPanelsWithTwoSimilar, similarTableName } from '../../../app.constants';
 import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
 
 
@@ -317,10 +317,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
 
     this.similarTargetTable = this.target.find(item => item.name === 'similar');
-    this.selectedTargetTable = this.getEnabledTargetTables()[0];
+    this.selectedTargetTable = this.getSelectedTargetTable();
+
 
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
-    this.target.find(item => item.name === 'similar') ? 4 : 3 : 2
+    this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
 
     setTimeout(() => {
       this.bridgeService.refresh(this.currentTargetTable);
@@ -364,8 +365,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openTablesDropdown(target: any, area: string){
-    const data = area === 'source' ? { tables: this.sourceTablesWithoutSimilar, selected: this.selectedSourceTable } :
-    { tables: this.getEnabledTargetTables(), selected: this.selectedTargetTable };
+    const data = area === 'source' ? {
+      tables: this.sourceTablesWithoutSimilar,
+      selected: this.selectedSourceTable,
+      uppercase : true} :
+    { tables: this.getEnabledTargetTables(), selected: this.selectedTargetTable, uppercase : true };
 
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
@@ -399,7 +403,19 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   refreshSourcePanel(data: any){
     this.selectedSourceTable = data;
     this.sourcePanel.panel.table = data;
-    this.refreshTargetPanel(this.getEnabledTargetTables()[0]);
+    this.refreshTargetPanel(this.getSelectedTargetTable());
+  }
+
+  getSelectedTargetTable() {
+    const enabledTargetTable = this.getEnabledTargetTables()[ 0 ];
+    const clones = this.storeService.state.targetClones[ enabledTargetTable.name ]
+    if (clones) {
+      const enabledClones = clones.filter(item => item.cloneConnectedToSourceName === this.currentSourceTable.name);
+      if (enabledClones && enabledClones.length) {
+        return enabledClones[ 0 ];
+      }
+    }
+    return enabledTargetTable;
   }
 
   onWheel(event: any, area: string) {
@@ -423,6 +439,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }
       this.refreshTargetPanel(this.getEnabledTargetTables()[ newIndex ]);
     }
+  }
+
+  changeTargetClone(table: any) {
+    this.bridgeService.hideAllArrows();
+    this.refreshTargetPanel(table);
   }
 
   ngOnDestroy() {
@@ -554,18 +575,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             this.sourcePanelSimilar.panel.table = this.similarSourceTable;
             this.sourcePanelSimilar.panel.refreshPanel();
             this.targetPanel.panel.refreshPanel(true);
-          } else {
-            this.refreshSourcePanel(this.selectedSourceTable);
           }
         } else {
           if (index === 0 && this.similarTargetTable) {
-            this.targetPanelSimilar.panel.table = this.similarSourceTable;
+            this.targetPanelSimilar.panel.table = this.similarTargetTable;
             this.targetPanelSimilar.panel.refreshPanel();
-          } else {
-            this.refreshTargetPanel(this.selectedTargetTable);
           }
-
         }
+        this.refreshSourcePanel(this.selectedSourceTable);
+        this.refreshTargetPanel(this.selectedTargetTable);
         resolve();
       }, 1000);
     });

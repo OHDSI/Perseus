@@ -45,7 +45,7 @@ export class DrawService {
       drawEntity.draw();
     }
 
-    return drawEntity;
+    return this.cache[entityId];
   }
 
   deleteAllConnectors() {

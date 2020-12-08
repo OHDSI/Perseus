@@ -3,7 +3,7 @@ import { SQL_STRING_FUNCTIONS, SQL_FUNCTIONS } from '../popups/rules-popup/trans
 import * as CodeMirror from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -31,7 +31,9 @@ export class TargetCloneDialogComponent implements OnInit {
   conditionForm = new FormGroup({});
   tableName = 'Test';
 
-  constructor( @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(
+    public dialogRef: MatDialogRef<TargetCloneDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
@@ -62,6 +64,10 @@ export class TargetCloneDialogComponent implements OnInit {
 
   onChange(cm, event) {
     this.data.table.condition = this.editorContent;
+  }
+
+  apply() {
+    this.dialogRef.close();
   }
 
 }

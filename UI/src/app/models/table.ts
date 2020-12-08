@@ -9,6 +9,8 @@ export interface ITable {
   visible: boolean;
   sql: string;
   cloneName: string;
+  condition: string;
+  cloneConnectedToSourceName: string;
 }
 
 
@@ -20,6 +22,8 @@ export interface ITableOptions {
   visible?: boolean;
   sql?: string;
   cloneName?: string;
+  condition?: string;
+  cloneConnectedToSourceName?: string;
 }
 
 export class Table {
@@ -30,6 +34,8 @@ export class Table {
   visible = true;
   sql: string;
   cloneName: string;
+  condition: string;
+  cloneConnectedToSourceName: string;
 
   constructor(options: ITableOptions = {}) {
     this.id = options.id;
@@ -39,5 +45,7 @@ export class Table {
     this.visible = options.visible || true;
     this.sql = options.sql || '';
     this.cloneName = options.cloneName;
+    this.condition = options.condition;
+    this.cloneConnectedToSourceName = options.cloneConnectedToSourceName;
   }
 }

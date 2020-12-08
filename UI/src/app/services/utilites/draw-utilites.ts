@@ -12,7 +12,7 @@ function areaOffset(source, target) {
 }
 
 function getSVGPoint(row: IRow, canvas: any) {
-  if (!row.htmlElement) {
+  if (!(row.htmlElement && row.htmlElement.id)) {
     return;
   }
 
