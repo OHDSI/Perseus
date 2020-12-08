@@ -1,9 +1,9 @@
 export enum ProgressNotificationStatusCode {
-  STARTED_SCANNING = 0,
+  STARTED = 0,
   TABLE_SCANNING = 1,
-  SCAN_REPORT_GENERATED = 2,
+  FINISHED = 2,
   ERROR = 3,
-  FAILED_TO_SCAN = 4,
+  FAILED = 4,
   CANCELED = 5,
   NONE = 6
 }

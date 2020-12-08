@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
@@ -8,10 +8,12 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { BaseComponent } from 'src/app/common/components/base/base.component';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
+import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
+import { Observable } from 'rxjs/internal/Observable';
 
 
 @Component({
@@ -25,6 +27,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   cdmVersion: string;
   reportName: string;
+
+  fakeDataDisabled$: Observable<boolean>;
 
   constructor(
     private bridgeService: BridgeService,
@@ -50,6 +54,12 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
         this.uploadService.onFileInputClick(this.fileInput);
       }
     });
+
+    this.fakeDataDisabled$ = this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        map(state => !(state.reportFile as boolean))
+      );
   }
 
   ngOnDestroy() {
@@ -101,7 +111,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
   }
 
-  GenerateAndSave(){
+  generateAndSave() {
     const { source } = this.storeService.getMappedTables();
 
     const areaRows = [];
@@ -122,6 +132,15 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(ScanDataDialogComponent, {
       width: '700',
       height: '674',
+      disableClose: true,
+      panelClass: 'scan-data-dialog'
+    });
+  }
+
+  generateFakeData() {
+    this.matDialog.open(FakeDataDialogComponent, {
+      width: '253',
+      height: '270',
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });
