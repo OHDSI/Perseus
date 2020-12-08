@@ -8,11 +8,12 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { BaseComponent } from 'src/app/common/components/base/base.component';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
+import { Observable } from 'rxjs/internal/Observable';
 
 
 @Component({
@@ -26,6 +27,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   cdmVersion: string;
   reportName: string;
+
+  fakeDataDisabled$: Observable<boolean>;
 
   constructor(
     private bridgeService: BridgeService,
@@ -52,7 +55,11 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       }
     });
 
-    this.generateFakeData();
+    this.fakeDataDisabled$ = this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        map(state => !(state.reportFile as boolean))
+      );
   }
 
   ngOnDestroy() {

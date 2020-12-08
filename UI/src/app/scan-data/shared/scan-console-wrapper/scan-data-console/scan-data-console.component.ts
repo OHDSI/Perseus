@@ -118,9 +118,9 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(() => {
+      .subscribe(result => {
         this.whiteRabbitWebsocketService.disconnect();
-        this.finish.emit('succeeded');
+        this.finish.emit(result);
       });
   }
 
