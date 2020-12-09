@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ITable } from 'src/app/models/table';
+import { ITable, Table } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
@@ -178,6 +178,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.commonUtilsService.openOnBoardingTip(target, 'create-group');
   }
 
+  openOnBoardingTipClone(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target, 'clone-target');
+  }
+
   openConditionDialog() {
 
     const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
@@ -219,8 +223,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
         }
         let cloneToSet;
         const cloneConnectedToSourceName = this.oppositeTableName;
-        const cloneId = this.storeService.state.targetClones[ this.table.name ] ?
-          this.storeService.state.target.length + Object.values(this.storeService.state.targetClones).length : this.storeService.state.target.length;
+        const totalNumberOfClones = Object.values(this.storeService.state.targetClones).reduce(function(accumulator: number, currentValue: ITable[]) {
+          return accumulator + currentValue.length;
+        }, 0);
+        const cloneId = this.storeService.state.target.length + totalNumberOfClones;
         if (this.existingClones && this.existingClones.length) {
           cloneToSet = this.createClonedTable(this.table, res.value, cloneId, cloneConnectedToSourceName);
           this.storeService.state.targetClones[ this.table.name ].
@@ -279,7 +285,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
       tables: this.getTableClones(),
       selected: this.table,
       clone: true,
-      previous: undefined
+      previous: undefined,
+      remove: true
     };
 
     const dialogOptions: OverlayConfigOptions = {
@@ -291,8 +298,23 @@ export class PanelComponent implements OnInit, AfterViewInit {
     };
     const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
 
-    overlayRef.afterClosed$.subscribe( tbl => {
-      this.setCloneTable(data.selected);
+    overlayRef.afterClosed$.subscribe(tbl => {
+      if (tbl) {
+        const table = tbl as Table;
+        this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ].filter(item => item.id !== table.id);
+        const arrowsToDelete = Object.values(this.bridgeService.arrowsCache).filter(item => item.target.tableId === table.id);
+        arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        if (!this.storeService.state.targetClones[ table.name ].length) {
+          delete this.storeService.state.targetClones[ table.name ];
+          const test = Object.values(this.bridgeService.arrowsCache).
+            filter(it => it.target.tableName === table.name && it.source.tableId === this.oppositeTableId);
+            test.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        } else {
+          this.setCloneTable(this.storeService.state.targetClones[ table.name ][0]);
+        }
+      } else {
+        this.setCloneTable(data.selected);
+      }
     });
 
   }

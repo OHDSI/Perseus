@@ -23,4 +23,8 @@ export class SelectTableDropdownComponent implements OnInit {
       this.payload.selected = event;
       this.dialogRef.close();
   }
+
+  remove(table: any){
+    this.dialogRef.close(table);
+  }
 }
