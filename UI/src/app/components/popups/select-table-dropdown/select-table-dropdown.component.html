@@ -7,7 +7,11 @@
                      [class.active]="table === payload.selected"
                      *ngFor="let table of payload.tables"
                      [value]="table">
-      {{payload.clone ? table.cloneName : table.name}}
+                     <div class="flex-div">
+                       <div>{{payload.clone ? table.cloneName : table.name}}</div>
+                       <mat-icon (click)="remove(table)"
+                                 *ngIf="payload.remove">delete_outline</mat-icon>
+                     </div>
     </mat-list-option>
   </mat-selection-list>
 </div>

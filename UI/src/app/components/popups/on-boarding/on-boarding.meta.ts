@@ -29,6 +29,17 @@ export const ON_BOARDING_META = [
       key: 'close'
     },
     bullets: []
+  },
+
+  {
+    key: 'clone-target',
+    title: 'Clone mapping',
+    content: 'Use this button to clone mapping for current source and target table',
+    action: {
+      title: 'Got it!',
+      key: 'close'
+    },
+    bullets: []
   }
 
 ];

@@ -1,4 +1,4 @@
-.tables-select{
+.tables-select {
     background: white;
     overflow-y: scroll;
     max-width: 250px;
@@ -6,17 +6,33 @@
     margin: 10px 10px 10px 10px;
 }
 
-.table-select-option{
-    font-family: "Akzidenz-Grotesk Pro", Arial, Helvetica, sans-serif;
-    font-size: 14px;
+.table-select-option {
     height: 32px;
-    font-weight: bold;
 }
 
-.uppercase{
+.flex-div {
+    display: flex;
+    font-family: "Akzidenz-Grotesk Pro", Arial, Helvetica, sans-serif;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    align-items: center;
+
+    .mat-icon{
+        margin-top: 4px;
+        margin-left: 3px;
+        font-size: 19px !important;
+        color: grey;
+      }
+      
+      .mat-icon:hover { 
+        color: red !important;
+      }
+}
+
+.uppercase {
     text-transform: uppercase;
 }
 
 .mat-list-item.active {
-    color: #066BBB;
-  }
+    color: #066bbb;
+}

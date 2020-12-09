@@ -396,7 +396,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       data.splice(index, 1);
     }
 
-    if (isConceptTable(targetTableName)) {
+//previous version of remove mapping algorithm. Has been commented since logic with deleting links from all concept tables is not required
+/*     if (isConceptTable(targetTableName)) {
       environment.conceptTables.forEach(conceptTable => {
         this.bridgeService.deleteArrowsForMapping(
           conceptTable,
@@ -408,7 +409,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         targetTableName,
         sourceTableName
       );
-    }
+    } */
+
+    this.bridgeService.deleteArrowsForMapping(
+      targetTableName,
+      sourceTableName
+    );
   }
 
   filterByName(area: string, byName: Criteria): void {
