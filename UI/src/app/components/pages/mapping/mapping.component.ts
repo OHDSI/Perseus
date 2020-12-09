@@ -27,10 +27,11 @@ import * as groups from './groups-conf.json';
 import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
-import { Packer, TableShading } from 'docx';
+import { Packer } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
 import { numberOfPanelsWithOneSimilar, numberOfPanelsWithoutSimilar, numberOfPanelsWithTwoSimilar, similarTableName } from '../../../app.constants';
 import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
+import { FakeDataDialogComponent } from '../../../scan-data/fake-data-dialog/fake-data-dialog.component';
 
 
 @Component({
@@ -714,6 +715,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     Packer.toBlob(report).then(blob => {
       saveAs(blob, 'report.docx');
+    });
+  }
+
+  generateFakeData() {
+    this.matDialog.open(FakeDataDialogComponent, {
+      width: '253',
+      height: '270',
+      disableClose: true,
+      panelClass: 'scan-data-dialog'
     });
   }
 }
