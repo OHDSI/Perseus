@@ -76,7 +76,10 @@ export class StoreService {
   }
 
   resetAllData() {
+    const cdmVersions = this.state.cdmVersions;
     this.storeState.next(Object.assign({}, this.initialState));
+    this.add('cdmVersions', cdmVersions);
+
   }
 }
 
