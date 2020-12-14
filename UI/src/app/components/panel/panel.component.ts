@@ -193,12 +193,20 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
     matDialog.afterClosed().subscribe(res => {
       if (this.existingClones && this.existingClones.length) {
-        this.storeService.state.targetClones[ this.table.name ].
-          find(item => item.id === this.table.id).condition = this.table.condition;
+        const tableToUpdate = this.storeService.state.targetClones[ this.table.name ].find(item => item.id === this.table.id);
+        this.updateCondition(tableToUpdate);
       } else {
-        this.storeService.state.target.find(item => item.id === this.table.id).condition = this.table.condition;
+        this.updateCondition(this.storeService.state.target.find(item => item.id === this.table.id));
       }
     });
+  }
+
+  updateCondition(table: ITable) {
+    table.condition = this.table.condition;
+    table.rows.forEach(row => row.condition = this.table.condition);
+    Object.values(this.bridgeService.arrowsCache).
+      filter(item => item.target.tableName === this.table.name && item.target.cloneTableName === this.table.cloneName).
+      forEach(el => el.target.condition = this.table.condition)
   }
 
   createClone() {
@@ -238,6 +246,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
             push(this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName));
         }
         this.setCloneTable(cloneToSet);
+        Object.values(this.bridgeService.arrowsCache).
+        filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
+        .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
       }
     });
   }
@@ -256,11 +267,17 @@ export class PanelComponent implements OnInit, AfterViewInit {
     const cloneTargetTable = cloneDeep(table) as ITable;
     cloneTargetTable.cloneName = cloneName;
     cloneTargetTable.cloneConnectedToSourceName = cloneConnectedToSourceName;
+    if (cloneName != 'Default'){
+      cloneTargetTable.condition = '';
+    }
     cloneTargetTable.id = cloneId;
     cloneTargetTable.rows.forEach(item => {
       item.tableId = cloneId;
       item.cloneTableName = cloneName;
       item.cloneConnectedToSourceName = cloneConnectedToSourceName;
+      if (cloneName != 'Default'){
+        item.condition = ''
+      }
     });
     this.bridgeService.drawCloneArrows(cloneTargetTable, table);
     return cloneTargetTable;
