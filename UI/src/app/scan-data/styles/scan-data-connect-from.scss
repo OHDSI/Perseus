@@ -1,0 +1,14 @@
+.scan-data-connect-form-control {
+  display: flex;
+  flex-direction: column;
+
+  margin: 15px 9px;
+
+  input, .mat-select {
+    background: #F9F9F9;
+
+    &.ng-invalid.ng-touched {
+      border-bottom: 1px solid red;
+    }
+  }
+}

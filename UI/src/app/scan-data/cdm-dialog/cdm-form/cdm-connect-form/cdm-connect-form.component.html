@@ -18,4 +18,9 @@
     <label for="dbName">Database Name</label>
     <input id="dbName" type="text" formControlName="database">
   </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('schemaName').disabled}">
+    <label for="schemaName">Schema Name</label>
+    <input id="schemaName" type="text" formControlName="schemaName">
+  </div>
 </form>

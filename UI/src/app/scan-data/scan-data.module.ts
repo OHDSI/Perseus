@@ -23,6 +23,10 @@ import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.com
 import { FakeConsoleWrapperComponent } from './fake-data-dialog/fake-console-wrapper/fake-console-wrapper.component';
 import { FakeDataFormComponent } from './fake-data-dialog/fake-data-form/fake-data-form.component';
 import { ScanConsoleWrapperComponent } from './scan-data-dialog/scan-console-wrapper/scan-console-wrapper.component';
+import { CdmDialogComponent } from './cdm-dialog/cdm-dialog.component';
+import { CdmFormComponent } from './cdm-dialog/cdm-form/cdm-form.component';
+import { CdmConnectFormComponent } from './cdm-dialog/cdm-form/cdm-connect-form/cdm-connect-form.component';
+import { CdmFakeDataFormComponent } from './cdm-dialog/cdm-form/cdm-fake-data-form/cdm-fake-data-form.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +46,11 @@ import { ScanConsoleWrapperComponent } from './scan-data-dialog/scan-console-wra
     FakeDataDialogComponent,
     FakeConsoleWrapperComponent,
     FakeDataFormComponent,
-    ScanConsoleWrapperComponent
+    ScanConsoleWrapperComponent,
+    CdmDialogComponent,
+    CdmFormComponent,
+    CdmConnectFormComponent,
+    CdmFakeDataFormComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +64,8 @@ import { ScanConsoleWrapperComponent } from './scan-data-dialog/scan-console-wra
   ],
   exports: [
     ScanDataDialogComponent,
-    FakeDataDialogComponent
+    FakeDataDialogComponent,
+    CdmDialogComponent
   ],
 })
 export class ScanDataModule { }

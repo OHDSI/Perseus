@@ -1,12 +1,12 @@
 <div class="source-form">
-  <div class="source-form__header">
+  <div class="scan-step-header">
     <div class="source-form__header-number scan-step">
       <h5 class="scan-step__number">1</h5>
     </div>
-    <h5 class="source-form__header-name">Source Data Location</h5>
+    <h5 class="scan-step-header__name">Source Data Location</h5>
   </div>
 
-  <mat-form-field class="source-form-control scan-data-form-control" floatLabel="never" appearance="none">
+  <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
     <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
       <mat-option *ngFor="let type of dataTypes" [value]="type">

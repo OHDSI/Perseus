@@ -14,6 +14,7 @@ import { Area } from 'src/app/models/area';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
 import { Observable } from 'rxjs/internal/Observable';
+import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 
 
 @Component({
@@ -29,6 +30,11 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   reportName: string;
 
   fakeDataDisabled$: Observable<boolean>;
+
+  private scanDataMatDialogSharedParams = {
+    disableClose: true,
+    panelClass: 'scan-data-dialog'
+  };
 
   constructor(
     private bridgeService: BridgeService,
@@ -60,6 +66,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
         takeUntil(this.ngUnsubscribe),
         map(state => !(state.reportFile as boolean))
       );
+
+    this.convertToCdm();
   }
 
   ngOnDestroy() {
@@ -132,8 +140,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(ScanDataDialogComponent, {
       width: '700',
       height: '674',
-      disableClose: true,
-      panelClass: 'scan-data-dialog'
+      ...this.scanDataMatDialogSharedParams
     });
   }
 
@@ -141,8 +148,15 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(FakeDataDialogComponent, {
       width: '253',
       height: '270',
-      disableClose: true,
-      panelClass: 'scan-data-dialog'
+      ...this.scanDataMatDialogSharedParams
+    });
+  }
+
+  convertToCdm() {
+    this.matDialog.open(CdmDialogComponent, {
+      width: '700',
+      height: '674',
+      ...this.scanDataMatDialogSharedParams
     });
   }
 }

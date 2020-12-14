@@ -8,11 +8,18 @@ import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
+import { whiteRabbitDataTypes } from '../../scan-data.constants';
 
 @Component({
   selector: 'app-connect-form',
   templateUrl: './connect-form.component.html',
-  styleUrls: ['./connect-form.component.scss', '../../styles/scan-data-form.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss'],
+  styleUrls: [
+    './connect-form.component.scss',
+    '../../styles/scan-data-form.scss',
+    '../../styles/scan-data-step.scss',
+    '../../styles/scan-data-normalize.scss',
+    '../../styles/scan-data-connect-from.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectFormComponent extends BaseComponent implements OnInit {
@@ -42,18 +49,7 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
   @Output()
   connectionPropsChanged = new EventEmitter<void>();
 
-  dataTypes = [
-    'CSV files',
-    'MySQL',
-    'Oracle',
-    'PostgreSQL',
-    'Redshift',
-    'SQL Server',
-    'Azure',
-    'MS Access',
-    'Teradata',
-    'BigQuery'
-  ];
+  dataTypes = whiteRabbitDataTypes;
 
   get fileInputText() {
     const result = this.filesToScan

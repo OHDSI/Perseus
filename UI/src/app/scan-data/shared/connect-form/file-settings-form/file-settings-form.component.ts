@@ -9,7 +9,12 @@ import { FileToScan } from '../../../model/file-to-scan';
 @Component({
   selector: 'app-file-settings-form',
   templateUrl: './file-settings-form.component.html',
-  styleUrls: ['../connect-form.component.scss', '../../../styles/scan-data-form.scss', '../../../styles/file-input.scss'],
+  styleUrls: [
+    '../connect-form.component.scss',
+    '../../../styles/scan-data-form.scss',
+    '../../../styles/file-input.scss',
+    '../../../styles/scan-data-connect-from.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileSettingsFormComponent extends BaseComponent {

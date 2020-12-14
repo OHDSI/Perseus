@@ -8,40 +8,6 @@
   border: 1px solid rgba(#066BBB, 0.1);
   border-radius: 2px;
 
-  &__header {
-    display: flex;
-    align-items: center;
-    height: 38px;
-
-    border-bottom: 1px solid rgba(#066BBB, 0.1);
-    border-radius: 2px;
-
-    padding-left: 9px;
-
-    &-name {
-      font-weight: normal;
-      font-size: 14px;
-      line-height: 15px;
-
-      color: #404040;
-    }
-  }
-
-  &-control {
-    display: flex;
-    flex-direction: column;
-
-    margin: 15px 9px;
-
-    input, .mat-select {
-      background: #F9F9F9;
-
-      &.ng-invalid.ng-touched {
-        border-bottom: 1px solid red;
-      }
-    }
-  }
-
   .mat-form-field {
     margin: 15px 9px 0 9px;
   }
