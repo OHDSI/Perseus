@@ -79,6 +79,7 @@ export class StoreService {
     const cdmVersions = this.state.cdmVersions;
     this.storeState.next(Object.assign({}, this.initialState));
     this.add('cdmVersions', cdmVersions);
+    this.state.targetClones = {};
 
   }
 }

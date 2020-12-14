@@ -384,7 +384,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     event?: any
   ) {
     if (event) {
-    event.stopPropagation();
+      event.stopPropagation();
     }
 
     const table = this.targetConfig[ targetTableName ];
@@ -396,20 +396,23 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       data.splice(index, 1);
     }
 
-//previous version of remove mapping algorithm. Has been commented since logic with deleting links from all concept tables is not required
-/*     if (isConceptTable(targetTableName)) {
-      environment.conceptTables.forEach(conceptTable => {
-        this.bridgeService.deleteArrowsForMapping(
-          conceptTable,
-          sourceTableName
-        );
-      });
-    } else {
-      this.bridgeService.deleteArrowsForMapping(
-        targetTableName,
-        sourceTableName
-      );
-    } */
+    if (this.storeService.state.targetClones[ targetTableName ]) {
+      delete this.storeService.state.targetClones[ targetTableName ];
+    }
+    //previous version of remove mapping algorithm. Has been commented since logic with deleting links from all concept tables is not required
+    /*     if (isConceptTable(targetTableName)) {
+          environment.conceptTables.forEach(conceptTable => {
+            this.bridgeService.deleteArrowsForMapping(
+              conceptTable,
+              sourceTableName
+            );
+          });
+        } else {
+          this.bridgeService.deleteArrowsForMapping(
+            targetTableName,
+            sourceTableName
+          );
+        } */
 
     this.bridgeService.deleteArrowsForMapping(
       targetTableName,

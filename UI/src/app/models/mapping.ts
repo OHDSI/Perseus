@@ -27,6 +27,8 @@ export interface MappingNode {
   lookup?: string;
   sqlTransformation?: string;
   comments?: IComment[];
+  condition?: string;
+  targetCloneName?: string;
 }
 
 export interface MappingPair {
