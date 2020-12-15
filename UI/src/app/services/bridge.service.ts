@@ -189,7 +189,7 @@ export class BridgeService {
     const tables = {
       source: source.filter(table => sourceTablesNames.includes(table.name)),
       target: target.filter(table => targetTablesNames.includes(table.name))
-    }
+    };
     return tables;
   }
 
@@ -441,7 +441,7 @@ export class BridgeService {
     }
   }
 
-  drawCloneArrows(cloneTable: ITable, targetTable: ITable){
+  drawCloneArrows(cloneTable: ITable, targetTable: ITable) {
     const arrowConnectedToTarget = Object.values(this.arrowsCache).filter(it => it.target.tableName === targetTable.name &&
       it.target.cloneTableName === targetTable.cloneName);
     arrowConnectedToTarget.forEach(item => {
@@ -617,7 +617,7 @@ export class BridgeService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  getMappingWithViewsAndGroups(sourceTables: any){
+  getMappingWithViewsAndGroups(sourceTables: any) {
     const mappingJSON = this.generateMapping();
 
     sourceTables.forEach(source => {

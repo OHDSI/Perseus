@@ -1,9 +1,14 @@
 import { Observable } from 'rxjs';
+import { WebsocketConfig } from './websocket.config';
 
-export interface WebsocketService {
+export abstract class WebsocketService {
   status$: Observable<boolean>;
 
-  on(destination: string): Observable<string>;
+  abstract connect(config: WebsocketConfig): Observable<boolean>;
 
-  send(destination: string, data: string): void;
+  abstract on(destination: string): Observable<string>;
+
+  abstract send(destination: string, data: string): void;
+
+  abstract disconnect(): void;
 }

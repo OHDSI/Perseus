@@ -13,74 +13,7 @@
   }
 
   &__test-connection {
-    box-sizing: content-box;
-    height: 54px;
     margin-top: auto;
     padding-bottom: 23px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    &-submit-button {
-      width: 140px;
-      height: 33px;
-
-      background: #F9F9F9;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(#066BBB, 0.1);
-
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 18px;
-
-      text-align: center;
-      color: #066BBB;
-      cursor: pointer;
-
-      &:focus {
-        outline: none;
-      }
-
-      &:hover {
-        background: #EBEBEB;
-      }
-
-      &:disabled {
-        background: #F9F9F9;
-        opacity: 0.6;
-      }
-    }
-
-    &-result {
-      margin-top: 8px;
-
-      span {
-        text-align: center;
-      }
-
-      &-success, &-error {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        svg {
-          margin-right: 5px;
-        }
-      }
-
-      &-success {
-        font-size: 12px;
-        line-height: 15px;
-
-        color: #42980E;
-      }
-
-      &-error {
-        font-size: 12px;
-        line-height: 15px;
-
-        color: #FF4646;
-      }
-    }
   }
 }

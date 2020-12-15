@@ -1,0 +1,23 @@
+<div class="test-connection">
+  <button class="test-connection-submit-button" type="submit" (click)="click.emit()"
+          [disabled]="disabled">
+    Test Connection
+  </button>
+
+  <div class="test-connection-result" [hidden]="!connectionResult">
+    <div class="test-connection-result-success" *ngIf="connectionResult && connectionResult.canConnect; else errorBlock">
+      <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.81353 7.10067L0.968732 4.30201L0 5.24832L3.81353 9L12 0.946309L11.0381 0L3.81353 7.10067Z" fill="#42980E"/>
+      </svg>
+      <span>Connected</span>
+    </div>
+    <ng-template #errorBlock>
+      <div class="test-connection-result-error">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 1.00714L8.99286 0L5 3.99286L1.00714 0L0 1.00714L3.99286 5L0 8.99286L1.00714 10L5 6.00714L8.99286 10L10 8.99286L6.00714 5L10 1.00714Z" fill="#FF4646"/>
+        </svg>
+        <span>Connection failed</span>
+      </div>
+    </ng-template>
+  </div>
+</div>

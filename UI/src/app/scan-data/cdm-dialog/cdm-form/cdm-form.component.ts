@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { cdmBuilderDataTypes } from '../../scan-data.constants';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { createFakeDataForm } from '../../util/form';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { CdmStateService } from '../../../services/cdm-state.service';
+import { BaseComponent } from '../../shared/base/base.component';
+import { FakeDataStateService } from '../../../services/fake-data-state.service';
+import { DbSettings } from '../../model/db-settings';
+import { FakeDataParams } from '../../model/fake-data-params';
 
 @Component({
   selector: 'app-cdm-form',
@@ -9,56 +12,41 @@ import { createFakeDataForm } from '../../util/form';
   styleUrls: [
     './cdm-form.component.scss',
     '../../styles/scan-data-buttons.scss',
-    '../../styles/scan-data-step.scss',
-    '../../styles/scan-data-form.scss',
-    '../../styles/scan-data-normalize.scss',
-    '../../styles/scan-data-connect-from.scss'
-  ]
+    '../../styles/scan-data-normalize.scss'
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CdmFormComponent implements OnInit {
+export class CdmFormComponent extends BaseComponent implements OnInit {
 
-  sourceConnectForm: FormGroup;
+  sourceDbSettings: DbSettings;
 
-  destinationConnectForm: FormGroup;
-
-  fakeDataForm: FormGroup;
-
-  isOriginalDatabase = true;
-
-  sourceConnecting = false;
-
-  destinationConnecting = false;
-
-  sourceDataTypes = [
-    'Fake Data',
-    ...cdmBuilderDataTypes
-  ];
-
-  destinationDataTypes = cdmBuilderDataTypes;
+  destinationDbSettings: DbSettings;
 
   sourceDataType: string;
 
   destinationDataType: string;
 
-  constructor(private formBuilder: FormBuilder) { }
+  fakeDataParams: FakeDataParams;
 
-  ngOnInit(): void {
-    const isSourceDisabled = true;
-    const isDestinationDisabled = true;
-
-    this.sourceConnectForm = this.createDbConnectForm(isSourceDisabled);
-    this.destinationConnectForm = this.createDbConnectForm(isDestinationDisabled);
-    this.fakeDataForm = createFakeDataForm();
+  constructor(private formBuilder: FormBuilder,
+              private cdmStateService: CdmStateService,
+              private fakeDataStateService: FakeDataStateService) {
+    super();
   }
 
-  private createDbConnectForm(disabled: boolean): FormGroup {
-    return this.formBuilder.group({
-      server: [{value: null, disabled}, [Validators.required]],
-      user: [{value: null, disabled}, [Validators.required]],
-      password: [{value: null, disabled}, [Validators.required]],
-      database: [{value: null, disabled}, [Validators.required]],
-      schemaName: [{value: null, disabled}, [Validators.required]]
-    });
+  ngOnInit(): void {
+    this.loadState();
+  }
+
+  private loadState() {
+    const {sourceDataType, destinationDataType, sourceDbSettings, destinationDbSettings} = this.cdmStateService.state;
+    const fakeDataParams = this.fakeDataStateService.state;
+
+    this.sourceDataType = sourceDataType;
+    this.destinationDataType = destinationDataType;
+    this.sourceDbSettings = sourceDbSettings;
+    this.destinationDbSettings = destinationDbSettings;
+    this.fakeDataParams = fakeDataParams;
   }
 }
 

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
+import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
 
 @Component({
   selector: 'app-cdm-dialog',
@@ -9,9 +10,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class CdmDialogComponent extends AbstractScanDialog {
 
+  @ViewChild(CdmConsoleWrapperComponent)
+  consoleWrapperComponent: CdmConsoleWrapperComponent;
+
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>) {
     super(dialogRef);
   }
 
-
+  onConvert(): void {
+  }
 }

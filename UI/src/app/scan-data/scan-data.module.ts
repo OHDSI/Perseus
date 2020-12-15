@@ -27,6 +27,10 @@ import { CdmDialogComponent } from './cdm-dialog/cdm-dialog.component';
 import { CdmFormComponent } from './cdm-dialog/cdm-form/cdm-form.component';
 import { CdmConnectFormComponent } from './cdm-dialog/cdm-form/cdm-connect-form/cdm-connect-form.component';
 import { CdmFakeDataFormComponent } from './cdm-dialog/cdm-form/cdm-fake-data-form/cdm-fake-data-form.component';
+import { TestConnectionComponent } from './shared/test-connection/test-connection.component';
+import { CdmDestinationFormComponent } from './cdm-dialog/cdm-form/cdm-destination-form/cdm-destination-form.component';
+import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cdm-source-form.component';
+import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +54,11 @@ import { CdmFakeDataFormComponent } from './cdm-dialog/cdm-form/cdm-fake-data-fo
     CdmDialogComponent,
     CdmFormComponent,
     CdmConnectFormComponent,
-    CdmFakeDataFormComponent
+    CdmFakeDataFormComponent,
+    TestConnectionComponent,
+    CdmDestinationFormComponent,
+    CdmSourceFormComponent,
+    CdmConsoleWrapperComponent
   ],
   imports: [
     CommonModule,

@@ -1,5 +1,6 @@
-export const whiteRabbitDataTypes = [
-  'CSV files',
+import { whiteRabbitPrefix, whiteRabbitUrl } from '../app.constants';
+
+export const whiteRabbitDatabaseTypes = [
   'MySQL',
   'Oracle',
   'PostgreSQL',
@@ -11,8 +12,20 @@ export const whiteRabbitDataTypes = [
   'BigQuery'
 ];
 
-export const cdmBuilderDataTypes = [
+export const delimitedFiles = [
+  'CSV files'
+];
+
+export const cdmBuilderDatabaseTypes = [
   'PostgreSQL',
   'SQL Server',
   'MySQL'
 ];
+
+export const fakeData = 'Fake Data';
+
+export const whiteRabbitWebSocketConfig = {
+  url: whiteRabbitUrl,
+  prefix: whiteRabbitPrefix,
+  progressMessagesDestination: '/user/queue/reply',
+};

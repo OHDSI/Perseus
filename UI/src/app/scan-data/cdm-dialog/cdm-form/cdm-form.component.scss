@@ -5,7 +5,11 @@
     display: flex;
     justify-content: space-between;
 
+    width: 608px;
+
     &-item {
+      display: flex;
+      flex-direction: column;
       width: 296px;
       height: 485px;
 
@@ -15,11 +19,16 @@
       &__progress-bar {
         background-color: #F9F9F9;
       }
-    }
-  }
 
-  .mat-form-field {
-    margin: 15px 9px 0 9px;
+      &__connection-result {
+        margin-top: auto;
+        padding-bottom: 23px;
+      }
+
+      .mat-form-field {
+        margin: 15px 9px 0 9px !important;
+      }
+    }
   }
 
   &__action {

@@ -23,6 +23,7 @@ import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
 import { WebsocketParams } from '../../model/websocket-params';
+import { whiteRabbitWebSocketConfig } from '../../scan-data.constants';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -206,8 +207,9 @@ export class ScanDataFormComponent implements OnInit {
     }
 
     return {
+      ...whiteRabbitWebSocketConfig,
       payload,
-      destination,
+      endPoint: destination,
       itemsToScanCount: payload.itemsToScanCount,
       resultDestination: '/user/queue/scan-report'
     };

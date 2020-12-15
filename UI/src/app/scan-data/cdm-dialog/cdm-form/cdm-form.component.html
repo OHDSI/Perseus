@@ -1,56 +1,11 @@
 <div class="cdm-form">
   <div class="cdm-form__content">
-    <div class="cdm-form__content-item">
-      <div class="cdm-form__content-item__progress-bar" *ngIf="sourceConnecting">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </div>
+    <app-cdm-source-form [dbSettings]="sourceDbSettings"
+                         [fakeDataParams]="fakeDataParams"
+                         [dataType]="sourceDataType"></app-cdm-source-form>
 
-      <div class="scan-step-header">
-        <div class="scan-step">
-          <h5 class="scan-step__number">1</h5>
-        </div>
-        <h5 class="scan-step-header__name">Source</h5>
-      </div>
-
-      <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
-        <label>Data type</label>
-        <mat-select [ngModel]="sourceDataType">
-          <mat-option *ngFor="let type of sourceDataTypes" [value]="type">
-            {{type}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <app-cdm-connect-form *ngIf="isOriginalDatabase" [form]="sourceConnectForm"></app-cdm-connect-form>
-
-      <ng-template>
-        <app-fake-data-form></app-fake-data-form>
-      </ng-template>
-    </div>
-
-    <div class="cdm-form__content-item">
-      <div class="cdm-form__content-item__progress-bar" *ngIf="destinationConnecting">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </div>
-
-      <div class="scan-step-header">
-        <div class="scan-step">
-          <h5 class="scan-step__number">2</h5>
-        </div>
-        <h5 class="scan-step-header__name">Destination</h5>
-      </div>
-
-      <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
-        <label>Data type</label>
-        <mat-select [ngModel]="destinationDataType">
-          <mat-option *ngFor="let type of destinationDataTypes" [value]="type">
-            {{type}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <app-cdm-connect-form [form]="destinationConnectForm"></app-cdm-connect-form>
-    </div>
+    <app-cdm-destination-form [dbSettings]="destinationDbSettings"
+                              [dataType]="destinationDataType"></app-cdm-destination-form>
   </div>
 
   <div class="cdm-form__action">

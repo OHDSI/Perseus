@@ -3,17 +3,29 @@ import {
   Input,
   OnInit, Output
 } from '@angular/core';
-import { WhiteRabbitWebsocketService } from '../../../../websocket/white-rabbit/white-rabbit-websocket.service';
 import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
-import { whiteRabbitPrefix, whiteRabbitUrl } from '../../../../app.constants';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../base/base.component';
 import { WebsocketParams } from '../../../model/websocket-params';
+import { WebsocketService } from '../../../../websocket/webscoket.service';
+import { WebsocketConfigurationService } from '../../../../websocket/websocket-configuration.service';
+import { WhiteRabbitWebsocketService } from '../../../../websocket/white-rabbit/white-rabbit-websocket.service';
+import { CdmBuilderWebsocketService } from '../../../../websocket/cdm-builder/cdm-builder-websocket.service';
 
 @Component({
   selector: 'app-scan-data-console',
   templateUrl: './scan-data-console.component.html',
-  styleUrls: ['./scan-data-console.component.scss']
+  styleUrls: ['./scan-data-console.component.scss'],
+  providers: [
+    {
+      provide: WebsocketService,
+      useFactory: (configurationService: WebsocketConfigurationService) => {
+        return configurationService.name === WhiteRabbitWebsocketService.name
+          ? new WhiteRabbitWebsocketService() : new CdmBuilderWebsocketService();
+      },
+      deps: [WebsocketConfigurationService]
+    }
+  ]
 })
 export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
 
@@ -30,22 +42,14 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
   @Output()
   finish = new EventEmitter<string>();
 
-  private webSocketConfig = {
-    url: whiteRabbitUrl,
-    prefix: whiteRabbitPrefix,
-    progressMessagesDestination: '/user/queue/reply',
-  };
-
   private scannedItemsCount = 0;
 
-  constructor(private whiteRabbitWebsocketService: WhiteRabbitWebsocketService) {
+  constructor(private websocketService: WebsocketService) {
     super();
   }
 
   ngOnInit(): void {
-    this.whiteRabbitWebsocketService.connect({
-      ...this.webSocketConfig, endPoint: this.params.destination
-    })
+    this.websocketService.connect(this.params)
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
@@ -67,17 +71,17 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
   }
 
   abortAndCancel() {
-    this.whiteRabbitWebsocketService.disconnect();
+    this.websocketService.disconnect();
   }
 
   private sendData(): void {
-    this.whiteRabbitWebsocketService
-      .send(this.params.destination, JSON.stringify(this.params.payload));
+    this.websocketService
+      .send(this.params.endPoint, JSON.stringify(this.params.payload));
   }
 
   private subscribeOnProgressMessages(): void {
-    this.whiteRabbitWebsocketService
-      .on(this.webSocketConfig.progressMessagesDestination)
+    this.websocketService
+      .on(this.params.progressMessagesDestination)
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
@@ -104,7 +108,7 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
           }
           case ProgressNotificationStatusCode.FAILED: {
             this.progressValue = 0;
-            this.whiteRabbitWebsocketService.disconnect();
+            this.websocketService.disconnect();
             this.showNotificationMessage(notification);
             break;
           }
@@ -113,13 +117,13 @@ export class ScanDataConsoleComponent extends BaseComponent implements OnInit {
   }
 
   private subscribeOnResult(): void {
-    this.whiteRabbitWebsocketService
+    this.websocketService
       .on(this.params.resultDestination)
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe(result => {
-        this.whiteRabbitWebsocketService.disconnect();
+        this.websocketService.disconnect();
         this.finish.emit(result);
       });
   }

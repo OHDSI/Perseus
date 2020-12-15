@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -8,8 +8,9 @@ import { FormGroup } from '@angular/forms';
     'cdm-fake-data-form.component.scss',
     '../cdm-form.component.scss',
     '../../../styles/scan-data-form.scss',
-    '../../../styles/scan-data-connect-from.scss'
-  ]
+    '../../../styles/scan-data-connect-form.scss'
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CdmFakeDataFormComponent {
 

@@ -7,12 +7,18 @@ import { FormGroup } from '@angular/forms';
   styleUrls: [
     '../cdm-form.component.scss',
     '../../../styles/scan-data-form.scss',
-    '../../../styles/scan-data-connect-from.scss'
+    '../../../styles/scan-data-connect-form.scss'
   ]
 })
 export class CdmConnectFormComponent {
 
   @Input()
+  prefix = '';
+
+  @Input()
   form: FormGroup;
 
+  id(name: string): string {
+    return `${this.prefix}-${name}`;
+  }
 }
