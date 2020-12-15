@@ -4,5 +4,5 @@ export interface WebsocketParams extends WebsocketConfig {
   progressMessagesDestination: string;
   resultDestination: string;
   payload: object;
-  itemsToScanCount: number;
+  itemsToScanCount?: number;
 }

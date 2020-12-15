@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractResourceForm } from '../../../shared/abstract-resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cdmDbSettingsFromControlNames, createCdmDbSettingsForm, createFakeDataForm } from '../../../util/form';
-import { cdmBuilderDatabaseTypes, fakeData } from '../../../scan-data.constants';
+import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } from '../../../scan-data.constants';
 import { FakeDataParams } from '../../../model/fake-data-params';
+import { CdmBuilderService } from '../../../../services/cdm-builder.service';
+import { adaptDbSettingsForSource } from '../../../util/cdm-adapter';
+import { CdmSettings } from '../../../model/cdm-settings';
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -16,8 +19,7 @@ import { FakeDataParams } from '../../../model/fake-data-params';
     '../../../styles/scan-data-form.scss',
     '../../../styles/scan-data-buttons.scss',
     '../../../styles/scan-data-normalize.scss'
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  ]
 })
 export class CdmSourceFormComponent extends AbstractResourceForm implements OnInit {
 
@@ -33,8 +35,20 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
     ...cdmBuilderDatabaseTypes
   ];
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(formBuilder: FormBuilder, private cdmBuilderService: CdmBuilderService) {
     super(formBuilder);
+  }
+
+  get settings() {
+    const dbType = this.dataType;
+    return {
+      ...dictionaryDbSettingForCdmBuilder,
+      ...adaptDbSettingsForSource({dbType, ...this.form.value})
+    };
+  }
+
+  get isNotValid() {
+    return !this.form.valid;
   }
 
   get isSourceDbSettings() {
@@ -49,6 +63,17 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
     super.ngOnInit();
 
     this.initFakeDataForm();
+  }
+
+  onTestConnection(): void {
+    this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
+      .subscribe(
+        result => this.connectionResult = result,
+        error => this.connectionResult = {
+          canConnect: false,
+          message: error.error
+        }
+      );
   }
 
   createForm(disabled: boolean): FormGroup {

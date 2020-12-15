@@ -86,7 +86,7 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
     this.initDelimitedFilesSettingsForm();
   }
 
-  onSubmit() {
+  onTestConnection() {
     this.testConnection.emit(this.isDbSettings ? this.dbSettingsForm.value : this.fileSettingsForm.value);
   }
 

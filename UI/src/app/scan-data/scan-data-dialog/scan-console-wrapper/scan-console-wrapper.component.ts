@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
 import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
 import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../util/base64-util';
 import { saveAs } from 'file-saver';
+import { WhiteRabbitScanDataConsoleComponent } from '../../shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -10,6 +11,9 @@ import { saveAs } from 'file-saver';
   styleUrls: ['scan-console-wrapper.component.scss', '../../shared/scan-console-wrapper/console-wrapper.component.scss', '../../styles/scan-data-buttons.scss']
 })
 export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
+
+  @ViewChild(WhiteRabbitScanDataConsoleComponent)
+  scanDataConsoleComponent: WhiteRabbitScanDataConsoleComponent;
 
   private reportName = 'ScanReport.xlsx';
 

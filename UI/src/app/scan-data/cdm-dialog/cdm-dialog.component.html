@@ -5,10 +5,14 @@
   </div>
 
   <div class="scan-dialog__content">
-    <app-cdm-form *ngIf="selectedIndex === 0; else consoleBlock" style="width: 100%"></app-cdm-form>
+    <app-cdm-form *ngIf="selectedIndex === 0; else consoleBlock" style="width: 100%"
+                  (convert)="onConvert($event)"></app-cdm-form>
 
     <ng-template #consoleBlock>
-      <app-cdm-console-wrapper style="width: 100%"></app-cdm-console-wrapper>
+      <app-cdm-console-wrapper style="width: 100%"
+                               [params]="websocketParams"
+                               (cancel)="onCancel()"
+                               (close)="onClose()"></app-cdm-console-wrapper>
     </ng-template>
   </div>
 </div>

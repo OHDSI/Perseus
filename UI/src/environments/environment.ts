@@ -20,7 +20,7 @@ export const environment = {
   conceptTables: CONCEPT_TABLES,
   config: '',
   whiteRabbitUrl: 'http://localhost:8000',
-  cdmBuilderUrl: 'http://10.110.1.7:9000/api/cdmbuilder'
+  cdmBuilderUrl: 'http://10.110.1.7:9000'
 };
 
 /*

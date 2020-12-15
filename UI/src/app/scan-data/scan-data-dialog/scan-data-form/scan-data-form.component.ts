@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  EventEmitter, OnDestroy,
   OnInit,
   Output,
   ViewChild
@@ -23,7 +23,7 @@ import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
 import { WebsocketParams } from '../../model/websocket-params';
-import { whiteRabbitWebSocketConfig } from '../../scan-data.constants';
+import { whiteRabbitWebsocketConfig } from '../../scan-data.constants';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -31,7 +31,7 @@ import { whiteRabbitWebSocketConfig } from '../../scan-data.constants';
   styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScanDataFormComponent implements OnInit {
+export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   dataType: string;
 
@@ -127,15 +127,18 @@ export class ScanDataFormComponent implements OnInit {
     this.loadState();
   }
 
+  ngOnDestroy() {
+    this.saveState();
+  }
+
   onTestConnection(scanSettings: ScanSettings): void {
     const strategy = this.getTestConnectionStrategy();
     strategy(scanSettings);
   }
 
   onScanTables(): void {
-    this.saveState();
-
-    this.scanTables.emit(this.createWebSocketParams());
+    const params = this.createWebSocketParams();
+    this.scanTables.emit(params);
   }
 
   reset(): void {
@@ -207,7 +210,7 @@ export class ScanDataFormComponent implements OnInit {
     }
 
     return {
-      ...whiteRabbitWebSocketConfig,
+      ...whiteRabbitWebsocketConfig,
       payload,
       endPoint: destination,
       itemsToScanCount: payload.itemsToScanCount,

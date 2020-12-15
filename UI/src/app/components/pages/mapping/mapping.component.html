@@ -12,8 +12,8 @@
                        [table]="similarSourceTable"
                        [tables]="source"
                        [oppositeTableId]="currentTargetTable.id"
-                       (open)="onPanelOpen(similarSourceTable)"
-                       (close)="onPanelClose(similarSourceTable)"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
                        (initialized)="onPanelInit(similarSourceTable)"></app-panel>
           </mat-tab>
           <mat-tab>
@@ -29,8 +29,8 @@
                        [table]="selectedSourceTable"
                        [tables]="source"
                        [oppositeTableId]="currentTargetTable.id"
-                       (open)="onPanelOpen(selectedSourceTable)"
-                       (close)="onPanelClose(selectedSourceTable)"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
                        (initialized)="onPanelInit(selectedSourceTable)"></app-panel>
           </mat-tab>
         </mat-tab-group>
@@ -88,7 +88,7 @@
               markerUnits="userSpaceOnUse"
             >
               <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
-              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">T</text>
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">T</text>
             </marker>
             <marker
               id="marker-end-L"
@@ -100,7 +100,7 @@
               markerUnits="userSpaceOnUse"
             >
               <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
-              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">L</text>
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">L</text>
             </marker>
             <marker id="marker-end-M"
                     viewBox="0 0 20 20"
@@ -111,7 +111,7 @@
                     markerUnits="userSpaceOnUse"
             >
               <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
-              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">M</text>
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">M</text>
             </marker>
             <marker
               id="marker-end-active"
@@ -134,7 +134,7 @@
               markerUnits="userSpaceOnUse"
             >
               <circle cx="10" cy="10" r="8" fill="#066BBB" />
-              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">T</text>
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">T</text>
             </marker>
             <marker
               id="marker-end-active-L"
@@ -146,7 +146,7 @@
               markerUnits="userSpaceOnUse"
             >
               <circle cx="10" cy="10" r="8" fill="#066BBB" />
-              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">L</text>
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">L</text>
             </marker>
             <marker
               id="marker-end-active-M"
@@ -158,7 +158,7 @@
               markerUnits="userSpaceOnUse"
             >
               <circle cx="10" cy="10" r="8" fill="#066BBB" />
-              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11;">M</text>
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">M</text>
             </marker>
           </defs>
         </svg>
@@ -178,8 +178,8 @@
                        [oppositeTableId]="currentSourceTable.id"
                        [filteredFields]="getFilteredFields()"
                        [mappingConfig]="mappingConfig"
-                       (open)="onPanelOpen(similarTargetTable)"
-                       (close)="onPanelClose(similarTargetTable)"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
                        (initialized)="onPanelInit(similarTargetTable)"></app-panel>
           </mat-tab>
           <mat-tab>
@@ -197,8 +197,8 @@
                        [oppositeTableId]="currentSourceTable.id"
                        [filteredFields]="getFilteredFields()"
                        [mappingConfig]="mappingConfig"
-                       (open)="onPanelOpen(selectedTargetTable)"
-                       (close)="onPanelClose(selectedTargetTable)"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
                        (initialized)="onPanelInit(selectedTargetTable)"
                        (changeClone)="changeTargetClone($event)"></app-panel>
           </mat-tab>
@@ -216,12 +216,18 @@
         mat-flat-button
         color="accent"
         class="mapping-page-button"
+        [disabled]="isFooterButtonDisabled()"
+        (click)="convertToCdm()">Convert to CDM</button>
+
+      <button
+        mat-flat-button
+        color="accent"
+        class="mapping-page-button"
         matTooltip="Download ziped mappings"
         aria-label="Download mappings xmls"
         [disabled]="isFooterButtonDisabled()"
-        (click)="generateMappingJson()"
-      >Generate & Save
-      </button>
+        (click)="generateMappingJson()">Generate & Save</button>
+
       <button
         mat-flat-button
         color="accent"
@@ -229,31 +235,26 @@
         matTooltip="Preview mappings"
         aria-label="Preview mapping xmls"
         [disabled]="isFooterButtonDisabled() || isSimilarTabs()"
-        (click)="previewMapping()"
-      >Preview
-      </button>
+        (click)="previewMapping()">Preview</button>
+
       <button
         mat-flat-button
         color="accent"
         class="mapping-page-button"
         [disabled]="isFooterButtonDisabled()"
-        (click)="generateReport()"
-      >Report
-      </button>
+        (click)="generateReport()">Report</button>
+
       <button
         mat-flat-button
         color="accent"
         class="mapping-page-button"
-        (click)="generateFakeData()"
-      >Generate Fake Data
-      </button>
+        (click)="generateFakeData()">Generate Fake Data</button>
+
       <button
         mat-flat-button
         class="mapping-page-button delete-links"
         [disabled]="isFooterButtonDisabled()"
-        (click)="deleteLinks()"
-      >Delete Links
-      </button>
+        (click)="deleteLinks()">Delete Links</button>
     </footer>
   </section>
 </div>

@@ -31,6 +31,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   fakeDataDisabled$: Observable<boolean>;
 
+  convertToCdmDisabled$: Observable<boolean>;
+
   private scanDataMatDialogSharedParams = {
     disableClose: true,
     panelClass: 'scan-data-dialog'
@@ -61,13 +63,9 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       }
     });
 
-    this.fakeDataDisabled$ = this.storeService.state$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        map(state => !(state.reportFile as boolean))
-      );
+    this.initStreamsOfDisabledButtons();
 
-    this.convertToCdm();
+    // this.convertToCdm();
   }
 
   ngOnDestroy() {
@@ -158,5 +156,19 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       height: '674',
       ...this.scanDataMatDialogSharedParams
     });
+  }
+
+  private initStreamsOfDisabledButtons() {
+    this.fakeDataDisabled$ = this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        map(state => !(state.reportFile as boolean))
+      );
+
+    this.convertToCdmDisabled$ = this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        map(state => state.source.length === 0)
+      );
   }
 }

@@ -10,10 +10,16 @@ export enum ProgressNotificationStatusCode {
 
 export interface ProgressNotificationStatus {
   code: number;
-  description: string;
+  description?: string;
 }
 
 export interface ProgressNotification {
   message: string;
   status: ProgressNotificationStatus;
+}
+
+export interface CdmProgressNotification {
+  text: string;
+  status: ProgressNotificationStatusCode;
+  progress: number;
 }

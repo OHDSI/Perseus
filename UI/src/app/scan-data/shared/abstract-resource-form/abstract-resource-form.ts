@@ -34,6 +34,8 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
     this.initForm();
   }
 
+  abstract onTestConnection(): void;
+
   dataTypeChange(value: string) {
     this.dataType = value;
     this.dataTypeChange$.next(value);

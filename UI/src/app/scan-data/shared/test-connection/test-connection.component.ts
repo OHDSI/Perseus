@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ConnectionResult } from '../../model/connection-result';
 
 @Component({
   selector: 'app-test-connection',
   templateUrl: './test-connection.component.html',
-  styleUrls: ['./test-connection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./test-connection.component.scss']
 })
 export class TestConnectionComponent {
 
@@ -16,5 +15,5 @@ export class TestConnectionComponent {
   disabled: boolean;
 
   @Output()
-  click = new EventEmitter<void>();
+  testConnection = new EventEmitter<void>();
 }

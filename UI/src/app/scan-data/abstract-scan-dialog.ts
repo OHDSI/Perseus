@@ -6,7 +6,7 @@ export abstract class AbstractScanDialog {
 
   websocketParams: WebsocketParams;
 
-  selectedIndex = 1;
+  selectedIndex = 0;
 
   abstract consoleWrapperComponent: AbstractConsoleWrapperComponent;
 
@@ -23,12 +23,7 @@ export abstract class AbstractScanDialog {
     }
   }
 
-  onScanningCancel(): void {
+  onCancel(): void {
     this.selectedIndex = 0;
-  }
-
-  onScanTables(websocketParams: WebsocketParams): void {
-    this.websocketParams = websocketParams;
-    this.selectedIndex = 1;
   }
 }

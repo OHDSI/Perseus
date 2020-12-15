@@ -25,6 +25,7 @@
     <app-cdm-connect-form prefix="source"
                           [form]="form"></app-cdm-connect-form>
     <app-test-connection class="cdm-form__content-item__connection-result"
+                         (testConnection)="onTestConnection()"
                          [connectionResult]="connectionResult"
                          [disabled]="!form.valid"></app-test-connection>
   </ng-template>

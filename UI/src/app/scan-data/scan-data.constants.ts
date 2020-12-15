@@ -1,4 +1,4 @@
-import { whiteRabbitPrefix, whiteRabbitUrl } from '../app.constants';
+import { cdmBuilderLogUrl, whiteRabbitPrefix, whiteRabbitUrl } from '../app.constants';
 
 export const whiteRabbitDatabaseTypes = [
   'MySQL',
@@ -24,8 +24,25 @@ export const cdmBuilderDatabaseTypes = [
 
 export const fakeData = 'Fake Data';
 
-export const whiteRabbitWebSocketConfig = {
+export const whiteRabbitWebsocketConfig = {
   url: whiteRabbitUrl,
   prefix: whiteRabbitPrefix,
   progressMessagesDestination: '/user/queue/reply',
+};
+
+export const cdmWebsocketConfig = {
+  url: cdmBuilderLogUrl,
+  prefix: '',
+  progressMessagesDestination: 'Log',
+};
+
+export const dictionaryDbSettingForCdmBuilder = {
+  vocabularyEngine: 'mssql',
+  vocabularyServer: '822JNJ16S03V',
+  vocabularySchema: 'dbo',
+  vocabularyDatabase: 'Vocabulary_20190617',
+  vocabularyUser: '3dx_reader',
+  vocabularyPassword: 'xd3!Ypr7q',
+  mappingsName: '',
+  cdmVersion: 'v5.3'
 };

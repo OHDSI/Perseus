@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
+import { CdmScanDataConsoleComponent } from '../../shared/scan-console-wrapper/scan-data-console/cdm-scan-data-console.component';
 
 @Component({
   selector: 'app-cdm-console-wrapper',
@@ -12,13 +13,14 @@ import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapp
 })
 export class CdmConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
 
-  constructor() {
-    super();
-  }
+  @ViewChild(CdmScanDataConsoleComponent)
+  scanDataConsoleComponent: CdmScanDataConsoleComponent;
 
   onFinish(result: string) {
+    this.result = result;
   }
 
   onClose() {
+    this.close.emit();
   }
 }

@@ -3,29 +3,45 @@ import { DbSettings } from '../scan-data/model/db-settings';
 import { IScanDataStateService } from './scan-data-state.service';
 
 export interface CdmState {
-  sourceDataType: string;
-  destinationDataType: string;
   sourceDbSettings: DbSettings;
   destinationDbSettings: DbSettings;
 }
 
 const initialState = {
   sourceDbSettings: {
-    dbType: null,
-    server: null,
-    user: null,
-    password: null,
-    database: null,
-    schemaName: null
+    dbType: 'SQL Server',
+    server: '822JNJ16S03V',
+    user: 'cdm_builder',
+    password: 'builder1!',
+    database: 'cprd_1k',
+    schemaName: 'dbo'
   },
   destinationDbSettings: {
-    dbType: null,
-    server: null,
-    user: null,
-    password: null,
-    database: null,
-    schemaName: null
+    dbType: 'SQL Server',
+    server: '822JNJ16S03V',
+    user: 'cdm_builder',
+    password: 'builder1!',
+    database: 'cdm_web_test_real1111',
+    schemaName: 'dbo'
   }
+  // sourceDataType: null,
+  // destinationDataType: null,
+  // sourceDbSettings: {
+  //   dbType: null,
+  //   server: null,
+  //   user: null,
+  //   password: null,
+  //   database: null,
+  //   schemaName: null
+  // },
+  // destinationDbSettings: {
+  //   dbType: null,
+  //   server: null,
+  //   user: null,
+  //   password: null,
+  //   database: null,
+  //   schemaName: null
+  // }
 };
 
 @Injectable({

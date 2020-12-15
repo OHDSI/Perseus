@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { ScanConsoleWrapperComponent } from './scan-console-wrapper/scan-console-wrapper.component';
+import { WebsocketParams } from '../model/websocket-params';
 
 @Component({
   selector: 'app-scan-data-dialog',
@@ -15,5 +16,10 @@ export class ScanDataDialogComponent extends AbstractScanDialog {
 
   constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>) {
     super(dialogRef);
+  }
+
+  onScanTables(websocketParams: WebsocketParams): void {
+    this.websocketParams = websocketParams;
+    this.selectedIndex = 1;
   }
 }

@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { StoreService } from '../../services/store.service';
 import { fileToBase64 } from '../../util/base64-util';
-import { whiteRabbitWebSocketConfig } from '../scan-data.constants';
+import { whiteRabbitWebsocketConfig } from '../scan-data.constants';
 import { FakeConsoleWrapperComponent } from './fake-console-wrapper/fake-console-wrapper.component';
 
 @Component({
@@ -29,17 +29,13 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
     return this.selectedIndex;
   }
 
-  onGenerationCancel() {
-    this.index = 0;
-  }
-
   async onGenerate(params: { maxRowCount: number, doUniformSampling: boolean }) {
     const state = this.storeService.state;
     const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;
     const itemsToScanCount = state.source.length;
 
     this.websocketParams = {
-      ...whiteRabbitWebSocketConfig,
+      ...whiteRabbitWebsocketConfig,
       endPoint: '/fake-data',
       payload: {
         ...params,

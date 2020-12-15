@@ -1,4 +1,4 @@
-export interface CdmBuilderSettings {
+export interface CdmSettings {
   sourceEngine: string;
   destinationEngine: string;
   vocabularyEngine: string;
