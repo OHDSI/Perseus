@@ -188,7 +188,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'sql-editor-dialog',
-      data: { table: this.table }
+      data: { table: this.table, sourceTable: this.storeService.state.source.find(item => item.name === this.oppositeTableName)}
     });
 
     matDialog.afterClosed().subscribe(res => {
