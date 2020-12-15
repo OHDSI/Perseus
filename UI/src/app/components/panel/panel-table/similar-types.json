@@ -4,7 +4,8 @@
   "varchar",
   "nvarchar",
   "character",
-  "character varying"
+  "character varying",
+  "char"
 ],
 
 "int": [
