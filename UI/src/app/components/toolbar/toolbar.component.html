@@ -82,7 +82,9 @@
   </mat-menu>
 
   <mat-menu #convertData="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item
+            [disabled]="convertToCdmDisabled$ | async"
+            (click)="convertToCdm()">
       <mat-icon svgIcon="convert_data"></mat-icon>
       <span>Convert to CDM</span>
     </button>

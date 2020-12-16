@@ -1,0 +1,26 @@
+<form [formGroup]="form" style="height: 100%">
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('server').disabled}">
+    <label [for]="id('server')">Server location</label>
+    <input class="test" type="text" [id]="id('server')" formControlName="server">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('user').disabled}">
+    <label [for]="id('username')">User name</label>
+    <input [id]="id('username')" type="text" formControlName="user">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('password').disabled}">
+    <label [for]="id('password')">Password</label>
+    <input [id]="id('password')" type="password" formControlName="password">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('database').disabled}">
+    <label [for]="id('dbName')">Database Name</label>
+    <input [id]="id('dbName')" type="text" formControlName="database">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('schemaName').disabled}">
+    <label [for]="id('schemaName')">Schema Name</label>
+    <input [id]="id('schemaName')" type="text" formControlName="schemaName">
+  </div>
+</form>

@@ -1,5 +1,5 @@
 import { EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.component';
+import { AbstractScanDataConsoleComponent } from './scan-data-console/abstract-scan-data-console.component';
 import { WebsocketParams } from '../../model/websocket-params';
 
 export abstract class AbstractConsoleWrapperComponent {
@@ -15,8 +15,8 @@ export abstract class AbstractConsoleWrapperComponent {
   @Output()
   close = new EventEmitter<void>();
 
-  @ViewChild(ScanDataConsoleComponent)
-  scanDataConsoleComponent: ScanDataConsoleComponent;
+  @ViewChild(AbstractScanDataConsoleComponent)
+  abstract scanDataConsoleComponent: AbstractScanDataConsoleComponent;
 
   onAbortAndCancel() {
     this.scanDataConsoleComponent.abortAndCancel();

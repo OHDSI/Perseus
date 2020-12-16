@@ -8,23 +8,10 @@
   border-radius: 2px;
 
   &__header {
-    display: flex;
-    align-items: center;
-    height: 38px;
-
-    border-bottom: 1px solid rgba(#066BBB, 0.1);
-    border-radius: 2px;
-
     margin-bottom: 11px;
-    padding-left: 9px;
 
     &-name {
       flex: 1;
-      font-size: 14px;
-      line-height: 15px;
-      font-weight: normal;
-
-      color: #404040;
     }
 
     &-settings {

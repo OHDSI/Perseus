@@ -2,16 +2,15 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { WebsocketParams } from './model/websocket-params';
 import { AbstractConsoleWrapperComponent } from './shared/scan-console-wrapper/abstract-console-wrapper.component';
 
-export class AbstractScanDialog {
+export abstract class AbstractScanDialog {
 
   websocketParams: WebsocketParams;
 
   selectedIndex = 0;
 
-  // need to override in inherit component
-  consoleWrapperComponent: AbstractConsoleWrapperComponent;
+  abstract consoleWrapperComponent: AbstractConsoleWrapperComponent;
 
-  constructor(protected dialogRef: MatDialogRef<AbstractScanDialog>) {
+  protected constructor(protected dialogRef: MatDialogRef<AbstractScanDialog>) {
   }
 
   onClose(): void {
@@ -24,12 +23,7 @@ export class AbstractScanDialog {
     }
   }
 
-  onScanningCancel(): void {
+  onCancel(): void {
     this.selectedIndex = 0;
-  }
-
-  onScanTables(websocketParams: WebsocketParams): void {
-    this.websocketParams = websocketParams;
-    this.selectedIndex = 1;
   }
 }

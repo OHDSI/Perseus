@@ -1,10 +1,10 @@
 <div class="scan-tables">
-  <div class="scan-tables__header">
+  <div class="scan-tables__header scan-step-header">
     <div class="scan-tables__header-number scan-step" [ngClass]="{'disconnected': !connectionResult || !connectionResult.canConnect}">
       <h5 class="scan-step__number">2</h5>
     </div>
 
-    <h5 class="scan-tables__header-name">Tables to Scan</h5>
+    <h5 class="scan-tables__header-name scan-step-header__name">Tables to Scan</h5>
 
     <div class="scan-tables__header-settings popup">
       <div #scanParamsButton class="scan-tables__header-settings-scan-params" (click)="onShowScanParams()">

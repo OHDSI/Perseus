@@ -12,7 +12,7 @@
     <ng-template #scanProgressBlock>
       <app-scan-data-console-wrapper style="width: 100%"
                              [params]="websocketParams"
-                             (cancel)="onScanningCancel()"
+                             (cancel)="onCancel()"
                              (close)="onClose()"></app-scan-data-console-wrapper>
     </ng-template>
   </div>

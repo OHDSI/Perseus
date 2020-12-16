@@ -22,3 +22,22 @@
     background: #D4D4D4;
   }
 }
+
+.scan-step-header {
+  display: flex;
+  align-items: center;
+  height: 38px;
+
+  border-bottom: 1px solid rgba(#066BBB, 0.1);
+  border-radius: 2px;
+
+  padding-left: 9px;
+
+  &__name {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 15px;
+
+    color: #404040;
+  }
+}

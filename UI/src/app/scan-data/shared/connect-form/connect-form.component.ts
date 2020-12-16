@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Subject } from 'rxjs';
 import { ConnectionResult } from '../../model/connection-result';
@@ -8,12 +8,18 @@ import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
+import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../scan-data.constants';
 
 @Component({
   selector: 'app-connect-form',
   templateUrl: './connect-form.component.html',
-  styleUrls: ['./connect-form.component.scss', '../../styles/scan-data-form.scss', '../../styles/scan-data-step.scss', '../../styles/scan-data-normalize.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: [
+    './connect-form.component.scss',
+    '../../styles/scan-data-form.scss',
+    '../../styles/scan-data-step.scss',
+    '../../styles/scan-data-normalize.scss',
+    '../../styles/scan-data-connect-form.scss'
+  ]
 })
 export class ConnectFormComponent extends BaseComponent implements OnInit {
 
@@ -43,26 +49,9 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
   connectionPropsChanged = new EventEmitter<void>();
 
   dataTypes = [
-    'CSV files',
-    'MySQL',
-    'Oracle',
-    'PostgreSQL',
-    'Redshift',
-    'SQL Server',
-    'Azure',
-    'MS Access',
-    'Teradata',
-    'BigQuery'
+    ...delimitedFiles,
+    ...whiteRabbitDatabaseTypes
   ];
-
-  get fileInputText() {
-    const result = this.filesToScan
-      .map(fileToScan => fileToScan.fileName)
-      .join(', ');
-
-    // 37 - max length
-    return result.length > 37 ? result.substring(0, 37) + '...' : result;
-  }
 
   private dataTypeChange$ = new Subject<string>();
 
@@ -70,12 +59,21 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
     super();
   }
 
+  get fileInputText() {
+    const result = this.filesToScan
+      .map(fileToScan => fileToScan.fileName)
+      .join(', ');
+
+    const maxLength = 37;
+    return result.length > maxLength ? result.substring(0, maxLength) + '...' : result;
+  }
+
   get isDbSettings() {
     if (!this.dataType) {
       return true;
     }
 
-    return this.dataType !== 'CSV files';
+    return delimitedFiles.every(dataType => dataType !== this.dataType);
   }
 
   get testConnectionDisabled() {
@@ -88,7 +86,7 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
     this.initDelimitedFilesSettingsForm();
   }
 
-  onSubmit() {
+  onTestConnection() {
     this.testConnection.emit(this.isDbSettings ? this.dbSettingsForm.value : this.fileSettingsForm.value);
   }
 

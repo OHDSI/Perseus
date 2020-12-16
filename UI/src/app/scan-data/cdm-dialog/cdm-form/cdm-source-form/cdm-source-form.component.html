@@ -1,0 +1,40 @@
+<div class="cdm-form__content-item">
+  <div class="cdm-form__content-item__progress-bar" *ngIf="connecting">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <div class="scan-step-header">
+    <div class="scan-step">
+      <h5 class="scan-step__number">1</h5>
+    </div>
+    <h5 class="scan-step-header__name">Source</h5>
+  </div>
+
+  <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
+    <label>Data type</label>
+    <mat-select [ngModel]="dataType" (ngModelChange)="dataTypeChange($event)">
+      <mat-option *ngFor="let type of dataTypes" [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <ng-container *ngIf="isSourceDbSettings; then db else fakeData"></ng-container>
+
+  <ng-template #db>
+    <app-cdm-connect-form prefix="source"
+                          [form]="form"></app-cdm-connect-form>
+    <app-test-connection class="cdm-form__content-item__apply"
+                         (testConnection)="onTestConnection()"
+                         [connectionResult]="connectionResult"
+                         [disabled]="!form.valid"></app-test-connection>
+  </ng-template>
+
+  <ng-template #fakeData>
+    <app-cdm-fake-data-form [form]="fakeDataForm"></app-cdm-fake-data-form>
+
+    <div class="cdm-form__content-item__apply fake-data">
+      <button (click)="generateFakeData.emit(this.fakeDataForm.value)">Generate</button>
+    </div>
+  </ng-template>
+</div>

@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { StoreService } from '../../services/store.service';
 import { fileToBase64 } from '../../util/base64-util';
+import { whiteRabbitWebsocketConfig } from '../scan-data.constants';
+import { FakeConsoleWrapperComponent } from './fake-console-wrapper/fake-console-wrapper.component';
 
 @Component({
   selector: 'app-fake-data-dialog',
@@ -10,6 +12,9 @@ import { fileToBase64 } from '../../util/base64-util';
   styleUrls: ['./fake-data-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
 })
 export class FakeDataDialogComponent extends AbstractScanDialog {
+
+  @ViewChild(FakeConsoleWrapperComponent)
+  consoleWrapperComponent: FakeConsoleWrapperComponent;
 
   constructor(dialogRef: MatDialogRef<FakeDataDialogComponent>, private storeService: StoreService) {
     super(dialogRef);
@@ -24,17 +29,14 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
     return this.selectedIndex;
   }
 
-  onGenerationCancel() {
-    this.index = 0;
-  }
-
   async onGenerate(params: { maxRowCount: number, doUniformSampling: boolean }) {
     const state = this.storeService.state;
     const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;
     const itemsToScanCount = state.source.length;
 
     this.websocketParams = {
-      destination: '/fake-data',
+      ...whiteRabbitWebsocketConfig,
+      endPoint: '/fake-data',
       payload: {
         ...params,
         scanReportBase64,

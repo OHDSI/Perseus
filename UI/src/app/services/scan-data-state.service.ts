@@ -6,6 +6,10 @@ import { ScanParams } from '../scan-data/model/scan-params';
 import { DelimitedTextFileSettings } from '../scan-data/model/delimited-text-file-settings';
 import { FileToScan } from '../scan-data/model/file-to-scan';
 
+export interface IScanDataStateService {
+  state: any;
+}
+
 export interface ScanDataState {
   dataType: string;
   dbSettings: DbSettings;
@@ -47,7 +51,7 @@ const initialState: ScanDataState = {
 @Injectable({
   providedIn: 'root'
 })
-export class ScanDataStateService {
+export class ScanDataStateService implements IScanDataStateService {
 
   private scanDataState: ScanDataState;
 

@@ -1,0 +1,23 @@
+.fake-data {
+  display: flex;
+  justify-content: center;
+  height: 54px;
+
+  button {
+    width: 140px;
+    height: 33px;
+    background: #F9F9F9;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    color: #066BBB;
+
+    &:hover {
+      background: #EBEBEB;
+    }
+  }
+}

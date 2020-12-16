@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
 import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { MappingPageSessionStorage } from 'src/app/models/implementation/mapping-page-session-storage';
-import { ITable, Table } from 'src/app/models/table';
+import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -29,9 +29,15 @@ import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
-import { numberOfPanelsWithOneSimilar, numberOfPanelsWithoutSimilar, numberOfPanelsWithTwoSimilar, similarTableName } from '../../../app.constants';
+import {
+  numberOfPanelsWithOneSimilar,
+  numberOfPanelsWithoutSimilar,
+  numberOfPanelsWithTwoSimilar,
+  similarTableName
+} from '../../../app.constants';
 import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
 import { FakeDataDialogComponent } from '../../../scan-data/fake-data-dialog/fake-data-dialog.component';
+import { CdmDialogComponent } from '../../../scan-data/cdm-dialog/cdm-dialog.component';
 
 
 @Component({
@@ -79,7 +85,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return this.targetTabIndex === 0 && this.similarTargetTable ? this.similarTargetTable : this.selectedTargetTable;
   }
 
-  get currentSourceTable(){
+  get currentSourceTable() {
     return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
   }
 
@@ -167,7 +173,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
           if (connectionType) {
-            const payload = { arrowCache: this.bridgeService.arrowsCache, connector: arrow.connector };
             const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
             const lookupType = arrow.connector.target.name.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
@@ -206,7 +211,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                 if (sql) {
                   if (sql[ 'name' ] || sql[ 'name' ] === '') {
                     arrow.sql = sql;
-                    arrow.sql[ 'applied' ] = sql[ 'name' ] === '' ? false : true;
+                    arrow.sql[ 'applied' ] = sql['name'] !== '';
                   }
                 }
                 this.bridgeService.updateConnectedRows(arrow);
@@ -356,16 +361,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return mappingConfig;
   }
 
-  getEnabledTargetTables(){
+  getEnabledTargetTables() {
     const isEnabledTargetTable = (table) => this.mappingConfig.
     find(item => item.includes(table.name) && item.includes(this.selectedSourceTable.name) && table.name !== 'similar');
 
-    const enabledTargetTables = this.target.filter(isEnabledTargetTable);
-
-    return enabledTargetTables;
+    return this.target.filter(isEnabledTargetTable);
   }
 
-  openTablesDropdown(target: any, area: string){
+  openTablesDropdown(target: any, area: string) {
     const data = area === 'source' ? {
       tables: this.sourceTablesWithoutSimilar,
       selected: this.selectedSourceTable,
@@ -381,7 +384,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     };
     const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
 
-    overlayRef.afterClosed$.subscribe(tbl => {
+    overlayRef.afterClosed$.subscribe(() => {
       this.bridgeService.hideAllArrows();
 
       if (area === 'source') {
@@ -401,7 +404,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.targetPanel.panel.refreshPanel(true);
   }
 
-  refreshSourcePanel(data: any){
+  refreshSourcePanel(data: any) {
     this.selectedSourceTable = data;
     this.sourcePanel.panel.table = data;
     this.refreshTargetPanel(this.getSelectedTargetTable());
@@ -409,7 +412,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getSelectedTargetTable() {
     const enabledTargetTable = this.getEnabledTargetTables()[ 0 ];
-    const clones = this.storeService.state.targetClones[ enabledTargetTable.name ]
+    const clones = this.storeService.state.targetClones[ enabledTargetTable.name ];
     if (clones) {
       const enabledClones = clones.filter(item => item.cloneConnectedToSourceName === this.currentSourceTable.name);
       if (enabledClones && enabledClones.length) {
@@ -444,9 +447,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getNewCurrentTable(newIndex: number){
         const newTable = this.getEnabledTargetTables()[ newIndex ]
-        return this.storeService.state.targetClones[newTable.name] ? 
+        return this.storeService.state.targetClones[newTable.name] ?
         this.storeService.state.targetClones[newTable.name][0] :
-        this.getEnabledTargetTables()[ newIndex ]; 
+        this.getEnabledTargetTables()[ newIndex ];
 
   }
 
@@ -643,7 +646,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isFooterButtonDisabled() {
-    return Object.keys(this.bridgeService.arrowsCache).length === 0;
+    const result = Object.keys(this.bridgeService.arrowsCache).length === 0;
+    // todo set mappingCreated field in store service
+    return result;
   }
 
   deleteLinks() {
@@ -730,6 +735,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(FakeDataDialogComponent, {
       width: '253',
       height: '270',
+      disableClose: true,
+      panelClass: 'scan-data-dialog'
+    });
+  }
+
+  convertToCdm() {
+    this.matDialog.open(CdmDialogComponent, {
+      width: '700',
+      height: '674',
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });
