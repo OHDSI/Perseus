@@ -15,6 +15,7 @@ export class StoreService {
     target: [],
     targetConfig: {},
     source: [],
+    mappedSource: [],
     report: undefined,
     linkTablesSearch: {
       source: undefined,

@@ -741,11 +741,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   convertToCdm() {
+    this.addMappedSourceToStore();
+
     this.matDialog.open(CdmDialogComponent, {
       width: '700',
       height: '674',
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });
+  }
+
+  private addMappedSourceToStore() {
+    this.storeService.add('mappedSource', this.source);
   }
 }
