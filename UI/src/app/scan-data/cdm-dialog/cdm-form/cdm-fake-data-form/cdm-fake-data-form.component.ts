@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { uniformSamplingTooltipText } from '../../../scan-data.constants';
 
 @Component({
   selector: 'app-cdm-fake-data-form',
@@ -18,4 +19,6 @@ export class CdmFakeDataFormComponent {
   form: FormGroup;
 
   checkboxBackground = '#F9F9F9';
+
+  uniformSamplingTooltip = uniformSamplingTooltipText;
 }

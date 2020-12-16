@@ -45,3 +45,5 @@ export const dictionaryDbSettingForCdmBuilder = {
   vocabularyPassword: 'xd3!Ypr7q',
   mappingsName: 'TestMappings'
 };
+
+export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { createFakeDataForm } from '../../util/form';
+import { uniformSamplingTooltipText } from '../../scan-data.constants';
 
 @Component({
   selector: 'app-fake-data-form',
@@ -19,6 +20,8 @@ export class FakeDataFormComponent implements OnInit {
 
   @Output()
   generate = new EventEmitter<{maxRowCount: number, doUniformSampling: boolean}>();
+
+  uniformSamplingTooltip = uniformSamplingTooltipText;
 
   ngOnInit(): void {
     this.initForm();
