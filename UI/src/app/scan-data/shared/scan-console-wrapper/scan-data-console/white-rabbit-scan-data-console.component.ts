@@ -48,7 +48,6 @@ export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsole
       case ProgressNotificationStatusCode.FAILED: {
         this.progressValue = 0;
         this.websocketService.disconnect();
-        this.showNotificationMessage(notification);
         break;
       }
     }
