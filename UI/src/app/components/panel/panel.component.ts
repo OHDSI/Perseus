@@ -249,6 +249,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
         Object.values(this.bridgeService.arrowsCache).
         filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
         .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        Object.values(this.bridgeService.constantsCache).
+        filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
+        .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(constant) ]);
       }
     });
   }
@@ -280,6 +283,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
       }
     });
     this.bridgeService.drawCloneArrows(cloneTargetTable, table);
+    this.bridgeService.addCloneConstants(cloneTargetTable, table);
     return cloneTargetTable;
   }
 
