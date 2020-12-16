@@ -9,37 +9,21 @@ export interface CdmState {
 
 const initialState = {
   sourceDbSettings: {
-    dbType: 'SQL Server',
-    server: '822JNJ16S03V',
-    user: 'cdm_builder',
-    password: 'builder1!',
-    database: 'cprd_1k',
-    schemaName: 'dbo'
+    dbType: null,
+    server: null,
+    user: null,
+    password: null,
+    database: null,
+    schemaName: null
   },
   destinationDbSettings: {
-    dbType: 'SQL Server',
-    server: '822JNJ16S03V',
-    user: 'cdm_builder',
-    password: 'builder1!',
-    database: 'cdm_web_test_real1111',
-    schemaName: 'dbo'
+    dbType: null,
+    server: null,
+    user: null,
+    password: null,
+    database: null,
+    schemaName: null
   }
-  // sourceDbSettings: {
-  //   dbType: null,
-  //   server: null,
-  //   user: null,
-  //   password: null,
-  //   database: null,
-  //   schemaName: null
-  // },
-  // destinationDbSettings: {
-  //   dbType: null,
-  //   server: null,
-  //   user: null,
-  //   password: null,
-  //   database: null,
-  //   schemaName: null
-  // }
 };
 
 @Injectable({
