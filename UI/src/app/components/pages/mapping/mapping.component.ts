@@ -447,9 +447,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getNewCurrentTable(newIndex: number){
         const newTable = this.getEnabledTargetTables()[ newIndex ]
-        return this.storeService.state.targetClones[newTable.name] ? 
+        return this.storeService.state.targetClones[newTable.name] ?
         this.storeService.state.targetClones[newTable.name][0] :
-        this.getEnabledTargetTables()[ newIndex ]; 
+        this.getEnabledTargetTables()[ newIndex ];
 
   }
 
@@ -647,6 +647,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   isFooterButtonDisabled() {
     const result = Object.keys(this.bridgeService.arrowsCache).length === 0;
+    // todo set mappingCreated field in store service
     return result;
   }
 

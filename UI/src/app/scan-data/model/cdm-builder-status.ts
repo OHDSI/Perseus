@@ -1,5 +1,5 @@
 export enum CdmBuilderStatus {
-  IDLE= 'Idle',
+  IDLE = 'Idle',
   RUNNING = 'Running',
   ABORTED = 'Aborted'
 }
