@@ -23,7 +23,8 @@ import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
 import { WebsocketParams } from '../../model/websocket-params';
-import { whiteRabbitWebsocketConfig } from '../../scan-data.constants';
+import { cdmBuilderDatabaseTypes, whiteRabbitWebsocketConfig } from '../../scan-data.constants';
+import { CdmStateService } from '../../../services/cdm-state.service';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -120,7 +121,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   constructor(private whiteRabbitService: WhiteRabbitService,
               private stateService: ScanDataStateService,
               private cdr: ChangeDetectorRef,
-              private matDialog: MatDialog) {
+              private matDialog: MatDialog,
+              protected cdmStateService: CdmStateService) {
   }
 
   ngOnInit(): void {
@@ -129,6 +131,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.saveState();
+    this.saveDbSettingsToCdmDbSettings();
   }
 
   onTestConnection(scanSettings: ScanSettings): void {
@@ -223,6 +226,20 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
       return this.testConnectionStrategies['dbSettings'];
     } else {
       return this.testConnectionStrategies['fileSettings'];
+    }
+  }
+
+  private saveDbSettingsToCdmDbSettings() {
+    const dbType = this.connectFormComponent.dataType;
+
+    if (cdmBuilderDatabaseTypes.includes(dbType)) {
+      this.cdmStateService.state = {
+        ...this.cdmStateService.state,
+        sourceDbSettings: {
+          dbType,
+          ...this.connectFormComponent.dbSettingsForm.value
+        }
+      };
     }
   }
 }
