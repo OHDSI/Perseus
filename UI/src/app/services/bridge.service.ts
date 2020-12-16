@@ -451,6 +451,15 @@ export class BridgeService {
     });
   }
 
+  addCloneConstants(cloneTable: ITable, targetTable: ITable){
+    const constants = Object.values(this.constantsCache).filter(it => it.tableName === targetTable.name &&
+      it.cloneTableName === targetTable.cloneName);
+    constants.forEach(item => {
+      const row = cloneTable.rows.find(el => el.name === item.name)
+      this.constantsCache[ this.getConstantId(row) ] = row;
+    })
+  }
+
   hideAllArrows(): void {
     this.drawService.deleteAllConnectors();
   }
