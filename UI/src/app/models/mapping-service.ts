@@ -112,9 +112,10 @@ export class MappingService {
         const constantObj = {
           source_field: '',
           sql_field: row.constant,
-          sql_alias: row.name,
+          sql_alias: row.cloneTableName? `${row.name}_${row.cloneTableName}` : row.name,
           target_field: row.name,
-          comments: row.comments
+          comments: row.comments,
+          targetCloneName: row.cloneTableName ? row.cloneTableName : ''
         };
         mapping['mapping'].push(constantObj);
       });
@@ -142,7 +143,7 @@ export function addGroupMappings(mapping: Mapping, source: ITable){
 
   mappingItems.forEach((item, index) => {
     const field = source.rows.filter(row => row.name === item.source_field)[ 0 ];
-    if (field.grouppedFields && field.grouppedFields.length) {
+    if (field && field.grouppedFields && field.grouppedFields.length) {
       const mappingsToAdd = field.grouppedFields.map(grouppedField => {
         return {
           source_field: grouppedField.name,
@@ -153,7 +154,7 @@ export function addGroupMappings(mapping: Mapping, source: ITable){
           sqlTransformation: item.sqlTransformation,
           comments: item.comments,
           condition: item.condition,
-          targetCloneName: item.targetCloneName
+          targetCloneName: item.targetCloneName ? item.targetCloneName : ''
         };
       });
 

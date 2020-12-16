@@ -117,7 +117,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     const viewTableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
     const viewResultColumns = [];
     const viewSql = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
-    this.dataService.getView(viewSql).subscribe(res => {
+    this.dataService.getView({sql: viewSql}).subscribe(res => {
       res.forEach((row, index) => {
         const rowOptions: RowOptions = {
           id: index,

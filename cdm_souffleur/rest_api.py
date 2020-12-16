@@ -77,11 +77,11 @@ def save_source_schema_to_db_call():
         raise InvalidUsage(error.__str__(), 404)
     return jsonify('OK')
 
-@bp.route('/api/get_view', methods=['GET'])
+@bp.route('/api/get_view', methods=['POST'])
 def get_View():
     try:
-        view_sql = request.args['sql']
-        view_result=get_view_from_db(view_sql)
+        view_sql = request.get_json()
+        view_result=get_view_from_db(view_sql['sql'])
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(view_result)
