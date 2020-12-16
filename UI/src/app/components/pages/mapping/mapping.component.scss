@@ -83,30 +83,84 @@ section {
   width: 100%;
 }
 
-footer {
+.mapping-footer {
   width: 100%;
-  float: left;
-  margin-top: 15px;
-  margin-bottom: 30px;
+  margin-top: 18px;
+  margin-bottom: 23px;
 
-  button {
-    float: right;
-    margin-left: 30px;
-  }
+  &__content {
+    width: 675px;
+    display: flex;
+    margin-left: auto;
+    justify-content: space-between;
 
-  button:first-child {
-    margin-right: 8px;
+    &-left, &-right {
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 18px;
+        height: 33px;
+
+        outline: none;
+        cursor: pointer;
+
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+        border: 0;
+
+        &:disabled {
+          cursor: default;
+          opacity: 0.6;
+        }
+      }
+    }
+
+    &-left {
+      width: 225px;
+    }
+
+    &-right {
+      width: 375px;
+    }
+
+    &-delete-links, &-preview {
+      width: 100px;
+    }
+
+    &-fake {
+      width: 120px;
+    }
+
+    &-report {
+      width: 83px;
+    }
+
+    &-cdm {
+      width: 140px;
+    }
   }
 }
 
-.mapping-page-button {
-  cursor: pointer;
-  font-weight: bold;
+.red-color {
+  color: #FF4646;
 }
 
-.delete-links {
-  color: red;
-  background: #E8E8E8;
+.blue-color {
+  color: #066BBB;
+}
+
+.white-color {
+  color: #FFF;
+}
+
+.grey-button {
+  background-color: #F9F9F9;
+}
+
+.blue-button {
+  background-color: #066BBB;
 }
 
 .patch {

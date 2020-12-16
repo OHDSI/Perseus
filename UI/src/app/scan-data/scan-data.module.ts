@@ -15,7 +15,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './shared/connect-form/connect-form.component';
 import { MatIconModule } from '@angular/material/icon';
-import { ClickOutsideDirective } from './shared/click-outside/click-outside.directive';
 import { DbSettingsFormComponent } from './shared/connect-form/db-settings-form/db-settings-form.component';
 import { FileSettingsFormComponent } from './shared/connect-form/file-settings-form/file-settings-form.component';
 import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.component';
@@ -44,7 +43,6 @@ import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapp
     CloseDialogButtonComponent,
     ScanDataDialogComponent,
     ConnectFormComponent,
-    ClickOutsideDirective,
     DbSettingsFormComponent,
     FileSettingsFormComponent,
     FakeDataDialogComponent,
