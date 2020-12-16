@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ITable } from 'src/app/models/table';
+import { ITable, Table } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 
 import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
@@ -178,23 +178,35 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.commonUtilsService.openOnBoardingTip(target, 'create-group');
   }
 
+  openOnBoardingTipClone(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target, 'clone-target');
+  }
+
   openConditionDialog() {
 
     const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'sql-editor-dialog',
-      data: { table: this.table }
+      data: { table: this.table, sourceTable: this.storeService.state.source.find(item => item.name === this.oppositeTableName)}
     });
 
     matDialog.afterClosed().subscribe(res => {
       if (this.existingClones && this.existingClones.length) {
-        this.storeService.state.targetClones[ this.table.name ].
-          find(item => item.id === this.table.id).condition = this.table.condition;
+        const tableToUpdate = this.storeService.state.targetClones[ this.table.name ].find(item => item.id === this.table.id);
+        this.updateCondition(tableToUpdate);
       } else {
-        this.storeService.state.target.find(item => item.id === this.table.id).condition = this.table.condition;
+        this.updateCondition(this.storeService.state.target.find(item => item.id === this.table.id));
       }
     });
+  }
+
+  updateCondition(table: ITable) {
+    table.condition = this.table.condition;
+    table.rows.forEach(row => row.condition = this.table.condition);
+    Object.values(this.bridgeService.arrowsCache).
+      filter(item => item.target.tableName === this.table.name && item.target.cloneTableName === this.table.cloneName).
+      forEach(el => el.target.condition = this.table.condition)
   }
 
   createClone() {
@@ -219,8 +231,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
         }
         let cloneToSet;
         const cloneConnectedToSourceName = this.oppositeTableName;
-        const cloneId = this.storeService.state.targetClones[ this.table.name ] ?
-          this.storeService.state.target.length + Object.values(this.storeService.state.targetClones).length : this.storeService.state.target.length;
+        const totalNumberOfClones = Object.values(this.storeService.state.targetClones).reduce(function(accumulator: number, currentValue: ITable[]) {
+          return accumulator + currentValue.length;
+        }, 0);
+        const cloneId = this.storeService.state.target.length + totalNumberOfClones;
         if (this.existingClones && this.existingClones.length) {
           cloneToSet = this.createClonedTable(this.table, res.value, cloneId, cloneConnectedToSourceName);
           this.storeService.state.targetClones[ this.table.name ].
@@ -232,6 +246,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
             push(this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName));
         }
         this.setCloneTable(cloneToSet);
+        Object.values(this.bridgeService.arrowsCache).
+        filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
+        .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
       }
     });
   }
@@ -250,11 +267,17 @@ export class PanelComponent implements OnInit, AfterViewInit {
     const cloneTargetTable = cloneDeep(table) as ITable;
     cloneTargetTable.cloneName = cloneName;
     cloneTargetTable.cloneConnectedToSourceName = cloneConnectedToSourceName;
+    if (cloneName != 'Default'){
+      cloneTargetTable.condition = '';
+    }
     cloneTargetTable.id = cloneId;
     cloneTargetTable.rows.forEach(item => {
       item.tableId = cloneId;
       item.cloneTableName = cloneName;
       item.cloneConnectedToSourceName = cloneConnectedToSourceName;
+      if (cloneName != 'Default'){
+        item.condition = ''
+      }
     });
     this.bridgeService.drawCloneArrows(cloneTargetTable, table);
     return cloneTargetTable;
@@ -279,7 +302,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
       tables: this.getTableClones(),
       selected: this.table,
       clone: true,
-      previous: undefined
+      previous: undefined,
+      remove: true
     };
 
     const dialogOptions: OverlayConfigOptions = {
@@ -291,8 +315,23 @@ export class PanelComponent implements OnInit, AfterViewInit {
     };
     const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
 
-    overlayRef.afterClosed$.subscribe( tbl => {
-      this.setCloneTable(data.selected);
+    overlayRef.afterClosed$.subscribe(tbl => {
+      if (tbl) {
+        const table = tbl as Table;
+        this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ].filter(item => item.id !== table.id);
+        const arrowsToDelete = Object.values(this.bridgeService.arrowsCache).filter(item => item.target.tableId === table.id);
+        arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        if (!this.storeService.state.targetClones[ table.name ].length) {
+          delete this.storeService.state.targetClones[ table.name ];
+          const test = Object.values(this.bridgeService.arrowsCache).
+            filter(it => it.target.tableName === table.name && it.source.tableId === this.oppositeTableId);
+            test.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        } else {
+          this.setCloneTable(this.storeService.state.targetClones[ table.name ][0]);
+        }
+      } else {
+        this.setCloneTable(data.selected);
+      }
     });
 
   }

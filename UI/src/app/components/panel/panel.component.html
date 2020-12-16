@@ -22,7 +22,8 @@
   <div class="margin-left">
     <a id="clone"
        (click)="createClone()">Clone</a>
-    <mat-icon class="info-icon">info</mat-icon>
+    <mat-icon class="info-icon"
+              (click)="openOnBoardingTipClone($event.currentTarget)">info</mat-icon>
     <a id="condition"
        class="condition"
        (click)="openConditionDialog()">Add Condition</a>

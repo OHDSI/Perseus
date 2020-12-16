@@ -37,9 +37,12 @@ export class MappingService {
           sourceColumn: arrow.source.name,
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
+          targetColumnAlias: arrow.target.cloneTableName? `${arrow.target.name}_${arrow.target.cloneTableName}` : arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
-          sqlTransformation: arrow.sql ? arrow.sql['name'] : '',
-          comments: arrow.source.comments
+          sqlTransformation: arrow.sql && arrow.sql['applied'] ? arrow.sql['name'] : '',
+          comments: arrow.source.comments,
+          condition: arrow.target.condition,
+          targetCloneName: arrow.target.cloneTableName,
         };
       });
 
@@ -63,10 +66,12 @@ export class MappingService {
             source_field: arrow.sourceColumn,
             target_field: arrow.targetColumn,
             sql_field: arrow.sourceColumn,
-            sql_alias: arrow.targetColumn,
+            sql_alias: arrow.targetColumnAlias,
             lookup: arrow.lookup,
             sqlTransformation: arrow.sqlTransformation,
-            comments: arrow.comments
+            comments: arrow.comments,
+            condition: arrow.condition,
+            targetCloneName: arrow.targetCloneName ? arrow.targetCloneName : ''
           };
 
           this.applyTransforms(node, arrow);
@@ -146,7 +151,9 @@ export function addGroupMappings(mapping: Mapping, source: ITable){
           sql_alias: item.sql_alias,
           lookup: item.lookup,
           sqlTransformation: item.sqlTransformation,
-          comments: item.comments
+          comments: item.comments,
+          condition: item.condition,
+          targetCloneName: item.targetCloneName
         };
       });
 

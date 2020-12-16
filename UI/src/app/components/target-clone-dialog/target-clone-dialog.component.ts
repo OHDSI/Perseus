@@ -40,7 +40,7 @@ export class TargetCloneDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.chips = this.data.table.rows.map(item => item.name);
+    this.chips = this.data.sourceTable.rows.map(item => item.name);
     this.tableName = this.data.table.cloneName ? this.data.table.cloneName : this.data.table.name;
     this.initCodeMirror();
     this.codeMirror.setValue(this.data.table.condition ? this.data.table.condition : '');
