@@ -71,7 +71,7 @@ export class MappingService {
             sqlTransformation: arrow.sqlTransformation,
             comments: arrow.comments,
             condition: arrow.condition,
-            targetCloneName: arrow.targetCloneName
+            targetCloneName: arrow.targetCloneName ? arrow.targetCloneName : ''
           };
 
           this.applyTransforms(node, arrow);
