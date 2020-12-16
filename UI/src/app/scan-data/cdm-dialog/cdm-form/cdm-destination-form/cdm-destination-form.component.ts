@@ -6,6 +6,7 @@ import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder } from '../..
 import { adaptDbSettingsForDestination } from '../../../util/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
 import { CdmBuilderService } from '../../../../services/cdm-builder.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cdm-destination-form',
@@ -26,8 +27,8 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
 
   dataTypes = cdmBuilderDatabaseTypes;
 
-  constructor(formBuilder: FormBuilder, private cdmBuilderService: CdmBuilderService) {
-    super(formBuilder);
+  constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
+    super(formBuilder, matDialog);
   }
 
   get settings() {
@@ -50,9 +51,12 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
     this.cdmBuilderService.testDestinationConnection(this.settings as CdmSettings)
       .subscribe(
         result => this.connectionResult = result,
-        error => this.connectionResult = {
-          canConnect: false,
-          message: error.error
+        error => {
+          this.connectionResult = {
+            canConnect: false,
+            message: error.error,
+          };
+          this.showErrorPopup(this.connectionResult.message);
         }
       );
   }

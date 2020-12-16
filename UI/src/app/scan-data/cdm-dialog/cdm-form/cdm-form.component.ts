@@ -9,6 +9,8 @@ import { CdmSourceFormComponent } from './cdm-source-form/cdm-source-form.compon
 import { CdmDestinationFormComponent } from './cdm-destination-form/cdm-destination-form.component';
 import { CdmSettings } from '../../model/cdm-settings';
 import { dictionaryDbSettingForCdmBuilder } from '../../scan-data.constants';
+import { StoreService } from '../../../services/store.service';
+import { adaptCdmVersions } from '../../util/cdm-adapter';
 
 @Component({
   selector: 'app-cdm-form',
@@ -36,6 +38,9 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   @Output()
   convert = new EventEmitter<CdmSettings>();
 
+  @Output()
+  generateFakeData = new EventEmitter<FakeDataParams>();
+
   @ViewChild(CdmSourceFormComponent)
   sourceFormComponent: CdmSourceFormComponent;
 
@@ -44,7 +49,8 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(private formBuilder: FormBuilder,
               private cdmStateService: CdmStateService,
-              private fakeDataStateService: FakeDataStateService) {
+              private fakeDataStateService: FakeDataStateService,
+              private storeService: StoreService) {
     super();
   }
 
@@ -94,10 +100,13 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   }
 
   private createCdmBuilderSettings(): CdmSettings {
+    const cdmVersion = adaptCdmVersions(this.storeService.state.version);
+
     const result = {
       ...this.sourceFormComponent.settings,
       ...this.destinationFormComponent.settings,
-      ...dictionaryDbSettingForCdmBuilder
+      ...dictionaryDbSettingForCdmBuilder,
+      cdmVersion
     };
     return result as CdmSettings;
   }

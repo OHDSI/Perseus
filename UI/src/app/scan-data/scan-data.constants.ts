@@ -37,12 +37,11 @@ export const cdmWebsocketConfig = {
 };
 
 export const dictionaryDbSettingForCdmBuilder = {
-  vocabularyEngine: 'mssql',
+  vocabularyEngine: 'MSSQL',
   vocabularyServer: '822JNJ16S03V',
   vocabularySchema: 'dbo',
   vocabularyDatabase: 'Vocabulary_20190617',
   vocabularyUser: '3dx_reader',
   vocabularyPassword: 'xd3!Ypr7q',
-  mappingsName: '',
-  cdmVersion: 'v5.3'
+  mappingsName: 'TestMappings'
 };

@@ -19,12 +19,12 @@ import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.compon
 
 @Component({
   selector: 'app-toolbar',
-  styleUrls: [ './toolbar.component.scss' ],
+  styleUrls: ['./toolbar.component.scss'],
   templateUrl: './toolbar.component.html',
 })
 export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy {
-  @ViewChild('sourceUpload', { static: true }) fileInput: ElementRef;
-  @ViewChild('mappingUpload', { static: true }) mappingInput: ElementRef;
+  @ViewChild('sourceUpload', {static: true}) fileInput: ElementRef;
+  @ViewChild('mappingUpload', {static: true}) mappingInput: ElementRef;
 
   cdmVersion: string;
   reportName: string;
@@ -51,11 +51,15 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   ngOnInit() {
-    this.storeService.state$.subscribe((res: any) => {
-      const info = stateToInfo(res);
-      this.cdmVersion = info.cdmVersion;
-      this.reportName = info.reportName;
-    });
+    this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe((res: any) => {
+        const info = stateToInfo(res);
+        this.cdmVersion = info.cdmVersion;
+        this.reportName = info.reportName;
+      });
 
     this.commonUtilsService.loadSourceReport$.subscribe(res => {
       if (res) {
@@ -64,8 +68,6 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     });
 
     this.initStreamsOfDisabledButtons();
-
-    // this.convertToCdm();
   }
 
   ngOnDestroy() {
@@ -89,7 +91,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openLoadMappingDialog() {
-   this.uploadService.onFileInputClick(this.mappingInput);
+    this.uploadService.onFileInputClick(this.mappingInput);
   }
 
   onOpenSourceClick() {
@@ -118,7 +120,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   generateAndSave() {
-    const { source } = this.storeService.getMappedTables();
+    const {source} = this.storeService.getMappedTables();
 
     const areaRows = [];
 
@@ -168,7 +170,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.convertToCdmDisabled$ = this.storeService.state$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        map(state => state.source.length === 0)
+        map(state => !state.mappingCreated)
       );
   }
 }

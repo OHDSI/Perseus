@@ -24,7 +24,7 @@
   <ng-template #db>
     <app-cdm-connect-form prefix="source"
                           [form]="form"></app-cdm-connect-form>
-    <app-test-connection class="cdm-form__content-item__connection-result"
+    <app-test-connection class="cdm-form__content-item__apply"
                          (testConnection)="onTestConnection()"
                          [connectionResult]="connectionResult"
                          [disabled]="!form.valid"></app-test-connection>
@@ -33,6 +33,8 @@
   <ng-template #fakeData>
     <app-cdm-fake-data-form [form]="fakeDataForm"></app-cdm-fake-data-form>
 
-    <button class="cdm-form__content-item__connection-result">Generate</button>
+    <div class="cdm-form__content-item__apply fake-data">
+      <button (click)="generateFakeData.emit(this.fakeDataForm.value)">Generate</button>
+    </div>
   </ng-template>
 </div>

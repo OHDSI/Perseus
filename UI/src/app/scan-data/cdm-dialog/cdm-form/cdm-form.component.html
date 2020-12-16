@@ -2,7 +2,8 @@
   <div class="cdm-form__content">
     <app-cdm-source-form [dbSettings]="sourceDbSettings"
                          [fakeDataParams]="fakeDataParams"
-                         [dataType]="sourceDataType"></app-cdm-source-form>
+                         [dataType]="sourceDataType"
+                         (generateFakeData)="generateFakeData.emit($event)"></app-cdm-source-form>
 
     <app-cdm-destination-form [dbSettings]="destinationDbSettings"
                               [dataType]="destinationDataType"></app-cdm-destination-form>

@@ -638,7 +638,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isFooterButtonDisabled() {
-    return Object.keys(this.bridgeService.arrowsCache).length === 0;
+    const result = Object.keys(this.bridgeService.arrowsCache).length === 0;
+    return result;
   }
 
   deleteLinks() {

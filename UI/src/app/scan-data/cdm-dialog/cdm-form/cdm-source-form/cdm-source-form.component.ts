@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractResourceForm } from '../../../shared/abstract-resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cdmDbSettingsFromControlNames, createCdmDbSettingsForm, createFakeDataForm } from '../../../util/form';
@@ -7,6 +7,7 @@ import { FakeDataParams } from '../../../model/fake-data-params';
 import { CdmBuilderService } from '../../../../services/cdm-builder.service';
 import { adaptDbSettingsForSource } from '../../../util/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -26,6 +27,9 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   @Input()
   fakeDataParams: FakeDataParams;
 
+  @Output()
+  generateFakeData = new EventEmitter<FakeDataParams>();
+
   formControlNames = cdmDbSettingsFromControlNames;
 
   fakeDataForm: FormGroup;
@@ -35,8 +39,8 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
     ...cdmBuilderDatabaseTypes
   ];
 
-  constructor(formBuilder: FormBuilder, private cdmBuilderService: CdmBuilderService) {
-    super(formBuilder);
+  constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
+    super(formBuilder, matDialog);
   }
 
   get settings() {
@@ -48,7 +52,7 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   }
 
   get isNotValid() {
-    return !this.form.valid;
+    return this.isSourceDbSettings ? !this.form.valid : !this.fakeDataForm.valid;
   }
 
   get isSourceDbSettings() {
@@ -69,9 +73,12 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
     this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
       .subscribe(
         result => this.connectionResult = result,
-        error => this.connectionResult = {
-          canConnect: false,
-          message: error.error
+        error => {
+          this.connectionResult = {
+            canConnect: false,
+            message: error.error,
+          };
+          this.showErrorPopup(this.connectionResult.message);
         }
       );
   }

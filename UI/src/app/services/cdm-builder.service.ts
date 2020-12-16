@@ -9,6 +9,7 @@ import { ConnectionResult } from '../scan-data/model/connection-result';
 import { DataService } from './data.service';
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
+import { dictionaryDbSettingForCdmBuilder } from '../scan-data/scan-data.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,7 @@ export class CdmBuilderService {
         switchMap(file => {
           const formData = new FormData();
           formData.append('File', file);
-          formData.append('Name', 'TestMappings');
+          formData.append('Name', dictionaryDbSettingForCdmBuilder.mappingsName);
           return this.httpClient.post(`${cdmBuilderApiUrl}/addmappings`, formData, {observe: 'response'});
         }),
         map(response => response.status === 200)
@@ -63,7 +64,7 @@ export class CdmBuilderService {
   }
 
   abort(): Observable<boolean> {
-    return this.httpClient.get(`${cdmBuilderApiUrl}/abort`, {observe: 'response'})
+    return this.httpClient.get(`${cdmBuilderApiUrl}/abort`, {observe: 'response', responseType: 'text'})
       .pipe(
         map(response => response.status === 200)
       );

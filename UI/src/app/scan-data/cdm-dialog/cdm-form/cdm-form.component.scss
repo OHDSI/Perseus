@@ -20,9 +20,10 @@
         background-color: #F9F9F9;
       }
 
-      &__connection-result {
+      &__apply {
         margin-top: auto;
-        padding-bottom: 23px;
+        padding-bottom: 21px;
+        box-sizing: content-box;
       }
 
       .mat-form-field {

@@ -24,8 +24,6 @@ const initialState = {
     database: 'cdm_web_test_real1111',
     schemaName: 'dbo'
   }
-  // sourceDataType: null,
-  // destinationDataType: null,
   // sourceDbSettings: {
   //   dbType: null,
   //   server: null,
