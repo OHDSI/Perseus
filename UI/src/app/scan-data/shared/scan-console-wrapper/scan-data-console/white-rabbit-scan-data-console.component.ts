@@ -34,6 +34,7 @@ export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsole
     const notification = JSON.parse(message) as ProgressNotification;
 
     this.showNotificationMessage(notification);
+    this.scrollToConsoleBottom();
 
     switch (notification.status.code) {
       case ProgressNotificationStatusCode.TABLE_SCANNING: {

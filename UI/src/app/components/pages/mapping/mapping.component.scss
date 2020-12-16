@@ -139,6 +139,10 @@ section {
 
     &-cdm {
       width: 140px;
+       svg {
+         margin-bottom: 2px;
+         margin-left: 8px;
+       }
     }
   }
 }
