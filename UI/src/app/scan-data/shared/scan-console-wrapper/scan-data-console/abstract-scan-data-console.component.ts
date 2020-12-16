@@ -1,6 +1,7 @@
 import {
+  ElementRef,
   EventEmitter, Input,
-  OnInit, Output
+  OnInit, Output, ViewChild
 } from '@angular/core';
 import { ProgressNotification} from '../../../model/progress-notification';
 import { takeUntil } from 'rxjs/operators';
@@ -22,6 +23,9 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
 
   @Output()
   finish = new EventEmitter<string>();
+
+  @ViewChild('console')
+  private console: ElementRef;
 
   protected constructor(protected websocketService: WebsocketService) {
     super();
@@ -77,4 +81,8 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
   }
 
   protected abstract handleProgressMessage(message: any): void;
+
+  protected scrollToConsoleBottom() {
+    this.console.nativeElement.scrollTop = this.console.nativeElement.scrollHeight;
+  }
 }

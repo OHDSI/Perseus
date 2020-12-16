@@ -211,50 +211,53 @@
         </mat-icon>
       </div>
     </main>
-    <footer>
-      <button
-        mat-flat-button
-        color="accent"
-        class="mapping-page-button"
-        [disabled]="isFooterButtonDisabled()"
-        (click)="convertToCdm()">Convert to CDM</button>
 
-      <button
-        mat-flat-button
-        color="accent"
-        class="mapping-page-button"
-        matTooltip="Download ziped mappings"
-        aria-label="Download mappings xmls"
-        [disabled]="isFooterButtonDisabled()"
-        (click)="generateMappingJson()">Generate & Save</button>
+    <footer class="mapping-footer">
+      <div class="mapping-footer__content">
+        <div class="mapping-footer__content-left">
+          <button class="mapping-footer__content-delete-links grey-button red-color"
+                  [disabled]="isFooterButtonDisabled()"
+                  (click)="deleteLinks()">Delete Links
+          </button>
 
-      <button
-        mat-flat-button
-        color="accent"
-        class="mapping-page-button"
-        matTooltip="Preview mappings"
-        aria-label="Preview mapping xmls"
-        [disabled]="isFooterButtonDisabled() || isSimilarTabs()"
-        (click)="previewMapping()">Preview</button>
+          <button class="mapping-footer__content-preview grey-button blue-color"
+                  [disabled]="isFooterButtonDisabled() || isSimilarTabs()"
+                  (click)="previewMapping()">Preview
+          </button>
+        </div>
 
-      <button
-        mat-flat-button
-        color="accent"
-        class="mapping-page-button"
-        [disabled]="isFooterButtonDisabled()"
-        (click)="generateReport()">Report</button>
+        <div class="mapping-footer__content-right">
+          <button class="mapping-footer__content-fake grey-button blue-color"
+                  (click)="generateFakeData()">Generate Fake
+          </button>
 
-      <button
-        mat-flat-button
-        color="accent"
-        class="mapping-page-button"
-        (click)="generateFakeData()">Generate Fake Data</button>
+          <button class="mapping-footer__content-report grey-button blue-color"
+                  [disabled]="isFooterButtonDisabled()"
+                  (click)="generateReport()">Report
+          </button>
 
-      <button
-        mat-flat-button
-        class="mapping-page-button delete-links"
-        [disabled]="isFooterButtonDisabled()"
-        (click)="deleteLinks()">Delete Links</button>
+          <button class="mapping-footer__content-cdm blue-button white-color"
+                  [disabled]="isFooterButtonDisabled()"
+                  [matMenuTriggerFor]="cdmMenu">Convert to CDM
+            <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0L4 4L8 0H0Z" fill="white"/>
+            </svg>
+          </button>
+
+          <mat-menu #cdmMenu="matMenu">
+            <button mat-menu-item (click)="convertToCdm()">
+              <mat-icon svgIcon="convert_data"></mat-icon>
+              <span>Convert to CDM</span>
+            </button>
+
+            <button mat-menu-item (click)="generateMappingJson()">
+              <mat-icon svgIcon="generate_and_save"></mat-icon>
+              <span>Generate & Save Files</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
     </footer>
   </section>
 </div>

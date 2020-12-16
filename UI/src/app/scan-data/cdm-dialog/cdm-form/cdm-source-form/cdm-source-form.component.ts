@@ -66,7 +66,9 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   ngOnInit() {
     super.ngOnInit();
 
-    this.initFakeDataForm();
+    if (this.fakeDataParams) {
+      this.initFakeDataForm();
+    }
   }
 
   onTestConnection(): void {
@@ -81,6 +83,14 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
           this.showErrorPopup(this.connectionResult.message);
         }
       );
+  }
+
+  isDbTypeDisable(dataType: string): boolean {
+    if (dataType !== fakeData) {
+      return false;
+    }
+
+    return this.fakeDataParams === null;
   }
 
   createForm(disabled: boolean): FormGroup {

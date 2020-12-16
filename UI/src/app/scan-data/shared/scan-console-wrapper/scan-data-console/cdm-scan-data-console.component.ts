@@ -21,6 +21,7 @@ export class CdmScanDataConsoleComponent extends AbstractScanDataConsoleComponen
       status: {code: notification.status},
       message: notification.text
     });
+    this.scrollToConsoleBottom();
 
     switch (notification.status) {
       case ProgressNotificationStatusCode.FINISHED: {
