@@ -77,7 +77,10 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   private loadState() {
     const {sourceDbSettings, destinationDbSettings} = this.cdmStateService.state;
-    const fakeDataParams = this.fakeDataStateService.state;
+    let fakeDataParams = null;
+    if (this.storeService.state.reportFile) {
+      fakeDataParams = this.fakeDataStateService.state;
+    }
 
     this.sourceDataType = sourceDbSettings.dbType;
     this.destinationDataType = destinationDbSettings.dbType;

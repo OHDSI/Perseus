@@ -13,7 +13,7 @@
   <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
     <mat-select [ngModel]="dataType" (ngModelChange)="dataTypeChange($event)">
-      <mat-option *ngFor="let type of dataTypes" [value]="type">
+      <mat-option *ngFor="let type of dataTypes" [value]="type" [disabled]="isDbTypeDisable(type)" >
         {{type}}
       </mat-option>
     </mat-select>
