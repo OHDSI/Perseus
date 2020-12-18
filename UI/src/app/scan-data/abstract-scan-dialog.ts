@@ -6,11 +6,20 @@ export abstract class AbstractScanDialog {
 
   websocketParams: WebsocketParams;
 
-  selectedIndex = 0;
+  private selectedIndex = 0;
 
   abstract consoleWrapperComponent: AbstractConsoleWrapperComponent;
 
   protected constructor(protected dialogRef: MatDialogRef<AbstractScanDialog>) {
+  }
+
+  set index(value: number) {
+    this.selectedIndex = value;
+    this.changeSize();
+  }
+
+  get index() {
+    return this.selectedIndex;
   }
 
   onClose(): void {
@@ -24,6 +33,8 @@ export abstract class AbstractScanDialog {
   }
 
   onCancel(): void {
-    this.selectedIndex = 0;
+    this.index = 0;
   }
+
+  protected abstract changeSize();
 }

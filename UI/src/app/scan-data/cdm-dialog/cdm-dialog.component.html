@@ -4,7 +4,7 @@
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
   </div>
 
-  <div class="scan-dialog__content" [ngSwitch]="selectedIndex">
+  <div class="scan-dialog__content" [ngSwitch]="index">
     <app-cdm-form *ngSwitchCase="0" style="width: 100%"
                   (convert)="onConvert($event)"
                   (generateFakeData)="onGenerateFakeData($event)"></app-cdm-form>

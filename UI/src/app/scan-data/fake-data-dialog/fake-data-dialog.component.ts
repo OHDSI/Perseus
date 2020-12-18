@@ -20,15 +20,6 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
     super(dialogRef);
   }
 
-  set index(value: number) {
-    this.selectedIndex = value;
-    this.changeSize();
-  }
-
-  get index() {
-    return this.selectedIndex;
-  }
-
   async onGenerate(params: { maxRowCount: number, doUniformSampling: boolean }) {
     const state = this.storeService.state;
     const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;
@@ -48,8 +39,8 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
     this.index = 1;
   }
 
-  private changeSize() {
-    if (this.selectedIndex === 0) {
+  protected changeSize() {
+    if (this.index === 0) {
       this.dialogRef.updateSize('265px', '280px');
     } else {
       this.dialogRef.updateSize('700px', '674px');

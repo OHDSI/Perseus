@@ -20,6 +20,14 @@ export class ScanDataDialogComponent extends AbstractScanDialog {
 
   onScanTables(websocketParams: WebsocketParams): void {
     this.websocketParams = websocketParams;
-    this.selectedIndex = 1;
+    this.index = 1;
+  }
+
+  protected changeSize() {
+    if (this.index === 0) {
+      this.dialogRef.updateSize('700px', '674px');
+    } else {
+      this.dialogRef.updateSize('613px', '478px');
+    }
   }
 }
