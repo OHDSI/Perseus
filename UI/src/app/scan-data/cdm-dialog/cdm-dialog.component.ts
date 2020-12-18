@@ -33,7 +33,7 @@ export class CdmDialogComponent extends AbstractScanDialog {
       payload: cdmSettings
     };
 
-    this.selectedIndex = 1;
+    this.index = 1;
   }
 
   async onGenerateFakeData(params: FakeDataParams) {
@@ -52,6 +52,14 @@ export class CdmDialogComponent extends AbstractScanDialog {
       resultDestination: '/user/queue/fake-data'
     };
 
-    this.selectedIndex = 2;
+    this.index = 2;
+  }
+
+  protected changeSize() {
+    if (this.index === 0) {
+      this.dialogRef.updateSize('700px', '674px');
+    } else {
+      this.dialogRef.updateSize('613px', '478px');
+    }
   }
 }

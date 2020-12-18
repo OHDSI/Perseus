@@ -77,8 +77,8 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
   }
 
   get testConnectionDisabled() {
-    return this.isDbSettings ? this.dbSettingsForm.invalid :
-      this.fileSettingsForm.invalid;
+    return this.isDbSettings ? !this.dbSettingsForm.valid :
+      !this.fileSettingsForm.valid;
   }
 
   ngOnInit(): void {

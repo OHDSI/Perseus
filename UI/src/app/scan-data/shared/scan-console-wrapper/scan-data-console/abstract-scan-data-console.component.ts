@@ -83,6 +83,10 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
   protected abstract handleProgressMessage(message: any): void;
 
   protected scrollToConsoleBottom() {
-    this.console.nativeElement.scrollTop = this.console.nativeElement.scrollHeight;
+    const console = this.console.nativeElement;
+    // delayed scroll, after render new message
+    setTimeout(() =>
+      console.scrollTop = console.scrollHeight - console.clientHeight
+    );
   }
 }

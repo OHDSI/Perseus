@@ -5,7 +5,7 @@
   </div>
 
   <div class="scan-dialog__content">
-    <app-scan-data-form *ngIf="selectedIndex === 0; else scanProgressBlock" style="width: 100%"
+    <app-scan-data-form *ngIf="index === 0; else scanProgressBlock" style="width: 100%"
                         (scanTables)="onScanTables($event)"
                         (cancel)="onClose()"></app-scan-data-form>
 
