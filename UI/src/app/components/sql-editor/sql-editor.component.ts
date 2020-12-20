@@ -1,7 +1,7 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Inject, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/show-hint';
@@ -15,6 +15,7 @@ import { CommonUtilsService } from '../../services/common-utils.service';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { DataService } from 'src/app/services/data.service';
 import { Row, RowOptions } from 'src/app/models/row';
+import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -40,6 +41,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     private cdRef: ChangeDetectorRef,
     private bridgeService: BridgeService,
     private dataService: DataService,
+    private matDialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -117,7 +119,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     const viewTableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
     const viewResultColumns = [];
     const viewSql = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
-    this.dataService.getView({sql: viewSql}).subscribe(res => {
+      this.dataService.getView({sql: viewSql}).subscribe(res => {
       res.forEach((row, index) => {
         const rowOptions: RowOptions = {
           id: index,
@@ -143,6 +145,16 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       const newTable = new Table(settings);
       this.removeLinksForDeletedRows(newTable);
       this.dialogRef.close(newTable);
+    },
+    error => {
+      const dialog = this.matDialog.open(ErrorPopupComponent, {
+        closeOnNavigation: false,
+        disableClose: false,
+        data: {
+          title: 'View error',
+          message: error.error.message
+        }
+      });
     });
   }
 

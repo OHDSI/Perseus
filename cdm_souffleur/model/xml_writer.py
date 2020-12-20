@@ -1,3 +1,4 @@
+import re
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 from cdm_souffleur.utils.constants import \
@@ -67,7 +68,7 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         """return unique all required fields to prepare sql"""
         all_fields = []
         mapping_items_for_table = mapping_items_[mapping_items_.source_table == source_table_]
-        required_fields = ['source_field', 'sql_field', 'sql_alias']
+        required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName']
         mapping_data = mapping_items_for_table.get('mapping', pd.Series())
         condition_data = mapping_items_for_table.get('condition', pd.Series())
         lookup = mapping_items_for_table.get('lookup', pd.Series())
@@ -93,41 +94,52 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
-    fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias']]
+    fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(by=['targetCloneName','source_field','sql_alias'])
     sql = 'SELECT '
     concept_id_counter = 1
     source_value_counter = 1
     type_concept_id_counter = 1
     source_concept_id_counter = 1
     mapped_to_person_id_field = ''
+    target_clone_name = ""
     for index, row in fields.iterrows():
         source_field = row['sql_field']
         target_field = row['sql_alias']
+        if target_clone_name != row['targetCloneName']:
+            target_clone_name = row['targetCloneName']
+            concept_id_counter = 1
+            source_value_counter = 1
+            type_concept_id_counter = 1
+            source_concept_id_counter = 1
+        if not row['targetCloneName']:
+            clone = ""
+        else:
+            clone = f"{row['targetCloneName']}_"
         if target_field == 'person_id':
             mapped_to_person_id_field = source_field
         if not source_field:
             sql += f"{row['source_field']},\n"
         else:
             if is_concept_id(target_field):
-                sql, concept_id_counter = add_concept_id_data(source_field, target_field, sql, concept_id_counter)
+                sql, concept_id_counter = add_concept_id_data(source_field, f"{clone}{target_field}", sql, concept_id_counter)
             elif is_source_value(target_field):
-                sql, source_value_counter = add_concept_id_data(source_field, target_field, sql, source_value_counter)
+                sql, source_value_counter = add_concept_id_data(source_field, f"{clone}{target_field}", sql, source_value_counter)
             elif is_type_concept_id(target_field):
                 sql, type_concept_id_counter = add_concept_id_data(
                     source_field,
-                    target_field,
+                    f"{clone}{target_field}",
                     sql,
                     type_concept_id_counter
                 )
             elif is_source_concept_id(target_field):
                 sql, source_concept_id_counter = add_concept_id_data(
                     source_field,
-                    target_field,
+                    f"{clone}{target_field}",
                     sql,
                     source_concept_id_counter
                 )
             else:
-                sql += f"{source_field} as {target_field},"
+                sql += f"{source_field} as {clone}{target_field},"
             sql += '\n'
     sql = f'{sql[:-2]}\n'
     view = None
@@ -249,6 +261,14 @@ def is_mapping_contains_source_value(field, mapping):
     return is_mapping_contains(field, 'source_value', mapping)
 
 
+def number_of_type_concept_id(field, mapping):
+    return number_of_fields_contained(field, 'type_concept_id', mapping)
+
+
+def number_of_source_value(field, mapping):
+    return number_of_fields_contained(field, 'source_value', mapping)
+
+
 def is_mapping_contains(field, key, mapping):
     for row in mapping:
         target_field = row['target_field']
@@ -259,6 +279,17 @@ def is_mapping_contains(field, key, mapping):
     return None
 
 
+def number_of_fields_contained(field, key, mapping):
+    fields_counter = 0
+    for row in mapping:
+        target_field = row['target_field']
+        if target_field.startswith('value_as'):
+            continue
+        if target_field == field.replace('concept_id', key):
+            fields_counter += 1
+    return fields_counter
+
+
 def is_mapping_contains_concept_id(field, replace_key, key, mapping):
     for row in mapping:
         target_field = row['target_field']
@@ -267,6 +298,7 @@ def is_mapping_contains_concept_id(field, replace_key, key, mapping):
         if target_field == field.replace(replace_key, key):
             return target_field
     return None
+
 
 def get_mapping_source_values(mapping):
     source_values = []
@@ -362,11 +394,14 @@ def get_xml(json_):
             if previous_target_table != target_table:
                 domain_tag = SubElement(query_definition_tag, tag_name)
 
-
             clone_key = lambda a: a.get('targetCloneName')
             clone_groups = groupby(sorted(mapping, key=clone_key), key=clone_key)
 
             for key, group in clone_groups:
+                if key != "":
+                    clone_key = f"{key}_"
+                else:
+                    clone_key = ""
                 groupList = list(group)
                 domain_definition_tag = SubElement(domain_tag, f'{tag_name}Definition')
                 condition_text = groupList[0].get('condition')
@@ -430,25 +465,38 @@ def get_xml(json_):
                                 for item in fields_tags[concept_tag_key]:
                                     if item.attrib.get(attrib_key, None) is None:
                                         continue
-                                    item.attrib[attrib_key] = f'{target_field}_{counter}'
+                                    item.attrib[attrib_key] = f'{clone_key}{target_field}_{counter}'
 
                                     if not mapping_source_values:
                                         continue
 
-                                    if is_mapping_contains_source_value(target_field, groupList):
-                                        item.attrib['sourceKey'] = f"{target_field.replace('concept_id', 'source_value')}"
+                                    if number_of_source_value(target_field, groupList) > 1:
+
+                                        if is_mapping_contains_source_value(target_field, groupList):
+                                            item.attrib['sourceKey'] = f"{item.attrib[attrib_key].replace('concept_id', 'source_value')}"
+
+                                    if number_of_type_concept_id(target_field, groupList) > 1:
+
+                                        if is_mapping_contains_type_concept_id(target_field, groupList):
+                                            item.attrib['typeId'] = f"{item.attrib[attrib_key].replace('concept_id', 'type_concept_id')}"
 
                             counter += 1
 
                             attrib = {
-                                attrib_key: f'{target_field}_{counter}',
+                                attrib_key: f'{clone_key}{target_field}_{counter}',
                             }
 
                             if is_mapping_contains_source_value(target_field, groupList):
-                                attrib['sourceKey'] = target_field.replace('concept_id', 'source_value')
+                                if number_of_source_value(target_field, groupList) > 1:
+                                    attrib['sourceKey'] = attrib[attrib_key].replace('concept_id', 'source_value')
+                                else:
+                                    attrib['sourceKey'] = re.sub(r'_\d+$', "", attrib[attrib_key].replace('concept_id', 'source_value'))
 
                             if is_mapping_contains_type_concept_id(target_field, groupList):
-                              attrib['typeId'] = target_field.replace('concept_id', 'type_concept_id')
+                                if number_of_type_concept_id(target_field, groupList) > 1:
+                                    attrib['typeId'] = attrib[attrib_key].replace('concept_id', 'type_concept_id')
+                                else:
+                                    attrib['typeId'] = re.sub(r'_\d+$', "", attrib[attrib_key].replace('concept_id', 'type_concept_id'))
 
                             SubElement(fields_tags[concept_tag_key], 'Field', attrib)
 
@@ -464,14 +512,14 @@ def get_xml(json_):
                             fields_tag = SubElement(concept_tags[concept_tag_key], 'Fields')
 
                             attrib = {
-                                attrib_key: target_field,
+                                attrib_key: f'{clone_key}{target_field}',
                             }
 
                             if is_mapping_contains(target_field, 'source_value', groupList):
-                                attrib['sourceKey'] = target_field.replace('concept_id', 'source_value')
+                                attrib['sourceKey'] = attrib[attrib_key].replace('concept_id', 'source_value')
 
                             if is_mapping_contains(target_field, 'type_concept_id', groupList):
-                                attrib['typeId'] = target_field.replace('concept_id', 'type_concept_id')
+                                attrib['typeId'] = attrib[attrib_key].replace('concept_id', 'type_concept_id')
 
                             SubElement(fields_tag, 'Field', attrib)
 

@@ -248,13 +248,14 @@ export class PanelTableComponent extends BaseComponent
   }
 
   validateGroupFields(groupType?: string) {
-    if (this.checkLinks()) {
+    const linkedTargetTables = uniq(this.checkLinks());
+    if (linkedTargetTables.length) {
       const dialog = this.matDialog.open(ErrorPopupComponent, {
         closeOnNavigation: false,
         disableClose: false,
         data: {
           title: 'Grouping error',
-          message: 'You cannot add linked fields to Group.'
+          message: `You cannot add linked fields to Group. Thare are links in the following tables: ${linkedTargetTables.join(",").toUpperCase()}`
         }
       });
 
@@ -296,8 +297,14 @@ export class PanelTableComponent extends BaseComponent
   }
 
   checkLinks() {
-    return this.rowFocusedElements.some(item =>
-      this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, this.oppositeTableId));
+    const linkedTables = [];
+    this.rowFocusedElements.forEach(item =>
+      this.storeService.state.target.forEach(tbl => {
+        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, tbl.id)) {
+          linkedTables.push(tbl.name)
+        }
+      }))
+    return linkedTables;
   }
 
   checkGrouppedFields() {
@@ -404,7 +411,7 @@ export class PanelTableComponent extends BaseComponent
         storedTarget ? storedTarget.rows = this.table.rows :
           targetClones.find(item => item.cloneName === this.table.cloneName).rows = this.table.rows;
       } else {
-        this.storeService.state.source.find(item => item.name === this.table.name).rows = this.table.rows;
+        this.storeService.state.target.find(item => item.name === this.table.name).rows = this.table.rows;
       }
 
     }

@@ -37,9 +37,9 @@ export class MappingService {
           sourceColumn: arrow.source.name,
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
-          targetColumnAlias: arrow.target.cloneTableName? `${arrow.target.name}_${arrow.target.cloneTableName}` : arrow.target.name,
+          targetColumnAlias: arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
-          sqlTransformation: arrow.sql && arrow.sql['applied'] ? arrow.sql['name'] : '',
+          sqlTransformation: arrow.sql && arrow.sql['applied'] ? `${arrow.sql['name']} as ${arrow.target.name}` : '',
           comments: arrow.source.comments,
           condition: arrow.target.condition,
           targetCloneName: arrow.target.cloneTableName,
@@ -112,7 +112,7 @@ export class MappingService {
         const constantObj = {
           source_field: '',
           sql_field: row.constant,
-          sql_alias: row.cloneTableName? `${row.name}_${row.cloneTableName}` : row.name,
+          sql_alias: row.name,
           target_field: row.name,
           comments: row.comments,
           targetCloneName: row.cloneTableName ? row.cloneTableName : ''
@@ -146,13 +146,14 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
       const field = source.rows.filter(row => row.name === item.source_field)[ 0 ];
       if (field && field.grouppedFields && field.grouppedFields.length) {
         const mappingsToAdd = field.grouppedFields.map(grouppedField => {
+          var regex = new RegExp("("+field.name+")(\\s|,|\\))","gi");
           return {
             source_field: grouppedField.name,
             target_field: item.target_field,
             sql_field: grouppedField.name,
             sql_alias: item.sql_alias,
             lookup: item.lookup,
-            sqlTransformation: item.sqlTransformation,
+            sqlTransformation: item.sqlTransformation.replace(regex, `${grouppedField.name}$2`),
             comments: item.comments,
             condition: item.condition,
             targetCloneName: item.targetCloneName ? item.targetCloneName : ''
