@@ -430,7 +430,8 @@ export class BridgeService {
 
   copyTransformations(arrow: any, cloneTable?: any) {
     const arrowWithSameTarget = cloneTable ? Object.values(this.arrowsCache).
-    filter(item => item.target.tableName === cloneTable.name && item.target.cloneTableName === cloneTable.cloneName)[ 0 ] :
+    filter(item => item.target.tableName === cloneTable.name && 
+      item.target.cloneTableName === cloneTable.cloneName && item.target.name === arrow.target.name)[ 0 ] :
     Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
 
     if (arrowWithSameTarget.connector.id !== arrow.connector.id) {

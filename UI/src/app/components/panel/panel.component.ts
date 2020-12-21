@@ -321,17 +321,19 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
     overlayRef.afterClosed$.subscribe(tbl => {
       if (tbl) {
-        const table = tbl as Table;
-        this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ].filter(item => item.id !== table.id);
-        const arrowsToDelete = Object.values(this.bridgeService.arrowsCache).filter(item => item.target.tableId === table.id);
-        arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
-        if (!this.storeService.state.targetClones[ table.name ].length) {
-          delete this.storeService.state.targetClones[ table.name ];
-          const test = Object.values(this.bridgeService.arrowsCache).
-            filter(it => it.target.tableName === table.name && it.source.tableId === this.oppositeTableId);
+        if (tbl instanceof Table) {
+          const table = tbl as Table;
+          this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ].filter(item => item.id !== table.id);
+          const arrowsToDelete = Object.values(this.bridgeService.arrowsCache).filter(item => item.target.tableId === table.id);
+          arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+          if (!this.storeService.state.targetClones[ table.name ].length) {
+            delete this.storeService.state.targetClones[ table.name ];
+            const test = Object.values(this.bridgeService.arrowsCache).
+              filter(it => it.target.tableName === table.name && it.source.tableId === this.oppositeTableId);
             test.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
-        } else {
-          this.setCloneTable(this.storeService.state.targetClones[ table.name ][0]);
+          } else {
+            this.setCloneTable(this.storeService.state.targetClones[ table.name ][ 0 ]);
+          }
         }
       } else {
         this.setCloneTable(data.selected);

@@ -53,7 +53,7 @@ export class TargetCloneDialogComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<any>) {
-    const text = event.item.element.nativeElement.textContent.trim();
+    const text = `{${event.item.element.nativeElement.textContent.trim()}}`;
     this.codeMirror.doc.replaceSelection(text);
     this.data.table.condition = this.editorContent;
   }
