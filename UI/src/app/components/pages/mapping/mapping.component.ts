@@ -38,6 +38,10 @@ import {
 import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
 import { FakeDataDialogComponent } from '../../../scan-data/fake-data-dialog/fake-data-dialog.component';
 import { CdmDialogComponent } from '../../../scan-data/cdm-dialog/cdm-dialog.component';
+import { LookupService } from '../../../services/lookup.service';
+import { getLookupType } from '../../../services/utilites/lookup-util';
+import { ReportCreator } from '../../../services/report/report-creator';
+import { MappingPair } from '../../../models/mapping';
 
 
 @Component({
@@ -108,6 +112,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private mappingStorage: MappingPageSessionStorage,
     private overlayService: OverlayService,
     private router: Router,
+    private lookupService: LookupService
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -174,7 +179,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           const { connectionType } = configOptions;
           if (connectionType) {
             const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
-            const lookupType = arrow.connector.target.name.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
+            const lookupType = getLookupType(arrow);
             const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
               closeOnNavigation: false,
               disableClose: false,
@@ -203,7 +208,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                   }
 
                   if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
-                    this.dataService.saveLookup(this.lookup, lookupType).subscribe(res => {
+                    this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
                       console.log(res);
                     });
                   }
@@ -445,12 +450,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  getNewCurrentTable(newIndex: number){
-        const newTable = this.getEnabledTargetTables()[ newIndex ]
-        return this.storeService.state.targetClones[newTable.name] ?
-        this.storeService.state.targetClones[newTable.name][0] :
-        this.getEnabledTargetTables()[ newIndex ];
-
+  getNewCurrentTable(newIndex: number) {
+    const newTable = this.getEnabledTargetTables()[newIndex];
+    return this.storeService.state.targetClones[newTable.name] ?
+      this.storeService.state.targetClones[newTable.name][0] :
+      this.getEnabledTargetTables()[newIndex];
   }
 
   changeTargetClone(table: any) {
@@ -669,8 +673,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
-  generateReport() {
-    const reportCreator = new WordReportCreator();
+  async generateReport() {
+    const reportCreator: ReportCreator = new WordReportCreator();
     const info = stateToInfo(this.storeService.state);
     const mappingHeader = { source: info.reportName, target: info.cdmVersion };
     const mapping = this.bridgeService.generateMapping();
@@ -683,25 +687,35 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
       .createTablesMappingImage(mappingHeader, this.mappingConfig);
 
+    const lookupTypesSet = new Set<string>();
+    const sortAscByTargetFunc = (a: MappingPair, b: MappingPair) =>
+      a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1);
+    const sortedMappingItems = mapping.mapping_items.sort(sortAscByTargetFunc);
+
     let currentTargetTable: string = null;
-    mapping.mapping_items
-      .sort((a, b) =>
-        a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1)
-      )
-      .forEach(mappingItem => {
-        let header3OnNewPage = true;
-        if (currentTargetTable !== mappingItem.target_table) {
-          currentTargetTable = mappingItem.target_table;
-          header3OnNewPage = false;
-          reportCreator
-            .createHeader2(`Table name: ${currentTargetTable}`, true);
-        }
+
+    for (const mappingItem of sortedMappingItems) {
+      let header3OnNewPage = true;
+      if (currentTargetTable !== mappingItem.target_table) {
+        currentTargetTable = mappingItem.target_table;
+        header3OnNewPage = false;
         reportCreator
-          .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage)
-          .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
-          .createParagraph()
-          .createFieldsDescriptionTable(mappingItem.mapping);
-      });
+          .createHeader2(`Table name: ${currentTargetTable}`, true);
+      }
+      for (const mappingNode of mappingItem.mapping) {
+        if (mappingNode.lookup) {
+          lookupTypesSet.add(mappingNode.lookupType);
+          mappingNode.lookup = await this.lookupService
+            .getLookup(mappingNode.lookup, mappingNode.lookupType)
+            .toPromise();
+        }
+      }
+      reportCreator
+        .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage)
+        .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
+        .createParagraph()
+        .createFieldsDescriptionTable(mappingItem.mapping);
+    }
 
     reportCreator.createHeader1('Appendix');
 
@@ -717,6 +731,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     reportCreator.createHeader2('Source tables', viewKeys.length > 0);
+
     this.source
       .filter(table => table.name !== this.similarTableName)
       .forEach((table, index) => reportCreator
@@ -724,10 +739,26 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         .createSourceInformationTable(table.rows)
       );
 
+    if (lookupTypesSet.size > 0) {
+      reportCreator.createHeader2('Lookup', true);
+      let onNewPage = false;
+      for (const lookupType of lookupTypesSet) {
+        const sqlTemplate = await this.lookupService
+          .getLookupTemplate(lookupType)
+          .toPromise();
+
+        reportCreator
+          .createHeader3(lookupType.toUpperCase(), onNewPage)
+          .createSqlTextBlock(sqlTemplate);
+
+        onNewPage = true;
+      }
+    }
+
     const report = reportCreator.generateReport();
 
     Packer.toBlob(report).then(blob => {
-      saveAs(blob, 'report.docx');
+      saveAs(blob, 'Report.docx');
     });
   }
 

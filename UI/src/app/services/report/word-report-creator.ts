@@ -255,7 +255,7 @@ function mapTextToParagraphs(content: string, style = 'Default'): Paragraph[] {
 }
 
 function mapSqlTextToParagraphs(sql: string, style = 'Default'): Paragraph[] {
-  const textRun = (text: string, wasQuote: boolean) => !wasQuote && sqlKeyWords.includes(text) ?
+  const textRun = (text: string, wasQuote: boolean) => !wasQuote && sqlKeyWords.includes(text.trim().toLowerCase()) ?
     new TextRun({text, color: '#066BBB'}) :
     new TextRun({text});
 

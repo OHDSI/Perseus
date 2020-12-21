@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { StoreService } from '../../services/store.service';
-import { fileToBase64 } from '../../util/base64-util';
+import { fileToBase64 } from '../../services/utilites/base64-util';
 import { whiteRabbitWebsocketConfig } from '../scan-data.constants';
 import { FakeConsoleWrapperComponent } from './fake-console-wrapper/fake-console-wrapper.component';
 

@@ -4,6 +4,7 @@ import { MappingPair, MappingNode, Mapping } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
+import { getLookupType } from '../services/utilites/lookup-util';
 
 export class MappingService {
   connections: Array<IConnection>;
@@ -37,8 +38,9 @@ export class MappingService {
           sourceColumn: arrow.source.name,
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
-          targetColumnAlias: arrow.target.cloneTableName? `${arrow.target.name}_${arrow.target.cloneTableName}` : arrow.target.name,
+          targetColumnAlias: arrow.target.cloneTableName ? `${arrow.target.name}_${arrow.target.cloneTableName}` : arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
+          lookupType: getLookupType(arrow),
           sqlTransformation: arrow.sql && arrow.sql['applied'] ? arrow.sql['name'] : '',
           comments: arrow.source.comments,
           condition: arrow.target.condition,
@@ -68,6 +70,7 @@ export class MappingService {
             sql_field: arrow.sourceColumn,
             sql_alias: arrow.targetColumnAlias,
             lookup: arrow.lookup,
+            lookupType: arrow.lookupType,
             sqlTransformation: arrow.sqlTransformation,
             comments: arrow.comments,
             condition: arrow.condition,

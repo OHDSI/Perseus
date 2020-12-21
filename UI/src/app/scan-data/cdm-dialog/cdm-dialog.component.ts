@@ -6,7 +6,7 @@ import { CdmSettings } from '../model/cdm-settings';
 import { cdmWebsocketConfig, whiteRabbitWebsocketConfig } from '../scan-data.constants';
 import { FakeDataParams } from '../model/fake-data-params';
 import { WebsocketParams } from '../model/websocket-params';
-import { fileToBase64 } from '../../util/base64-util';
+import { fileToBase64 } from '../../services/utilites/base64-util';
 import { StoreService } from '../../services/store.service';
 
 @Component({
