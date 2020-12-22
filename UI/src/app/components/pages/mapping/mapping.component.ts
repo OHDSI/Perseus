@@ -395,7 +395,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       if (area === 'source') {
         this.refreshSourcePanel(data.selected);
       } else {
-        this.refreshTargetPanel(data.selected);
+        this.refreshTargetPanel(this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.selected.name)));
       }
 
     });
