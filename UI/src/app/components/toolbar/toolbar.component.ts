@@ -79,7 +79,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   IsCreateNewMappingDisabled() {
-    return !(this.storeService.state.source.length && this.storeService.state.target.length);
+    return !(this.storeService.state.source.length || this.storeService.state.target.length);
   }
 
   resetAllMappings() {

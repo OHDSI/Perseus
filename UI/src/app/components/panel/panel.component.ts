@@ -240,10 +240,11 @@ export class PanelComponent implements OnInit, AfterViewInit {
           this.storeService.state.targetClones[ this.table.name ].
             push(cloneToSet);
         } else {
-          cloneToSet = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName)
-          this.storeService.state.targetClones[ this.table.name ].push(cloneToSet);
+          const defaultClone = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName)
+          this.storeService.state.targetClones[ this.table.name ].push(defaultClone);
+          cloneToSet = this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName);
           this.storeService.state.targetClones[ this.table.name ].
-            push(this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName));
+            push(cloneToSet);
         }
         this.setCloneTable(cloneToSet);
         Object.values(this.bridgeService.arrowsCache).
