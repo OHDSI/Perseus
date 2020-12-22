@@ -38,11 +38,16 @@
   @extend %common-dialog;
 
    border-radius: 2px;
-   width: 265px;
-   height: 267px;
+   width: 240px;
+   height: 230px;
+
   .mat-dialog-container {
     position: relative;
     padding: 40px;
+  }
+
+  .mat-dialog-actions {
+    justify-content: space-between;
   }
 }
 
