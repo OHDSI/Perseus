@@ -67,7 +67,7 @@ def get_source_schema(schemaname):
             column_type = column_description[1]
             column = Column(column_name, column_type)
             table_.column_list.append(column)
-            create_column_sql = '{0} {1},'.format(column_name, column_type)
+            create_column_sql = '"{0}" {1},'.format(column_name, column_type)
             create_table_sql += create_column_sql
         create_table_sql = create_table_sql.rstrip(',')
         create_table_sql += ' );'
