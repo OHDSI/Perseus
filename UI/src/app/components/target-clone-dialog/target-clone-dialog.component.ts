@@ -30,6 +30,7 @@ export class TargetCloneDialogComponent implements OnInit {
   codeMirror;
   conditionForm = new FormGroup({});
   tableName = 'Test';
+  condition;
 
   constructor(
     public dialogRef: MatDialogRef<TargetCloneDialogComponent>,
@@ -42,8 +43,9 @@ export class TargetCloneDialogComponent implements OnInit {
   ngOnInit(): void {
     this.chips = this.data.sourceTable.rows.map(item => item.name);
     this.tableName = this.data.table.cloneName ? this.data.table.cloneName : this.data.table.name;
+    this.condition = this.data.table.condition;
     this.initCodeMirror();
-    this.codeMirror.setValue(this.data.table.condition ? this.data.table.condition : '');
+    this.codeMirror.setValue(this.condition ? this.condition : '');
   }
 
   initCodeMirror() {
@@ -55,7 +57,7 @@ export class TargetCloneDialogComponent implements OnInit {
   drop(event: CdkDragDrop<any>) {
     const text = `{${event.item.element.nativeElement.textContent.trim()}}`;
     this.codeMirror.doc.replaceSelection(text);
-    this.data.table.condition = this.editorContent;
+    this.condition = this.editorContent;
   }
 
   onCancelClick() {
@@ -63,11 +65,11 @@ export class TargetCloneDialogComponent implements OnInit {
   }
 
   onChange(cm, event) {
-    this.data.table.condition = this.editorContent;
+    this.condition = this.editorContent;
   }
 
   apply() {
-    this.dialogRef.close();
+    this.dialogRef.close({apply: true, condition: this.condition});
   }
 
 }

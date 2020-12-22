@@ -26,7 +26,7 @@
               (click)="openOnBoardingTipClone($event.currentTarget)">info</mat-icon>
     <a id="condition"
        class="condition"
-       (click)="openConditionDialog()">Add Condition</a>
+       (click)="openConditionDialog()">{{table.condition? "Modify Condition": "Add Condition"}}</a>
   </div>
 </div>
 <app-area [area]="area">
