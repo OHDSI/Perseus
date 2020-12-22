@@ -147,29 +147,12 @@ export class DataService {
     return this.httpService.getTopValues(tableName, columnName);
   }
 
-  getLookupsList(lookupType): Observable<any> {
-    return this.httpService.getLookupsList(lookupType);
-  }
-
-  getLookup(name, lookupType): Observable<any> {
-    return this.httpService.getLookup(name, lookupType);
-  }
-
-  saveLookup(lookup, lookupType): Observable<any> {
-    const { name, value } = lookup;
-    return this.httpService.saveLookup({ name, value, lookupType });
-  }
-
   saveSourceSchemaToDb(sourceTables: any): Observable<any> {
     return this.httpService.saveSourceSchemaToDb(sourceTables);
   }
 
   getView(sql: any): Observable<any> {
     return this.httpService.getView(sql);
-  }
-
-  deleteLookup(name, lookupType): Observable<any> {
-    return this.httpService.deleteLookup(name, lookupType);
   }
 
   prepareTargetConfig(data) {
@@ -196,7 +179,7 @@ export class DataService {
     return tables;
   }
 
-  saveReportName(data, key){
+  saveReportName(data, key) {
     this.storeService.add(key, data);
   }
 }

@@ -25,6 +25,7 @@ export interface MappingNode {
   sql_field: string;
   sql_alias: string;
   lookup?: string;
+  lookupType?: string;
   sqlTransformation?: string;
   comments?: IComment[];
   condition?: string;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UploadService } from './upload.service';
-import { base64ToFileAsObservable } from '../util/base64-util';
+import { base64ToFileAsObservable } from './utilites/base64-util';
 import { BridgeService } from './bridge.service';
 import { DataService } from './data.service';
 import { switchMap } from 'rxjs/operators';

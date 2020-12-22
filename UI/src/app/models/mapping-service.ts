@@ -4,6 +4,7 @@ import { MappingPair, MappingNode, Mapping } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
+import { getLookupType } from '../services/utilites/lookup-util';
 
 export class MappingService {
   connections: Array<IConnection>;
@@ -39,6 +40,7 @@ export class MappingService {
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
+          lookupType: getLookupType(arrow),
           sqlTransformation: arrow.sql && arrow.sql['applied'] ? `${arrow.sql['name']} as ${arrow.target.name}` : '',
           comments: arrow.source.comments,
           condition: arrow.target.condition,
@@ -68,6 +70,7 @@ export class MappingService {
             sql_field: arrow.sourceColumn,
             sql_alias: arrow.targetColumnAlias,
             lookup: arrow.lookup,
+            lookupType: arrow.lookupType,
             sqlTransformation: arrow.sqlTransformation,
             comments: arrow.comments,
             condition: arrow.condition,
@@ -146,7 +149,7 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
       const field = source.rows.filter(row => row.name === item.source_field)[ 0 ];
       if (field && field.grouppedFields && field.grouppedFields.length) {
         const mappingsToAdd = field.grouppedFields.map(grouppedField => {
-          var regex = new RegExp("("+field.name+")(\\s|,|\\))","gi");
+          const regex = new RegExp('(' + field.name + ')(\\s|,|\\))', 'gi');
           return {
             source_field: grouppedField.name,
             target_field: item.target_field,

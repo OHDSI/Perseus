@@ -92,7 +92,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     vocabulariesService: VocabulariesService
   ) {
     this.lookupName = payload[ 'lookupName' ];
-    this.lookupType = payload['lookupType']
+    this.lookupType = payload['lookupType'];
     this.transformationConfigs = [];
     this.sql = payload[ 'sql' ] ? {...payload[ 'sql' ]} : {};
     this.tab = payload['tab'];
@@ -221,10 +221,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup}) : this.dialogRef.close({sql: this.sql });
   }
 
-addDisabled(){
-  return this.tab === 'Lookup' &&
-  (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
-}
+  addDisabled() {
+    return this.tab === 'Lookup' &&
+    (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
+  }
 
   closeDialog() {
     const dialog = this.matDialog.open(DeleteWarningComponent, {

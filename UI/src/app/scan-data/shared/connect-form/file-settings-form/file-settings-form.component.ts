@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { fileToBase64AsObservable } from '../../../../util/base64-util';
+import { fileToBase64AsObservable } from '../../../../services/utilites/base64-util';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../base/base.component';

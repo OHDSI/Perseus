@@ -10,6 +10,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
+import { LookupService } from '../../../services/lookup.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -51,7 +52,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   originText = '';
 
   constructor(
-    private dataService: DataService,
+    private lookupService: LookupService,
     private matDialog: MatDialog) {
   }
 
@@ -71,7 +72,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   updateItems() {
-    this.dataService.getLookupsList(this.lookupType).subscribe(data => this.items = data);
+    this.lookupService.getLookupsList(this.lookupType).subscribe(data => this.items = data);
   }
 
   initCodeMirror() {
@@ -88,12 +89,12 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
   refreshCodeMirror(value) {
     if (this.codeMirror1) {
-      const name = `template_${this.lookupType}`;
-      this.dataService.getLookup(name, this.lookupType).subscribe(data => this.codeMirror1.setValue(data));
+      this.lookupService.getLookupTemplate(this.lookupType)
+        .subscribe(data => this.codeMirror1.setValue(data));
     }
 
     if (this.codeMirror2) {
-      this.dataService.getLookup(value, this.lookupType).subscribe(data => {
+      this.lookupService.getLookup(value, this.lookupType).subscribe(data => {
         this.codeMirror2.setValue(data);
         this.originText = data;
         this.lookup[ 'originName' ] = value;
@@ -145,7 +146,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
 
     dialog.afterClosed().subscribe(res => {
       if (res) {
-        this.dataService.deleteLookup(item, this.lookupType).subscribe(_ => {
+        this.lookupService.deleteLookup(item, this.lookupType).subscribe(_ => {
           this.updateItems();
         });
       }

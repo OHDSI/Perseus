@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
 import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
-import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../util/base64-util';
+import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../services/utilites/base64-util';
 import { saveAs } from 'file-saver';
 import { WhiteRabbitScanDataConsoleComponent } from '../../shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
 
