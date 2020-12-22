@@ -11,9 +11,10 @@
 
     <ng-template #scanProgressBlock>
       <app-scan-data-console-wrapper style="width: 100%"
-                             [params]="websocketParams"
-                             (cancel)="onCancel()"
-                             (close)="onClose()"></app-scan-data-console-wrapper>
+                                     [params]="websocketParams"
+                                     [reportName]="dbName"
+                                     (cancel)="onCancel()"
+                                     (close)="onClose()"></app-scan-data-console-wrapper>
     </ng-template>
   </div>
 </div>

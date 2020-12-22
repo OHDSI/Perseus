@@ -21,7 +21,7 @@ export class ScanDataUploadService {
   uploadScanReport(reportBase64: string, reportName: string): Observable<void> {
     this.bridgeService.reportLoading();
 
-    return base64ToFileAsObservable(reportBase64, reportName)
+    return base64ToFileAsObservable(reportBase64, `${reportName}.xlsx`)
       .pipe(
         switchMap(file => {
           this.storeService.add('reportFile', file);

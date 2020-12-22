@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
 import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
 import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../services/utilites/base64-util';
@@ -15,14 +15,15 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
   @ViewChild(WhiteRabbitScanDataConsoleComponent)
   scanDataConsoleComponent: WhiteRabbitScanDataConsoleComponent;
 
-  private reportName = 'ScanReport.xlsx';
+  @Input()
+  private reportName: string;
 
   constructor(private scanDataUploadService: ScanDataUploadService) {
     super();
   }
 
   onSaveReport() {
-    base64ToFileAsObservable(this.result, this.reportName)
+    base64ToFileAsObservable(this.result, `${this.reportName}.xlsx`)
       .subscribe(file => saveAs(file));
   }
 

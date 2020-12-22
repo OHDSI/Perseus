@@ -1,14 +1,25 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { merge, Subject } from 'rxjs';
-import { ConnectionResult } from '../../model/connection-result';
+import { merge, of } from 'rxjs';
 import { DbSettings } from '../../model/db-settings';
 import { DelimitedTextFileSettings } from '../../model/delimited-text-file-settings';
-import { BaseComponent } from '../base/base.component';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
 import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../scan-data.constants';
+import { AbstractResourceForm } from '../abstract-resource-form/abstract-resource-form';
+import { MatDialog } from '@angular/material/dialog';
+import { WhiteRabbitService } from '../../../services/white-rabbit.service';
+import { TableToScan } from '../../model/table-to-scan';
+import { ConnectionResult } from '../../model/connection-result';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'app-connect-form',
@@ -19,44 +30,94 @@ import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../scan-data.consta
     '../../styles/scan-data-step.scss',
     '../../styles/scan-data-normalize.scss',
     '../../styles/scan-data-connect-form.scss'
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ConnectFormComponent extends BaseComponent implements OnInit {
+export class ConnectFormComponent extends AbstractResourceForm implements OnInit {
 
-  dbSettingsForm: FormGroup;
+  // dbSettingsForm
+  form: FormGroup;
 
   fileSettingsForm: FormGroup;
-
-  @Input()
-  dataType: string;
-
-  @Input()
-  dbSettings: DbSettings;
 
   @Input()
   fileSettings: DelimitedTextFileSettings;
 
   @Input()
-  connectionResult: ConnectionResult;
-
-  @Input()
   filesToScan: FileToScan[];
 
   @Output()
-  testConnection = new EventEmitter<ScanSettings>();
+  connectionPropsChanged = new EventEmitter<void>();
 
   @Output()
-  connectionPropsChanged = new EventEmitter<void>();
+  tablesToScanChange = new EventEmitter<TableToScan[]>();
+
+  @Output()
+  connectionResultChange = new EventEmitter<ConnectionResult>();
 
   dataTypes = [
     ...delimitedFiles,
     ...whiteRabbitDatabaseTypes
   ];
 
-  private dataTypeChange$ = new Subject<string>();
+  formControlNames = [
+    'server', 'user', 'password', 'database'
+  ];
 
-  constructor(private formBuilder: FormBuilder) {
-    super();
+  private filesChange$ = new Subject<FileToScan[]>();
+
+  private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => void } = {
+    dbSettings: (settings: ScanSettings) => {
+      const dbSettings = settings as DbSettings;
+      dbSettings.dbType = this.dataType;
+
+      this.connecting = true;
+
+      this.whiteRabbitService.testConnection(dbSettings)
+        .pipe(
+          switchMap(connectionResult => {
+            this.connectionResult = connectionResult;
+            this.connectionResultChange.emit(connectionResult);
+            if (connectionResult.canConnect) {
+              this.subscribeFormChange();
+              return this.whiteRabbitService.tablesInfo(dbSettings);
+            } else {
+              this.showErrorPopup(connectionResult.message);
+              return of([]);
+            }
+          }),
+          tap(() => {
+            this.connecting = false;
+          })
+        )
+        .subscribe(tablesToScan => {
+          this.tablesToScanChange.emit(tablesToScan);
+        }, error => {
+          this.connectionResult = {canConnect: false, message: error.message};
+          this.tablesToScanChange.emit([]);
+          this.connectionResultChange.emit(this.connectionResult);
+          this.connecting = false;
+          this.showErrorPopup(this.connectionResult.message);
+        });
+    },
+
+    fileSettings: (settings: ScanSettings) => {
+      this.connectionResult = {canConnect: true, message: ''};
+      this.subscribeFormChange();
+      const tables = this.filesToScan
+        .map(fileToScan => ({
+          tableName: fileToScan.fileName,
+          selected: true
+        }));
+      this.connectionResultChange.emit(this.connectionResult);
+      this.tablesToScanChange.emit(tables);
+    }
+  };
+
+  constructor(formBuilder: FormBuilder,
+              matDialog: MatDialog,
+              private whiteRabbitService: WhiteRabbitService) {
+    super(formBuilder, matDialog);
   }
 
   get fileInputText() {
@@ -77,52 +138,45 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
   }
 
   get testConnectionDisabled() {
-    return this.isDbSettings ? !this.dbSettingsForm.valid :
+    return this.isDbSettings ? !this.form.valid :
       !this.fileSettingsForm.valid;
   }
 
   ngOnInit(): void {
-    this.initDbSettingsForm();
+    super.ngOnInit();
     this.initDelimitedFilesSettingsForm();
   }
 
   onTestConnection() {
-    this.testConnection.emit(this.isDbSettings ? this.dbSettingsForm.value : this.fileSettingsForm.value);
+    const scanSettings = this.isDbSettings ? this.form.value : this.fileSettingsForm.value;
+    const strategy = this.getTestConnectionStrategy();
+    strategy(scanSettings);
+  }
+
+  onFileToScanChanged(files: FileToScan[]) {
+    this.filesToScan = files;
+    this.filesChange$.next(files);
   }
 
   subscribeFormChange(): void {
-    const form = this.isDbSettings ? this.dbSettingsForm : this.fileSettingsForm;
+    const form = this.isDbSettings ? this.form : this.fileSettingsForm;
 
-    const subscription = merge(form.valueChanges, this.dataTypeChange$)
+    const subscription = merge(form.valueChanges, this.dataTypeChange$, this.filesChange$)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
+        this.connectionResult = null;
         this.connectionPropsChanged.emit();
         subscription.unsubscribe();
       });
   }
 
-  onDataTypeChange(dataType: string) {
-    this.dataType = dataType;
-    this.dataTypeChange$.next(this.dataType);
-  }
-
-  private initDbSettingsForm(): void {
-    const disabled = !this.dataType;
-
-    this.dbSettingsForm = this.formBuilder.group({
+  createForm(disabled: boolean): FormGroup {
+    return this.formBuilder.group({
       server: [{value: null, disabled}, [Validators.required]],
       user: [{value: null, disabled}, [Validators.required]],
       password: [{value: null, disabled}, [Validators.required]],
       database: [{value: null, disabled}, [Validators.required]]
     });
-
-    if (disabled) {
-      this.subscribeOnDataTypeChange(this.dbSettingsForm, [
-        'server', 'user', 'password', 'database'
-      ]);
-    }
-
-    this.dbSettingsForm.patchValue(this.dbSettings);
   }
 
   private initDelimitedFilesSettingsForm(): void {
@@ -141,18 +195,11 @@ export class ConnectFormComponent extends BaseComponent implements OnInit {
     this.fileSettingsForm.patchValue({delimiter: this.fileSettings.delimiter});
   }
 
-  private subscribeOnDataTypeChange(form: FormGroup, controlNames: string[]) {
-    const subscription = this.dataTypeChange$
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(value => {
-        if (value) {
-          for (const name of controlNames) {
-            form.get(name).enable();
-          }
-          subscription.unsubscribe();
-        }
-      });
+  private getTestConnectionStrategy() {
+    if (this.isDbSettings) {
+      return this.testConnectionStrategies['dbSettings'];
+    } else {
+      return this.testConnectionStrategies['fileSettings'];
+    }
   }
 }
