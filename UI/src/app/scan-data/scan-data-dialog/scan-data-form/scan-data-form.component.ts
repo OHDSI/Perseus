@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   EventEmitter, OnDestroy,
   OnInit,
@@ -9,16 +8,11 @@ import {
 } from '@angular/core';
 import { ConnectionResult } from '../../model/connection-result';
 import { TableToScan } from '../../model/table-to-scan';
-import { WhiteRabbitService } from '../../../services/white-rabbit.service';
 import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
-import { switchMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
 import { ScanParams } from '../../model/scan-params';
 import { ScanDataStateService } from '../../../services/scan-data-state.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ConnectionErrorPopupComponent } from '../../shared/connection-error-popup/connection-error-popup.component';
-import { ConnectFormComponent } from '../../shared/connect-form/connect-form.component';
+import { ConnectFormComponent } from './connect-form/connect-form.component';
 import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../../model/delimited-text-file-settings';
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
@@ -123,7 +117,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
       tablesToScan: this.tablesToScanComponent.tablesToScan,
       filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
       filesToScan: this.connectFormComponent.filesToScan,
-      connectionResult: this.connectionResult
+      connectionResult: this.connectFormComponent.connectionResult
     };
   }
 

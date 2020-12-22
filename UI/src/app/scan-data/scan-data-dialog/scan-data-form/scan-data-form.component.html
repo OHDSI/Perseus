@@ -8,6 +8,7 @@
                       [dbSettings]="dbSettings"
                       [fileSettings]="fileSettings"
                       [filesToScan]="filesToScan"
+                      [correctConnectionSettingsLoaded]="connectionResult?.canConnect"
                       (tablesToScanChange)="onTablesToScanChange($event)"
                       (connectionResultChange)="onConnectionResultChange($event)"
                       (connectionPropsChanged)="reset()"></app-connect-form>

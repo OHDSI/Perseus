@@ -6,8 +6,8 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './db-settings-form.component.html',
   styleUrls: [
     '../connect-form.component.scss',
-    '../../../styles/scan-data-form.scss',
-    '../../../styles/scan-data-connect-form.scss'
+    '../../../../styles/scan-data-form.scss',
+    '../../../../styles/scan-data-connect-form.scss'
   ]
 })
 export class DbSettingsFormComponent {

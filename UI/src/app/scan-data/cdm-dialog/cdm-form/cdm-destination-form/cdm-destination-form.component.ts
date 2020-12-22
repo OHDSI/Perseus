@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractResourceForm } from '../../../shared/abstract-resource-form/abstract-resource-form';
+import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cdmDbSettingsFromControlNames, createCdmDbSettingsForm } from '../../../util/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder } from '../../../scan-data.constants';

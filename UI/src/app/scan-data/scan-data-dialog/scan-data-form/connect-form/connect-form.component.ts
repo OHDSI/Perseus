@@ -8,17 +8,17 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, of } from 'rxjs';
-import { DbSettings } from '../../model/db-settings';
-import { DelimitedTextFileSettings } from '../../model/delimited-text-file-settings';
+import { DbSettings } from '../../../model/db-settings';
+import { DelimitedTextFileSettings } from '../../../model/delimited-text-file-settings';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ScanSettings } from '../../model/scan-settings';
-import { FileToScan } from '../../model/file-to-scan';
-import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../scan-data.constants';
-import { AbstractResourceForm } from '../abstract-resource-form/abstract-resource-form';
+import { ScanSettings } from '../../../model/scan-settings';
+import { FileToScan } from '../../../model/file-to-scan';
+import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
+import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { MatDialog } from '@angular/material/dialog';
-import { WhiteRabbitService } from '../../../services/white-rabbit.service';
-import { TableToScan } from '../../model/table-to-scan';
-import { ConnectionResult } from '../../model/connection-result';
+import { WhiteRabbitService } from '../../../../services/white-rabbit.service';
+import { TableToScan } from '../../../model/table-to-scan';
+import { ConnectionResult } from '../../../model/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
@@ -26,10 +26,10 @@ import { Subject } from 'rxjs/internal/Subject';
   templateUrl: './connect-form.component.html',
   styleUrls: [
     './connect-form.component.scss',
-    '../../styles/scan-data-form.scss',
-    '../../styles/scan-data-step.scss',
-    '../../styles/scan-data-normalize.scss',
-    '../../styles/scan-data-connect-form.scss'
+    '../../../styles/scan-data-form.scss',
+    '../../../styles/scan-data-step.scss',
+    '../../../styles/scan-data-normalize.scss',
+    '../../../styles/scan-data-connect-form.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -45,6 +45,9 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
 
   @Input()
   filesToScan: FileToScan[];
+
+  @Input()
+  correctConnectionSettingsLoaded: boolean;
 
   @Output()
   connectionPropsChanged = new EventEmitter<void>();
@@ -145,6 +148,10 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
     this.initDelimitedFilesSettingsForm();
+
+    if (this.correctConnectionSettingsLoaded) {
+      this.subscribeFormChange();
+    }
   }
 
   onTestConnection() {
