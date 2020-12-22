@@ -174,7 +174,7 @@ def add_lookup_data(folder, basepath, lookup, template):
     lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
     lookup_body_data = get_lookup_data(lookup_body_filepath).split('\n\n')[1]
 
-    lookup_filepath = os.path.join(basepath, folder, f'{lookup.split(".")[0]}.txt')
+    lookup_filepath = os.path.join(basepath, folder, f'{lookup}.txt')
     lookup_data = get_lookup_data(lookup_filepath)
 
     replace_key = '{_}'.replace('_', folder)
@@ -440,7 +440,7 @@ def get_xml(json_):
 
                             mapper = SubElement(concept_id_mapper, 'Mapper')
                             lookup = SubElement(mapper, 'Lookup')
-                            lookup.text = lookup_name
+                            lookup.text = lookup_name.split(".")[0]
 
                             lookups.append(lookup_name)
                     else:
