@@ -374,32 +374,36 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openTablesDropdown(target: any, area: string) {
-    const data = area === 'source' ? {
-      tables: this.sourceTablesWithoutSimilar,
-      selected: this.selectedSourceTable,
-      uppercase : true} :
-    { tables: this.getEnabledTargetTables(), selected: this.selectedTargetTable, uppercase : true };
+    const enabledTargetTables = this.getEnabledTargetTables();
+    if (area === 'source' && this.currentSourceTable.name !== 'similar' && this.sourceTablesWithoutSimilar.length > 1 ||
+     area === 'target' && this.currentTargetTable.name !== 'similar' && enabledTargetTables.length >1) {
+      const data = area === 'source' ? {
+        tables: this.sourceTablesWithoutSimilar,
+        selected: this.selectedSourceTable,
+        uppercase: true
+      } :
+        { tables: enabledTargetTables, selected: this.selectedTargetTable, uppercase: true };
 
-    const dialogOptions: OverlayConfigOptions = {
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      panelClass: 'filter-popup',
-      positionStrategyFor: 'table-dropdown',
-      payload: data
-    };
-    const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
+      const dialogOptions: OverlayConfigOptions = {
+        hasBackdrop: true,
+        backdropClass: 'custom-backdrop',
+        panelClass: 'filter-popup',
+        positionStrategyFor: 'table-dropdown',
+        payload: data
+      };
+      const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
 
-    overlayRef.afterClosed$.subscribe(() => {
-      this.bridgeService.hideAllArrows();
+      overlayRef.afterClosed$.subscribe(() => {
+        this.bridgeService.hideAllArrows();
 
-      if (area === 'source') {
-        this.refreshSourcePanel(data.selected);
-      } else {
-        this.refreshTargetPanel(this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.selected.name)));
-      }
+        if (area === 'source') {
+          this.refreshSourcePanel(data.selected);
+        } else {
+          this.refreshTargetPanel(this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.selected.name)));
+        }
 
-    });
-
+      });
+    }
   }
 
   refreshTargetPanel(data: any) {

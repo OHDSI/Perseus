@@ -99,10 +99,10 @@ def save_source_schema_in_db(source_tables):
             for field in row['rows']:
                 if len(field['grouppedFields']):
                     for item in field['grouppedFields']:
-                        create_column_sql = '{0} {1},'.format(item['name'], item['type'])
+                        create_column_sql = '"{0}" {1},'.format(item['name'], item['type'])
                         create_table_sql += create_column_sql
                 else:
-                    create_column_sql = '{0} {1},'.format(field['name'], field['type'])
+                    create_column_sql = '"{0}" {1},'.format(field['name'], field['type'])
                     create_table_sql += create_column_sql
             create_table_sql = create_table_sql.rstrip(',')
             create_table_sql += ' );'

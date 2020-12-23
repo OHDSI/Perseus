@@ -18,9 +18,12 @@
           </mat-tab>
           <mat-tab>
             <ng-template mat-tab-label>
-              <div class="drop-down-label" (wheel) = "onWheel($event, 'source')">
+              <div class="drop-down-label" 
+                   (wheel) = "onWheel($event, 'source')"
+                   (click)="openTablesDropdown($event.target, 'source')">
                 <div>{{selectedSourceTable.name}}</div>
-                <mat-icon (click)="openTablesDropdown($event.target, 'source')">arrow_drop_down</mat-icon>
+                <mat-icon *ngIf="this.sourceTablesWithoutSimilar.length > 1"
+                          (click)="openTablesDropdown($event.target, 'source')">arrow_drop_down</mat-icon>
               </div>
             </ng-template>
             <app-panel #sourcePanel
@@ -184,9 +187,12 @@
           </mat-tab>
           <mat-tab>
           <ng-template mat-tab-label>
-            <div class="drop-down-label" (wheel) = "onWheel($event, 'target')">
+            <div class="drop-down-label" 
+                 (wheel) = "onWheel($event, 'target')"
+                 (click)="openTablesDropdown($event.target, 'target')">
               <div>{{selectedTargetTable.name}}</div>
-              <mat-icon (click)="openTablesDropdown($event.target, 'target')">arrow_drop_down</mat-icon>
+              <mat-icon *ngIf = "getEnabledTargetTables().length > 1"
+                        (click)="openTablesDropdown($event.target, 'target')">arrow_drop_down</mat-icon>
             </div>
           </ng-template>
             <app-panel #targetPanel

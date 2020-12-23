@@ -41,7 +41,7 @@ export class MappingService {
           targetColumnAlias: arrow.target.name,
           lookup: arrow.lookup ? arrow.lookup['name'] : '',
           lookupType: getLookupType(arrow),
-          sqlTransformation: arrow.sql && arrow.sql['applied'] ? `${arrow.sql['name']} as ${arrow.target.name}` : '',
+          sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.source.comments,
           condition: arrow.target.condition,
           targetCloneName: arrow.target.cloneTableName,
@@ -95,6 +95,11 @@ export class MappingService {
     mapping.mapping_items = mapPairs;
 
     return mapping;
+  }
+
+  getSqlTransformation(arrow: any){
+    const target_column_name = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
+    return arrow.sql && arrow.sql['applied'] ? `${arrow.sql['name']} as ${target_column_name}` : '';
   }
 
   applyTransforms(node: MappingNode, connector: any) {

@@ -188,15 +188,18 @@ export class PanelComponent implements OnInit, AfterViewInit {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'sql-editor-dialog',
-      data: { table: this.table, sourceTable: this.storeService.state.source.find(item => item.name === this.oppositeTableName)}
+      data: { table: this.table, sourceTable: this.storeService.state.source.find(item => item.name === this.oppositeTableName) }
     });
 
     matDialog.afterClosed().subscribe(res => {
-      if (this.existingClones && this.existingClones.length) {
-        const tableToUpdate = this.storeService.state.targetClones[ this.table.name ].find(item => item.id === this.table.id);
-        this.updateCondition(tableToUpdate);
-      } else {
-        this.updateCondition(this.storeService.state.target.find(item => item.id === this.table.id));
+      if (res) {
+        this.table.condition = res.condition;
+        if (this.existingClones && this.existingClones.length) {
+          const tableToUpdate = this.storeService.state.targetClones[ this.table.name ].find(item => item.id === this.table.id);
+          this.updateCondition(tableToUpdate);
+        } else {
+          this.updateCondition(this.storeService.state.target.find(item => item.id === this.table.id));
+        }
       }
     });
   }
@@ -308,7 +311,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
       selected: this.table,
       clone: true,
       previous: undefined,
-      remove: true
+      remove: true,
+      itemNotToRemove: 'Default'
     };
 
     const dialogOptions: OverlayConfigOptions = {
