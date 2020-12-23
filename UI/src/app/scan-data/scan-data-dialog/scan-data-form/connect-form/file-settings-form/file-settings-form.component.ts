@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { fileToBase64AsObservable } from '../../../../../services/utilites/base64-util';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
@@ -14,7 +14,8 @@ import { FileToScan } from '../../../../model/file-to-scan';
     '../../../../styles/scan-data-form.scss',
     '../../../../styles/file-input.scss',
     '../../../../styles/scan-data-connect-form.scss'
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileSettingsFormComponent extends BaseComponent {
 

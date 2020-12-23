@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 export abstract class AbstractResourceForm extends BaseComponent implements OnInit {
 
-  connecting = false;
+  tryConnect = false;
 
   form: FormGroup;
 

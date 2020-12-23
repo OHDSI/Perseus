@@ -12,6 +12,11 @@ export const whiteRabbitDatabaseTypes = [
   'BigQuery'
 ];
 
+export const dbTypesRequireSchema = [
+  'Oracle',
+  'PostgreSQL'
+];
+
 export const delimitedFiles = [
   'CSV files'
 ];

@@ -15,7 +15,9 @@
     </mat-select>
   </mat-form-field>
 
-  <app-db-settings-form [form]="form" *ngIf="isDbSettings; else delimitedFileBlock"></app-db-settings-form>
+  <app-db-settings-form *ngIf="isDbSettings; else delimitedFileBlock"
+                        [form]="form"
+                        [requireSchema]="requireSchema"></app-db-settings-form>
 
   <ng-template #delimitedFileBlock>
     <app-file-settings-form [form]="fileSettingsForm"

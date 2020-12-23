@@ -13,7 +13,7 @@ import { DelimitedTextFileSettings } from '../../../model/delimited-text-file-se
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ScanSettings } from '../../../model/scan-settings';
 import { FileToScan } from '../../../model/file-to-scan';
-import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
+import { dbTypesRequireSchema, delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
 import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { MatDialog } from '@angular/material/dialog';
 import { WhiteRabbitService } from '../../../../services/white-rabbit.service';
@@ -64,7 +64,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   ];
 
   formControlNames = [
-    'server', 'user', 'password', 'database'
+    'server', 'user', 'password', 'database', 'schema'
   ];
 
   private filesChange$ = new Subject<FileToScan[]>();
@@ -74,7 +74,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
       const dbSettings = settings as DbSettings;
       dbSettings.dbType = this.dataType;
 
-      this.connecting = true;
+      this.tryConnect = true;
 
       this.whiteRabbitService.testConnection(dbSettings)
         .pipe(
@@ -90,7 +90,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
             }
           }),
           tap(() => {
-            this.connecting = false;
+            this.tryConnect = false;
           })
         )
         .subscribe(tablesToScan => {
@@ -99,7 +99,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
           this.connectionResult = {canConnect: false, message: error.message};
           this.tablesToScanChange.emit([]);
           this.connectionResultChange.emit(this.connectionResult);
-          this.connecting = false;
+          this.tryConnect = false;
           this.showErrorPopup(this.connectionResult.message);
         });
     },
@@ -145,6 +145,10 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
       !this.fileSettingsForm.valid;
   }
 
+  get requireSchema() {
+    return dbTypesRequireSchema.includes(this.dataType);
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
     this.initDelimitedFilesSettingsForm();
@@ -152,6 +156,19 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     if (this.correctConnectionSettingsLoaded) {
       this.subscribeFormChange();
     }
+
+    this.dataTypeChange$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => {
+        const schemaControl = this.form.get('schema');
+        if (this.requireSchema) {
+          schemaControl.setValidators([Validators.required]);
+        } else {
+          schemaControl.setValidators([]);
+        }
+      });
   }
 
   onTestConnection() {
@@ -178,11 +195,14 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   }
 
   createForm(disabled: boolean): FormGroup {
+    const schemaValidators = this.requireSchema ? [Validators.required] : [];
+
     return this.formBuilder.group({
       server: [{value: null, disabled}, [Validators.required]],
       user: [{value: null, disabled}, [Validators.required]],
       password: [{value: null, disabled}, [Validators.required]],
-      database: [{value: null, disabled}, [Validators.required]]
+      database: [{value: null, disabled}, [Validators.required]],
+      schema: [{value: null, disabled}, schemaValidators]
     });
   }
 
