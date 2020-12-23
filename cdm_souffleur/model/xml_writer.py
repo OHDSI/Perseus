@@ -148,13 +148,13 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
 
     if view:
         view = view.replace('from ', 'from {sc}.').replace('join ', 'join {sc}.')
-        sql  = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
+        sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
     if not check_lookup_tables(tagret_tables):
-        sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0} AND ENROLID = CH.PERSON_ID ORDER BY PERSON_ID'
+        sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0}'
         if mapped_to_person_id_field:
-            sql = sql.replace('ENROLID = CH.PERSON_ID', f'{mapped_to_person_id_field} = CH.PERSON_ID')
+            sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
 
 
@@ -542,7 +542,7 @@ def get_xml(json_):
 
                             definitions.append(target_field)
                     if sql_transformation:
-                        match_item = f"{source_field} as {target_field}"
+                        match_item = f"{source_field} as {clone_key}{target_field}"
                         if sql_transformation not in query_tag.text:
                             query_tag.text = query_tag.text.replace(
                                 match_item,
