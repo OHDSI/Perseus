@@ -1,5 +1,5 @@
 <div class="cdm-form__content-item">
-  <div class="cdm-form__content-item__progress-bar" *ngIf="connecting">
+  <div class="cdm-form__content-item__progress-bar" *ngIf="tryConnect">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </div>
 
@@ -12,7 +12,7 @@
 
   <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
-    <mat-select [ngModel]="dataType" (ngModelChange)="dataTypeChange($event)">
+    <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
       <mat-option *ngFor="let type of dataTypes" [value]="type">
         {{type}}
       </mat-option>

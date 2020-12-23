@@ -17,10 +17,10 @@ export function createCdmDbSettingsForm(disabled: boolean, formBuilder: FormBuil
     user: [{value: null, disabled}, [Validators.required]],
     password: [{value: null, disabled}, [Validators.required]],
     database: [{value: null, disabled}, [Validators.required]],
-    schemaName: [{value: null, disabled}, [Validators.required]]
+    schema: [{value: null, disabled}, [Validators.required]]
   });
 }
 
 export const cdmDbSettingsFromControlNames = [
-  'server', 'user', 'password', 'database', 'schemaName'
+  'server', 'user', 'password', 'database', 'schema'
 ];

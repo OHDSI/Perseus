@@ -7,9 +7,10 @@
     <app-connect-form [dataType]="dataType"
                       [dbSettings]="dbSettings"
                       [fileSettings]="fileSettings"
-                      [connectionResult]="connectionResult"
                       [filesToScan]="filesToScan"
-                      (testConnection)="onTestConnection($event)"
+                      [correctConnectionSettingsLoaded]="connectionResult?.canConnect"
+                      (tablesToScanChange)="onTablesToScanChange($event)"
+                      (connectionResultChange)="onConnectionResultChange($event)"
                       (connectionPropsChanged)="reset()"></app-connect-form>
 
     <app-tables-to-scan [scanParams]="scanParams"

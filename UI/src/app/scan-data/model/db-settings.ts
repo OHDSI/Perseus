@@ -9,7 +9,7 @@ export interface DbSettings extends ScanSettings {
   database: string;
   server: string;
   domain?: string;
-  schemaName?: string;
+  schema?: string;
   itemsToScanCount?: number;
   tablesToScan?: string;
   scanParams?: ScanParams;

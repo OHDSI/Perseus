@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,12 +6,16 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './db-settings-form.component.html',
   styleUrls: [
     '../connect-form.component.scss',
-    '../../../styles/scan-data-form.scss',
-    '../../../styles/scan-data-connect-form.scss'
-  ]
+    '../../../../styles/scan-data-form.scss',
+    '../../../../styles/scan-data-connect-form.scss'
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DbSettingsFormComponent {
 
   @Input()
   form: FormGroup;
+
+  @Input()
+  requireSchema: boolean;
 }
