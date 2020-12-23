@@ -17,7 +17,8 @@
   <div class="flex-div-align-center"
        *ngIf="existingClones && existingClones.length">
     <div id="clonesDropdown">{{table.cloneName}}</div>
-    <mat-icon (click)="openClonesDropdown($event.target)">arrow_drop_down</mat-icon>
+    <mat-icon *ngIf="existingClones.length > 1"
+              (click)="openClonesDropdown($event.target)">arrow_drop_down</mat-icon>
   </div>
   <div class="margin-left">
     <a id="clone"

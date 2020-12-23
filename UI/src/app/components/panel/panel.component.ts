@@ -311,7 +311,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
       selected: this.table,
       clone: true,
       previous: undefined,
-      remove: true
+      remove: true,
+      itemNotToRemove: 'Default'
     };
 
     const dialogOptions: OverlayConfigOptions = {
