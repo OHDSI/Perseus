@@ -374,16 +374,22 @@ export class BridgeService {
     this.removeConnection.next(connection);
   }
 
-  deleteArrowsForMapping(targetTableName: string, sourceTableName: string) {
+  deleteArrowsForMapping(targetTableName: string, sourceTableName: string, tableCloneName?: string) {
+    var deleteCondition = tableCloneName ?
+      function (targetName: any, sourceName: any, cloneName: any) {
+        return targetName.toUpperCase() === targetTableName.toUpperCase() &&
+        sourceName.toUpperCase() === sourceTableName.toUpperCase() &&
+        tableCloneName.toUpperCase() === cloneName.toUpperCase()
+      } :
+      function (targetName: any, sourceName: any, cloneName: any) {
+        return targetName.toUpperCase() === targetTableName.toUpperCase() &&
+        sourceName.toUpperCase() === sourceTableName.toUpperCase()
+      };
     Object.keys(this.arrowsCache).forEach(key => {
       const cache = this.arrowsCache[ key ];
-      const { target: { tableName: cachedTargetTableName }, source: { tableName: cachedSourceTableName } } = cache;
-      if (
-        cachedTargetTableName.toUpperCase() === targetTableName.toUpperCase() &&
-        cachedSourceTableName.toUpperCase() === sourceTableName.toUpperCase()
-      ) {
+      const { target: { tableName: cachedTargetTableName, cloneTableName: clone }, source: { tableName: cachedSourceTableName } } = cache;
+      if (deleteCondition(cachedTargetTableName, cachedSourceTableName, clone)) {
         delete this.arrowsCache[ key ];
-
         // If target and source are switched
       } else if (
         cachedTargetTableName.toUpperCase() === sourceTableName.toUpperCase() &&
