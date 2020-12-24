@@ -1,6 +1,6 @@
 <div class="connection-error">
   <div class="connection-error__header">
-    <div class="connection-error__header-right">
+    <div class="connection-error__header-left">
       <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.32086 2.59503C10.109 1.37704 11.891 1.37704 12.6791 2.59503L20.0029 13.9135C20.8639 15.2442 19.9087 17 18.3237 17H3.67629C2.09128 17 1.13609 15.2442 1.99715 13.9135L9.32086 2.59503Z" fill="#FF4646"/>
         <path d="M12 6.68555H10V5H12V6.68555ZM12 15H10V7.60623H12V15Z" fill="white"/>
@@ -8,7 +8,7 @@
       <p>Connection Error</p>
     </div>
 
-    <app-close-dialog-button (click)="onCancel()"></app-close-dialog-button>
+    <app-close-dialog-button class="connection-error__header-close" (click)="onCancel()"></app-close-dialog-button>
   </div>
 
   <div class="connection-error__content">

@@ -31,6 +31,7 @@ import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cd
 import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
 import { CdmScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/cdm-scan-data-console.component';
 import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
+import { DataBaseExistWarningPopupComponent } from './shared/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapp
     CdmSourceFormComponent,
     CdmConsoleWrapperComponent,
     CdmScanDataConsoleComponent,
-    WhiteRabbitScanDataConsoleComponent
+    WhiteRabbitScanDataConsoleComponent,
+    DataBaseExistWarningPopupComponent
   ],
   imports: [
     CommonModule,
