@@ -1,8 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractResourceForm } from '../../../shared/abstract-resource-form/abstract-resource-form';
+import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cdmDbSettingsFromControlNames, createCdmDbSettingsForm, createFakeDataForm } from '../../../util/form';
-import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } from '../../../scan-data.constants';
+import {
+  cdmBuilderDatabaseTypes,
+  dictionaryDbSettingForCdmBuilder,
+  fakeData,
+  fakeDataDbSettings
+} from '../../../scan-data.constants';
 import { FakeDataParams } from '../../../model/fake-data-params';
 import { CdmBuilderService } from '../../../../services/cdm-builder.service';
 import { adaptDbSettingsForSource } from '../../../util/cdm-adapter';
@@ -45,9 +50,11 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
 
   get settings() {
     const dbType = this.dataType;
+    const dbSettings = this.isSourceDbSettings ? {dbType, ...this.form.value} : fakeDataDbSettings;
+
     return {
       ...dictionaryDbSettingForCdmBuilder,
-      ...adaptDbSettingsForSource({dbType, ...this.form.value})
+      ...adaptDbSettingsForSource(dbSettings)
     };
   }
 

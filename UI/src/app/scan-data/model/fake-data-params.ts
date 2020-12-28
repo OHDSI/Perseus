@@ -1,6 +1,6 @@
 export interface FakeDataParams {
   maxRowCount: number;
   doUniformSampling: boolean;
-  schemaName?: string;
+  schema?: string;
   scanReportBase64?: string;
 }

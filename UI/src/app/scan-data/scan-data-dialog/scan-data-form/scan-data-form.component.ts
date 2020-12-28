@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   EventEmitter, OnDestroy,
   OnInit,
@@ -9,16 +8,11 @@ import {
 } from '@angular/core';
 import { ConnectionResult } from '../../model/connection-result';
 import { TableToScan } from '../../model/table-to-scan';
-import { WhiteRabbitService } from '../../../services/white-rabbit.service';
 import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
-import { switchMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
 import { ScanParams } from '../../model/scan-params';
 import { ScanDataStateService } from '../../../services/scan-data-state.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ConnectionErrorPopupComponent } from '../../shared/connection-error-popup/connection-error-popup.component';
-import { ConnectFormComponent } from '../../shared/connect-form/connect-form.component';
+import { ConnectFormComponent } from './connect-form/connect-form.component';
 import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../../model/delimited-text-file-settings';
 import { ScanSettings } from '../../model/scan-settings';
 import { FileToScan } from '../../model/file-to-scan';
@@ -48,15 +42,15 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   filesToScan: FileToScan[];
 
-  connectionResult: ConnectionResult;
-
   connecting = false;
+
+  connectionResult: ConnectionResult;
 
   @Output()
   cancel = new EventEmitter<void>();
 
   @Output()
-  scanTables = new EventEmitter<WebsocketParams>();
+  scanTables = new EventEmitter<{dbName: string; params: WebsocketParams}>();
 
   @ViewChild(ConnectFormComponent)
   connectFormComponent: ConnectFormComponent;
@@ -64,65 +58,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   @ViewChild(TablesToScanComponent)
   tablesToScanComponent: TablesToScanComponent;
 
-  private testConnectionStrategies: {[key: string]: (settings: ScanSettings) => void} = {
-    dbSettings: (settings: ScanSettings) => {
-      const dbSettings = settings as DbSettings;
-      dbSettings.dbType = this.connectFormComponent.dataType;
-
-      this.connecting = true;
-
-      this.whiteRabbitService.testConnection(dbSettings)
-        .pipe(
-          switchMap(connectionResult => {
-            this.connectionResult = connectionResult;
-            if (connectionResult.canConnect) {
-              this.connectFormComponent.subscribeFormChange();
-              return this.whiteRabbitService.tablesInfo(dbSettings);
-            } else {
-              this.showErrorPopup(connectionResult.message);
-              return of([]);
-            }
-          }),
-          tap(() => {
-            this.connecting = false;
-            this.cdr.detectChanges();
-          })
-        )
-        .subscribe(tablesToScan => {
-          this.tablesToScan = tablesToScan;
-          this.filteredTablesToScan = this.tablesToScan;
-          this.cdr.detectChanges();
-        }, error => {
-          this.tablesToScan = [];
-          this.filteredTablesToScan = this.tablesToScan;
-          this.connectionResult = {canConnect: false, message: error.message};
-          this.connecting = false;
-          this.cdr.detectChanges();
-          this.showErrorPopup(this.connectionResult.message);
-        });
-
-      this.tablesToScanComponent.reset();
-    },
-
-    fileSettings: (settings: ScanSettings) => {
-      this.tablesToScanComponent.reset();
-      this.connectionResult = {canConnect: true, message: ''};
-      this.tablesToScan = this.connectFormComponent.filesToScan
-        .map(fileToScan => ({
-          tableName: fileToScan.fileName,
-          selected: true
-        }));
-      this.filteredTablesToScan = this.tablesToScan;
-
-      this.cdr.detectChanges();
-    }
-  };
-
-  constructor(private whiteRabbitService: WhiteRabbitService,
-              private stateService: ScanDataStateService,
-              private cdr: ChangeDetectorRef,
-              private matDialog: MatDialog,
-              protected cdmStateService: CdmStateService) {
+  constructor(private stateService: ScanDataStateService,
+              private cdmStateService: CdmStateService) {
   }
 
   ngOnInit(): void {
@@ -134,20 +71,27 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.saveDbSettingsToCdmDbSettings();
   }
 
-  onTestConnection(scanSettings: ScanSettings): void {
-    const strategy = this.getTestConnectionStrategy();
-    strategy(scanSettings);
-  }
-
   onScanTables(): void {
+    const dbName = this.getDbName();
     const params = this.createWebSocketParams();
-    this.scanTables.emit(params);
+    this.scanTables.emit({dbName, params});
   }
 
   reset(): void {
+    this.connectionResult = null;
     if (this.tablesToScan.length > 0) {
       this.tablesToScan = [];
     }
+  }
+
+  onConnectionResultChange(result: ConnectionResult) {
+    this.connectionResult = result;
+  }
+
+  onTablesToScanChange(tables: TableToScan[]) {
+    this.tablesToScanComponent.reset();
+    this.tablesToScan = tables;
+    this.filteredTablesToScan = tables;
   }
 
   private loadState(): void {
@@ -167,24 +111,14 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   private saveState(): void {
     this.stateService.state = {
       dataType: this.connectFormComponent.dataType,
-      dbSettings: this.connectFormComponent.dbSettingsForm.value,
+      dbSettings: this.connectFormComponent.form.value,
       fileSettings: this.connectFormComponent.fileSettingsForm.value,
       scanParams: this.tablesToScanComponent.scanParams,
       tablesToScan: this.tablesToScanComponent.tablesToScan,
       filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
       filesToScan: this.connectFormComponent.filesToScan,
-      connectionResult: this.connectionResult
+      connectionResult: this.connectFormComponent.connectionResult
     };
-  }
-
-  private showErrorPopup(message: string): void {
-    this.matDialog.open(ConnectionErrorPopupComponent, {
-      width: '502',
-      height: '358',
-      disableClose: true,
-      panelClass: 'scan-data-dialog',
-      data: message
-    });
   }
 
   private createWebSocketParams(): WebsocketParams {
@@ -194,7 +128,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     if (this.connectFormComponent.isDbSettings) {
       payload = new DbSettingsBuilder()
         .setDbType(this.connectFormComponent.dataType)
-        .setDbSettings(this.connectFormComponent.dbSettingsForm.value)
+        .setDbSettings(this.connectFormComponent.form.value)
         .setScanParams(this.tablesToScanComponent.scanParams)
         .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
         .build();
@@ -221,14 +155,6 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private getTestConnectionStrategy() {
-    if (this.connectFormComponent.isDbSettings) {
-      return this.testConnectionStrategies['dbSettings'];
-    } else {
-      return this.testConnectionStrategies['fileSettings'];
-    }
-  }
-
   private saveDbSettingsToCdmDbSettings() {
     const dbType = this.connectFormComponent.dataType;
 
@@ -237,9 +163,17 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
         ...this.cdmStateService.state,
         sourceDbSettings: {
           dbType,
-          ...this.connectFormComponent.dbSettingsForm.value
+          ...this.connectFormComponent.form.value
         }
       };
+    }
+  }
+
+  private getDbName() {
+    if (this.connectFormComponent.isDbSettings) {
+      return this.connectFormComponent.form.value.database;
+    } else {
+      return 'ScanReport';
     }
   }
 }

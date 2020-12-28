@@ -36,6 +36,10 @@ export class CdmDialogComponent extends AbstractScanDialog {
     this.index = 1;
   }
 
+  header() {
+    return this.index === 2 ? 'Fake Data Generation' : 'Convert to CDM';
+  }
+
   async onGenerateFakeData(params: FakeDataParams) {
     const state = this.storeService.state;
     const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;

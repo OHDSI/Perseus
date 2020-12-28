@@ -4,7 +4,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-connection-error-popup',
   templateUrl: './connection-error-popup.component.html',
-  styleUrls: ['./connection-error-popup.component.scss', '../../styles/scan-data-normalize.scss']
+  styleUrls: [
+    './connection-error-popup.component.scss',
+    '../../styles/scan-data-normalize.scss'
+  ]
 })
 export class ConnectionErrorPopupComponent implements OnInit {
 

@@ -11,6 +11,12 @@ import { CdmSettings } from '../../model/cdm-settings';
 import { dictionaryDbSettingForCdmBuilder } from '../../scan-data.constants';
 import { StoreService } from '../../../services/store.service';
 import { adaptCdmVersions } from '../../util/cdm-adapter';
+import { Observable } from 'rxjs/internal/Observable';
+import { CdmBuilderService } from '../../../services/cdm-builder.service';
+import { catchError, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DataBaseExistWarningPopupComponent } from '../../shared/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 
 @Component({
   selector: 'app-cdm-form',
@@ -50,7 +56,9 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   constructor(private formBuilder: FormBuilder,
               private cdmStateService: CdmStateService,
               private fakeDataStateService: FakeDataStateService,
-              private storeService: StoreService) {
+              private storeService: StoreService,
+              private cdmBuilderService: CdmBuilderService,
+              private matDialog: MatDialog) {
     super();
   }
 
@@ -72,7 +80,13 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   onConvert() {
     const settings = this.createCdmBuilderSettings();
-    this.convert.emit(settings);
+
+    this.checkDestinationDatabase(settings)
+      .subscribe(result => {
+        if (result) {
+          this.convert.emit(settings);
+        }
+      });
   }
 
   private loadState() {
@@ -112,6 +126,30 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
       cdmVersion
     };
     return result as CdmSettings;
+  }
+
+  // If destination db exist show warning popup
+  private checkDestinationDatabase(settings: CdmSettings): Observable<boolean> {
+    return this.cdmBuilderService.testDestinationConnection(settings)
+      .pipe(
+        switchMap(connectionResult => {
+          if (connectionResult.canConnect) {
+            return this.showDestinationDbExistWarningPopup();
+          } else {
+            return of(true);
+          }
+        }),
+        catchError(() => of(true))
+      );
+  }
+
+  private showDestinationDbExistWarningPopup(): Observable<boolean> {
+    const dialogRef = this.matDialog.open(DataBaseExistWarningPopupComponent, {
+      disableClose: true,
+      panelClass: 'scan-data-dialog'
+    });
+
+    return dialogRef.afterClosed();
   }
 }
 

@@ -26,7 +26,7 @@ export class StoreService {
     cdmVersions: [],
     targetClones: {},
     reportFile: undefined,
-    mappingCreated: false
+    mappingEmpty: true
   };
   private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
   readonly state$ = this.storeState.asObservable();

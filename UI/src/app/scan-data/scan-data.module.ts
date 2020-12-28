@@ -13,10 +13,10 @@ import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/c
 import { CloseDialogButtonComponent } from './shared/close-dialog-button/close-dialog-button.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
-import { ConnectFormComponent } from './shared/connect-form/connect-form.component';
+import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
 import { MatIconModule } from '@angular/material/icon';
-import { DbSettingsFormComponent } from './shared/connect-form/db-settings-form/db-settings-form.component';
-import { FileSettingsFormComponent } from './shared/connect-form/file-settings-form/file-settings-form.component';
+import { DbSettingsFormComponent } from './scan-data-dialog/scan-data-form/connect-form/db-settings-form/db-settings-form.component';
+import { FileSettingsFormComponent } from './scan-data-dialog/scan-data-form/connect-form/file-settings-form/file-settings-form.component';
 import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.component';
 import { FakeConsoleWrapperComponent } from './fake-data-dialog/fake-console-wrapper/fake-console-wrapper.component';
 import { FakeDataFormComponent } from './fake-data-dialog/fake-data-form/fake-data-form.component';
@@ -31,6 +31,7 @@ import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cd
 import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
 import { CdmScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/cdm-scan-data-console.component';
 import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
+import { DataBaseExistWarningPopupComponent } from './shared/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapp
     CdmSourceFormComponent,
     CdmConsoleWrapperComponent,
     CdmScanDataConsoleComponent,
-    WhiteRabbitScanDataConsoleComponent
+    WhiteRabbitScanDataConsoleComponent,
+    DataBaseExistWarningPopupComponent
   ],
   imports: [
     CommonModule,

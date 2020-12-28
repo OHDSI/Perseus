@@ -14,12 +14,16 @@ export class ScanDataDialogComponent extends AbstractScanDialog {
   @ViewChild(ScanConsoleWrapperComponent)
   consoleWrapperComponent: ScanConsoleWrapperComponent;
 
+  dbName: string;
+
   constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>) {
     super(dialogRef);
   }
 
-  onScanTables(websocketParams: WebsocketParams): void {
-    this.websocketParams = websocketParams;
+  onScanTables(payload: {dbName: string, params: WebsocketParams}): void {
+    const {dbName, params} = payload;
+    this.dbName = dbName;
+    this.websocketParams = params;
     this.index = 1;
   }
 

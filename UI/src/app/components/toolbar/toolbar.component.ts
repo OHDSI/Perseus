@@ -170,7 +170,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.convertToCdmDisabled$ = this.storeService.state$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        map(state => !state.mappingCreated)
+        map(state => state.mappingEmpty)
       );
   }
 }

@@ -10,23 +10,23 @@ import { MatDialog } from '@angular/material/dialog';
 
 export abstract class AbstractResourceForm extends BaseComponent implements OnInit {
 
-  connecting = false;
+  tryConnect = false;
 
   form: FormGroup;
 
   @Input()
   dataType: string;
 
+  @Input()
+  dbSettings: DbSettings;
+
   dataTypes: string[];
 
   connectionResult: ConnectionResult;
 
-  @Input()
-  dbSettings: DbSettings;
-
   abstract formControlNames: string[];
 
-  private dataTypeChange$ = new Subject<string>();
+  protected dataTypeChange$ = new Subject<string>();
 
   protected constructor(protected formBuilder: FormBuilder, protected matDialog: MatDialog) {
     super();
@@ -40,7 +40,7 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
 
   abstract createForm(disabled: boolean): FormGroup;
 
-  dataTypeChange(value: string) {
+  onDataTypeChange(value: string) {
     this.dataType = value;
     this.dataTypeChange$.next(value);
   }
@@ -79,5 +79,4 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
     this.subscribeOnDataTypeChange(this.form, this.formControlNames);
     this.form.patchValue(formValue);
   }
-
 }

@@ -14,7 +14,7 @@ const initialState = {
     user: null,
     password: null,
     database: null,
-    schemaName: null
+    schema: null
   },
   destinationDbSettings: {
     dbType: null,
@@ -22,7 +22,7 @@ const initialState = {
     user: null,
     password: null,
     database: null,
-    schemaName: null
+    schema: null
   }
 };
 

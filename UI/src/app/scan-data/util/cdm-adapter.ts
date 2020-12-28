@@ -10,7 +10,7 @@ const dbTypeIdentifiers = {
 
 const cdmVersionIdentifiers = {
   'v6.0': name => name === '6',
-  'v5.3': name => name === '5.3.1' || name === '5.3.0'
+  'v5.3': name => name === '5.3.0'
 };
 
 export function adaptDbSettingsForSource(dbSettings: DbSettings) {
@@ -20,7 +20,7 @@ export function adaptDbSettingsForSource(dbSettings: DbSettings) {
   return {
     sourceEngine,
     sourceServer: dbSettings.server,
-    sourceSchema: dbSettings.schemaName,
+    sourceSchema: dbSettings.schema,
     sourceDatabase: dbSettings.database,
     sourceUser: dbSettings.user,
     sourcePassword: dbSettings.password
@@ -34,7 +34,7 @@ export function adaptDbSettingsForDestination(dbSettings: DbSettings) {
   return {
     destinationEngine,
     destinationServer: dbSettings.server,
-    destinationSchema: dbSettings.schemaName,
+    destinationSchema: dbSettings.schema,
     destinationDatabase: dbSettings.database,
     destinationUser: dbSettings.user,
     destinationPassword: dbSettings.password
