@@ -257,15 +257,23 @@ export class BridgeService {
 
     this.constantsCache = Object.assign(configuration.constantsCache);
     this.arrowsCache = Object.assign(configuration.arrows);
-    Object.keys(this.arrowsCache).forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
 
-    this.storeService.add('filtered', configuration.filtered);
-    this.storeService.add('version', configuration.cdmVersion);
-    this.storeService.add('target', configuration.targetTables);
-    this.storeService.add('source', configuration.sourceTables);
-    this.storeService.add('targetConfig', configuration.tables);
-    this.storeService.add('report', configuration.reportName);
-    this.storeService.add('targetClones', configuration.targetClones);
+    Object.keys(this.arrowsCache)
+      .forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
+
+    const isMappingNotEmpty = Object.keys(configuration.arrows).length > 0;
+
+    this.storeService.state = {
+      ...this.storeService.state,
+      filtered: configuration.filtered,
+      version: configuration.cdmVersion,
+      target: configuration.targetTables,
+      source: configuration.sourceTables,
+      targetConfig: configuration.tables,
+      report: configuration.reportName,
+      targetClones: configuration.targetClones,
+      mappingEmpty: !isMappingNotEmpty,
+    };
 
     this.applyConfiguration$.next(configuration);
   }
@@ -436,7 +444,7 @@ export class BridgeService {
 
   copyTransformations(arrow: any, cloneTable?: any) {
     const arrowWithSameTarget = cloneTable ? Object.values(this.arrowsCache).
-    filter(item => item.target.tableName === cloneTable.name && 
+    filter(item => item.target.tableName === cloneTable.name &&
       item.target.cloneTableName === cloneTable.cloneName && item.target.name === arrow.target.name)[ 0 ] :
     Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
 

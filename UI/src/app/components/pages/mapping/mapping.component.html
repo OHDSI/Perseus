@@ -18,7 +18,7 @@
           </mat-tab>
           <mat-tab>
             <ng-template mat-tab-label>
-              <div class="drop-down-label" 
+              <div class="drop-down-label"
                    (wheel) = "onWheel($event, 'source')"
                    (click)="openTablesDropdown($event.target, 'source')">
                 <div>{{selectedSourceTable.name}}</div>
@@ -187,7 +187,7 @@
           </mat-tab>
           <mat-tab>
           <ng-template mat-tab-label>
-            <div class="drop-down-label" 
+            <div class="drop-down-label"
                  (wheel) = "onWheel($event, 'target')"
                  (click)="openTablesDropdown($event.target, 'target')">
               <div>{{selectedTargetTable.name}}</div>
@@ -222,12 +222,12 @@
       <div class="mapping-footer__content">
         <div class="mapping-footer__content-left">
           <button class="mapping-footer__content-delete-links grey-button red-color"
-                  [disabled]="isFooterButtonDisabled()"
+                  [disabled]="isMappingEmpty()"
                   (click)="deleteLinks()">Delete Links
           </button>
 
           <button class="mapping-footer__content-preview grey-button blue-color"
-                  [disabled]="isFooterButtonDisabled() || isSimilarTabs()"
+                  [disabled]="isMappingEmpty() || isSimilarTabs()"
                   (click)="previewMapping()">Preview
           </button>
         </div>
@@ -238,12 +238,12 @@
           </button>
 
           <button class="mapping-footer__content-report grey-button blue-color"
-                  [disabled]="isFooterButtonDisabled()"
+                  [disabled]="isMappingEmpty()"
                   (click)="generateReport()">Report
           </button>
 
           <button class="mapping-footer__content-cdm blue-button white-color"
-                  [disabled]="isFooterButtonDisabled()"
+                  [disabled]="isMappingEmpty()"
                   [matMenuTriggerFor]="cdmMenu">Convert to CDM
             <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 0L4 4L8 0H0Z" fill="white"/>
