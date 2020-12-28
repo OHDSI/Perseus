@@ -19,7 +19,7 @@ enum FileTypes {
   CSV = 'CSV files'
 }
 
-export const whiteRabbitDatabaseTypes = [
+export const whiteRabbitDatabaseTypes: string[] = [
   DbTypes.MYSQL,
   DbTypes.ORACLE,
   DbTypes.POSTGRESQL,
@@ -31,16 +31,16 @@ export const whiteRabbitDatabaseTypes = [
   DbTypes.BIGQUERY
 ];
 
-export const dbTypesRequireSchema = [
+export const dbTypesRequireSchema: string[] = [
   DbTypes.ORACLE,
   DbTypes.POSTGRESQL
 ];
 
-export const delimitedFiles = [
+export const delimitedFiles: string[] = [
   FileTypes.CSV
 ];
 
-export const cdmBuilderDatabaseTypes = [
+export const cdmBuilderDatabaseTypes: string[] = [
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
   DbTypes.MYSQL
