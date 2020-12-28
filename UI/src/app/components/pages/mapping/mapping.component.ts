@@ -672,7 +672,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     dialog.afterClosed().subscribe(res => {
       if (res) {
-        this.bridgeService.deleteAllArrows();
+        this.bridgeService.deleteArrowsForMapping(this.currentTargetTable.name, this.currentSourceTable.name, this.currentTargetTable.cloneName);
+        this.bridgeService.refreshAll();
       }
     });
   }
