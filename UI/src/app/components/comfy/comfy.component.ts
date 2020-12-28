@@ -318,11 +318,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (!this.data.source.length) {
       return;
     }
+    const allViews = this.data.source.filter(item => item.sql).map(item => item.name);
     const allColumns = this.data.source.reduce((prev, cur) => {
       let ar = [];
-      cur.rows.forEach(item => {
-        item.grouppedFields.length > 0 ? ar = ar.concat(item.grouppedFields) : ar.push(item);
-      });
+      if (!allViews.includes(cur.name)) {
+        cur.rows.forEach(item => {
+          item.grouppedFields.length > 0 ? ar = ar.concat(item.grouppedFields) : ar.push(item);
+        });
+      }
       return prev.concat(ar);
     }, []);
     this.sourceRows = uniqBy(allColumns, 'name');
