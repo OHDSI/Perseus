@@ -9,7 +9,6 @@ import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
-
 import { StateService } from 'src/app/services/state.service';
 import { stateToInfo, StoreService } from 'src/app/services/store.service';
 import { BaseComponent } from '../../../common/components/base/base.component';
@@ -24,7 +23,6 @@ import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.comp
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
-import * as similarNamesMap from './similar-names-map.json';
 import { Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
@@ -42,7 +40,6 @@ import { LookupService } from '../../../services/lookup.service';
 import { getLookupType } from '../../../services/utilites/lookup-util';
 import { ReportCreator } from '../../../services/report/report-creator';
 import { MappingPair } from '../../../models/mapping';
-
 
 @Component({
   selector: 'app-mapping',
@@ -70,13 +67,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   mappingConfig = [];
 
   similarTableName = similarTableName;
-  similarNamesMap = (similarNamesMap as any).default;
-
   filteredFields;
 
   lookup;
 
   numberOfPanels: number;
+
   get hint(): string {
     return 'no hint';
   }
@@ -118,6 +114,48 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.commonService.mappingElement = mappingElementRef;
   }
 
+  ngOnInit() {
+    if (this.storeService.state.target.length === 0) {
+      this.router.navigateByUrl(`/comfy`);
+      return;
+    }
+    const { source, target } = this.storeService.getMappedTables();
+
+    this.prepareTables(source, Area.Source);
+    this.prepareTables(target, Area.Target);
+    this.prepareMappedTables(this.getMappingConfig());
+    this.moveSimilarTables();
+    this.similarSourceTable = this.source.find(item => item.name === 'similar');
+    this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
+    this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
+
+    this.similarTargetTable = this.target.find(item => item.name === 'similar');
+    this.selectedTargetTable = this.getSelectedTargetTable();
+
+    this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
+      this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
+
+    setTimeout(() => {
+      this.bridgeService.refresh(this.currentTargetTable);
+      this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
+      this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
+      this.bridgeService.adjustArrowsPositions();
+    }, 200);
+
+    this.rulesPoupService.deleteConnector$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(connectorKey => {
+        this.bridgeService.deleteArrow(connectorKey);
+      });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields;
+        this.bridgeService.refreshAll();
+      }
+    });
+  }
+
   ngAfterViewInit() {
     this.svgCanvas.nativeElement.addEventListener('mouseup', (event: any) => {
       const markerWidth = 16;
@@ -131,6 +169,16 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.endMarkerClick(offsetY, currentTarget);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.clickArrowSubscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+
+    this.saveMappingStatus();
+
+    super.ngOnDestroy();
   }
 
   startMarkerClick(offset: number, currentTarget: any) {
@@ -312,49 +360,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  ngOnInit() {
-    if (this.storeService.state.target.length === 0) {
-      this.router.navigateByUrl(`/comfy`);
-      return;
-    }
-    const { source, target } = this.storeService.getMappedTables();
-
-    this.prepareTables(source, Area.Source);
-    this.prepareTables(target, Area.Target);
-    this.prepareMappedTables(this.getMappingConfig());
-    this.moveSimilarTables();
-    this.similarSourceTable = this.source.find(item => item.name === 'similar');
-    this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
-    this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
-
-    this.similarTargetTable = this.target.find(item => item.name === 'similar');
-    this.selectedTargetTable = this.getSelectedTargetTable();
-
-
-    this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
-    this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
-
-    setTimeout(() => {
-      this.bridgeService.refresh(this.currentTargetTable);
-      this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
-      this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
-      this.bridgeService.adjustArrowsPositions();
-    }, 200);
-
-    this.rulesPoupService.deleteConnector$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(connectorKey => {
-        this.bridgeService.deleteArrow(connectorKey);
-      });
-
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.filteredFields = res.filteredFields;
-        this.bridgeService.refreshAll();
-      }
-    });
-  }
-
   getMappingConfig() {
     const mappingConfig = [];
     Object.keys(this.storeService.state.targetConfig).forEach(key => {
@@ -464,14 +469,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   changeTargetClone(table: any) {
     this.bridgeService.hideAllArrows();
     this.refreshTargetPanel(table);
-  }
-
-  ngOnDestroy() {
-    this.clickArrowSubscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-    });
-
-    super.ngOnDestroy();
   }
 
   @HostListener('document:keyup', [ '$event' ])
@@ -653,10 +650,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  isFooterButtonDisabled() {
-    const result = Object.keys(this.bridgeService.arrowsCache).length === 0;
-    // todo set mappingCreated field in store service
-    return result;
+  isMappingEmpty() {
+    return Object.keys(this.bridgeService.arrowsCache).length === 0;
   }
 
   deleteLinks() {
@@ -788,5 +783,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   private addMappedSourceToStore() {
     this.storeService.add('mappedSource', this.source);
+  }
+
+  private saveMappingStatus() {
+    this.storeService.add('mappingEmpty', this.isMappingEmpty());
   }
 }

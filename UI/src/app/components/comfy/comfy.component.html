@@ -14,8 +14,7 @@
                     (columnsSelected)="findTables($event)"></app-columns-list>
 </nav>
 <main>
-  <div class="articles"
-  cdkDropListGroup>
+  <div class="articles" cdkDropListGroup>
     <article>
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
@@ -72,11 +71,13 @@
       <div class="initial"
            *ngIf="!data.source.length">
         <p>Please load New Report to see Source tables</p>
+
         <input #sourceUpload
                type="file"
                accept=".xlsx, .xls"
                (change)="onFileUpload($event)"
                hidden/>
+
         <button mat-flat-button
                 color="accent"
                 class="cdm-button"

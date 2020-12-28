@@ -343,7 +343,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.router.navigateByUrl(`/mapping`);
   }
 
-   getMappingConfig() {
+  getMappingConfig() {
     const mappingConfig = [];
     Object.keys(this.targetConfig).forEach(key => {
       const item = this.targetConfig[ key ].data;
