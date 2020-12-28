@@ -325,14 +325,18 @@ export class PanelTableComponent extends BaseComponent
 
   addRowToGroup(rows: IRow[]) {
     const group = rows[ 0 ];
-    const rowToAdd = rows[ 1 ];
+    const focusedRowsNames = this.rowFocusedElements.map(item =>item.id);
+    const rowsToAdd = this.table.rows.filter(item => focusedRowsNames.includes(item.name));
     if (!this.validateGroupFields(group.type)) {
       return;
     };
-    this.table.rows.find(item => item.name === group.name).grouppedFields.splice(0, 0, rowToAdd);
-    this.table.rows.splice(this.bridgeService.draggedRowIndex, 1);
-    this.bridgeService.saveChangesInGroup(group.tableName, this.table.rows);
-    this.removeRowsFromSimilarTable([ rowToAdd.name ]);
+    rowsToAdd.forEach(rowToAdd => {
+      const addedRowIndex = this.table.rows.findIndex(item => item.name === rowToAdd.name);
+      this.table.rows.find(item => item.name === group.name).grouppedFields.splice(0, 0, rowToAdd);
+      this.table.rows.splice(addedRowIndex, 1);
+      this.bridgeService.saveChangesInGroup(group.tableName, this.table.rows);
+      this.removeRowsFromSimilarTable([ rowToAdd.name ]);
+    })
     this.refreshPanel();
   }
 
@@ -528,14 +532,17 @@ export class PanelTableComponent extends BaseComponent
 
   setRowFocus(target, ctrlKey) {
     if (target) {
-      if (!ctrlKey) {
+      const targetFocused = this.rowFocusedElements && !this.rowFocusedElements.find(item => item.id === target.id) ? false : true;
+      if (!ctrlKey && !targetFocused) {
         this.unsetRowFocus();
       }
       if (!this.rowFocusedElements) {
         this.rowFocusedElements = [];
       }
-      this.rowFocusedElements.push(target);
-      this.rowFocusedElements[ this.rowFocusedElements.length - 1 ].classList.add('row-focus');
+      if(!targetFocused){
+        this.rowFocusedElements.push(target);
+        this.rowFocusedElements[ this.rowFocusedElements.length - 1 ].classList.add('row-focus');
+      }
     }
   }
 
