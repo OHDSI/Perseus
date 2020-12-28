@@ -375,7 +375,7 @@ export class BridgeService {
   }
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string, tableCloneName?: string) {
-    var deleteCondition = tableCloneName ?
+    const deleteCondition = tableCloneName ?
       function (targetName: any, sourceName: any, cloneName: any) {
         return targetName.toUpperCase() === targetTableName.toUpperCase() &&
         sourceName.toUpperCase() === sourceTableName.toUpperCase() &&

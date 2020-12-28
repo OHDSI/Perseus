@@ -532,7 +532,7 @@ export class PanelTableComponent extends BaseComponent
 
   setRowFocus(target, ctrlKey) {
     if (target) {
-      const targetFocused = this.rowFocusedElements && !this.rowFocusedElements.find(item => item.id === target.id) ? false : true;
+      const targetFocused = this.rowFocusedElements && !this.rowFocusedElements.find(item => item.id === target.id);
       if (!ctrlKey && !targetFocused) {
         this.unsetRowFocus();
       }
