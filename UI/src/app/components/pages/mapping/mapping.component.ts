@@ -372,9 +372,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   getEnabledTargetTables() {
-    const isEnabledTargetTable = (table) => this.mappingConfig.
-    find(item => item.includes(table.name) && item.includes(this.selectedSourceTable.name) && table.name !== 'similar');
-
+    const isEnabledTargetTable = this.sourceTabIndex === 0 && this.similarSourceTable ?
+    (table) => this.mappingConfig.find(item => item.includes(table.name) && table.name !== 'similar'):
+    (table) => this.mappingConfig.find(item => item.includes(table.name) && item.includes(this.selectedSourceTable.name) && table.name !== 'similar')
     return this.target.filter(isEnabledTargetTable);
   }
 
