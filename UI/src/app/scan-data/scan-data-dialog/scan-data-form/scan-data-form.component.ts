@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter, OnDestroy,
   OnInit,
@@ -23,8 +22,7 @@ import { CdmStateService } from '../../../services/cdm-state.service';
 @Component({
   selector: 'app-scan-data-form',
   templateUrl: './scan-data-form.component.html',
-  styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss']
 })
 export class ScanDataFormComponent implements OnInit, OnDestroy {
 

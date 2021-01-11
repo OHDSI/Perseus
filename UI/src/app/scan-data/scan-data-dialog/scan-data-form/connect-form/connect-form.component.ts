@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -30,8 +29,7 @@ import { Subject } from 'rxjs/internal/Subject';
     '../../../styles/scan-data-step.scss',
     '../../../styles/scan-data-normalize.scss',
     '../../../styles/scan-data-connect-form.scss'
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  ]
 })
 export class ConnectFormComponent extends AbstractResourceForm implements OnInit {
 
