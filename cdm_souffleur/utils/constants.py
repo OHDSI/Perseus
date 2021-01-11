@@ -42,3 +42,11 @@ COLUMN_TYPES_MAPPING = {
      2950: 'uuid',
 }
 
+TYPES_WITH_MAX_LENGTH = [
+  "varchar",
+  "nvarchar",
+  "character",
+  "character varying",
+  "char",
+  "text"
+]
