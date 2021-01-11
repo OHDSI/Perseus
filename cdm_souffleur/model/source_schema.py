@@ -6,7 +6,7 @@ import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
@@ -52,7 +52,7 @@ def get_source_schema(schemaname):
     # always take the first sheet of the excel file
 
     tables_pd = sqldf(
-        """select `table`, group_concat(field || ':' || type, ',') as fields
+        """select `table`, group_concat(field || ':' || type || ':' || "Max length", ',') as fields
          from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
     for index, row in tables_pd.iterrows():
@@ -64,7 +64,10 @@ def get_source_schema(schemaname):
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
-            column_type = column_description[1]
+            column_max_length = ""
+            if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
+                column_max_length = '({0})'.format(column_description[2])
+            column_type = '{0}{1}'.format(column_description[1], column_max_length)
             column = Column(column_name, column_type)
             table_.column_list.append(column)
             create_column_sql = '"{0}" {1},'.format(column_name, column_type)
