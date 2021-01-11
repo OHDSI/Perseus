@@ -132,6 +132,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       } else if (!exists) {
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         this.storeService.add('targetConfig', this.targetConfig);
+        this.storeService.state.recalculateSimilar = true;
       }
     }
   });

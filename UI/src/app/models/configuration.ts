@@ -16,6 +16,9 @@ export interface ConfigurationOptions {
   filtered?: any;
   constants?: any;
   targetClones?: any;
+  sourceSimilar?: Row[];
+  targetSimilar?: Row[];
+  recalculateSimilar?: boolean;
 }
 
 export class Configuration {
@@ -66,8 +69,29 @@ export class Configuration {
   }
 
   get targetClones(): any {
-    return  parse(this.targetTablesClones);
+    return parse(this.targetTablesClones);
   }
+
+  get targetSimilarRows(): any {
+    if (parse(this.targetSimilar)) {
+      const rows = [];
+      parse(this.targetSimilar).map(item => rows.push(new Row(item)));
+      return rows;
+    }
+  }
+
+  get sourceSimilarRows(): any {
+    if (parse(this.sourceSimilar)) {
+      const rows = [];
+      parse(this.sourceSimilar).map(item => rows.push(new Row(item)));
+      return rows;
+    }
+  }
+
+  get recalculateSimilarTables(): any {
+    return  JSON.parse(this.recalculateSimilar);
+  }
+
 
 
   name: string;
@@ -80,6 +104,9 @@ export class Configuration {
   filtered: string;
   constants: string;
   targetTablesClones: string;
+  sourceSimilar: string;
+  targetSimilar: string;
+  recalculateSimilar: string;
 
   constructor(options: ConfigurationOptions = {}) {
     this.name = options.name;
@@ -92,5 +119,8 @@ export class Configuration {
     this.filtered = JSON.stringify(options.filtered);
     this.constants = JSON.stringify(options.constants);
     this.targetTablesClones = stringify(options.targetClones);
+    this.sourceSimilar = stringify(options.sourceSimilar);
+    this.targetSimilar = stringify(options.targetSimilar);
+    this.recalculateSimilar = JSON.stringify(options.recalculateSimilar);
   }
 }

@@ -407,17 +407,24 @@ export class PanelTableComponent extends BaseComponent
 
   updateRowsIndexesAnsSaveChanges() {
     if (this.area === 'source') {
-      this.storeService.state.source.find(item => item.name === this.table.name).rows = this.table.rows;
-    } else {
-      const targetClones = this.storeService.state.targetClones[ this.table.name ];
-      if (targetClones) {
-        const storedTarget = this.storeService.state.target.find(item => item.name === this.table.name && item.cloneName === this.table.cloneName);
-        storedTarget ? storedTarget.rows = this.table.rows :
-          targetClones.find(item => item.cloneName === this.table.cloneName).rows = this.table.rows;
+      if (this.table.name === 'similar') {
+        this.storeService.state.sourceSimilar = this.table.rows;
       } else {
-        this.storeService.state.target.find(item => item.name === this.table.name).rows = this.table.rows;
+        this.storeService.state.source.find(item => item.name === this.table.name).rows = this.table.rows;
       }
-
+    } else {
+      if (this.table.name === 'similar') {
+        this.storeService.state.targetSimilar = this.table.rows;
+      } else {
+        const targetClones = this.storeService.state.targetClones[ this.table.name ];
+        if (targetClones) {
+          const storedTarget = this.storeService.state.target.find(item => item.name === this.table.name && item.cloneName === this.table.cloneName);
+          storedTarget ? storedTarget.rows = this.table.rows :
+            targetClones.find(item => item.cloneName === this.table.cloneName).rows = this.table.rows;
+        } else {
+          this.storeService.state.target.find(item => item.name === this.table.name).rows = this.table.rows;
+        }
+      }
     }
     this.refreshPanel();
   }

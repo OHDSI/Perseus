@@ -49,10 +49,8 @@ import { MappingPair } from '../../../models/mapping';
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   source: ITable[];
   target: ITable[];
-  similarSourceTable: ITable;
   sourceTablesWithoutSimilar: ITable[];
   selectedSourceTable: ITable;
-  similarTargetTable: ITable;
   selectedTargetTable: ITable;
 
   sourceTabIndex = 0;
@@ -87,6 +85,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   get currentSourceTable() {
     return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
+  }
+
+  get similarSourceTable() {
+    return this.source.find(item => item.name === 'similar');
+  }
+
+  get similarTargetTable() {
+    return this.target.find(item => item.name === 'similar');
   }
 
   @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
@@ -125,11 +131,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.prepareTables(target, Area.Target);
     this.prepareMappedTables(this.getMappingConfig());
     this.moveSimilarTables();
-    this.similarSourceTable = this.source.find(item => item.name === 'similar');
+    if (!this.storeService.state.recalculateSimilar) {
+      if (this.similarSourceTable) { this.similarSourceTable.rows = this.storeService.state.sourceSimilar; }
+      if (this.similarTargetTable) { this.similarTargetTable.rows = this.storeService.state.targetSimilar; }
+    } else {
+      if (this.similarSourceTable) { this.storeService.state.sourceSimilar = this.similarSourceTable.rows };
+      if (this.similarTargetTable) { this.storeService.state.targetSimilar = this.similarTargetTable.rows };
+      this.storeService.state.recalculateSimilar = false;
+    }
     this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
-    this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
+    this.selectedSourceTable = this.sourceTablesWithoutSimilar[ 0 ];
 
-    this.similarTargetTable = this.target.find(item => item.name === 'similar');
     this.selectedTargetTable = this.getSelectedTargetTable();
 
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
