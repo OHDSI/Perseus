@@ -39,7 +39,7 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup ? arrow.lookup['name'] : '',
+          lookup: arrow.lookup && arrow.lookup['applied']? arrow.lookup['name'] : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.source.comments,

@@ -223,7 +223,7 @@ export class Arrow implements IConnector {
 
   private checkAndChangeHtmlElement(row: IRow): IRow {
     const foundElements = document.getElementsByClassName(
-      `item-${row.tableName}-${row.cloneTableName ? row.cloneTableName : ''}-${row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}-${row.name}`
+      `item-${row.area}-${row.tableName}-${row.cloneTableName ? row.cloneTableName : ''}-${row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}-${row.name}`
     );
     const foundElement = extractHtmlElement(foundElements, null);
 

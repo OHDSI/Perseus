@@ -273,6 +273,9 @@ export class BridgeService {
       report: configuration.reportName,
       targetClones: configuration.targetClones,
       mappingEmpty: !isMappingNotEmpty,
+      sourceSimilar: configuration.sourceSimilarRows,
+      targetSimilar: configuration.targetSimilarRows,
+      recalculateSimilar: configuration.recalculateSimilarTables
     };
 
     this.applyConfiguration$.next(configuration);
