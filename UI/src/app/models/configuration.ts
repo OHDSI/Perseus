@@ -89,7 +89,9 @@ export class Configuration {
   }
 
   get recalculateSimilarTables(): any {
-    return  JSON.parse(this.recalculateSimilar);
+    if (this.recalculateSimilar) {
+      return JSON.parse(this.recalculateSimilar)
+    }
   }
 
 
