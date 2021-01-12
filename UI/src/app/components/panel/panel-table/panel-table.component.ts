@@ -539,12 +539,15 @@ export class PanelTableComponent extends BaseComponent
 
   setRowFocus(target, ctrlKey) {
     if (target) {
-      const targetFocused = this.rowFocusedElements && !this.rowFocusedElements.find(item => item.id === target.id);
-      if (!ctrlKey && !targetFocused) {
-        this.unsetRowFocus();
+      const targetFocused = this.rowFocusedElements.find(item => item.id === target.id);
+      if (!ctrlKey) {
+        if (!targetFocused) {this.unsetRowFocus();}
       }
-      if (!this.rowFocusedElements) {
-        this.rowFocusedElements = [];
+      else {
+        if (targetFocused) {
+          targetFocused.classList.remove('row-focus');
+          this.rowFocusedElements = this.rowFocusedElements.filter(item => item.id !== target.id)
+        }
       }
       if(!targetFocused){
         this.rowFocusedElements.push(target);
@@ -556,7 +559,7 @@ export class PanelTableComponent extends BaseComponent
   unsetRowFocus() {
     const focused: HTMLAllCollection = this.elementRef.nativeElement.querySelectorAll('.row-focus');
     Array.from(focused).forEach((it: HTMLElement) => it.classList.remove('row-focus'));
-    this.rowFocusedElements = undefined;
+    this.rowFocusedElements = [];
   }
 
   // connectortype is not reflected in the table
