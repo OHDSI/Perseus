@@ -92,6 +92,7 @@ export class Configuration {
     if (this.recalculateSimilar) {
       return JSON.parse(this.recalculateSimilar)
     }
+    return true;
   }
 
 
