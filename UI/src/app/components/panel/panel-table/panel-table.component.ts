@@ -228,7 +228,7 @@ export class PanelTableComponent extends BaseComponent
           tableId: this.table.id,
           tableName: this.table.name,
           name: res.value,
-          type: groupType,
+          type: groupType.substr(0, groupType.indexOf('(')),
           isNullable: true,
           comments: [],
           uniqueIdentifier: false,
@@ -317,10 +317,15 @@ export class PanelTableComponent extends BaseComponent
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
         filter(([ k, v ]) => v.includes(groupType))));
     } else {
+      const firstGroupRowType = this.table.rows.find(r => r.name === this.rowFocusedElements[ 0 ].id).type
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(this.table.rows.find(r => r.name === this.rowFocusedElements[ 0 ].id).type))));
+        filter(([ k, v ]) => v.includes(firstGroupRowType.substr(0, firstGroupRowType.indexOf('('))))));
     }
-    return this.rowFocusedElements.some(item => !typesArray[ 0 ].includes(this.table.rows.find(r => r.name === item.id).type.toLowerCase()));
+    return this.rowFocusedElements.some(item => {
+      const rowType = this.table.rows.find(r => r.name === item.id).type.toLowerCase();
+      return !typesArray[ 0 ].includes(rowType.substr(0, rowType.indexOf('(')))
+    }
+      );
   }
 
   addRowToGroup(rows: IRow[]) {
