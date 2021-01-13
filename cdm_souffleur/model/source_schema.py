@@ -137,6 +137,13 @@ def get_view_from_db(view_sql):
     pg_db.close()
     return view_res;
 
+def run_sql_transformation(sql_transformation):
+    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
+                               host='localhost', port=5432)
+    pg_db.connect()
+    pg_db.execute_sql(sql_transformation).description
+    pg_db.close()
+    return True
 
 def _open_book(filepath=None):
     # TODO decide whether check below is required (if yes, find all cases when book should be set to None)
