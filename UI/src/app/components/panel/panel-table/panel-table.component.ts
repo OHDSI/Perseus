@@ -325,7 +325,7 @@ export class PanelTableComponent extends BaseComponent
       const rowType = this.table.rows.find(r => r.name === item.id).type.toLowerCase();
       return !typesArray[ 0 ].includes(rowType.substr(0, rowType.indexOf('(')))
     }
-      );
+    );
   }
 
   addRowToGroup(rows: IRow[]) {
