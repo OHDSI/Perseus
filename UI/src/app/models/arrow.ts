@@ -24,6 +24,8 @@ export class Arrow implements IConnector {
   targetSVGPoint: any;
 
   path: any;
+  title: any;
+  titleText: any;
   type: ConnectorType;
 
   private removeClickListener: any;
@@ -101,6 +103,10 @@ export class Arrow implements IConnector {
     );
 
     this.renderer.appendChild(this.canvas, this.path);
+    this.title = this.renderer.createElement('title', 'svg');
+    this.titleText = this.renderer.createText(`${this.source.name} - ${this.target.name}`);
+    this.renderer.appendChild(this.title, this.titleText);
+    this.renderer.appendChild(this.path, this.title);
   }
 
   adjustPosition() {

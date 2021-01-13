@@ -69,7 +69,15 @@ export class Configuration {
   }
 
   get targetClones(): any {
-    return parse(this.targetTablesClones);
+    const clonesResult = {};
+    const clones = parse(this.targetTablesClones);
+    Object.keys(clones).forEach(item => {
+      const cloneTables = [];
+       const cloneList = clones[item];
+       cloneList.forEach(it => cloneTables.push(new Table(it)));
+       clonesResult[item] = cloneTables;
+    });
+    return clonesResult;
   }
 
   get targetSimilarRows(): any {

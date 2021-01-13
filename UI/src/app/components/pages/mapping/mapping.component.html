@@ -2,7 +2,8 @@
   <section>
     <main #maincanvas class="main">
       <div class="area-source">
-        <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event, source, 'source')"
+        <mat-tab-group selectedIndex="{{sourceTabIndex}}"
+                       (selectedIndexChange)="onTabIndexChanged($event, 'source')"
                        mat-align-tabs="start">
           <mat-tab [label]="'similar'"
                    *ngIf="similarSourceTable">
@@ -169,7 +170,7 @@
       <!--End-of-the-Bridge-->
       <div class="area-target">
         <mat-tab-group selectedIndex="{{targetTabIndex}}"
-                       (selectedIndexChange)="onTabIndexChanged($event, target, 'target')">
+                       (selectedIndexChange)="onTabIndexChanged($event, 'target')">
           <mat-tab [label]="'similar'"
                    *ngIf="similarTargetTable">
             <app-panel #targetPanelSimilar

@@ -23,7 +23,7 @@ import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.comp
 import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WordReportCreator } from '../../../services/report/word-report-creator';
 import { Packer } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
@@ -116,7 +116,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private mappingStorage: MappingPageSessionStorage,
     private overlayService: OverlayService,
     private router: Router,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private activatedRoute: ActivatedRoute
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -168,6 +169,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.refreshAll();
       }
     });
+    this.activatedRoute.queryParams.subscribe(data=> {
+      if(Object.keys(data).length !== 0){
+       this.targetTabIndex = 1;
+       this.sourceTabIndex = 1;
+       const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
+       this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
+       this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));       
+      }
+   });
 
     this.initHasScanReport();
   }
@@ -453,7 +463,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   onWheel(event: any, area: string) {
-    const up = event.deltaY < 0;
+    const up = event.deltaY > 0;
     let newIndex;
     if (area === 'source' && this.currentSourceTable.name !== 'similar') {
       const index = this.source.indexOf(this.currentSourceTable);
@@ -592,7 +602,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  onTabIndexChanged(index: number, tables: ITable[], area: string): void {
+  onTabIndexChanged(index: number, area: string): void {
     this.bridgeService.hideAllArrows();
 
     if (area === 'source') {
