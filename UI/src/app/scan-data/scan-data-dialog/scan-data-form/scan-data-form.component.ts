@@ -40,8 +40,6 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   filesToScan: FileToScan[];
 
-  connecting = false;
-
   connectionResult: ConnectionResult;
 
   @Output()

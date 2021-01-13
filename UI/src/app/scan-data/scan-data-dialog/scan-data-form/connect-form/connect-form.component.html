@@ -1,4 +1,8 @@
 <div class="source-form">
+  <div *ngIf="tryConnect" class="connect-progress-bar">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
   <div class="scan-step-header">
     <div class="source-form__header-number scan-step">
       <h5 class="scan-step__number">1</h5>
