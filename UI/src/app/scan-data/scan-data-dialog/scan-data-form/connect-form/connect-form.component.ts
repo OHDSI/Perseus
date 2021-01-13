@@ -225,7 +225,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
         const schemaControl = this.form.get('schema');
 
         if (requireSchema) {
-          schemaControl.setValidators([Validators.required]);
+          schemaControl.setValidators([ Validators.required ]);
         } else {
           schemaControl.setValidators([]);
         }
@@ -236,5 +236,14 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
           this.requireSchema = requireSchema;
         });
       });
+  }
+
+  resetForm(){
+    this.isDbSettings ? super.resetForm() : this.resetFileSettingsForm();
+  }
+
+  private resetFileSettingsForm() {
+    this.fileSettingsForm.reset();
+    this.onFileToScanChanged([]);
   }
 }
