@@ -481,6 +481,7 @@ export class PanelTableComponent extends BaseComponent
 
   selectIncrement(anchor: HTMLElement, row: IRow) {
     if (!this.isRowHasConnection(row)) {
+      row.increment = !row.increment;
       this.updateIncrementOrConstantFields(row, 'increment');
     }
   }
@@ -503,7 +504,7 @@ export class PanelTableComponent extends BaseComponent
       return found;
     };
     if (type === 'increment') {
-      const value = !row.increment;
+      const value = row.increment;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
       this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
     } else {

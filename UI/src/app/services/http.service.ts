@@ -24,7 +24,8 @@ const API_URLS = {
   saveLookup: () => `${URL}/save_lookup`,
   deleteLookup: () => `${URL}/delete_lookup`,
   saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`,
-  getView: () => `${URL}/get_view`
+  getView: () => `${URL}/get_view`,
+  validateSql: () => `${URL}/validate_sql`
 
 };
 
@@ -96,5 +97,9 @@ export class HttpService {
 
   getView(sql: any): Observable<any> {
     return this.httpClient.post(API_URLS.getView(), sql);
+  }
+
+  validateSql(sql: any): Observable<any> {
+    return this.httpClient.post(API_URLS.validateSql(), sql);
   }
 }

@@ -135,7 +135,8 @@
                      class="vertical-box"
                      [id]="tableName"
                      cdkDrag
-                     (cdkDragMoved)="dragMoved($event)">
+                     (cdkDragMoved)="dragMoved($event)"
+                     (dblclick)="openMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
                   <div class="table-description target caption"
                        [matTooltip]="tableName"
                        matTooltipPosition="right">

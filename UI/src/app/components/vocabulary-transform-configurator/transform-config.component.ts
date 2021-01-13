@@ -16,6 +16,8 @@ import { IConnector } from 'src/app/models/interface/connector.interface';
 import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
 import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { HttpService } from 'src/app/services/http.service';
+import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
 
 @Component({
   selector: 'app-transform-config',
@@ -89,7 +91,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     private addCondition: MatDialog,
     private stateService: StateService,
     private bridgeService: BridgeService,
-    vocabulariesService: VocabulariesService
+    vocabulariesService: VocabulariesService,
+    private httpService: HttpService
   ) {
     this.lookupName = payload[ 'lookupName' ];
     this.lookupType = payload['lookupType'];
@@ -218,7 +221,26 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   add() {
-    this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup}) : this.dialogRef.close({sql: this.sql });
+    this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup }) : this.validateSql(this.sql['name'])
+
+  }
+
+  validateSql(sql: string){
+    const sqlTransformation = `SELECT ${sql} FROM ${this.connector.source.tableName}`
+    this.httpService.validateSql({sql: sqlTransformation}).subscribe(res=>{
+      this.dialogRef.close({ sql: this.sql })
+    },
+    error => {
+      const dialog = this.matDialog.open(ErrorPopupComponent, {
+        closeOnNavigation: false,
+        disableClose: false,
+        data: {
+          title: 'Sql error',
+          message: error.error.message
+        }
+      });
+    })
+    return true;
   }
 
   addDisabled() {
