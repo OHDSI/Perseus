@@ -79,9 +79,4 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
     this.subscribeOnDataTypeChange(this.form, this.formControlNames);
     this.form.patchValue(formValue);
   }
-
-  protected resetForm(){
-    this.form.reset();
-  }
-
 }

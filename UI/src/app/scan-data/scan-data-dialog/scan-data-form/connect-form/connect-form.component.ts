@@ -239,7 +239,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   }
 
   resetForm(){
-    this.isDbSettings ? super.resetForm() : this.resetFileSettingsForm();
+    this.isDbSettings ? this.form.reset() : this.resetFileSettingsForm();
   }
 
   private resetFileSettingsForm() {
