@@ -79,6 +79,7 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   }
 
   onTestConnection(): void {
+    this.tryConnect = true;
     this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
       .subscribe(
         result => this.connectionResult = result,
@@ -88,7 +89,8 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
             message: error.error,
           };
           this.showErrorPopup(this.connectionResult.message);
-        }
+        },
+        () => this.tryConnect = false
       );
   }
 

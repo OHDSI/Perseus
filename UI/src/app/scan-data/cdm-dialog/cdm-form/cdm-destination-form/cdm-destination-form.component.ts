@@ -48,6 +48,7 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
   }
 
   onTestConnection() {
+    this.tryConnect = true;
     this.cdmBuilderService.testDestinationConnection(this.settings as CdmSettings)
       .subscribe(
         result => this.connectionResult = result,
@@ -57,7 +58,8 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
             message: error.error,
           };
           this.showErrorPopup(this.connectionResult.message);
-        }
+        },
+        () => this.tryConnect = false
       );
   }
 }

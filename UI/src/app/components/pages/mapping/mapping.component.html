@@ -232,6 +232,7 @@
 
         <div class="mapping-footer__content-right">
           <button class="mapping-footer__content-fake grey-button blue-color"
+                  [disabled]="!hasScanReport"
                   (click)="generateFakeData()">Generate Fake
           </button>
 

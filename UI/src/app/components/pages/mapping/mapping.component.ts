@@ -71,6 +71,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   numberOfPanels: number;
 
+  hasScanReport = false;
+
   get hint(): string {
     return 'no hint';
   }
@@ -135,8 +137,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       if (this.similarSourceTable) { this.similarSourceTable.rows = this.storeService.state.sourceSimilar; }
       if (this.similarTargetTable) { this.similarTargetTable.rows = this.storeService.state.targetSimilar; }
     } else {
-      if (this.similarSourceTable) { this.storeService.state.sourceSimilar = this.similarSourceTable.rows };
-      if (this.similarTargetTable) { this.storeService.state.targetSimilar = this.similarTargetTable.rows };
+      if (this.similarSourceTable) { this.storeService.state.sourceSimilar = this.similarSourceTable.rows; }
+      if (this.similarTargetTable) { this.storeService.state.targetSimilar = this.similarTargetTable.rows; }
       this.storeService.state.recalculateSimilar = false;
     }
     this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
@@ -166,6 +168,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.refreshAll();
       }
     });
+
+    this.initHasScanReport();
   }
 
   ngAfterViewInit() {
@@ -385,15 +389,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getEnabledTargetTables() {
     const isEnabledTargetTable = this.sourceTabIndex === 0 && this.similarSourceTable ?
-    (table) => this.mappingConfig.find(item => item.includes(table.name) && table.name !== 'similar'):
-    (table) => this.mappingConfig.find(item => item.includes(table.name) && item.includes(this.selectedSourceTable.name) && table.name !== 'similar')
+      (table) => this.mappingConfig.find(item => item.includes(table.name) && table.name !== 'similar') :
+      (table) => this.mappingConfig.find(item => item.includes(table.name) && item.includes(this.selectedSourceTable.name) && table.name !== 'similar');
     return this.target.filter(isEnabledTargetTable);
   }
 
   openTablesDropdown(target: any, area: string) {
     const enabledTargetTables = this.getEnabledTargetTables();
     if (area === 'source' && this.currentSourceTable.name !== 'similar' && this.sourceTablesWithoutSimilar.length > 1 ||
-     area === 'target' && this.currentTargetTable.name !== 'similar' && enabledTargetTables.length >1) {
+     area === 'target' && this.currentTargetTable.name !== 'similar' && enabledTargetTables.length > 1) {
       const data = area === 'source' ? {
         tables: this.sourceTablesWithoutSimilar,
         selected: this.selectedSourceTable,
@@ -800,5 +804,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   private saveMappingStatus() {
     this.storeService.add('mappingEmpty', this.isMappingEmpty());
+  }
+
+  private initHasScanReport() {
+    this.hasScanReport = this.storeService.state.reportFile;
   }
 }

@@ -65,6 +65,8 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     'server', 'user', 'password', 'database', 'schema'
   ];
 
+  requireSchema = false;
+
   private filesChange$ = new Subject<FileToScan[]>();
 
   private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => void } = {
@@ -143,10 +145,6 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
       !this.fileSettingsForm.valid;
   }
 
-  get requireSchema() {
-    return dbTypesRequireSchema.includes(this.dataType);
-  }
-
   ngOnInit(): void {
     super.ngOnInit();
     this.initDelimitedFilesSettingsForm();
@@ -155,18 +153,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
       this.subscribeFormChange();
     }
 
-    this.dataTypeChange$
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(() => {
-        const schemaControl = this.form.get('schema');
-        if (this.requireSchema) {
-          schemaControl.setValidators([Validators.required]);
-        } else {
-          schemaControl.setValidators([]);
-        }
-      });
+    this.checkDataTypeChange();
   }
 
   onTestConnection() {
@@ -226,5 +213,28 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     } else {
       return this.testConnectionStrategies['fileSettings'];
     }
+  }
+
+  private checkDataTypeChange() {
+    this.dataTypeChange$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => {
+        const requireSchema = dbTypesRequireSchema.includes(this.dataType);
+        const schemaControl = this.form.get('schema');
+
+        if (requireSchema) {
+          schemaControl.setValidators([Validators.required]);
+        } else {
+          schemaControl.setValidators([]);
+        }
+        schemaControl.updateValueAndValidity();
+
+        // After checked child forms
+        setTimeout(() => {
+          this.requireSchema = requireSchema;
+        });
+      });
   }
 }
