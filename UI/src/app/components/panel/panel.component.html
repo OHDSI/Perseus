@@ -4,6 +4,7 @@
                     (complete)="filterByName($event)"
                     (reset)="filterByNameReset($event)">
 </app-search-by-name>
+
 <div class="flex-div"
      *ngIf="area === 'source' && table.name !== 'similar'"> <a id="createGroup"
      (click)="createGroup()"
@@ -12,6 +13,7 @@
   <mat-icon class="info-icon"
             (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>
 </div>
+
 <div class="flex-div"
      *ngIf="area === 'target' && table.name !== 'similar' && oppositeTableName">
   <div class="flex-div-align-center"
@@ -20,6 +22,7 @@
     <mat-icon *ngIf="existingClones.length > 1"
               (click)="openClonesDropdown($event.target)">arrow_drop_down</mat-icon>
   </div>
+
   <div class="margin-left">
     <a id="clone"
        (click)="createClone()">Clone</a>
@@ -30,6 +33,7 @@
        (click)="openConditionDialog()">{{table.condition? "Modify Condition": "Add Condition"}}</a>
   </div>
 </div>
+
 <app-area [area]="area">
   <app-panel-table #panel
                    [createGroupElementId]="'createGroup'"

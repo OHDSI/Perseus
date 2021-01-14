@@ -16,7 +16,6 @@ import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-di
 import { SelectTableDropdownComponent } from '../popups/select-table-dropdown/select-table-dropdown.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { ColumnFilterTriggerComponent } from 'ng2-qgrid';
 
 @Component({
   selector: 'app-panel',
@@ -49,7 +48,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
   get oppositeTableName() {
     const oppositeTable = this.storeService.state.source.find(item => item.id === this.oppositeTableId);
-    if(oppositeTable){
+    if (oppositeTable) {
       return oppositeTable.name;
     }
     return undefined;
@@ -116,8 +115,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   createGroup() {
-    if(this.panel.rowFocusedElements.length){
-    this.panel.createGroup();
+    if (this.panel.rowFocusedElements.length) {
+      this.panel.createGroup();
     }
   }
 
@@ -157,7 +156,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   filterByName(byName: Criteria): void {
-    const filterByName = (name, index?) => {
+    const filterByName = name => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
     };
 
@@ -207,9 +206,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
   updateCondition(table: ITable) {
     table.condition = this.table.condition;
     table.rows.forEach(row => row.condition = this.table.condition);
-    Object.values(this.bridgeService.arrowsCache).
-      filter(item => item.target.tableName === this.table.name && item.target.cloneTableName === this.table.cloneName).
-      forEach(el => el.target.condition = this.table.condition)
+    Object.values(this.bridgeService.arrowsCache)
+      .filter(item => item.target.tableName === this.table.name && item.target.cloneTableName === this.table.cloneName)
+      .forEach(el => el.target.condition = this.table.condition);
   }
 
   createClone() {
@@ -234,16 +233,15 @@ export class PanelComponent implements OnInit, AfterViewInit {
         }
         let cloneToSet;
         const cloneConnectedToSourceName = this.oppositeTableName;
-        const totalNumberOfClones = Object.values(this.storeService.state.targetClones).reduce(function(accumulator: number, currentValue: ITable[]) {
-          return accumulator + currentValue.length;
-        }, 0);
+        const totalNumberOfClones = Object.values(this.storeService.state.targetClones)
+          .reduce((accumulator: number, currentValue: ITable[]) => accumulator + currentValue.length, 0);
         const cloneId = this.storeService.state.target.length + totalNumberOfClones;
         if (this.existingClones && this.existingClones.length) {
           cloneToSet = this.createClonedTable(this.table, res.value, cloneId, cloneConnectedToSourceName);
           this.storeService.state.targetClones[ this.table.name ].
             push(cloneToSet);
         } else {
-          const defaultClone = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName)
+          const defaultClone = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName);
           this.storeService.state.targetClones[ this.table.name ].push(defaultClone);
           cloneToSet = this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName);
           this.storeService.state.targetClones[ this.table.name ].
@@ -274,7 +272,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     const cloneTargetTable = cloneDeep(table) as ITable;
     cloneTargetTable.cloneName = cloneName;
     cloneTargetTable.cloneConnectedToSourceName = cloneConnectedToSourceName;
-    if (cloneName != 'Default'){
+    if (cloneName !== 'Default') {
       cloneTargetTable.condition = '';
     }
     cloneTargetTable.id = cloneId;
@@ -282,8 +280,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
       item.tableId = cloneId;
       item.cloneTableName = cloneName;
       item.cloneConnectedToSourceName = cloneConnectedToSourceName;
-      if (cloneName != 'Default'){
-        item.condition = ''
+      if (cloneName !== 'Default') {
+        item.condition = '';
       }
     });
     this.bridgeService.drawCloneArrows(cloneTargetTable, table);
@@ -294,7 +292,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   getTableCloneNames() {
     const tableClones = this.getTableClones();
     if (tableClones) {
-      return tableClones.map(item => item.cloneName)
+      return tableClones.map(item => item.cloneName);
     }
   }
 
@@ -305,7 +303,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openClonesDropdown(target: any, area: string) {
+  openClonesDropdown(target: any) {
     const data = {
       tables: this.getTableClones(),
       selected: this.table,

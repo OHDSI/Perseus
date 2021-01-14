@@ -30,6 +30,7 @@ export interface MappingNode {
   comments?: IComment[];
   condition?: string;
   targetCloneName?: string;
+  groupName?: string;
 }
 
 export interface MappingPair {
@@ -38,6 +39,7 @@ export interface MappingPair {
   mapping: Array<MappingNode>;
   lookup?: Array<MappingLookup>;
   sqlTransformation?: string;
+  clones?: {name: string, condition: string}[];
 }
 
 export interface Mapping {

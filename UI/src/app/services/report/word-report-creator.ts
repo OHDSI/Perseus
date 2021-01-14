@@ -7,6 +7,7 @@ import { logicForReport } from './logic-for-report';
 import { IRow } from '../../models/row';
 import { commentsForReport } from './comments-for-report';
 import { doubleQuote, singleQuote, sqlKeyWords } from './sql-keywords';
+import { parseMappingNodesByGroups } from './mapping-util';
 
 const paragraph = {
   spacing: {
@@ -46,6 +47,18 @@ export class WordReportCreator implements ReportCreator {
         {
           id: 'Heading3',
           name: 'Heading 3',
+          basedOn: 'Normal',
+          next: 'Normal',
+          quickFormat: true,
+          run: {
+            size: 24,
+            bold: true
+          },
+          paragraph
+        },
+        {
+          id: 'Heading4',
+          name: 'Heading 4',
           basedOn: 'Normal',
           next: 'Normal',
           quickFormat: true,
@@ -115,6 +128,10 @@ export class WordReportCreator implements ReportCreator {
     return this.createHeader(text, HeadingLevel.HEADING_3, onNewPage);
   }
 
+  createHeader4(text: string, onNewPage: boolean): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_4, onNewPage);
+  }
+
   createTablesMappingImage(header: MappingForImage, mappingConfig: string[][]) {
     const imageForReport = createMappingTablesImage(header, mappingConfig, this.mappingPairImageStyles);
     return this.createImage(imageForReport);
@@ -125,7 +142,7 @@ export class WordReportCreator implements ReportCreator {
     return this.createImage(imageForReport);
   }
 
-  createFieldsDescriptionTable(mapping: MappingNode[]): ReportCreator {
+  createFieldsDescriptionTable(mappingNodes: MappingNode[]): ReportCreator {
     const header = createTableRow([
       createTableCell('Destination Field', 'TableHeader'),
       createTableCell('Source field', 'TableHeader'),
@@ -133,7 +150,9 @@ export class WordReportCreator implements ReportCreator {
       createTableCell('Comment field', 'TableHeader')
     ], true);
 
-    const rows = mapping
+    const parsedMappingNodes = parseMappingNodesByGroups(mappingNodes);
+
+    const rows = parsedMappingNodes
       .map(node => createTableRow([
         createTableCell(node.target_field),
         createTableCell(node.source_field),

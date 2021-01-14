@@ -39,7 +39,7 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup && arrow.lookup['applied']? arrow.lookup['name'] : '',
+          lookup: arrow.lookup && arrow.lookup['applied'] ? arrow.lookup['name'] : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.source.comments,
@@ -97,7 +97,7 @@ export class MappingService {
     return mapping;
   }
 
-  getSqlTransformation(arrow: any){
+  getSqlTransformation(arrow: any) {
     const target_column_name = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
     return arrow.sql && arrow.sql['applied'] ? `${arrow.sql['name']} as ${target_column_name}` : '';
   }
@@ -144,7 +144,6 @@ export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
 }
 
 export function addGroupMappings(mapping: Mapping, source: ITable) {
-
   if (source.name !== 'similar') {
     const mappingIndex = mapping.mapping_items.findIndex(item => item.source_table === source.name);
     let mappingItems = mapping.mapping_items[ mappingIndex ].mapping;
@@ -153,18 +152,19 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
     mappingItems.forEach((item, index) => {
       const field = source.rows.filter(row => row.name === item.source_field)[ 0 ];
       if (field && field.grouppedFields && field.grouppedFields.length) {
-        const mappingsToAdd = field.grouppedFields.map(grouppedField => {
+        const mappingsToAdd: MappingNode[] = field.grouppedFields.map(groupedField => {
           const regex = new RegExp('(' + field.name + ')(\\s|,|\\))', 'gi');
           return {
-            source_field: grouppedField.name,
+            source_field: groupedField.name,
             target_field: item.target_field,
-            sql_field: grouppedField.name,
+            sql_field: groupedField.name,
             sql_alias: item.sql_alias,
             lookup: item.lookup,
-            sqlTransformation: item.sqlTransformation.replace(regex, `${grouppedField.name}$2`),
+            sqlTransformation: item.sqlTransformation.replace(regex, `${groupedField.name}$2`),
             comments: item.comments,
             condition: item.condition,
-            targetCloneName: item.targetCloneName ? item.targetCloneName : ''
+            targetCloneName: item.targetCloneName ? item.targetCloneName : '',
+            groupName: item.source_field
           };
         });
 
@@ -180,4 +180,27 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
 
     mapping.mapping_items[ mappingIndex ].mapping = mappingItems;
   }
+}
+
+export function addClonesToMapping(mapping: Mapping): Mapping {
+  mapping.mapping_items
+    .forEach(mappingItem => {
+      const clones = {};
+      mappingItem.mapping.forEach(mappingNode => {
+        const targetCloneName = mappingNode.targetCloneName;
+        if (targetCloneName && targetCloneName !== '' && !clones.hasOwnProperty(targetCloneName)) {
+          clones[mappingNode.targetCloneName] = mappingNode.condition;
+        }
+      });
+
+      const clonesKeys = Object.keys(clones);
+      if (clonesKeys.length > 0) {
+        mappingItem.clones = clonesKeys.map(key => ({
+          name: key,
+          condition: clones[key]
+        }));
+      }
+    });
+
+  return mapping;
 }

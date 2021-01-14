@@ -10,7 +10,7 @@ import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
 import { Configuration } from '../models/configuration';
 import { IConnector } from '../models/interface/connector.interface';
-import { MappingService } from '../models/mapping-service';
+import { addClonesToMapping, MappingService } from '../models/mapping-service';
 import { ITable, Table } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
@@ -95,7 +95,6 @@ export class BridgeService {
 
   applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
-  loadSavedSchema$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
   reportLoading$ = new Subject<boolean>();
   private sourcerow: IRow;
@@ -387,15 +386,11 @@ export class BridgeService {
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string, tableCloneName?: string) {
     const deleteCondition = tableCloneName ?
-      function (targetName: any, sourceName: any, cloneName: any) {
-        return targetName.toUpperCase() === targetTableName.toUpperCase() &&
+      (targetName: any, sourceName: any, cloneName: any) => targetName.toUpperCase() === targetTableName.toUpperCase() &&
         sourceName.toUpperCase() === sourceTableName.toUpperCase() &&
-        tableCloneName.toUpperCase() === cloneName.toUpperCase()
-      } :
-      function (targetName: any, sourceName: any, cloneName: any) {
-        return targetName.toUpperCase() === targetTableName.toUpperCase() &&
-        sourceName.toUpperCase() === sourceTableName.toUpperCase()
-      };
+        tableCloneName.toUpperCase() === cloneName.toUpperCase() :
+      (targetName: any, sourceName: any, cloneName: any) => targetName.toUpperCase() === targetTableName.toUpperCase() &&
+        sourceName.toUpperCase() === sourceTableName.toUpperCase();
     Object.keys(this.arrowsCache).forEach(key => {
       const cache = this.arrowsCache[ key ];
       const { target: { tableName: cachedTargetTableName, cloneTableName: clone }, source: { tableName: cachedSourceTableName } } = cache;
@@ -444,7 +439,6 @@ export class BridgeService {
     };
   }
 
-
   copyTransformations(arrow: any, cloneTable?: any) {
     const arrowWithSameTarget = cloneTable ? Object.values(this.arrowsCache).
     filter(item => item.target.tableName === cloneTable.name &&
@@ -469,13 +463,13 @@ export class BridgeService {
     });
   }
 
-  addCloneConstants(cloneTable: ITable, targetTable: ITable){
+  addCloneConstants(cloneTable: ITable, targetTable: ITable) {
     const constants = Object.values(this.constantsCache).filter(it => it.tableName === targetTable.name &&
       it.cloneTableName === targetTable.cloneName);
     constants.forEach(item => {
-      const row = cloneTable.rows.find(el => el.name === item.name)
+      const row = cloneTable.rows.find(el => el.name === item.name);
       this.constantsCache[ this.getConstantId(row) ] = row;
-    })
+    });
   }
 
   hideAllArrows(): void {
@@ -632,8 +626,8 @@ export class BridgeService {
       similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[ item ]));
     }
     connectedToSameTraget.forEach(item => { item.lookup = { ...arrow.lookup }; item.sql = { ...arrow.sql }; });
-    const applyedL = arrow.lookup ? arrow.lookup[ 'applied' ] ? true : false : false;
-    const applyedT = arrow.sql ? arrow.sql[ 'applied' ] ? true : false : false;
+    const applyedL = arrow.lookup ? !!arrow.lookup['applied'] : false;
+    const applyedT = arrow.sql ? !!arrow.sql['applied'] : false;
     const appliedTransformations = applyedL && applyedT ? 'M' : applyedL || applyedT ? applyedL ? 'L' : 'T' : 'None';
     connectedToSameTraget.forEach(item => {
       this.setArrowType(item.connector.id, appliedTransformations);
@@ -644,7 +638,7 @@ export class BridgeService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  getMappingWithViewsAndGroups(sourceTables: any) {
+  generateMappingWithViewsAndGroups(sourceTables: any) {
     const mappingJSON = this.generateMapping();
 
     sourceTables.forEach(source => {
@@ -656,6 +650,12 @@ export class BridgeService {
     });
 
     return mappingJSON;
+  }
+
+  generateMappingWithViewsAndGroupsAndClones(sourceTables: any) {
+    const mappingJSON = this.generateMappingWithViewsAndGroups(sourceTables);
+
+    return addClonesToMapping(mappingJSON);
   }
 
   prepareTables(data, area, areaRows) {
@@ -713,5 +713,4 @@ export class BridgeService {
       );
     });
   }
-
 }
