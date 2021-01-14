@@ -3,7 +3,7 @@
     <label for="files">Select files</label>
     <div class="file-input">
       <span class="file-input__text">{{fileInputText}}</span>
-      <input id="files" type="file" multiple (change)="onFileInputChange($event)" [disabled]="disabled">
+      <input id="files" type="file" multiple (change)="onFileInputChange($event)" [disabled]="disabled" accept=".csv">
     </div>
   </div>
 
