@@ -152,18 +152,19 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
     mappingItems.forEach((item, index) => {
       const field = source.rows.filter(row => row.name === item.source_field)[ 0 ];
       if (field && field.grouppedFields && field.grouppedFields.length) {
-        const mappingsToAdd = field.grouppedFields.map(grouppedField => {
+        const mappingsToAdd: MappingNode[] = field.grouppedFields.map(groupedField => {
           const regex = new RegExp('(' + field.name + ')(\\s|,|\\))', 'gi');
           return {
-            source_field: grouppedField.name,
+            source_field: groupedField.name,
             target_field: item.target_field,
-            sql_field: grouppedField.name,
+            sql_field: groupedField.name,
             sql_alias: item.sql_alias,
             lookup: item.lookup,
-            sqlTransformation: item.sqlTransformation.replace(regex, `${grouppedField.name}$2`),
+            sqlTransformation: item.sqlTransformation.replace(regex, `${groupedField.name}$2`),
             comments: item.comments,
             condition: item.condition,
-            targetCloneName: item.targetCloneName ? item.targetCloneName : ''
+            targetCloneName: item.targetCloneName ? item.targetCloneName : '',
+            groupName: item.source_field
           };
         });
 

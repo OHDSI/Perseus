@@ -493,11 +493,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.bridgeService.deleteSelectedArrows();
     }
   }
-
-  trackByFn(index, item) {
-    return index;
-  }
-
   previewMapping() {
     const source = this.currentSourceTable;
     const target = this.currentTargetTable;

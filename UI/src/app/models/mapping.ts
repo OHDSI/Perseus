@@ -30,6 +30,7 @@ export interface MappingNode {
   comments?: IComment[];
   condition?: string;
   targetCloneName?: string;
+  groupName?: string;
 }
 
 export interface MappingPair {
