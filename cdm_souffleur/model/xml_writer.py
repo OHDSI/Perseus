@@ -538,7 +538,7 @@ def get_xml(json_):
                                 domain_definition_tag,
                                 _convert_underscore_to_camel(_replace_with_similar_name(target_field))
                             )
-                            v.text = sql_alias if sql_alias else source_field
+                            v.text = f'{clone_key}{sql_alias}' if sql_alias else source_field
 
                             definitions.append(target_field)
                     if sql_transformation:
