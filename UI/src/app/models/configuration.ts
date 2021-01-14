@@ -63,7 +63,7 @@ export class Configuration {
 
   get constantsCache(): any {
     if (this.constants) {
-      return JSON.parse(this.constants);
+      return parse(this.constants);
     }
     return {};
   }
@@ -128,7 +128,7 @@ export class Configuration {
     this.report = JSON.stringify(options.report);
     this.version = JSON.stringify(options.version);
     this.filtered = JSON.stringify(options.filtered);
-    this.constants = JSON.stringify(options.constants);
+    this.constants = stringify(options.constants);
     this.targetTablesClones = stringify(options.targetClones);
     this.sourceSimilar = stringify(options.sourceSimilar);
     this.targetSimilar = stringify(options.targetSimilar);

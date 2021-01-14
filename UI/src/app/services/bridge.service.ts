@@ -488,6 +488,10 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
+  deleteAllConstants() {
+    this.constantsCache = {};
+  }
+
   setArrowType(id: string, type: string) {
     const arrow = this.arrowsCache[ id ];
     arrow.connector.setEndMarkerType(type);
@@ -563,6 +567,7 @@ export class BridgeService {
 
   resetAllMappings() {
     this.deleteAllArrows();
+    this.deleteAllConstants();
 
     this.resetAllMappings$.next();
   }
