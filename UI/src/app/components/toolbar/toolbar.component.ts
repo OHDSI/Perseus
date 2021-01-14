@@ -126,7 +126,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
     const sourceTables = this.bridgeService.prepareTables(source, Area.Source, areaRows);
 
-    const mappingJSON = this.bridgeService.getMappingWithViewsAndGroups(sourceTables);
+    const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(sourceTables);
 
     this.dataService
       .getZippedXml(mappingJSON)

@@ -39,7 +39,7 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup && arrow.lookup['applied']? arrow.lookup['name'] : '',
+          lookup: arrow.lookup && arrow.lookup['applied'] ? arrow.lookup['name'] : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.source.comments,
@@ -97,7 +97,7 @@ export class MappingService {
     return mapping;
   }
 
-  getSqlTransformation(arrow: any){
+  getSqlTransformation(arrow: any) {
     const target_column_name = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
     return arrow.sql && arrow.sql['applied'] ? `${arrow.sql['name']} as ${target_column_name}` : '';
   }
@@ -144,7 +144,6 @@ export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
 }
 
 export function addGroupMappings(mapping: Mapping, source: ITable) {
-
   if (source.name !== 'similar') {
     const mappingIndex = mapping.mapping_items.findIndex(item => item.source_table === source.name);
     let mappingItems = mapping.mapping_items[ mappingIndex ].mapping;
@@ -180,4 +179,27 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
 
     mapping.mapping_items[ mappingIndex ].mapping = mappingItems;
   }
+}
+
+export function addClonesToMapping(mapping: Mapping): Mapping {
+  mapping.mapping_items
+    .forEach(mappingItem => {
+      const clones = {};
+      mappingItem.mapping.forEach(mappingNode => {
+        const targetCloneName = mappingNode.targetCloneName;
+        if (targetCloneName && targetCloneName !== '' && !clones.hasOwnProperty(targetCloneName)) {
+          clones[mappingNode.targetCloneName] = mappingNode.condition;
+        }
+      });
+
+      const clonesKeys = Object.keys(clones);
+      if (clonesKeys.length > 0) {
+        mappingItem.clones = clonesKeys.map(key => ({
+          name: key,
+          condition: clones[key]
+        }));
+      }
+    });
+
+  return mapping;
 }

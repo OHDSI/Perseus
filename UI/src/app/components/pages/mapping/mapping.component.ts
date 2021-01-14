@@ -525,7 +525,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   generateMappingJson() {
-    const mappingJSON = this.bridgeService.getMappingWithViewsAndGroups(this.source);
+    const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(this.source);
 
     this.dataService
       .getZippedXml(mappingJSON)
@@ -693,17 +693,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const reportCreator: ReportCreator = new WordReportCreator();
     const info = stateToInfo(this.storeService.state);
     const mappingHeader = { source: info.reportName, target: info.cdmVersion };
-    const mapping = this.bridgeService.generateMapping();
-
-    this.source.forEach(source => {
-      addViewsToMapping(mapping, source);
-    });
+    const mapping = this.bridgeService.generateMappingWithViewsAndGroupsAndClones(this.source);
 
     reportCreator
       .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
       .createTablesMappingImage(mappingHeader, this.mappingConfig);
 
-    const lookupTypesSet = new Set<string>();
+    const lookupTypesSet = new Set<string>(); // Lookups for appendix
     const sortAscByTargetFunc = (a: MappingPair, b: MappingPair) =>
       a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1);
     const sortedMappingItems = mapping.mapping_items.sort(sortAscByTargetFunc);
@@ -718,6 +714,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         reportCreator
           .createHeader2(`Table name: ${currentTargetTable}`, true);
       }
+
+      // set lookups
       for (const mappingNode of mappingItem.mapping) {
         if (mappingNode.lookup) {
           lookupTypesSet.add(mappingNode.lookupType);
@@ -726,11 +724,36 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             .toPromise();
         }
       }
+
       reportCreator
-        .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage)
-        .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
-        .createParagraph()
-        .createFieldsDescriptionTable(mappingItem.mapping);
+        .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage);
+
+      const hasClones = mappingItem.clones && mappingItem.clones.length > 0;
+
+      if (hasClones) {
+        mappingItem.clones.forEach((clone, index) => {
+          reportCreator
+            .createHeader4(`Clone ${clone.name}`, index !== 0);
+
+          if (clone.condition && clone.condition !== '') {
+            reportCreator
+              .createParagraph(`Condition: ${clone.condition}`);
+          }
+
+          const mappingNodes = mappingItem.mapping
+            .filter(mappingNode => mappingNode.targetCloneName = clone.name);
+
+          reportCreator
+            .createFieldsMappingImage(mappingHeader, mappingNodes)
+            .createParagraph()
+            .createFieldsDescriptionTable(mappingNodes);
+        });
+      } else {
+        reportCreator
+          .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
+          .createParagraph()
+          .createFieldsDescriptionTable(mappingItem.mapping);
+      }
     }
 
     reportCreator.createHeader1('Appendix');

@@ -39,7 +39,7 @@ export class CdmBuilderService {
 
   addMapping(): Observable<boolean> {
     const source = this.storeService.state.mappedSource;
-    const mappingJSON = this.bridgeService.getMappingWithViewsAndGroups(source);
+    const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(source);
 
     return this.dataService.getZippedXml(mappingJSON)
       .pipe(

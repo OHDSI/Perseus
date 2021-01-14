@@ -185,14 +185,14 @@
                        (initialized)="onPanelInit(similarTargetTable)"></app-panel>
           </mat-tab>
           <mat-tab>
-          <ng-template mat-tab-label>
-            <div class="drop-down-label"
-                 (wheel) = "onWheel($event, 'target')"
-                 (click)="openTablesDropdown($event.target, 'target')">
-              <div>{{selectedTargetTable.name}}</div>
-              <mat-icon *ngIf = "getEnabledTargetTables().length > 1">arrow_drop_down</mat-icon>
-            </div>
-          </ng-template>
+            <ng-template mat-tab-label>
+              <div class="drop-down-label"
+                   (wheel)="onWheel($event, 'target')"
+                   (click)="openTablesDropdown($event.target, 'target')">
+                <div>{{selectedTargetTable.name}}</div>
+                <mat-icon *ngIf="getEnabledTargetTables().length > 1">arrow_drop_down</mat-icon>
+              </div>
+            </ng-template>
             <app-panel #targetPanel
                        *ngIf="selectedTargetTable.visible"
                        [tabIndex]="targetTabIndex"

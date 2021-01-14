@@ -12,6 +12,8 @@ export interface ReportCreator {
 
   createHeader3: (text: string, onNewPage: boolean) => ReportCreator;
 
+  createHeader4: (text: string, onNewPage: boolean) => ReportCreator;
+
   createTablesMappingImage: (header: MappingForImage, mappingConfig: string[][]) => ReportCreator;
 
   createFieldsMappingImage: (header: MappingForImage, mapping: MappingNode[]) => ReportCreator;

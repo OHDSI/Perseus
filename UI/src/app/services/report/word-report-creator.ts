@@ -56,6 +56,18 @@ export class WordReportCreator implements ReportCreator {
           paragraph
         },
         {
+          id: 'Heading4',
+          name: 'Heading 4',
+          basedOn: 'Normal',
+          next: 'Normal',
+          quickFormat: true,
+          run: {
+            size: 24,
+            bold: true
+          },
+          paragraph
+        },
+        {
           id: 'Default',
           name: 'Default',
           basedOn: 'Normal',
@@ -113,6 +125,10 @@ export class WordReportCreator implements ReportCreator {
 
   createHeader3(text: string, onNewPage: boolean): ReportCreator {
     return this.createHeader(text, HeadingLevel.HEADING_3, onNewPage);
+  }
+
+  createHeader4(text: string, onNewPage: boolean): ReportCreator {
+    return this.createHeader(text, HeadingLevel.HEADING_4, onNewPage);
   }
 
   createTablesMappingImage(header: MappingForImage, mappingConfig: string[][]) {
