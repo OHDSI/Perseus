@@ -21,4 +21,8 @@ export class CdmConnectFormComponent {
   id(name: string): string {
     return `${this.prefix}-${name}`;
   }
+
+  resetForm(){
+    this.form.reset();
+  }
 }
