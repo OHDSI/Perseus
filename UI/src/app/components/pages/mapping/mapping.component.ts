@@ -169,13 +169,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.refreshAll();
       }
     });
-    this.activatedRoute.queryParams.subscribe(data=> {
-      if(Object.keys(data).length !== 0){
-       this.targetTabIndex = 1;
-       this.sourceTabIndex = 1;
-       const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
-       this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
-       this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));       
+    this.activatedRoute.queryParams.subscribe(data => {
+      if (Object.keys(data).length !== 0) {
+        this.targetTabIndex = 1;
+        this.sourceTabIndex = 1;
+        const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
+        this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
+        this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
       }
    });
 
@@ -746,7 +746,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           }
 
           const mappingNodes = mappingItem.mapping
-            .filter(mappingNode => mappingNode.targetCloneName = clone.name);
+            .filter(mappingNode => mappingNode.targetCloneName === clone.name);
 
           reportCreator
             .createFieldsMappingImage(mappingHeader, mappingNodes)

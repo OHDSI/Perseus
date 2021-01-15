@@ -160,6 +160,7 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
             sql_field: groupedField.name,
             sql_alias: item.sql_alias,
             lookup: item.lookup,
+            lookupType: item.lookupType,
             sqlTransformation: item.sqlTransformation.replace(regex, `${groupedField.name}$2`),
             comments: item.comments,
             condition: item.condition,
