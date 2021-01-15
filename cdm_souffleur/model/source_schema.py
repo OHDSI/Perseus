@@ -141,7 +141,8 @@ def run_sql_transformation(sql_transformation):
     pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
                                host='localhost', port=5432)
     pg_db.connect()
-    pg_db.execute_sql(sql_transformation).description
+    for val in sql_transformation:
+        pg_db.execute_sql(val).description
     pg_db.close()
     return True
 

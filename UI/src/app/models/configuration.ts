@@ -63,7 +63,13 @@ export class Configuration {
 
   get constantsCache(): any {
     if (this.constants) {
-      return parse(this.constants);
+      let constants;
+      try {
+        constants = parse(this.constants);
+      } catch {
+        constants = JSON.parse(this.constants)
+      }
+      return constants;
     }
     return {};
   }
