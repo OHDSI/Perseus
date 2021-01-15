@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Command } from 'src/app/infrastructure/command';
-import { cloneDeep, uniqBy } from 'src/app/infrastructure/utility';
+import { cloneDeep, uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { StateService } from 'src/app/services/state.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
@@ -18,6 +18,7 @@ import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.
 import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
+import { Area } from 'src/app/models/area';
 
 @Component({
   selector: 'app-transform-config',
@@ -225,22 +226,35 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   }
 
-  validateSql(sql: string){
-    const sqlTransformation = `SELECT ${sql} FROM ${this.connector.source.tableName}`
-    this.httpService.validateSql({sql: sqlTransformation}).subscribe(res=>{
+  validateSql(sql: string) {
+    const sqlTransformation = [];
+    if (this.connector.source.tableName === 'similar') {
+      const similarLinks = this.bridgeService.findSimilarLinks(this.connector, Area.Source, Area.Target);
+      const tables = [];
+      similarLinks.forEach(item => {
+        const tableName = this.bridgeService.arrowsCache[ item ].source.tableName;
+        if (tableName !== 'similar') {
+          tables.push(this.bridgeService.arrowsCache[ item ].source.tableName)
+        }
+      }
+      )
+      uniq(tables).forEach(it => sqlTransformation.push(`SELECT ${sql} FROM ${it}`))
+    } else {
+      sqlTransformation.push(`SELECT ${sql} FROM ${this.connector.source.tableName}`)
+    }
+    this.httpService.validateSql({ sql: sqlTransformation }).subscribe(res => {
       this.dialogRef.close({ sql: this.sql })
     },
-    error => {
-      const dialog = this.matDialog.open(ErrorPopupComponent, {
-        closeOnNavigation: false,
-        disableClose: false,
-        data: {
-          title: 'Sql error',
-          message: error.error.message
-        }
-      });
-    })
-    return true;
+      error => {
+        const dialog = this.matDialog.open(ErrorPopupComponent, {
+          closeOnNavigation: false,
+          disableClose: false,
+          data: {
+            title: 'Sql error',
+            message: error.error.message
+          }
+        });
+      })
   }
 
   addDisabled() {
