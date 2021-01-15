@@ -181,6 +181,28 @@ def get_top_values(table_name, column_name=None):
         except KeyError as e:
             raise InvalidUsage('Column invalid' + e.__str__(), 404)
 
+def get_column_info(table_name, column_name=None):
+    """return top 10 values be freq for target table and/or column"""
+    try:
+        table_overview = pd.read_excel(book, table_name, dtype=str,
+                                       na_filter=False,
+                                       engine='xlrd')
+        overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
+        sql = f"select field, `table`, `type`, `Fraction empty` as emp, `N unique values` as uniq from overview where `table`=='{table_name}' and `field`=='{column_name}'"
+        tables_pd = sqldf(sql)._series
+    except xlrd.biffh.XLRDError as e:
+        raise InvalidUsage(e.__str__(), 404)
+    try:
+        info = {}
+        info['top_10'] = table_overview[column_name].head(10).tolist()
+        info['field'] = tables_pd['Field'][0]
+        info['table'] = tables_pd['Table'][0]
+        info['type'] = tables_pd['Type'][0]
+        info['unique'] = tables_pd['uniq'][0]
+        info['empty'] = tables_pd['emp'][0]
+        return info
+    except KeyError as e:
+        raise InvalidUsage('Column invalid' + e.__str__(), 404)
 
 def load_report(filepath):
     """Load report from whiteRabbit to DB, separate table for each sheet"""

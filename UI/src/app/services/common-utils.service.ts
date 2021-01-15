@@ -170,7 +170,13 @@ export class CommonUtilsService {
 
   loadReportAndReturnToComfy() {
     this.router.navigateByUrl(`/comfy`);
+    this.refreshCDM();
     this.loadReport.next(true);
+  }
+
+  refreshCDM() {
+    this.storeService.state.targetClones = {};
+    this.dataService.getTargetData(this.storeService.state.version).subscribe();    
   }
 
   resetMappingsWithWarning() {
