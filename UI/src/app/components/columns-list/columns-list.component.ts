@@ -3,7 +3,7 @@ import { IRow } from 'src/app/models/row';
 import { DataService } from 'src/app/services/data.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { ValuesPopupComponent } from '../popups/values-popup/values-popup.component';
+import { ColumnInfoComponent } from '../field-information/column-info.component';
 
 @Component({
   selector: 'app-columns-list',
@@ -11,7 +11,9 @@ import { ValuesPopupComponent } from '../popups/values-popup/values-popup.compon
   styleUrls: ['./columns-list.component.scss']
 })
 export class ColumnsListComponent {
-  @Input() sourceRows: IRow[];
+  @Input() uniqSourceRows: IRow[];
+
+  @Input() allSourceRows: IRow[];
 
   @Output() columnsSelected = new EventEmitter<string[]>();
 
@@ -41,21 +43,22 @@ export class ColumnsListComponent {
     }
   }
 
-  showTop10Values(event: any, htmlElement: any, item: IRow) {
+  showColumnInfo(event: any, htmlElement: any, item: IRow) {
     event.stopPropagation();
 
     const { tableName, name } = item;
-    this.dataService.getTopValues(tableName, name).subscribe(result => {
-      const component = ValuesPopupComponent;
+
+    this.dataService.getColumnInfo(tableName, name).subscribe(result => {
+      const componentType = ColumnInfoComponent;
 
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
         backdropClass: 'custom-backdrop',
         positionStrategyFor: 'values',
-        payload: { items: result }
+        payload: result
       };
 
-      this.overlayService.open(dialogOptions, htmlElement, component);
+      this.overlayService.open(dialogOptions, htmlElement, componentType);
     });
   }
 }

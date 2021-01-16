@@ -1,0 +1,37 @@
+<div class="field-information">
+  <div class="field-information__general">
+    <div class="field-information__general-name">
+      <span>Field Name:</span>
+      <span>{{fieldInformation.name}}</span>
+    </div>
+
+    <div class="field-information__general-type">
+      <span>Field type:</span>
+      <span>{{fieldInformation.type}}</span>
+    </div>
+
+    <div class="field-information__general-unique">
+      <span>Unique values:</span>
+      <span>{{fieldInformation.uniqueValues}}</span>
+    </div>
+  </div>
+
+  <div class="field-information__values">
+    <table>
+      <thead>
+      <tr>
+        <th>Value</th>
+        <th>Frequency</th>
+        <th>Percentage</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let value of fieldInformation.topValues">
+        <th>{{value.value}}</th>
+        <th>{{value.frequency}}</th>
+        <th>{{value.percentage}}</th>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

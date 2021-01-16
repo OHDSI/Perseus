@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { Mapping } from '../models/mapping';
@@ -14,7 +14,7 @@ const API_URLS = {
   getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
   getSourceSchema: (path) => `${URL}/get_source_schema?path=${path}`,
   getSourceSchemaData: (name) => `${URL}/load_saved_source_schema?schema_name=${name}`,
-  getTopValues: (tableName, columnName) => `${URL}/get_top_values?table_name=${tableName}&column_name=${columnName}`,
+  getColumnInfo: (tableName, columnName) => `${URL}/get_column_info?table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
   getSqlPreview: (name) => `${URL}/get_generated_sql?source_table_name=${name}`,
   postLoadSchema: () => `${URL}/load_schema`,
@@ -29,8 +29,9 @@ const API_URLS = {
 
 };
 
-@Injectable()
-
+@Injectable({
+  providedIn: 'root'
+})
 export class HttpService {
 
   constructor(private httpClient: HttpClient) {
@@ -52,8 +53,8 @@ export class HttpService {
     return this.httpClient.get<any>(API_URLS.getSourceSchemaData(name));
   }
 
-  getTopValues(tableName: string, columnName: string): Observable<any> {
-    return this.httpClient.get<any>(API_URLS.getTopValues(tableName, columnName));
+  getColumnInfo(tableName: string, columnName: string): Observable<any> {
+    return this.httpClient.get<any>(API_URLS.getColumnInfo(tableName, columnName));
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {

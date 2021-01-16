@@ -16,7 +16,6 @@ import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/c
 import { DeleteWarningComponent } from 'src/app/components/popups/delete-warning/delete-warning.component';
 import { RulesPopupComponent } from 'src/app/components/popups/rules-popup/rules-popup.component';
 import { SetConnectionTypePopupComponent } from 'src/app/components/popups/set-connection-type-popup/set-connection-type-popup.component';
-import { ValuesPopupComponent } from 'src/app/components/popups/values-popup/values-popup.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
@@ -67,6 +66,7 @@ import { ScanDataModule } from './scan-data/scan-data.module';
 import { ErrorPopupComponent } from './components/popups/error-popup/error-popup.component';
 import { SelectTableDropdownComponent } from './components/popups/select-table-dropdown/select-table-dropdown.component';
 import { TargetCloneDialogComponent } from './components/target-clone-dialog/target-clone-dialog.component';
+import { ColumnInfoComponent } from './components/field-information/column-info.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +75,6 @@ import { TargetCloneDialogComponent } from './components/target-clone-dialog/tar
     BreadcrumbComponent,
     MappingComponent,
     CommentPopupComponent,
-    ValuesPopupComponent,
     SetConnectionTypePopupComponent,
     DeleteWarningComponent,
     SampleDataPopupComponent,
@@ -108,7 +107,8 @@ import { TargetCloneDialogComponent } from './components/target-clone-dialog/tar
     LookupComponent,
     ErrorPopupComponent,
     SelectTableDropdownComponent,
-    TargetCloneDialogComponent
+    TargetCloneDialogComponent,
+    ColumnInfoComponent
   ],
   imports: [
     BrowserModule,

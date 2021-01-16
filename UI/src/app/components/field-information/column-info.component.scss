@@ -1,0 +1,40 @@
+.field-information {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #fff;
+
+  width: 300px;
+  height: auto;
+
+  padding: 10px;
+
+  &__general {
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+  }
+
+  &__values {
+
+    table {
+      width: 100%;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    th {
+      font-weight: normal;
+      text-align: left;
+      padding: 5px;
+    }
+  }
+}
