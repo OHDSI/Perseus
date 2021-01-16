@@ -11,7 +11,7 @@ from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
 from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, \
-    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation
+    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, get_column_info
 from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
@@ -152,6 +152,14 @@ def get_top_values_call():
     column_name = request.args.get('column_name')
     return jsonify(get_top_values(table_name, column_name))
 
+@bp.route('/api/get_column_info')
+def get_column_info_call():
+    """return top 10 values by freq for table and row(optionally)
+    based on WR report
+    """
+    table_name = request.args['table_name']
+    column_name = request.args.get('column_name')
+    return jsonify(get_column_info(table_name, column_name))
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
