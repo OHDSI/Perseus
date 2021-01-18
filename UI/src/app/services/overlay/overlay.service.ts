@@ -1,5 +1,4 @@
 import {
-  ConnectedPosition,
   ConnectionPositionPair,
   FlexibleConnectedPositionStrategy,
   Overlay,
@@ -45,7 +44,7 @@ export class OverlayService {
   open(
     configOptions: OverlayConfigOptions,
     anchor: any,
-    component: any
+    componentType: any
   ): OverlayDialogRef {
     const config = this.getOverlayConfig(configOptions, anchor);
 
@@ -57,7 +56,7 @@ export class OverlayService {
 
     const injector = this.createInjector(configOptions, dialogRef);
 
-    overlayRef.attach(new ComponentPortal(component, null, injector));
+    overlayRef.attach(new ComponentPortal(componentType, null, injector));
 
     return dialogRef;
   }

@@ -1,0 +1,75 @@
+@import 'src/app/styles/variables.scss';
+
+.mat-tab-column-info-container {
+  width: 300px;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 14px;
+    width: 0;
+    height: 0;
+    box-sizing: border-box;
+    border: 5px solid $black;
+    border-color: transparent transparent $cdm-grey-lighter $cdm-grey-lighter;
+    transform-origin: 0 0;
+    transform: rotate(45deg);
+    box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.column-info {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  padding: 10px;
+  background-color: #fff;
+  font-size: 12px;
+
+  &__general {
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+  }
+
+  &__values {
+
+    table {
+      width: 100%;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    th {
+      font-weight: normal;
+      text-align: left;
+      padding: 2px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 300px;
+  height: auto;
+
+  p {
+    margin: 0;
+  }
+}

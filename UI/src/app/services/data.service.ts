@@ -9,10 +9,13 @@ import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
+import { ColumnInfo } from '../components/field-information/column-info.component';
 
 const URL = environment.url;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DataService {
   batch = [];
 
@@ -48,7 +51,7 @@ export class DataService {
           name: item.column_list[j].column_name,
           type: item.column_list[j].column_type,
           isNullable: item.column_list[j].is_column_nullable ?
-          item.column_list[j].is_column_nullable.toUpperCase() === 'YES' ? true : false : true,
+            item.column_list[j].is_column_nullable.toUpperCase() === 'YES' : true,
           comments: [],
           uniqueIdentifier: unique,
           area
@@ -79,7 +82,7 @@ export class DataService {
 
   getZippedXml(mapping: Mapping): Observable<any> {
     return this.getXmlPreview(mapping).pipe(
-      switchMap(jsonMapping => {
+      switchMap(() => {
         const headers = new Headers();
         headers.set('Content-type', 'application/json; charset=UTF-8');
         headers.set('Cache-Control',  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0');
@@ -95,7 +98,7 @@ export class DataService {
         const request = new Request(url, init);
 
         return from(
-          new Promise((resolve, reject) => {
+          new Promise((resolve) => {
             fetch(request)
               .then(responce => responce.blob())
               .then(blob => {
@@ -143,8 +146,27 @@ export class DataService {
     );
   }
 
-  getTopValues(tableName: string, columnName: string): Observable<any> {
-    return this.httpService.getTopValues(tableName, columnName);
+  getColumnInfo(tableName: string, columnName: string): Observable<ColumnInfo> {
+    return this.httpService.getColumnInfo(tableName, columnName)
+      .pipe(
+        map(info => {
+          if (info.top_10[info.top_10.length - 1] === 'List truncated...') {
+            info.top_10.pop();
+          }
+
+          return {
+            name: info.field,
+            type: info.type,
+            uniqueValues: info.unique,
+            topValues: info.percentage
+              .map((percentage, index) => ({
+                value: info.top_10[index],
+                frequency: info.frequency[index],
+                percentage: (percentage * 100).toFixed(2)
+              }))
+          };
+        })
+      );
   }
 
   saveSourceSchemaToDb(sourceTables: any): Observable<any> {

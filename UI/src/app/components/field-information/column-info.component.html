@@ -1,0 +1,49 @@
+<div class="mat-tab-column-info-container">
+  <mat-tab-group (selectedTabChange)="onTableChanged($event.index)">
+    <mat-tab *ngFor="let tableName of tableNames" [label]="tableName">
+      <div *ngIf="columnInfos[tableName]; else loadingBlock" class="column-info">
+        <div class="column-info__general">
+          <div class="column-info__general-name">
+            <span>Field Name:</span>
+            <span>{{columnName}}</span>
+          </div>
+
+          <div class="column-info__general-type">
+            <span>Field type:</span>
+            <span>{{columnInfos[tableName].type}}</span>
+          </div>
+
+          <div class="column-info__general-unique">
+            <span>Unique values:</span>
+            <span>{{columnInfos[tableName].uniqueValues}}</span>
+          </div>
+        </div>
+
+        <div *ngIf="columnInfos[tableName].topValues.length > 0" class="column-info__values">
+          <table>
+            <thead>
+            <tr>
+              <th>Value</th>
+              <th>Frequency</th>
+              <th>Percentage</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let value of columnInfos[tableName].topValues">
+              <th>{{value.value}}</th>
+              <th>{{value.frequency}}</th>
+              <th>{{value.percentage}}</th>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <ng-template #loadingBlock>
+        <div class="loading-container">
+          <p>Loading...</p>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
