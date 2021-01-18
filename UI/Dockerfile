@@ -1,21 +1,15 @@
-FROM node:14.5.0
-
-ARG CDM_CONFIG=''
-
-ARG CDM_PORT=4200
-
-ENV CDM_CONFIG ${CDM_CONFIG}
-
-ENV CDM_PORT ${CDM_PORT}
-
-COPY . /app/UI
-
-WORKDIR /app/UI
-
-RUN npm install -g @angular/cli
-
+### STAGE 1: Build ###
+FROM node:14.5.0 AS build-step
+ARG env='prod'
+ENV env ${env}
+WORKDIR /usr/src/app
+COPY package.json .
 RUN npm install
+COPY . .
+RUN ng build $env
 
-RUN npm install node-sass@4.14.1
+### STAGE 2: Run ###
 
-CMD ng serve --c $CDM_CONFIG --port $CDM_PORT
+FROM nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=build-step /usr/src/app/dist/report-config /usr/share/nginx/html
