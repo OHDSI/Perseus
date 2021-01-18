@@ -11,5 +11,5 @@ RUN ng build --$env
 
 ### STAGE 2: Run ###
 FROM nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.$env.conf /etc/nginx/nginx.conf
 COPY --from=build-step /usr/src/app/dist /usr/share/nginx/html
