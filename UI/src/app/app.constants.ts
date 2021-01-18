@@ -6,7 +6,7 @@ export const isProd = environment.production;
 export const isDev = !isProd;
 
 export const whiteRabbitUrl = environment.whiteRabbitUrl;
-export const whiteRabbitPrefix = '/white-rabbit-service';
+export const whiteRabbitPrefix = 'white-rabbit-service';
 export const whiteRabbitApiUrl = `${whiteRabbitUrl}/${whiteRabbitPrefix}/api`;
 
 export const cdmBuilderLogUrl = `${environment.cdmBuilderUrl}/log`;
