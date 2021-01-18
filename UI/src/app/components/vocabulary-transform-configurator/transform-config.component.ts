@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Command } from 'src/app/infrastructure/command';
 import { cloneDeep, uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
-import { StateService } from 'src/app/services/state.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { TransformRulesData } from '../popups/rules-popup/model/transform-rules-data';
 import { DictionaryItem } from '../vocabulary-search-select/model/vocabulary';
@@ -19,6 +18,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
 import { Area } from 'src/app/models/area';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
   selector: 'app-transform-config',
@@ -90,7 +90,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     private matDialog: MatDialog,
     private snakbar: MatSnackBar,
     private addCondition: MatDialog,
-    private stateService: StateService,
+    private storeService: StoreService,
     private bridgeService: BridgeService,
     vocabulariesService: VocabulariesService,
     private httpService: HttpService
@@ -119,7 +119,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       );
     }
 
-    this.sourceTables = this.stateService.state.source.tables;
+    this.sourceTables = this.storeService.state.source;
     this.vocabularies = vocabulariesService.vocabularies;
 
     this.selectedSourceFields = Object.values(payload.arrowCache).map(arrow => arrow.source.name);
@@ -234,13 +234,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       similarLinks.forEach(item => {
         const tableName = this.bridgeService.arrowsCache[ item ].source.tableName;
         if (tableName !== 'similar') {
-          tables.push(this.bridgeService.arrowsCache[ item ].source.tableName)
+          tables.push(this.getViewSql(sql, tableName))
         }
       }
       )
-      uniq(tables).forEach(it => sqlTransformation.push(`SELECT ${sql} FROM ${it}`))
+      uniq(tables).forEach(it => sqlTransformation.push(it))
     } else {
-      sqlTransformation.push(`SELECT ${sql} FROM ${this.connector.source.tableName}`)
+      sqlTransformation.push(this.getViewSql(sql, this.connector.source.tableName));
     }
     this.httpService.validateSql({ sql: sqlTransformation }).subscribe(res => {
       this.dialogRef.close({ sql: this.sql })
@@ -255,6 +255,12 @@ export class TransformConfigComponent implements OnInit, OnChanges {
           }
         });
       })
+  }
+
+  private getViewSql(sql: string, tableName: string) {
+    let viewSql = this.sourceTables.find(item => item.name == tableName).sql.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');;
+    if (viewSql) {viewSql = `WITH ${tableName} AS (${viewSql}) `}
+    return `${viewSql} SELECT ${sql} FROM ${tableName}`;
   }
 
   addDisabled() {
