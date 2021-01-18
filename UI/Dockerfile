@@ -1,7 +1,6 @@
 ### STAGE 1: Build ###
 FROM node:14.5.0 AS build-step
-ARG env='prod'
-ENV env ${env}
+ARG env=prod
 WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install
