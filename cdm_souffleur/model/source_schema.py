@@ -188,13 +188,20 @@ def get_column_info(table_name, column_name=None):
                                        na_filter=False,
                                        engine='xlrd')
         overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
-        sql = f"select field, `table`, `type`, `Fraction empty` as emp, `N unique values` as uniq from overview where `table`=='{table_name}' and `field`=='{column_name}'"
+        sql = f"select field, `table`, `type`, `Fraction empty` as emp, `N unique values` as uniq, `N rows` as n_rows from overview where `table`=='{table_name}' and `field`=='{column_name}'"
         tables_pd = sqldf(sql)._series
     except xlrd.biffh.XLRDError as e:
         raise InvalidUsage(e.__str__(), 404)
     try:
         info = {}
         info['top_10'] = table_overview[column_name].head(10).tolist()
+        column_index = table_overview.columns.get_loc(column_name)
+        info['frequency'] = table_overview.iloc[:, column_index + 1].head(10).tolist()
+        percentage = []
+        for freq in info['frequency']:
+            if freq:
+                percentage.append(int(freq) / int(tables_pd['n_rows'][0]))
+        info['percentage'] = percentage
         info['field'] = tables_pd['Field'][0]
         info['table'] = tables_pd['Table'][0]
         info['type'] = tables_pd['Type'][0]
