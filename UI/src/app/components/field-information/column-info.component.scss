@@ -1,10 +1,29 @@
-.field-information {
+@import 'src/app/styles/variables.scss';
+
+.mat-tab-column-info-container {
+  background-color: #fff;
+  width: 300px;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 14px;
+    width: 0;
+    height: 0;
+    box-sizing: border-box;
+    border: 5px solid $black;
+    border-color: transparent transparent $cdm-grey-lighter $cdm-grey-lighter;
+    transform-origin: 0 0;
+    transform: rotate(45deg);
+    box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.column-info {
   display: flex;
   flex-direction: column;
 
-  background-color: #fff;
-
-  width: 300px;
   height: auto;
 
   padding: 10px;
@@ -36,5 +55,18 @@
       text-align: left;
       padding: 5px;
     }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 300px;
+  height: auto;
+
+  p {
+    margin: 0;
   }
 }

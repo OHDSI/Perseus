@@ -13,7 +13,9 @@ import { ColumnInfo } from '../components/field-information/column-info.componen
 
 const URL = environment.url;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DataService {
   batch = [];
 

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { IRow } from 'src/app/models/row';
-import { DataService } from 'src/app/services/data.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { ColumnInfoComponent } from '../field-information/column-info.component';
@@ -19,12 +18,6 @@ export class ColumnsListComponent {
 
   selected = [];
 
-  constructor(
-    private dataService: DataService,
-    private overlayService: OverlayService
-  ) {
-  }
-
   onSelect(name: string) {
     const itemSelected = this.selected.find(x => x === name);
     if (itemSelected) {
@@ -34,6 +27,11 @@ export class ColumnsListComponent {
     }
 
     this.columnsSelected.emit(this.selected);
+  }
+
+  constructor(
+    private overlayService: OverlayService
+  ) {
   }
 
   deselectAll() {
@@ -46,19 +44,25 @@ export class ColumnsListComponent {
   showColumnInfo(event: any, htmlElement: any, item: IRow) {
     event.stopPropagation();
 
-    const { tableName, name } = item;
+    const columnName = item.name;
+    const tableNames = this.allSourceRows
+      .filter(row => row.name === columnName)
+      .map(row => row.tableName);
 
-    this.dataService.getColumnInfo(tableName, name).subscribe(result => {
-      const componentType = ColumnInfoComponent;
+    const payload = {
+      columnName,
+      tableNames
+    };
 
-      const dialogOptions: OverlayConfigOptions = {
-        hasBackdrop: true,
-        backdropClass: 'custom-backdrop',
-        positionStrategyFor: 'values',
-        payload: result
-      };
+    const componentType = ColumnInfoComponent;
 
-      this.overlayService.open(dialogOptions, htmlElement, componentType);
-    });
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      positionStrategyFor: 'values',
+      payload
+    };
+
+    this.overlayService.open(dialogOptions, htmlElement, componentType);
   }
 }
