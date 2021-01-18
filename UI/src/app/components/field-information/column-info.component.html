@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <div class="column-info__values">
+        <div *ngIf="columnInfos[tableName].topValues.length > 0" class="column-info__values">
           <table>
             <thead>
             <tr>

@@ -149,12 +149,23 @@ export class DataService {
   getColumnInfo(tableName: string, columnName: string): Observable<ColumnInfo> {
     return this.httpService.getColumnInfo(tableName, columnName)
       .pipe(
-        map(info => ({
-          name: info.field,
-          type: info.type,
-          uniqueValues: info.unique,
-          topValues: info.top_10
-        }))
+        map(info => {
+          if (info.top_10[info.top_10.length - 1] === 'List truncated...') {
+            info.top_10.pop();
+          }
+
+          return {
+            name: info.field,
+            type: info.type,
+            uniqueValues: info.unique,
+            topValues: info.percentage
+              .map((percentage, index) => ({
+                value: info.top_10[index],
+                frequency: info.frequency[index],
+                percentage: (percentage * 100).toFixed(2)
+              }))
+          };
+        })
       );
   }
 

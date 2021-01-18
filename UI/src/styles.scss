@@ -227,12 +227,17 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
 }
 
 .mat-tab-column-info-container {
+  .mat-tab-header {
+    background: #fff;
+  }
+
   .mat-tab-labels {
     display: flex;
   }
 
   .mat-tab-label {
     flex: 1;
+    height: 38px;
   }
 
   .mat-ink-bar {

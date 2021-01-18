@@ -1,8 +1,10 @@
 @import 'src/app/styles/variables.scss';
 
 .mat-tab-column-info-container {
-  background-color: #fff;
   width: 300px;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
 
   &:after {
     content: "";
@@ -23,10 +25,10 @@
 .column-info {
   display: flex;
   flex-direction: column;
-
   height: auto;
-
   padding: 10px;
+  background-color: #fff;
+  font-size: 12px;
 
   &__general {
     display: flex;
@@ -35,7 +37,7 @@
     & > div {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
   }
 
@@ -48,12 +50,13 @@
     table, th, td {
       border: 1px solid black;
       border-collapse: collapse;
+      font-size: 11px;
     }
 
     th {
       font-weight: normal;
       text-align: left;
-      padding: 5px;
+      padding: 2px;
     }
   }
 }

@@ -59,7 +59,7 @@ export class ColumnsListComponent {
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
-      positionStrategyFor: 'values',
+      positionStrategyFor: 'column-info',
       payload
     };
 
