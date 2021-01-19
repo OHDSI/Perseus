@@ -7,6 +7,7 @@ import { adaptDbSettingsForDestination } from '../../../util/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
 import { CdmBuilderService } from '../../../../services/cdm-builder.service';
 import { MatDialog } from '@angular/material/dialog';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cdm-destination-form',
@@ -50,6 +51,9 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
   onTestConnection() {
     this.tryConnect = true;
     this.cdmBuilderService.testDestinationConnection(this.settings as CdmSettings)
+      .pipe(
+        finalize(() => this.tryConnect = false)
+      )
       .subscribe(
         result => this.connectionResult = result,
         error => {
@@ -58,8 +62,7 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
             message: error.error,
           };
           this.showErrorPopup(this.connectionResult.message);
-        },
-        () => this.tryConnect = false
+        }
       );
   }
 }

@@ -13,6 +13,7 @@ import { CdmBuilderService } from '../../../../services/cdm-builder.service';
 import { adaptDbSettingsForSource } from '../../../util/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -81,6 +82,9 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   onTestConnection(): void {
     this.tryConnect = true;
     this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
+      .pipe(
+        finalize(() => this.tryConnect = false)
+      )
       .subscribe(
         result => this.connectionResult = result,
         error => {
@@ -89,8 +93,7 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
             message: error.error,
           };
           this.showErrorPopup(this.connectionResult.message);
-        },
-        () => this.tryConnect = false
+        }
       );
   }
 
