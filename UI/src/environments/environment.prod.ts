@@ -16,5 +16,5 @@ export const environment = {
   conceptTables: CONCEPT_TABLES,
   config: '',
   whiteRabbitUrl: 'http://10.110.1.7',
-  cdmBuilderUrl: 'http://10.110.1.7/org.ohdsi.cdm.presentation.builderwebapi'
+  cdmBuilderUrl: 'http://10.110.1.7/cdm-builder'
 };
