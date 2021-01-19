@@ -11,7 +11,7 @@ const CONCEPT_TABLES = [
   ];
   
   export const environment = {
-    production: true,
+    production: false,
     url: 'http://10.110.1.7/api',
     conceptTables: CONCEPT_TABLES,
     config: '',
