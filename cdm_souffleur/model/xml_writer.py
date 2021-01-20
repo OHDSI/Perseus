@@ -531,6 +531,7 @@ def get_xml(json_):
                             is_source_value(target_field) or
                             is_source_concept_id(target_field)
                         ):
+                            apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag)
                             continue
 
                         if target_field not in definitions:
@@ -541,16 +542,7 @@ def get_xml(json_):
                             v.text = f'{clone_key}{sql_alias}' if sql_alias else source_field
 
                             definitions.append(target_field)
-                    if sql_transformation:
-                        match_item = f"{source_field} as {clone_key}{target_field}"
-                        if sql_transformation not in query_tag.text:
-                            query_tag.text = query_tag.text.replace(
-                                match_item,
-                                sql_transformation,
-                            )
-                        else:
-                            query_tag.text = query_tag.text.replace(f'{match_item},\n', '')
-                            query_tag.text = query_tag.text.replace(f'{match_item}\n', '')
+                    apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag)
                 previous_target_table = target_table
                 if target_table == 'person':
                     generate_bath_sql_file(groupList, source_table, views)
@@ -565,6 +557,17 @@ def get_xml(json_):
         write_xml(query_definition_tag, source_table, result)
     return result
 
+def apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag):
+    if sql_transformation:
+        match_item = f"{source_field} as {clone_key}{target_field}"
+        if sql_transformation not in query_tag.text:
+            query_tag.text = query_tag.text.replace(
+                match_item,
+                sql_transformation,
+            )
+        else:
+            query_tag.text = query_tag.text.replace(f'{match_item},\n', '')
+            query_tag.text = query_tag.text.replace(f'{match_item}\n', '')
 
 def write_xml(tag, filename, result):
     xml = ElementTree(tag)

@@ -183,11 +183,11 @@ export class PanelTableComponent extends BaseComponent
     moveItemInArray(this.table.rows, this.bridgeService.draggedRowIndex, replacerowindex);
     this.updateRowsIndexesAnsSaveChanges();
   }
-  
+
   ngAfterViewInit() {
   }
 
-  getAllPanelRowNames(){
+  getAllPanelRowNames() {
     let existingRowNames = [];
     this.tables.forEach(tbl => {
       const tblRowNames = tbl.rows.reduce((prev, cur) => {
@@ -200,9 +200,9 @@ export class PanelTableComponent extends BaseComponent
   }
 
   createGroup() {
-    if (!this.validateGroupFields()){
+    if (!this.validateGroupFields()) {
       return;
-    };
+    }
     const existingRowNames =  this.getAllPanelRowNames();
     this.groupDialogOpened = true;
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
@@ -255,7 +255,7 @@ export class PanelTableComponent extends BaseComponent
         disableClose: false,
         data: {
           title: 'Grouping error',
-          message: `You cannot add linked fields to Group. Thare are links in the following tables: ${linkedTargetTables.join(",").toUpperCase()}`
+          message: `You cannot add linked fields to Group. Thare are links in the following tables: ${linkedTargetTables.join(',').toUpperCase()}`
         }
       });
 
@@ -301,9 +301,9 @@ export class PanelTableComponent extends BaseComponent
     this.rowFocusedElements.forEach(item =>
       this.storeService.state.target.forEach(tbl => {
         if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, tbl.id)) {
-          linkedTables.push(tbl.name)
+          linkedTables.push(tbl.name);
         }
-      }))
+      }));
     return linkedTables;
   }
 
@@ -317,31 +317,39 @@ export class PanelTableComponent extends BaseComponent
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
         filter(([ k, v ]) => v.includes(groupType))));
     } else {
-      const firstGroupRowType = this.table.rows.find(r => r.name === this.rowFocusedElements[ 0 ].id).type
+      const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(firstGroupRowType.substr(0, firstGroupRowType.indexOf('('))))));
+        filter(([ k, v ]) => v.includes(firstGroupRowType))));
     }
     return this.rowFocusedElements.some(item => {
-      const rowType = this.table.rows.find(r => r.name === item.id).type.toLowerCase();
-      return !typesArray[ 0 ].includes(rowType.substr(0, rowType.indexOf('(')))
+      const rowType = this.getTypeWithoutLength(item.id);
+      return !typesArray[ 0 ].includes(rowType);
     }
     );
   }
 
+  private getTypeWithoutLength(rowName: string) {
+    let rowType = this.table.rows.find(r => r.name === rowName).type;
+    if (rowType.indexOf('(') !== -1) {
+      rowType = rowType.substr(0, rowType.indexOf('('));
+    }
+    return rowType;
+  }
+
   addRowToGroup(rows: IRow[]) {
     const group = rows[ 0 ];
-    const focusedRowsNames = this.rowFocusedElements.map(item =>item.id);
+    const focusedRowsNames = this.rowFocusedElements.map(item => item.id);
     const rowsToAdd = this.table.rows.filter(item => focusedRowsNames.includes(item.name));
     if (!this.validateGroupFields(group.type)) {
       return;
-    };
+    }
     rowsToAdd.forEach(rowToAdd => {
       const addedRowIndex = this.table.rows.findIndex(item => item.name === rowToAdd.name);
       this.table.rows.find(item => item.name === group.name).grouppedFields.splice(0, 0, rowToAdd);
       this.table.rows.splice(addedRowIndex, 1);
       this.bridgeService.saveChangesInGroup(group.tableName, this.table.rows);
       this.removeRowsFromSimilarTable([ rowToAdd.name ]);
-    })
+    });
     this.refreshPanel();
   }
 
@@ -378,7 +386,7 @@ export class PanelTableComponent extends BaseComponent
           this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
             filter(([ k, v ]) => !(v.source.tableName === 'similar' && v.source.name === item)));
         }
-      })
+      });
     }
   }
 
@@ -479,7 +487,7 @@ export class PanelTableComponent extends BaseComponent
 
       overlayRef.afterClosed$.subscribe(ok => {
         row.constant = data.value;
-        this.updateIncrementOrConstantFields(row, 'constant')
+        this.updateIncrementOrConstantFields(row, 'constant');
       });
     }
   }
@@ -547,17 +555,16 @@ export class PanelTableComponent extends BaseComponent
     if (target) {
       const targetFocused = this.rowFocusedElements.find(item => item.id === target.id);
       if (!ctrlKey) {
-        if (!targetFocused) {this.unsetRowFocus();}
-      }
-      else {
+        if (!targetFocused) { this.unsetRowFocus(); }
+      } else {
         if (targetFocused) {
           targetFocused.classList.remove('row-focus');
-          this.rowFocusedElements = this.rowFocusedElements.filter(item => item.id !== target.id)
+          this.rowFocusedElements = this.rowFocusedElements.filter(item => item.id !== target.id);
         }
       }
-      if(!targetFocused){
+      if (!targetFocused) {
         this.rowFocusedElements.push(target);
-        this.rowFocusedElements[ this.rowFocusedElements.length - 1 ].classList.add('row-focus');
+        this.rowFocusedElements[this.rowFocusedElements.length - 1].classList.add('row-focus');
       }
     }
   }
