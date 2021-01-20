@@ -11,10 +11,10 @@ const CONCEPT_TABLES = [
 ];
 
 export const environment = {
-  production: true,
-  url: 'http://10.110.1.2/api',
+  production: false,
+  url: 'http://10.110.1.7/api',
   conceptTables: CONCEPT_TABLES,
   config: '',
-  whiteRabbitUrl: 'http://10.110.1.2',
-  cdmBuilderUrl: 'http://10.110.1.2:9000'
+  whiteRabbitUrl: 'http://10.110.1.7',
+  cdmBuilderUrl: 'http://10.110.1.7:9000'
 };

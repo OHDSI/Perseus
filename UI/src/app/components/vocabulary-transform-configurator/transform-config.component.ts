@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,7 +12,6 @@ import { ConditionDialogComponent } from './condition-dialog/condition-dialog.co
 import { TransformationCondition, TransformationConfig, TransformationConfigFactory } from './model/transformation-config';
 import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/interface/connector.interface';
-import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
 import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -222,8 +221,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   }
 
   add() {
-    this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup }) : this.validateSql(this.sql['name'])
-
+    this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup }) : this.validateSql(this.sql['name']);
   }
 
   validateSql(sql: string) {
@@ -232,18 +230,18 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       const similarLinks = this.bridgeService.findSimilarLinks(this.connector, Area.Source, Area.Target);
       const tables = [];
       similarLinks.forEach(item => {
-        const tableName = this.bridgeService.arrowsCache[ item ].source.tableName;
-        if (tableName !== 'similar') {
-          tables.push(this.getViewSql(sql, tableName))
+          const tableName = this.bridgeService.arrowsCache[item].source.tableName;
+          if (tableName !== 'similar') {
+            tables.push(this.getViewSql(sql, tableName));
+          }
         }
-      }
-      )
-      uniq(tables).forEach(it => sqlTransformation.push(it))
+      );
+      uniq(tables).forEach(it => sqlTransformation.push(it));
     } else {
       sqlTransformation.push(this.getViewSql(sql, this.connector.source.tableName));
     }
-    this.httpService.validateSql({ sql: sqlTransformation }).subscribe(res => {
-      this.dialogRef.close({ sql: this.sql })
+    this.httpService.validateSql({ sql: sqlTransformation }).subscribe(() => {
+      this.dialogRef.close({ sql: this.sql });
     },
       error => {
         const dialog = this.matDialog.open(ErrorPopupComponent, {
@@ -254,12 +252,14 @@ export class TransformConfigComponent implements OnInit, OnChanges {
             message: error.error.message
           }
         });
-      })
+      });
   }
 
   private getViewSql(sql: string, tableName: string) {
-    let viewSql = this.sourceTables.find(item => item.name == tableName).sql.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');;
-    if (viewSql) {viewSql = `WITH ${tableName} AS (${viewSql}) `}
+    let viewSql = this.sourceTables.find(item => item.name === tableName).sql.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
+    if (viewSql) {
+      viewSql = `WITH ${tableName} AS (${viewSql}) `;
+    }
     return `${viewSql} SELECT ${sql} FROM ${tableName}`;
   }
 
