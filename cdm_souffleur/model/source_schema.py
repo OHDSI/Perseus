@@ -6,7 +6,7 @@ import pandas as pd
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME
 import xml.etree.ElementTree as ElementTree
 import os
 import csv
@@ -188,8 +188,9 @@ def get_column_info(table_name, column_name=None):
                                        na_filter=False,
                                        engine='xlrd')
         overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
-        sql = f"select field, `table`, `type`, `Fraction empty` as emp, `N unique values` as uniq, `N rows` as n_rows from overview where `table`=='{table_name}' and `field`=='{column_name}'"
+        sql = f"select * from overview where `table`=='{table_name}' and `field`=='{column_name}'"
         tables_pd = sqldf(sql)._series
+        test = tables_pd.keys()
     except xlrd.biffh.XLRDError as e:
         raise InvalidUsage(e.__str__(), 404)
     try:
@@ -198,15 +199,14 @@ def get_column_info(table_name, column_name=None):
         column_index = table_overview.columns.get_loc(column_name)
         info['frequency'] = table_overview.iloc[:, column_index + 1].head(10).tolist()
         percentage = []
-        for freq in info['frequency']:
-            if freq:
-                percentage.append(int(freq) / int(tables_pd['n_rows'][0]))
-        info['percentage'] = percentage
-        info['field'] = tables_pd['Field'][0]
-        info['table'] = tables_pd['Table'][0]
-        info['type'] = tables_pd['Type'][0]
-        info['unique'] = tables_pd['uniq'][0]
-        info['empty'] = tables_pd['emp'][0]
+        if N_ROWS_FIELD_NAME in tables_pd:
+            for freq in info['frequency']:
+                if freq:
+                    percentage.append(int(freq) / int(tables_pd[N_ROWS_FIELD_NAME][0]))
+            info['percentage'] = percentage
+        for field in LIST_OF_COLUMN_INFO_FIELDS:
+            if field in tables_pd:
+                info[field] = tables_pd[field][0]
         return info
     except KeyError as e:
         raise InvalidUsage('Column invalid' + e.__str__(), 404)

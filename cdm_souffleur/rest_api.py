@@ -159,7 +159,11 @@ def get_column_info_call():
     """
     table_name = request.args['table_name']
     column_name = request.args.get('column_name')
-    return jsonify(get_column_info(table_name, column_name))
+    info = get_column_info(table_name, column_name);
+    if not info:
+        raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
+    else:
+        return jsonify(info)
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
