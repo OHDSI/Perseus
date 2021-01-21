@@ -155,9 +155,9 @@ export class DataService {
           }
 
           return {
-            name: info.field,
-            type: info.type,
-            uniqueValues: info.unique,
+            name: info.Field,
+            type: info.Type,
+            uniqueValues: info['N unique values'],
             topValues: info.percentage
               .map((percentage, index) => ({
                 value: info.top_10[index],
