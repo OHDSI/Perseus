@@ -50,3 +50,13 @@ TYPES_WITH_MAX_LENGTH = [
   "char",
   "text"
 ]
+
+LIST_OF_COLUMN_INFO_FIELDS = [
+    "Field",
+    "Table",
+    "Type",
+    "N unique values",
+    "Fraction empty"
+]
+
+N_ROWS_FIELD_NAME = 'N rows'
