@@ -245,3 +245,101 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
   }
 }
 
+// mat-tab
+.area-source, .area-target, .mat-tab-column-info-container {
+  .mat-tab-group {
+    .mat-expansion-panel-header-title span {
+      color: $cdm-grey-dark;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .mat-ink-bar {
+      background-color: transparent !important;
+      height: 3px;
+    }
+
+    .mat-tab-header {
+      .mat-elevation-z4 {
+        box-shadow: none;
+      }
+
+      .mat-tab-label {
+        opacity: 1;
+        float: left;
+        height: 40px;
+        padding: 0 15px;
+        min-width: auto;
+      }
+
+      .mat-tab-label-active .mat-tab-label-content {
+        color: $blue;
+      }
+
+      .mat-tab-label-content {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    }
+
+    .drop-down-label{
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+// mat tab for mapping-page
+.area-source, .area-target {
+  .mat-tab-group {
+    height: calc(100% - 15px);
+    margin-top: 15px;
+
+    .mat-tab-body-wrapper {
+      height: calc(100% - 58px);
+    }
+
+    .mat-tab-header {
+      margin-bottom: 10px;
+      border-bottom: none !important; // hide bottom border
+
+      .mat-tab-header-pagination-disabled {
+        display: none;
+      }
+    }
+
+    .mat-tab-body-content {
+      overflow-y: hidden;
+    }
+  }
+}
+
+// mat tab for target block on mapping page
+.area-target {
+  .mat-tab-header {
+    margin-right: 30px;
+  }
+}
+
+// mat tab for column-info popup
+.mat-tab-column-info-container {
+  .mat-tab-label-content {
+    margin: 0 10px;
+  }
+}
+
+// area-component
+.scrollable-area {
+  .scrollbarLeft {
+    .mat-expansion-panel {
+      direction: ltr;
+      margin-left: 5px;
+    }
+  }
+
+  .scrollbarRight {
+    .mat-expansion-panel {
+      margin-right: 5px;
+    }
+  }
+}

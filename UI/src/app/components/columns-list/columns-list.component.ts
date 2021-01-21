@@ -60,6 +60,7 @@ export class ColumnsListComponent {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       positionStrategyFor: 'column-info',
+      panelClass: 'field-info-popup',
       payload
     };
 
