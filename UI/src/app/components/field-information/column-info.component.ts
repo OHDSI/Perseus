@@ -9,9 +9,15 @@ export interface ValueInfo {
 }
 
 export interface ColumnInfo {
-  type: string;
-  uniqueValues: string;
-  topValues: ValueInfo[];
+  type?: string;
+  uniqueValues?: string;
+  topValues?: ValueInfo[];
+}
+
+enum ColumnInfoStatus {
+  LOADING,
+  READY,
+  NO_INFO
 }
 
 @Component({
@@ -22,12 +28,16 @@ export interface ColumnInfo {
 export class ColumnInfoComponent implements OnInit {
 
   columnName: string;
-
   tableNames: string[];
 
-  columnInfos: {[key: string]: ColumnInfo} = {};
+  columnInfos: {
+    [key: string]: {
+      status: ColumnInfoStatus,
+      value?: ColumnInfo
+    }
+  } = {};
 
-  constructor(@Inject(OVERLAY_DIALOG_DATA) public payload: {columnName: string, tableNames: string[]},
+  constructor(@Inject(OVERLAY_DIALOG_DATA) public payload: { columnName: string, tableNames: string[] },
               private dataService: DataService) {
   }
 
@@ -35,16 +45,24 @@ export class ColumnInfoComponent implements OnInit {
     this.columnName = this.payload.columnName;
     this.tableNames = this.payload.tableNames;
 
+    this.tableNames
+      .forEach(tableName => this.columnInfos[tableName] = {
+        status: ColumnInfoStatus.LOADING
+      });
+
     this.loadFirst();
   }
 
   onTableChanged(index: number) {
     const tableName = this.tableNames[index];
 
-    if (!this.columnInfos[tableName]) {
+    if (this.columnInfos[tableName].status === ColumnInfoStatus.LOADING) {
       this.dataService.getColumnInfo(tableName, this.columnName)
         .subscribe(result => {
-          this.columnInfos[tableName] = result;
+          this.columnInfos[tableName].value = result;
+          this.columnInfos[tableName].status = ColumnInfoStatus.READY;
+        }, () => {
+          this.columnInfos[tableName].status = ColumnInfoStatus.NO_INFO;
         });
     }
   }
