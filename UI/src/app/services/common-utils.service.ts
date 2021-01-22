@@ -174,9 +174,13 @@ export class CommonUtilsService {
     this.loadReport.next(true);
   }
 
+  loadReportWithoutWarning() {
+    this.loadReport.next(true);
+  }
+
   refreshCDM() {
     this.storeService.state.targetClones = {};
-    this.dataService.getTargetData(this.storeService.state.version).subscribe();    
+    this.dataService.getTargetData(this.storeService.state.version);    
   }
 
   resetMappingsWithWarning() {

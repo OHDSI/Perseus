@@ -95,7 +95,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   onOpenSourceClick() {
-    this.commonUtilsService.loadNewReportWithWarning();
+    this.storeService.state.source.length ? this.commonUtilsService.loadNewReportWithWarning() : this.commonUtilsService.loadReportWithoutWarning();
   }
 
   onFileUpload(event: Event) {
