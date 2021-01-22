@@ -180,7 +180,7 @@ export class CommonUtilsService {
 
   refreshCDM() {
     this.storeService.state.targetClones = {};
-    this.dataService.getTargetData(this.storeService.state.version);    
+    this.dataService.getTargetData(this.storeService.state.version).subscribe();    
   }
 
   resetMappingsWithWarning() {
