@@ -223,21 +223,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   ngOnInit() {
-    /*Experiment for vocabulary*/
-    this.vocabulariesService
-      .setVocabularyConnectionString()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-        () => {
-          this.vocabulariesService
-            .getVocabularies()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(vocabularies => {
-              this.vocabularies = [ ...vocabularies ];
-            });
-        },
-        error => console.error(error)
-      );
+    this.vocabularies = this.vocabulariesService.vocabularies;
 
     this.dataService.getCDMVersions().subscribe(res => {
       res = res.sort((a, b) => (a > b ? -1 : 1));
