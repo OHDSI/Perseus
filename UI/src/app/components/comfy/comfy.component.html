@@ -3,7 +3,7 @@
     <ng-container *ngIf="data.source?.length">({{uniqSourceRows.length}})</ng-container>
   </h4>
   <app-search-by-name *ngIf="data.source?.length"
-                            class="filter-by-name"
+                            class="comfy-filter-by-name"
                             placeholder='Search by source column'
                             [criteria]="data.linkTablesSearch.sourceColumns"
                             (complete)="filterByName('source-column', $event)"
@@ -19,11 +19,22 @@
     <article>
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
-        <p class="saving" *ngIf="reportLoading">Loading report<span>.</span><span>.</span><span>.</span></p>
+        <p class="saving" *ngIf="reportLoading$ | async">
+          Loading report
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </p>
+        <p class="saving" *ngIf="mappingLoading$ | async">
+          Loading mapping
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </p>
       </h4>
       <app-search-by-name *ngIf="data.source?.length"
-                                class="filter-by-name"
-                                placeholder="Search by source table"
+                                class="comfy-filter-by-name"
+                                placeholder="Search by Loading reportsource table"
                                 [criteria]="data.linkTablesSearch.source"
                                 (complete)="filterByName('source', $event)"
                                 (reset)="filterByNameReset('source')"></app-search-by-name>
@@ -111,7 +122,7 @@
                   (click)="openFilter($event.target)">sort
         </mat-icon>
       </h4>
-      <app-search-by-name class="filter-by-name"
+      <app-search-by-name class="comfy-filter-by-name"
                                 placeholder="Search by target table"
                                 [criteria]="data.linkTablesSearch.target"
                                 (complete)="filterByName('target', $event)"
