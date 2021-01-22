@@ -37,6 +37,7 @@ import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-comfy',
@@ -83,7 +84,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   subs = new Subscription();
   private animationFrame: number | undefined;
 
-  reportLoading = false;
+  reportLoading$: Observable<boolean>;
+  mappingLoading$: Observable<boolean>;
+
   vocabularies: IVocabulary[] = [];
   data = {
     source: [],
@@ -151,6 +154,57 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     }
   }
 
+  ngOnInit() {
+    this.vocabularies = this.vocabulariesService.vocabularies;
+
+    this.dataService.getCDMVersions().subscribe(res => {
+      res = res.sort((a, b) => (a > b ? -1 : 1));
+      this.storeService.add('cdmVersions', res);
+    });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.data = res;
+        this.initializeData();
+      }
+    });
+
+    this.bridgeService.applyConfiguration$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables)))
+      .subscribe(res => {
+        if (res === 'OK') {
+          this.uploadService.mappingLoading = false;
+          this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
+        } else {
+          this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ');
+        }
+      }, () => this.uploadService.mappingLoading = false);
+
+    this.bridgeService.resetAllMappings$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(_ => {
+        Object.values(this.targetConfig).forEach((item: any) => {
+          item.data = [ item.first ];
+        });
+        this.initializeData();
+
+        this.snackBar.open('Reset all mappings success', ' DISMISS ');
+      });
+
+    this.bridgeService.saveAndLoadSchema$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(_ => {
+        this.bridgeService.reportLoaded();
+        this.initializeData();
+        this.snackBar.open('New source schema loaded', ' DISMISS ');
+      });
+
+    this.reportLoading$ = this.bridgeService.reportLoading$;
+    this.mappingLoading$ = this.uploadService.mappingLoading$;
+  }
+
   ngAfterViewInit() {
     const onMove$ = this.dragEls.changes.pipe(
       startWith(this.dragEls),
@@ -171,6 +225,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     );
 
     this.subs.add(onDown$.subscribe());
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
   dragMoved(event) {
@@ -216,64 +274,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       baseEl.scrollTop = scrollTop + this.speed * Math.exp(bottom / 50);
       this.animationFrame = requestAnimationFrame(() => this.scroll($event));
     }
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
-  }
-
-  ngOnInit() {
-    this.vocabularies = this.vocabulariesService.vocabularies;
-
-    this.dataService.getCDMVersions().subscribe(res => {
-      res = res.sort((a, b) => (a > b ? -1 : 1));
-      this.storeService.add('cdmVersions', res);
-    });
-
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.data = res;
-        this.initializeData();
-      }
-    });
-
-    this.bridgeService.applyConfiguration$.pipe(
-      takeUntil(this.ngUnsubscribe),
-      switchMap(configuration => {
-      return this.dataService.saveSourceSchemaToDb(configuration.sourceTables);
-    }))
-    .subscribe(( res ) => {
-      res !== 'OK' ?
-      this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ') :
-      this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
-    });
-
-    this.bridgeService.resetAllMappings$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(_ => {
-        Object.values(this.targetConfig).forEach((item: any) => {
-          item.data = [ item.first ];
-        });
-        this.initializeData();
-
-        this.snackBar.open('Reset all mappings success', ' DISMISS ');
-      });
-
-    this.bridgeService.saveAndLoadSchema$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(_ => {
-        this.bridgeService.reportLoaded();
-        this.initializeData();
-
-        this.snackBar.open('New source schema loaded', ' DISMISS ');
-      });
-
-    this.bridgeService.reportLoading$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(res => {
-        this.reportLoading = res;
-        this.snackBar.open('New source schema loaded', ' DISMISS ');
-      });
   }
 
   initializeSourceData() {

@@ -19,11 +19,22 @@
     <article>
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
-        <p class="saving" *ngIf="reportLoading">Loading report<span>.</span><span>.</span><span>.</span></p>
+        <p class="saving" *ngIf="reportLoading$ | async">
+          Loading report
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </p>
+        <p class="saving" *ngIf="mappingLoading$ | async">
+          Loading mapping
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </p>
       </h4>
       <app-search-by-name *ngIf="data.source?.length"
                                 class="filter-by-name"
-                                placeholder="Search by source table"
+                                placeholder="Search by Loading reportsource table"
                                 [criteria]="data.linkTablesSearch.source"
                                 (complete)="filterByName('source', $event)"
                                 (reset)="filterByNameReset('source')"></app-search-by-name>
