@@ -3,7 +3,7 @@
     <ng-container *ngIf="data.source?.length">({{uniqSourceRows.length}})</ng-container>
   </h4>
   <app-search-by-name *ngIf="data.source?.length"
-                            class="filter-by-name"
+                            class="comfy-filter-by-name"
                             placeholder='Search by source column'
                             [criteria]="data.linkTablesSearch.sourceColumns"
                             (complete)="filterByName('source-column', $event)"
@@ -33,7 +33,7 @@
         </p>
       </h4>
       <app-search-by-name *ngIf="data.source?.length"
-                                class="filter-by-name"
+                                class="comfy-filter-by-name"
                                 placeholder="Search by Loading reportsource table"
                                 [criteria]="data.linkTablesSearch.source"
                                 (complete)="filterByName('source', $event)"
@@ -122,7 +122,7 @@
                   (click)="openFilter($event.target)">sort
         </mat-icon>
       </h4>
-      <app-search-by-name class="filter-by-name"
+      <app-search-by-name class="comfy-filter-by-name"
                                 placeholder="Search by target table"
                                 [criteria]="data.linkTablesSearch.target"
                                 (complete)="filterByName('target', $event)"
