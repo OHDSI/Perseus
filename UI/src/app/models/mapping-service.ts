@@ -25,7 +25,7 @@ export class MappingService {
   generate(): Mapping {
     const merged = this.connections
       .filter(arrow => {
-        let condition = arrow.target.tableName !== 'similar';
+        let condition = arrow.target.tableName !== 'similar' && arrow.source.tableName !== 'similar';
         if (this.sourceTableName) {
           condition = condition && arrow.source.tableName === this.sourceTableName;
         }

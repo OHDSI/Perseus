@@ -18,6 +18,7 @@ import os
 from pathlib import Path
 from cdm_souffleur.model.similar_names_map import similar_names_map
 from itertools import groupby
+from peewee import PostgresqlDatabase
 
 
 def _convert_underscore_to_camel(word: str):
@@ -147,7 +148,28 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         view = views.get(source_table, None)
 
     if view:
-        view = view.replace('from ', 'from {sc}.').replace('join ', 'join {sc}.')
+        single_quote = view.rsplit('\'', 1)
+        double_quote = view.rsplit('\"', 1)
+        if len(single_quote) == 1:
+            if len(double_quote) == 1:
+                after_quote = double_quote[0]
+                before_quote = ''
+            else:
+                after_quote = double_quote[1]
+                before_quote = double_quote[0]
+        else:
+            if len(double_quote) == 1:
+                after_quote = single_quote[1]
+                before_quote = single_quote[0]
+            else:
+                if single_quote[1] < double_quote[1]:
+                    after_quote = single_quote[1]
+                    before_quote = single_quote[0]
+                else:
+                    after_quote = double_quote[0]
+                    before_quote = double_quote[0]
+        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\'', after_quote)
+        view = f'{before_quote}\'{after_quote_replaced}'
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
@@ -157,6 +179,16 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
 
+def addSchemaNames(sql, view_sql):
+    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
+                               host='localhost', port=5432)
+    pg_db.connect()
+    cursor = pg_db.execute_sql(sql)
+    for row in cursor.fetchall():
+        view_sql = re.sub(f"(?i)join {row[0]}", f'join {{sc}}.{row[0]}', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]}", f'from {{sc}}.{row[0]}', view_sql)
+    pg_db.close()
+    return view_sql
 
 def has_pair(field_name, mapping):
     for item in mapping:
