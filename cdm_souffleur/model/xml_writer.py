@@ -460,21 +460,20 @@ def get_xml(json_):
                         attrib_key = 'key'
                         if lookup_name not in lookups:
                             lookup_created = create_lookup(lookup_name, target_field, groupList)
-
-                            concepts_tag = prepare_concepts_tag(
-                                concept_tags,
-                                concepts_tag,
-                                domain_definition_tag,
-                                concept_tag_key,
-                                target_field
-                            )
-
-                            concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
-
-                            mapper = SubElement(concept_id_mapper, 'Mapper')
-                            lookup = SubElement(mapper, 'Lookup')
-                            lookup.text = lookup_name.split(".")[0]
                             if lookup_created:
+                                concepts_tag = prepare_concepts_tag(
+                                    concept_tags,
+                                    concepts_tag,
+                                    domain_definition_tag,
+                                    concept_tag_key,
+                                    target_field
+                                )
+
+                                concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
+
+                                mapper = SubElement(concept_id_mapper, 'Mapper')
+                                lookup = SubElement(mapper, 'Lookup')
+                                lookup.text = lookup_name.split(".")[0]
                                 lookups.append(lookup_name)
                     else:
                         attrib_key = 'conceptId'
