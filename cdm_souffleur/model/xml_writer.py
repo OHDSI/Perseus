@@ -224,7 +224,7 @@ def create_lookup(lookup, target_field, mapping):
         print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist')
 
     if target_field.endswith('source_concept_id'):
-        return
+        return False
     else:
         pair_target_field = target_field.replace('concept_id', 'source_concept_id')
 
@@ -248,6 +248,7 @@ def create_lookup(lookup, target_field, mapping):
     result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
+    return True
 
 
 def is_concept_id(field: str):
@@ -458,7 +459,7 @@ def get_xml(json_):
                     if lookup_name:
                         attrib_key = 'key'
                         if lookup_name not in lookups:
-                            create_lookup(lookup_name, target_field, groupList)
+                            lookup_created = create_lookup(lookup_name, target_field, groupList)
 
                             concepts_tag = prepare_concepts_tag(
                                 concept_tags,
@@ -473,8 +474,8 @@ def get_xml(json_):
                             mapper = SubElement(concept_id_mapper, 'Mapper')
                             lookup = SubElement(mapper, 'Lookup')
                             lookup.text = lookup_name.split(".")[0]
-
-                            lookups.append(lookup_name)
+                            if lookup_created:
+                                lookups.append(lookup_name)
                     else:
                         attrib_key = 'conceptId'
 
