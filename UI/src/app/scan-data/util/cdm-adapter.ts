@@ -1,13 +1,13 @@
 import { DbSettings } from '../model/db-settings';
 
 /* Adapt white-rabbit dbSettings to CDM-builder settings */
-
 const dbTypeIdentifiers = {
   Postgre: name => name === 'PostgreSQL',
   MSSQL: name => name === 'SQL Server',
   Mysql: name => name === 'MySQL'
 };
 
+/* Adapt cdm version*/
 const cdmVersionIdentifiers = {
   'v6.0': name => name === '6',
   'v5.3': name => name === '5.3.0'
@@ -42,6 +42,8 @@ export function adaptDbSettingsForDestination(dbSettings: DbSettings) {
 }
 
 export function adaptCdmVersions(version: string) {
-  return Object.keys(cdmVersionIdentifiers)
+  const result = Object.keys(cdmVersionIdentifiers)
     .find(key => cdmVersionIdentifiers[key](version));
+
+  return result ? result : version;
 }

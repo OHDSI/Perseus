@@ -7,7 +7,7 @@ import { ProgressNotification} from '../../../model/progress-notification';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../base/base.component';
 import { WebsocketParams } from '../../../model/websocket-params';
-import { WebsocketService } from '../../../../websocket/webscoket.service';
+import { WebsocketService } from '../../../../websocket/websocket.service';
 
 export abstract class AbstractScanDataConsoleComponent extends BaseComponent implements OnInit {
 

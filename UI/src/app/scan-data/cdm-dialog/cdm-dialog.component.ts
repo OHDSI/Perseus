@@ -21,6 +21,8 @@ export class CdmDialogComponent extends AbstractScanDialog {
 
   whiteRabbitWebsocketParams: WebsocketParams;
 
+  dqdWebsocketParams: WebsocketParams;
+
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>, private storeService: StoreService) {
     super(dialogRef);
   }
@@ -37,7 +39,18 @@ export class CdmDialogComponent extends AbstractScanDialog {
   }
 
   header() {
-    return this.index === 2 ? 'Fake Data Generation' : 'Convert to CDM';
+    switch (this.index) {
+      case 0:
+      case 1: {
+        return 'Convert to CDM';
+      }
+      case 2: {
+        return 'Fake Data Generation';
+      }
+      case 3: {
+        return 'Data Quality Check';
+      }
+    }
   }
 
   async onGenerateFakeData(params: FakeDataParams) {

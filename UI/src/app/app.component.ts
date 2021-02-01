@@ -67,7 +67,7 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    window.addEventListener("beforeunload", event => {
+    window.addEventListener('beforeunload', event => {
       event.preventDefault();
       event.returnValue = false;
     });

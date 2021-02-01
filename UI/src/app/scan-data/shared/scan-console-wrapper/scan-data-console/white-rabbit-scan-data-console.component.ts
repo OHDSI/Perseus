@@ -14,8 +14,8 @@ export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsole
 
   private startedScanningItemsCount = 0;
 
-  constructor(whiteRabbitWebSokcetService: WhiteRabbitWebsocketService) {
-    super(whiteRabbitWebSokcetService);
+  constructor(whiteRabbitWebSocketService: WhiteRabbitWebsocketService) {
+    super(whiteRabbitWebSocketService);
   }
 
   protected onConnect(): void {
