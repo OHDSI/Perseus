@@ -32,6 +32,10 @@ import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm
 import { CdmScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/cdm-scan-data-console.component';
 import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
 import { DataBaseExistWarningPopupComponent } from './shared/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
+import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
+import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
+import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
+import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +64,11 @@ import { DataBaseExistWarningPopupComponent } from './shared/data-base-exist-war
     CdmConsoleWrapperComponent,
     CdmScanDataConsoleComponent,
     WhiteRabbitScanDataConsoleComponent,
-    DataBaseExistWarningPopupComponent
+    DataBaseExistWarningPopupComponent,
+    DqdDialogComponent,
+    DqdConsoleWrapperComponent,
+    DqdConsoleComponent,
+    DqdFormComponent
   ],
   imports: [
     CommonModule,

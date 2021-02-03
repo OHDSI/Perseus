@@ -1,4 +1,4 @@
-import { Injectable, Renderer2, RendererFactory2, ViewChild, ElementRef } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -19,10 +19,6 @@ import { OverlayConfigOptions } from './overlay/overlay-config-options.interface
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
 import { UploadService } from './upload.service';
-import * as fileSaver from 'file-saver';
-import { Configuration } from '../models/configuration';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -41,8 +37,7 @@ export class CommonUtilsService {
     private router: Router,
     private configService: ConfigurationService,
     private snackbar: MatSnackBar,
-    rendererFactory: RendererFactory2,
-    private uploadService: UploadService,
+    rendererFactory: RendererFactory2
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
@@ -180,7 +175,7 @@ export class CommonUtilsService {
 
   refreshCDM() {
     this.storeService.state.targetClones = {};
-    this.dataService.getTargetData(this.storeService.state.version).subscribe();    
+    this.dataService.getTargetData(this.storeService.state.version).subscribe();
   }
 
   resetMappingsWithWarning() {

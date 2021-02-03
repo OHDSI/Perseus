@@ -99,6 +99,11 @@
       <mat-icon svgIcon="generate_fake"></mat-icon>
       <span>Generate Fake Data</span>
     </button>
+    <button mat-menu-item
+            (click)="dataQualityCheck()">
+      <mat-icon></mat-icon>
+      <span>Data Quality Check</span>
+    </button>
     <button mat-menu-item [matMenuTriggerFor]="generateReport">
       <mat-icon svgIcon="generate_report"></mat-icon>
       <span>Report</span>

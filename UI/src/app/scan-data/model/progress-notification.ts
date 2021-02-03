@@ -1,6 +1,6 @@
 export enum ProgressNotificationStatusCode {
   STARTED = 0,
-  TABLE_SCANNING = 1,
+  IN_PROGRESS = 1,
   FINISHED = 2,
   ERROR = 3,
   FAILED = 4,
@@ -15,7 +15,7 @@ export interface ProgressNotificationStatus {
 
 export interface ProgressNotification {
   message: string;
-  status: ProgressNotificationStatus;
+  status?: ProgressNotificationStatus | string;
 }
 
 export interface CdmProgressNotification {

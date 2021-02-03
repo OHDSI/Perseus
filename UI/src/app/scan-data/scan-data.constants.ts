@@ -2,7 +2,7 @@ import { cdmBuilderLogUrl, whiteRabbitPrefix, whiteRabbitUrl } from '../app.cons
 import { DbSettings } from './model/db-settings';
 
 /* Name uses in UI and White Rabbit */
-enum DbTypes {
+export enum DbTypes {
   MYSQL = 'MySQL',
   ORACLE = 'Oracle',
   POSTGRESQL = 'PostgreSQL',

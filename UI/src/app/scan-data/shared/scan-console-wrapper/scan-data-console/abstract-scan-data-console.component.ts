@@ -43,7 +43,7 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
           }
         }, error => {
           this.showNotificationMessage({
-            message: `Error: ${error.reason}`,
+            message: `Error: ${error.reason ? error.reason : error.message}`,
             status: null
           });
         }
