@@ -1,10 +1,11 @@
 import { DbSettings } from '../model/db-settings';
+import { CdmSettings } from '../model/cdm-settings';
 
 /* Adapt white-rabbit dbSettings to CDM-builder settings */
 const dbTypeIdentifiers = {
-  Postgre: name => name === 'PostgreSQL',
-  MSSQL: name => name === 'SQL Server',
-  Mysql: name => name === 'MySQL'
+  Postgre: 'PostgreSQL',
+  MSSQL: 'SQL Server',
+  Mysql: 'MySQL'
 };
 
 /* Adapt cdm version*/
@@ -15,7 +16,7 @@ const cdmVersionIdentifiers = {
 
 export function adaptDbSettingsForSource(dbSettings: DbSettings) {
   const sourceEngine = Object.keys(dbTypeIdentifiers)
-    .find(key => dbTypeIdentifiers[key](dbSettings.dbType));
+    .find(key => dbTypeIdentifiers[key] === dbSettings.dbType);
 
   return {
     sourceEngine,
@@ -29,7 +30,7 @@ export function adaptDbSettingsForSource(dbSettings: DbSettings) {
 
 export function adaptDbSettingsForDestination(dbSettings: DbSettings) {
   const destinationEngine = Object.keys(dbTypeIdentifiers)
-    .find(key => dbTypeIdentifiers[key](dbSettings.dbType));
+    .find(key => dbTypeIdentifiers[key] === dbSettings.dbType);
 
   return {
     destinationEngine,
@@ -47,3 +48,18 @@ export function adaptCdmVersions(version: string) {
 
   return result ? result : version;
 }
+
+export function adaptDestinationCdmSettings(cdmSettings: CdmSettings): DbSettings {
+  const dbType = dbTypeIdentifiers[cdmSettings.destinationEngine];
+
+  return {
+    dbType,
+    server: cdmSettings.destinationServer,
+    port: null,
+    database: cdmSettings.destinationDatabase,
+    schema: cdmSettings.destinationSchema,
+    user: cdmSettings.destinationUser,
+    password: cdmSettings.destinationPassword
+  };
+}
+
