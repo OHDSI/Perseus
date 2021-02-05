@@ -6,9 +6,10 @@ import { MappingComponent } from './components/pages/mapping/mapping.component';
 import { environment } from '../environments/environment';
 
 const {config: config} = environment;
+
 const routes: Routes = [
   {
-    path: `${config}`,
+    path: '',
     redirectTo: `/comfy`,
     pathMatch: 'full'
   },
@@ -16,13 +17,12 @@ const routes: Routes = [
     path: `comfy`,
     component: ComfyComponent,
     data: { breadcrumb: 'Link Tables' },
-    children: [ {
-      path: `mapping`,
-      component: MappingComponent,
-      data: { breadcrumb: 'Link Fields' }
-    } ]
   },
-  { path: `mapping`, component: MappingComponent, data: { breadcrumb: 'Link Fields' } }
+  {
+    path: `mapping`,
+    component: MappingComponent,
+    data: { breadcrumb: 'Link Fields' }
+  }
 ];
 
 @NgModule({

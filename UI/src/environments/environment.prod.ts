@@ -16,5 +16,5 @@ export const environment = {
   conceptTables: CONCEPT_TABLES,
   config: '',
   whiteRabbitUrl: 'http://10.110.1.2',
-  cdmBuilderUrl: 'http://10.110.1.2:9000'
+  cdmBuilderUrl: 'http://10.110.1.2'
 };
