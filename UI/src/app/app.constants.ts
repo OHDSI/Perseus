@@ -12,6 +12,10 @@ export const whiteRabbitApiUrl = `${whiteRabbitUrl}/${whiteRabbitPrefix}/api`;
 export const cdmBuilderLogUrl = `${environment.cdmBuilderUrl}/log`;
 export const cdmBuilderApiUrl = `${environment.cdmBuilderUrl}/cdm-builder/api`;
 
+export const dqdUrl = environment.dqdUrl;
+export const dqdApiUrl = `${environment.dqdUrl}/api`;
+export const dqdWsUrl = environment.dqdWsUrl;
+
 export const numberOfPanelsWithoutSimilar = 2;
 export const numberOfPanelsWithOneSimilar = 3;
 export const numberOfPanelsWithTwoSimilar = 4;
