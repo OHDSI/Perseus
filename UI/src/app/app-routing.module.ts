@@ -4,8 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { ComfyComponent } from './components/comfy/comfy.component';
 import { MappingComponent } from './components/pages/mapping/mapping.component';
 
-const {config: config} = environment;
-
 const routes: Routes = [
   {
     path: '',
