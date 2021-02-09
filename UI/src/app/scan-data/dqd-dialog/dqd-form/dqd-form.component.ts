@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CdmBuilderService } from '../../../services/cdm-builder.service';
-import { DbTypes } from '../../scan-data.constants';
+import { dqdDatabaseTypes } from '../../scan-data.constants';
 import { ConnectionResult } from '../../model/connection-result';
 import { CdmSettings } from '../../model/cdm-settings';
 import { finalize } from 'rxjs/operators';
@@ -28,9 +28,7 @@ export class DqdFormComponent implements OnInit, OnDestroy {
 
   formControlNames = [];
 
-  dataTypes = [
-    DbTypes.SQL_SERVER
-  ];
+  dataTypes = dqdDatabaseTypes;
 
   connectionResult: ConnectionResult;
 

@@ -80,6 +80,16 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   }
 
   onTestConnection(): void {
+    const errorParser = error => {
+      if (typeof error.error === 'string') {
+        return error.error;
+      } else if (error.message) {
+        return error.message;
+      } else {
+        return 'Can not connect to database server';
+      }
+    };
+
     this.tryConnect = true;
     this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
       .pipe(
@@ -90,7 +100,7 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
         error => {
           this.connectionResult = {
             canConnect: false,
-            message: error.error,
+            message: errorParser(error),
           };
           this.showErrorPopup(this.connectionResult.message);
         }

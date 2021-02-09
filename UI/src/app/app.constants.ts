@@ -10,7 +10,7 @@ export const whiteRabbitPrefix = '/white-rabbit-service';
 export const whiteRabbitApiUrl = `${whiteRabbitUrl}/${whiteRabbitPrefix}/api`;
 
 export const cdmBuilderLogUrl = `${environment.cdmBuilderUrl}/log`;
-export const cdmBuilderApiUrl = `${environment.cdmBuilderUrl}/api/cdmbuilder`;
+export const cdmBuilderApiUrl = `${environment.cdmBuilderUrl}/cdm-builder/api`;
 
 export const dqdUrl = environment.dqdUrl;
 export const dqdApiUrl = `${environment.dqdUrl}/api`;
