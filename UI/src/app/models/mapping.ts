@@ -20,6 +20,7 @@ export interface MappingLookup {
 }
 
 export interface MappingNode {
+  concept_id?: any;
   source_field: string;
   target_field: string;
   sql_field: string;

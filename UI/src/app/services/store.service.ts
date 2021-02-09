@@ -29,7 +29,8 @@ export class StoreService {
     mappingEmpty: true,
     sourceSimilar: undefined,
     targetSimilar: undefined,
-    recalculateSimilar: true
+    recalculateSimilar: true,
+    concepts: {}
   };
   private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
   readonly state$ = this.storeState.asObservable();
@@ -85,6 +86,7 @@ export class StoreService {
     this.storeState.next(Object.assign({}, this.initialState));
     this.add('cdmVersions', cdmVersions);
     this.state.targetClones = {};
+    this.state.concepts = {};
 
   }
 }

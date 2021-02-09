@@ -1,7 +1,8 @@
 <div [formGroup]="sqlForm">
   <section cdkDropList
            #editorArea="cdkDropList"
-           (cdkDropListDropped)="drop($event)">
+           (cdkDropListDropped)="drop($event)"
+           [ngClass]="{'condition-text': reducedSqlField}">
     <label>SQL Statement</label>
     <textarea #editor></textarea>
   </section>
@@ -12,7 +13,8 @@
                    cdkDropListSortingDisabled
                    [cdkDropListData]="chips"
                    [cdkDropListConnectedTo]="[editorArea]"
-                   class="table-name">
+                   class="table-name"
+                   [ngClass]="{'extended-chips-panel': reducedSqlField}">
       <mat-chip class="table-box"
                 cdkDrag
                 *ngFor="let chip of chips">

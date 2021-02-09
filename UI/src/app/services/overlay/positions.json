@@ -95,6 +95,14 @@
       "originY": "top",
       "overlayX": "start",
       "overlayY": "top"
+    },
+    "concept-fields-dropdown":{
+      "offsetX": 0,
+      "offsetY": 38,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
     }
   }
 }

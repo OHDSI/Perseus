@@ -99,6 +99,14 @@
   }
 }
 
+.sql-editor-dialog-padding-15-width-650 {
+  @extend .sql-editor-dialog-padding-15;
+
+  .mat-dialog-container {
+    width: 650px;
+  }
+}
+
 .filter-popup {
   background: white;
   @include mat-elevation-transition;
