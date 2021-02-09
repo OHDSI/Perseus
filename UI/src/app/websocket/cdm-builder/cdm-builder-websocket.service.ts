@@ -70,10 +70,7 @@ export class CdmBuilderWebsocketService extends WebsocketService {
 
   private createSignalRConnection() {
     return new SignalR.HubConnectionBuilder()
-      .withUrl(this.websocketConfig.url, {
-        skipNegotiation: true,
-        transport: SignalR.HttpTransportType.WebSockets
-      })
+      .withUrl(this.websocketConfig.url)
       .configureLogging(isProd ? SignalR.LogLevel.None : SignalR.LogLevel.Information)
       .build();
   }
