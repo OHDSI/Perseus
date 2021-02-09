@@ -2,7 +2,7 @@ import { WebsocketService } from '../webscoket.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { WebsocketConfig } from '../websocket.config';
 import { CdmBuilderService } from '../../services/cdm-builder.service';
-import * as SignalR from '@microsoft/signalr';
+import * as SignalR from '@aspnet/signalr';
 import { isProd } from '../../app.constants';
 import { switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';

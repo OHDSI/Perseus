@@ -90,7 +90,7 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
         error => {
           this.connectionResult = {
             canConnect: false,
-            message: error.error,
+            message: (typeof error.error === 'string') ? error.error : error.message,
           };
           this.showErrorPopup(this.connectionResult.message);
         }
