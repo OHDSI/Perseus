@@ -16,6 +16,6 @@ export const environment = {
   conceptTables: CONCEPT_TABLES,
   whiteRabbitUrl: 'http://185.134.75.47',
   cdmBuilderUrl: 'http://185.134.75.47',
-  dqdUrl: 'http://185.134.75.47',
-  dqdWsUrl: 'ws://185.134.75.47:8001/progress'
+  dqdUrl: 'http://185.134.75.47/dqd',
+  dqdWsUrl: 'ws://185.134.75.47:8001/dqd/progress'
 };
