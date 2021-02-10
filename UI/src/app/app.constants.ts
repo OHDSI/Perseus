@@ -13,7 +13,7 @@ export const cdmBuilderLogUrl = `${environment.cdmBuilderUrl}/log`;
 export const cdmBuilderApiUrl = `${environment.cdmBuilderUrl}/cdm-builder/api`;
 
 export const dqdUrl = environment.dqdUrl;
-export const dqdApiUrl = `${environment.dqdUrl}/api`;
+export const dqdApiUrl = `${environment.dqdUrl}/dqd/api`;
 export const dqdWsUrl = environment.dqdWsUrl;
 
 export const numberOfPanelsWithoutSimilar = 2;
