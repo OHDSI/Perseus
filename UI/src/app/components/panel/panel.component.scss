@@ -1,15 +1,9 @@
 @import 'src/app/styles/variables.scss';
 
-.filter-by-name {
+.mapping-filter-by-name {
   display: block;
   width: 100%;
   margin-top: 5px;
-}
-
-.filter-by-name {
-  ::ng-deep .search-by-name {
-    margin: 0 3px 0 3px;
-  }
 }
 
 .flex-div{

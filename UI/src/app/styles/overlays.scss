@@ -107,7 +107,7 @@
   }
 }
 
-.filter-popup {
+.filter-popup, .field-info-popup {
   background: white;
   @include mat-elevation-transition;
   @include mat-elevation(4);

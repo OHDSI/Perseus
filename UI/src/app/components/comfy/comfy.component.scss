@@ -301,7 +301,7 @@ nav {
     margin-left: 56px;
   }
 
-  .filter-by-name {
+  .comfy-filter-by-name {
     display: block;
     margin-left: 45px;
     width: 312px;
@@ -356,7 +356,7 @@ article {
     width: 400px;
   }
 
-  .filter-by-name {
+  .comfy-filter-by-name {
     width: 420px;
 
     + a {
@@ -388,13 +388,13 @@ article {
     align-items: flex-end;
 
     h4,
-    .filter-by-name {
+    .comfy-filter-by-name {
       width: 412px;
     }
 
     &.initial-wrapper {
       h4,
-      .filter-by-name {
+      .comfy-filter-by-name {
         width: 405px;
       }
     }

@@ -1,4 +1,18 @@
 .search-by-name {
   display: block;
-  margin: 0 12px 0 8px;
+}
+
+
+// search by name in comfy component
+:host(.comfy-filter-by-name) {
+  .search-by-name {
+    margin: 0 12px 0 8px;
+  }
+}
+
+// search by name in panel component
+:host(.mapping-filter-by-name) {
+  .search-by-name {
+    margin: 0 3px 0 3px;
+  }
 }

@@ -2,9 +2,7 @@
 
 .mat-tab-column-info-container {
   width: 300px;
-  height: 420px;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
 
   &:after {
     content: "";
@@ -22,12 +20,15 @@
   }
 }
 
+.column-info, .text-message-container {
+  background-color: #fff;
+}
+
 .column-info {
   display: flex;
   flex-direction: column;
   height: auto;
   padding: 10px;
-  background-color: #fff;
   font-size: 12px;
 
   &__general {
@@ -61,14 +62,12 @@
   }
 }
 
-.loading-container {
+.text-message-container {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #fff;
-  margin: 4px;
-
-  width: 300px;
+  margin: 8px;
   height: auto;
 
   p {
