@@ -2,7 +2,7 @@ import { cdmBuilderLogUrl, whiteRabbitPrefix, whiteRabbitUrl } from '../app.cons
 import { DbSettings } from './model/db-settings';
 
 /* Name uses in UI and White Rabbit */
-enum DbTypes {
+export enum DbTypes {
   MYSQL = 'MySQL',
   ORACLE = 'Oracle',
   POSTGRESQL = 'PostgreSQL',
@@ -11,7 +11,12 @@ enum DbTypes {
   AZURE = 'Azure',
   MS_ACCESS = 'MS Access',
   TERADATA = 'Teradata',
-  BIGQUERY = 'BigQuery'
+  BIGQUERY = 'BigQuery',
+  PDW = 'PDW',
+  NETEZZA = 'Netezza',
+  IMPALA = 'Impala',
+  SQLITE = 'SQLite',
+  HIVE = 'Hive',
 }
 
 /* Name uses in UI and White Rabbit */
@@ -28,7 +33,7 @@ export const whiteRabbitDatabaseTypes: string[] = [
   DbTypes.AZURE,
   DbTypes.MS_ACCESS,
   DbTypes.TERADATA,
-  DbTypes.BIGQUERY
+  DbTypes.BIGQUERY,
 ];
 
 export const dbTypesRequireSchema: string[] = [
@@ -80,3 +85,16 @@ export const fakeDataDbSettings: DbSettings = {
   password: 'postgres',
   schema: 'testdb'
 };
+
+export const dqdDatabaseTypes = [
+  DbTypes.SQL_SERVER,
+  DbTypes.POSTGRESQL,
+  DbTypes.ORACLE,
+  DbTypes.PDW,
+  DbTypes.REDSHIFT,
+  DbTypes.NETEZZA,
+  DbTypes.IMPALA,
+  DbTypes.HIVE,
+  DbTypes.BIGQUERY,
+  DbTypes.SQLITE
+];

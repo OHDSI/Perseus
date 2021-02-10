@@ -1,15 +1,15 @@
 <div class="console-wrapper">
 
-  <app-cdm-scan-data-console [params]="params"
-                             (finish)="onFinish($event)"></app-cdm-scan-data-console>
+  <app-dqd-console [params]="params"
+                   (finish)="onFinish($event)"></app-dqd-console>
 
   <div class="console-wrapper__action">
     <ng-container *ngIf="result; then scanningFinishedBlock; else scanningBlock"></ng-container>
 
     <ng-template #scanningFinishedBlock>
       <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
-      <button class="console-wrapper__action-back confirm" (click)="onClose()">Close</button>
-      <button class="console-wrapper__action-dqd confirm" (click)="onDataQualityCheck()">Data Quality Check</button>
+      <button class="console-wrapper__action-save confirm" (click)="onSaveResult()">Save result</button>
+      <button class="console-wrapper__action-save confirm" (click)="onShowResult()">Show result</button>
     </ng-template>
 
     <ng-template #scanningBlock>

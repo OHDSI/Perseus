@@ -2,7 +2,11 @@ import { Component } from '@angular/core';
 import { AbstractScanDataConsoleComponent } from './abstract-scan-data-console.component';
 import { WhiteRabbitWebsocketService } from '../../../../websocket/white-rabbit/white-rabbit-websocket.service';
 import { takeUntil } from 'rxjs/operators';
-import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
+import {
+  ProgressNotification,
+  ProgressNotificationStatus,
+  ProgressNotificationStatusCode
+} from '../../../model/progress-notification';
 
 @Component({
   selector: 'app-white-rabbit-scan-data-console',
@@ -14,8 +18,8 @@ export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsole
 
   private startedScanningItemsCount = 0;
 
-  constructor(whiteRabbitWebSokcetService: WhiteRabbitWebsocketService) {
-    super(whiteRabbitWebSokcetService);
+  constructor(whiteRabbitWebSocketService: WhiteRabbitWebsocketService) {
+    super(whiteRabbitWebSocketService);
   }
 
   protected onConnect(): void {
@@ -36,8 +40,8 @@ export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsole
     this.showNotificationMessage(notification);
     this.scrollToConsoleBottom();
 
-    switch (notification.status.code) {
-      case ProgressNotificationStatusCode.TABLE_SCANNING: {
+    switch ((notification.status as ProgressNotificationStatus).code) {
+      case ProgressNotificationStatusCode.IN_PROGRESS: {
         this.progressValue = this.startedScanningItemsCount / this.params.itemsToScanCount * 100;
         this.startedScanningItemsCount++;
         break;

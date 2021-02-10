@@ -1,4 +1,4 @@
-import { WebsocketService } from '../webscoket.service';
+import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { WebsocketConfig } from '../websocket.config';
 import { CdmBuilderService } from '../../services/cdm-builder.service';

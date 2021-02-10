@@ -20,8 +20,8 @@ export const environment = {
   conceptTables: CONCEPT_TABLES,
   whiteRabbitUrl: 'http://10.110.1.7:8080',
   cdmBuilderUrl: 'http://10.110.1.7:8080',
-  dqdUrl: 'http://localhost:8080',
-  dqdWsUrl: 'ws://localhost:8080/progress'
+  dqdUrl: 'http://10.110.1.7:8080',
+  dqdWsUrl: 'ws://10.110.1.7:8001/progress'
 };
 
 /*

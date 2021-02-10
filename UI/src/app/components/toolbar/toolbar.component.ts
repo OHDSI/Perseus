@@ -1,5 +1,4 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
 import { BridgeService } from '../../services/bridge.service';
 import { CommonUtilsService } from '../../services/common-utils.service';
 import { stateToInfo, StoreService } from '../../services/store.service';
@@ -15,7 +14,7 @@ import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-d
 import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
 import { Observable } from 'rxjs/internal/Observable';
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
-
+import { DqdDialogComponent } from '../../scan-data/dqd-dialog/dqd-dialog.component';
 
 @Component({
   selector: 'app-toolbar',
@@ -154,6 +153,14 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   convertToCdm() {
     this.matDialog.open(CdmDialogComponent, {
+      width: '700',
+      height: '674',
+      ...this.scanDataMatDialogSharedParams
+    });
+  }
+
+  dataQualityCheck() {
+    this.matDialog.open(DqdDialogComponent, {
       width: '700',
       height: '674',
       ...this.scanDataMatDialogSharedParams

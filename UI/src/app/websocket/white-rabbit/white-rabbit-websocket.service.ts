@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { WebsocketService } from '../webscoket.service';
+import { WebsocketService } from '../websocket.service';
 import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import { WebsocketConfig } from '../websocket.config';
