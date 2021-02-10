@@ -15,5 +15,7 @@ export const environment = {
   url: 'http://185.134.75.47/api',
   conceptTables: CONCEPT_TABLES,
   whiteRabbitUrl: 'http://185.134.75.47',
-  cdmBuilderUrl: 'http://185.134.75.47'
+  cdmBuilderUrl: 'http://185.134.75.47',
+  dqdUrl: 'http://185.134.75.47',
+  dqdWsUrl: 'ws://185.134.75.47:8001/progress'
 };

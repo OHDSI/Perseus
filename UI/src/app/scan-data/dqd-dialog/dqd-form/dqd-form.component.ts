@@ -112,16 +112,6 @@ export class DqdFormComponent implements OnInit, OnDestroy {
   }
 
   private loadState() {
-    // this.form.patchValue({
-    //   dbType: DbTypes.SQL_SERVER,
-    //   server: '822JNJ16S03V',
-    //   user: 'cdm_builder',
-    //   password: 'builder1!',
-    //   database: 'CDM_CPRD',
-    //   schema: 'dbo',
-    //   port: '1433'
-    // });
-
     this.form.patchValue(this.stateService.state);
   }
 
