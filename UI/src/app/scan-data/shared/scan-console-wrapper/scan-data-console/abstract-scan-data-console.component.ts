@@ -7,7 +7,7 @@ import { ProgressNotification} from '../../../model/progress-notification';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../base/base.component';
 import { WebsocketParams } from '../../../model/websocket-params';
-import { WebsocketService } from '../../../../websocket/webscoket.service';
+import { WebsocketService } from '../../../../websocket/websocket.service';
 
 export abstract class AbstractScanDataConsoleComponent extends BaseComponent implements OnInit {
 
@@ -43,7 +43,7 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
           }
         }, error => {
           this.showNotificationMessage({
-            message: `Error: ${error.reason}`,
+            message: `Error: ${error.reason ? error.reason : error.message}`,
             status: null
           });
         }

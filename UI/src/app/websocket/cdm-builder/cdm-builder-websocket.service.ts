@@ -1,4 +1,4 @@
-import { WebsocketService } from '../webscoket.service';
+import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { WebsocketConfig } from '../websocket.config';
 import { CdmBuilderService } from '../../services/cdm-builder.service';
@@ -70,7 +70,10 @@ export class CdmBuilderWebsocketService extends WebsocketService {
 
   private createSignalRConnection() {
     return new SignalR.HubConnectionBuilder()
-      .withUrl(this.websocketConfig.url)
+      .withUrl(this.websocketConfig.url, {
+        skipNegotiation: true,
+        transport: SignalR.HttpTransportType.WebSockets
+      })
       .configureLogging(isProd ? SignalR.LogLevel.None : SignalR.LogLevel.Information)
       .build();
   }

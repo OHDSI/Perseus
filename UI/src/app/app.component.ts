@@ -8,7 +8,8 @@ import { debounceTime, map } from 'rxjs/operators';
 
 import { BridgeService } from './services/bridge.service';
 
-const ICON_NAMES = [ 'CDM_version',
+const ICON_NAMES = [
+  'CDM_version',
   'folder',
   'folder_2',
   'mapping',
@@ -26,7 +27,8 @@ const ICON_NAMES = [ 'CDM_version',
   'generate_report',
   'generate_word',
   'generate_html',
-  'generate_md'
+  'generate_md',
+  'quality_check'
 ];
 
 @Component({
@@ -67,7 +69,7 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    window.addEventListener("beforeunload", event => {
+    window.addEventListener('beforeunload', event => {
       event.preventDefault();
       event.returnValue = false;
     });

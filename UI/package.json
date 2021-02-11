@@ -4,15 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:demo": "npm run clean && ng build --stats-json --configuration=production && npm run copyconfig",
     "build": "ng build",
     "test": "ng test",
     "lint": "tslint \"src/**/*.ts\"",
-    "e2e": "ng e2e",
-    "rimraf": "./node_modules/.bin/rimraf",
-    "clean": "npm run rimraf -- ./dist/*",
-    "copyconfig": "copy-files-from-to --config copy-web-config.json",
-    "postinstall": "ngcc"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -26,7 +21,7 @@
     "@angular/platform-browser": "~9.1.12",
     "@angular/platform-browser-dynamic": "~9.1.12",
     "@angular/router": "~9.1.12",
-    "@microsoft/signalr": "^5.0.1",
+    "@microsoft/signalr": "^5.0.2",
     "@stomp/rx-stomp": "^1.0.1",
     "buffer": "^5.2.1",
     "codemirror": "^5.56.0",
@@ -70,7 +65,7 @@
     "tslint": "~5.11.0"
   },
   "peerDependencies": {
-    "typescript": "~3.8.3",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.0",
+    "typescript": "~3.8.3"
   }
 }

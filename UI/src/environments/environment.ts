@@ -18,9 +18,10 @@ export const environment = {
   production: false,
   url: 'http://10.110.1.7:8080/api',
   conceptTables: CONCEPT_TABLES,
-  config: '',
   whiteRabbitUrl: 'http://10.110.1.7:8080',
-  cdmBuilderUrl: 'http://10.110.1.7:9000'
+  cdmBuilderUrl: 'http://10.110.1.7:8080',
+  dqdUrl: 'http://10.110.1.7:8080/dqd',
+  dqdWsUrl: 'ws://10.110.1.7:8001/dqd/progress'
 };
 
 /*
