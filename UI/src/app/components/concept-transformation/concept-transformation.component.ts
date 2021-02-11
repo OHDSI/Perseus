@@ -72,7 +72,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.conceptFields.forEach(item => {
       const connectedFields = [];
 
-      const links = Object.values(this.bridgeService.arrowsCache).filter(this.bridgeService.sourceConnectedToSameTargetByName(item, this.payload.arrow, this.payload.oppositeSourceTable));
+      const links = Object.values(this.bridgeService.arrowsCache)
+      .filter(this.bridgeService.sourceConnectedToSameTargetByName(item, this.payload.arrow, this.payload.oppositeSourceTable));
       links.forEach(link => {
         if(link.source.grouppedFields && link.source.grouppedFields.length){
           link.source.grouppedFields.forEach(it => {

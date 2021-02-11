@@ -62,8 +62,6 @@ export class ConceptColumnComponent implements OnInit {
         this.row.fields[this.fieldType].alreadySelected = false;
       };
     });
-    
-
   }
 
   validateSelectedField(field: any){

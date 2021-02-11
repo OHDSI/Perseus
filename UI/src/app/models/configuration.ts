@@ -111,8 +111,8 @@ export class Configuration {
   }
 
   get tableConcepts(): any {
-    if (this.concepts){
-    return JSON.parse(this.concepts);
+    if (this.concepts) {
+      return JSON.parse(this.concepts);
     }
     return {};
   }

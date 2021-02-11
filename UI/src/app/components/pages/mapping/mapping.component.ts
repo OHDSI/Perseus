@@ -315,10 +315,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             oppositeSourceTable: this.targetPanel.oppositeTableName
           }
         });
-        transformDialogRef.afterClosed().subscribe((options: any) => {
-
-        });
-
       } 
         return;
       }

@@ -6,26 +6,22 @@ import { StoreService } from 'src/app/services/store.service';
 @Component({
   selector: 'app-select-concept-field',
   templateUrl: './select-concept-field.component.html',
-  styleUrls: ['./select-concept-field.component.scss']
+  styleUrls: [ './select-concept-field.component.scss' ]
 })
-export class SelectConceptFieldComponent implements OnInit {
+export class SelectConceptFieldComponent {
 
   constructor(private storeService: StoreService,
     public dialogRef: OverlayDialogRef,
     @Inject(OVERLAY_DIALOG_DATA) public payload: any,
-) {
-}
-ngOnInit(): void {
+  ) { }
 
-}
+  onSelectionChange(event: any) {
+    this.payload.selected = event;
+    this.dialogRef.close();
+  }
 
-onSelectionChange(event: any) {
-this.payload.selected = event;
-this.dialogRef.close();
-}
-
-remove(table: any){
-this.dialogRef.close(table);
-}
+  remove(table: any) {
+    this.dialogRef.close(table);
+  }
 
 }

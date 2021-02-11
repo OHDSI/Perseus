@@ -249,11 +249,11 @@ export class PanelComponent implements OnInit, AfterViewInit {
             push(cloneToSet);
         }
         this.setCloneTable(cloneToSet);
-        Object.values(this.bridgeService.arrowsCache).
-          filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
+        Object.values(this.bridgeService.arrowsCache)
+          .filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
           .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
-        Object.values(this.bridgeService.constantsCache).
-          filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
+        Object.values(this.bridgeService.constantsCache)
+          .filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
           .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(constant) ]);
         this.cloneConcepts(cloneFromTableName);
 
@@ -327,8 +327,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
   getTableClones() {
     if (this.storeService.state.targetClones[ this.table.name ]) {
-      return this.storeService.state.targetClones[ this.table.name ].
-        filter(it => it.cloneConnectedToSourceName === this.oppositeTableName);
+      return this.storeService.state.targetClones[ this.table.name ]
+        .filter(it => it.cloneConnectedToSourceName === this.oppositeTableName);
     }
   }
 
