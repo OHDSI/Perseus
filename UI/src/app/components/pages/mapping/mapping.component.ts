@@ -40,6 +40,8 @@ import { LookupService } from '../../../services/lookup.service';
 import { getLookupType } from '../../../services/utilites/lookup-util';
 import { ReportCreator } from '../../../services/report/report-creator';
 import { MappingPair } from '../../../models/mapping';
+import * as conceptFields from '../../concept-fileds-list.json';
+import { ConceptTransformationComponent } from '../../concept-transformation/concept-transformation.component';
 
 @Component({
   selector: 'app-mapping',
@@ -72,6 +74,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   numberOfPanels: number;
 
   hasScanReport = false;
+
+  conceptFieldNames = (conceptFields as any).default;
 
   get hint(): string {
     return 'no hint';
@@ -247,7 +251,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
-
+        if(!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
+        
         const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
@@ -298,6 +303,19 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
             });
           }
         });
+      } else {
+        const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
+          closeOnNavigation: false,
+          disableClose: true,
+          panelClass: 'sql-editor-dialog-padding-15-width-650',
+          maxHeight: '100%',
+          data: {
+            arrowCache: this.bridgeService.arrowsCache,
+            arrow: arrow,
+            oppositeSourceTable: this.targetPanel.oppositeTableName
+          }
+        });
+      } 
         return;
       }
     }

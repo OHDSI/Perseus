@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { SQL_STRING_FUNCTIONS, SQL_FUNCTIONS } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
 import * as CodeMirror from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FormGroup } from '@angular/forms';
+import { BridgeService } from 'src/app/services/bridge.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -25,13 +26,16 @@ export class SqlTransformationComponent implements OnInit {
 
   @ViewChild('editor', { static: true }) editor;
   @Input() sql: {};
+  @Input() reducedSqlField;
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;
   codeMirror;
   sqlForm = new FormGroup({});
 
-  constructor() { }
+  constructor(
+    private bridgeService: BridgeService
+  ) { }
 
   get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
@@ -62,6 +66,11 @@ export class SqlTransformationComponent implements OnInit {
 
   onChange(cm, event) {
       this.sql['name'] = this.editorContent;
+      this.bridgeService.changeConceptSql(this.sql['name']);
+  }
+
+  setConeptSqlValue(sqlTransformation: string) {
+    this.codeMirror.setValue(sqlTransformation);
   }
 
   onCursorActivity(cm, event) {

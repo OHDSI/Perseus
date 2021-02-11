@@ -68,6 +68,12 @@
         padding-left: 0;
         padding-right: 0;
       }
+
+    }
+
+    mat-radio-button{
+      padding-left: 10px;
+      padding-right: 10px;
     }
 
     .preview-title {
@@ -76,6 +82,7 @@
 
     .flex-div {
       display: flex;
+      padding-top: 20px;
     }
 
     .select-preview {

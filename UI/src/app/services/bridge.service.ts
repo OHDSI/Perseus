@@ -97,6 +97,7 @@ export class BridgeService {
   resetAllMappings$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
   reportLoading$ = new Subject<boolean>();
+  conceptSqlTransfomed$ = new Subject<string>();
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -274,7 +275,8 @@ export class BridgeService {
       mappingEmpty: !isMappingNotEmpty,
       sourceSimilar: configuration.sourceSimilarRows,
       targetSimilar: configuration.targetSimilarRows,
-      recalculateSimilar: configuration.recalculateSimilarTables
+      recalculateSimilar: configuration.recalculateSimilarTables,
+      concepts: configuration.tableConcepts
     };
 
     this.applyConfiguration$.next(configuration);
@@ -439,6 +441,16 @@ export class BridgeService {
     };
   }
 
+
+  sourceConnectedToSameTargetByName(rowName: string, row: any, sourceTable: string) {
+    return (item: IConnection) => {
+      return item.connector.target.name.toUpperCase() === rowName.toUpperCase() &&
+        item.connector.target.tableName.toUpperCase() === row.target.tableName.toUpperCase() &&
+        item.connector.target.cloneTableName === row.target.cloneTableName &&
+        item.connector.source.tableName.toUpperCase() === sourceTable.toUpperCase(); 
+    };
+  }
+
   copyTransformations(arrow: any, cloneTable?: any) {
     const arrowWithSameTarget = cloneTable ? Object.values(this.arrowsCache).
     filter(item => item.target.tableName === cloneTable.name &&
@@ -513,7 +525,8 @@ export class BridgeService {
       this.arrowsCache,
       this.constantsCache,
       sourceTableName,
-      targetTableName
+      targetTableName,
+      this.storeService.state.concepts
     );
     return mappingService.generate();
   }
@@ -717,5 +730,9 @@ export class BridgeService {
         (this.similarNamesMap[ r.name ] || this.similarNamesMap[ row.name ])
       );
     });
+  }
+
+  changeConceptSql(sql: string){
+    this.conceptSqlTransfomed$.next(sql);
   }
 }

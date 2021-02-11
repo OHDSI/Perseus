@@ -50,7 +50,8 @@ export class ConfigurationService {
       targetClones: this.storeService.state.targetClones,
       sourceSimilar: this.storeService.state.sourceSimilar,
       targetSimilar: this.storeService.state.targetSimilar,
-      recalculateSimilar: this.storeService.state.recalculateSimilar
+      recalculateSimilar: this.storeService.state.recalculateSimilar,
+      concepts: this.storeService.state.concepts
     });
 
     this.saveOnLocalDisk(newConfiguration);
