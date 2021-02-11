@@ -659,6 +659,11 @@ export class BridgeService {
   generateMappingWithViewsAndGroups(sourceTables: any) {
     const mappingJSON = this.generateMapping();
 
+    if (!sourceTables.length) {
+      const { source, target } = this.storeService.getMappedTables();
+      sourceTables = source;
+    }
+
     sourceTables.forEach(source => {
       addViewsToMapping(mappingJSON, source);
     });
