@@ -19,6 +19,7 @@ export interface ConfigurationOptions {
   sourceSimilar?: Row[];
   targetSimilar?: Row[];
   recalculateSimilar?: boolean;
+  concepts?: any;
 }
 
 export class Configuration {
@@ -109,6 +110,13 @@ export class Configuration {
     return true;
   }
 
+  get tableConcepts(): any {
+    if (this.concepts) {
+      return JSON.parse(this.concepts);
+    }
+    return {};
+  }
+
 
 
   name: string;
@@ -124,6 +132,7 @@ export class Configuration {
   sourceSimilar: string;
   targetSimilar: string;
   recalculateSimilar: string;
+  concepts: string;
 
   constructor(options: ConfigurationOptions = {}) {
     this.name = options.name;
@@ -139,5 +148,6 @@ export class Configuration {
     this.sourceSimilar = stringify(options.sourceSimilar);
     this.targetSimilar = stringify(options.targetSimilar);
     this.recalculateSimilar = JSON.stringify(options.recalculateSimilar);
+    this.concepts = JSON.stringify(options.concepts);
   }
 }

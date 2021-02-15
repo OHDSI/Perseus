@@ -67,6 +67,9 @@ import { ErrorPopupComponent } from './components/popups/error-popup/error-popup
 import { SelectTableDropdownComponent } from './components/popups/select-table-dropdown/select-table-dropdown.component';
 import { TargetCloneDialogComponent } from './components/target-clone-dialog/target-clone-dialog.component';
 import { ColumnInfoComponent } from './components/field-information/column-info.component';
+import { ConceptTransformationComponent } from './components/concept-transformation/concept-transformation.component';
+import { SelectConceptFieldComponent } from './components/popups/select-concept-field/select-concept-field.component';
+import { ConceptColumnComponent } from './components/concept-transformation/concept-column/concept-column.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +111,10 @@ import { ColumnInfoComponent } from './components/field-information/column-info.
     ErrorPopupComponent,
     SelectTableDropdownComponent,
     TargetCloneDialogComponent,
-    ColumnInfoComponent
+    ColumnInfoComponent,
+    ConceptTransformationComponent,
+    SelectConceptFieldComponent,
+    ConceptColumnComponent
   ],
   imports: [
     BrowserModule,

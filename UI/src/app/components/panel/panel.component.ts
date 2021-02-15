@@ -20,7 +20,7 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.scss']
+  styleUrls: [ './panel.component.scss' ]
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
@@ -82,7 +82,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.linkFieldsSearchKey = `${this.table.name}Search`;
     this.linkFieldsSearch = this.storeService.state.linkFieldsSearch;
-    this.searchCriteria = this.linkFieldsSearch[this.linkFieldsSearchKey];
+    this.searchCriteria = this.linkFieldsSearch[ this.linkFieldsSearchKey ];
 
     this.filterAtInitialization();
 
@@ -138,7 +138,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   onOpenTransfromDialog(event: any) {
-    const {row, element} = event;
+    const { row, element } = event;
 
     const connections = this.bridgeService.findCorrespondingConnections(
       this.table,
@@ -146,7 +146,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     );
     if (connections.length > 0) {
       const payload: BridgeButtonData = {
-        connector: connections[0].connector,
+        connector: connections[ 0 ].connector,
         arrowCache: this.bridgeService.arrowsCache
       };
 
@@ -161,14 +161,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
     };
 
     this.filtered = this.table.rows.map(item => item.name).filter(filterByName);
-    this.linkFieldsSearch[this.linkFieldsSearchKey] = byName.criteria;
+    this.linkFieldsSearch[ this.linkFieldsSearchKey ] = byName.criteria;
     this.searchCriteria = byName.criteria;
     this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
   }
 
   filterByNameReset(byName: Criteria): void {
     this.filtered = undefined;
-    this.linkFieldsSearch[this.linkFieldsSearchKey] = '';
+    this.linkFieldsSearch[ this.linkFieldsSearchKey ] = '';
     this.searchCriteria = '';
     this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
   }
@@ -228,8 +228,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
-        if (!this.storeService.state.targetClones[this.table.name]) {
-          this.storeService.state.targetClones[this.table.name] = [];
+        const cloneFromTableName = this.table.cloneName;
+        if (!this.storeService.state.targetClones[ this.table.name ]) {
+          this.storeService.state.targetClones[ this.table.name ] = [];
         }
         let cloneToSet;
         const cloneConnectedToSourceName = this.oppositeTableName;
@@ -248,14 +249,42 @@ export class PanelComponent implements OnInit, AfterViewInit {
             push(cloneToSet);
         }
         this.setCloneTable(cloneToSet);
-        Object.values(this.bridgeService.arrowsCache).
-        filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
-        .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
-        Object.values(this.bridgeService.constantsCache).
-        filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
-        .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(constant) ]);
+        Object.values(this.bridgeService.arrowsCache)
+          .filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
+          .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        Object.values(this.bridgeService.constantsCache)
+          .filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
+          .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(constant) ]);
+        this.cloneConcepts(cloneFromTableName);
+
       }
     });
+  }
+
+  cloneConcepts(cloneFromTableName: string) {
+    const tableConcepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ];
+
+    if (tableConcepts) {
+
+      const clonedConcepts = []
+      tableConcepts.conceptsList.forEach(it => {
+        if (it.fields[ 'concept_id' ].targetCloneName === cloneFromTableName) {
+          if (!it.fields[ 'concept_id' ].targetCloneName) {
+            Object.values(it.fields).forEach(field => {
+              (field as any).targetCloneName = 'Default';
+            })
+          }
+          const clonedConcept = cloneDeep(it);
+          clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
+          Object.values(clonedConcept.fields).forEach(field => {
+            (field as any).targetCloneName = this.table.cloneName;
+          })
+          clonedConcepts.push(clonedConcept);
+        };
+      })
+
+      tableConcepts.conceptsList = tableConcepts.conceptsList.concat(clonedConcepts);
+    }
   }
 
   updateClonedTableProperties(table: ITable, cloneName: string, cloneConnectedToSourceName: string) {
@@ -298,8 +327,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
   getTableClones() {
     if (this.storeService.state.targetClones[ this.table.name ]) {
-      return this.storeService.state.targetClones[ this.table.name ].
-      filter(it => it.cloneConnectedToSourceName === this.oppositeTableName);
+      return this.storeService.state.targetClones[ this.table.name ]
+        .filter(it => it.cloneConnectedToSourceName === this.oppositeTableName);
     }
   }
 
@@ -326,6 +355,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
       if (tbl) {
         if (tbl instanceof Table) {
           const table = tbl as Table;
+          this.removeCloneConcepts(table);
           this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ].filter(item => item.id !== table.id);
           const arrowsToDelete = Object.values(this.bridgeService.arrowsCache).filter(item => item.target.tableId === table.id);
           arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
@@ -343,6 +373,17 @@ export class PanelComponent implements OnInit, AfterViewInit {
       }
     });
 
+  }
+
+  removeCloneConcepts(table: any){
+    let tableConcepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ];
+
+    if(tableConcepts){
+      tableConcepts.conceptsList = tableConcepts.conceptsList.filter(it => it.fields['concept_id'].targetCloneName !== table.cloneName);
+      tableConcepts.conceptsList.forEach((it, index) =>{
+        it.id = index;
+      })
+    }
   }
 
   setCloneTable(table) {

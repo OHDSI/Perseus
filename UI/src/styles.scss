@@ -226,6 +226,10 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
   transform: translateY(0px) !important;
 }
 
+.mat-tooltip {
+  font-size: 14px !important;
+}
+
 .mat-tab-column-info-container {
   .mat-tab-header {
     background: #fff;
@@ -246,7 +250,7 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
 }
 
 // mat-tab
-.area-source, .area-target, .mat-tab-column-info-container {
+.area-source, .area-target, .mat-tab-column-info-container, .concept-container {
   .mat-tab-group {
     .mat-expansion-panel-header-title span {
       color: $cdm-grey-dark;
@@ -260,6 +264,8 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
     }
 
     .mat-tab-header {
+      border-bottom: none;
+      
       .mat-elevation-z4 {
         box-shadow: none;
       }
@@ -270,10 +276,11 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
         height: 40px;
         padding: 0 15px;
         min-width: auto;
+        color: $blue;
       }
 
       .mat-tab-label-active .mat-tab-label-content {
-        color: $blue;
+        color: rgba(64, 64, 64, 0.87);
       }
 
       .mat-tab-label-content {

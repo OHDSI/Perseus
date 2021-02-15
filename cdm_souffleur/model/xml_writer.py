@@ -61,6 +61,12 @@ def check_lookup_tables(tables):
             return True
     return False
 
+def unique(sequence):
+    seen = []
+    for x in sequence:
+        if not x in seen:
+            seen.append(x)
+    return seen
 
 def prepare_sql(mapping_items, source_table, views, tagret_tables):
     """prepare sql from mapping json"""
@@ -69,7 +75,7 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         """return unique all required fields to prepare sql"""
         all_fields = []
         mapping_items_for_table = mapping_items_[mapping_items_.source_table == source_table_]
-        required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName']
+        required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id']
         mapping_data = mapping_items_for_table.get('mapping', pd.Series())
         condition_data = mapping_items_for_table.get('condition', pd.Series())
         lookup = mapping_items_for_table.get('lookup', pd.Series())
@@ -89,13 +95,12 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         for index_, row_ in result_data.iteritems():
             all_fields += [{k: dic[k] for k in required_fields} for dic in row_]
 
-        all_fields_unique = [
-            dict(tuple_map_item) for tuple_map_item in {tuple(map_item.items()) for map_item in all_fields}
-        ]
+        all_fields_unique = unique(all_fields)
+
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
-    fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(by=['targetCloneName','source_field','sql_alias'])
+    fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(by=['targetCloneName'])
     sql = 'SELECT '
     concept_id_counter = 1
     source_value_counter = 1
@@ -213,7 +218,7 @@ def add_lookup_data(folder, basepath, lookup, template):
     return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
 
 
-def create_lookup(lookup, target_field, mapping):
+def create_lookup(lookup, target_field, mapping, lookup_source_to_source_included):
     if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
 
@@ -233,7 +238,7 @@ def create_lookup(lookup, target_field, mapping):
     else:
         basepath = PREDEFINED_LOOKUPS_PATH
 
-    if has_pair(pair_target_field, mapping):
+    if lookup_source_to_source_included:
         template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, 'template_result.txt')
         template_data = get_lookup_data(template_filepath)
 
@@ -286,12 +291,12 @@ def prepare_concepts_tag(concept_tags, concepts_tag, domain_definition_tag, conc
     return concepts_tag
 
 
-def is_mapping_contains_type_concept_id(field, mapping):
-    return is_mapping_contains(field, 'type_concept_id', mapping)
+def is_mapping_contains_type_concept_id(field, mapping, concept_id):
+    return is_mapping_contains(field, 'type_concept_id', mapping, concept_id)
 
 
-def is_mapping_contains_source_value(field, mapping):
-    return is_mapping_contains(field, 'source_value', mapping)
+def is_mapping_contains_source_value(field, mapping, concept_id):
+    return is_mapping_contains(field, 'source_value', mapping, concept_id)
 
 
 def number_of_type_concept_id(field, mapping):
@@ -302,12 +307,12 @@ def number_of_source_value(field, mapping):
     return number_of_fields_contained(field, 'source_value', mapping)
 
 
-def is_mapping_contains(field, key, mapping):
+def is_mapping_contains(field, key, mapping, concept_id):
     for row in mapping:
         target_field = row['target_field']
         if target_field.startswith('value_as'):
             continue
-        if target_field == field.replace('concept_id', key):
+        if target_field == field.replace('concept_id', key) and row['concept_id'] == concept_id:
             return target_field
     return None
 
@@ -452,6 +457,12 @@ def get_xml(json_):
                 lookups = []
                 for row in groupList:
                     lookup_name = row.get('lookup', None)
+                    if lookup_name:
+                        if 'sourceToSourceIncluded' in lookup_name:
+                            lookup_source_to_source_included = lookup_name['sourceToSourceIncluded']
+                        else:
+                            lookup_source_to_source_included = ''
+                        lookup_name = lookup_name['name']
                     sql_transformation = row.get('sqlTransformation', None)
                     target_field = row.get('target_field', None)
                     concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else target_field
@@ -459,7 +470,7 @@ def get_xml(json_):
                     if lookup_name:
                         attrib_key = 'key'
                         if lookup_name not in lookups:
-                            lookup_created = create_lookup(lookup_name, target_field, groupList)
+                            lookup_created = create_lookup(lookup_name, target_field, groupList, lookup_source_to_source_included)
                             if lookup_created:
                                 concepts_tag = prepare_concepts_tag(
                                     concept_tags,
@@ -481,6 +492,8 @@ def get_xml(json_):
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
                     target_field = row['target_field']
+                    if 'concept_id' in row:
+                        concept_id = row['concept_id']
 
                     if is_concept_id(target_field):
                         concepts_tag = prepare_concepts_tag(
@@ -504,12 +517,12 @@ def get_xml(json_):
 
                                     if number_of_source_value(target_field, groupList) > 1:
 
-                                        if is_mapping_contains_source_value(target_field, groupList):
+                                        if is_mapping_contains_source_value(target_field, groupList, concept_id):
                                             item.attrib['sourceKey'] = f"{item.attrib[attrib_key].replace('concept_id', 'source_value')}"
 
                                     if number_of_type_concept_id(target_field, groupList) > 1:
 
-                                        if is_mapping_contains_type_concept_id(target_field, groupList):
+                                        if is_mapping_contains_type_concept_id(target_field, groupList, concept_id):
                                             item.attrib['typeId'] = f"{item.attrib[attrib_key].replace('concept_id', 'type_concept_id')}"
 
                             counter += 1
@@ -518,13 +531,13 @@ def get_xml(json_):
                                 attrib_key: f'{clone_key}{target_field}_{counter}',
                             }
 
-                            if is_mapping_contains_source_value(target_field, groupList):
+                            if is_mapping_contains_source_value(target_field, groupList, concept_id):
                                 if number_of_source_value(target_field, groupList) > 1:
                                     attrib['sourceKey'] = attrib[attrib_key].replace('concept_id', 'source_value')
                                 else:
                                     attrib['sourceKey'] = re.sub(r'_\d+$', "", attrib[attrib_key].replace('concept_id', 'source_value'))
 
-                            if is_mapping_contains_type_concept_id(target_field, groupList):
+                            if is_mapping_contains_type_concept_id(target_field, groupList, concept_id):
                                 if number_of_type_concept_id(target_field, groupList) > 1:
                                     attrib['typeId'] = attrib[attrib_key].replace('concept_id', 'type_concept_id')
                                 else:
@@ -547,10 +560,10 @@ def get_xml(json_):
                                 attrib_key: f'{clone_key}{target_field}',
                             }
 
-                            if is_mapping_contains(target_field, 'source_value', groupList):
+                            if is_mapping_contains(target_field, 'source_value', groupList, concept_id):
                                 attrib['sourceKey'] = attrib[attrib_key].replace('concept_id', 'source_value')
 
-                            if is_mapping_contains(target_field, 'type_concept_id', groupList):
+                            if is_mapping_contains(target_field, 'type_concept_id', groupList, concept_id):
                                 attrib['typeId'] = attrib[attrib_key].replace('concept_id', 'type_concept_id')
 
                             SubElement(fields_tag, 'Field', attrib)
