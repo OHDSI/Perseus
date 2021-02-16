@@ -30,6 +30,7 @@
     "file-saver": "^2.0.2",
     "flatted": "^3.0.4",
     "hammerjs": "^2.0.8",
+    "jszip": "^3.6.0",
     "lodash-es": "^4.17.11",
     "ng2-qgrid": "^9.1.4",
     "ngx-mat-select-search": "^3.0.1",

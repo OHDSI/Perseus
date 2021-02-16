@@ -7,6 +7,8 @@ import { HttpService } from './http.service';
 import { Configuration } from '../models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject } from 'rxjs';
+import * as jsZip from 'jszip'; 
+import { MediaType } from './utilites/base64-util';
 
 @Injectable({
   providedIn: 'root'
@@ -33,12 +35,12 @@ export class UploadService {
     this.loading$.next(value);
   }
 
-  uploadSchema(files: File[]) {
+  uploadSchema(files: File[], loadWithoutDb?: boolean) {
     const formData: FormData = new FormData();
     for (const file of files) {
       formData.append('file', file, file.name);
     }
-    return this.httpService.postSaveLoadSchema(formData);
+    return loadWithoutDb ? this.httpService.loadReportToServer(formData) : this.httpService.postSaveLoadSchema(formData);
   }
 
   onFileChange(event: any): void {
@@ -58,26 +60,51 @@ export class UploadService {
       }, () => this.bridgeService.reportLoading$.next(false));
   }
 
-  onMappingChange(event: any): void {
-    this.mappingLoading = true;
-    const file = event.target.files[ 0 ];
-    const fileReader: FileReader = new FileReader();
-    fileReader.onloadend = () => {
-      try {
-        const content = fileReader.result;
-        const loadedConfig = JSON.parse(content as string);
-        const resultConfig = new Configuration();
-        Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
-        this.bridgeService.applyConfiguration(resultConfig);
-      } catch (error) {
-        this.mappingLoading = false;
-      }
-    };
-    fileReader.onerror = () => {
-      this.mappingLoading = false;
-    };
 
-    fileReader.readAsText(file);
+  async onMappingChange(event: any): Promise<any> {
+
+    const zip = await jsZip.loadAsync(event.target.files[ 0 ]);
+
+    Object.keys(zip.files).forEach(obj => {
+      const dotIndex = obj.lastIndexOf('.');
+      const isJson = obj.substring(dotIndex + 1) === 'json';
+      if (isJson) {
+        this.loadMappingAndReport(zip.files[ obj ], true);
+      } else {
+        this.loadMappingAndReport(zip.files[ obj ], false);
+      }
+    })
+
+  }
+
+  async loadMappingAndReport(file: any, isJson: boolean) {
+    if (isJson) {
+      const content = await file.async('string');
+      this.loadMapping(content);
+    } else {
+      const content = await file.async('blob');
+      const blob = new Blob([content], { type: MediaType.XLSX });
+      const reportFile = new File([blob], file.name, {type: MediaType.XLSX});
+      this.loadReport([reportFile]);
+    }
+  }
+
+  loadMapping(content: any) {
+    const loadedConfig = JSON.parse(content as string);
+    const resultConfig = new Configuration();
+    Object.keys(loadedConfig).forEach(key => resultConfig[ key ] = loadedConfig[ key ]);
+    this.bridgeService.applyConfiguration(resultConfig);
+  }
+
+  async loadReport(file: any){
+    this.storeService.add('reportFile', file);
+    this.uploadSchema(file, true)
+      .subscribe(res => {
+        this.snackbar.open(
+          'Success file upload',
+          ' DISMISS '
+        );
+      });
   }
 
   onFileInputClick(el: ElementRef) {
