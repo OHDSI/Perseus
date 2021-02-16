@@ -68,6 +68,16 @@ def save_and_load_schema_call():
     else:
         raise InvalidUsage('Schema was not loaded', 404)
 
+@bp.route(f'/api/load_schema_to_server', methods=['POST'])
+def load_schema_call():
+    """save schema to server and load it from server in the same request"""
+    try:
+        file = request.files['file']
+        load_schema_to_server(file)
+    except Exception as error:
+        raise InvalidUsage('Schema was not loaded', 404)
+    return jsonify('OK')
+
 @bp.route('/api/save_source_schema_to_db', methods=['POST'])
 def save_source_schema_to_db_call():
     try:

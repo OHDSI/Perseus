@@ -3,9 +3,9 @@ import { IStorage } from '../models/interface/storage.interface';
 import { Configuration } from '../models/configuration';
 import { BridgeService } from './bridge.service';
 import { BrowserSessionConfigurationStorage } from '../models/implementation/configuration-session-storage';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';
+import * as JSZip from 'jszip'; 
 
 @Injectable({
   providedIn: 'root'
@@ -67,8 +67,21 @@ export class ConfigurationService {
 
   saveOnLocalDisk(newConfiguration: Configuration) {
     const config = JSON.stringify(newConfiguration);
-    const blob = new Blob([ config ], { type: 'application/json' });
-    saveAs(blob, `${newConfiguration.name}.json`);
+    const blobMapping = new Blob([ config ], { type: 'application/json' });
+    this.createZip([ blobMapping, this.storeService.state.reportFile ], [ `${newConfiguration.name}.json`, `${this.storeService.state.report}.xlsx` ], newConfiguration.name)
   }
+
+  async createZip(files: any[], names: any[], zipName: string) {
+    const zip = new JSZip();
+    const name = zipName + '.etl';
+    files.forEach((item, index) => {
+      zip.file(names[ index ], item);
+    })
+    zip.generateAsync({ type: 'blob' , compression: "DEFLATE"}).then((content) => {
+      if (content) {
+        saveAs(content, name);
+      }
+    });
+  }  
 
 }
