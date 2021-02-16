@@ -2,7 +2,7 @@
 create schema "vocabulary";
 
 --- user
-CREATE USER cdm_builder WITH PASSWORD 'N7jscuS3ca'
+CREATE USER cdm_builder WITH PASSWORD 'N7jscuS3ca';
 
 GRANT USAGE ON SCHEMA vocabulary TO cdm_builder;
 GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO cdm_builder;
