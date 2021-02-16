@@ -78,12 +78,12 @@ export const dictionaryDbSettingForCdmBuilder = {
 export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';
 
 export const fakeDataDbSettings: DbSettings = {
-  dbType: DbTypes.ORACLE,
+  dbType: DbTypes.POSTGRESQL,
   server: '10.110.1.7',
   database: 'testdb',
   user: 'postgres',
   password: 'postgres',
-  schema: 'testdb'
+  schema: 'public'
 };
 
 export const dqdDatabaseTypes = [
