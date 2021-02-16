@@ -1,17 +1,13 @@
---- variables
-schemaName CONSTANT varchar := 'vocabulary';
-
-
 --- schema
-create schema schemaName;
+create schema "vocabulary";
 
 
 
 --- tables
-CREATE TABLE schemaName."concept"
+CREATE TABLE "vocabulary.concept"
 (
    concept_id        int            NOT NULL,
-   concept_name      varchar(255)   NOT NULL,
+   concept_name      text           NOT NULL,
    domain_id         varchar(20)    NOT NULL,
    vocabulary_id     varchar(20)    NOT NULL,
    concept_class_id  varchar(20)    NOT NULL,
@@ -24,7 +20,7 @@ CREATE TABLE schemaName."concept"
 
 
 
-CREATE TABLE schemaName."concept_ancestor"
+CREATE TABLE "vocabulary.concept_ancestor"
 (
    ancestor_concept_id       int   NOT NULL,
    descendant_concept_id     int   NOT NULL,
@@ -34,7 +30,7 @@ CREATE TABLE schemaName."concept_ancestor"
 
 
 
-CREATE TABLE schemaName."concept_class"
+CREATE TABLE "vocabulary.concept_class"
 (
    concept_class_id          varchar(20)    NOT NULL,
    concept_class_name        varchar(255)   NOT NULL,
@@ -43,7 +39,7 @@ CREATE TABLE schemaName."concept_class"
 
 
 
-CREATE TABLE schemaName."concept_relationship"
+CREATE TABLE "vocabulary.concept_relationship"
 (
    concept_id_1      int           NOT NULL,
    concept_id_2      int           NOT NULL,
@@ -55,7 +51,7 @@ CREATE TABLE schemaName."concept_relationship"
 
 
 
-CREATE TABLE schemaName."concept_synonym"
+CREATE TABLE "vocabulary.concept_synonym"
 (
    concept_id            int             NOT NULL,
    concept_synonym_name  varchar(1000)   NOT NULL,
@@ -64,7 +60,7 @@ CREATE TABLE schemaName."concept_synonym"
 
 
 
-CREATE TABLE schemaName."domain"
+CREATE TABLE "vocabulary.domain"
 (
    domain_id          varchar(20)    NOT NULL,
    domain_name        varchar(255)   NOT NULL,
@@ -73,7 +69,7 @@ CREATE TABLE schemaName."domain"
 
 
 
-CREATE TABLE schemaName."drug_strength"
+CREATE TABLE "vocabulary.drug_strength"
 (
    drug_concept_id              int          NOT NULL,
    ingredient_concept_id        int          NOT NULL,
@@ -91,7 +87,7 @@ CREATE TABLE schemaName."drug_strength"
 
 
 
-CREATE TABLE schemaName."relationship"
+CREATE TABLE "vocabulary.relationship"
 (
    relationship_id          varchar(20)    NOT NULL,
    relationship_name        varchar(255)   NOT NULL,
@@ -103,7 +99,7 @@ CREATE TABLE schemaName."relationship"
 
 
 
-CREATE TABLE schemaName."source_to_concept_map"
+CREATE TABLE "vocabulary.source_to_concept_map"
 (
    source_code              varchar(255)    NOT NULL,
    source_concept_id        int            NOT NULL,
@@ -118,7 +114,7 @@ CREATE TABLE schemaName."source_to_concept_map"
 
 
 
-CREATE TABLE schemaName."vocabulary"
+CREATE TABLE "vocabulary.vocabulary"
 (
    vocabulary_id          varchar(20)    NOT NULL,
    vocabulary_name        varchar(255)   NOT NULL,
@@ -130,12 +126,12 @@ CREATE TABLE schemaName."vocabulary"
 
 
 --- copy
-COPY schemaName."concept" FROM '~/vocabulary/CONCEPT.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."concept_ancestor" FROM '~/vocabulary/CONCEPT_ANCESTOR.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."concept_class" FROM '~/vocabulary/CONCEPT_CLASS.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."concept_relationship" FROM '~/vocabulary/CONCEPT_RELATIONSHIP.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."concept_synonym" FROM '~/vocabulary/CONCEPT_SYNONYM.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."domain" FROM '~/vocabulary/DOMAIN.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."drug_strength" FROM '~/vocabulary/DRUG_STRENGTH.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."relationship" FROM '~/vocabulary/RELATIONSHIP.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
-COPY schemaName."vocabulary" FROM '~/vocabulary/VOCABULARY.csv' WITH (FORMAT CSV DELIMITER '\t' HEADER TRUE);
+COPY "vocabulary.concept" FROM '/tmp/vocabulary/CONCEPT.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.concept_ancestor" FROM '/tmp/vocabulary/CONCEPT_ANCESTOR.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.concept_class" FROM '/tmp/vocabulary/CONCEPT_CLASS.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.concept_relationship" FROM '/tmp/vocabulary/CONCEPT_RELATIONSHIP.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.concept_synonym" FROM '/tmp/vocabulary/CONCEPT_SYNONYM.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.domain" FROM '/tmp/vocabulary/DOMAIN.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.drug_strength" FROM '/tmp/vocabulary/DRUG_STRENGTH.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.relationship" FROM '/tmp/vocabulary/RELATIONSHIP.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary.vocabulary" FROM '/tmp/vocabulary/VOCABULARY.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
