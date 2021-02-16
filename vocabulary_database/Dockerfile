@@ -2,6 +2,7 @@ FROM postgres
 
 # Install csv files
 COPY load_csv.sh load_csv.sh
+RUN chmod 770 load_csv.sh
 RUN ./load_csv.sh
 
 COPY init.sql /docker-entrypoint-initdb.d/
