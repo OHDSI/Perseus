@@ -36,8 +36,8 @@ def get_source_schema(schemaname):
      """
     print("schema name: " + str(schemaname))
 
-    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
-                               host='localhost', port=5432)
+    pg_db = PostgresqlDatabase('cdm_souffleur', user='postgres', password='5eC_DkMr^3',
+                                   host='localhost', port=5431)
     pg_db.connect()
 
     reset_schema(pg_db)
@@ -89,8 +89,8 @@ def reset_schema(pg_db, name='public'):
 
 
 def save_source_schema_in_db(source_tables):
-    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
-                               host='localhost', port=5432)
+    pg_db = PostgresqlDatabase('cdm_souffleur', user='postgres', password='5eC_DkMr^3',
+                                   host='localhost', port=5431)
     pg_db.connect()
     reset_schema(pg_db)
 
@@ -114,8 +114,8 @@ def save_source_schema_in_db(source_tables):
 
 
 def get_view_from_db(view_sql):
-    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
-                               host='localhost', port=5432)
+    pg_db = PostgresqlDatabase('cdm_souffleur', user='postgres', password='5eC_DkMr^3',
+                                   host='localhost', port=5431)
     pg_db.connect()
 
     view_cursor = pg_db.execute_sql(view_sql).description
@@ -138,8 +138,8 @@ def get_view_from_db(view_sql):
     return view_res;
 
 def run_sql_transformation(sql_transformation):
-    pg_db = PostgresqlDatabase('testdb', user='postgres', password='postgres',
-                               host='localhost', port=5432)
+    pg_db = PostgresqlDatabase('cdm_souffleur', user='postgres', password='5eC_DkMr^3',
+                                   host='localhost', port=5431)
     pg_db.connect()
     for val in sql_transformation:
         pg_db.execute_sql(val).description
