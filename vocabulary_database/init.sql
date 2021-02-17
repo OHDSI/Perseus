@@ -109,6 +109,17 @@ CREATE TABLE "vocabulary"."vocabulary"
    vocabulary_concept_id  int            NOT NULL
 );
 
+--- copy
+COPY "vocabulary"."concept" FROM '/tmp/vocabulary/CONCEPT.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."concept_ancestor" FROM '/tmp/vocabulary/CONCEPT_ANCESTOR.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."concept_class" FROM '/tmp/vocabulary/CONCEPT_CLASS.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."concept_relationship" FROM '/tmp/vocabulary/CONCEPT_RELATIONSHIP.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."concept_synonym" FROM '/tmp/vocabulary/CONCEPT_SYNONYM.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."domain" FROM '/tmp/vocabulary/DOMAIN.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."drug_strength" FROM '/tmp/vocabulary/DRUG_STRENGTH.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."relationship" FROM '/tmp/vocabulary/RELATIONSHIP.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+COPY "vocabulary"."vocabulary" FROM '/tmp/vocabulary/VOCABULARY.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
+
 --- indexes
 ALTER TABLE "vocabulary"."concept" ADD CONSTRAINT xpk_concept PRIMARY KEY (concept_id);
 ALTER TABLE "vocabulary"."vocabulary" ADD CONSTRAINT xpk_vocabulary PRIMARY KEY (vocabulary_id);
@@ -160,25 +171,14 @@ CREATE INDEX idx_drug_strength_id_1 ON "vocabulary"."drug_strength" (drug_concep
 CLUSTER "vocabulary"."drug_strength"  USING idx_drug_strength_id_1;
 CREATE INDEX idx_drug_strength_id_2 ON "vocabulary"."drug_strength" (ingredient_concept_id ASC);
 
---- copy
-COPY "vocabulary"."concept" FROM '/tmp/vocabulary/CONCEPT.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."concept_ancestor" FROM '/tmp/vocabulary/CONCEPT_ANCESTOR.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."concept_class" FROM '/tmp/vocabulary/CONCEPT_CLASS.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."concept_relationship" FROM '/tmp/vocabulary/CONCEPT_RELATIONSHIP.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."concept_synonym" FROM '/tmp/vocabulary/CONCEPT_SYNONYM.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."domain" FROM '/tmp/vocabulary/DOMAIN.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."drug_strength" FROM '/tmp/vocabulary/DRUG_STRENGTH.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."relationship" FROM '/tmp/vocabulary/RELATIONSHIP.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-COPY "vocabulary"."vocabulary" FROM '/tmp/vocabulary/VOCABULARY.csv' WITH (FORMAT CSV, DELIMITER E'\t', HEADER TRUE, QUOTE E'\b');
-
 --- Vacuum analyze
-VACUUM ANALYZE "vocabulary"."concept";
-VACUUM ANALYZE "vocabulary"."concept_ancestor";
-VACUUM ANALYZE "vocabulary"."concept_class";
-VACUUM ANALYZE "vocabulary"."concept_relationship";
-VACUUM ANALYZE "vocabulary"."concept_synonym";
-VACUUM ANALYZE "vocabulary"."domain";
-VACUUM ANALYZE "vocabulary"."drug_strength";
-VACUUM ANALYZE "vocabulary"."relationship";
-VACUUM ANALYZE "vocabulary"."source_to_concept_map";
-VACUUM ANALYZE "vocabulary"."vocabulary";
+VACUUM FULL "vocabulary"."concept";
+VACUUM FULL "vocabulary"."concept_ancestor";
+VACUUM FULL "vocabulary"."concept_class";
+VACUUM FULL "vocabulary"."concept_relationship";
+VACUUM FULL "vocabulary"."concept_synonym";
+VACUUM FULL "vocabulary"."domain";
+VACUUM FULL "vocabulary"."drug_strength";
+VACUUM FULL "vocabulary"."relationship";
+VACUUM FULL "vocabulary"."source_to_concept_map";
+VACUUM FULL "vocabulary"."vocabulary";
