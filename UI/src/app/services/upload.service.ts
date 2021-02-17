@@ -97,7 +97,7 @@ export class UploadService {
   }
 
   async loadReport(file: any){
-    this.storeService.add('reportFile', file);
+    this.storeService.add('reportFile', file[0]);
     this.uploadSchema(file, true)
       .subscribe(res => {
         this.snackbar.open(
