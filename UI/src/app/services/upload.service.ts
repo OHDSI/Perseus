@@ -62,7 +62,7 @@ export class UploadService {
 
 
   async onMappingChange(event: any): Promise<any> {
-
+    this.mappingLoading = true;
     const zip = await jsZip.loadAsync(event.target.files[ 0 ]);
 
     Object.keys(zip.files).forEach(obj => {
