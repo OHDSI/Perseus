@@ -1,7 +1,12 @@
 <form [formGroup]="form" style="height: 100%;">
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('server').disabled}">
     <label for="server">Server location</label>
-    <input class="test" type="text" id="server" formControlName="server">
+    <input id="server" type="text" formControlName="server">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('port').disabled}">
+    <label for="port">Port</label>
+    <input id="port" type="text" formControlName="port">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('user').disabled}">

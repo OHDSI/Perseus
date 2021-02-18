@@ -23,11 +23,12 @@
 
   <ng-template #db>
     <app-cdm-connect-form prefix="source"
+                          [requireSchema]="requireSchema"
                           [form]="form"></app-cdm-connect-form>
     <app-test-connection class="cdm-form__content-item__apply"
                          (testConnection)="onTestConnection()"
                          [connectionResult]="connectionResult"
-                         [disabled]="!form.valid"></app-test-connection>
+                         [disabled]="isNotValid"></app-test-connection>
   </ng-template>
 
   <ng-template #fakeData>

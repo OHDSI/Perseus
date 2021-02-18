@@ -11,16 +11,15 @@ export function createFakeDataForm(value: FakeDataParams =
   );
 }
 
-export function createCdmDbSettingsForm(disabled: boolean, formBuilder: FormBuilder): FormGroup {
+export function createDbConnectionForm(disabled: boolean, requireSchema: boolean, formBuilder: FormBuilder): FormGroup {
+  const schemaValidators = requireSchema ? [Validators.required] : [];
+
   return formBuilder.group({
     server: [{value: null, disabled}, [Validators.required]],
+    port: [{value: null, disabled}, [Validators.required]],
     user: [{value: null, disabled}, [Validators.required]],
     password: [{value: null, disabled}, [Validators.required]],
     database: [{value: null, disabled}, [Validators.required]],
-    schema: [{value: null, disabled}, [Validators.required]]
+    schema: [{value: null, disabled}, schemaValidators]
   });
 }
-
-export const cdmDbSettingsFromControlNames = [
-  'server', 'user', 'password', 'database', 'schema'
-];

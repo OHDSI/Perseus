@@ -7,6 +7,7 @@
   <div class="scan-dialog__content" [ngSwitch]="index">
     <app-cdm-form *ngSwitchCase="0" style="width: 100%"
                   (convert)="onConvert($event)"
+                  (cancel)="onClose()"
                   (generateFakeData)="onGenerateFakeData($event)"></app-cdm-form>
 
     <app-cdm-console-wrapper *ngSwitchCase="1" style="width: 100%"

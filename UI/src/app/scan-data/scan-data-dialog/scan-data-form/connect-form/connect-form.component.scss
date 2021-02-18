@@ -1,9 +1,11 @@
+@import "../../../styles/variables";
+
 .source-form {
   display: flex;
   flex-direction: column;
 
   width: 296px;
-  height: 485px;
+  height: $form-height;
 
   border: 1px solid rgba(#066BBB, 0.1);
   border-radius: 2px;
@@ -18,6 +20,6 @@
 
   &__test-connection {
     margin-top: auto;
-    padding-bottom: 23px;
+    padding-bottom: 13px;
   }
 }
