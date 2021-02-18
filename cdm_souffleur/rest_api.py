@@ -109,8 +109,8 @@ def validate_Sql():
 def get_view_call():
     try:
         view_sql = request.args['sql']
-        pg_db = PostgresqlDatabase('cdm_souffleur', user='postgres', password='5eC_DkMr^3',
-                                   host='localhost', port=5431)
+        pg_db = PostgresqlDatabase(app.config["DB_NAME"], user=app.config["DB_USER"], password=app.config["DB_PASSWORD"],
+                                   host=app.config["DB_HOST"], port=app.config["DB_PORT"])
         sql_test='select * from additional as t1 join batchnumbers as t2'
         pg_db.connect()
         cursor = pg_db.execute_sql(view_sql)
