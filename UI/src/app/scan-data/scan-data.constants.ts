@@ -1,5 +1,6 @@
 import { cdmBuilderLogUrl, whiteRabbitPrefix, whiteRabbitUrl } from '../app.constants';
 import { DbSettings } from './model/db-settings';
+import { adaptDbType } from './util/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
@@ -38,7 +39,8 @@ export const whiteRabbitDatabaseTypes: string[] = [
 
 export const dbTypesRequireSchema: string[] = [
   DbTypes.ORACLE,
-  DbTypes.POSTGRESQL
+  DbTypes.POSTGRESQL,
+  DbTypes.SQL_SERVER
 ];
 
 export const delimitedFiles: string[] = [
@@ -66,12 +68,13 @@ export const cdmWebsocketConfig = {
 };
 
 export const dictionaryDbSettingForCdmBuilder = {
-  vocabularyEngine: 'MSSQL', // Name for Cdm builder
-  vocabularyServer: '822JNJ16S03V',
-  vocabularySchema: 'dbo',
-  vocabularyDatabase: 'Vocabulary_20190617',
-  vocabularyUser: '3dx_reader',
-  vocabularyPassword: 'xd3!Ypr7q',
+  vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
+  vocabularyServer: '10.110.1.7',
+  vocabularyPort: 5431,
+  vocabularyDatabase: 'cdm_souffleur',
+  vocabularySchema: 'vocabulary',
+  vocabularyUser: 'cdm_builder',
+  vocabularyPassword: 'N7jscuS3ca',
   mappingsName: 'TestMappings'
 };
 
@@ -98,3 +101,13 @@ export const dqdDatabaseTypes = [
   DbTypes.BIGQUERY,
   DbTypes.SQLITE
 ];
+
+export const defaultPorts = {
+  [DbTypes.POSTGRESQL]: 5432,
+  [DbTypes.SQL_SERVER]: 1433,
+  [DbTypes.ORACLE]: 1521,
+  [DbTypes.MYSQL]: 3306,
+  [DbTypes.PDW]: 17001,
+  [DbTypes.REDSHIFT]: 5439,
+  [DbTypes.NETEZZA]: 5480
+};

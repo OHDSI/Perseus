@@ -12,13 +12,14 @@ import { DelimitedTextFileSettings } from '../../../model/delimited-text-file-se
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ScanSettings } from '../../../model/scan-settings';
 import { FileToScan } from '../../../model/file-to-scan';
-import { dbTypesRequireSchema, delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
+import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
 import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { MatDialog } from '@angular/material/dialog';
 import { WhiteRabbitService } from '../../../../services/white-rabbit.service';
 import { TableToScan } from '../../../model/table-to-scan';
 import { ConnectionResult } from '../../../model/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
+import { createDbConnectionForm } from '../../../util/form';
 
 @Component({
   selector: 'app-connect-form',
@@ -60,12 +61,6 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     ...delimitedFiles,
     ...whiteRabbitDatabaseTypes
   ];
-
-  formControlNames = [
-    'server', 'user', 'password', 'database', 'schema'
-  ];
-
-  requireSchema = false;
 
   private filesChange$ = new Subject<FileToScan[]>();
 
@@ -152,8 +147,6 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     if (this.correctConnectionSettingsLoaded) {
       this.subscribeFormChange();
     }
-
-    this.checkDataTypeChange();
   }
 
   onTestConnection() {
@@ -168,9 +161,10 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   }
 
   subscribeFormChange(): void {
-    const form = this.isDbSettings ? this.form : this.fileSettingsForm;
+    const formStreams$ = this.isDbSettings ? [this.form.valueChanges]
+      : [this.fileSettingsForm.valueChanges, this.filesChange$];
 
-    const subscription = merge(form.valueChanges, this.dataTypeChange$, this.filesChange$)
+    const subscription = merge(...formStreams$, this.dataTypeChange$)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
         this.connectionResult = null;
@@ -180,15 +174,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   }
 
   createForm(disabled: boolean): FormGroup {
-    const schemaValidators = this.requireSchema ? [Validators.required] : [];
-
-    return this.formBuilder.group({
-      server: [{value: null, disabled}, [Validators.required]],
-      user: [{value: null, disabled}, [Validators.required]],
-      password: [{value: null, disabled}, [Validators.required]],
-      database: [{value: null, disabled}, [Validators.required]],
-      schema: [{value: null, disabled}, schemaValidators]
-    });
+    return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
   }
 
   private initDelimitedFilesSettingsForm(): void {
@@ -215,30 +201,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     }
   }
 
-  private checkDataTypeChange() {
-    this.dataTypeChange$
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(() => {
-        const requireSchema = dbTypesRequireSchema.includes(this.dataType);
-        const schemaControl = this.form.get('schema');
-
-        if (requireSchema) {
-          schemaControl.setValidators([ Validators.required ]);
-        } else {
-          schemaControl.setValidators([]);
-        }
-        schemaControl.updateValueAndValidity();
-
-        // After checked child forms
-        setTimeout(() => {
-          this.requireSchema = requireSchema;
-        });
-      });
-  }
-
-  resetForm(){
+  resetForm() {
     this.isDbSettings ? this.form.reset() : this.resetFileSettingsForm();
   }
 

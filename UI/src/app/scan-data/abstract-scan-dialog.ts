@@ -36,5 +36,11 @@ export abstract class AbstractScanDialog {
     this.index = 0;
   }
 
-  protected abstract changeSize();
+  protected changeSize() {
+    if (this.index === 0) {
+      this.dialogRef.updateSize('700px', '737px');
+    } else {
+      this.dialogRef.updateSize('613px', '478px');
+    }
+  }
 }

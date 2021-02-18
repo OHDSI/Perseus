@@ -31,6 +31,7 @@ const initialState = {
 })
 export class CdmStateService implements IScanDataStateService {
 
+  private isInit = false;
   private cdmState: CdmState;
 
   get state() {
@@ -38,7 +39,12 @@ export class CdmStateService implements IScanDataStateService {
   }
 
   set state(state: CdmState) {
+    this.isInit = true;
     this.cdmState = state;
+  }
+
+  get isSet() {
+    return this.isInit;
   }
 
   constructor() {

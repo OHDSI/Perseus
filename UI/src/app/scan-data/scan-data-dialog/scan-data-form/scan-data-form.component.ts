@@ -154,7 +154,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   private saveDbSettingsToCdmDbSettings() {
     const dbType = this.connectFormComponent.dataType;
 
-    if (cdmBuilderDatabaseTypes.includes(dbType)) {
+    if (!this.cdmStateService.isSet && cdmBuilderDatabaseTypes.includes(dbType)) {
       this.cdmStateService.state = {
         ...this.cdmStateService.state,
         sourceDbSettings: {

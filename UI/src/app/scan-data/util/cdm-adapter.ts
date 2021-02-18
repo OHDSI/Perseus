@@ -14,13 +14,18 @@ const cdmVersionIdentifiers = {
   'v5.3': name => name === '5.3.0'
 };
 
+export function adaptDbType(dbType) {
+  return Object.keys(dbTypeIdentifiers)
+    .find(key => dbTypeIdentifiers[key] === dbType);
+}
+
 export function adaptDbSettingsForSource(dbSettings: DbSettings) {
-  const sourceEngine = Object.keys(dbTypeIdentifiers)
-    .find(key => dbTypeIdentifiers[key] === dbSettings.dbType);
+  const sourceEngine = adaptDbType(dbSettings.dbType);
 
   return {
     sourceEngine,
     sourceServer: dbSettings.server,
+    sourcePort: dbSettings.port,
     sourceSchema: dbSettings.schema,
     sourceDatabase: dbSettings.database,
     sourceUser: dbSettings.user,
@@ -29,12 +34,12 @@ export function adaptDbSettingsForSource(dbSettings: DbSettings) {
 }
 
 export function adaptDbSettingsForDestination(dbSettings: DbSettings) {
-  const destinationEngine = Object.keys(dbTypeIdentifiers)
-    .find(key => dbTypeIdentifiers[key] === dbSettings.dbType);
+  const destinationEngine = adaptDbType(dbSettings.dbType);
 
   return {
     destinationEngine,
     destinationServer: dbSettings.server,
+    destinationPort: dbSettings.port,
     destinationSchema: dbSettings.schema,
     destinationDatabase: dbSettings.database,
     destinationUser: dbSettings.user,
@@ -55,7 +60,7 @@ export function adaptDestinationCdmSettings(cdmSettings: CdmSettings): DbSetting
   return {
     dbType,
     server: cdmSettings.destinationServer,
-    port: null,
+    port: cdmSettings.destinationPort,
     database: cdmSettings.destinationDatabase,
     schema: cdmSettings.destinationSchema,
     user: cdmSettings.destinationUser,

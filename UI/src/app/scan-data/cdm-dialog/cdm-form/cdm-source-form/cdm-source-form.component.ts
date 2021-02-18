@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { cdmDbSettingsFromControlNames, createCdmDbSettingsForm, createFakeDataForm } from '../../../util/form';
+import { createDbConnectionForm, createFakeDataForm } from '../../../util/form';
 import {
   cdmBuilderDatabaseTypes,
   dictionaryDbSettingForCdmBuilder,
@@ -35,8 +35,6 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
 
   @Output()
   generateFakeData = new EventEmitter<FakeDataParams>();
-
-  formControlNames = cdmDbSettingsFromControlNames;
 
   fakeDataForm: FormGroup;
 
@@ -96,7 +94,10 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
         finalize(() => this.tryConnect = false)
       )
       .subscribe(
-        result => this.connectionResult = result,
+        result => {
+          this.connectionResult = result;
+          this.subscribeFormChange();
+        },
         error => {
           this.connectionResult = {
             canConnect: false,
@@ -116,7 +117,7 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
   }
 
   createForm(disabled: boolean): FormGroup {
-    return createCdmDbSettingsForm(disabled, this.formBuilder);
+    return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
   }
 
   private initFakeDataForm() {

@@ -10,7 +10,7 @@
   </div>
 
   <div class="cdm-form__action">
-    <button class="cdm-form__action-cancel cancel">Cancel</button>
+    <button class="cdm-form__action-cancel cancel" (click)="cancel.emit()">Cancel</button>
     <button class="cdm-form__action-convert confirm" (click)="onConvert()" [disabled]="isConvertButtonDisabled">Convert</button>
   </div>
 </div>

@@ -18,11 +18,14 @@ export class CdmConnectFormComponent {
   @Input()
   form: FormGroup;
 
+  @Input()
+  requireSchema: boolean;
+
   id(name: string): string {
     return `${this.prefix}-${name}`;
   }
 
-  resetForm(){
+  resetForm() {
     this.form.reset();
   }
 }

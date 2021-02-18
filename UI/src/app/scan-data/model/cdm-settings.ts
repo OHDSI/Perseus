@@ -7,6 +7,10 @@ export interface CdmSettings {
   destinationServer: string;
   vocabularyServer: string;
 
+  sourcePort: number;
+  destinationPort: number;
+  vocabularyPort: number;
+
   sourceSchema: string;
   destinationSchema: string;
   vocabularySchema: string;

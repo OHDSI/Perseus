@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectionResult } from '../../model/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
 import { Input, OnInit } from '@angular/core';
@@ -7,6 +7,8 @@ import { BaseComponent } from '../base/base.component';
 import { DbSettings } from '../../model/db-settings';
 import { ConnectionErrorPopupComponent } from '../connection-error-popup/connection-error-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { dbTypesRequireSchema, defaultPorts } from '../../scan-data.constants';
+import { merge } from 'rxjs';
 
 export abstract class AbstractResourceForm extends BaseComponent implements OnInit {
 
@@ -24,7 +26,11 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
 
   connectionResult: ConnectionResult;
 
-  abstract formControlNames: string[];
+  requireSchema = false;
+
+  formControlNames = [
+    'server', 'port', 'user', 'password', 'database', 'schema'
+  ];
 
   protected dataTypeChange$ = new Subject<string>();
 
@@ -34,6 +40,7 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
 
   ngOnInit(): void {
     this.initForm();
+    this.checkDataTypeChange();
   }
 
   abstract onTestConnection(): void;
@@ -41,8 +48,41 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
   abstract createForm(disabled: boolean): FormGroup;
 
   onDataTypeChange(value: string) {
+    this.setDefaultPort(value);
     this.dataType = value;
     this.dataTypeChange$.next(value);
+  }
+
+  subscribeFormChange(): void {
+    const subscription = merge(this.form.valueChanges, this.dataTypeChange$)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.connectionResult = null;
+        subscription.unsubscribe();
+      });
+  }
+
+  protected checkDataTypeChange() {
+    this.dataTypeChange$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => {
+        const requireSchema = dbTypesRequireSchema.includes(this.dataType);
+        const schemaControl = this.form.get('schema');
+
+        if (requireSchema) {
+          schemaControl.setValidators([ Validators.required ]);
+        } else {
+          schemaControl.setValidators([]);
+        }
+        schemaControl.updateValueAndValidity();
+
+        // After checked child forms
+        setTimeout(() => {
+          this.requireSchema = requireSchema;
+        });
+      });
   }
 
   protected subscribeOnDataTypeChange(form: FormGroup, controlNames: string[]) {
@@ -70,12 +110,22 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
     });
   }
 
+  protected setDefaultPort(dbType: string) {
+    const defaultPort = defaultPorts[dbType];
+    if (defaultPort) {
+      const portControl = this.form.get('port');
+      if (portControl) {
+        portControl.setValue(defaultPort);
+      }
+    }
+  }
+
   private initForm() {
     const disabled = !this.dataType;
     const formValue = this.dbSettings;
 
+    this.requireSchema = !disabled;
     this.form = this.createForm(disabled);
-
     this.subscribeOnDataTypeChange(this.form, this.formControlNames);
     this.form.patchValue(formValue);
   }

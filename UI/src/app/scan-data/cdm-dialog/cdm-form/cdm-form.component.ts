@@ -47,6 +47,9 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   @Output()
   generateFakeData = new EventEmitter<FakeDataParams>();
 
+  @Output()
+  cancel = new EventEmitter<void>();
+
   @ViewChild(CdmSourceFormComponent)
   sourceFormComponent: CdmSourceFormComponent;
 

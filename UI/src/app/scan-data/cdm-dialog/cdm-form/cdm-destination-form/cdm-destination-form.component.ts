@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { cdmDbSettingsFromControlNames, createCdmDbSettingsForm } from '../../../util/form';
+import { createDbConnectionForm } from '../../../util/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder } from '../../../scan-data.constants';
 import { adaptDbSettingsForDestination } from '../../../util/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
@@ -24,8 +24,6 @@ import { finalize } from 'rxjs/operators';
 })
 export class CdmDestinationFormComponent extends AbstractResourceForm implements OnInit {
 
-  formControlNames = cdmDbSettingsFromControlNames;
-
   dataTypes = cdmBuilderDatabaseTypes;
 
   constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
@@ -45,7 +43,7 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
   }
 
   createForm(disabled: boolean): FormGroup {
-    return createCdmDbSettingsForm(disabled, this.formBuilder);
+    return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
   }
 
   onTestConnection() {
@@ -55,7 +53,10 @@ export class CdmDestinationFormComponent extends AbstractResourceForm implements
         finalize(() => this.tryConnect = false)
       )
       .subscribe(
-        result => this.connectionResult = result,
+        result => {
+          this.connectionResult = result;
+          this.subscribeFormChange();
+        },
         error => {
           this.connectionResult = {
             canConnect: false,

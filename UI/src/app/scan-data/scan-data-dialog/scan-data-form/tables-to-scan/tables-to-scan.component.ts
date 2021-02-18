@@ -22,7 +22,7 @@ import { ScanParamsComponent } from './scan-params/scan-params.component';
     './tables-to-scan.component.scss',
     '../../../styles/scan-data-step.scss',
     '../../../styles/scan-data-normalize.scss',
-    '../../../styles/scan-data-popup.scss'
+    '../../../styles/scan-data-popup.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
