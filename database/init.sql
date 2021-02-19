@@ -6,9 +6,6 @@ create schema "vocabulary";
 --- user ---
 CREATE USER cdm_builder WITH PASSWORD 'N7jscuS3ca';
 
-GRANT USAGE ON SCHEMA vocabulary TO cdm_builder;
-GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO cdm_builder;
-
 
 
 --- tables ---
@@ -233,3 +230,9 @@ CREATE UNIQUE INDEX idx_vocabulary_vocabulary_id ON "vocabulary"."vocabulary" (v
 CLUSTER "vocabulary"."vocabulary" USING idx_vocabulary_vocabulary_id ;
 
 VACUUM FULL "vocabulary"."vocabulary";
+
+
+
+--- permissions
+GRANT USAGE ON SCHEMA vocabulary TO cdm_builder;
+GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO cdm_builder;
