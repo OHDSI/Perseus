@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class TypeToIconPipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    switch(value.toLowerCase()) {
+    switch (value.toLowerCase()) {
       case 'numeric':
       case 'integer': {
         return '“”';

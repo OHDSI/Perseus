@@ -3,7 +3,7 @@ import { ConnectionResult } from '../../model/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
 import { Input, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../base/base.component';
+import { BaseComponent } from '../../../base/base.component';
 import { DbSettings } from '../../model/db-settings';
 import { ConnectionErrorPopupComponent } from '../connection-error-popup/connection-error-popup.component';
 import { MatDialog } from '@angular/material/dialog';

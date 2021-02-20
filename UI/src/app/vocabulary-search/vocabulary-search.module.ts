@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VocabularySearchComponent } from './vocabulary-search.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [VocabularySearchComponent],
@@ -8,7 +9,8 @@ import { VocabularySearchComponent } from './vocabulary-search.component';
     VocabularySearchComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatProgressSpinnerModule
   ]
 })
 export class VocabularySearchModule { }

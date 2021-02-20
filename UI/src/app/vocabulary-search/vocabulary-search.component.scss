@@ -266,6 +266,23 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
     }
   }
 
+  &__table-wrapper {
+    position: relative;
+
+    .ui-blocker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #9b9b9b;
+      opacity: 0.35;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
   &__table {
     margin-top: 12px;
     height: 297px;

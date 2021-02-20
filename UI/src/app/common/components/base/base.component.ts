@@ -10,5 +10,4 @@ export class BaseComponent implements OnDestroy {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }
-
 }

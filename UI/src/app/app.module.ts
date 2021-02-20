@@ -38,7 +38,6 @@ import { SqlFunctionsInjector } from './components/popups/rules-popup/model/sql-
 import { RulesPopupService } from './components/popups/rules-popup/services/rules-popup.service';
 import { SQL_FUNCTIONS } from './components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { TransformationInputComponent } from './components/popups/rules-popup/transformation-input/transformation-input.component';
-import { SampleDataPopupComponent } from './components/popups/sample-data-popup/sample-data-popup.component';
 import { SqlEditorComponent } from './components/sql-editor/sql-editor.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { VocabularyDropdownComponent } from './components/vocabulary-search-select/vocabulary-dropdown.component';
@@ -79,7 +78,6 @@ import { VocabularySearchModule } from './vocabulary-search/vocabulary-search.mo
     CommentPopupComponent,
     SetConnectionTypePopupComponent,
     DeleteWarningComponent,
-    SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,
     ComfyComponent,

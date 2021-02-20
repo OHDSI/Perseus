@@ -5,7 +5,6 @@ import { BridgeService } from 'src/app/services/bridge.service';
 
 import { BridgeButtonData } from '../bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '../bridge-button/service/bridge-button.service';
-import { SampleDataPopupComponent } from '../popups/sample-data-popup/sample-data-popup.component';
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { StoreService } from '../../services/store.service';
@@ -124,17 +123,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
     if (!this.initializing) {
       this.close.emit();
     }
-  }
-
-  openSampleDataDialog(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    this.dialog.open(SampleDataPopupComponent, {
-      width: '1021px',
-      height: '696px',
-      data: this.table
-    });
   }
 
   onOpenTransfromDialog(event: any) {
@@ -266,22 +254,22 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
     if (tableConcepts) {
 
-      const clonedConcepts = []
+      const clonedConcepts = [];
       tableConcepts.conceptsList.forEach(it => {
         if (it.fields[ 'concept_id' ].targetCloneName === cloneFromTableName) {
           if (!it.fields[ 'concept_id' ].targetCloneName) {
             Object.values(it.fields).forEach(field => {
               (field as any).targetCloneName = 'Default';
-            })
+            });
           }
           const clonedConcept = cloneDeep(it);
           clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
           Object.values(clonedConcept.fields).forEach(field => {
             (field as any).targetCloneName = this.table.cloneName;
-          })
+          });
           clonedConcepts.push(clonedConcept);
-        };
-      })
+        }
+      });
 
       tableConcepts.conceptsList = tableConcepts.conceptsList.concat(clonedConcepts);
     }
@@ -375,14 +363,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
 
   }
 
-  removeCloneConcepts(table: any){
-    let tableConcepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ];
+  removeCloneConcepts(table: any) {
+    const tableConcepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`];
 
-    if(tableConcepts){
+    if (tableConcepts) {
       tableConcepts.conceptsList = tableConcepts.conceptsList.filter(it => it.fields['concept_id'].targetCloneName !== table.cloneName);
-      tableConcepts.conceptsList.forEach((it, index) =>{
+      tableConcepts.conceptsList.forEach((it, index) => {
         it.id = index;
-      })
+      });
     }
   }
 
