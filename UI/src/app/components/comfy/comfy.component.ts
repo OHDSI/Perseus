@@ -388,6 +388,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (this.storeService.state.targetClones[ targetTableName ]) {
       delete this.storeService.state.targetClones[ targetTableName ];
     }
+
+    if (this.storeService.state.concepts[ `${targetTableName}|${sourceTableName}` ]) {
+      delete this.storeService.state.concepts[ `${targetTableName}|${sourceTableName}` ];
+    }
+
+
     // previous version of remove mapping algorithm. Has been commented since logic with deleting links from all concept tables is not required
     /*     if (isConceptTable(targetTableName)) {
           environment.conceptTables.forEach(conceptTable => {
