@@ -407,6 +407,7 @@ def get_xml(json_):
     clear()
     result = {}
     previous_target_table = ''
+    previous_source_table = ''
     domain_tag = ''
     mapping_items = pd.DataFrame(json_['mapping_items'])
     source_tables = pd.unique(mapping_items.get('source_table'))
@@ -430,7 +431,7 @@ def get_xml(json_):
             if mapping is None:
                 continue
 
-            if previous_target_table != target_table:
+            if previous_target_table != target_table or previous_source_table != source_table:
                 domain_tag = SubElement(query_definition_tag, tag_name)
 
             clone_key = lambda a: a.get('targetCloneName')
@@ -590,6 +591,7 @@ def get_xml(json_):
                             definitions.append(target_field)
                     apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag)
                 previous_target_table = target_table
+                previous_source_table = source_table
                 if target_table == 'person':
                     generate_bath_sql_file(groupList, source_table, views)
 

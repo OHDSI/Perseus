@@ -312,7 +312,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           data: {
             arrowCache: this.bridgeService.arrowsCache,
             arrow: arrow,
-            oppositeSourceTable: this.targetPanel.oppositeTableName
+            oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
           }
         });
       } 

@@ -1,7 +1,8 @@
 <div  class="concept-container"> 
     <h3>Concept Configuration</h3>
     <mat-icon class="close"
-          mat-dialog-close>close
+          mat-dialog-close
+          (click)="close()">close
   </mat-icon>
     <mat-tab-group>
         <mat-tab [label]="'Fields'">
@@ -22,6 +23,7 @@
                             [fieldType]="'source_value'"
                             [concepts] = "dataSource.data"
                             [connectedToConceptFields]="connectedToConceptFields"
+                            [targetTableName]="targetTableName"
                             (getConceptFieldName) = "getConceptFieldNameByType($event)"
                             ></app-concept-column>
                         </td>
@@ -40,6 +42,7 @@
                             [fieldType]="'concept_id'"
                             [concepts] = "dataSource.data"
                             [connectedToConceptFields]="connectedToConceptFields"
+                            [targetTableName]="targetTableName"
                             (getConceptFieldName) = "getConceptFieldNameByType($event)"
                             ></app-concept-column>
                         </td>
@@ -58,6 +61,7 @@
                             [fieldType]="'source_concept_id'"
                             [concepts] = "dataSource.data"
                             [connectedToConceptFields]="connectedToConceptFields"
+                            [targetTableName]="targetTableName"
                             (getConceptFieldName) = "getConceptFieldNameByType($event)"
                             ></app-concept-column>
                         </td>
@@ -76,6 +80,7 @@
                             [fieldType]="'type_concept_id'"
                             [concepts] = "dataSource.data"
                             [connectedToConceptFields]="connectedToConceptFields"
+                            [targetTableName]="targetTableName"
                             (getConceptFieldName) = "getConceptFieldNameByType($event)"
                             ></app-concept-column>
                         </td>

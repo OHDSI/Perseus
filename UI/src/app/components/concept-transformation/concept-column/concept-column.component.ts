@@ -3,6 +3,7 @@ import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-op
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
 import { SelectConceptFieldComponent } from '../../popups/select-concept-field/select-concept-field.component';
+import * as conceptMap from './../../concept-fileds-list.json'
 
 @Component({
   selector: 'app-concept-column',
@@ -16,19 +17,30 @@ export class ConceptColumnComponent implements OnInit {
   @Input() row: any;
   @Input() fieldType: any;
   @Input() connectedToConceptFields: any;
+  @Input() targetTableName: any;
   @Output() getConceptFieldName = new EventEmitter<any>();
-  @Input() concepts: any
+  @Input() concepts: any;
+  conceptFieldsMap = (conceptMap as any).default;
 
   errorText = '';
 
+  get Constant(): string {
+    return this.field.constant.replace(/['"]+/g, '');
+  }
+
+  set Constant(cons: string) {
+    this.field.constant = `"${cons}"`;
+  }
+
   constructor(private overlayService: OverlayService) { }
+  
 
   ngOnInit(): void {
   }
 
   openConceptFieldsDropdown(target: any){
 
-    const conceptColumnName = getConceptFieldNameByType(this.fieldType, this.connectedToConceptFields);
+    const conceptColumnName = getConceptFieldNameByType(this.fieldType, this.conceptFieldsMap[this.targetTableName]);
 
     const data = {
       fields: [ 'Constant' ].concat(this.connectedToConceptFields[ conceptColumnName ]
