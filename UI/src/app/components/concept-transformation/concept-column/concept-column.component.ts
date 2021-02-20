@@ -24,11 +24,11 @@ export class ConceptColumnComponent implements OnInit {
 
   errorText = '';
 
-  get Constant(): string {
+  get constant(): string {
     return this.field.constant.replace(/['"]+/g, '');
   }
 
-  set Constant(cons: string) {
+  set constant(cons: string) {
     this.field.constant = `"${cons}"`;
   }
 

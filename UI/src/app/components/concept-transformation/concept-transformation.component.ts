@@ -72,7 +72,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
     this.conceptsTable = this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ];
 
-    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
+    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList
+      .filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
 
     this.bridgeService.conceptSqlTransfomed$.
       pipe(takeUntil(this.ngUnsubscribe))

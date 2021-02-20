@@ -471,12 +471,12 @@ getConceptFieldsDictionary(conceptFields: any) {
       delete this.arrowsCache[ key ];
     }
 
-    if(connection) {
+    if (connection) {
       if (Object.values(this.conceptFieldNames)
-      .filter(item => (item as any).includes(connection.target.name)).length) {
-      const conceptService = new ConceptTransformationService(connection, this.storeService.state.concepts, this.arrowsCache);
-      conceptService.deleteFieldsFromConcepts();
-    } 
+        .filter(item => (item as any).includes(connection.target.name)).length) {
+        const conceptService = new ConceptTransformationService(connection, this.storeService.state.concepts, this.arrowsCache);
+        conceptService.deleteFieldsFromConcepts();
+      }
     }
 
     this.removeConnection.next(connection);
