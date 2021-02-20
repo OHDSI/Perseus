@@ -218,31 +218,44 @@
     </main>
 
     <footer class="mapping-footer">
-      <div class="mapping-footer__content">
-        <div class="mapping-footer__content-left">
-          <button class="mapping-footer__content-delete-links grey-button red-color"
+      <div class="mapping-footer__block vocabulary">
+        <button class="mapping-footer__vocabulary" (click)="showVocabulary()">
+          <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.4351 10.0629H17.7124L17.4563 9.81589C18.3528 8.77301 18.8925 7.4191 18.8925 5.94625C18.8925 2.66209 16.2304 0 12.9463 0C9.66209 0 7 2.66209 7 5.94625C7 9.23042 9.66209 11.8925 12.9463 11.8925C14.4191 11.8925 15.773 11.3528 16.8159 10.4563L17.0629 10.7124V11.4351L21.6369 16L23 14.6369L18.4351 10.0629ZM12.9463 10.0629C12.6763 10.0629 12.4124 10.0371 12.1571 9.98773C10.9662 9.75762 9.96023 9.01621 9.37566 8C9.03652 7.41043 8.83922 6.72837 8.82996 6C8.82973 5.98211 8.82962 5.9642 8.82962 5.94625C8.82962 5.24169 9.00554 4.57913 9.31596 4C9.82858 3.04364 10.708 2.3148 11.7677 2C12.0116 1.92753 12.2651 1.877 12.5259 1.85069C12.6641 1.83676 12.8043 1.82962 12.9463 1.82962C15.2241 1.82962 17.0629 3.66838 17.0629 5.94625C17.0629 8.22413 15.2241 10.0629 12.9463 10.0629Z" fill="#066BBB"/>
+            <path d="M0 13C0 12.4477 0.447715 12 1 12H7C7.55228 12 8 12.4477 8 13C8 13.5523 7.55228 14 7 14H1C0.447715 14 0 13.5523 0 13Z" fill="#066BBB"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1 4C0.447715 4 0 4.44772 0 5C0 5.55228 0.447715 6 1 6H8.82996C8.82973 5.98211 8.82962 5.9642 8.82962 5.94625C8.82962 5.24169 9.00554 4.57913 9.31596 4H1Z" fill="#066BBB"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1 8C0.447715 8 0 8.44772 0 9C0 9.55228 0.447715 10 1 10H12C12.0535 10 12.1059 9.99581 12.1571 9.98773C10.9662 9.75762 9.96023 9.01621 9.37566 8H1Z" fill="#066BBB"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2H11.7677C12.0116 1.92753 12.2651 1.877 12.5259 1.85069C12.8105 1.6744 13 1.35934 13 1C13 0.447715 12.5523 0 12 0H1Z" fill="#066BBB"/>
+          </svg>
+          Vocabulary
+        </button>
+      </div>
+
+      <div class="mapping-footer__right">
+        <div class="mapping-footer__block secondary">
+          <button class="mapping-footer__delete-links grey-button red-color"
                   [disabled]="isMappingEmpty()"
                   (click)="deleteLinks()">Delete Links
           </button>
 
-          <button class="mapping-footer__content-preview grey-button blue-color"
+          <button class="mapping-footer__preview grey-button blue-color"
                   [disabled]="isMappingEmpty() || isSimilarTabs()"
                   (click)="previewMapping()">Preview
           </button>
         </div>
 
-        <div class="mapping-footer__content-right">
-          <button class="mapping-footer__content-fake grey-button blue-color"
+        <div class="mapping-footer__block general">
+          <button class="mapping-footer__fake grey-button blue-color"
                   [disabled]="!hasScanReport"
                   (click)="generateFakeData()">Generate Fake
           </button>
 
-          <button class="mapping-footer__content-report grey-button blue-color"
+          <button class="mapping-footer__report grey-button blue-color"
                   [disabled]="isMappingEmpty()"
                   (click)="generateReport()">Report
           </button>
 
-          <button class="mapping-footer__content-cdm blue-button white-color"
+          <button class="mapping-footer__cdm blue-button white-color"
                   [disabled]="isMappingEmpty()"
                   [matMenuTriggerFor]="cdmMenu">Convert to CDM
             <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -263,7 +276,8 @@
           </mat-menu>
         </div>
       </div>
-
     </footer>
   </section>
 </div>
+
+<app-vocabulary-search *ngIf="isVocabularyVisible"></app-vocabulary-search>

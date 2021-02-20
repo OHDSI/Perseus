@@ -77,6 +77,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   conceptFieldNames = (conceptFields as any).default;
 
+  isVocabularyVisible = false;
+
   get hint(): string {
     return 'no hint';
   }
@@ -251,8 +253,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
-        if(!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
-        
+        if (!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
+
         const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
         dialogRef.afterClosed$.subscribe((configOptions: any) => {
           const { connectionType } = configOptions;
@@ -311,11 +313,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           maxHeight: '100%',
           data: {
             arrowCache: this.bridgeService.arrowsCache,
-            arrow: arrow,
+            arrow,
             oppositeSourceTable: this.targetPanel.oppositeTableName
           }
         });
-      } 
+      }
         return;
       }
     }
@@ -842,6 +844,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });
+  }
+
+  showVocabulary() {
+    this.isVocabularyVisible = !this.isVocabularyVisible;
   }
 
   private addMappedSourceToStore() {
