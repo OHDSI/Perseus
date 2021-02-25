@@ -1,5 +1,6 @@
 $row-height: 32px;
 $header-border: 1px solid rgba(230, 230, 230, .2);
+$table-height: 297px;
 
 * {
   margin: 0;
@@ -82,46 +83,7 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
     height: 100%;
     border-top: 1px solid rgba(6, 107, 187, .1);
     padding-top: 20px;
-
-    &-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 0 38px;
-      padding: 10px 0;
-      cursor: pointer;
-
-      &__name {
-        font-size: 14px;
-        line-height: 18px;
-        display: flex;
-        align-items: center;
-
-        svg {
-          margin-right: 8px;
-        }
-      }
-
-      .domain svg circle {
-        fill: #761C1C;
-      }
-
-      .concept svg circle {
-        fill: #406C95;
-      }
-
-      .class svg circle {
-        fill: #14772A;
-      }
-
-      .vocab svg circle {
-        fill: #E99A00;
-      }
-
-      .validity svg circle {
-        fill: #3D00BD;
-      }
-    }
+    overflow-y: auto;
   }
 
   &__content {
@@ -285,7 +247,7 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
 
   &__table {
     margin-top: 12px;
-    height: 297px;
+    height: $table-height;
     min-width: 1064px;
     border-radius: 2px;
     overflow-y: auto;
@@ -342,6 +304,14 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
           line-height: 15px;
           color: #fff;;
         }
+      }
+
+      &.error-row {
+        height: $table-height - $row-height;
+        display: flex;
+        color: red;
+        justify-content: center;
+        align-items: center;
       }
 
       &:nth-child(2n) {

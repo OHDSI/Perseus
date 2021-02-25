@@ -1,0 +1,8 @@
+<div class="vocabulary-search__filters-list">
+  <div *ngFor="let value of values" class="vocabulary-search__filters-list-item">
+    <label>
+      <input type="checkbox" [disabled]="value.disabled" [checked]="value.checked">
+      {{value.name}} ({{value.count}})
+    </label>
+  </div>
+</div>

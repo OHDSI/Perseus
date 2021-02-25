@@ -26,28 +26,15 @@
     </div>
 
     <div class="vocabulary-search__filters">
-      <div class="vocabulary-search__filters-item">
-        <div class="vocabulary-search__filters-item__name domain">
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="4" cy="4" r="4"/>
-          </svg>
-          <span>Domain</span>
-        </div>
-        <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0L4 4L8 0H0Z" fill="#404040"/>
-        </svg>
-      </div>
+      <div *ngFor="let filter of filters" class="vocabulary-search__filters-wrapper">
 
-      <div class="vocabulary-search__filters-item">
-        <div class="vocabulary-search__filters-item__name concept">
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="4" cy="4" r="4"/>
-          </svg>
-          <span>Concept</span>
-        </div>
-        <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0L4 4L8 0H0Z" fill="#404040"/>
-        </svg>
+        <app-filter-item [name]="filter.name"
+                         [color]="filter.color"
+                         [opened]="openedFilter === filter.name"
+                         (open)="onOpen($event)"></app-filter-item>
+
+        <app-filter-list *ngIf="filter.name === openedFilter"
+                         [values]="filter.values"></app-filter-list>
       </div>
     </div>
   </div>
@@ -63,18 +50,18 @@
           <path d="M8.97917 7.91667H8.41958L8.22125 7.72542C8.91542 6.91792 9.33333 5.86958 9.33333 4.72917C9.33333 2.18625 7.27208 0.125 4.72917 0.125C2.18625 0.125 0.125 2.18625 0.125 4.72917C0.125 7.27208 2.18625 9.33333 4.72917 9.33333C5.86958 9.33333 6.91792 8.91542 7.72542 8.22125L7.91667 8.41958V8.97917L11.4583 12.5138L12.5138 11.4583L8.97917 7.91667ZM4.72917 7.91667C2.96542 7.91667 1.54167 6.49292 1.54167 4.72917C1.54167 2.96542 2.96542 1.54167 4.72917 1.54167C6.49292 1.54167 7.91667 2.96542 7.91667 4.72917C7.91667 6.49292 6.49292 7.91667 4.72917 7.91667Z"
                 fill="#808080"/>
         </svg>
-        <input placeholder="Search by Keywords"/>
+        <input #keyWordInput placeholder="Search by Keywords"/>
       </label>
 
       <div class="vocabulary-search__navigation" (click)="handleNavigation($event)">
         <div class="show-by">
           <label for="show-by">Show by</label>
-          <input id="show-by" type="number" value="100">
+          <input #pageSizeInput id="show-by" type="number" value="100">
         </div>
 
         <div class="total">
           <label>Total</label>
-          <span>8 000 566</span>
+          <span>{{total}}</span>
         </div>
 
         <div class="pagination">
@@ -119,13 +106,11 @@
     <div class="vocabulary-search__table-wrapper">
       <div class="vocabulary-search__table">
         <div class="row header">
-          <div class="cell id">
-            <div class="column">
-              ID
-              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path opacity="0.6" d="M0 12H6V10H0V12ZM0 0V2H18V0H0ZM0 7H12V5H0V7Z" fill="white"/>
-              </svg>
-            </div>
+          <div class="column cell id">
+            ID
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.6" d="M0 12H6V10H0V12ZM0 0V2H18V0H0ZM0 7H12V5H0V7Z" fill="white"/>
+            </svg>
           </div>
           <div class="column cell code">
             Code
@@ -181,6 +166,8 @@
           <div class="cell domain">{{concept.domain}}</div>
           <div class="cell vocab">{{concept.vocabulary}}</div>
         </div>
+
+        <div *ngIf="error" class="row error-row">{{error}}</div>
       </div>
 
       <div *ngIf="requestInProgress" class="ui-blocker">
