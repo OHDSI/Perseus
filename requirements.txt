@@ -12,3 +12,4 @@ Werkzeug==0.14.1
 py-postgresql==1.2.1
 peewee
 psycopg2
+numpy

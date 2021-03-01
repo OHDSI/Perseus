@@ -3,25 +3,25 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     UPLOAD_SOURCE_SCHEMA_FOLDER
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from flask import Blueprint
-from cdm_souffleur.model.xml_writer import get_xml, zip_xml, \
+from cdm_souffleur.services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_sql, delete_generated_sql, get_lookups_list, get_lookup, add_lookup, del_lookup
 from _thread import start_new_thread
 from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
     return_lookup_list, return_domain_list, return_concept_class_list
-from cdm_souffleur.model.source_schema import load_report, get_source_schema, \
+from cdm_souffleur.services.source_schema import load_report, get_source_schema, \
     get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, \
     load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, get_column_info
-from cdm_souffleur.model.cdm_schema import get_exist_version, get_schema
+from cdm_souffleur.services.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.exceptions import BadRequestKeyError
 import os
 from peewee import *
 from flask import Blueprint
+from cdm_souffleur.services.vocabulary_service import search_vocabulary_concepts
+from cdm_souffleur import app
+from cdm_souffleur.db import pg_db
 
-app = Flask(__name__)
-app.config.from_object(f'config.{os.getenv("CDM_SOUFFLEUR_ENV").capitalize()}Config')
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 app.secret_key = 'mdcr'
@@ -36,6 +36,14 @@ def load_schema():
         load_schema_to_server(file)
     return jsonify(success=True)
 
+@bp.route('/api/search_concepts', methods=['GET'])
+def search_concepts():
+    """save source schema to server side"""
+    query = request.args['query']
+    pageSize = request.args['pageSize']
+    page = request.args['page']
+    search_result = search_vocabulary_concepts(pageSize, page, query)
+    return jsonify(search_result)
 
 @bp.route('/api/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
@@ -109,9 +117,6 @@ def validate_Sql():
 def get_view_call():
     try:
         view_sql = request.args['sql']
-        pg_db = PostgresqlDatabase(app.config["DB_NAME"], user=app.config["DB_USER"], password=app.config["DB_PASSWORD"],
-                                   host=app.config["DB_HOST"], port=app.config["DB_PORT"])
-        sql_test='select * from additional as t1 join batchnumbers as t2'
         pg_db.connect()
         cursor = pg_db.execute_sql(view_sql)
         pg_db.close()
