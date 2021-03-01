@@ -1,6 +1,6 @@
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT, \
-    UPLOAD_SOURCE_SCHEMA_FOLDER
+    UPLOAD_SOURCE_SCHEMA_FOLDER, VOCABULARY_FILTERS
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from cdm_souffleur.services.xml_writer import get_xml, zip_xml, \
@@ -39,10 +39,16 @@ def load_schema():
 @bp.route('/api/search_concepts', methods=['GET'])
 def search_concepts():
     """save source schema to server side"""
-    query = request.args['query']
-    pageSize = request.args['pageSize']
-    page = request.args['page']
-    search_result = search_vocabulary_concepts(pageSize, page, query)
+    query = request.args.get('query')
+    pageSize = request.args.get('pageSize')
+    page = request.args.get('page')
+    sort = request.args.get('sort')
+    order = request.args.get('order')
+    filters = {}
+    for key in VOCABULARY_FILTERS:
+        filters[key] = request.args.get(VOCABULARY_FILTERS[key])
+    update_filters = request.args.get('updateFilters')
+    search_result = search_vocabulary_concepts(pageSize, page, query, sort, order, filters, update_filters)
     return jsonify(search_result)
 
 @bp.route('/api/get_existing_source_schemas_list', methods=['GET'])
