@@ -1,17 +1,43 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
+export interface FilterValue {
+  name: string;
+  count: number;
+  filterIndex: number;
+  checked: boolean;
+  disabled: boolean;
+}
 
 @Component({
   selector: 'app-filter-list',
   templateUrl: './filter-list.component.html',
   styleUrls: ['./filter-list.component.scss']
 })
-export class FilterListComponent {
+export class FilterListComponent implements OnInit {
+
+  filter = '';
 
   @Input()
-  values: {
-    name: string,
-    count: number,
-    checked: boolean,
-    disabled: boolean
-  }[];
+  values: FilterValue[];
+
+  filteredValues: FilterValue[];
+
+  @Output()
+  check = new EventEmitter<FilterValue>();
+
+  ngOnInit(): void {
+    this.filteredValues = this.values;
+  }
+
+  onCheck(index: number) {
+    this.check.emit(this.values[index]);
+  }
+
+  onFilter(value: string) {
+    const parsedValue = value.toLowerCase();
+    this.filteredValues = this.values.filter(filter => filter.name
+      .toLowerCase()
+      .includes(parsedValue)
+    );
+  }
 }

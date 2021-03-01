@@ -9,6 +9,8 @@ import { Subject } from 'rxjs/internal/Subject';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
 import { parseHtmlError } from '../services/utilites/error';
+import { Filter } from './filter-item/filter-item.component';
+import { FilterValue } from './filter-list/filter-list.component';
 
 @Component({
   selector: 'app-vocabulary-search',
@@ -34,27 +36,35 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   error: string;
 
+  columns = [
+    {field: 'id', name: 'ID', className: 'id'},
+    {field: 'code', name: 'Code', className: 'code'},
+    {field: 'name', name: 'Name', className: 'name'},
+    {field: 'className', name: 'Class', className: 'class'},
+    {field: 'standardConcept', name: 'Concept', className: 'concept'},
+    {field: 'invalidReason', name: 'Validity', className: 'validity'},
+    {field: 'domain', name: 'Domain', className: 'domain'},
+    {field: 'vocabulary', name: 'Vocab', className: 'vocab'}
+  ];
+
+  sort: {
+    field: string;
+    order: string
+  };
+
   @ViewChild('keyWordInput')
   keyWordInput: ElementRef;
 
   @ViewChild('pageSizeInput')
   pageSizeInput: ElementRef;
 
-  filters: {
-    name: string,
-    priority: number,
-    color: string,
-    values: {
-      name: string,
-      count: number,
-      checked: boolean,
-      disabled: boolean
-    }[]
-  }[] = [];
+  filters: Filter[] = [];
 
   openedFilter: string;
 
-  selectedFilters = [];
+  selectedFilters: FilterValue[] = [];
+
+  chipsHeight = '';
 
   private requestParams: VocabSearchReqParams = {
     pageSize: 100,
@@ -77,10 +87,23 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     invalid_reason: {name: 'Valid', priority: 5, color: '#3D00BD'}
   };
 
+  private sortFieldMap = {
+    id: 'concept_id',
+    code: 'concept_code',
+    name: 'concept_name',
+    className: 'concept_class_id',
+    standardConcept: 'standard_concept',
+    invalidReason: 'invalid_reason',
+    domain: 'domain_id',
+    vocabulary: 'vocabulary_id'
+  };
+
   private request$ = new Subject<{
     params: VocabSearchReqParams,
     updateFilters: boolean
   }>();
+
+  private readonly chipHeight = 72;
 
   constructor(private vocabularySearchService: VocabularySearchService) {
     super();
@@ -102,8 +125,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     });
   }
 
-  handleNavigation($event: MouseEvent) {
-    const dataset = ($event.target as HTMLElement).dataset;
+  handleNavigation(event: MouseEvent) {
+    const dataset = (event.target as HTMLElement).dataset;
 
     let doRequest = false;
 
@@ -149,6 +172,60 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     } else {
       this.openedFilter = filter;
     }
+  }
+
+  onSort(event: MouseEvent) {
+    const field = (event.target as HTMLElement).dataset.sortField;
+
+    if (field) {
+      if (!this.sort || this.sort.field !== field || this.sort.order === 'desc') {
+        this.sort = {
+          field,
+          order: 'asc'
+        };
+      } else {
+        this.sort = {
+          field,
+          order: 'desc'
+        };
+      }
+
+      this.requestParams = {
+        ...this.requestParams,
+        sort: this.sortFieldMap[this.sort.field],
+        order: this.sort.order
+      };
+      this.makeRequest(this.requestParams, false);
+    }
+  }
+
+  chipBackgroundColor(filterIndex: number) {
+    const field = this.filters[filterIndex].field;
+    return this.filtersRecognizer[field].color;
+  }
+
+  onCheckFilter(filterValue: FilterValue) {
+    filterValue.checked = !filterValue.checked;
+
+    if (filterValue.checked) {
+      this.selectedFilters.push(filterValue);
+    } else {
+      const index = this.selectedFilters.indexOf(filterValue);
+      this.selectedFilters.splice(index, 1);
+    }
+
+    this.updateChipsHeight();
+
+    this.setFiltersAndMakeRequest();
+  }
+
+  onDeleteFilter(index: number) {
+    this.selectedFilters[index].checked = false;
+    this.selectedFilters.splice(index, 1);
+
+    this.updateChipsHeight();
+
+    this.setFiltersAndMakeRequest();
   }
 
   private handleArrowNavigation(arrow: string): boolean {
@@ -209,10 +286,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
       )
       .subscribe(result => {
         this.concepts = result.content;
-        if (this.total !== result.totalElements) {
-          this.total = result.totalElements;
-          this.pageCount = result.totalPages;
-        }
+        this.setPagesAndElementsCount(result.totalElements, result.totalPages);
         if (updateFilters) {
           this.updateFilters(result.facets);
         }
@@ -220,7 +294,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
         this.requestInProgress = false;
       }, error => {
         this.concepts = [];
-        this.total = 0;
+        this.setPagesAndElementsCount(0, 1);
         this.error = parseHtmlError(error);
         this.requestInProgress = false;
       });
@@ -242,22 +316,64 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private updateFilters(facets: VocabSearchFilters) {
     this.filters = Object.keys(facets)
-      .map(filterKey => {
+      .sort(filterKey => this.filtersRecognizer[filterKey].priority)
+      .map((filterKey, filterIndex) => {
         const filter = this.filtersRecognizer[filterKey];
         const filterValue = facets[filterKey];
         return {
           name: filter.name as string,
-          priority: filter.priority as number,
+          field: filterKey,
           color: filter.color as string,
           values: Object.keys(filterValue)
             .map(valueKey => ({
               name: valueKey,
+              filterIndex,
               count: filterValue[valueKey] as number,
               checked: false,
               disabled: (filterValue[valueKey] as number) === 0
             }))
         };
-      })
-      .sort(filter => filter.priority);
+      });
+  }
+
+  private updateChipsHeight() {
+    const height = this.selectedFilters.length * this.chipHeight;
+    this.chipsHeight = `${height}px`;
+  }
+
+  private setFiltersAndMakeRequest() {
+    const getConcreteFiltersByIndex = index => this.selectedFilters
+        .filter(filter => filter.filterIndex === index)
+        .map(filter => filter.name);
+
+    this.requestParams = {
+      ...this.requestParams,
+      domain: getConcreteFiltersByIndex(0),
+      standardConcept: getConcreteFiltersByIndex(1),
+      conceptClass: getConcreteFiltersByIndex(2),
+      vocabulary: getConcreteFiltersByIndex(3),
+      invalidReason: getConcreteFiltersByIndex(4)
+    };
+
+    this.makeRequest(this.requestParams, false);
+  }
+
+  private setPagesAndElementsCount(total: number, pageCount: number) {
+    if (this.total !== total || this.pageCount !== pageCount) {
+      this.total = total;
+      this.pageCount = pageCount;
+
+      if (this.currentPage > pageCount) {
+        this.currentPage = pageCount;
+
+        const second = pageCount - 2;
+        const third = pageCount - 1;
+
+        this.movableIndexes = {
+          second: second > 1 ? second : 2,
+          third: third > 2 ? third : 3
+        };
+      }
+    }
   }
 }

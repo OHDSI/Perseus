@@ -1,3 +1,5 @@
+@import "search-input";
+
 $row-height: 32px;
 $header-border: 1px solid rgba(230, 230, 230, .2);
 $table-height: 297px;
@@ -42,39 +44,12 @@ $table-height: 297px;
   }
 
   &__chips {
-    height: 144px;
+    max-height: 100px;
     padding-top: 15px;
     padding-left: 38px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-
-    &-item {
-      margin-bottom: 4px;
-      border-radius: 16px;
-      background-color: #406C95;
-      width: fit-content;
-      padding: 8px 10px 9px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: normal;
-      font-size: 14px;
-      line-height: 15px;
-      color: #fff;
-
-      span {
-        padding-right: 8px;
-      }
-
-      svg {
-        cursor: pointer;
-      }
-
-      &:last-child {
-        background-color: #761C1C;
-      }
-    }
   }
 
   &__filters {
@@ -112,20 +87,12 @@ $table-height: 297px;
     input {
       width: 500px;
       height: 30px;
-      box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
-      border-radius: 2px;
-      border: 0;
       padding-left: 33px;
-
-      &:focus {
-        outline: none;
-      }
 
       &::placeholder {
         font-weight: normal;
         font-size: 14px;
         line-height: 18px;
-        color: #808080;
       }
     }
   }
@@ -286,13 +253,25 @@ $table-height: 297px;
           padding-right: 10px;
 
           svg {
-            display: none;
             cursor: pointer;
+            display: none;
           }
 
           &:hover {
             svg {
               display: block;
+            }
+          }
+
+          &.sortable-asc, &.sortable-desc {
+            svg {
+              display: block;
+            }
+          }
+
+          &.sortable-asc {
+            svg {
+              transform: rotate(270deg);
             }
           }
         }

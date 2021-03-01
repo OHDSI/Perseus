@@ -1,7 +1,11 @@
 <div class="vocabulary-search__filters-list">
-  <div *ngFor="let value of values" class="vocabulary-search__filters-list-item">
+  <input *ngIf="values.length > 4" class="filter vocabulary-search-input" placeholder="Filter"
+         [ngModel]="filter"
+         (ngModelChange)="onFilter($event)">
+
+  <div *ngFor="let value of filteredValues; let i = index" class="vocabulary-search__filters-list-item">
     <label>
-      <input type="checkbox" [disabled]="value.disabled" [checked]="value.checked">
+      <input (click)="onCheck(i)" type="checkbox" [disabled]="value.disabled" [checked]="value.checked">
       {{value.name}} ({{value.count}})
     </label>
   </div>

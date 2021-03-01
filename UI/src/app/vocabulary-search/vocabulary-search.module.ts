@@ -4,19 +4,23 @@ import { VocabularySearchComponent } from './vocabulary-search.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FilterItemComponent } from './filter-item/filter-item.component';
 import { FilterListComponent } from './filter-list/filter-list.component';
+import { ChipComponent } from './chip/chip.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     VocabularySearchComponent,
     FilterItemComponent,
-    FilterListComponent
+    FilterListComponent,
+    ChipComponent
   ],
   exports: [
     VocabularySearchComponent
   ],
   imports: [
     CommonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FormsModule
   ]
 })
 export class VocabularySearchModule { }
