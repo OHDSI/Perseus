@@ -34,20 +34,17 @@ export class MappingService {
     const conceptTables = Object.keys(this.conceptFieldsMap);
     const merged = this.connections
       .filter(arrow => {
-        let condition = arrow.target.tableName !== 'similar' && 
-        arrow.source.tableName !== 'similar';
+        let condition = arrow.target.tableName !== 'similar' &&
+          arrow.source.tableName !== 'similar';
         if (this.sourceTableName) {
           condition = condition && arrow.source.tableName === this.sourceTableName;
         }
-        if (this.clones[arrow.target.tableName]){
-          this.clones[arrow.target.tableName].forEach(item => {
+        if (this.clones[ arrow.target.tableName ]) {
+          this.clones[ arrow.target.tableName ].forEach(item => {
             if (item.cloneConnectedToSourceName === this.sourceTableName) {
               condition = !!arrow.target.cloneTableName;
             }
           })
-        }
-        if (conceptTables.includes(arrow.target.tableName) && this.conceptFieldsMap[arrow.target.tableName].includes(arrow.target.name)){
-          condition = false;
         }
         return condition;
       })
@@ -59,7 +56,7 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup && arrow.lookup['applied'] ? arrow.lookup['name'] : '',
+          lookup: arrow.lookup && arrow.lookup[ 'applied' ] ? arrow.lookup[ 'name' ] : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.source.comments,
@@ -76,31 +73,34 @@ export class MappingService {
       if (this.sourceTableName && this.sourceTableName !== sourceTable) {
         return;
       }
-      const byTargetTable = groupBy(bySource[sourceTable], 'targetTable');
+      const byTargetTable = groupBy(bySource[ sourceTable ], 'targetTable');
       Object.keys(byTargetTable).forEach(targetTable => {
         if (this.targetTableName && this.targetTableName !== targetTable) {
           return;
         }
+
         const mappings = [];
 
-        byTargetTable[targetTable].map(arrow => {
-          const node: MappingNode = {
-            concept_id: '',
-            source_field: arrow.sourceColumn,
-            target_field: arrow.targetColumn,
-            sql_field: arrow.sourceColumn,
-            sql_alias: arrow.targetColumnAlias,
-            lookup: arrow.lookup,
-            lookupType: arrow.lookupType,
-            sqlTransformation: arrow.sqlTransformation,
-            comments: arrow.comments,
-            condition: arrow.condition,
-            targetCloneName: arrow.targetCloneName ? arrow.targetCloneName : '',
-          };
+        byTargetTable[ targetTable ].map(arrow => {
 
-          this.applyTransforms(node, arrow);
+          if (!(conceptTables.includes(arrow.targetTable) && this.conceptFieldsMap[ arrow.targetTable ].includes(arrow.targetColumn))) {
+            const node: MappingNode = {
+              concept_id: '',
+              source_field: arrow.sourceColumn,
+              target_field: arrow.targetColumn,
+              sql_field: arrow.sourceColumn,
+              sql_alias: arrow.targetColumnAlias,
+              lookup: arrow.lookup,
+              lookupType: arrow.lookupType,
+              sqlTransformation: arrow.sqlTransformation,
+              comments: arrow.comments,
+              condition: arrow.condition,
+              targetCloneName: arrow.targetCloneName ? arrow.targetCloneName : '',
+            };
+            this.applyTransforms(node, arrow);
+            mappings.push(node);
+          }
 
-          mappings.push(node);
         });
         mapPairs.push({
           source_table: sourceTable,
@@ -229,7 +229,7 @@ export class MappingService {
         const constantObj = {
           source_field: '',
           concept_id: '',
-          sql_field: row.constant,
+          sql_field: `"${row.constant}"`,
           sql_alias: row.name,
           target_field: row.name,
           comments: row.comments,
