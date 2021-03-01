@@ -69,7 +69,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
   private requestParams: VocabSearchReqParams = {
     pageSize: 100,
     pageNumber: 1,
-    query: ''
+    query: '',
+    updateFilters: true
   };
 
   private pageNumberRecognizer = {
@@ -98,10 +99,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     vocabulary: 'vocabulary_id'
   };
 
-  private request$ = new Subject<{
-    params: VocabSearchReqParams,
-    updateFilters: boolean
-  }>();
+  private request$ = new Subject<VocabSearchReqParams>();
 
   private readonly chipHeight = 72;
 
@@ -112,17 +110,14 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeOnRequests();
 
-    this.makeRequest(this.requestParams, true);
+    this.makeRequest(this.requestParams);
   }
 
-  makeRequest(params: VocabSearchReqParams, updateFilters: boolean) {
+  makeRequest(params: VocabSearchReqParams) {
     if (!this.requestInProgress) {
       this.requestInProgress = true;
     }
-    this.request$.next({
-      params,
-      updateFilters
-    });
+    this.request$.next(params);
   }
 
   handleNavigation(event: MouseEvent) {
@@ -144,8 +139,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     if (doRequest) {
       this.makeRequest({
         ...this.requestParams,
-        pageNumber: this.currentPage
-      }, false);
+        pageNumber: this.currentPage,
+        updateFilters: false
+      });
     }
   }
 
@@ -160,9 +156,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
       this.requestParams = {
         ...this.requestParams,
         pageSize,
-        query
+        query,
+        updateFilters
       };
-      this.makeRequest(this.requestParams, updateFilters);
+      this.makeRequest(this.requestParams);
     }
   }
 
@@ -193,9 +190,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
       this.requestParams = {
         ...this.requestParams,
         sort: this.sortFieldMap[this.sort.field],
-        order: this.sort.order
+        order: this.sort.order,
+        updateFilters: false
       };
-      this.makeRequest(this.requestParams, false);
+      this.makeRequest(this.requestParams);
     }
   }
 
@@ -281,8 +279,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     this.request$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        tap(value => updateFilters = value.updateFilters),
-        switchMap(value => this.vocabularySearchService.search(value.params))
+        tap(params => updateFilters = params.updateFilters),
+        switchMap(params => this.vocabularySearchService.search(params))
       )
       .subscribe(result => {
         this.concepts = result.content;
@@ -320,6 +318,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
       .map((filterKey, filterIndex) => {
         const filter = this.filtersRecognizer[filterKey];
         const filterValue = facets[filterKey];
+
         return {
           name: filter.name as string,
           field: filterKey,
@@ -329,7 +328,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
               name: valueKey,
               filterIndex,
               count: filterValue[valueKey] as number,
-              checked: false,
+              checked: this.selectedFilters.find(value => value.name === valueKey)?.checked,
               disabled: (filterValue[valueKey] as number) === 0
             }))
         };
@@ -352,14 +351,17 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
       standardConcept: getConcreteFiltersByIndex(1),
       conceptClass: getConcreteFiltersByIndex(2),
       vocabulary: getConcreteFiltersByIndex(3),
-      invalidReason: getConcreteFiltersByIndex(4)
+      invalidReason: getConcreteFiltersByIndex(4),
+      updateFilters: false
     };
 
-    this.makeRequest(this.requestParams, false);
+    this.makeRequest(this.requestParams);
   }
 
   private setPagesAndElementsCount(total: number, pageCount: number) {
     if (this.total !== total || this.pageCount !== pageCount) {
+      const wasLastPage = this.currentPage === this.pageCount;
+
       this.total = total;
       this.pageCount = pageCount;
 
@@ -372,6 +374,16 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
         this.movableIndexes = {
           second: second > 1 ? second : 2,
           third: third > 2 ? third : 3
+        };
+      } else if (wasLastPage) {
+        this.movableIndexes = {
+          second: this.movableIndexes.second + 1,
+          third: this.movableIndexes.third + 1
+        };
+      } else if (this.pageCount === this.movableIndexes.third) { // current page is last
+        this.movableIndexes = {
+          second: this.movableIndexes.second - 1,
+          third: this.movableIndexes.third - 1
         };
       }
     }

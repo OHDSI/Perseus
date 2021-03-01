@@ -37,7 +37,8 @@ export class VocabularySearchService {
 
   private mandatoryParams = [
     'pageSize',
-    'pageNumber'
+    'pageNumber',
+    'updateFilters'
   ];
 
   constructor(private httpClient: HttpClient) {
@@ -46,12 +47,16 @@ export class VocabularySearchService {
   search(params: VocabSearchReqParams): Observable<VocabSearchResult> {
     const url = 'https://athena.ohdsi.org/api/v1/concepts';
 
-    const urlWithMandatoryParams = `${url}?pageSize=${params.pageSize}&page=${params.pageNumber}`;
+    const urlWithMandatoryParams = `${url}?pageSize=${params.pageSize}&page=${params.pageNumber}&updateFilters=${params.updateFilters}`;
+
+    const lengthNotZero = (value: string | string[]) => value?.length > 0;
+    const isSecondaryFields = (field: string) => !this.mandatoryParams.includes(field);
+    const parseFromStringOrArray = (value: string | string[]) => typeof value === 'string' ? value : value.join(',');
 
     const urlWithAllParams = urlWithMandatoryParams + Object
       .keys(params)
-      .filter(key =>  params[key] as boolean && params[key].length > 0 && !this.mandatoryParams.includes(key))
-      .map(key => `&${key}=${typeof params[key] === 'string' ? params[key] : params[key].join(',')}`)
+      .filter(key => isSecondaryFields(key) && lengthNotZero(params[key]))
+      .map(key => `&${key}=${parseFromStringOrArray(params[key])}`)
       .join('');
 
     return this.httpClient.get<VocabSearchResult>(urlWithAllParams);
