@@ -2,7 +2,7 @@
 
 $row-height: 32px;
 $header-border: 1px solid rgba(230, 230, 230, .2);
-$table-height: 297px;
+$table-height: 385px;
 
 * {
   margin: 0;
@@ -17,7 +17,7 @@ $table-height: 297px;
   left: 0;
   bottom: 74px;
   width: 100%;
-  height: 444px;
+  height: 465px;
   background: #fff;
   box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.1);
   font-style: normal;
@@ -61,16 +61,42 @@ $table-height: 297px;
     overflow-y: auto;
   }
 
-  &__content {
-    flex: 1;
-    padding: 42px 38px 25px 39px;
+  &__apply {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 15px;
+    padding-top: 9px;
+
+    button {
+      height: 33px;
+      width: 80px;
+      margin-right: 15px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+      border: 0;
+
+      &:focus {
+        outline: none;
+      }
+
+      &.clear {
+        color: #404040;
+        background-color: #E5E5E5;
+      }
+
+      &.apply {
+        color: #fff;
+        background-color: #066BBB;
+      }
+    }
   }
 
-  &__header {
-    padding-bottom: 20px;
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 23px;
+  &__content {
+    flex: 1;
+    padding: 17px 38px 17px 39px;
   }
 
   &__input {
@@ -100,6 +126,21 @@ $table-height: 297px;
   &__toolbar {
     display: flex;
     justify-content: space-between;
+  }
+
+  &__mode {
+    width: 125px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    line-height: 14px;
+  }
+
+  &__search-input-and-mode-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 651px;
   }
 
   &__navigation {

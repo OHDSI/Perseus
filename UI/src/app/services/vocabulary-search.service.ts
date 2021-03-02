@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { Concept } from '../vocabulary-search/concept';
+import { apiUrl } from '../app.constants';
 
 export interface VocabSearchReqParams {
   pageSize: number;
@@ -25,9 +26,14 @@ export interface VocabSearchFilters {
 
 export interface VocabSearchResult {
   content: Concept[];
-  facets: VocabSearchFilters;
+  facets?: VocabSearchFilters;
   totalElements: number;
   totalPages: number;
+}
+
+export enum VocabSearchMode {
+  LOCAL = 'local',
+  ATHENA = 'athena'
 }
 
 @Injectable({
@@ -41,13 +47,25 @@ export class VocabularySearchService {
     'updateFilters'
   ];
 
+  private searchMode = VocabSearchMode.LOCAL;
+
   constructor(private httpClient: HttpClient) {
   }
 
-  search(params: VocabSearchReqParams): Observable<VocabSearchResult> {
-    const url = 'https://athena.ohdsi.org/api/v1/concepts';
+  set mode(mode: VocabSearchMode) {
+    this.searchMode = mode;
+  }
 
-    const urlWithMandatoryParams = `${url}?pageSize=${params.pageSize}&page=${params.pageNumber}&updateFilters=${params.updateFilters}`;
+  get url() {
+    if (this.searchMode === VocabSearchMode.LOCAL) {
+      return `${apiUrl}/search_concepts`;
+    } else {
+      return 'https://athena.ohdsi.org/api/v1/concepts';
+    }
+  }
+
+  search(params: VocabSearchReqParams): Observable<VocabSearchResult> {
+    const urlWithMandatoryParams = `${this.url}?pageSize=${params.pageSize}&page=${params.pageNumber}&updateFilters=${params.updateFilters}`;
 
     const lengthNotZero = (value: string | string[]) => value?.length > 0;
     const isSecondaryFields = (field: string) => !this.mandatoryParams.includes(field);

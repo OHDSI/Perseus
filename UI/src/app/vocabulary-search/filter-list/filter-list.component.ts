@@ -30,7 +30,7 @@ export class FilterListComponent implements OnInit {
   }
 
   onCheck(index: number) {
-    this.check.emit(this.values[index]);
+    this.check.emit(this.filteredValues[index]);
   }
 
   onFilter(value: string) {

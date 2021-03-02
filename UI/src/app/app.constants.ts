@@ -2,6 +2,8 @@ import { environment } from '../environments/environment';
 
 export const similarTableName = 'similar';
 
+export const apiUrl = environment.url;
+
 export const isProd = environment.production;
 export const isDev = !isProd;
 

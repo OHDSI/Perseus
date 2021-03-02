@@ -1,16 +1,17 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import {
-  VocabSearchFilters,
-  VocabSearchReqParams,
+  VocabSearchFilters, VocabSearchMode,
+  VocabSearchReqParams, VocabSearchResult,
   VocabularySearchService
 } from '../services/vocabulary-search.service';
 import { Concept } from './concept';
 import { Subject } from 'rxjs/internal/Subject';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
 import { parseHtmlError } from '../services/utilites/error';
 import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-vocabulary-search',
@@ -27,6 +28,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
   currentPage = 1;
 
   pageCount = 1;
+
+  pageSize = 100;
 
   concepts: Concept[] = [];
 
@@ -66,12 +69,14 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   chipsHeight = '';
 
-  private requestParams: VocabSearchReqParams = {
+  requestParams: VocabSearchReqParams = {
     pageSize: 100,
     pageNumber: 1,
     query: '',
     updateFilters: true
   };
+
+  mode = VocabSearchMode.LOCAL;
 
   private pageNumberRecognizer = {
     first: () => 1,
@@ -103,6 +108,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private readonly chipHeight = 72;
 
+  private readonly maxPageSize = 500;
+
   constructor(private vocabularySearchService: VocabularySearchService) {
     super();
   }
@@ -111,13 +118,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     this.subscribeOnRequests();
 
     this.makeRequest(this.requestParams);
-  }
-
-  makeRequest(params: VocabSearchReqParams) {
-    if (!this.requestInProgress) {
-      this.requestInProgress = true;
-    }
-    this.request$.next(params);
   }
 
   handleNavigation(event: MouseEvent) {
@@ -153,9 +153,18 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
       const {query, pageSize} = changes;
       const updateFilters = this.requestParams.query !== query;
 
+      let checkedPageSize: number;
+      if (pageSize < 1) {
+        checkedPageSize = 1;
+      } else if (pageSize > this.maxPageSize) {
+        checkedPageSize = this.maxPageSize;
+      } else {
+        checkedPageSize = pageSize;
+      }
+
       this.requestParams = {
         ...this.requestParams,
-        pageSize,
+        pageSize: checkedPageSize,
         query,
         updateFilters
       };
@@ -213,8 +222,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     }
 
     this.updateChipsHeight();
-
-    this.setFiltersAndMakeRequest();
   }
 
   onDeleteFilter(index: number) {
@@ -222,27 +229,43 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     this.selectedFilters.splice(index, 1);
 
     this.updateChipsHeight();
+  }
 
+  onClear() {
+    this.selectedFilters.forEach(filter =>
+      filter.checked = false
+    );
+    this.selectedFilters = [];
+    this.updateChipsHeight();
+  }
+
+  onApply() {
     this.setFiltersAndMakeRequest();
+  }
+
+  onModeChange(value: string) {
+    this.vocabularySearchService.mode = value as VocabSearchMode;
+    this.makeRequest(this.requestParams);
+  }
+
+  private makeRequest(params: VocabSearchReqParams) {
+    if (!this.requestInProgress) {
+      this.requestInProgress = true;
+    }
+    this.request$.next(params);
   }
 
   private handleArrowNavigation(arrow: string): boolean {
     if (arrow === 'left' && this.currentPage !== 1) {
       if (this.currentPage === this.movableIndexes.second && this.movableIndexes.second !== 2) {
-        this.movableIndexes = {
-          second: this.movableIndexes.second - 1,
-          third: this.movableIndexes.third - 1
-        };
+        this.setMovableIndexes(this.movableIndexes.second - 1);
       }
       this.currentPage--;
 
       return true;
     } else if (arrow === 'right' && this.currentPage !== this.pageCount) {
       if (this.currentPage === this.movableIndexes.third && this.movableIndexes.third !== this.pageCount - 1) {
-        this.movableIndexes = {
-          second: this.movableIndexes.second + 1,
-          third: this.movableIndexes.third + 1
-        };
+        this.setMovableIndexes(this.movableIndexes.second + 1);
       }
       this.currentPage++;
 
@@ -256,15 +279,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
     if (page !== this.currentPage) {
       this.currentPage = page;
       if (page === 1 && this.movableIndexes.second !== 2) {
-        this.movableIndexes = {
-          second: 2,
-          third: 3
-        };
+        this.setMovableIndexes(2);
       } else if (page === this.pageCount && this.movableIndexes.third !== this.pageCount - 1) {
-        this.movableIndexes = {
-          second: this.pageCount - 2,
-          third: this.pageCount - 1
-        };
+        this.setMovableIndexes(this.pageCount - 2);
       }
 
       return true;
@@ -274,27 +291,42 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
   }
 
   private subscribeOnRequests() {
+    const searchRequest = (params: VocabSearchReqParams) =>
+      this.vocabularySearchService.search(params)
+        .pipe(
+          catchError(error => {
+            this.error = parseHtmlError(error);
+            const result: VocabSearchResult = {
+              content: [],
+              totalPages: 1,
+              totalElements: 0
+            };
+            return of(result);
+          })
+        );
+
     let updateFilters = false;
 
     this.request$
       .pipe(
         takeUntil(this.ngUnsubscribe),
         tap(params => updateFilters = params.updateFilters),
-        switchMap(params => this.vocabularySearchService.search(params))
+        switchMap(params => searchRequest(params))
       )
       .subscribe(result => {
         this.concepts = result.content;
         this.setPagesAndElementsCount(result.totalElements, result.totalPages);
-        if (updateFilters) {
+        if (updateFilters && result.facets) {
           this.updateFilters(result.facets);
         }
-        this.error = null;
+        if (this.concepts.length > 0) {
+          this.error = null;
+        }
         this.requestInProgress = false;
       }, error => {
-        this.concepts = [];
-        this.setPagesAndElementsCount(0, 1);
-        this.error = parseHtmlError(error);
-        this.requestInProgress = false;
+        console.log(error);
+      }, () => {
+        console.log('complete');
       });
   }
 
@@ -342,8 +374,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private setFiltersAndMakeRequest() {
     const getConcreteFiltersByIndex = index => this.selectedFilters
-        .filter(filter => filter.filterIndex === index)
-        .map(filter => filter.name);
+      .filter(filter => filter.filterIndex === index)
+      .map(filter => filter.name);
 
     this.requestParams = {
       ...this.requestParams,
@@ -360,32 +392,29 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private setPagesAndElementsCount(total: number, pageCount: number) {
     if (this.total !== total || this.pageCount !== pageCount) {
-      const wasLastPage = this.currentPage === this.pageCount;
+      if (this.currentPage >= pageCount) { // current page > new page count
+        this.currentPage = pageCount;
+        this.setMovableIndexes(pageCount - 2, pageCount);
+      } else if (this.currentPage === this.pageCount) { // current page = old page count
+        this.setMovableIndexes(this.currentPage - 1, pageCount);
+      }
 
       this.total = total;
       this.pageCount = pageCount;
+    }
+  }
 
-      if (this.currentPage > pageCount) {
-        this.currentPage = pageCount;
-
-        const second = pageCount - 2;
-        const third = pageCount - 1;
-
-        this.movableIndexes = {
-          second: second > 1 ? second : 2,
-          third: third > 2 ? third : 3
-        };
-      } else if (wasLastPage) {
-        this.movableIndexes = {
-          second: this.movableIndexes.second + 1,
-          third: this.movableIndexes.third + 1
-        };
-      } else if (this.pageCount === this.movableIndexes.third) { // current page is last
-        this.movableIndexes = {
-          second: this.movableIndexes.second - 1,
-          third: this.movableIndexes.third - 1
-        };
-      }
+  private setMovableIndexes(second: number, pageCount = this.pageCount) {
+    if (pageCount < 4 || second < 2) {
+      this.movableIndexes = {
+        second: 2,
+        third: 3
+      };
+    } else {
+      this.movableIndexes = {
+        second,
+        third: second + 1
+      };
     }
   }
 }
