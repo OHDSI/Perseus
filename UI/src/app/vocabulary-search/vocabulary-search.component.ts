@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   VocabSearchFilters, VocabSearchMode,
   VocabSearchReqParams, VocabSearchResult,
@@ -12,13 +12,14 @@ import { parseHtmlError } from '../services/utilites/error';
 import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
 import { of } from 'rxjs';
+import { VocabularySearchStateService } from '../services/vocabulary-search-state.service';
 
 @Component({
   selector: 'app-vocabulary-search',
   templateUrl: './vocabulary-search.component.html',
   styleUrls: ['./vocabulary-search.component.scss']
 })
-export class VocabularySearchComponent extends BaseComponent implements OnInit {
+export class VocabularySearchComponent extends BaseComponent implements OnInit, OnDestroy {
 
   movableIndexes = {
     second: 2,
@@ -110,14 +111,22 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private readonly maxPageSize = 500;
 
-  constructor(private vocabularySearchService: VocabularySearchService) {
+  constructor(private searchService: VocabularySearchService,
+              private stateService: VocabularySearchStateService) {
     super();
   }
 
   ngOnInit(): void {
     this.subscribeOnRequests();
 
+    this.loadState();
+
     this.makeRequest(this.requestParams);
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.saveState();
   }
 
   handleNavigation(event: MouseEvent) {
@@ -292,7 +301,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private subscribeOnRequests() {
     const searchRequest = (params: VocabSearchReqParams) =>
-      this.vocabularySearchService.search(params, this.mode)
+      this.searchService.search(params, this.mode)
         .pipe(
           catchError(error => {
             this.error = parseHtmlError(error);
@@ -323,10 +332,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
           this.error = null;
         }
         this.requestInProgress = false;
-      }, error => {
-        console.log(error);
-      }, () => {
-        console.log('complete');
       });
   }
 
@@ -416,5 +421,22 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
         third: second + 1
       };
     }
+  }
+
+  private loadState() {
+    if (this.stateService.state) {
+      const {requestParams, mode, selectedFilters} = this.stateService.state;
+      this.requestParams = requestParams;
+      this.mode = mode;
+      this.selectedFilters = selectedFilters;
+    }
+  }
+
+  private saveState() {
+    this.stateService.state = {
+      requestParams: this.requestParams,
+      mode: this.mode,
+      selectedFilters: this.selectedFilters
+    };
   }
 }
