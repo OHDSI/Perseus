@@ -6,24 +6,36 @@ from cdm_souffleur.utils.constants import VOCABULARY_FILTERS
 
 
 def search_vocabulary_concepts(pageSize, page, query, sort, order, filters, update_filters):
-    offset = (int(page) - 1) * int(pageSize)
-    concepts_list = get_concepts_list(query, filters, sort, order)
-    selected_concepts_indices = np.arange(offset, offset + int(pageSize))
-    selected_concepts = np.take(concepts_list, selected_concepts_indices)
+    total_count, concepts_list, concept_filter_queries = get_concepts_list(query, int(pageSize), int(page), filters, sort, order)
     vocabulary_filters = {}
     if update_filters:
-        vocabulary_filters = get_filters(concepts_list)
-    total_records = len(concepts_list)
-    total_pages = math.ceil(total_records/int(pageSize))
+        vocabulary_filters = get_filters(concept_filter_queries, total_count)
+    total_pages = math.ceil(total_count/int(pageSize))
 
-    search_result = {'content': list(selected_concepts), 'facets': vocabulary_filters, 'totalElements': total_records, 'totalPages': total_pages}
+    search_result = {'content': list(concepts_list), 'facets': vocabulary_filters, 'totalElements': total_count, 'totalPages': total_pages}
 
     return search_result
 
 
-def get_concepts_list(query, filters, sort, order):
-    concepts_query = Concept.select().where(Concept.concept_name.contains(query))
+def get_concepts_list(query, page_size, page, filters, sort, order):
+
+    filter_queries = {}
+    for key in VOCABULARY_FILTERS:
+        filter_queries[key] = Concept.select(getattr(Concept, key), fn.COUNT(getattr(Concept, key))).group_by(
+        getattr(Concept, key))
+    concepts_query = Concept.select()
+    count_query = Concept.select(fn.Count(Concept.concept_id).alias('count'))
+
+    if query:
+        concepts_query = apply_query(query, concepts_query)
+        count_query = apply_query(query, count_query)
+        for key in filter_queries:
+            filter_queries[key] = apply_query(query, filter_queries[key])
+
     concepts_query = add_filters(concepts_query, filters)
+    count_query = add_filters(count_query, filters)
+    concepts_query = concepts_query.paginate((page - 1)*page_size+1, page*page_size)
+
     if sort:
         concepts_query = apply_sort(concepts_query, sort, order)
     result_concepts = []
@@ -37,8 +49,13 @@ def get_concepts_list(query, filters, sort, order):
                    'domain': item.domain_id,
                    'vocabulary': item.vocabulary_id}
         result_concepts.append(concept)
+    for item in count_query:
+        total_count = item.count
 
-    return result_concepts
+    return total_count, result_concepts, filter_queries
+
+def apply_query(query, sql_request):
+    return sql_request.where(Concept.concept_name.contains(query))
 
 
 def apply_sort(concepts_query, sort, order):
@@ -95,21 +112,26 @@ def apply_standard_concept_filter(concepts_query, filter_values):
     return concepts_query
 
 
-def get_filters(concepts):
+def get_filters(concept_filter_queries, total_count):
     filter_queries = {'concept_class_id': Concept_Class.select(Concept_Class.concept_class_id),
                       'domain_id': Domain.select(Domain.domain_id),
                       'vocabulary_id': Vocabulary.select(Vocabulary.vocabulary_id)}
     filters = {}
     for key in VOCABULARY_FILTERS:
         if key in filter_queries:
-            filters[key] = get_filter_values(filter_queries[key], key)
+            filters[key] = get_filter_keys(filter_queries[key], key)
         else:
             filters[key] = {}
-        filters[key] = update_filter_values(filters[key], concepts, VOCABULARY_FILTERS[key])
+        filters[key] = update_filter_values(filters[key], concept_filter_queries[key], key)
+    update_valid_and_non_standard_concept_counts(filters, total_count)
     return filters
 
+def update_valid_and_non_standard_concept_counts(filters, total_count):
+    filters['invalid_reason']['Valid'] = total_count - filters['invalid_reason']['Invalid']
+    filters['standard_concept']['Non-Standard'] = total_count - filters['standard_concept']['Standard'] - filters['standard_concept']['Classification']
 
-def get_filter_values(query, field):
+
+def get_filter_keys(query, field):
     result_values = {}
     for item in query:
         filter_key = item.concept_class_id if field == 'concept_class_id' else item.domain_id if field == 'domain_id' else item.vocabulary_id,
@@ -117,9 +139,24 @@ def get_filter_values(query, field):
     return result_values
 
 
-def update_filter_values(vocab_filter, concepts, vocab_property):
-    group_key = lambda a: a[vocab_property]
-    groups = groupby(sorted(concepts, key=group_key), key=group_key)
-    for key, group in groups:
-        vocab_filter[key] = len(list(group))
+def update_filter_values(vocab_filter, concept_filter_query, vocab_key):
+    for item in concept_filter_query:
+        if vocab_key == 'invalid_reason':
+            set_invalid_reason_count(vocab_filter, getattr(item, vocab_key), item.count)
+        elif vocab_key == 'standard_concept':
+            set_standard_concept_count(vocab_filter, getattr(item, vocab_key), item.count)
+        else:
+            vocab_filter[getattr(item, vocab_key)] = item.count
     return vocab_filter
+
+
+def set_invalid_reason_count(vocab_filter, field, count):
+    if field:
+        vocab_filter['Invalid'] = count if 'Invalid' not in vocab_filter else vocab_filter['Invalid'] + count
+
+
+def set_standard_concept_count(vocab_filter, field, count):
+    if field == 'S':
+        vocab_filter['Standard'] = count
+    if field == 'C':
+        vocab_filter['Classification'] = count

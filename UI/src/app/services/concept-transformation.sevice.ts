@@ -45,15 +45,18 @@ export class ConceptTransformationService {
             connectedFields.forEach((it) => {
                 let fieldCompleted = false;
                 for (let item of this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList) {
-                    if (item.fields[ fieldType ].field === '' && (!item.fields[ fieldType ].constantSelected || item.fields[ fieldType ].constantSelected && item.fields[ fieldType ].constant === '')) {
-                        item.fields[ fieldType ].field = it.source.name;
-                        item.fields[ fieldType ].constantSelected = false;
-                        fieldCompleted = true;
-                        break;
+                    if (it.target.cloneTableName === item.fields[ fieldType ].targetCloneName) {
+                        if (item.fields[ fieldType ].field === '' && (!item.fields[ fieldType ].constantSelected || item.fields[ fieldType ].constantSelected && item.fields[ fieldType ].constant === '')) {
+                            item.fields[ fieldType ].field = it.source.name;
+                            item.fields[ fieldType ].constantSelected = false;
+                            fieldCompleted = true;
+                            break;
+                        }
+
+                        if (!fieldCompleted) {
+                            newConceptFields.push(it);
+                        }
                     }
-                }
-                if (!fieldCompleted) {
-                    newConceptFields.push(it);
                 }
             })
             newConceptFields.forEach(item => {
