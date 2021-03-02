@@ -1,6 +1,6 @@
 <div class="app-mapping">
   <section>
-    <main #maincanvas class="main">
+    <main #maincanvas [style.height]="mainHeight" class="main">
       <div class="area-source">
         <mat-tab-group selectedIndex="{{sourceTabIndex}}"
                        (selectedIndexChange)="onTabIndexChanged($event, 'source')"

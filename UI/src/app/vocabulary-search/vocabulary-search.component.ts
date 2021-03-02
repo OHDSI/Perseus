@@ -244,7 +244,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
   }
 
   onModeChange(value: string) {
-    this.vocabularySearchService.mode = value as VocabSearchMode;
+    this.mode = value as VocabSearchMode;
     this.makeRequest(this.requestParams);
   }
 
@@ -292,7 +292,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit {
 
   private subscribeOnRequests() {
     const searchRequest = (params: VocabSearchReqParams) =>
-      this.vocabularySearchService.search(params)
+      this.vocabularySearchService.search(params, this.mode)
         .pipe(
           catchError(error => {
             this.error = parseHtmlError(error);

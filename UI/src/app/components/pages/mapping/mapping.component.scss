@@ -42,20 +42,20 @@ section {
 
   main {
     width: 100%;
-    height: calc(100% - 81px);
     position: relative;
     float: left;
   }
 
   .hint {
     position: absolute;
+    bottom: 0;
     left: 35%;
     color: $cdm-grey-dark;
     display: flex;
     text-align: center;
     justify-content: center;
     width: calc(30% + 10px);
-    height: 100%;
+    height: calc(100% - 139px); // 139 - header height
     z-index: 2;
 
     p {

@@ -47,25 +47,19 @@ export class VocabularySearchService {
     'updateFilters'
   ];
 
-  private searchMode = VocabSearchMode.LOCAL;
-
-  constructor(private httpClient: HttpClient) {
-  }
-
-  set mode(mode: VocabSearchMode) {
-    this.searchMode = mode;
-  }
-
-  get url() {
-    if (this.searchMode === VocabSearchMode.LOCAL) {
+  private url = (mode: VocabSearchMode) => {
+    if (mode === VocabSearchMode.LOCAL) {
       return `${apiUrl}/search_concepts`;
     } else {
       return 'https://athena.ohdsi.org/api/v1/concepts';
     }
   }
 
-  search(params: VocabSearchReqParams): Observable<VocabSearchResult> {
-    const urlWithMandatoryParams = `${this.url}?pageSize=${params.pageSize}&page=${params.pageNumber}&updateFilters=${params.updateFilters}`;
+  constructor(private httpClient: HttpClient) {
+  }
+
+  search(params: VocabSearchReqParams, mode: VocabSearchMode): Observable<VocabSearchResult> {
+    const urlWithMandatoryParams = `${this.url(mode)}?pageSize=${params.pageSize}&page=${params.pageNumber}&updateFilters=${params.updateFilters}`;
 
     const lengthNotZero = (value: string | string[]) => value?.length > 0;
     const isSecondaryFields = (field: string) => !this.mandatoryParams.includes(field);

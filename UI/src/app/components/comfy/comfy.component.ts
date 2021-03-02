@@ -104,6 +104,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
   @ViewChildren(CdkDrag) dragEls: QueryList<CdkDrag>;
+  @ViewChild('mappingUpload', { static: false }) mappingInput: ElementRef;
 
   drop = new Command({
     execute: (event: any) => {
@@ -327,7 +328,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.dataService.getTargetData(version).subscribe();
   }
 
-  async openMapping(event?: any) {
+  async afterOpenMapping(event?: any) {
     if (!event || event.index !== 0)
       this.router.navigate(['/mapping'], { queryParams: event, skipLocationChange: true});
   }
@@ -602,6 +603,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });
+  }
+
+  openMapping() {
+    this.uploadService.onFileInputClick(this.mappingInput);
+  }
+
+  onMappingUpload(event: Event) {
+    this.uploadService.onMappingChange(event);
   }
 }
 
