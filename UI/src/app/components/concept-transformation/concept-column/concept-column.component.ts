@@ -18,7 +18,6 @@ export class ConceptColumnComponent implements OnInit {
   @Input() fieldType: any;
   @Input() connectedToConceptFields: any;
   @Input() targetTableName: any;
-  @Output() getConceptFieldName = new EventEmitter<any>();
   @Input() concepts: any;
   conceptFieldsMap = (conceptMap as any).default;
 
