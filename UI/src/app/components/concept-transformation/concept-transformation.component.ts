@@ -3,24 +3,24 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StoreService } from 'src/app/services/store.service';
-import { Concept, IConceptOptions, ITableConcepts, ITableConceptsOptions, TableConcepts } from './model/concept';
-import * as conceptMap from './../concept-fileds-list.json'
-import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { Concept, IConceptOptions, ITableConcepts } from './model/concept';
+import * as conceptMap from './../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SelectConceptFieldComponent } from '../popups/select-concept-field/select-concept-field.component';
 import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/common/components/base/base.component';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
+import { BaseComponent } from '../../base/base.component';
 import { createConceptFields } from 'src/app/services/utilites/concept-util';
 
 @Component({
   selector: 'app-concept-transformation',
   templateUrl: './concept-transformation.component.html',
-  styleUrls: [ './concept-transformation.component.scss',
-    './../vocabulary-transform-configurator/transform-config.component.scss' ]
+  styleUrls: [
+    './concept-transformation.component.scss',
+    './../vocabulary-transform-configurator/transform-config.component.scss'
+  ]
 })
 export class ConceptTransformationComponent extends BaseComponent implements OnInit {
 
@@ -28,12 +28,12 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   @ViewChild('lookupComponent') lookupComponent: LookupComponent;
 
   constructor(@Inject(MAT_DIALOG_DATA) public payload: any,
-    private storeService: StoreService,
-    private bridgeService: BridgeService,
-    private renderer: Renderer2,
-    private overlayService: OverlayService,
-    public dialogRef: MatDialogRef<ConceptTransformationComponent>,
-    private lookupService: LookupService
+              private storeService: StoreService,
+              private bridgeService: BridgeService,
+              private renderer: Renderer2,
+              private overlayService: OverlayService,
+              public dialogRef: MatDialogRef<ConceptTransformationComponent>,
+              private lookupService: LookupService
   ) {
     super();
   }
@@ -45,7 +45,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   conceptsTable: ITableConcepts;
   targetTableName;
   selectedCellElement;
-  conceptFieldsMap = (conceptMap as any).default
+  conceptFieldsMap = (conceptMap as any).default;
   connectedToConceptFields = {};
   conceptFields = [];
   selectedCellType = '';
@@ -55,11 +55,9 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   targetCloneName: string;
   targetCondition: string;
 
-
   get displayedColumns() {
     return [ 'source_value', 'concept_id', 'source_concept_id', 'type_concept_id', 'remove_concept' ];
   }
-
 
   ngOnInit(): void {
 
@@ -99,14 +97,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
         } else {
           connectedFields.push(link);
         }
-      })
+      });
       this.connectedToConceptFields[ item ] = connectedFields;
-    })
+    });
   }
 
   onCellClick(cell: any, row: any) {
 
-    while (cell.localName !== "td") {
+    while (cell.localName !== 'td') {
       cell = cell.parentElement;
     }
     const newselectedCellElement = cell;
@@ -118,15 +116,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.selectedCellElement = newselectedCellElement;
       this.selectedCellType = this.selectedCellElement.classList.contains('concept_id') ? 'concept_id' :
         this.selectedCellElement.classList.contains('source_value') ? 'source_value' :
-          this.selectedCellElement.classList.contains('source_concept_id') ? 'source_concept_id' : 'type_concept_id'
-      this.renderer.addClass(this.selectedCellElement, 'concept-cell-selected')
+          this.selectedCellElement.classList.contains('source_concept_id') ? 'source_concept_id' : 'type_concept_id';
+      this.renderer.addClass(this.selectedCellElement, 'concept-cell-selected');
       this.conceptsTable.conceptsList[ row.id ].fields[ this.selectedCellType ].selected = true;
       this.selectedConceptId = row.id;
       this.sqlTransformation.setConeptSqlValue(this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql);
     }
 
   }
-
 
   toggleSqlTransformation(event: any) {
     this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlApplied = event;
@@ -136,7 +133,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     const fields = createConceptFields(this.conceptFields, this.targetCloneName, this.targetCondition);
     const conceptOptions: IConceptOptions = {
       id: this.conceptsTable.conceptsList.length,
-      fields: fields
+      fields
     };
     this.conceptsTable.conceptsList.push(new Concept(conceptOptions));
     this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList);
@@ -147,14 +144,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.conceptsTable.conceptsList = this.conceptsTable.conceptsList.filter(item => item.id !== row.id);
     this.conceptsTable.conceptsList.forEach((item, index) => {
       item.id = index;
-    })
+    });
     this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
   }
 
   add() {
     this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable;
 
-    if (this.payload.oppositeSourceTable == 'similar') {
+    if (this.payload.oppositeSourceTable === 'similar') {
       this.bridgeService.updateSimilarConcepts(this.payload.arrow);
     }
 
@@ -194,9 +191,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     }
   }
 
-  close(){
+  close() {
     this.removeSelection();
     this.dialogRef.close();
   }
-
 }

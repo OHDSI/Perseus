@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { fileToBase64AsObservable } from '../../../../../services/utilites/base64-util';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../../../shared/base/base.component';
+import { BaseComponent } from '../../../../../base/base.component';
 import { FileToScan } from '../../../../model/file-to-scan';
 
 @Component({

@@ -11,9 +11,9 @@ import {
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { DictionaryItem } from './model/vocabulary';
-import { BaseComponent } from '../../common/components/base/base.component';
 import { takeUntil } from 'rxjs/operators';
 import { MatSelect } from '@angular/material/select';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   selector: 'app-vocabulary-dropdown',

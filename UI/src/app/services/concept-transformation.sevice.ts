@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Concept, IConceptOptions, ITableConceptsOptions, TableConcepts } from '../components/concept-transformation/model/concept';
-import { cloneDeep, uniq } from '../infrastructure/utility';
+import { cloneDeep } from '../infrastructure/utility';
 import * as conceptMap from './../components/concept-fileds-list.json';
-import { BridgeService, IConnection } from './bridge.service';
-import { getConceptFieldNameByType, createConceptFields } from 'src/app/services/utilites/concept-util';
+import { createConceptFields } from 'src/app/services/utilites/concept-util';
 
 @Injectable({
     providedIn: 'root'
@@ -41,10 +40,10 @@ export class ConceptTransformationService {
         if (!this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ]) {
             this.addNewConceptTable(connectedFields, fieldType);
         } else {
-            const newConceptFields = []
+            const newConceptFields = [];
             connectedFields.forEach((it) => {
                 let fieldCompleted = false;
-                for (let item of this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList) {
+                for (const item of this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList) {
                     if (it.target.cloneTableName === item.fields[ fieldType ].targetCloneName) {
                         if (item.fields[ fieldType ].field === '' && (!item.fields[ fieldType ].constantSelected || item.fields[ fieldType ].constantSelected && item.fields[ fieldType ].constant === '')) {
                             item.fields[ fieldType ].field = it.source.name;
@@ -58,18 +57,18 @@ export class ConceptTransformationService {
                         }
                     }
                 }
-            })
+            });
             newConceptFields.forEach(item => {
                 const conceptIndex = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList.length;
                 const fields = createConceptFields(this.conceptFields, this.targetCloneName, this.targetCondition);
                 const conceptOptions = this.createConceptOptions(conceptIndex, fields, fieldType, item.source.name);
-                this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList.push(new Concept(conceptOptions))
-            })
+                this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList.push(new Concept(conceptOptions));
+            });
         }
 
     }
 
-    collectConnectedGroupedFields(){
+    collectConnectedGroupedFields() {
         const connectedFields = [];
         if (this.arrow.source.grouppedFields && this.arrow.source.grouppedFields.length) {
             this.arrow.source.grouppedFields.forEach(it => {
@@ -94,8 +93,8 @@ export class ConceptTransformationService {
             const conceptIndex = connectedFields.indexOf(it);
             const fields = createConceptFields(this.conceptFields, this.targetCloneName, this.targetCondition);
             const conceptOptions = this.createConceptOptions(conceptIndex, fields, fieldType, it.source.name);
-            this.conceptsTable.conceptsList.push(new Concept(conceptOptions))
-        })
+            this.conceptsTable.conceptsList.push(new Concept(conceptOptions));
+        });
 
         this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ] = this.conceptsTable;
     }
@@ -106,7 +105,7 @@ export class ConceptTransformationService {
 
         const conceptOptions: IConceptOptions = {
             id: index,
-            fields: fields
+            fields
         };
 
         return conceptOptions;
@@ -122,7 +121,7 @@ export class ConceptTransformationService {
     deleteFieldsFromConcepts() {
         const connectedFields = this.collectConnectedGroupedFields();
         const fieldType = this.getConceptFieldType(this.arrow.target.name);
-        const conceptsList = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList
+        const conceptsList = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList;
 
         connectedFields.forEach(item => {
             conceptsList.forEach(conc => {
@@ -131,8 +130,8 @@ export class ConceptTransformationService {
                     conc.fields[ fieldType ].field = '';
                     conc.fields[ fieldType ].constantSelected = true;
                 }
-            })
-        })
+            });
+        });
 
     }
 

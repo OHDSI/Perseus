@@ -1,0 +1,27 @@
+@import "../search-input";
+
+.vocabulary-search__filters-list {
+  padding: 10px 5px 5px 36px;
+  background-color: #fff;
+
+  .filter {
+    margin: 0 0 9px 3px;
+
+    &::placeholder {
+      font-size: 12px;
+    }
+  }
+
+  &-item {
+    margin-bottom: 5px;
+
+    label {
+      display: flex;
+      align-items: center;
+    }
+
+    input {
+      margin-right: 7px;
+    }
+  }
+}

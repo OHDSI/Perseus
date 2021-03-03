@@ -32,12 +32,12 @@ export class ConceptColumnComponent implements OnInit {
   }
 
   constructor(private overlayService: OverlayService) { }
-  
+
 
   ngOnInit(): void {
   }
 
-  openConceptFieldsDropdown(target: any){
+  openConceptFieldsDropdown(target: any) {
 
     const conceptColumnName = getConceptFieldNameByType(this.fieldType, this.conceptFieldsMap[this.targetTableName]);
 
@@ -65,18 +65,17 @@ export class ConceptColumnComponent implements OnInit {
         this.row.fields[this.fieldType].constantSelected = false;
       }
 
-      if (!this.validateSelectedField(this.row.fields[this.fieldType].field)){
+      if (!this.validateSelectedField(this.row.fields[this.fieldType].field)) {
         this.row.fields[this.fieldType].alreadySelected = true;
         this.errorText = `${this.row.fields[this.fieldType].field} field is already used`
-      }
-      else {
+      } else {
         this.row.fields[this.fieldType].alreadySelected = false;
-      };
+      }
     });
   }
 
-  validateSelectedField(field: any){
-     return !this.concepts.filter(it=> it.id !== this.row.id).map(it => it.fields[this.fieldType].field).includes(field);
+  validateSelectedField(field: any) {
+     return !this.concepts.filter(it => it.id !== this.row.id).map(it => it.fields[this.fieldType].field).includes(field);
   }
 
 

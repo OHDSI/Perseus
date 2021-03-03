@@ -30,7 +30,6 @@ import { OverlayConfigOptions } from '../../services/overlay/overlay-config-opti
 import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
-import { BaseComponent } from '../../common/components/base/base.component';
 import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
@@ -38,6 +37,7 @@ import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 import { Observable } from 'rxjs/internal/Observable';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   selector: 'app-comfy',
@@ -104,6 +104,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
   @ViewChildren(CdkDrag) dragEls: QueryList<CdkDrag>;
+  @ViewChild('mappingUpload', { static: false }) mappingInput: ElementRef;
 
   drop = new Command({
     execute: (event: any) => {
@@ -327,7 +328,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.dataService.getTargetData(version).subscribe();
   }
 
-  async openMapping(event?: any) {
+  async afterOpenMapping(event?: any) {
     if (!event || event.index !== 0)
       this.router.navigate(['/mapping'], { queryParams: event, skipLocationChange: true});
   }
@@ -608,6 +609,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       disableClose: true,
       panelClass: 'scan-data-dialog'
     });
+  }
+
+  openMapping() {
+    this.uploadService.onFileInputClick(this.mappingInput);
+  }
+
+  onMappingUpload(event: Event) {
+    this.uploadService.onMappingChange(event);
   }
 }
 

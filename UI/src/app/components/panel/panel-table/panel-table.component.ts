@@ -4,28 +4,26 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
-  HostListener
+  ViewChild
 } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
 
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
 import { Area } from 'src/app/models/area';
-import { Row, IRow, RowOptions } from 'src/app/models/row';
+import { IRow, Row, RowOptions } from 'src/app/models/row';
 import { ITable } from 'src/app/models/table';
 import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { BaseComponent } from '../../../common/components/base/base.component';
 import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-constant-popup.component';
 import { StoreService } from 'src/app/services/store.service';
-import { DataService } from 'src/app/services/data.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { OpenSaveDialogComponent } from '../../popups/open-save-dialog/open-save-dialog.component';
@@ -34,6 +32,7 @@ import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.compon
 import * as fieldTypes from './similar-types.json';
 import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { BaseComponent } from '../../../base/base.component';
 
 @Component({
   selector: 'app-panel-table',
@@ -138,8 +137,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   checkExpanded(row: IRow) {
-    const res = row === this.expandedElement ? 'expanded' : 'collapsed';
-    return res;
+    return row === this.expandedElement ? 'expanded' : 'collapsed';
   }
 
   dataSourceInit(data: any[]) {

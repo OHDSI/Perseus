@@ -4,8 +4,6 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { GridModule } from 'ng2-qgrid';
-import { ThemeModule } from 'ng2-qgrid/theme/material';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
@@ -40,7 +38,6 @@ import { SqlFunctionsInjector } from './components/popups/rules-popup/model/sql-
 import { RulesPopupService } from './components/popups/rules-popup/services/rules-popup.service';
 import { SQL_FUNCTIONS } from './components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { TransformationInputComponent } from './components/popups/rules-popup/transformation-input/transformation-input.component';
-import { SampleDataPopupComponent } from './components/popups/sample-data-popup/sample-data-popup.component';
 import { SqlEditorComponent } from './components/sql-editor/sql-editor.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { VocabularyDropdownComponent } from './components/vocabulary-search-select/vocabulary-dropdown.component';
@@ -70,6 +67,7 @@ import { ColumnInfoComponent } from './components/field-information/column-info.
 import { ConceptTransformationComponent } from './components/concept-transformation/concept-transformation.component';
 import { SelectConceptFieldComponent } from './components/popups/select-concept-field/select-concept-field.component';
 import { ConceptColumnComponent } from './components/concept-transformation/concept-column/concept-column.component';
+import { VocabularySearchModule } from './vocabulary-search/vocabulary-search.module';
 
 @NgModule({
   declarations: [
@@ -80,7 +78,6 @@ import { ConceptColumnComponent } from './components/concept-transformation/conc
     CommentPopupComponent,
     SetConnectionTypePopupComponent,
     DeleteWarningComponent,
-    SampleDataPopupComponent,
     RulesPopupComponent,
     PreviewPopupComponent,
     ComfyComponent,
@@ -123,10 +120,9 @@ import { ConceptColumnComponent } from './components/concept-transformation/conc
     AppRoutingModule,
     PanelModule,
     CdmCommonModule,
-    GridModule,
-    ThemeModule,
     NgxMatSelectSearchModule,
-    ScanDataModule
+    ScanDataModule,
+    VocabularySearchModule
   ],
   exports: [
     CdmCommonModule
