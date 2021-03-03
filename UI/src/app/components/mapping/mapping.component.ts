@@ -11,37 +11,38 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import { stateToInfo, StoreService } from 'src/app/services/store.service';
-import { PanelComponent } from '../../panel/panel.component';
-import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
-import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
+import { PanelComponent } from '../panel/panel.component';
+import { PreviewPopupComponent } from '../popups/preview-popup/preview-popup.component';
+import { RulesPopupService } from '../popups/rules-popup/services/rules-popup.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SetConnectionTypePopupComponent } from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
-import { CdmFilterComponent } from '../../popups/open-cdm-filter/cdm-filter.component';
-import { TransformConfigComponent } from '../../vocabulary-transform-configurator/transform-config.component';
+import { SetConnectionTypePopupComponent } from '../popups/set-connection-type-popup/set-connection-type-popup.component';
+import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
+import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
+import { TransformConfigComponent } from '../vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WordReportCreator } from '../../../services/report/word-report-creator';
+import { WordReportCreator } from '../../services/report/word-report-creator';
 import { Packer } from 'docx';
-import { addGroupMappings, addViewsToMapping } from '../../../models/mapping-service';
+import { addGroupMappings, addViewsToMapping } from '../../models/mapping-service';
 import {
   numberOfPanelsWithOneSimilar,
   numberOfPanelsWithoutSimilar,
   numberOfPanelsWithTwoSimilar,
   similarTableName
-} from '../../../app.constants';
-import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
-import { FakeDataDialogComponent } from '../../../scan-data/fake-data-dialog/fake-data-dialog.component';
-import { CdmDialogComponent } from '../../../scan-data/cdm-dialog/cdm-dialog.component';
-import { LookupService } from '../../../services/lookup.service';
-import { getLookupType } from '../../../services/utilites/lookup-util';
-import { ReportCreator } from '../../../services/report/report-creator';
-import { MappingPair } from '../../../models/mapping';
-import * as conceptFields from '../../concept-fileds-list.json';
-import { ConceptTransformationComponent } from '../../concept-transformation/concept-transformation.component';
-import { BaseComponent } from '../../../base/base.component';
+} from '../../app.constants';
+import { SelectTableDropdownComponent } from '../popups/select-table-dropdown/select-table-dropdown.component';
+import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
+import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
+import { LookupService } from '../../services/lookup.service';
+import { getLookupType } from '../../services/utilites/lookup-util';
+import { ReportCreator } from '../../services/report/report-creator';
+import { MappingPair } from '../../models/mapping';
+import * as conceptFields from '../concept-fileds-list.json';
+import { ConceptTransformationComponent } from '../concept-transformation/concept-transformation.component';
+import { BaseComponent } from '../../base/base.component';
+import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
 
 @Component({
   selector: 'app-mapping',
@@ -125,7 +126,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private overlayService: OverlayService,
     private router: Router,
     private lookupService: LookupService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private vocabularyObserverService: VocabularyObserverService
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -142,6 +144,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.initHasScanReport();
 
     this.setMainHeight();
+
+    this.subscribeOnVocabularyOpening()
   }
 
   ngAfterViewInit() {
@@ -283,10 +287,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     const upperLimit = point - offset;
     const lowerLimit = point + offset;
     return { upperLimit, lowerLimit };
-  }
-
-  getSimilarTable() {
-    return this.source.filter(item => item.name === 'similar' );
   }
 
   prepareTables(data, area) {
@@ -803,6 +803,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   showVocabulary() {
     this.isVocabularyVisible = !this.isVocabularyVisible;
     this.setMainHeight();
+    this.vocabularyObserverService.next({
+      value: this.isVocabularyVisible,
+      emit: false
+    });
   }
 
   setMainHeight() {
@@ -885,5 +889,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
       }
     });
+  }
+
+  private subscribeOnVocabularyOpening() {
+    this.vocabularyObserverService.show$.subscribe(visible => {
+      this.isVocabularyVisible = visible;
+      this.setMainHeight();
+    })
   }
 }

@@ -1,4 +1,14 @@
-import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {
   VocabSearchFilters, VocabSearchMode,
   VocabSearchReqParams, VocabSearchResult,
@@ -76,6 +86,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   };
 
   mode = VocabSearchMode.LOCAL;
+
+  @Input()
+  bottom = '0'
 
   @Output()
   close = new EventEmitter<void>();

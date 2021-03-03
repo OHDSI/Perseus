@@ -15,7 +15,7 @@ import { ITable, Table } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import * as similarNamesMap from '../components/pages/mapping/similar-names-map.json';
+import * as similarNamesMap from '../components/mapping/similar-names-map.json';
 import { addGroupMappings, addViewsToMapping } from '../models/mapping-service';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFields from '../../app/components/concept-fileds-list.json';

@@ -15,7 +15,7 @@
                     (columnsSelected)="findTables($event)"></app-columns-list>
 </nav>
 <main>
-  <div class="articles" cdkDropListGroup>
+  <div class="articles" [style.height]="mappingHeight" cdkDropListGroup>
     <article>
       <h4>Source tables
         <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
@@ -207,13 +207,15 @@
       </div>
     </article>
   </div>
-  <div class="actions"
-       *ngIf="data.source?.length && data.target?.length">
+  <div class="actions" *ngIf="actionVisible">
+    <app-vocabulary-button class="show-vocabulary" (click)="showVocabulary()"></app-vocabulary-button>
+
     <button mat-flat-button
             class="right-bottom-button-reset"
             [disabled]="!checkExistingMappings()"
             (click)="resetMapping()">Delete Mapping
     </button>
+
     <button mat-flat-button
             color="accent"
             class="right-bottom-button"
@@ -222,3 +224,7 @@
     </button>
   </div>
 </main>
+
+<app-vocabulary-search *ngIf="isVocabularyVisible"
+                       [bottom]="vocabularyBottom"
+                       (close)="showVocabulary()"></app-vocabulary-search>

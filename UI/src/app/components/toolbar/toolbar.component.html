@@ -50,6 +50,11 @@
       <span>Convert Data</span>
     </button>
     <button mat-menu-item
+            (click)="showVocabulary()">
+      <mat-icon svgIcon="vocabulary"></mat-icon>
+      <span>Vocabulary</span>
+    </button>
+    <button mat-menu-item
             (click)="resetAllMappings()">
       <mat-icon svgIcon="reset"></mat-icon>
       <span>Delete All Mappings</span>
