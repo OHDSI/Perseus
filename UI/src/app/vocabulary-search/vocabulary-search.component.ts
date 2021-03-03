@@ -371,7 +371,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   private updateFilters(facets: VocabSearchFilters) {
     this.filters = Object.keys(facets)
-      .sort(filterKey => this.filtersRecognizer[filterKey].priority)
       .map((filterKey, filterIndex) => {
         const filter = this.filtersRecognizer[filterKey];
         const filterValue = facets[filterKey];
@@ -389,6 +388,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
               disabled: (filterValue[valueKey] as number) === 0
             }))
         };
+      })
+      .sort((f1, f2) => {
+        return this.filtersRecognizer[f1.field].priority - this.filtersRecognizer[f2.field].priority
       });
   }
 
