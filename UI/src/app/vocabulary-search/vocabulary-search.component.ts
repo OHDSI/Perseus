@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import {
   VocabSearchFilters, VocabSearchMode,
   VocabSearchReqParams, VocabSearchResult,
@@ -29,8 +29,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   currentPage = 1;
 
   pageCount = 1;
-
-  pageSize = 100;
 
   concepts: Concept[] = [];
 
@@ -79,6 +77,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   mode = VocabSearchMode.LOCAL;
 
+  @Output()
+  close = new EventEmitter<void>();
+
   private pageNumberRecognizer = {
     first: () => 1,
     second: () => this.movableIndexes.second,
@@ -119,9 +120,11 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   ngOnInit(): void {
     this.subscribeOnRequests();
 
-    this.loadState();
+    const needRequest = !this.loadState();
 
-    this.makeRequest(this.requestParams);
+    if (needRequest) {
+      this.makeRequest(this.requestParams);
+    }
   }
 
   ngOnDestroy() {
@@ -163,7 +166,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       const updateFilters = this.requestParams.query !== query;
 
       let checkedPageSize: number;
-      if (pageSize < 1) {
+      if (!pageSize || pageSize < 1) {
         checkedPageSize = 1;
       } else if (pageSize > this.maxPageSize) {
         checkedPageSize = this.maxPageSize;
@@ -255,6 +258,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   onModeChange(value: string) {
     this.mode = value as VocabSearchMode;
     this.makeRequest(this.requestParams);
+  }
+
+  onClose() {
+    this.close.emit();
   }
 
   private makeRequest(params: VocabSearchReqParams) {
@@ -423,20 +430,39 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     }
   }
 
-  private loadState() {
+  private loadState(): boolean {
     if (this.stateService.state) {
-      const {requestParams, mode, selectedFilters} = this.stateService.state;
+      const {requestParams, mode, selectedFilters, concepts,
+        currentPage, pageCount, filters, movableIndexes} = this.stateService.state;
       this.requestParams = requestParams;
       this.mode = mode;
       this.selectedFilters = selectedFilters;
+      this.concepts = concepts;
+      this.currentPage = currentPage;
+      this.pageCount = pageCount;
+      this.filters = filters;
+      this.movableIndexes = movableIndexes;
+
+      this.updateChipsHeight();
+
+      return true;
     }
+
+    return false;
   }
 
   private saveState() {
-    this.stateService.state = {
-      requestParams: this.requestParams,
-      mode: this.mode,
-      selectedFilters: this.selectedFilters
-    };
+    if (this.concepts.length > 0) {
+      this.stateService.state = {
+        requestParams: this.requestParams,
+        mode: this.mode,
+        selectedFilters: this.selectedFilters,
+        concepts: this.concepts,
+        currentPage: this.currentPage,
+        pageCount: this.pageCount,
+        filters: this.filters,
+        movableIndexes: this.movableIndexes
+      };
+    }
   }
 }

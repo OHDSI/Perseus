@@ -6,7 +6,6 @@ import { UploadService } from '../../services/upload.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
-import { BaseComponent } from 'src/app/common/components/base/base.component';
 import { map, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
@@ -15,6 +14,7 @@ import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-d
 import { Observable } from 'rxjs/internal/Observable';
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '../../scan-data/dqd-dialog/dqd-dialog.component';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   selector: 'app-toolbar',

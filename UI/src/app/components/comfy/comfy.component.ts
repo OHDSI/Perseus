@@ -30,7 +30,6 @@ import { OverlayConfigOptions } from '../../services/overlay/overlay-config-opti
 import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
-import { BaseComponent } from '../../common/components/base/base.component';
 import { Criteria } from '../../common/components/search-by-name/search-by-name.component';
 import { CdmFilterComponent } from '../popups/open-cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../sql-editor/sql-editor.component';
@@ -38,6 +37,7 @@ import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 import { Observable } from 'rxjs/internal/Observable';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   selector: 'app-comfy',

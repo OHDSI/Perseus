@@ -11,7 +11,6 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import { stateToInfo, StoreService } from 'src/app/services/store.service';
-import { BaseComponent } from '../../../common/components/base/base.component';
 import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
@@ -42,6 +41,7 @@ import { ReportCreator } from '../../../services/report/report-creator';
 import { MappingPair } from '../../../models/mapping';
 import * as conceptFields from '../../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../../concept-transformation/concept-transformation.component';
+import { BaseComponent } from '../../../base/base.component';
 
 @Component({
   selector: 'app-mapping',

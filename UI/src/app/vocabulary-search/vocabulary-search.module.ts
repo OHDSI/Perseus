@@ -6,6 +6,7 @@ import { FilterItemComponent } from './filter-item/filter-item.component';
 import { FilterListComponent } from './filter-list/filter-list.component';
 import { ChipComponent } from './chip/chip.component';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -17,10 +18,11 @@ import { FormsModule } from '@angular/forms';
   exports: [
     VocabularySearchComponent
   ],
-  imports: [
-    CommonModule,
-    MatProgressSpinnerModule,
-    FormsModule
-  ]
+    imports: [
+        CommonModule,
+        MatProgressSpinnerModule,
+        FormsModule,
+        SharedModule
+    ]
 })
 export class VocabularySearchModule { }

@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
 import { VocabSearchMode, VocabSearchReqParams } from './vocabulary-search.service';
 import { FilterValue } from '../vocabulary-search/filter-list/filter-list.component';
+import { Concept } from '../vocabulary-search/concept';
+import { Filter } from '../vocabulary-search/filter-item/filter-item.component';
 
 export interface VocabSearchState {
   requestParams: VocabSearchReqParams;
   mode: VocabSearchMode;
   selectedFilters: FilterValue[];
+  concepts: Concept[];
+  currentPage: number;
+  pageCount: number;
+  filters: Filter[];
+  movableIndexes: {second: number; third: number};
 }
 
 @Injectable({

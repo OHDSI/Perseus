@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
-import { BaseComponent } from '../base/base.component';
 import { takeUntil } from 'rxjs/operators';
+import { BaseComponent } from '../../../base/base.component';
 
 @Component({
   selector: 'app-search-by-name',
@@ -30,8 +30,6 @@ export class SearchByNameComponent extends BaseComponent
 
   @ViewChild(MatAutocomplete, { static: true })
   private autoCmplt: MatAutocomplete;
-
-  private model: any;
 
   dbNameFormControl: FormControl = new FormControl();
   filteredNames: string[];
