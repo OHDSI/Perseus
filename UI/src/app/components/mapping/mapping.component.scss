@@ -1,4 +1,4 @@
-@import 'src/app/styles/variables.scss';
+@import '../../styles/variables';
 
 :host {
   //width: 1440px;
@@ -142,24 +142,6 @@ section {
     svg {
       margin-bottom: 2px;
       margin-left: 8px;
-    }
-  }
-
-  &__vocabulary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0;
-    background-color: transparent;
-    border: 0;
-    box-shadow: none!important;
-    text-align: center;
-    color: #066BBB;
-    width: 100px;
-
-    button {
-      width: 100%;
-      outline: none;
     }
   }
 }

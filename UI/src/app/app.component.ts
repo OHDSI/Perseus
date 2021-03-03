@@ -28,7 +28,8 @@ const ICON_NAMES = [
   'generate_word',
   'generate_html',
   'generate_md',
-  'quality_check'
+  'quality_check',
+  'vocabulary'
 ];
 
 @Component({

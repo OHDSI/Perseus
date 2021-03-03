@@ -324,7 +324,6 @@ ul {
 
 .articles {
   display: flex;
-  height: 100%;
   align-items: stretch;
   justify-content: stretch;
   width: 940px;
@@ -332,7 +331,13 @@ ul {
   & + .actions {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    margin-top: auto;
     width: 940px;
+
+    .show-vocabulary {
+      margin-right: auto;
+    }
 
     button + button {
       margin-left: 10px;

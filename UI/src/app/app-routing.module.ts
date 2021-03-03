@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ComfyComponent } from './components/comfy/comfy.component';
-import { MappingComponent } from './components/pages/mapping/mapping.component';
+import { MappingComponent } from './components/mapping/mapping.component';
 
 const routes: Routes = [
   {
