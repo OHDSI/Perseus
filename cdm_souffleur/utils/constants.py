@@ -60,3 +60,11 @@ LIST_OF_COLUMN_INFO_FIELDS = [
 ]
 
 N_ROWS_FIELD_NAME = 'N rows'
+
+VOCABULARY_FILTERS = {
+    'concept_class_id': 'className',
+    'domain_id': 'domain',
+    'invalid_reason': 'invalidReason',
+    'standard_concept': 'standardConcept',
+    'vocabulary_id': 'vocabulary',
+}

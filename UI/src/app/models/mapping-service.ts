@@ -7,6 +7,7 @@ import { ITable } from './table';
 import { getLookupType } from '../services/utilites/lookup-util';
 import * as conceptMap from './../components/concept-fileds-list.json'
 import { IConcept, ITableConcepts } from '../components/concept-transformation/model/concept';
+import { conceptFieldsTypes } from '../app.constants';
 
 export class MappingService {
   connections: Array<IConnection>;
@@ -15,8 +16,9 @@ export class MappingService {
   targetTableName: string;
   conceptFieldsMap = (conceptMap as any).default;
   concepts: ITableConcepts;
+  clones: any;
 
-  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string, concepts: ITableConcepts) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string, concepts: ITableConcepts, clones: any) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
@@ -25,16 +27,24 @@ export class MappingService {
     this.sourceTableName = sourceTableName;
     this.targetTableName = targetTableName;
     this.concepts = concepts;
+    this.clones = clones;
   }
 
   generate(): Mapping {
     const conceptTables = Object.keys(this.conceptFieldsMap);
     const merged = this.connections
       .filter(arrow => {
-        let condition = arrow.target.tableName !== 'similar' && arrow.source.tableName !== 'similar' &&
-        !(conceptTables.includes(arrow.target.tableName) && this.conceptFieldsMap[arrow.target.tableName].includes(arrow.target.name));
+        let condition = arrow.target.tableName !== 'similar' &&
+          arrow.source.tableName !== 'similar';
         if (this.sourceTableName) {
           condition = condition && arrow.source.tableName === this.sourceTableName;
+        }
+        if (this.clones[ arrow.target.tableName ]) {
+          this.clones[ arrow.target.tableName ].forEach(item => {
+            if (item.cloneConnectedToSourceName === this.sourceTableName) {
+              condition = !!arrow.target.cloneTableName;
+            }
+          })
         }
         return condition;
       })
@@ -46,7 +56,7 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup && arrow.lookup['applied'] ? arrow.lookup['name'] : '',
+          lookup: arrow.lookup && arrow.lookup[ 'applied' ] ? arrow.lookup[ 'name' ] : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.source.comments,
@@ -63,31 +73,34 @@ export class MappingService {
       if (this.sourceTableName && this.sourceTableName !== sourceTable) {
         return;
       }
-      const byTargetTable = groupBy(bySource[sourceTable], 'targetTable');
+      const byTargetTable = groupBy(bySource[ sourceTable ], 'targetTable');
       Object.keys(byTargetTable).forEach(targetTable => {
         if (this.targetTableName && this.targetTableName !== targetTable) {
           return;
         }
+
         const mappings = [];
 
-        byTargetTable[targetTable].map(arrow => {
-          const node: MappingNode = {
-            concept_id: '',
-            source_field: arrow.sourceColumn,
-            target_field: arrow.targetColumn,
-            sql_field: arrow.sourceColumn,
-            sql_alias: arrow.targetColumnAlias,
-            lookup: arrow.lookup,
-            lookupType: arrow.lookupType,
-            sqlTransformation: arrow.sqlTransformation,
-            comments: arrow.comments,
-            condition: arrow.condition,
-            targetCloneName: arrow.targetCloneName ? arrow.targetCloneName : '',
-          };
+        byTargetTable[ targetTable ].map(arrow => {
 
-          this.applyTransforms(node, arrow);
+          if (!(conceptTables.includes(arrow.targetTable) && this.conceptFieldsMap[ arrow.targetTable ].includes(arrow.targetColumn))) {
+            const node: MappingNode = {
+              concept_id: '',
+              source_field: arrow.sourceColumn,
+              target_field: arrow.targetColumn,
+              sql_field: arrow.sourceColumn,
+              sql_alias: arrow.targetColumnAlias,
+              lookup: arrow.lookup,
+              lookupType: arrow.lookupType,
+              sqlTransformation: arrow.sqlTransformation,
+              comments: arrow.comments,
+              condition: arrow.condition,
+              targetCloneName: arrow.targetCloneName ? arrow.targetCloneName : '',
+            };
+            this.applyTransforms(node, arrow);
+            mappings.push(node);
+          }
 
-          mappings.push(node);
         });
         mapPairs.push({
           source_table: sourceTable,
@@ -109,32 +122,39 @@ export class MappingService {
 
 
   addConceptFields(mapping: Mapping) {
-
-    const conceptFieldNames = [ 'concept_id', 'source_value', 'source_concept_id', 'type_concept_id' ];
-
     Object.keys(this.concepts).forEach(key => {
       const tableNames = key.split('|');
       const conceptTargetTable = tableNames[ 0 ];
       const conceptSourceTable = tableNames[ 1 ];
-      let mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
-      if (mappingItemIndex === -1) {
-        const  mappingPair = {
-          source_table: conceptSourceTable,
-          target_table: conceptTargetTable,
-          mapping:[]
-        };
-        mapping.mapping_items.push(mappingPair)
+      let cloneExists = false;
+      if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length) {
+        const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName === conceptSourceTable);
+        cloneExists = !!existingClones.length;
       }
-      mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
-      this.concepts[ key ].conceptsList.forEach(conc => {
-        conceptFieldNames.forEach(fieldType => {
-          const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup);
-          if(newMappingNode){
-            mapping.mapping_items[ mappingItemIndex ].mapping.push(newMappingNode);
+      if (this.concepts[ key ]) {
+        if (conceptSourceTable !== 'similar' && (!this.sourceTableName || this.sourceTableName === conceptSourceTable)) {
+          let mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
+          if (mappingItemIndex === -1) {
+            const mappingPair = {
+              source_table: conceptSourceTable,
+              target_table: conceptTargetTable,
+              mapping: []
+            };
+            mapping.mapping_items.push(mappingPair)
           }
-        })
-      })
-
+          mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
+          this.concepts[ key ].conceptsList.forEach(conc => {
+            conceptFieldsTypes.forEach(fieldType => {
+              if (!(cloneExists && !conc.fields[ fieldType ].targetCloneName)) {
+                const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup);
+                if (newMappingNode) {
+                  mapping.mapping_items[ mappingItemIndex ].mapping.push(newMappingNode);
+                }
+              }
+            })
+          })
+        }
+      }
     })
 
     return mapping;
@@ -166,7 +186,7 @@ export class MappingService {
       target_field: concept.fields[ fieldType ].targetFieldName,
       sql_field: concept.fields[ fieldType ].field,
       sql_alias: concept.fields[ fieldType ].targetFieldName,
-      lookup: lookup,
+      lookup,
       lookupType: this.getConceptLookupType(concept.fields[ fieldType ].targetFieldName),
       sqlTransformation: this.getConceptSqlTransformation(concept.fields[ fieldType ].sqlApplied, concept.fields[ fieldType ].sql, concept.fields[ fieldType ].targetFieldName, concept.fields[ fieldType ].targetCloneName),
       comments: concept.fields[ fieldType ].targetFieldName,
@@ -208,7 +228,7 @@ export class MappingService {
         const constantObj = {
           source_field: '',
           concept_id: '',
-          sql_field: row.constant,
+          sql_field: `"${row.constant}"`,
           sql_alias: row.name,
           target_field: row.name,
           comments: row.comments,

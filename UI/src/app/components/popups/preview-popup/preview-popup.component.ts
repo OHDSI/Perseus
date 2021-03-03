@@ -1,10 +1,7 @@
 import {
   Component,
   OnInit,
-  Inject,
-  ViewChild,
-  ElementRef,
-  AfterViewChecked
+  Inject
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -23,5 +20,8 @@ export class PreviewPopupComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    const replacedQuotes = (Object.values(this.data)[0] as string).replace(/&quot;/gi, '\"');
+    this.data[Object.keys(this.data)[0]] = replacedQuotes;
+  }
 }

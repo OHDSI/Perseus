@@ -13,6 +13,7 @@ import { LookupComponent } from '../vocabulary-transform-configurator/lookup/loo
 import { LookupService } from 'src/app/services/lookup.service';
 import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
 import { BaseComponent } from '../../base/base.component';
+import { createConceptFields } from 'src/app/services/utilites/concept-util';
 
 @Component({
   selector: 'app-concept-transformation',
@@ -36,11 +37,12 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
               private lookupService: LookupService
   ) {
     super();
-   }
+  }
 
   data;
   dataSource;
-  concepts = [new Concept(), new Concept()];
+  concepts = [ new Concept(), new Concept() ];
+
   conceptsTable: ITableConcepts;
   targetTableName;
   selectedCellElement;
@@ -65,12 +67,27 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.targetCloneName = this.payload.arrow.target.cloneTableName;
     this.targetCondition = this.payload.arrow.condition;
 
+    this.collectConnectedFields();
+
+    this.conceptsTable = this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ];
+
+    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList
+      .filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
+
+    this.bridgeService.conceptSqlTransfomed$.
+      pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(res => {
+        this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql = res;
+      });
+  }
+
+  collectConnectedFields() {
     this.connectedToConceptFields = {};
     this.conceptFields.forEach(item => {
       const connectedFields = [];
 
       const links = Object.values(this.bridgeService.arrowsCache)
-      .filter(this.bridgeService.sourceConnectedToSameTargetByName(item, this.payload.arrow, this.payload.oppositeSourceTable));
+        .filter(this.bridgeService.sourceConnectedToSameTargetByName(item, this.payload.arrow, this.payload.oppositeSourceTable));
       links.forEach(link => {
         if (link.source.grouppedFields && link.source.grouppedFields.length) {
           link.source.grouppedFields.forEach(it => {
@@ -132,7 +149,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.conceptsTable.conceptsList[this.selectedConceptId].fields[this.selectedCellType].sql = res;
     });
   }
-
 
   removeDeletedFields(conceptTable, connectedFields, fieldType) {
     conceptTable.forEach(concept => {
@@ -199,11 +215,11 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   toggleSqlTransformation(event: any) {
-    this.conceptsTable.conceptsList[this.selectedConceptId].fields[this.selectedCellType].sqlApplied = event;
+    this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlApplied = event;
   }
 
   addConcept() {
-    const fields = this.createConceptFields();
+    const fields = createConceptFields(this.conceptFields, this.targetCloneName, this.targetCondition);
     const conceptOptions: IConceptOptions = {
       id: this.conceptsTable.conceptsList.length,
       fields
@@ -218,11 +234,15 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.conceptsTable.conceptsList.forEach((item, index) => {
       item.id = index;
     });
-    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields['concept_id'].targetCloneName === this.targetCloneName));
+    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
   }
 
   add() {
     this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable;
+
+    if (this.payload.oppositeSourceTable === 'similar') {
+      this.bridgeService.updateSimilarConcepts(this.payload.arrow);
+    }
 
     if (this.lookupComponent.updatedSourceToStandard || this.lookupComponent.updatedSourceToSource) {
 
@@ -260,4 +280,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     }
   }
 
+  close() {
+    this.removeSelection();
+    this.dialogRef.close();
+  }
 }

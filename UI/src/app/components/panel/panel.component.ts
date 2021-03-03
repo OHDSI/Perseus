@@ -226,46 +226,35 @@ export class PanelComponent implements OnInit, AfterViewInit {
           .reduce((accumulator: number, currentValue: ITable[]) => accumulator + currentValue.length, 0);
         const cloneId = this.storeService.state.target.length + totalNumberOfClones;
         if (this.existingClones && this.existingClones.length) {
-          cloneToSet = this.createClonedTable(this.table, res.value, cloneId, cloneConnectedToSourceName);
+          cloneToSet = this.createClonedTable(this.table, res.value, cloneId, cloneConnectedToSourceName, cloneFromTableName);
           this.storeService.state.targetClones[ this.table.name ].
             push(cloneToSet);
         } else {
-          const defaultClone = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName);
+          const defaultClone = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName, cloneFromTableName);
           this.storeService.state.targetClones[ this.table.name ].push(defaultClone);
-          cloneToSet = this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName);
+          cloneToSet = this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName, cloneFromTableName);
           this.storeService.state.targetClones[ this.table.name ].
             push(cloneToSet);
         }
         this.setCloneTable(cloneToSet);
-        Object.values(this.bridgeService.arrowsCache)
-          .filter(it => it.target.tableName === this.table.name && it.source.tableId === this.oppositeTableId && it.target.cloneTableName === undefined)
-          .forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
         Object.values(this.bridgeService.constantsCache)
           .filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
           .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(constant) ]);
-        this.cloneConcepts(cloneFromTableName);
-
       }
     });
   }
 
-  cloneConcepts(cloneFromTableName: string) {
-    const tableConcepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ];
+  cloneConcepts(cloneFromTableName: string, cloneToTableName: string) {
+    const tableConcepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`];
 
     if (tableConcepts) {
-
       const clonedConcepts = [];
       tableConcepts.conceptsList.forEach(it => {
-        if (it.fields[ 'concept_id' ].targetCloneName === cloneFromTableName) {
-          if (!it.fields[ 'concept_id' ].targetCloneName) {
-            Object.values(it.fields).forEach(field => {
-              (field as any).targetCloneName = 'Default';
-            });
-          }
+        if (it.fields['concept_id'].targetCloneName === cloneFromTableName) {
           const clonedConcept = cloneDeep(it);
           clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
           Object.values(clonedConcept.fields).forEach(field => {
-            (field as any).targetCloneName = this.table.cloneName;
+            (field as any).targetCloneName = cloneToTableName;
           });
           clonedConcepts.push(clonedConcept);
         }
@@ -285,7 +274,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
 
-  createClonedTable(table: ITable, cloneName: string, cloneId: number, cloneConnectedToSourceName: string) {
+  createClonedTable(table: ITable, cloneName: string, cloneId: number, cloneConnectedToSourceName: string, cloneFromTableName: string) {
     const cloneTargetTable = cloneDeep(table) as ITable;
     cloneTargetTable.cloneName = cloneName;
     cloneTargetTable.cloneConnectedToSourceName = cloneConnectedToSourceName;
@@ -301,8 +290,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
         item.condition = '';
       }
     });
-    this.bridgeService.drawCloneArrows(cloneTargetTable, table);
-    this.bridgeService.addCloneConstants(cloneTargetTable, table);
+    this.bridgeService.drawCloneArrows(cloneTargetTable, table, this.oppositeTableName);
+    this.bridgeService.addCloneConstants(cloneTargetTable, table, this.oppositeTableName);
+    this.cloneConcepts(cloneFromTableName, cloneName);
     return cloneTargetTable;
   }
 
