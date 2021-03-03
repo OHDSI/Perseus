@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { ProgressNotification} from '../../../model/progress-notification';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../base/base.component';
+import { BaseComponent } from '../../../../base/base.component';
 import { WebsocketParams } from '../../../model/websocket-params';
 import { WebsocketService } from '../../../../websocket/websocket.service';
 

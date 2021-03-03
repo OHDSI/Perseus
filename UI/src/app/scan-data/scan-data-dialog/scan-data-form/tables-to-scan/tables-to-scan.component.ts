@@ -12,7 +12,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ConnectionResult } from '../../../model/connection-result';
 import { takeUntil } from 'rxjs/operators';
 import { ScanParams } from '../../../model/scan-params';
-import { BaseComponent } from '../../../shared/base/base.component';
+import { BaseComponent } from '../../../../base/base.component';
 import { ScanParamsComponent } from './scan-params/scan-params.component';
 
 @Component({

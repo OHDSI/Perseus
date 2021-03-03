@@ -89,5 +89,4 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 }
 
-
 export type OpenMappingDialog = 'open' | 'save';

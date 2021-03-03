@@ -178,14 +178,14 @@ export class BridgeService {
     canExecute: () => true
   });
 
-  getDefaultClones(targetTableName: string){
+  getDefaultClones(targetTableName: string) {
     const cloneTables = this.storeService.state.targetClones[targetTableName];
     if (cloneTables) {
       return cloneTables.filter(item => item.cloneName === 'Default');
     }
   }
 
-  drawSimilarCloneLinks(arrow: any, similarSourceRows: any){
+  drawSimilarCloneLinks(arrow: any, similarSourceRows: any) {
     const defaultTables = this.getDefaultClones(this.targetRow.tableName);
     if (defaultTables) {
       defaultTables.forEach(item => {
@@ -194,7 +194,7 @@ export class BridgeService {
         if (similarSourceRow.length) {
           this.drawArrow(similarSourceRow[0], targetcloneRow, arrow.type);
         }
-      }) 
+      });
     }
   }
 
@@ -238,27 +238,27 @@ export class BridgeService {
         concepts.lookup = conceptsCopy.lookup;
       }
     })
-  } 
+  }
 
-removeDeletedLinksFromFields(conceptsCopy: any, linksToConceptFields: any, conceptFieldsDictionary: any){
-  conceptsCopy.conceptsList.forEach(conc => {
-    Object.keys(conc.fields).forEach(type => {
-      const sourceField = conc.fields[type].field;
-      const linkExists = linksToConceptFields.filter(it => it.target.name === conceptFieldsDictionary[type] && it.source.name === sourceField);
-      if (sourceField && !linkExists.length){
-        conc.fields[type].field = '';
-      }
+  removeDeletedLinksFromFields(conceptsCopy: any, linksToConceptFields: any, conceptFieldsDictionary: any) {
+    conceptsCopy.conceptsList.forEach(conc => {
+      Object.keys(conc.fields).forEach(type => {
+        const sourceField = conc.fields[type].field;
+        const linkExists = linksToConceptFields.filter(it => it.target.name === conceptFieldsDictionary[type] && it.source.name === sourceField);
+        if (sourceField && !linkExists.length) {
+          conc.fields[type].field = '';
+        }
+      })
     })
-  })
-}
+  }
 
-getConceptFieldsDictionary(conceptFields: any) {
-  const conceptFieldsDictionary = {};
-  conceptFieldsTypes.forEach(it => {
-    conceptFieldsDictionary[it] = getConceptFieldNameByType(it, conceptFields);
-  })
-  return conceptFieldsDictionary;
-}
+  getConceptFieldsDictionary(conceptFields: any) {
+    const conceptFieldsDictionary = {};
+    conceptFieldsTypes.forEach(it => {
+      conceptFieldsDictionary[it] = getConceptFieldNameByType(it, conceptFields);
+    })
+    return conceptFieldsDictionary;
+  }
 
   getTables() {
     const { source, target, targetConfig } = this.storeService.state;
@@ -527,7 +527,7 @@ getConceptFieldsDictionary(conceptFields: any) {
     if (!cloneTable) {
       this.updateConcepts(connection);
     }
-   
+
     this.connection.next(connection);
 
     return connection;
@@ -554,7 +554,7 @@ getConceptFieldsDictionary(conceptFields: any) {
       return item.connector.target.name.toUpperCase() === rowName.toUpperCase() &&
         item.connector.target.tableName.toUpperCase() === row.target.tableName.toUpperCase() &&
         item.connector.target.cloneTableName === row.target.cloneTableName &&
-        item.connector.source.tableName.toUpperCase() === sourceTable.toUpperCase(); 
+        item.connector.source.tableName.toUpperCase() === sourceTable.toUpperCase();
     };
   }
 
@@ -845,7 +845,7 @@ getConceptFieldsDictionary(conceptFields: any) {
     });
   }
 
-  changeConceptSql(sql: string){
+  changeConceptSql(sql: string) {
     this.conceptSqlTransfomed$.next(sql);
   }
 }

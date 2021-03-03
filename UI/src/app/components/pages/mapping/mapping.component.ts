@@ -11,7 +11,6 @@ import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
 import { stateToInfo, StoreService } from 'src/app/services/store.service';
-import { BaseComponent } from '../../../common/components/base/base.component';
 import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
@@ -42,6 +41,7 @@ import { ReportCreator } from '../../../services/report/report-creator';
 import { MappingPair } from '../../../models/mapping';
 import * as conceptFields from '../../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../../concept-transformation/concept-transformation.component';
+import { BaseComponent } from '../../../base/base.component';
 
 @Component({
   selector: 'app-mapping',
@@ -76,6 +76,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   hasScanReport = false;
 
   conceptFieldNames = (conceptFields as any).default;
+
+  isVocabularyVisible = false;
+
+  mainHeight = '';
 
   get hint(): string {
     return 'no hint';
@@ -132,58 +136,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.router.navigateByUrl(`/comfy`);
       return;
     }
-    const { source, target } = this.storeService.getMappedTables();
 
-    this.prepareTables(source, Area.Source);
-    this.prepareTables(target, Area.Target);
-    this.prepareMappedTables(this.getMappingConfig());
-    this.moveSimilarTables();
-    if (!this.storeService.state.recalculateSimilar) {
-      if (this.similarSourceTable) { this.similarSourceTable.rows = this.storeService.state.sourceSimilar; }
-      if (this.similarTargetTable) { this.similarTargetTable.rows = this.storeService.state.targetSimilar; }
-    } else {
-      if (this.similarSourceTable) { this.storeService.state.sourceSimilar = this.similarSourceTable.rows; }
-      if (this.similarTargetTable) { this.storeService.state.targetSimilar = this.similarTargetTable.rows; }
-      this.storeService.state.recalculateSimilar = false;
-    }
-    this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
-    this.selectedSourceTable = this.sourceTablesWithoutSimilar[ 0 ];
-
-    this.selectedTargetTable = this.getSelectedTargetTable();
-
-    this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
-      this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
-
-    setTimeout(() => {
-      this.bridgeService.refresh(this.currentTargetTable);
-      this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
-      this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
-      this.bridgeService.adjustArrowsPositions();
-    }, 200);
-
-    this.rulesPoupService.deleteConnector$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(connectorKey => {
-        this.bridgeService.deleteArrow(connectorKey);
-      });
-
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.filteredFields = res.filteredFields;
-        this.bridgeService.refreshAll();
-      }
-    });
-    this.activatedRoute.queryParams.subscribe(data => {
-      if (Object.keys(data).length !== 0) {
-        this.targetTabIndex = 1;
-        this.sourceTabIndex = 1;
-        const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
-        this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
-        this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
-      }
-   });
+    this.loadMapping();
 
     this.initHasScanReport();
+
+    this.setMainHeight();
   }
 
   ngAfterViewInit() {
@@ -234,12 +192,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
-      const arrow = this.bridgeService.arrowsCache[ child.id ];
+      const arrow = this.bridgeService.arrowsCache[child.id];
 
       const endXYAttributeIndex = 7;
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[ endXYAttributeIndex ].value);
+      const {upperLimit, lowerLimit} = this.getLimits(child.attributes[endXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
-
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
@@ -251,71 +208,70 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
-        if(!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
-        
-        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
-        dialogRef.afterClosed$.subscribe((configOptions: any) => {
-          const { connectionType } = configOptions;
-          if (connectionType) {
-            const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
-            const lookupType = getLookupType(arrow);
-            const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
-              closeOnNavigation: false,
-              disableClose: false,
-              panelClass: 'sql-editor-dialog-padding-15',
-              maxHeight: '100%',
-              width: '570px;',
-              data: {
-                arrowCache: this.bridgeService.arrowsCache,
-                connector: arrow.connector,
-                lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
-                lookupType,
-                sql: arrow.sql,
-                tab: selectedtab
-              }
-            });
-
-            transformDialogRef.afterClosed().subscribe((options: any) => {
-              if (options) {
-                const { lookup, sql } = options;
-                if (lookup) {
-                  if (lookup[ 'originName' ]) {
-                    this.lookup = lookup;
-                    this.lookup[ 'applied' ] = true;
-                    const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
-                    this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
-                  }
-
-                  if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
-                    this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                      console.log(res);
-                    });
-                  }
+        if (!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
+          const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
+          dialogRef.afterClosed$.subscribe((configOptions: any) => {
+            const {connectionType} = configOptions;
+            if (connectionType) {
+              const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
+              const lookupType = getLookupType(arrow);
+              const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
+                closeOnNavigation: false,
+                disableClose: false,
+                panelClass: 'sql-editor-dialog-padding-15',
+                maxHeight: '100%',
+                width: '570px;',
+                data: {
+                  arrowCache: this.bridgeService.arrowsCache,
+                  connector: arrow.connector,
+                  lookupName: arrow.lookup ? arrow.lookup['name'] : '',
+                  lookupType,
+                  sql: arrow.sql,
+                  tab: selectedtab
                 }
-                if (sql) {
-                  if (sql[ 'name' ] || sql[ 'name' ] === '') {
-                    arrow.sql = sql;
-                    arrow.sql[ 'applied' ] = sql['name'] !== '';
+              });
+
+              transformDialogRef.afterClosed().subscribe((options: any) => {
+                if (options) {
+                  const {lookup, sql} = options;
+                  if (lookup) {
+                    if (lookup['originName']) {
+                      this.lookup = lookup;
+                      this.lookup['applied'] = true;
+                      const lookupName = this.lookup['name'] ? this.lookup['name'] : this.lookup['originName'];
+                      this.bridgeService.arrowsCache[child.id].lookup = {name: lookupName, applied: true};
+                    }
+
+                    if (lookup['originName'] && lookup['name'] && lookup['originName'] !== lookup['name']) {
+                      this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
+                        console.log(res);
+                      });
+                    }
                   }
+                  if (sql) {
+                    if (sql['name'] || sql['name'] === '') {
+                      arrow.sql = sql;
+                      arrow.sql['applied'] = sql['name'] !== '';
+                    }
+                  }
+                  this.bridgeService.updateConnectedRows(arrow);
                 }
-                this.bridgeService.updateConnectedRows(arrow);
-              }
-            });
-          }
-        });
-      } else {
-        const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
-          closeOnNavigation: false,
-          disableClose: true,
-          panelClass: 'sql-editor-dialog-padding-15-width-650',
-          maxHeight: '100%',
-          data: {
-            arrowCache: this.bridgeService.arrowsCache,
-            arrow: arrow,
-            oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
-          }
-        });
-      } 
+              });
+            }
+          });
+        } else {
+          const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
+            closeOnNavigation: false,
+            disableClose: true,
+            panelClass: 'sql-editor-dialog-padding-15-width-650',
+            maxHeight: '100%',
+            data: {
+              arrowCache: this.bridgeService.arrowsCache,
+              arrow,
+              oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
+            }
+          });
+        }
         return;
       }
     }
@@ -844,6 +800,20 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
+  showVocabulary() {
+    this.isVocabularyVisible = !this.isVocabularyVisible;
+    this.setMainHeight();
+  }
+
+  setMainHeight() {
+    let sub = 81; // footer height
+    if (this.isVocabularyVisible) {
+      sub += 465; // vocabulary search dialog height
+    }
+
+    this.mainHeight = `calc(100% - ${sub}px)`;
+  }
+
   private addMappedSourceToStore() {
     this.storeService.add('mappedSource', this.source);
   }
@@ -854,5 +824,66 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   private initHasScanReport() {
     this.hasScanReport = this.storeService.state.reportFile;
+  }
+
+  private loadMapping() {
+    const { source, target } = this.storeService.getMappedTables();
+
+    this.prepareTables(source, Area.Source);
+    this.prepareTables(target, Area.Target);
+    this.prepareMappedTables(this.getMappingConfig());
+    this.moveSimilarTables();
+    if (!this.storeService.state.recalculateSimilar) {
+      if (this.similarSourceTable) {
+        this.similarSourceTable.rows = this.storeService.state.sourceSimilar;
+      }
+      if (this.similarTargetTable) {
+        this.similarTargetTable.rows = this.storeService.state.targetSimilar;
+      }
+    } else {
+      if (this.similarSourceTable) {
+        this.storeService.state.sourceSimilar = this.similarSourceTable.rows;
+      }
+      if (this.similarTargetTable) {
+        this.storeService.state.targetSimilar = this.similarTargetTable.rows;
+      }
+      this.storeService.state.recalculateSimilar = false;
+    }
+    this.sourceTablesWithoutSimilar = this.source.filter(item => item.name !== 'similar');
+    this.selectedSourceTable = this.sourceTablesWithoutSimilar[0];
+
+    this.selectedTargetTable = this.getSelectedTargetTable();
+
+    this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
+      this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
+
+    setTimeout(() => {
+      this.bridgeService.refresh(this.currentTargetTable);
+      this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
+      this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
+      this.bridgeService.adjustArrowsPositions();
+    }, 200);
+
+    this.rulesPoupService.deleteConnector$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(connectorKey => {
+        this.bridgeService.deleteArrow(connectorKey);
+      });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields;
+        this.bridgeService.refreshAll();
+      }
+    });
+    this.activatedRoute.queryParams.subscribe(data => {
+      if (Object.keys(data).length !== 0) {
+        this.targetTabIndex = 1;
+        this.sourceTabIndex = 1;
+        const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
+        this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
+        this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
+      }
+    });
   }
 }

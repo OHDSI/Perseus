@@ -1,10 +1,7 @@
 import {
   Component,
   OnInit,
-  Inject,
-  ViewChild,
-  ElementRef,
-  AfterViewChecked
+  Inject
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 

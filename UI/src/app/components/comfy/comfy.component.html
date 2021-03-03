@@ -90,6 +90,12 @@
                (change)="onFileUpload($event)"
                hidden/>
 
+        <input #mappingUpload
+               type="file"
+               accept=".etl"
+               (change)="onMappingUpload($event)"
+               hidden/>
+
         <button mat-flat-button
                 color="accent"
                 class="cdm-button"
@@ -102,6 +108,13 @@
                 class="cdm-button"
                 (click)="scanData()">
           Scan Data
+        </button>
+
+        <button mat-flat-button
+                color="accent"
+                class="cdm-button"
+                (click)="openMapping()">
+          Open Mapping
         </button>
       </div>
     </article>
@@ -148,7 +161,7 @@
                      [id]="tableName"
                      cdkDrag
                      (cdkDragMoved)="dragMoved($event)"
-                     (dblclick)="openMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
+                     (dblclick)="afterOpenMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
                   <div class="table-description target caption"
                        [matTooltip]="tableName"
                        matTooltipPosition="right">
@@ -205,7 +218,7 @@
             color="accent"
             class="right-bottom-button"
             [disabled]="!checkExistingMappings()"
-            (click)="openMapping()">Go To Link Fields
+            (click)="afterOpenMapping()">Go To Link Fields
     </button>
   </div>
 </main>

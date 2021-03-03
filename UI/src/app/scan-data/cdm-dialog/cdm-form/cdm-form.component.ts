@@ -1,7 +1,7 @@
 import { AfterViewChecked, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CdmStateService } from '../../../services/cdm-state.service';
-import { BaseComponent } from '../../shared/base/base.component';
+import { BaseComponent } from '../../../base/base.component';
 import { FakeDataStateService } from '../../../services/fake-data-state.service';
 import { DbSettings } from '../../model/db-settings';
 import { FakeDataParams } from '../../model/fake-data-params';

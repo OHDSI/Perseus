@@ -73,6 +73,7 @@
     "directive-class-suffix": true,
     "no-string-literal": false,
     "curly": false,
-    "ban-types": true
+    "ban-types": true,
+    "semicolon": false
   }
 }

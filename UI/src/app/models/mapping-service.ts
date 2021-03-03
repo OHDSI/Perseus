@@ -122,14 +122,13 @@ export class MappingService {
 
 
   addConceptFields(mapping: Mapping) {
-
     Object.keys(this.concepts).forEach(key => {
       const tableNames = key.split('|');
       const conceptTargetTable = tableNames[ 0 ];
       const conceptSourceTable = tableNames[ 1 ];
       let cloneExists = false;
-      if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length){
-        const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName == conceptSourceTable);
+      if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length) {
+        const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName === conceptSourceTable);
         cloneExists = !!existingClones.length;
       }
       if (this.concepts[ key ]) {
@@ -187,7 +186,7 @@ export class MappingService {
       target_field: concept.fields[ fieldType ].targetFieldName,
       sql_field: concept.fields[ fieldType ].field,
       sql_alias: concept.fields[ fieldType ].targetFieldName,
-      lookup: lookup,
+      lookup,
       lookupType: this.getConceptLookupType(concept.fields[ fieldType ].targetFieldName),
       sqlTransformation: this.getConceptSqlTransformation(concept.fields[ fieldType ].sqlApplied, concept.fields[ fieldType ].sql, concept.fields[ fieldType ].targetFieldName, concept.fields[ fieldType ].targetCloneName),
       comments: concept.fields[ fieldType ].targetFieldName,

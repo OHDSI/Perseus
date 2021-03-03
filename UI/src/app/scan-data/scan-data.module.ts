@@ -10,7 +10,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
 import { WebsocketModule } from '../websocket/websocket.module';
 import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
-import { CloseDialogButtonComponent } from './shared/close-dialog-button/close-dialog-button.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
@@ -36,6 +35,7 @@ import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
 import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,6 @@ import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
     ScanDataFormComponent,
     ScanDataCheckboxComponent,
     ConnectionErrorPopupComponent,
-    CloseDialogButtonComponent,
     ScanDataDialogComponent,
     ConnectFormComponent,
     DbSettingsFormComponent,
@@ -78,7 +77,8 @@ import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
     MatProgressBarModule,
     MatTooltipModule,
     MatIconModule,
-    WebsocketModule
+    WebsocketModule,
+    SharedModule
   ],
   exports: [
     ScanDataDialogComponent,
