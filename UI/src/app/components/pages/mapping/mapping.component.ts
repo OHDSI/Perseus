@@ -251,7 +251,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
-        if(!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
+        if(!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
         
         const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
         dialogRef.afterClosed$.subscribe((configOptions: any) => {

@@ -127,33 +127,36 @@ export class MappingService {
       const tableNames = key.split('|');
       const conceptTargetTable = tableNames[ 0 ];
       const conceptSourceTable = tableNames[ 1 ];
-      let cloneExists = false;
-      if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length){
-        const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName == conceptSourceTable);
-        cloneExists = !!existingClones.length;
-      }
-      if (this.concepts[ key ]) {
-        if (conceptSourceTable !== 'similar' && (!this.sourceTableName || this.sourceTableName === conceptSourceTable)) {
-          let mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
-          if (mappingItemIndex === -1) {
-            const mappingPair = {
-              source_table: conceptSourceTable,
-              target_table: conceptTargetTable,
-              mapping: []
-            };
-            mapping.mapping_items.push(mappingPair)
-          }
-          mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
-          this.concepts[ key ].conceptsList.forEach(conc => {
-            conceptFieldsTypes.forEach(fieldType => {
-              if (!(cloneExists && !conc.fields[ fieldType ].targetCloneName)) {
-                const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup);
-                if (newMappingNode) {
-                  mapping.mapping_items[ mappingItemIndex ].mapping.push(newMappingNode);
+
+      if (!this.sourceTableName || this.sourceTableName === conceptSourceTable && this.targetTableName === conceptTargetTable) {
+        let cloneExists = false;
+        if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length) {
+          const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName == conceptSourceTable);
+          cloneExists = !!existingClones.length;
+        }
+        if (this.concepts[ key ]) {
+          if (conceptSourceTable !== 'similar' && (!this.sourceTableName || this.sourceTableName === conceptSourceTable)) {
+            let mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
+            if (mappingItemIndex === -1) {
+              const mappingPair = {
+                source_table: conceptSourceTable,
+                target_table: conceptTargetTable,
+                mapping: []
+              };
+              mapping.mapping_items.push(mappingPair)
+            }
+            mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
+            this.concepts[ key ].conceptsList.forEach(conc => {
+              conceptFieldsTypes.forEach(fieldType => {
+                if (!(cloneExists && !conc.fields[ fieldType ].targetCloneName)) {
+                  const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup);
+                  if (newMappingNode) {
+                    mapping.mapping_items[ mappingItemIndex ].mapping.push(newMappingNode);
+                  }
                 }
-              }
+              })
             })
-          })
+          }
         }
       }
     })
