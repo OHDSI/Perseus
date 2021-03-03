@@ -34,6 +34,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   @Input() lookup;
   @Input() name;
   @Input() lookupType;
+  @Input() notConceptTableField;
 
   @ViewChild('editor', { static: true }) editor;
   @ViewChild('disabledEditor', { static: true }) disabledEditor;

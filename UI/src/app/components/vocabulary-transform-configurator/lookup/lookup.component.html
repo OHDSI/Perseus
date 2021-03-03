@@ -21,13 +21,13 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-        <mat-radio-button [checked]="lookupType==='source_to_standard'"
+        <mat-radio-button *ngIf="!notConceptTableField" [checked]="lookupType==='source_to_standard'"
                           (change)="lookupTypeChanged($event.value)"
                           [value]="lookupType">Source to Standard</mat-radio-button>
-        <mat-radio-button [checked]="lookupType==='source_to_source'"
+        <mat-radio-button *ngIf="!notConceptTableField" [checked]="lookupType==='source_to_source'"
                           (change)="lookupTypeChanged($event.value)"
                           [value]="lookupType">Source to Source</mat-radio-button>
-        <mat-checkbox [checked]="lookup['sourceToSourceIncluded']"
+        <mat-checkbox *ngIf="!notConceptTableField" [checked]="lookup['sourceToSourceIncluded']"
                       [disabled]="!withSourceToSource"
                       (change)="includeSourceToStandardChanged($event)">Include Source to Source</mat-checkbox>
       <div class="flex-div">

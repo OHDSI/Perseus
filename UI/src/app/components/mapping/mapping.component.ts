@@ -196,11 +196,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
-      const arrow = this.bridgeService.arrowsCache[child.id];
+      const arrow = this.bridgeService.arrowsCache[ child.id ];
 
       const endXYAttributeIndex = 7;
-      const {upperLimit, lowerLimit} = this.getLimits(child.attributes[endXYAttributeIndex].value);
+      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[ endXYAttributeIndex ].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
+
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
@@ -212,70 +213,71 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
-        if (!Object.values(this.conceptFieldNames).filter(item => (item as any).includes(htmlElementId)).length) {
-          const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
-          dialogRef.afterClosed$.subscribe((configOptions: any) => {
-            const {connectionType} = configOptions;
-            if (connectionType) {
-              const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
-              const lookupType = getLookupType(arrow);
-              const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
-                closeOnNavigation: false,
-                disableClose: false,
-                panelClass: 'sql-editor-dialog-padding-15',
-                maxHeight: '100%',
-                width: '570px;',
-                data: {
-                  arrowCache: this.bridgeService.arrowsCache,
-                  connector: arrow.connector,
-                  lookupName: arrow.lookup ? arrow.lookup['name'] : '',
-                  lookupType,
-                  sql: arrow.sql,
-                  tab: selectedtab
-                }
-              });
+        if(!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
+        
+        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
+        dialogRef.afterClosed$.subscribe((configOptions: any) => {
+          const { connectionType } = configOptions;
+          if (connectionType) {
+            const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
+            const lookupType = getLookupType(arrow);
+            const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
+              closeOnNavigation: false,
+              disableClose: false,
+              panelClass: 'sql-editor-dialog-padding-15',
+              maxHeight: '100%',
+              width: '570px;',
+              data: {
+                arrowCache: this.bridgeService.arrowsCache,
+                connector: arrow.connector,
+                lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
+                lookupType,
+                sql: arrow.sql,
+                tab: selectedtab
+              }
+            });
 
-              transformDialogRef.afterClosed().subscribe((options: any) => {
-                if (options) {
-                  const {lookup, sql} = options;
-                  if (lookup) {
-                    if (lookup['originName']) {
-                      this.lookup = lookup;
-                      this.lookup['applied'] = true;
-                      const lookupName = this.lookup['name'] ? this.lookup['name'] : this.lookup['originName'];
-                      this.bridgeService.arrowsCache[child.id].lookup = {name: lookupName, applied: true};
-                    }
+            transformDialogRef.afterClosed().subscribe((options: any) => {
+              if (options) {
+                const { lookup, sql } = options;
+                if (lookup) {
+                  if (lookup[ 'originName' ]) {
+                    this.lookup = lookup;
+                    this.lookup[ 'applied' ] = true;
+                    const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
+                    this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
+                  }
 
-                    if (lookup['originName'] && lookup['name'] && lookup['originName'] !== lookup['name']) {
-                      this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                        console.log(res);
-                      });
-                    }
+                  if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
+                    this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
+                      console.log(res);
+                    });
                   }
-                  if (sql) {
-                    if (sql['name'] || sql['name'] === '') {
-                      arrow.sql = sql;
-                      arrow.sql['applied'] = sql['name'] !== '';
-                    }
-                  }
-                  this.bridgeService.updateConnectedRows(arrow);
                 }
-              });
-            }
-          });
-        } else {
-          const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
-            closeOnNavigation: false,
-            disableClose: true,
-            panelClass: 'sql-editor-dialog-padding-15-width-650',
-            maxHeight: '100%',
-            data: {
-              arrowCache: this.bridgeService.arrowsCache,
-              arrow,
-              oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
-            }
-          });
-        }
+                if (sql) {
+                  if (sql[ 'name' ] || sql[ 'name' ] === '') {
+                    arrow.sql = sql;
+                    arrow.sql[ 'applied' ] = sql['name'] !== '';
+                  }
+                }
+                this.bridgeService.updateConnectedRows(arrow);
+              }
+            });
+          }
+        });
+      } else {
+        const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
+          closeOnNavigation: false,
+          disableClose: true,
+          panelClass: 'sql-editor-dialog-padding-15-width-650',
+          maxHeight: '100%',
+          data: {
+            arrowCache: this.bridgeService.arrowsCache,
+            arrow: arrow,
+            oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
+          }
+        });
+      } 
         return;
       }
     }
