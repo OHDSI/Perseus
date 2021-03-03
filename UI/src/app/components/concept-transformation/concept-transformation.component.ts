@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StoreService } from 'src/app/services/store.service';
-import { Concept, IConceptOptions, ITableConcepts, ITableConceptsOptions, TableConcepts } from './model/concept';
+import { Concept, IConceptOptions, ITableConcepts } from './model/concept';
 import * as conceptMap from './../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
@@ -11,7 +11,6 @@ import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
-import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
 import { BaseComponent } from '../../base/base.component';
 import { createConceptFields } from 'src/app/services/utilites/concept-util';
 
@@ -101,87 +100,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       });
       this.connectedToConceptFields[ item ] = connectedFields;
     });
-
-    if (!this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ]) {
-
-      const conceptTableOptions: ITableConceptsOptions = {
-        lookup: {},
-        conceptsList: []
-      };
-      this.conceptsTable = new TableConcepts(conceptTableOptions);
-      Object.keys(this.connectedToConceptFields).forEach(key => {
-
-        this.connectedToConceptFields[ key ].forEach(it => {
-          const conceptIndex = this.connectedToConceptFields[ key ].indexOf(it);
-          const fieldType = this.getConceptFieldType(it.target.name);
-          if (!this.conceptsTable.conceptsList[ conceptIndex ]) {
-            const fields = this.createConceptFields(this.targetCloneName, this.targetCondition);
-            fields[fieldType].field = it.source.name;
-            fields[fieldType].constantSelected = false;
-
-            const conceptOptions: IConceptOptions = {
-              id: conceptIndex,
-              fields
-            };
-
-            this.conceptsTable.conceptsList.push(new Concept(conceptOptions));
-
-          } else {
-            this.conceptsTable.conceptsList[ conceptIndex ].fields[ fieldType ].field = it.source.name;
-            this.conceptsTable.conceptsList[ conceptIndex ].fields[ fieldType ].constantSelected = false;
-          }
-        });
-      });
-    } else {
-     Object.keys(this.connectedToConceptFields).forEach(key => {
-       const fieldType = this.getConceptFieldType(key);
-       this.removeDeletedFields(this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ].conceptsList, this.connectedToConceptFields[key].map(item => item.source.name), fieldType);
-     });
-     this.conceptsTable = this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ];
-
-    }
-
-    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields['concept_id'].targetCloneName === this.targetCloneName));
-
-    this.bridgeService.conceptSqlTransfomed$.
-    pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(res => {
-      this.conceptsTable.conceptsList[this.selectedConceptId].fields[this.selectedCellType].sql = res;
-    });
-  }
-
-  removeDeletedFields(conceptTable, connectedFields, fieldType) {
-    conceptTable.forEach(concept => {
-      if (!connectedFields.includes(concept.fields[ fieldType ].field)) {
-        concept.fields[ fieldType ].field = '';
-        concept.fields[ fieldType ].sql = '';
-        concept.fields[ fieldType ].sqlApplied = false;
-      }
-    });
-  }
-
-  createConceptField(fields, fieldName: string, targetFieldName: string, clone?: string, condition?: string) {
-    fields[ fieldName ] = {
-      field: '',
-      targetFieldName,
-      targetCloneName: clone,
-      sql: '',
-      sqlApplied: false,
-      constant: '',
-      selected: false,
-      constantSelected: true,
-      condition,
-      alreadySelected: false
-    };
-  }
-
-  createConceptFields(clone?: string, condition?: string) {
-    const fields = {};
-    this.createConceptField(fields, 'concept_id', getConceptFieldNameByType('concept_id', this.connectedToConceptFields), clone, condition);
-    this.createConceptField(fields, 'source_value', getConceptFieldNameByType('source_value', this.connectedToConceptFields), clone, condition);
-    this.createConceptField(fields, 'source_concept_id', getConceptFieldNameByType('source_concept_id', this.connectedToConceptFields), clone, condition);
-    this.createConceptField(fields, 'type_concept_id', getConceptFieldNameByType('type_concept_id', this.connectedToConceptFields), clone, condition);
-    return fields;
   }
 
   onCellClick(cell: any, row: any) {
@@ -205,13 +123,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.sqlTransformation.setConeptSqlValue(this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql);
     }
 
-  }
-
-  getConceptFieldType(fieldName: string) {
-    return fieldName.endsWith('type_concept_id') ? 'type_concept_id' :
-    fieldName.endsWith('source_concept_id') ? 'source_concept_id' :
-    fieldName.endsWith('source_value') ? 'source_value' :
-    'concept_id';
   }
 
   toggleSqlTransformation(event: any) {
