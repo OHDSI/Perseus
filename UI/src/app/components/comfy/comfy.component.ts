@@ -52,7 +52,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   get vocabularyBottom(): string {
-    return this.actionVisible ? '73px' : '0';
+    return this.actionVisible ? '80px' : '0';
   }
 
   get actionVisible(): boolean {
@@ -650,8 +650,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   private setTableMappingAndColumnListHeights() {
     if (this.actionVisible) {
       if (this.isVocabularyVisible) {
-        this.mappingHeight = 'calc(100% - 535px)';
-        this.columnListHeight = 'calc(100% - 470px)';
+        this.mappingHeight = 'calc(100% - 470px)';
+        this.columnListHeight = 'calc(100% - 420px)';
       } else {
         this.mappingHeight = '100%';
         this.columnListHeight = '100%';
