@@ -79,7 +79,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   chipsHeight = '';
 
   requestParams: VocabSearchReqParams = {
-    pageSize: 100,
+    pageSize: 10,
     pageNumber: 1,
     query: '',
     updateFilters: true
@@ -371,6 +371,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   private updateFilters(facets: VocabSearchFilters) {
     this.filters = Object.keys(facets)
+      .sort((key1, key2) =>
+        this.filtersRecognizer[key1].priority - this.filtersRecognizer[key2].priority
+      )
       .map((filterKey, filterIndex) => {
         const filter = this.filtersRecognizer[filterKey];
         const filterValue = facets[filterKey];
@@ -389,9 +392,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
             }))
         };
       })
-      .sort((f1, f2) => {
-        return this.filtersRecognizer[f1.field].priority - this.filtersRecognizer[f2.field].priority
-      });
   }
 
   private updateChipsHeight() {
@@ -411,7 +411,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       conceptClass: getConcreteFiltersByIndex(2),
       vocabulary: getConcreteFiltersByIndex(3),
       invalidReason: getConcreteFiltersByIndex(4),
-      updateFilters: false
+      updateFilters: true
     };
 
     this.makeRequest(this.requestParams);
@@ -424,6 +424,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
         this.setMovableIndexes(pageCount - 2, pageCount);
       } else if (this.currentPage === this.pageCount) { // current page = old page count
         this.setMovableIndexes(this.currentPage - 1, pageCount);
+      }
+
+      if (this.currentPage === 0) {
+        this.currentPage = 1;
       }
 
       this.total = total;

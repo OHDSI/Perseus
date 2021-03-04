@@ -639,21 +639,23 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   showVocabulary() {
     this.isVocabularyVisible = !this.isVocabularyVisible;
-    this.setMapping();
+    this.setMappingHeight();
     this.vocabularyObserverService.next({
       value: this.isVocabularyVisible,
       emit: false
     })
   }
 
-  setMapping() {
-    this.mappingHeight = this.isVocabularyVisible ? 'calc(100% - 535px)' : '100%';
+  private setMappingHeight() {
+    if (this.actionVisible) {
+      this.mappingHeight = this.isVocabularyVisible ? 'calc(100% - 535px)' : '100%';
+    }
   }
 
   private subscribeOnVocabularyOpening() {
     this.vocabularyObserverService.show$.subscribe(visible => {
       this.isVocabularyVisible = visible;
-      this.setMapping();
+      this.setMappingHeight();
     })
   }
 }
