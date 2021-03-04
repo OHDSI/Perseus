@@ -13,6 +13,7 @@ export interface VocabSearchState {
   pageCount: number;
   filters: Filter[];
   movableIndexes: {second: number; third: number};
+  sort: { field: string; order: string };
 }
 
 @Injectable({
