@@ -52,7 +52,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   get vocabularyBottom(): string {
-    return this.actionVisible ? '82px' : '0';
+    return this.actionVisible ? '73px' : '0';
   }
 
   get actionVisible(): boolean {
