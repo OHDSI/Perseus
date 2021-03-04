@@ -61,7 +61,6 @@ mat-list-item.mat-list-item {
 }
 
 .virtual-scroll-container {
-  height: calc(100vh - 230px);
   overflow-x: hidden;
   top: -1px;
 }
@@ -80,4 +79,8 @@ mat-list-item.mat-list-item {
   transform: rotate(270deg) !important;
   text-align: center;
   font-size: 14px !important;
+}
+
+.source-columns-list {
+  height: 100%;
 }

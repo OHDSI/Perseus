@@ -114,6 +114,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   isVocabularyVisible: boolean;
 
   mappingHeight = '100%';
+  columnListHeight = '100%';
 
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
@@ -639,23 +640,29 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   showVocabulary() {
     this.isVocabularyVisible = !this.isVocabularyVisible;
-    this.setMappingHeight();
+    this.setTableMappingAndColumnListHeights();
     this.vocabularyObserverService.next({
       value: this.isVocabularyVisible,
       emit: false
     })
   }
 
-  private setMappingHeight() {
+  private setTableMappingAndColumnListHeights() {
     if (this.actionVisible) {
-      this.mappingHeight = this.isVocabularyVisible ? 'calc(100% - 535px)' : '100%';
+      if (this.isVocabularyVisible) {
+        this.mappingHeight = 'calc(100% - 535px)';
+        this.columnListHeight = 'calc(100% - 470px)';
+      } else {
+        this.mappingHeight = '100%';
+        this.columnListHeight = '100%';
+      }
     }
   }
 
   private subscribeOnVocabularyOpening() {
     this.vocabularyObserverService.show$.subscribe(visible => {
       this.isVocabularyVisible = visible;
-      this.setMappingHeight();
+      this.setTableMappingAndColumnListHeights();
     })
   }
 }
