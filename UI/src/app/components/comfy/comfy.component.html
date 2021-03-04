@@ -10,6 +10,7 @@
                             (reset)="filterByNameReset('source-column')"></app-search-by-name>
   <app-columns-list *ngIf="data.source?.length"
                     class="source-columns-list"
+                    [columnListHeight]="columnListHeight"
                     [allSourceRows]="allSourceRows"
                     [uniqSourceRows]="uniqSourceRows"
                     (columnsSelected)="findTables($event)"></app-columns-list>

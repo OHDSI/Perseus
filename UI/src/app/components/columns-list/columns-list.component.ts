@@ -14,6 +14,8 @@ export class ColumnsListComponent {
 
   @Input() allSourceRows: IRow[];
 
+  @Input() columnListHeight = '100%';
+
   @Output() columnsSelected = new EventEmitter<string[]>();
 
   selected = [];

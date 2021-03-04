@@ -452,7 +452,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   private loadState(): boolean {
     if (this.stateService.state) {
       const {requestParams, mode, selectedFilters, concepts,
-        currentPage, pageCount, filters, movableIndexes} = this.stateService.state;
+        currentPage, pageCount, filters, movableIndexes, sort} = this.stateService.state;
       this.requestParams = requestParams;
       this.mode = mode;
       this.selectedFilters = selectedFilters;
@@ -461,6 +461,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       this.pageCount = pageCount;
       this.filters = filters;
       this.movableIndexes = movableIndexes;
+      this.sort = sort;
 
       this.updateChipsHeight();
 
@@ -480,7 +481,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
         currentPage: this.currentPage,
         pageCount: this.pageCount,
         filters: this.filters,
-        movableIndexes: this.movableIndexes
+        movableIndexes: this.movableIndexes,
+        sort: this.sort
       };
     }
   }
