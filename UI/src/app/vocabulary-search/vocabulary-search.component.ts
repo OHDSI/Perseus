@@ -74,6 +74,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   openedFilter: string;
 
+  oldSelectedFilters: string[] = []; // only names
   selectedFilters: FilterValue[] = [];
 
   chipsHeight = '';
@@ -121,7 +122,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   private request$ = new Subject<VocabSearchReqParams>();
 
-  private readonly chipHeight = 72;
+  private readonly chipHeight = 78;
 
   private readonly maxPageSize = 500;
 
@@ -171,28 +172,21 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   }
 
   @HostListener('document:keyup.enter')
-  onEnterClick() {
+  onEnterOrApply() {
     const changes = this.findChanges();
+    const filtersChanged = this.isFilterChanged();
 
     if (changes) {
       const {query, pageSize} = changes;
-      const updateFilters = this.requestParams.query !== query;
 
-      let checkedPageSize: number;
-      if (!pageSize || pageSize < 1) {
-        checkedPageSize = 1;
-      } else if (pageSize > this.maxPageSize) {
-        checkedPageSize = this.maxPageSize;
-      } else {
-        checkedPageSize = pageSize;
-      }
+      this.setPageSizeAndQuery(query, pageSize);
+    }
 
-      this.requestParams = {
-        ...this.requestParams,
-        pageSize: checkedPageSize,
-        query,
-        updateFilters
-      };
+    if (filtersChanged) {
+      this.setFilters();
+    }
+
+    if (changes || filtersChanged) {
       this.makeRequest(this.requestParams);
     }
   }
@@ -262,10 +256,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     );
     this.selectedFilters = [];
     this.updateChipsHeight();
-  }
-
-  onApply() {
-    this.setFiltersAndMakeRequest();
   }
 
   onModeChange(value: string) {
@@ -383,13 +373,22 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
           field: filterKey,
           color: filter.color as string,
           values: Object.keys(filterValue)
-            .map(valueKey => ({
-              name: valueKey,
-              filterIndex,
-              count: filterValue[valueKey] as number,
-              checked: this.selectedFilters.find(value => value.name === valueKey)?.checked,
-              disabled: (filterValue[valueKey] as number) === 0
-            }))
+            .map(valueKey => {
+              const oldFilterValue = this.filters[filterIndex]?.values.find(value => value.name === valueKey);
+
+              if (oldFilterValue) {
+                oldFilterValue.count = filterValue[valueKey] as number
+                return oldFilterValue;
+              } else {
+                return {
+                  name: valueKey,
+                  filterIndex,
+                  count: filterValue[valueKey] as number,
+                  checked: this.selectedFilters.find(value => value.name === valueKey)?.checked,
+                  disabled: (filterValue[valueKey] as number) === 0
+                }
+              }
+            })
         };
       })
   }
@@ -399,7 +398,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     this.chipsHeight = `${height}px`;
   }
 
-  private setFiltersAndMakeRequest() {
+  private setFilters() {
+    this.saveOldFilters();
+
     const getConcreteFiltersByIndex = index => this.selectedFilters
       .filter(filter => filter.filterIndex === index)
       .map(filter => filter.name);
@@ -413,8 +414,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       invalidReason: getConcreteFiltersByIndex(4),
       updateFilters: true
     };
-
-    this.makeRequest(this.requestParams);
   }
 
   private setPagesAndElementsCount(total: number, pageCount: number) {
@@ -485,5 +484,38 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
         sort: this.sort
       };
     }
+  }
+
+  private setPageSizeAndQuery(query: string, pageSize: number) {
+    const updateFilters = this.requestParams.query !== query;
+
+    let checkedPageSize: number;
+    if (!pageSize || pageSize < 1) {
+      checkedPageSize = 1;
+    } else if (pageSize > this.maxPageSize) {
+      checkedPageSize = this.maxPageSize;
+    } else {
+      checkedPageSize = pageSize;
+    }
+
+    this.requestParams = {
+      ...this.requestParams,
+      pageSize: checkedPageSize,
+      query,
+      updateFilters
+    };
+  }
+
+  private isFilterChanged() {
+    const equal = (oldFilters: string[], newFilters: FilterValue[]) =>
+      oldFilters.length === newFilters.length &&
+      oldFilters.every((name, index) => name === newFilters[index].name)
+
+    return !equal(this.oldSelectedFilters, this.selectedFilters);
+  }
+
+  private saveOldFilters() {
+    this.oldSelectedFilters = this.selectedFilters
+      .map(filter => filter.name);
   }
 }
