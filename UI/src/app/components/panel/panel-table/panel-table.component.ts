@@ -33,6 +33,9 @@ import * as fieldTypes from './similar-types.json';
 import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '../../../base/base.component';
+import * as conceptMap from './../../../components/concept-fileds-list.json';
+import { ConceptTransformationComponent } from '../../concept-transformation/concept-transformation.component';
+import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
 
 @Component({
   selector: 'app-panel-table',
@@ -52,6 +55,7 @@ export class PanelTableComponent extends BaseComponent
   @Input() table: ITable;
   @Input() tabIndex: any;
   @Input() oppositeTableId: any;
+  @Input() oppositeTableName: any;
   @Input() filtered: any;
   @Input() filteredFields: any;
   @Input() mappingConfig: any;
@@ -90,7 +94,7 @@ export class PanelTableComponent extends BaseComponent
   connectortype = {};
   expandedElement: any = undefined;
   groupDialogOpened = false;
-  cloneName = 'test';
+  conceptFieldNames = (conceptMap as any).default;
 
   constructor(
     private bridgeService: BridgeService,
@@ -167,6 +171,17 @@ export class PanelTableComponent extends BaseComponent
         this.filteredFields = res.filteredFields ? res.filteredFields[ this.table.name ] : res.filteredFields;
       }
     });
+  }
+  
+  isConstant(column: any) {
+    const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
+    const isConceptTable = this.conceptFieldNames[ this.table.name ] ? this.conceptFieldNames[ this.table.name ].includes(column.name) : undefined
+    if (concepts && isConceptTable) {
+      const conceptFieldType = getConceptFieldType(column.name);
+      return concepts.conceptsList.filter(item => item.fields[ conceptFieldType ].constantSelected &&
+        item.fields[ conceptFieldType ].constant).length
+    }
+    return column.hasConstant;
   }
 
   refreshPanel(event?: any) {
@@ -464,30 +479,53 @@ export class PanelTableComponent extends BaseComponent
 
   openConstantDialog(anchor: HTMLElement, row: IRow) {
     if (!this.isRowHasConnection(row)) {
-      const value = row.constant;
-      const mode = value ? 'view' : 'add';
-      const type = row.type;
-      const data = { value, mode, type };
-      const component = AddConstantPopupComponent;
-
-      const dialogOptions: OverlayConfigOptions = {
-        hasBackdrop: true,
-        backdropClass: 'custom-backdrop',
-        positionStrategyFor: `comments-${this._getArea()}`,
-        payload: data
-      };
-
-      const overlayRef = this.overlayService.open(
-        dialogOptions,
-        anchor,
-        component
-      );
-
-      overlayRef.afterClosed$.subscribe(ok => {
-        row.constant = data.value;
-        this.updateIncrementOrConstantFields(row, 'constant');
-      });
+      if (this.conceptFieldNames[ row.tableName ] &&
+        this.conceptFieldNames[ row.tableName ].includes(row.name)) {
+        this.openConceptDialog(row);
+      } else {
+        this.openNonConceptConstantDialog(anchor, row);
+      }
     }
+  }
+
+  openConceptDialog(row: IRow){
+    const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
+      closeOnNavigation: false,
+      disableClose: true,
+      panelClass: 'sql-editor-dialog-padding-15-width-650',
+      maxHeight: '100%',
+      data: {
+        arrowCache: this.bridgeService.arrowsCache,
+        row: row,
+        oppositeSourceTable: this.oppositeTableName ? this.oppositeTableName : 'similar'
+      }
+    });
+  }
+
+  openNonConceptConstantDialog(anchor: HTMLElement, row: IRow) {
+    const value = row.constant;
+    const mode = value ? 'view' : 'add';
+    const type = row.type;
+    const data = { value, mode, type };
+    const component = AddConstantPopupComponent;
+
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      positionStrategyFor: `comments-${this._getArea()}`,
+      payload: data
+    };
+
+    const overlayRef = this.overlayService.open(
+      dialogOptions,
+      anchor,
+      component
+    );
+
+    overlayRef.afterClosed$.subscribe(ok => {
+      row.constant = data.value;
+      this.updateIncrementOrConstantFields(row, 'constant');
+    });
   }
 
   selectIncrement(anchor: HTMLElement, row: IRow) {

@@ -13,7 +13,7 @@
    ],
    "measurement": [
       "measurement_concept_id",
-      "meausrement_source_value",
+      "measurement_source_value",
       "measurement_source_concept_id",
       "measurement_type_concept_id"
    ],
