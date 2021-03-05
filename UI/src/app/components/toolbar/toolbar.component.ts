@@ -15,6 +15,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '../../scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '../../base/base.component';
+import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -44,7 +45,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     private storeService: StoreService,
     private router: Router,
     private matDialog: MatDialog,
-    private dataService: DataService
+    private dataService: DataService,
+    private vocabularyObserverService: VocabularyObserverService
   ) {
     super();
   }
@@ -165,6 +167,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       height: '674',
       ...this.scanDataMatDialogSharedParams
     });
+  }
+
+  showVocabulary() {
+    this.vocabularyObserverService.show = true;
   }
 
   private initStreamsOfDisabledButtons() {

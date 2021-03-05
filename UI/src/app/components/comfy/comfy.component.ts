@@ -38,6 +38,7 @@ import * as cdmTypes from '../popups/open-cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 import { Observable } from 'rxjs/internal/Observable';
 import { BaseComponent } from '../../base/base.component';
+import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
 
 @Component({
   selector: 'app-comfy',
@@ -45,8 +46,17 @@ import { BaseComponent } from '../../base/base.component';
   styleUrls: [ './comfy.component.scss' ]
 })
 export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+
   get state() {
     return this.storeService.state;
+  }
+
+  get vocabularyBottom(): string {
+    return this.actionVisible ? '80px' : '0';
+  }
+
+  get actionVisible(): boolean {
+    return this.data.source?.length > 0 && this.data.target?.length > 0
   }
 
   constructor(
@@ -63,7 +73,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private matDialog: MatDialog,
     private commonService: CommonService,
     private element: ElementRef,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private vocabularyObserverService: VocabularyObserverService
   ) {
     super();
   }
@@ -82,7 +93,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   sourceFocusedElement;
   speed = 5;
   subs = new Subscription();
-  private animationFrame: number | undefined;
 
   reportLoading$: Observable<boolean>;
   mappingLoading$: Observable<boolean>;
@@ -100,6 +110,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       sourceColumns: undefined
     }
   };
+
+  isVocabularyVisible: boolean;
+
+  mappingHeight = '100%';
+  columnListHeight = '100%';
 
   @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
   @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
@@ -139,6 +154,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       }
     }
   });
+
+  private animationFrame: number | undefined;
 
   @HostListener('document:click', [ '$event' ])
   onClick(event) {
@@ -204,6 +221,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
     this.reportLoading$ = this.bridgeService.reportLoading$;
     this.mappingLoading$ = this.uploadService.mappingLoading$;
+
+    this.subscribeOnVocabularyOpening();
   }
 
   ngAfterViewInit() {
@@ -617,6 +636,34 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   onMappingUpload(event: Event) {
     this.uploadService.onMappingChange(event);
+  }
+
+  showVocabulary() {
+    this.isVocabularyVisible = !this.isVocabularyVisible;
+    this.setTableMappingAndColumnListHeights();
+    this.vocabularyObserverService.next({
+      value: this.isVocabularyVisible,
+      emit: false
+    })
+  }
+
+  private setTableMappingAndColumnListHeights() {
+    if (this.actionVisible) {
+      if (this.isVocabularyVisible) {
+        this.mappingHeight = 'calc(100% - 470px)';
+        this.columnListHeight = 'calc(100% - 420px)';
+      } else {
+        this.mappingHeight = '100%';
+        this.columnListHeight = '100%';
+      }
+    }
+  }
+
+  private subscribeOnVocabularyOpening() {
+    this.vocabularyObserverService.show$.subscribe(visible => {
+      this.isVocabularyVisible = visible;
+      this.setTableMappingAndColumnListHeights();
+    })
   }
 }
 

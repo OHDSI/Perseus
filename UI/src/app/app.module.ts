@@ -8,7 +8,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
 import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrump.component';
-import { MappingComponent } from 'src/app/components/pages/mapping/mapping.component';
+import { MappingComponent } from 'src/app/components/mapping/mapping.component';
 import { PanelModule } from 'src/app/components/panel/panel.module';
 import { CommentPopupComponent } from 'src/app/components/popups/comment-popup/comment-popup.component';
 import { DeleteWarningComponent } from 'src/app/components/popups/delete-warning/delete-warning.component';
@@ -68,6 +68,7 @@ import { ConceptTransformationComponent } from './components/concept-transformat
 import { SelectConceptFieldComponent } from './components/popups/select-concept-field/select-concept-field.component';
 import { ConceptColumnComponent } from './components/concept-transformation/concept-column/concept-column.component';
 import { VocabularySearchModule } from './vocabulary-search/vocabulary-search.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { VocabularySearchModule } from './vocabulary-search/vocabulary-search.mo
     CdmCommonModule,
     NgxMatSelectSearchModule,
     ScanDataModule,
-    VocabularySearchModule
+    VocabularySearchModule,
+    SharedModule
   ],
   exports: [
     CdmCommonModule

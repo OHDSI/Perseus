@@ -1,4 +1,4 @@
-<div class="vocabulary-search">
+<div class="vocabulary-search" [style.bottom]="bottom">
   <div class="vocabulary-search__side-panel">
     <h2 class="vocabulary-search__side-panel__header">
       Filters
@@ -30,7 +30,7 @@
 
     <div class="vocabulary-search__apply">
       <button class="clear" (click)="onClear()">Clear</button>
-      <button class="apply" (click)="onApply()">Apply</button>
+      <button class="apply" (click)="onEnterOrApply()">Apply</button>
     </div>
   </div>
 
@@ -148,5 +148,5 @@
     </div>
   </div>
 
-  <app-close-dialog-button class="vocabulary-search__close" (close)="onClose()"></app-close-dialog-button>
+  <app-close-dialog-button class="vocabulary-search__close" (click)="onClose()"></app-close-dialog-button>
 </div>
