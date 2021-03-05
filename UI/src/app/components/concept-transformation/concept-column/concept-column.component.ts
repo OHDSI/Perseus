@@ -28,7 +28,7 @@ export class ConceptColumnComponent implements OnInit {
   }
 
   set constant(cons: string) {
-    this.field.constant = `"${cons}"`;
+    this.field.constant = cons ? `'${cons}'` : '';
   }
 
   constructor(private overlayService: OverlayService) { }

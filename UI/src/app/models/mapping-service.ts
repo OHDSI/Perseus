@@ -231,7 +231,7 @@ export class MappingService {
         const constantObj = {
           source_field: '',
           concept_id: '',
-          sql_field: `"${row.constant}"`,
+          sql_field: `'${row.constant}'`,
           sql_alias: row.name,
           target_field: row.name,
           comments: row.comments,

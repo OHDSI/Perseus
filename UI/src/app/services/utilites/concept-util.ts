@@ -30,3 +30,11 @@ export function createConceptFields(conceptFields: any, clone?: string, conditio
   createConceptField(fields, 'type_concept_id', getConceptFieldNameByType('type_concept_id', conceptFields), clone, condition);
   return fields;
 }
+
+
+export function getConceptFieldType(fieldName: string) {
+  return fieldName.endsWith('type_concept_id') ? 'type_concept_id' :
+      fieldName.endsWith('source_concept_id') ? 'source_concept_id' :
+          fieldName.endsWith('source_value') ? 'source_value' :
+              'concept_id';
+}

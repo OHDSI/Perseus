@@ -273,7 +273,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           maxHeight: '100%',
           data: {
             arrowCache: this.bridgeService.arrowsCache,
-            arrow: arrow,
+            row: arrow.target,
             oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
           }
         });
@@ -649,6 +649,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   isMappingEmpty() {
     return Object.keys(this.bridgeService.arrowsCache).length === 0;
+  }
+
+  isTableMappingEmpty() {
+    return Object.values(this.bridgeService.arrowsCache)
+      .filter(item => item.source.tableName === this.currentSourceTable.name && item.target.tableName === this.currentTargetTable.name).length === 0;
   }
 
   deleteLinks() {

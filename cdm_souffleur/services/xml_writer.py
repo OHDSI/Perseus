@@ -463,7 +463,8 @@ def get_xml(json_):
                             lookup_source_to_source_included = lookup_name['sourceToSourceIncluded']
                         else:
                             lookup_source_to_source_included = ''
-                        lookup_name = lookup_name['name']
+                        if 'name' in lookup_name:
+                            lookup_name = lookup_name['name']
                     sql_transformation = row.get('sqlTransformation', None)
                     target_field = row.get('target_field', None)
                     concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else target_field
@@ -613,8 +614,8 @@ def apply_sql_transformation(sql_transformation, source_field, target_field, clo
                 sql_transformation,
             )
         else:
-            query_tag.text = query_tag.text.replace(f'{match_item},\n', '')
-            query_tag.text = query_tag.text.replace(f'{match_item}\n', '')
+            query_tag.text = query_tag.text.replace(f',\n{match_item},\n', ' ')
+            query_tag.text = query_tag.text.replace(f',\n{match_item}\n', ' ')
 
 def write_xml(tag, filename, result):
     xml = ElementTree(tag)

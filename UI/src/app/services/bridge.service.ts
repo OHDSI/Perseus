@@ -20,7 +20,7 @@ import { addGroupMappings, addViewsToMapping } from '../models/mapping-service';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFields from '../../app/components/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
-import { getConceptFieldNameByType} from 'src/app/services/utilites/concept-util';
+import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
 
 export interface IConnection {
   source: IRow;
@@ -179,7 +179,7 @@ export class BridgeService {
   });
 
   getDefaultClones(targetTableName: string) {
-    const cloneTables = this.storeService.state.targetClones[targetTableName];
+    const cloneTables = this.storeService.state.targetClones[ targetTableName ];
     if (cloneTables) {
       return cloneTables.filter(item => item.cloneName === 'Default');
     }
@@ -192,37 +192,37 @@ export class BridgeService {
         const targetcloneRow = item.rows.find(it => it.name === this.targetRow.name);
         const similarSourceRow = similarSourceRows.filter(it => it.tableName === targetcloneRow.cloneConnectedToSourceName);
         if (similarSourceRow.length) {
-          this.drawArrow(similarSourceRow[0], targetcloneRow, arrow.type);
+          this.drawArrow(similarSourceRow[ 0 ], targetcloneRow, arrow.type);
         }
       });
     }
   }
 
-  updateSimilarConcepts(arrow: any) {
+  updateSimilarConcepts(row: any) {
     const tablesWithSimilarLinks = uniq(Object.values(this.arrowsCache).
-      filter(this.sourceConnectedToSameTarget(arrow, false)).map(item => item.source.tableName))
+      filter(this.sourceConnectedToSameTarget(row, false)).map(item => item.source.tableName))
       .filter(item => item !== 'similar');
 
     let defaultClonesConnectedToNames = [];
-    const defaultClonesConnectedTo = this.getDefaultClones(arrow.target.tableName);
+    const defaultClonesConnectedTo = this.getDefaultClones(row.tableName);
     if (defaultClonesConnectedTo) {
       defaultClonesConnectedToNames = defaultClonesConnectedTo.map(it => it.cloneConnectedToSourceName);
     }
-    const conceptFields = this.conceptFieldNames[ arrow.target.tableName ];
+    const conceptFields = this.conceptFieldNames[ row.tableName ];
     const conceptFieldsDictionary = this.getConceptFieldsDictionary(conceptFields);
 
     tablesWithSimilarLinks.forEach(item => {
-      const conceptsCopy = cloneDeep(this.storeService.state.concepts[ `${arrow.target.tableName}|similar` ]);
+      const conceptsCopy = cloneDeep(this.storeService.state.concepts[ `${row.tableName}|similar` ]);
       let linksToConceptFields = Object.values(this.arrowsCache)
-        .filter(it => it.source.tableName === item && it.target.tableName === arrow.target.tableName && conceptFields.includes(it.target.name));
+        .filter(it => it.source.tableName === item && it.target.tableName === row.tableName && conceptFields.includes(it.target.name));
 
       if (!defaultClonesConnectedToNames.includes(item)) {
         this.removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
-        this.storeService.state.concepts[ `${arrow.target.tableName}|${item}` ] = conceptsCopy;
+        this.storeService.state.concepts[ `${row.tableName}|${item}` ] = conceptsCopy;
       } else {
         linksToConceptFields = linksToConceptFields.filter(it => it.target.cloneTableName === 'Default');
         this.removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
-        const concepts = this.storeService.state.concepts[ `${arrow.target.tableName}|${item}` ];
+        const concepts = this.storeService.state.concepts[ `${row.tableName}|${item}` ];
         concepts.conceptsList = concepts.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName !== 'Default');
 
         conceptsCopy.conceptsList.forEach(it => {
@@ -243,10 +243,10 @@ export class BridgeService {
   removeDeletedLinksFromFields(conceptsCopy: any, linksToConceptFields: any, conceptFieldsDictionary: any) {
     conceptsCopy.conceptsList.forEach(conc => {
       Object.keys(conc.fields).forEach(type => {
-        const sourceField = conc.fields[type].field;
-        const linkExists = linksToConceptFields.filter(it => it.target.name === conceptFieldsDictionary[type] && it.source.name === sourceField);
+        const sourceField = conc.fields[ type ].field;
+        const linkExists = linksToConceptFields.filter(it => it.target.name === conceptFieldsDictionary[ type ] && it.source.name === sourceField);
         if (sourceField && !linkExists.length) {
-          conc.fields[type].field = '';
+          conc.fields[ type ].field = '';
         }
       })
     })
@@ -255,7 +255,7 @@ export class BridgeService {
   getConceptFieldsDictionary(conceptFields: any) {
     const conceptFieldsDictionary = {};
     conceptFieldsTypes.forEach(it => {
-      conceptFieldsDictionary[it] = getConceptFieldNameByType(it, conceptFields);
+      conceptFieldsDictionary[ it ] = getConceptFieldNameByType(it, conceptFields);
     })
     return conceptFieldsDictionary;
   }
@@ -470,16 +470,19 @@ export class BridgeService {
     if (this.arrowsCache[ key ]) {
       delete this.arrowsCache[ key ];
     }
+    this.deleteConceptFields(connection)
 
+    this.removeConnection.next(connection);
+  }
+
+  deleteConceptFields(connection) {
     if (connection) {
-      if (Object.values(this.conceptFieldNames)
-        .filter(item => (item as any).includes(connection.target.name)).length) {
-        const conceptService = new ConceptTransformationService(connection, this.storeService.state.concepts, this.arrowsCache);
+      if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
+        const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
+          this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
         conceptService.deleteFieldsFromConcepts();
       }
     }
-
-    this.removeConnection.next(connection);
   }
 
   deleteArrowsForMapping(targetTableName: string, sourceTableName: string, tableCloneName?: string) {
@@ -493,6 +496,7 @@ export class BridgeService {
       const cache = this.arrowsCache[ key ];
       const { target: { tableName: cachedTargetTableName, cloneTableName: clone }, source: { tableName: cachedSourceTableName } } = cache;
       if (deleteCondition(cachedTargetTableName, cachedSourceTableName, clone)) {
+        this.deleteConceptFields(this.arrowsCache[ key ]);
         delete this.arrowsCache[ key ];
         // If target and source are switched
       } else if (
@@ -534,35 +538,36 @@ export class BridgeService {
   }
 
   updateConcepts(connection: any) {
-    if (Object.values(this.conceptFieldNames).filter(item => (item as any).includes(connection.target.name)).length) {
-      const conceptService = new ConceptTransformationService(connection, this.storeService.state.concepts, this.arrowsCache);
+    if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
+      const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
+        this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
       conceptService.addFieldToConcepts();
-   }
+    }
   }
 
-  sourceConnectedToSameTarget(value: IConnection, draw: boolean) {
+  sourceConnectedToSameTarget(row: IRow, draw: boolean) {
     return (item: IConnection) => {
-      const tableName = value.connector.target.tableName.toUpperCase();
-      return item.connector.target.name.toUpperCase() === value.connector.target.name.toUpperCase() &&
+      const tableName = row.tableName.toUpperCase();
+      return item.connector.target.name.toUpperCase() === row.name.toUpperCase() &&
         item.connector.target.tableName.toUpperCase() === tableName &&
-        item.connector.target.cloneTableName === value.connector.target.cloneTableName;
+        item.connector.target.cloneTableName === row.cloneTableName;
     };
   }
 
   sourceConnectedToSameTargetByName(rowName: string, row: any, sourceTable: string) {
     return (item: IConnection) => {
       return item.connector.target.name.toUpperCase() === rowName.toUpperCase() &&
-        item.connector.target.tableName.toUpperCase() === row.target.tableName.toUpperCase() &&
-        item.connector.target.cloneTableName === row.target.cloneTableName &&
+        item.connector.target.tableName.toUpperCase() === row.tableName.toUpperCase() &&
+        item.connector.target.cloneTableName === row.cloneTableName &&
         item.connector.source.tableName.toUpperCase() === sourceTable.toUpperCase();
     };
   }
 
   copyTransformations(arrow: any, cloneTable?: any) {
     const arrowWithSameTarget = cloneTable ? Object.values(this.arrowsCache).
-    filter(item => item.target.tableName === cloneTable.name &&
-      item.target.cloneTableName === cloneTable.cloneName && item.target.name === arrow.target.name)[ 0 ] :
-    Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow, true))[ 0 ];
+      filter(item => item.target.tableName === cloneTable.name &&
+        item.target.cloneTableName === cloneTable.cloneName && item.target.name === arrow.target.name)[ 0 ] :
+      Object.values(this.arrowsCache).filter(this.sourceConnectedToSameTarget(arrow.connector.target, true))[ 0 ];
 
     if (arrowWithSameTarget.connector.id !== arrow.connector.id) {
       if (arrowWithSameTarget.lookup) { arrow.lookup = arrowWithSameTarget.lookup; }
@@ -741,7 +746,7 @@ export class BridgeService {
 
   updateConnectedRows(arrow: IConnection) {
     let connectedToSameTraget = Object.values(this.arrowsCache).
-      filter(this.sourceConnectedToSameTarget(arrow, false));
+      filter(this.sourceConnectedToSameTarget(arrow.connector.target, false));
     if (arrow.connector.target.tableName.toUpperCase() === 'SIMILAR') {
       let similarLinks = [];
       connectedToSameTraget.forEach(item => {
@@ -752,8 +757,8 @@ export class BridgeService {
       similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[ item ]));
     }
     connectedToSameTraget.forEach(item => { item.lookup = { ...arrow.lookup }; item.sql = { ...arrow.sql }; });
-    const applyedL = arrow.lookup ? !!arrow.lookup['applied'] : false;
-    const applyedT = arrow.sql ? !!arrow.sql['applied'] : false;
+    const applyedL = arrow.lookup ? !!arrow.lookup[ 'applied' ] : false;
+    const applyedT = arrow.sql ? !!arrow.sql[ 'applied' ] : false;
     const appliedTransformations = applyedL && applyedT ? 'M' : applyedL || applyedT ? applyedL ? 'L' : 'T' : 'None';
     connectedToSameTraget.forEach(item => {
       this.setArrowType(item.connector.id, appliedTransformations);

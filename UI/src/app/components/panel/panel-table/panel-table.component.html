@@ -10,7 +10,7 @@
                 *ngIf="area === 'target' && !column.uniqueIdentifier"
                 (click)="openConstantDialog(anchor, column)">
           <div class="constant-increment-icon"
-               [ngClass]="{ active: column.hasConstant }">C</div>
+               [ngClass]="{ active: isConstant(column) }">C</div>
         </button>
         <button mat-icon-button
                 *ngIf="area === 'target' && column.uniqueIdentifier"
