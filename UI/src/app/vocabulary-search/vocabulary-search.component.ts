@@ -377,7 +377,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
               const oldFilterValue = this.filters[filterIndex]?.values.find(value => value.name === valueKey);
 
               if (oldFilterValue) {
-                oldFilterValue.count = filterValue[valueKey] as number
+                oldFilterValue.count = filterValue[valueKey] as number;
+                oldFilterValue.disabled = oldFilterValue.count === 0;
                 return oldFilterValue;
               } else {
                 return {
