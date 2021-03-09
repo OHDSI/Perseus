@@ -33,7 +33,6 @@ def get_concepts_list(query, page_size, page, filters, sort, order):
             filter_queries[key] = apply_query(query, filter_queries[key])
 
     concepts_query = add_filters(concepts_query, filters)
-    count_query = add_filters(count_query, filters)
     concepts_query = concepts_query.paginate((page - 1)*page_size+1, page*page_size)
 
     if sort:
