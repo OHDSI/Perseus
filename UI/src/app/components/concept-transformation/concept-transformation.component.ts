@@ -12,7 +12,7 @@ import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
 import { BaseComponent } from '../../base/base.component';
-import { createConceptFields } from 'src/app/services/utilites/concept-util';
+import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/services/utilites/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
 
 @Component({
@@ -144,7 +144,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       fields
     };
     this.conceptsTable.conceptsList.push(new Concept(conceptOptions));
-    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList);
+    this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList
+      .filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
   }
 
   removeConcept(row: any) {
@@ -157,6 +158,12 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   add() {
+    this.removeSelection();
+
+    this.conceptsTable.conceptsList = updateConceptsList(this.conceptsTable.conceptsList);
+    updateConceptsIndexes(this.conceptsTable.conceptsList);
+    this.bridgeService.updateConceptArrowTypes(this.targetTableName, this.payload.oppositeSourceTable, this.targetCloneName) 
+
     this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable;
 
     if (this.payload.oppositeSourceTable === 'similar') {
@@ -168,7 +175,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.updateLookupValue(this.lookupComponent.updatedSourceToStandard, 'source_to_standard');
       this.updateLookupValue(this.lookupComponent.updatedSourceToSource, 'source_to_source');
     }
-    this.removeSelection();
     this.dialogRef.close();
   }
 

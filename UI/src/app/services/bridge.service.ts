@@ -219,6 +219,7 @@ export class BridgeService {
       if (!defaultClonesConnectedToNames.includes(item)) {
         this.removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
         this.storeService.state.concepts[ `${row.tableName}|${item}` ] = conceptsCopy;
+        this.updateConceptArrowTypes(row.tableName, item, row.cloneTableName);
       } else {
         linksToConceptFields = linksToConceptFields.filter(it => it.target.cloneTableName === 'Default');
         this.removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
@@ -236,6 +237,7 @@ export class BridgeService {
           it.id = index;
         })
         concepts.lookup = conceptsCopy.lookup;
+        this.updateConceptArrowTypes(row.tableName, item, 'Default');
       }
     })
   }
@@ -481,7 +483,22 @@ export class BridgeService {
         const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
           this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
         conceptService.deleteFieldsFromConcepts();
+        this.updateConceptArrowTypes(connection.target.tableName, connection.source.tableName, connection.target.cloneTableName, )
       }
+    }
+  }
+
+  updateConceptArrowTypes(targetTable: string, sourceTable: string, cloneName: string) {
+    const concepts = this.storeService.state.concepts[ `${targetTable}|${sourceTable}` ].conceptsList
+      .filter(item => item.fields[ 'concept_id' ].targetCloneName === cloneName);
+
+    const arrows = Object.values(this.arrowsCache).filter(item => item.source.tableName === sourceTable &&
+      item.target.tableName === targetTable && item.target.cloneTableName === cloneName);
+
+    if (!concepts.length) {
+      arrows.forEach(item => this.setArrowType(item.connector.id, 'None'));
+    } else {
+      arrows.forEach(item => this.setArrowType(item.connector.id, 'concept'));
     }
   }
 
@@ -542,6 +559,7 @@ export class BridgeService {
       const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
         this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
       conceptService.addFieldToConcepts();
+      this.setArrowType(connection.connector.id, 'concept');
     }
   }
 

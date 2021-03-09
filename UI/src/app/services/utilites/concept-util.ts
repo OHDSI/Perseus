@@ -1,3 +1,5 @@
+import { Concept } from "src/app/components/concept-transformation/model/concept";
+
 export function getConceptFieldNameByType(columnType: string, connectedToConceptFields: any) {
   let names = connectedToConceptFields.filter(it => it.endsWith(columnType));
   if (columnType === 'concept_id') {
@@ -38,3 +40,22 @@ export function getConceptFieldType(fieldName: string) {
           fieldName.endsWith('source_value') ? 'source_value' :
               'concept_id';
 }
+
+
+export function updateConceptsList(conceptsList: Concept[]) {
+  return conceptsList.filter(conc => conceptFieldHasAnyValue(conc, 'concept_id') ||
+      conceptFieldHasAnyValue(conc, 'source_value') ||
+      conceptFieldHasAnyValue(conc, 'type_concept_id') ||
+      conceptFieldHasAnyValue(conc, 'source_concept_id'))
+}
+
+export function conceptFieldHasAnyValue(conc: Concept, fieldType: string) {
+  return !!conc.fields[ fieldType ].field || !!conc.fields[ fieldType ].constant;
+}
+
+export function updateConceptsIndexes(concepts: Concept[]) {
+  concepts.forEach((conc, index) => {
+    conc.id = index;
+  });
+}
+
