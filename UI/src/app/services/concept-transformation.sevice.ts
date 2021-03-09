@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { Concept, IConceptOptions, ITableConceptsOptions, TableConcepts } from '../components/concept-transformation/model/concept';
 import { cloneDeep } from '../infrastructure/utility';
 import * as conceptMap from './../components/concept-fileds-list.json';
-import { createConceptFields, getConceptFieldType } from 'src/app/services/utilites/concept-util';
+import { createConceptFields, getConceptFieldType, updateConceptsIndexes, updateConceptsList } from 'src/app/services/utilites/concept-util';
+import { Arrow } from '../models/arrow';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConceptTransformationService {
 
-    arrow;
+    arrow: Arrow;
     targetTableName;
     conceptFields;
     targetCloneName;
@@ -22,7 +23,7 @@ export class ConceptTransformationService {
 
     connectedToConceptFields = {};
 
-    constructor(targetTableName: any, oppositeSourceTable: any, concepts: any, arrow?: any, cloneTableName?: any, condition?: any, arrowsCache?: any) {
+    constructor(targetTableName: any, oppositeSourceTable: any, concepts: any, arrow?: Arrow, cloneTableName?: any, condition?: any, arrowsCache?: any) {
         this.arrow = arrow;
         this.targetTableName = targetTableName;
         this.conceptFields = this.conceptFieldsMap[ this.targetTableName ];
@@ -120,14 +121,14 @@ export class ConceptTransformationService {
 
         connectedFields.forEach(item => {
             conceptsList.forEach(conc => {
-
                 if (conc.fields[ fieldType ].targetCloneName === this.targetCloneName && conc.fields[ fieldType ].field === item.source.name) {
                     conc.fields[ fieldType ].field = '';
                     conc.fields[ fieldType ].constantSelected = true;
                 }
             });
         });
-
+        this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList = updateConceptsList(conceptsList);
+        updateConceptsIndexes(this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList);
     }
 
 }
