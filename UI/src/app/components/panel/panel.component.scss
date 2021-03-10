@@ -10,6 +10,10 @@
   display: flex;
 }
 
+.min-height-25{
+  min-height: 25px;
+}
+
 .flex-div-align-center {
   @extend .flex-div;
   align-items: center;
