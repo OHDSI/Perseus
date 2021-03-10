@@ -251,11 +251,16 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   }
 
   onClear() {
-    this.selectedFilters.forEach(filter =>
-      filter.checked = false
-    );
-    this.selectedFilters = [];
-    this.updateChipsHeight();
+    if (this.selectedFilters.length > 0) {
+      this.selectedFilters.forEach(filter =>
+        filter.checked = false
+      );
+      this.selectedFilters = [];
+      this.updateChipsHeight();
+
+      this.setFilters();
+      this.makeRequest(this.requestParams);
+    }
   }
 
   onModeChange(value: string) {

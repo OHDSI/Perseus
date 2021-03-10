@@ -35,6 +35,12 @@ export class DqdConsoleComponent extends AbstractScanDataConsoleComponent {
       case ProgressNotificationStatusCode.FINISHED: {
         this.progressValue = 100;
         this.getResult();
+        break;
+      }
+      case ProgressNotificationStatusCode.FAILED: {
+        this.progressValue = 0;
+        this.websocketService.disconnect();
+        break;
       }
     }
   }
