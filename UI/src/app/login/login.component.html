@@ -20,7 +20,7 @@
       </div>
 
       <div class="login__form__submit">
-        <button type="submit" [disabled]="form.invalid">Login</button>
+        <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Login</button>
       </div>
     </div>
   </form>

@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { parseHtmlError } from '../services/utilites/error';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,9 @@ export class LoginComponent implements OnInit {
     this.loading = true
     const user: User = this.form.value
     this.authService.login(user.login, user.password)
+      .pipe(
+        delay(2000)
+      )
       .subscribe(() =>
         this.router.navigate(['/cdm']),
         error => {
