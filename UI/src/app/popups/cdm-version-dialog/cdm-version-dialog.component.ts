@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { DataService } from '../../services/data.service';
-import { SavedMappingsComponent } from '../saved-mappings/saved-mappings.component';
 import { StoreService } from 'src/app/services/store.service';
 
 @Component({
@@ -11,7 +10,6 @@ import { StoreService } from 'src/app/services/store.service';
   styleUrls: ['./cdm-version-dialog.component.scss']
 })
 export class CdmVersionDialogComponent implements OnInit {
-  @ViewChild(SavedMappingsComponent, { static: true }) controller: SavedMappingsComponent;
   @ViewChild('version', { static: true }) versionElement: MatSelect;
   versions = [];
   selectedVersion;

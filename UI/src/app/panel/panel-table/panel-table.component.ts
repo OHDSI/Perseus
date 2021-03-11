@@ -33,8 +33,8 @@ import * as fieldTypes from './similar-types.json';
 import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '../../base/base.component';
-import * as conceptMap from '../../mapping/concept-fileds-list.json';
-import { ConceptTransformationComponent } from '../../mapping/concept-transformation/concept-transformation.component';
+import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
+import { ConceptTransformationComponent } from '../../cdm/mapping/concept-transformation/concept-transformation.component';
 import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
 
 @Component({

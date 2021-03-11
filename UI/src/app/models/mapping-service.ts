@@ -5,8 +5,8 @@ import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
 import { getLookupType } from '../services/utilites/lookup-util';
-import * as conceptMap from '../mapping/concept-fileds-list.json'
-import { IConcept, ITableConcepts } from '../mapping/concept-transformation/model/concept';
+import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
+import { IConcept, ITableConcepts } from '../cdm/mapping/concept-transformation/model/concept';
 import { conceptFieldsTypes } from '../app.constants';
 
 export class MappingService {

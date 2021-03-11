@@ -1,7 +1,7 @@
 import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
 import { extractHtmlElement } from '../services/utilites/html-utilities';
-import { ConnectorType, IConnector } from './interface/connector.interface';
+import { ConnectorType, IConnector } from './connector.interface';
 import { ElementRef, EventEmitter, Renderer2 } from '@angular/core';
 
 // TODO Hide properties with WeakMap

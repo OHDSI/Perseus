@@ -47,6 +47,11 @@
               "node_modules/prismjs/themes/prism-okaidia.css",
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles"
+              ]
+            },
             "scripts": [
               "node_modules/hammerjs/hammer.js"
             ],

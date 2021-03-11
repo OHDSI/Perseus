@@ -22,13 +22,13 @@ export class BreadcrumbComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
-    this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);
+    this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.firstChild);
   }
 
   ngOnInit() {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd), distinctUntilChanged())
       .subscribe(() => {
-        this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root, '', this.breadcrumbs);
+        this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute, this.router.url, this.breadcrumbs);
       });
   }
 
@@ -53,8 +53,9 @@ export class BreadcrumbComponent implements OnInit {
     }
     const newBreadcrumbs = breadcrumb.label ? [ ...breadcrumbs, breadcrumb ] : [ ...breadcrumbs];
     if (route.firstChild) {
-        return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);
+        return this.buildBreadCrumb(route.firstChild, this.router.url, newBreadcrumbs);
     }
+
     return newBreadcrumbs;
   }
 }

@@ -7,7 +7,6 @@ import { DeleteWarningComponent } from './delete-warning/delete-warning.componen
 import { ErrorPopupComponent } from './error-popup/error-popup.component';
 import { OnBoardingComponent } from './on-boarding/on-boarding.component';
 import { CdmFilterComponent } from './cdm-filter/cdm-filter.component';
-import { OpenMappingDialogComponent } from './open-mapping-dialog/open-mapping-dialog.component';
 import { OpenSaveDialogComponent } from './open-save-dialog/open-save-dialog.component';
 import { PreviewPopupComponent } from './preview-popup/preview-popup.component';
 import { PrismComponent } from './preview-popup/prism.component';
@@ -21,7 +20,6 @@ import { CdmCommonModule } from '../common/cdm-common.module';
 import { TransformationTypeComponent } from './transformation-type/transformation-type.component';
 import { SqlFunctionsInjector } from './rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-string-functions';
-import { SavedMappingsComponent } from './saved-mappings/saved-mappings.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +30,6 @@ import { SavedMappingsComponent } from './saved-mappings/saved-mappings.componen
     ErrorPopupComponent,
     OnBoardingComponent,
     CdmFilterComponent,
-    OpenMappingDialogComponent,
     OpenSaveDialogComponent,
     PreviewPopupComponent,
     PrismComponent,
@@ -42,8 +39,7 @@ import { SavedMappingsComponent } from './saved-mappings/saved-mappings.componen
     SelectConceptFieldComponent,
     SelectTableDropdownComponent,
     SetConnectionTypePopupComponent,
-    TransformationTypeComponent,
-    SavedMappingsComponent
+    TransformationTypeComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +53,6 @@ import { SavedMappingsComponent } from './saved-mappings/saved-mappings.componen
     ErrorPopupComponent,
     OnBoardingComponent,
     CdmFilterComponent,
-    OpenMappingDialogComponent,
     OpenSaveDialogComponent,
     PreviewPopupComponent,
     PrismComponent,
@@ -67,8 +62,7 @@ import { SavedMappingsComponent } from './saved-mappings/saved-mappings.componen
     SelectConceptFieldComponent,
     SelectTableDropdownComponent,
     SetConnectionTypePopupComponent,
-    TransformationTypeComponent,
-    SavedMappingsComponent
+    TransformationTypeComponent
   ],
   providers: [
     { provide: SqlFunctionsInjector, useValue: SQL_FUNCTIONS }

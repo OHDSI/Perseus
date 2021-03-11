@@ -29,7 +29,7 @@ import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-b
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
-    NgxMatSelectSearchModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class CdmCommonModule { }

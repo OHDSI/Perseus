@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
 import { SqlFunction } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
-import { TransformationConfig } from '../mapping/vocabulary-transform-configurator/model/transformation-config';
+import { TransformationConfig } from '../cdm/mapping/vocabulary-transform-configurator/model/transformation-config';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
 import { Configuration } from '../models/configuration';
-import { IConnector } from '../models/interface/connector.interface';
+import { IConnector } from '../models/connector.interface';
 import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '../models/mapping-service';
 import { ITable, Table } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import * as similarNamesMap from '../mapping/similar-names-map.json';
+import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
-import * as conceptFields from '../mapping/concept-fileds-list.json';
+import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
 import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
 
@@ -122,7 +121,7 @@ export class BridgeService {
 
   tables = {};
 
-  conceptFieldNames = (conceptFields as any).default;
+  conceptFieldNames = (conceptFieldsFromJson as any).default;
 
   connect = new Command({
     execute: (mappingConfig) => {

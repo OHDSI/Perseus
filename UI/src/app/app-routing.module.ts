@@ -1,11 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './login/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: `login`,
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: 'cdm',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./cdm/cdm.module')
+      .then(module => module.CdmModule),
   },
   {
     path: 'login',
@@ -13,14 +20,8 @@ const routes: Routes = [
       .then(module => module.LoginModule)
   },
   {
-    path: `comfy`,
-    loadChildren: () => import('./comfy/comfy.module')
-      .then(module => module.ComfyModule)
-  },
-  {
-    path: `mapping`,
-    loadChildren: () => import('./mapping/mapping.module')
-      .then(module => module.MappingModule)
+    path: '**',
+    redirectTo: 'login'
   }
 ];
 

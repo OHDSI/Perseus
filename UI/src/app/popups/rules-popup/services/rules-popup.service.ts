@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class RulesPopupService {
   get deleteConnector$(): Observable<string> {
     return this.deleteSubject.asObservable();
