@@ -1,24 +1,26 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
-import { ComfyComponent } from './components/comfy/comfy.component';
-import { MappingComponent } from './components/mapping/mapping.component';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: `/comfy`,
+    redirectTo: `login`,
     pathMatch: 'full'
   },
   {
+    path: 'login',
+    loadChildren: () => import('./login/login.module')
+      .then(module => module.LoginModule)
+  },
+  {
     path: `comfy`,
-    component: ComfyComponent,
-    data: { breadcrumb: 'Link Tables' },
+    loadChildren: () => import('./comfy/comfy.module')
+      .then(module => module.ComfyModule)
   },
   {
     path: `mapping`,
-    component: MappingComponent,
-    data: { breadcrumb: 'Link Fields' }
+    loadChildren: () => import('./mapping/mapping.module')
+      .then(module => module.MappingModule)
   }
 ];
 

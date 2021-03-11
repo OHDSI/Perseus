@@ -1,12 +1,12 @@
-import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { fromEvent } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { BridgeService } from './services/bridge.service';
+import { BaseComponent } from './base/base.component';
 
 const ICON_NAMES = [
   'CDM_version',
@@ -37,56 +37,41 @@ const ICON_NAMES = [
   templateUrl: './app.component.html',
   styleUrls: [ './app.component.scss' ]
 })
-export class AppComponent implements OnDestroy, OnInit {
-  mobileQuery: MediaQueryList;
-  currentUrl;
-  private readonly mobileQueryListener: () => void;
+export class AppComponent extends BaseComponent implements OnInit {
 
   constructor(
-    cd: ChangeDetectorRef,
-    media: MediaMatcher,
     private bridgeService: BridgeService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private router: Router
   ) {
-    this.addIcons();
-
-    this.mobileQueryListener = () => cd.detectChanges();
-
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this.mobileQuery.addListener(this.mobileQueryListener);
-
-    const windowResizedSubscription = fromEvent(window, 'resize')
-      .pipe(
-        debounceTime(50),
-        map((event: any) => event.target)
-      )
-      .subscribe(window => {
-        this.bridgeService.refreshAll();
-      });
-
-    this.router.events.subscribe((res) => this.currentUrl = this.router.url.replace('/', ''));
+    super();
   }
 
   ngOnInit() {
-    window.addEventListener('beforeunload', event => {
-      event.preventDefault();
-      event.returnValue = false;
-    });
+    this.addIcons();
+
+    this.subscribeOnResize();
   }
 
-  ngOnDestroy(): void {
-    this.mobileQuery.removeListener(this.mobileQueryListener);
-  }
-
-  addIcons() {
+  private addIcons() {
     ICON_NAMES.forEach(key => {
       this.matIconRegistry.addSvgIcon(
         key,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`./assets/icons/${key}.svg`)
       );
     });
+  }
+
+  private subscribeOnResize() {
+    fromEvent(window, 'resize')
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        debounceTime(50)
+      )
+      .subscribe(() => {
+        this.bridgeService.refreshAll();
+      });
   }
 }
 

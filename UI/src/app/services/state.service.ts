@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ITable} from '../models/table';
-import { ConceptService } from '../components/comfy/services/concept.service';
+import { ITable } from '../models/table';
+import { ConceptService } from '../comfy/services/concept.service';
 
 export interface IState {
   source: StateItem;

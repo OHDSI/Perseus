@@ -1,12 +1,12 @@
 import { ArrowCache, ConstantCache } from './arrow-cache';
 import { groupBy } from '../infrastructure/utility';
-import { MappingPair, MappingNode, Mapping } from './mapping';
+import { Mapping, MappingNode, MappingPair } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
 import { getLookupType } from '../services/utilites/lookup-util';
-import * as conceptMap from './../components/concept-fileds-list.json'
-import { IConcept, ITableConcepts } from '../components/concept-transformation/model/concept';
+import * as conceptMap from '../mapping/concept-fileds-list.json'
+import { IConcept, ITableConcepts } from '../mapping/concept-transformation/model/concept';
 import { conceptFieldsTypes } from '../app.constants';
 
 export class MappingService {
@@ -130,7 +130,7 @@ export class MappingService {
       if (!this.sourceTableName || this.sourceTableName === conceptSourceTable && this.targetTableName === conceptTargetTable) {
         let cloneExists = false;
         if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length) {
-          const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName == conceptSourceTable);
+          const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName === conceptSourceTable);
           cloneExists = !!existingClones.length;
         }
         if (this.concepts[ key ]) {
@@ -164,16 +164,15 @@ export class MappingService {
   }
 
   createConceptConstantNode(concept: IConcept, fieldType: string) {
-    const constantObj = {
+    return {
       concept_id: concept.id,
       source_field: '',
-      sql_field: concept.fields[ fieldType ].constant,
-      sql_alias: concept.fields[ fieldType ].targetFieldName,
-      target_field: concept.fields[ fieldType ].targetFieldName,
-      comments: concept.fields[ fieldType ].comments,
-      targetCloneName: concept.fields[ fieldType ].targetCloneName ? concept.fields[ fieldType ].targetCloneName : ''
+      sql_field: concept.fields[fieldType].constant,
+      sql_alias: concept.fields[fieldType].targetFieldName,
+      target_field: concept.fields[fieldType].targetFieldName,
+      comments: concept.fields[fieldType].comments,
+      targetCloneName: concept.fields[fieldType].targetCloneName ? concept.fields[fieldType].targetCloneName : ''
     };
-    return constantObj;
   }
 
   createConceptMappingNode(concept: IConcept, fieldType: string, lookup: any) {

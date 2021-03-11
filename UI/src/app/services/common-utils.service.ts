@@ -2,23 +2,22 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
 import { OpenMappingDialog } from '../app.component';
-import { CdmVersionDialogComponent } from '../components/popups/cdm-version-dialog/cdm-version-dialog.component';
-import { DeleteWarningComponent } from '../components/popups/delete-warning/delete-warning.component';
-import { OnBoardingComponent } from '../components/popups/on-boarding/on-boarding.component';
-import { OpenMappingDialogComponent } from '../components/popups/open-mapping-dialog/open-mapping-dialog.component';
-import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
-import { ResetWarningComponent } from '../components/popups/reset-warning/reset-warning.component';
+import { CdmVersionDialogComponent } from '../popups/cdm-version-dialog/cdm-version-dialog.component';
+import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
+import { OnBoardingComponent } from '../popups/on-boarding/on-boarding.component';
+import { OpenMappingDialogComponent } from '../popups/open-mapping-dialog/open-mapping-dialog.component';
+import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-dialog.component';
+import { ResetWarningComponent } from '../popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
 import { ConfigurationService } from './configuration.service';
 import { DataService } from './data.service';
 import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
-import { UploadService } from './upload.service';
 
 @Injectable({
   providedIn: 'root'

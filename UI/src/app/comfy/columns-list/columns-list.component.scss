@@ -1,0 +1,86 @@
+@import '../../../../node_modules/@angular/material/theming';
+@import "../../styles/variables";
+
+.selected {
+  direction: ltr;
+  font-size: smaller;
+  position: absolute;
+  display: block;
+  width: 200px;
+  top: 95px;
+  left: 75px;
+
+  span {
+    color: $cdm-grey;
+  }
+
+  a {
+    margin-left: 32px;
+  }
+}
+
+.data-item {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  padding: 10px 15px 5px;
+  font-size: larger;
+  align-items: center;
+
+  .mat-icon {
+    font-size: 15px;
+    height: 16px;
+    &.checked {
+      display: none;
+    }
+  }
+  span {
+    font-weight: bolder;
+  }
+}
+
+.data-item-caption {
+  position: relative;
+  width: 292px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: $cdm-grey-lighter;
+  border: 1px solid $cdm-grey-lighter;
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
+}
+
+mat-list-item.mat-list-item {
+  direction: ltr;
+  width: 292px;
+
+  & + & {
+    margin-top: 7px;
+  }
+}
+
+.virtual-scroll-container {
+  overflow-x: hidden;
+  top: -1px;
+}
+
+[highlighted="true"] {
+  @include mat-elevation-transition;
+  background-color: $cdm-blue-lightest;
+  border-color: $cdm-blue;
+  border-radius: 2px;
+  .mat-icon.checked {
+    display: block;
+  }
+}
+
+.rotate{
+  transform: rotate(270deg) !important;
+  text-align: center;
+  font-size: 14px !important;
+}
+
+.source-columns-list {
+  height: 100%;
+}

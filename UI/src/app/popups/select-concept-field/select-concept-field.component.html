@@ -1,0 +1,10 @@
+<div class="tables-select">
+  <mat-selection-list [multiple]="false"
+                      (selectionChange)="onSelectionChange($event.option.value)">
+    <mat-list-option class="table-select-option"
+                     [class.active]="field === payload.selected"
+                     *ngFor="let field of payload.fields"
+                     [value]="field">{{field}}
+    </mat-list-option>
+  </mat-selection-list>
+</div>
