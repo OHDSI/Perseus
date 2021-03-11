@@ -4,7 +4,7 @@ import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs/internal/Observable';
-import { tap } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,7 @@ export class FakeAuthService implements AuthService {
       login,
       token: Math.random().toString(36).substring(7)
     }).pipe(
+      delay(2000),
       tap(user => {
         localStorage.setItem('currentUser', JSON.stringify(user))
         this.currentUser$.next(user)
