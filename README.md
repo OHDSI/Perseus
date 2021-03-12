@@ -25,4 +25,6 @@ and run via CMD/BASH from path where rest_api.py located
 $ export/set FLASK_APP=rest_api.py
 $ flask run --host=0.0.0.0 --port=5000
 ```
-	
+License
+=======
+CDMSouffleur is licensed under Apache License 2.0
