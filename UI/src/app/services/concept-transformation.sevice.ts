@@ -1,8 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Concept, IConceptOptions, ITableConceptsOptions, TableConcepts } from '../components/concept-transformation/model/concept';
+import {
+  Concept,
+  IConceptOptions,
+  ITableConceptsOptions,
+  TableConcepts
+} from '../cdm/mapping/concept-transformation/model/concept';
 import { cloneDeep } from '../infrastructure/utility';
-import * as conceptMap from './../components/concept-fileds-list.json';
-import { createConceptFields, getConceptFieldType, updateConceptsIndexes, updateConceptsList } from 'src/app/services/utilites/concept-util';
+import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
+import {
+  createConceptFields,
+  getConceptFieldType,
+  updateConceptsIndexes,
+  updateConceptsList
+} from 'src/app/services/utilites/concept-util';
 import { Arrow } from '../models/arrow';
 
 @Injectable({
@@ -89,7 +99,7 @@ export class ConceptTransformationService {
         };
         this.conceptsTable = new TableConcepts(conceptTableOptions);
 
-        if(connectedFields){
+        if (connectedFields) {
             connectedFields.forEach(it => {
                 const conceptIndex = connectedFields.indexOf(it);
                 const fields = createConceptFields(this.conceptFields, this.targetCloneName, this.targetCondition);

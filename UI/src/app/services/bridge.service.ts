@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
-import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
-import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
+import { SqlFunction } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
+import { TransformationConfig } from '../cdm/mapping/vocabulary-transform-configurator/model/transformation-config';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
 import { Configuration } from '../models/configuration';
-import { IConnector } from '../models/interface/connector.interface';
-import { addClonesToMapping, MappingService } from '../models/mapping-service';
+import { IConnector } from '../models/connector.interface';
+import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '../models/mapping-service';
 import { ITable, Table } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import * as similarNamesMap from '../components/mapping/similar-names-map.json';
-import { addGroupMappings, addViewsToMapping } from '../models/mapping-service';
+import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
-import * as conceptFields from '../../app/components/concept-fileds-list.json';
+import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
 import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
 
@@ -33,7 +31,9 @@ export interface IConnection {
   sql?: {};
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class BridgeService {
   set sourceRow(row: IRow) {
     this.sourcerow = row;
@@ -121,7 +121,7 @@ export class BridgeService {
 
   tables = {};
 
-  conceptFieldNames = (conceptFields as any).default;
+  conceptFieldNames = (conceptFieldsFromJson as any).default;
 
   connect = new Command({
     execute: (mappingConfig) => {
@@ -276,11 +276,10 @@ export class BridgeService {
     });
     sourceTablesNames = uniq(sourceTablesNames);
 
-    const tables = {
+    return {
       source: source.filter(table => sourceTablesNames.includes(table.name)),
       target: target.filter(table => targetTablesNames.includes(table.name))
     };
-    return tables;
   }
 
   drawSimilar(config, sourceRow, targetRow) {
@@ -480,7 +479,7 @@ export class BridgeService {
   deleteConceptFields(connection) {
     if (connection) {
       if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
-        const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
+        const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName,
           this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
         conceptService.deleteFieldsFromConcepts();
         this.updateConceptArrowTypes(connection.target.tableName, connection.source.tableName, connection.target.cloneTableName, )
@@ -556,7 +555,7 @@ export class BridgeService {
 
   updateConcepts(connection: any) {
     if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
-      const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
+      const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName,
         this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
       conceptService.addFieldToConcepts();
       this.setArrowType(connection.connector.id, 'concept');
