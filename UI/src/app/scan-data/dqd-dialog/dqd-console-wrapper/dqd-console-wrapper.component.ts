@@ -24,6 +24,8 @@ export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent 
   @ViewChild(DqdConsoleComponent)
   scanDataConsoleComponent: DqdConsoleComponent;
 
+  fileLoading = false;
+
   onFinish(result: string) {
     this.result = result;
   }
@@ -33,13 +35,16 @@ export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent 
   }
 
   onSaveResult() {
+    this.fileLoading = true
+
     this.dqdService.download(this.result)
       .subscribe(json => {
         const blob = new Blob([JSON.stringify(json)], {type: 'application/json'});
         const dbSettings = this.params.payload as DbSettings;
 
         fileSaver.saveAs(blob, `${dbSettings.database}.${dbSettings.schema}.json`);
-      });
+        this.fileLoading = false
+      }, error => this.fileLoading = false);
   }
 }
 
