@@ -16,10 +16,8 @@ from shutil import rmtree
 import zipfile
 import os
 from pathlib import Path
-from cdm_souffleur.model.similar_names_map import similar_names_map
+from cdm_souffleur.utils.similar_names_map import similar_names_map
 from itertools import groupby
-from peewee import PostgresqlDatabase
-from flask import current_app as app
 from cdm_souffleur.db import pg_db
 
 

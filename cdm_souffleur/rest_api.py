@@ -21,6 +21,8 @@ from flask import Blueprint
 from cdm_souffleur.services.vocabulary_service import search_vocabulary_concepts
 from cdm_souffleur import app
 from cdm_souffleur.db import pg_db
+from cdm_souffleur.vocab_search_api import vocab_search_api
+from cdm_souffleur.authorization_api import authorization_api
 
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
@@ -36,20 +38,6 @@ def load_schema():
         load_schema_to_server(file)
     return jsonify(success=True)
 
-@bp.route('/api/search_concepts', methods=['GET'])
-def search_concepts():
-    """save source schema to server side"""
-    query = request.args.get('query')
-    pageSize = request.args.get('pageSize')
-    page = request.args.get('page')
-    sort = request.args.get('sort')
-    order = request.args.get('order')
-    filters = {}
-    for key in VOCABULARY_FILTERS:
-        filters[key] = request.args.get(VOCABULARY_FILTERS[key])
-    update_filters = request.args.get('updateFilters')
-    search_result = search_vocabulary_concepts(pageSize, page, query, sort, order, filters, update_filters)
-    return jsonify(search_result)
 
 @bp.route('/api/get_existing_source_schemas_list', methods=['GET'])
 def get_existing_source_schemas_list_call():
@@ -368,6 +356,8 @@ def set_db_connection_call():
     return 'OK'
 
 app.register_blueprint(bp)
+app.register_blueprint(vocab_search_api)
+app.register_blueprint(authorization_api)
 if __name__ == '__main__':
     # app.run(debug=True)
 

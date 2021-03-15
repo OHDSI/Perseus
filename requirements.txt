@@ -13,3 +13,5 @@ py-postgresql==1.2.1
 peewee
 psycopg2
 numpy
+flask-bcrypt
+pyjwt
