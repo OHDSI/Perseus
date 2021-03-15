@@ -1,7 +1,14 @@
-@import "mixins";
-
 button {
-  @include cmd-button();
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  border: 0;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 
   &.confirm {
     background: #066BBB;

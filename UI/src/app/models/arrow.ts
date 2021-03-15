@@ -1,8 +1,9 @@
 import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '../services/utilites/draw-utilites';
 import { extractHtmlElement } from '../services/utilites/html-utilities';
-import { ConnectorType, IConnector } from './connector.interface';
-import { ElementRef, EventEmitter, Renderer2 } from '@angular/core';
+import { IConnector, ConnectorType } from './interface/connector.interface';
+import { Renderer2, ElementRef, EventEmitter } from '@angular/core';
+import { ConceptService, isConcept } from '../components/comfy/services/concept.service';
 
 // TODO Hide properties with WeakMap
 
@@ -40,6 +41,14 @@ export class Arrow implements IConnector {
     this.canvas = canvasRef ? canvasRef.nativeElement : null;
     this.clicked = new EventEmitter<IConnector>();
     this.type = type;
+  }
+
+  private getType() {
+    if (isConcept(this)) {
+      return 'L';
+    } else {
+      return 'T';
+    }
   }
 
   draw(): void {
@@ -158,8 +167,8 @@ export class Arrow implements IConnector {
     const isTypeT = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-T)');
     const isTypeL = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-L)');
     const isTypeM = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-M)');
-    const hasConcept = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-concept)');
-    const markerType = hasConcept ? '-concept' : isTypeL ? '-L' : isTypeT ? '-T' : isTypeM ? '-M' : '';
+    const isConcept = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-concept)');
+    const markerType = isConcept? '-concept': isTypeL ? '-L' : isTypeT ? '-T' : isTypeM ? '-M' : '';
     const markerState = state ? '-active' : '';
 
     this.renderer.removeAttribute(this.svgPath, `marker-start`);

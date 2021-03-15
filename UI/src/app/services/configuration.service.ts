@@ -1,19 +1,35 @@
 import { Injectable } from '@angular/core';
+import { IStorage } from '../models/interface/storage.interface';
 import { Configuration } from '../models/configuration';
 import { BridgeService } from './bridge.service';
+import { BrowserSessionConfigurationStorage } from '../models/implementation/configuration-session-storage';
 import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';
-import * as JSZip from 'jszip';
+import * as JSZip from 'jszip'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigurationService {
 
+  configStorageService: IStorage<Configuration>;
+  configurations = [];
+
   constructor(
     private bridgeService: BridgeService,
     private storeService: StoreService
   ) {
+    this.configStorageService = new BrowserSessionConfigurationStorage('configurations');
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
+  }
+
+  openConfiguration(configurationName: string): string {
+    const config = this.configStorageService.open(configurationName);
+    if (!config) {
+      return `Configuration ${configurationName} not found`;
+    }
+    this.bridgeService.applyConfiguration(config);
+    return `Configuration ${config.name} has been loaded`;
   }
 
   saveConfiguration(configurationName: string): string {
@@ -43,6 +59,12 @@ export class ConfigurationService {
     return `Configuration ${configurationName} has been saved`;
   }
 
+
+  saveInLocalStorage(newConfiguration: Configuration) {
+    this.configStorageService.save(newConfiguration);
+    this.configurations = [ ...Object.values(this.configStorageService.configuration) ];
+  }
+
   saveOnLocalDisk(newConfiguration: Configuration) {
     const config = JSON.stringify(newConfiguration);
     const blobMapping = new Blob([ config ], { type: 'application/json' });
@@ -55,10 +77,11 @@ export class ConfigurationService {
     files.forEach((item, index) => {
       zip.file(names[ index ], item);
     })
-    zip.generateAsync({ type: 'blob' , compression: 'DEFLATE'}).then((content) => {
+    zip.generateAsync({ type: 'blob' , compression: "DEFLATE"}).then((content) => {
       if (content) {
         saveAs(content, name);
       }
     });
-  }
+  }  
+
 }

@@ -100,10 +100,10 @@ function dashedDateToString(mdate: Date): string {
 
 function generateString(len: number): string {
   const length = len ? len : 10;
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const numbers = '0123456789';
-  let token = '';
-  let character = '';
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  let token = "";
+  let character = "";
   const crunch = true;
   while (token.length < length) {
     const entity1 = Math.ceil(letters.length * Math.random() * Math.random());

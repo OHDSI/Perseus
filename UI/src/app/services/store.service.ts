@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Table } from '../models/table';
+
 import { uniq } from '../infrastructure/utility';
 
 @Injectable({

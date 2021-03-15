@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DbSettings } from '../scan-data/model/db-settings';
+import { DbTypes } from '../scan-data/scan-data.constants';
 
 const initialState: DbSettings = {
   dbType: null,
