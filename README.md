@@ -1,30 +1,47 @@
-Prepare xml for CDMBuilder based on json  through POST service
+Introduction
+========
+Perseus combines intuitive and easy to use Web-based UI for ETL configuration and service for
+conversion native data to the CDM.
 
-In order to RUN API
+Features
+========
+- Map source data to tables and columns to CDM
+- Combine source tables
+- Use pre-built sql functions (replace, concat…)
+- Use pre-built source to source and source to standard vocabulary lookups (icd9, icd10, ndc…)
+- Create custom lookups for the concept_id fields
+- Set constant values to the CDM fields
+- Use System/Auto generated values for the CDM fields
+- Auto mapping for similar fields
+- OMOP Vocabulary search
+- Data Quality check
+- Search mapping between new codes and OMOP standard concepts
+- Convert data from native format to CDM
+- Logic for creating eras (DRUG_ERAs, CONDITION_ERAs…)
+- Logic for grouping visit occurrence/observation_period records
+- Auto domain switching 
+- Create ETL specification
 
-1. Rebuild, from path where setup.py located
-```
-$ python setup.py install
-```
-2. Check path to the configuration/default.json
-3. Check rest_api.py for existance:
-```python
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
-```
-and run simple where rest_api.py located
-> python rest_api.py
+Screenshot
+===========
+TODO
 
-or
-```python
-if __name__ == '__main__':
-    app.run()
-```
-and run via CMD/BASH from path where rest_api.py located
-```
-$ export/set FLASK_APP=rest_api.py
-$ flask run --host=0.0.0.0 --port=5000
-```
+Technology
+============
+TODO
+
+System Requirements
+============
+TODO
+
+Dependencies
+============
+ TODO
+
+Getting Started
+===============
+TODO
+
 License
 =======
 CDMSouffleur is licensed under Apache License 2.0
