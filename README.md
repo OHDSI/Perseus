@@ -28,15 +28,12 @@ TODO
 
 Technology
 ============
-TODO
-
-System Requirements
-============
-TODO
-
-Dependencies
-============
- TODO
+- Angular 9
+- Python 3.6
+- Java 15
+- R 4.0.4
+- PostgreSQL 13.2
+- .NET Core 3.1
 
 Getting Started
 ===============
