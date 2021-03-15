@@ -1,0 +1,37 @@
+@import 'src/app/styles/variables.scss';
+
+
+:host {
+  width: 100%;
+}
+
+.scrollable-area {
+  overflow-y: auto;
+  height: 70vh;
+}
+
+.scrollbarLeft {
+  direction: rtl;
+  height: calc(100% - 66px);
+}
+
+.scrollbarRight {
+  height: calc(100% - 66px);
+}
+
+.scrollable-area::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 100px;
+  background-color: #F5F5F5;
+}
+
+.scrollable-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollable-area::-webkit-scrollbar-thumb {
+  width: 5px;
+  border-radius: 100px;
+  -webkit-box-shadow: $cdm-grey-light;
+  background-color: #B3B3B3;
+}

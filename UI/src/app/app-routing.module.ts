@@ -1,27 +1,24 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './login/auth.guard';
+import { Routes, RouterModule } from '@angular/router';
+
+import { ComfyComponent } from './components/comfy/comfy.component';
+import { MappingComponent } from './components/mapping/mapping.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: `/comfy`,
     pathMatch: 'full'
   },
   {
-    path: 'cdm',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./cdm/cdm.module')
-      .then(module => module.CdmModule),
+    path: `comfy`,
+    component: ComfyComponent,
+    data: { breadcrumb: 'Link Tables' },
   },
   {
-    path: 'login',
-    loadChildren: () => import('./login/login.module')
-      .then(module => module.LoginModule)
-  },
-  {
-    path: '**',
-    redirectTo: 'login'
+    path: `mapping`,
+    component: MappingComponent,
+    data: { breadcrumb: 'Link Fields' }
   }
 ];
 

@@ -1,4 +1,4 @@
-import { Concept } from 'src/app/cdm/mapping/concept-transformation/model/concept';
+import { Concept } from "src/app/components/concept-transformation/model/concept";
 
 export function getConceptFieldNameByType(columnType: string, connectedToConceptFields: any) {
   let names = connectedToConceptFields.filter(it => it.endsWith(columnType));

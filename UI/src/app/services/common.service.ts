@@ -1,8 +1,7 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable, ElementRef } from '@angular/core';
+import { Area } from '../models/area';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CommonService {
   svgCanvas: ElementRef;
   mainElement: ElementRef;
