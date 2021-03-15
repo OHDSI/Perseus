@@ -44,4 +44,4 @@ TODO
 
 License
 =======
-CDMSouffleur is licensed under Apache License 2.0
+Perseus is licensed under Apache License 2.0
