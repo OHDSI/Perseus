@@ -492,7 +492,8 @@ export class BridgeService {
       .filter(item => item.fields[ 'concept_id' ].targetCloneName === cloneName);
 
     const arrows = Object.values(this.arrowsCache).filter(item => item.source.tableName === sourceTable &&
-      item.target.tableName === targetTable && item.target.cloneTableName === cloneName);
+      item.target.tableName === targetTable && item.target.cloneTableName === cloneName && 
+      this.conceptFieldNames[targetTable].includes(item.target.name));
 
     if (!concepts.length) {
       arrows.forEach(item => this.setArrowType(item.connector.id, 'None'));
