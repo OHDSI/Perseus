@@ -30,7 +30,8 @@ export class StoreService {
     sourceSimilar: undefined,
     targetSimilar: undefined,
     recalculateSimilar: true,
-    concepts: {}
+    concepts: {},
+    isMappingPage: false
   };
   private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
   readonly state$ = this.storeState.asObservable();

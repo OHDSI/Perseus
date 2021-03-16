@@ -109,24 +109,11 @@
       <mat-icon svgIcon="quality_check"></mat-icon>
       <span>Data Quality Check</span>
     </button>
-    <button mat-menu-item [matMenuTriggerFor]="generateReport">
+    <button mat-menu-item
+            [disabled]="reportGenerationDisabled$ | async"
+            (click)="generateReport()">
       <mat-icon svgIcon="generate_report"></mat-icon>
       <span>Report</span>
-    </button>
-  </mat-menu>
-
-  <mat-menu #generateReport="matMenu">
-    <button mat-menu-item>
-      <mat-icon svgIcon="generate_word"></mat-icon>
-      <span>Generate Word File</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon svgIcon="generate_html"></mat-icon>
-      <span>Generate HTML File</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon svgIcon="generate_md"></mat-icon>
-      <span>Generate MD File</span>
     </button>
   </mat-menu>
 
