@@ -137,6 +137,12 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlApplied = event;
   }
 
+  onTabIndexChanged(index: any) {
+    if (index === 1) {
+      this.lookupComponent.refreshCodeMirror(this.lookupComponent.name);
+    }
+  }
+
   addConcept() {
     const fields = createConceptFields(this.conceptFields, this.targetCloneName, this.targetCondition);
     const conceptOptions: IConceptOptions = {
