@@ -4,7 +4,7 @@
           mat-dialog-close
           (click)="close()">close
   </mat-icon>
-    <mat-tab-group>
+    <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
         <mat-tab [label]="'Fields'">
             <a class="add-concept-link"
             (click)="addConcept()">Add concept</a>
