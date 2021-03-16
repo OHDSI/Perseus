@@ -16,6 +16,7 @@ import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.compon
 import { DqdDialogComponent } from '../../scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -33,6 +34,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   convertToCdmDisabled$: Observable<boolean>;
 
+  reportGenerationDisabled$: Observable<boolean>;
+
   private scanDataMatDialogSharedParams = {
     disableClose: true,
     panelClass: 'scan-data-dialog'
@@ -46,7 +49,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     private router: Router,
     private matDialog: MatDialog,
     private dataService: DataService,
-    private vocabularyObserverService: VocabularyObserverService
+    private vocabularyObserverService: VocabularyObserverService,
+    private reportGenerationService: ReportGenerationService
   ) {
     super();
   }
@@ -69,6 +73,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     });
 
     this.initStreamsOfDisabledButtons();
+
+    this.subscribeOnReportConfigReady();
   }
 
   ngOnDestroy() {
@@ -173,6 +179,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.vocabularyObserverService.show = true;
   }
 
+  generateReport() {
+    this.reportGenerationService.emit(ReportGenerationEvent.PREPARE)
+  }
+
   private initStreamsOfDisabledButtons() {
     this.fakeDataDisabled$ = this.storeService.state$
       .pipe(
@@ -185,5 +195,19 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
         takeUntil(this.ngUnsubscribe),
         map(state => state.mappingEmpty)
       );
+
+    this.reportGenerationDisabled$ = this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        map(state => !state.isMappingPage)
+      );
+  }
+
+  private subscribeOnReportConfigReady() {
+    this.reportGenerationService.reportConfigReady$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => this.reportGenerationService.generateReport(ReportType.WORD))
   }
 }

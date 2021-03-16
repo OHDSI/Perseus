@@ -10,7 +10,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StateService } from 'src/app/services/state.service';
-import { stateToInfo, StoreService } from 'src/app/services/store.service';
+import { StoreService } from 'src/app/services/store.service';
 import { PanelComponent } from '../panel/panel.component';
 import { PreviewPopupComponent } from '../popups/preview-popup/preview-popup.component';
 import { RulesPopupService } from '../popups/rules-popup/services/rules-popup.service';
@@ -23,8 +23,6 @@ import { TransformConfigComponent } from '../vocabulary-transform-configurator/t
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WordReportCreator } from '../../services/report/word-report-creator';
-import { Packer } from 'docx';
 import { addGroupMappings, addViewsToMapping } from '../../models/mapping-service';
 import {
   numberOfPanelsWithOneSimilar,
@@ -37,17 +35,16 @@ import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-d
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 import { LookupService } from '../../services/lookup.service';
 import { getLookupType } from '../../services/utilites/lookup-util';
-import { ReportCreator } from '../../services/report/report-creator';
-import { MappingPair } from '../../models/mapping';
 import * as conceptFields from '../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../concept-transformation/concept-transformation.component';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
 
 @Component({
   selector: 'app-mapping',
   templateUrl: './mapping.component.html',
-  styleUrls: [ './mapping.component.scss' ]
+  styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   source: ITable[];
@@ -106,8 +103,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return this.target.find(item => item.name === 'similar');
   }
 
-  @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
-  @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
+  @ViewChild('arrowsarea', {read: ElementRef, static: true}) svgCanvas: ElementRef;
+  @ViewChild('maincanvas', {read: ElementRef, static: true}) mainCanvas: ElementRef;
   @ViewChild('sourcePanel') sourcePanel: PanelComponent;
   @ViewChild('targetPanel') targetPanel: PanelComponent;
   @ViewChild('sourcePanelSimilar') sourcePanelSimilar: PanelComponent;
@@ -127,7 +124,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private router: Router,
     private lookupService: LookupService,
     private activatedRoute: ActivatedRoute,
-    private vocabularyObserverService: VocabularyObserverService
+    private vocabularyObserverService: VocabularyObserverService,
+    private reportGenerationService: ReportGenerationService
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -146,6 +144,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.setMainHeight();
 
     this.subscribeOnVocabularyOpening()
+
+    this.subscribeOnPrepareReportGenerationConfig()
+
+    this.storeService.add('isMappingPage', true)
   }
 
   ngAfterViewInit() {
@@ -169,6 +171,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
 
     this.saveMappingStatus();
+
+    this.storeService.add('isMappingPage', false)
 
     super.ngOnDestroy();
   }
@@ -213,71 +217,71 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(htmlElementId);
-        if(!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
-        
-        const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
-        dialogRef.afterClosed$.subscribe((configOptions: any) => {
-          const { connectionType } = configOptions;
-          if (connectionType) {
-            const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
-            const lookupType = getLookupType(arrow);
-            const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
-              closeOnNavigation: false,
-              disableClose: false,
-              panelClass: 'sql-editor-dialog-padding-15',
-              maxHeight: '100%',
-              width: '570px;',
-              data: {
-                arrowCache: this.bridgeService.arrowsCache,
-                connector: arrow.connector,
-                lookupName: arrow.lookup ? arrow.lookup[ 'name' ] : '',
-                lookupType,
-                sql: arrow.sql,
-                tab: selectedtab
-              }
-            });
+        if (!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
 
-            transformDialogRef.afterClosed().subscribe((options: any) => {
-              if (options) {
-                const { lookup, sql } = options;
-                if (lookup) {
-                  if (lookup[ 'originName' ]) {
-                    this.lookup = lookup;
-                    this.lookup[ 'applied' ] = true;
-                    const lookupName = this.lookup[ 'name' ] ? this.lookup[ 'name' ] : this.lookup[ 'originName' ];
-                    this.bridgeService.arrowsCache[ child.id ].lookup = { name: lookupName, applied: true };
-                  }
+          const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
+          dialogRef.afterClosed$.subscribe((configOptions: any) => {
+            const {connectionType} = configOptions;
+            if (connectionType) {
+              const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
+              const lookupType = getLookupType(arrow);
+              const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
+                closeOnNavigation: false,
+                disableClose: false,
+                panelClass: 'sql-editor-dialog-padding-15',
+                maxHeight: '100%',
+                width: '570px;',
+                data: {
+                  arrowCache: this.bridgeService.arrowsCache,
+                  connector: arrow.connector,
+                  lookupName: arrow.lookup ? arrow.lookup['name'] : '',
+                  lookupType,
+                  sql: arrow.sql,
+                  tab: selectedtab
+                }
+              });
 
-                  if (lookup[ 'originName' ] && lookup[ 'name' ] && lookup[ 'originName' ] !== lookup[ 'name' ]) {
-                    this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                      console.log(res);
-                    });
+              transformDialogRef.afterClosed().subscribe((options: any) => {
+                if (options) {
+                  const {lookup, sql} = options;
+                  if (lookup) {
+                    if (lookup['originName']) {
+                      this.lookup = lookup;
+                      this.lookup['applied'] = true;
+                      const lookupName = this.lookup['name'] ? this.lookup['name'] : this.lookup['originName'];
+                      this.bridgeService.arrowsCache[child.id].lookup = {name: lookupName, applied: true};
+                    }
+
+                    if (lookup['originName'] && lookup['name'] && lookup['originName'] !== lookup['name']) {
+                      this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
+                        console.log(res);
+                      });
+                    }
                   }
-                }
-                if (sql) {
-                  if (sql[ 'name' ] || sql[ 'name' ] === '') {
-                    arrow.sql = sql;
-                    arrow.sql[ 'applied' ] = sql['name'] !== '';
+                  if (sql) {
+                    if (sql['name'] || sql['name'] === '') {
+                      arrow.sql = sql;
+                      arrow.sql['applied'] = sql['name'] !== '';
+                    }
                   }
+                  this.bridgeService.updateConnectedRows(arrow);
                 }
-                this.bridgeService.updateConnectedRows(arrow);
-              }
-            });
-          }
-        });
-      } else {
-        const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
-          closeOnNavigation: false,
-          disableClose: true,
-          panelClass: 'sql-editor-dialog-padding-15-width-650',
-          maxHeight: '100%',
-          data: {
-            arrowCache: this.bridgeService.arrowsCache,
-            row: arrow.target,
-            oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
-          }
-        });
-      } 
+              });
+            }
+          });
+        } else {
+          const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
+            closeOnNavigation: false,
+            disableClose: true,
+            panelClass: 'sql-editor-dialog-padding-15-width-650',
+            maxHeight: '100%',
+            data: {
+              arrowCache: this.bridgeService.arrowsCache,
+              row: arrow.target,
+              oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
+            }
+          });
+        }
         return;
       }
     }
@@ -383,13 +387,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   openTablesDropdown(target: any, area: string) {
     const enabledTargetTables = this.getEnabledTargetTables();
     if (area === 'source' && this.currentSourceTable.name !== 'similar' && this.sourceTablesWithoutSimilar.length > 1 ||
-     area === 'target' && this.currentTargetTable.name !== 'similar' && enabledTargetTables.length > 1) {
+      area === 'target' && this.currentTargetTable.name !== 'similar' && enabledTargetTables.length > 1) {
       const data = area === 'source' ? {
-        tables: this.sourceTablesWithoutSimilar,
-        selected: this.selectedSourceTable,
-        uppercase: true
-      } :
-        { tables: enabledTargetTables, selected: this.selectedTargetTable, uppercase: true };
+          tables: this.sourceTablesWithoutSimilar,
+          selected: this.selectedSourceTable,
+          uppercase: true
+        } : {tables: enabledTargetTables, selected: this.selectedTargetTable, uppercase: true};
 
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
@@ -479,6 +482,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.bridgeService.deleteSelectedArrows();
     }
   }
+
   previewMapping() {
     const source = this.currentSourceTable;
     const target = this.currentTargetTable;
@@ -675,116 +679,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
-  async generateReport() {
-    const reportCreator: ReportCreator = new WordReportCreator();
-    const info = stateToInfo(this.storeService.state);
-    const mappingHeader = { source: info.reportName, target: info.cdmVersion };
-    const mapping = this.bridgeService.generateMappingWithViewsAndGroupsAndClones(this.source);
-
-    reportCreator
-      .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
-      .createTablesMappingImage(mappingHeader, this.mappingConfig);
-
-    const lookupTypesSet = new Set<string>(); // Lookups for appendix
-    const sortAscByTargetFunc = (a: MappingPair, b: MappingPair) =>
-      a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1);
-    const sortedMappingItems = mapping.mapping_items.sort(sortAscByTargetFunc);
-
-    let currentTargetTable: string = null;
-
-    for (const mappingItem of sortedMappingItems) {
-      let header3OnNewPage = true;
-      if (currentTargetTable !== mappingItem.target_table) {
-        currentTargetTable = mappingItem.target_table;
-        header3OnNewPage = false;
-        reportCreator
-          .createHeader2(`Table name: ${currentTargetTable}`, true);
-      }
-
-      // set lookups
-      for (const mappingNode of mappingItem.mapping) {
-        if (mappingNode.lookup) {
-          lookupTypesSet.add(mappingNode.lookupType);
-          mappingNode.lookup = await this.lookupService
-            .getLookup(mappingNode.lookup, mappingNode.lookupType)
-            .toPromise();
-        }
-      }
-
-      reportCreator
-        .createHeader3(`Reading from ${mappingItem.source_table}`, header3OnNewPage);
-
-      const hasClones = mappingItem.clones && mappingItem.clones.length > 0;
-
-      if (hasClones) {
-        mappingItem.clones.forEach((clone, index) => {
-          reportCreator
-            .createHeader4(`Clone ${clone.name}`, index !== 0);
-
-          if (clone.condition && clone.condition !== '') {
-            reportCreator
-              .createParagraph(`Condition: ${clone.condition}`);
-          }
-
-          const mappingNodes = mappingItem.mapping
-            .filter(mappingNode => mappingNode.targetCloneName === clone.name);
-
-          reportCreator
-            .createFieldsMappingImage(mappingHeader, mappingNodes)
-            .createParagraph()
-            .createFieldsDescriptionTable(mappingNodes);
-        });
-      } else {
-        reportCreator
-          .createFieldsMappingImage(mappingHeader, mappingItem.mapping)
-          .createParagraph()
-          .createFieldsDescriptionTable(mappingItem.mapping);
-      }
-    }
-
-    reportCreator.createHeader1('Appendix');
-
-    const viewKeys = Object.keys(mapping.views ? mapping.views : {});
-    if (viewKeys.length > 0) {
-      reportCreator.createHeader2('View mapping', false);
-      viewKeys.forEach(key => {
-        reportCreator
-          .createHeader3(`${info.reportName.toUpperCase()} to ${key}`, false)
-          .createSqlTextBlock(mapping.views[ key ])
-          .createParagraph();
-      });
-    }
-
-    reportCreator.createHeader2('Source tables', viewKeys.length > 0);
-
-    this.source
-      .filter(table => table.name !== this.similarTableName)
-      .forEach((table, index) => reportCreator
-        .createHeader3(`Table: ${table.name}`, index !== 0)
-        .createSourceInformationTable(table.rows)
-      );
-
-    if (lookupTypesSet.size > 0) {
-      reportCreator.createHeader2('Lookup', true);
-      let onNewPage = false;
-      for (const lookupType of lookupTypesSet) {
-        const sqlTemplate = await this.lookupService
-          .getLookupTemplate(lookupType)
-          .toPromise();
-
-        reportCreator
-          .createHeader3(lookupType.toUpperCase(), onNewPage)
-          .createSqlTextBlock(sqlTemplate);
-
-        onNewPage = true;
-      }
-    }
-
-    const report = reportCreator.generateReport();
-
-    Packer.toBlob(report).then(blob => {
-      saveAs(blob, 'Report.docx');
-    });
+  generateReport() {
+    this.reportGenerationService
+      .setSource(this.source)
+      .setMappingConfig(this.mappingConfig)
+      .setSimilarTableName(this.similarTableName)
+      .generateReport(ReportType.WORD)
   }
 
   generateFakeData() {
@@ -903,5 +803,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.isVocabularyVisible = visible;
       this.setMainHeight();
     })
+  }
+
+  private subscribeOnPrepareReportGenerationConfig() {
+    this.reportGenerationService.reportConfigPrepare$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => this.reportGenerationService
+        .setSource(this.source)
+        .setMappingConfig(this.mappingConfig)
+        .setSimilarTableName(this.similarTableName)
+        .emit(ReportGenerationEvent.READY)
+      )
   }
 }
