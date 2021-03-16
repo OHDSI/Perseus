@@ -102,7 +102,7 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
-    fields = data_.loc[:, ['source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(by=['targetCloneName'])
+    fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(by=['targetCloneName', 'concept_id'])
     sql = 'SELECT '
     concept_id_counter = 1
     source_value_counter = 1
