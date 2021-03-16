@@ -21,6 +21,7 @@ import json
 from werkzeug.utils import secure_filename
 from itertools import groupby
 from cdm_souffleur.db import pg_db
+import re
 
 book = None
 ALLOWED_EXTENSIONS = {'xlsx'}
@@ -79,19 +80,21 @@ def reset_schema(pg_db, name='public'):
     exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)
     cursor = pg_db.execute_sql(exists_sql)
     if cursor.rowcount:
-        drop_create_schema_sql = 'DROP SCHEMA {0} CASCADE; CREATE SCHEMA {0};'.format(name)
-        pg_db.execute_sql(drop_create_schema_sql)
+        drop_schema_sql = 'DROP SCHEMA {0} CASCADE;'.format(name)
+        pg_db.execute_sql(drop_schema_sql)
+    create_schema_sql = ' CREATE SCHEMA {0};'.format(name)
+    pg_db.execute_sql(create_schema_sql)
 
 
-def save_source_schema_in_db(source_tables):
+def save_source_schema_in_db(current_user, source_tables):
     pg_db.connect()
-    reset_schema(pg_db)
+    reset_schema(pg_db, name=current_user)
 
     for row in source_tables:
         if row['sql'] == '':
             create_table_sql = '';
             table_name = row['name']
-            create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
+            create_table_sql += 'CREATE TABLE {0}.{1} ('.format(current_user, table_name)
             for field in row['rows']:
                 if len(field['grouppedFields']):
                     for item in field['grouppedFields']:
@@ -106,9 +109,9 @@ def save_source_schema_in_db(source_tables):
     pg_db.close()
 
 
-def get_view_from_db(view_sql):
+def get_view_from_db(current_user, view_sql):
     pg_db.connect()
-
+    view_sql = addSchemaNames(current_user, view_sql)
     view_cursor = pg_db.execute_sql(view_sql).description
     view_key= lambda a: a.name
     view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
@@ -127,6 +130,14 @@ def get_view_from_db(view_sql):
 
     pg_db.close()
     return view_res;
+
+def addSchemaNames(current_user, view_sql):
+    user_schema_tables = pg_db.execute_sql(
+        'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user))
+    for row in user_schema_tables.fetchall():
+        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {current_user}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {current_user}.{row[0]} ', view_sql)
+    return view_sql
 
 def run_sql_transformation(sql_transformation):
     pg_db.connect()
@@ -298,26 +309,26 @@ def _allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def load_schema_to_server(file):
+def load_schema_to_server(file, current_user):
     """save source schema to server side"""
     if file and _allowed_file(file.filename):
         filename = secure_filename(file.filename)
         try:
-            os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
-            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
+            os.mkdir(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}")
+            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} created")
         except FileExistsError:
-            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
-        file.save(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{filename}")
+            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} already exist")
+        file.save(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{filename}")
         file.close()
     return
 
 
-def load_saved_source_schema_from_server(schema_name):
+def load_saved_source_schema_from_server(current_user, schema_name):
     """load saved source schema by name"""
     if schema_name in get_existing_source_schemas_list(
-            UPLOAD_SOURCE_SCHEMA_FOLDER):
+            f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"):
         source_schema = get_source_schema(
-            f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{schema_name}")
+            f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{schema_name}")
         return source_schema
     else:
         return None

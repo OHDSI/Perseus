@@ -16,13 +16,10 @@ from cdm_souffleur.utils.exceptions import InvalidUsage
 import traceback
 from werkzeug.exceptions import BadRequestKeyError
 import os
-from peewee import *
 from flask import Blueprint
-from cdm_souffleur.services.vocabulary_service import search_vocabulary_concepts
-from cdm_souffleur import app
-from cdm_souffleur.db import pg_db
 from cdm_souffleur.vocab_search_api import vocab_search_api
 from cdm_souffleur.authorization_api import authorization_api
+from cdm_souffleur.model.user import *
 
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
@@ -31,26 +28,21 @@ app.secret_key = 'mdcr'
 bp = Blueprint('bp', __name__, url_prefix=app.config["CDM_SOUFFLEUR_PREFIX"])
 
 @bp.route('/api/load_schema', methods=['GET', 'POST'])
-def load_schema():
+@token_required
+def load_schema(current_user):
     """save source schema to server side"""
     if request.method == 'POST':
         file = request.files['file']
-        load_schema_to_server(file)
+        load_schema_to_server(file, current_user)
     return jsonify(success=True)
 
 
-@bp.route('/api/get_existing_source_schemas_list', methods=['GET'])
-def get_existing_source_schemas_list_call():
-    """return list of saved source schemas"""
-    return jsonify(
-        get_existing_source_schemas_list(app.config['UPLOAD_FOLDER']))
-
-
 @bp.route('/api/load_saved_source_schema', methods=['GET'])
-def load_saved_source_schema_call():
+@token_required
+def load_saved_source_schema_call(current_user):
     """load saved source schema by name"""
     schema_name = request.args['schema_name']
-    saved_schema = load_saved_source_schema_from_server(schema_name)
+    saved_schema = load_saved_source_schema_from_server(current_user, schema_name)
     if saved_schema is not None:
         return jsonify([s.to_json() for s in saved_schema])
     else:
@@ -58,42 +50,46 @@ def load_saved_source_schema_call():
 
 
 @bp.route(f'/api/save_and_load_schema', methods=['GET', 'POST'])
-def save_and_load_schema_call():
+@token_required
+def save_and_load_schema_call(current_user):
     """save schema to server and load it from server in the same request"""
-    delete_generated_xml() #remove Definitions directory
+    delete_generated_xml(current_user)
     if request.method == 'POST':
         file = request.files['file']
-        load_schema_to_server(file)
-    saved_schema = load_saved_source_schema_from_server(file.filename)
+        load_schema_to_server(file, current_user)
+    saved_schema = load_saved_source_schema_from_server(current_user, file.filename)
     if saved_schema is not None:
         return jsonify([s.to_json() for s in saved_schema])
     else:
         raise InvalidUsage('Schema was not loaded', 404)
 
 @bp.route(f'/api/load_schema_to_server', methods=['POST'])
-def load_schema_call():
+@token_required
+def load_schema_call(current_user):
     """save schema to server and load it from server in the same request"""
     try:
         file = request.files['file']
-        load_schema_to_server(file)
+        load_schema_to_server(file, current_user)
     except Exception as error:
         raise InvalidUsage('Schema was not loaded', 404)
     return jsonify('OK')
 
 @bp.route('/api/save_source_schema_to_db', methods=['POST'])
-def save_source_schema_to_db_call():
+@token_required
+def save_source_schema_to_db_call(current_user):
     try:
         source_tables = request.json
-        save_source_schema_in_db(source_tables)
+        save_source_schema_in_db(current_user, source_tables)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify('OK')
 
 @bp.route('/api/get_view', methods=['POST'])
-def get_View():
+@token_required
+def get_View(current_user):
     try:
         view_sql = request.get_json()
-        view_result=get_view_from_db(view_sql['sql'])
+        view_result=get_view_from_db(current_user, view_sql['sql'])
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(view_result)
@@ -131,7 +127,8 @@ def delete_saved_source_schema_call():
 
 
 @bp.route('/api/get_cdm_versions')
-def get_cdm_versions_call():
+@token_required
+def get_cdm_versions_call(current_user):
     """return available CDM versions schema list"""
     return jsonify(get_exist_version())
 

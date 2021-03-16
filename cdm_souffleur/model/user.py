@@ -2,6 +2,8 @@ from peewee import *
 from cdm_souffleur.db import pg_db
 from cdm_souffleur import app, bcrypt
 import jwt
+from flask import request, jsonify
+from functools import wraps
 
 
 class BaseModel(Model):
@@ -14,14 +16,7 @@ class User(BaseModel):
     username = CharField(unique=True)
     password = CharField()
 
-    def __init__(self, username, password):
-        super(BaseModel, self).__init__()
-        self.username = username
-        self.password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
-
-    def encode_auth_token(self, user_id):
+    def encode_auth_token(self, user_id, **kwargs):
         try:
             payload = {
                 'sub': user_id
@@ -33,3 +28,28 @@ class User(BaseModel):
             )
         except Exception as e:
             return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms='HS256')
+        return payload['sub']
+
+def token_required(f):
+   @wraps(f)
+   def decorator(*args, **kwargs):
+
+      token = None
+
+      if 'Authorization' in request.headers:
+         token = request.headers['Authorization']
+
+      if not token:
+         return jsonify({'message': 'a valid token is missing'})
+
+      try:
+         current_user = User.decode_auth_token(token)
+      except:
+         return jsonify({'message': 'token is invalid'})
+
+      return f(current_user, *args, **kwargs)
+   return decorator

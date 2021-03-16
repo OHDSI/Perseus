@@ -4,14 +4,6 @@ from cdm_souffleur.services.authorization_service import *
 
 authorization_api = Blueprint('authorization_api', __name__)
 
-@authorization_api.route('/api/login', methods=['POST'])
-def login():
-    try:
-        username = request.json['username']
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return jsonify('OK')
-
 
 @authorization_api.route('/api/register', methods=['POST'])
 def register_user():
@@ -24,11 +16,12 @@ def register_user():
     return jsonify(auth_token)
 
 
-@authorization_api.route('/api/register', methods=['POST'])
-def register():
+@authorization_api.route('/api/login', methods=['POST'])
+def login():
     try:
-        source_tables = request.json
-
+        username = request.json['username']
+        password = request.json['password']
+        auth_token = user_login(username, password)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
-    return jsonify('OK')
+    return jsonify(auth_token)

@@ -68,7 +68,7 @@ def unique(sequence):
             seen.append(x)
     return seen
 
-def prepare_sql(mapping_items, source_table, views, tagret_tables):
+def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables):
     """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
@@ -173,7 +173,7 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
                 else:
                     after_quote = double_quote[0]
                     before_quote = double_quote[0]
-        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\'', after_quote)
+        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), after_quote)
         view = f'{before_quote}\'{after_quote_replaced}'
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
@@ -188,8 +188,8 @@ def addSchemaNames(sql, view_sql):
     pg_db.connect()
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
-        view_sql = re.sub(f"(?i)join {row[0]}", f'join {{sc}}.{row[0]}', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]}", f'from {{sc}}.{row[0]}', view_sql)
+        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {{sc}}.{row[0]} ', view_sql)
     pg_db.close()
     return view_sql
 
@@ -740,9 +740,9 @@ def delete_generated(path):
     except Exception:
         print(f'Directory {path} does not exist')
 
-def delete_generated_xml():
+def delete_generated_xml(current_user):
     """clean mapping folder"""
-    delete_generated(GENERATE_CDM_XML_PATH)
+    delete_generated(f"{GENERATE_CDM_XML_PATH}/{current_user}")
 
 def delete_generated_sql():
     """clean lookup sql folder"""
