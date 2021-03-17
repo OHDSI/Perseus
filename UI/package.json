@@ -34,7 +34,7 @@
     "lodash-es": "^4.17.11",
     "ngx-mat-select-search": "^3.0.1",
     "pako": "^1.0.10",
-    "prismjs": "^1.17.1",
+    "prismjs": "^1.23.0",
     "rxjs": "~6.6.0",
     "sockjs-client": "^1.5.0",
     "stompjs": "^2.3.3",
