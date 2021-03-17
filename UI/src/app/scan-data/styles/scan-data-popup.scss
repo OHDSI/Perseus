@@ -1,0 +1,32 @@
+.popup {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+
+  &-content {
+    visibility: hidden;
+
+    position: absolute;
+    z-index: 1;
+    top: 25px;
+    right: -6px;
+
+    background: #FFFFFF;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+
+    // Popup arrow
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      right: 17px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: transparent transparent #FFFFFF transparent;
+    }
+  }
+
+  & .show {
+    visibility: visible;
+  }
+}

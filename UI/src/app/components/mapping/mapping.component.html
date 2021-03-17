@@ -1,0 +1,300 @@
+<div class="app-mapping">
+  <section>
+    <main #maincanvas [style.height]="mainHeight" class="main">
+      <div class="area-source">
+        <mat-tab-group selectedIndex="{{sourceTabIndex}}"
+                       (selectedIndexChange)="onTabIndexChanged($event, 'source')"
+                       mat-align-tabs="start">
+          <mat-tab [label]="'similar'"
+                   *ngIf="similarSourceTable">
+            <app-panel #sourcePanelSimilar
+                       *ngIf="similarSourceTable.visible"
+                       [tabIndex]="sourceTabIndex"
+                       [table]="similarSourceTable"
+                       [tables]="source"
+                       [oppositeTableId]="currentTargetTable.id"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
+                       (initialized)="onPanelInit(similarSourceTable)"></app-panel>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="drop-down-label"
+                   (wheel) = "onWheel($event, 'source')"
+                   (click)="openTablesDropdown($event.target, 'source')">
+                <div>{{selectedSourceTable.name}}</div>
+                <mat-icon *ngIf="this.sourceTablesWithoutSimilar.length > 1">arrow_drop_down</mat-icon>
+              </div>
+            </ng-template>
+            <app-panel #sourcePanel
+                       *ngIf="selectedSourceTable.visible"
+                       [tabIndex]="sourceTabIndex"
+                       [table]="selectedSourceTable"
+                       [tables]="source"
+                       [oppositeTableId]="currentTargetTable.id"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
+                       (initialized)="onPanelInit(selectedSourceTable)"></app-panel>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <!--Bridge-->
+      <div class="hint">
+        <div class="patch-top"></div>
+        <svg class="canvas" #arrowsarea>
+          <defs>
+            <marker
+              id="marker-start"
+              viewBox="0 0 20 20"
+              refX="4"
+              refY="8"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <rect x="0" y="0" rx="5" width="20" height="16" fill="#BDBDBD" pointer-events="visiblePoint"/>
+              <line x1="8" y1="4" x2="16" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+              <line x1="16" y1="4" x2="8" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+            </marker>
+            <marker
+              id="marker-start-active"
+              viewBox="0 0 20 20"
+              refX="4"
+              refY="8"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <rect x="0" y="0" rx="5" width="20" height="16" fill="#066BBB"/>
+              <line x1="8" y1="4" x2="16" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+              <line x1="16" y1="4" x2="8" y2="12" style="stroke:rgb(255, 255, 255); stroke-width: 1.5" />
+            </marker>
+
+            <marker
+              id="marker-end"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+            </marker>
+            <marker
+              id="marker-end-T"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">T</text>
+            </marker>
+            <marker
+              id="marker-end-L"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">L</text>
+            </marker>
+            <marker id="marker-end-M"
+                    viewBox="0 0 20 20"
+                    refX="8"
+                    refY="10"
+                    markerWidth="20"
+                    markerHeight="20"
+                    markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">M</text>
+            </marker>
+          <marker
+            id="marker-end-concept"
+            viewBox="0 0 20 20"
+            refX="8"
+            refY="10"
+            markerWidth="20"
+            markerHeight="20"
+            markerUnits="userSpaceOnUse"
+          >
+            <circle cx="10" cy="10" r="8" fill="#BDBDBD" />
+            <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 10px;">&#x2713;</text>
+          </marker>
+            <marker
+              id="marker-end-active"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+            </marker>
+            <marker
+              id="marker-end-active-T"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">T</text>
+            </marker>
+            <marker
+              id="marker-end-active-L"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">L</text>
+            </marker>
+            <marker
+              id="marker-end-active-M"
+              viewBox="0 0 20 20"
+              refX="8"
+              refY="10"
+              markerWidth="20"
+              markerHeight="20"
+              markerUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="8" fill="#066BBB" />
+              <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 11px;">M</text>
+            </marker>
+            <marker
+            id="marker-end-active-concept"
+            viewBox="0 0 20 20"
+            refX="8"
+            refY="10"
+            markerWidth="20"
+            markerHeight="20"
+            markerUnits="userSpaceOnUse"
+          >
+            <circle cx="10" cy="10" r="8" fill="#066BBB" />
+            <text x="7" y="14" style="fill:rgb(255, 255, 255); font-size: 10px;">&#x2713;</text>
+          </marker>
+          </defs>
+        </svg>
+        <!-- <div class="patch-bottom"></div> -->
+      </div>
+      <!--End-of-the-Bridge-->
+      <div class="area-target">
+        <mat-tab-group selectedIndex="{{targetTabIndex}}"
+                       (selectedIndexChange)="onTabIndexChanged($event, 'target')">
+          <mat-tab [label]="'similar'"
+                   *ngIf="similarTargetTable">
+            <app-panel #targetPanelSimilar
+                       *ngIf="similarTargetTable.visible"
+                       [tabIndex]="targetTabIndex"
+                       [table]="similarTargetTable"
+                       [tables]="target"
+                       [oppositeTableId]="currentSourceTable.id"
+                       [filteredFields]="getFilteredFields()"
+                       [mappingConfig]="mappingConfig"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
+                       (initialized)="onPanelInit(similarTargetTable)"></app-panel>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="drop-down-label"
+                   (wheel)="onWheel($event, 'target')"
+                   (click)="openTablesDropdown($event.target, 'target')">
+                <div>{{selectedTargetTable.name}}</div>
+                <mat-icon *ngIf="getEnabledTargetTables().length > 1">arrow_drop_down</mat-icon>
+              </div>
+            </ng-template>
+            <app-panel #targetPanel
+                       *ngIf="selectedTargetTable.visible"
+                       [tabIndex]="targetTabIndex"
+                       [table]="selectedTargetTable"
+                       [tables]="target"
+                       [oppositeTableId]="currentSourceTable.id"
+                       [filteredFields]="getFilteredFields()"
+                       [mappingConfig]="mappingConfig"
+                       (open)="onPanelOpen()"
+                       (close)="onPanelClose()"
+                       (initialized)="onPanelInit(selectedTargetTable)"
+                       (changeClone)="changeTargetClone($event)"></app-panel>
+          </mat-tab>
+        </mat-tab-group>
+        <mat-icon matTooltip="Filters applied"
+                  matTooltipPosition="above"
+                  [matTooltipDisabled]="isTooltipDisabled()"
+                  class="targetFilter"
+                  (click)="openFilter($event.target)">sort
+        </mat-icon>
+      </div>
+    </main>
+
+    <footer class="mapping-footer">
+      <div class="mapping-footer__block vocabulary">
+        <app-vocabulary-button (click)="showVocabulary()"></app-vocabulary-button>
+      </div>
+
+      <div class="mapping-footer__right">
+        <div class="mapping-footer__block secondary">
+          <button class="mapping-footer__delete-links grey-button red-color"
+                  [disabled]="isMappingEmpty()"
+                  (click)="deleteLinks()">Delete Links
+          </button>
+
+          <button class="mapping-footer__preview grey-button blue-color"
+                  [disabled]="isTableMappingEmpty() || isSimilarTabs()"
+                  (click)="previewMapping()">Preview
+          </button>
+        </div>
+
+        <div class="mapping-footer__block general">
+          <button class="mapping-footer__fake grey-button blue-color"
+                  [disabled]="!hasScanReport"
+                  (click)="generateFakeData()">Generate Fake
+          </button>
+
+          <button class="mapping-footer__report grey-button blue-color"
+                  [disabled]="isMappingEmpty()"
+                  (click)="generateReport()">Report
+          </button>
+
+          <button class="mapping-footer__cdm blue-button white-color"
+                  [disabled]="isMappingEmpty()"
+                  [matMenuTriggerFor]="cdmMenu">Convert to CDM
+            <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0L4 4L8 0H0Z" fill="white"/>
+            </svg>
+          </button>
+
+          <mat-menu #cdmMenu="matMenu">
+            <button mat-menu-item (click)="convertToCdm()">
+              <mat-icon svgIcon="convert_data"></mat-icon>
+              <span>Convert to CDM</span>
+            </button>
+
+            <button mat-menu-item (click)="generateMappingJson()">
+              <mat-icon svgIcon="generate_and_save"></mat-icon>
+              <span>Generate & Save Files</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </footer>
+  </section>
+</div>
+
+<app-vocabulary-search *ngIf="isVocabularyVisible"
+                       bottom="74px"
+                       (close)="showVocabulary()"></app-vocabulary-search>

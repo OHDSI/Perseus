@@ -14,12 +14,23 @@ export interface RowOptions {
   visible?: boolean;
   htmlElement?: any;
   constant?: string;
+  increment?: boolean;
   selected?: boolean;
+  uniqueIdentifier?: boolean;
+  sqlTransformation?: string;
+  sqlTransformationActive?: boolean;
+  isNullable?: boolean;
+  grouppedFields?: IRow[];
+  cloneTableName?: string;
+  cloneConnectedToSourceName?: string;
+  condition?: string;
 }
 
 export interface IRow {
   readonly key: string;
   readonly hasConstant;
+  readonly hasIncrement;
+  readonly hasSqlTransformation;
 
   id: number;
   tableId: number;
@@ -32,8 +43,17 @@ export interface IRow {
   visible?: boolean;
   htmlElement: any;
   constant: string;
+  increment: boolean;
   selected: boolean;
   connectorTypes: ConnectorType[];
+  uniqueIdentifier: boolean;
+  sqlTransformation: string;
+  sqlTransformationActive: boolean;
+  isNullable: boolean;
+  grouppedFields: IRow[];
+  cloneTableName: string;
+  cloneConnectedToSourceName: string;
+  condition: string;
 
   removeConnections(): void;
   setType(type: ConnectorType): void;
@@ -48,15 +68,36 @@ export class Row implements IRow {
   area: string;
   comments: IComment[];
   constant: string;
+  increment: boolean;
   values: any[];
   visible = true;
   connections = [];
   htmlElement: any = null;
   selected: boolean;
   connectorTypes: ConnectorType[];
+  uniqueIdentifier: boolean;
+  sqlTransformation: string;
+  sqlTransformationActive: boolean;
+  isNullable: boolean;
+  grouppedFields: IRow[];
+  cloneTableName: string;
+  cloneConnectedToSourceName: string;
+  condition: string;
 
   get hasConstant(): boolean {
     return this.constant ? true : false;
+  }
+
+  get hasIncrement(): boolean {
+    return this.increment;
+  }
+
+  get hasSqlTransformation(): string {
+    return this.sqlTransformation;
+  }
+
+  get isRowNullable(): boolean {
+    return this.isNullable;
   }
 
   get key(): string {
@@ -72,8 +113,15 @@ export class Row implements IRow {
     this.area = options.area;
     this.comments = options.comments;
     this.constant = options.constant;
+    this.increment = options.increment;
     this.selected = options.selected || false;
     this.connectorTypes = [];
+    this.uniqueIdentifier = options.uniqueIdentifier;
+    this.isNullable = options.isNullable;
+    this.grouppedFields = options.grouppedFields ? options.grouppedFields.map((row: any) => new Row(row)) : [];
+    this.cloneTableName = options.cloneTableName;
+    this.cloneConnectedToSourceName = options.cloneConnectedToSourceName;
+    this.condition = options.condition;
   }
 
   removeConnections() {
@@ -83,7 +131,7 @@ export class Row implements IRow {
   setType(type: ConnectorType) {
     const idx = this.connectorTypes.findIndex(existingType => existingType === type);
     if (idx === -1) {
-       this.connectorTypes.push(type);
+      this.connectorTypes.push(type);
     }
   }
 

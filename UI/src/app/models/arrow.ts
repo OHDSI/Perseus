@@ -7,6 +7,8 @@ import { ConceptService, isConcept } from '../components/comfy/services/concept.
 
 // TODO Hide properties with WeakMap
 
+const markerEndAttributeIndex = 9;
+
 export class Arrow implements IConnector {
   clicked: EventEmitter<IConnector>;
 
@@ -22,6 +24,8 @@ export class Arrow implements IConnector {
   targetSVGPoint: any;
 
   path: any;
+  title: any;
+  titleText: any;
   type: ConnectorType;
 
   private removeClickListener: any;
@@ -31,11 +35,12 @@ export class Arrow implements IConnector {
     public id: string,
     public source: IRow,
     public target: IRow,
+    type: ConnectorType,
     private renderer: Renderer2
   ) {
-    this.canvas = canvasRef.nativeElement;
+    this.canvas = canvasRef ? canvasRef.nativeElement : null;
     this.clicked = new EventEmitter<IConnector>();
-    this.type = this.getType();
+    this.type = type;
   }
 
   private getType() {
@@ -47,12 +52,20 @@ export class Arrow implements IConnector {
   }
 
   draw(): void {
-    const source = this.checkAndChangeHtmlElement(this.source);
-    const target = this.checkAndChangeHtmlElement(this.target);
 
-    // TODO Check htmlElement for existance
+    let source;
+    let target;
+
+    source = this.checkAndChangeHtmlElement(this.source);
+    target = this.checkAndChangeHtmlElement(this.target);
+
+      // TODO Check htmlElement for existance
     this.sourceSVGPoint = getSVGPoint(source, this.canvas);
     this.targetSVGPoint = getSVGPoint(target, this.canvas);
+
+    if (!this.sourceSVGPoint || !this.targetSVGPoint) {
+      return;
+    }
 
     const id = this.id;
 
@@ -78,10 +91,10 @@ export class Arrow implements IConnector {
       Math.floor((y1 + y2) / 2).toString()
     );
     this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
-    this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'endXY', `${x2},${y2}`);
 
-    this.renderer.setAttribute(this.path, 'marker-start', 'url(#dot-start)');
-    this.renderer.setAttribute(this.path, 'marker-end', 'url(#dot)');
+    this.renderer.setAttribute(this.path, 'marker-start', 'url(#marker-start)');
+    this.renderer.setAttribute(this.path, 'marker-end', `url(#marker-end${this.type ? `-${this.type}` : ''})`);
 
     this.removeClickListener = this.renderer.listen(
       this.path,
@@ -90,11 +103,19 @@ export class Arrow implements IConnector {
     );
 
     this.renderer.appendChild(this.canvas, this.path);
+    this.title = this.renderer.createElement('title', 'svg');
+    this.titleText = this.renderer.createText(`${this.source.name} - ${this.target.name}`);
+    this.renderer.appendChild(this.title, this.titleText);
+    this.renderer.appendChild(this.path, this.title);
   }
 
   adjustPosition() {
     const sourceSVGPoint = getSVGPoint(this.source, this.canvas);
     const targetSVGPoint = getSVGPoint(this.target, this.canvas);
+
+    if (!sourceSVGPoint || !targetSVGPoint) {
+      return;
+    }
 
     const { x: x1, y: y1 } = sourceSVGPoint;
     const { x: x2, y: y2 } = targetSVGPoint;
@@ -106,33 +127,58 @@ export class Arrow implements IConnector {
     );
 
     this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
-    this.renderer.setAttribute(this.path, 'endXY', `${x1},${y1}`);
+    this.renderer.setAttribute(this.path, 'endXY', `${x2},${y2}`);
   }
 
   attachButton(button) {
     this.button = button;
   }
 
+  setEndMarkerType(type): void {
+    if (this.svgPath) {
+      this.refreshPathHtmlElement();
+      if (this.svgPath) {
+
+        const isActive = this.svgPath.attributes[ markerEndAttributeIndex ].value.includes('active');
+
+        this.renderer.removeAttribute(this.svgPath, 'marker-end');
+
+        this.type = type === 'None' ? '' : type;
+        const markerType = type === 'None' ? '' : `-${type}`;
+        const markerState = isActive ? '-active' : '';
+        const markerEnd = `url(#marker-end${markerState}${markerType})`;
+
+        this.renderer.setAttribute(this.svgPath, 'marker-end', markerEnd);
+      }
+    }
+  }
+
   select() {
-    this.refreshPathHtmlElement();
-
-    this.renderer.removeAttribute(this.svgPath, 'marker-end');
-
-    this.selected = true;
-
-    this.renderer.addClass(this.svgPath, 'selected');
-    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#dot-active)');
+    this.toggle(true);
   }
 
   deselect(): void {
+    this.toggle(false);
+  }
+
+  toggle(state) {
     this.refreshPathHtmlElement();
 
-    this.renderer.removeAttribute(this.svgPath, 'marker-end');
+    const isTypeT = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-T)');
+    const isTypeL = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-L)');
+    const isTypeM = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-M)');
+    const isConcept = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-concept)');
+    const markerType = isConcept? '-concept': isTypeL ? '-L' : isTypeT ? '-T' : isTypeM ? '-M' : '';
+    const markerState = state ? '-active' : '';
 
-    this.selected = false;
+    this.renderer.removeAttribute(this.svgPath, `marker-start`);
+    this.renderer.removeAttribute(this.svgPath, `marker-end`);
 
-    this.renderer.removeClass(this.svgPath, 'selected');
-    this.renderer.setAttribute(this.svgPath, 'marker-end', 'url(#dot)');
+    this.selected = state;
+    state ? this.renderer.addClass(this.svgPath, 'selected') : this.renderer.removeClass(this.svgPath, 'selected');
+
+    this.renderer.setAttribute(this.svgPath, 'marker-start', `url(#marker-start${markerState})`);
+    this.renderer.setAttribute(this.svgPath, 'marker-end', `url(#marker-end${markerState}${markerType})`);
   }
 
   remove() {
@@ -153,7 +199,18 @@ export class Arrow implements IConnector {
 
   clickHandler(event: any) {
     event.stopPropagation();
+    const markerWidth = 16;
+    if (event.offsetX < markerWidth || event.offsetX > event.currentTarget.parentElement.clientWidth - markerWidth) {
+      return;
+    }
+
     this.clicked.emit(this);
+
+    if (this.selected) {
+      this.deselect();
+    } else {
+      this.select();
+    }
   }
 
   private generateSvgPath(pointStart: number[], pointEnd: number[]): string {
@@ -173,7 +230,7 @@ export class Arrow implements IConnector {
 
   private checkAndChangeHtmlElement(row: IRow): IRow {
     const foundElements = document.getElementsByClassName(
-      `item-${row.tableName}-${row.name}`
+      `item-${row.area}-${row.tableName}-${row.cloneTableName ? row.cloneTableName : ''}-${row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}-${row.name}`
     );
     const foundElement = extractHtmlElement(foundElements, null);
 

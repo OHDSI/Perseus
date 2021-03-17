@@ -1,0 +1,144 @@
+@import './variables.scss';
+
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.mat-menu-content {
+  padding: 0 !important;
+}
+
+.mat-menu-panel {
+  border-radius: 2px !important;
+  background-color: white;
+}
+
+.mat-card {
+  border-radius: 0 !important;
+  background-color: $cdm-grey-lighter;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
+}
+
+.mat-dialog-container {
+  border-radius: 0 !important;
+  background-color: $cdm-grey-lighter;
+}
+
+.mat-table {
+  background-color: $cdm-grey-lighter;
+}
+
+//
+
+
+mat-list.mat-list.mat-list-base[dense] {
+  padding-top: 0;
+
+  .mat-list-item .mat-list-item-content {
+    padding: 0 0 0 8px;
+  }
+}
+
+.mat-flat-button {
+  background-color: $cdm-grey-light;
+}
+
+button.mat-flat-button.mat-button-base {
+  border-radius: 2px;
+}
+
+.mat-form-field.mat-form-field-appearance-outline {
+  .mat-form-field-wrapper {
+    margin: 0;
+    padding-bottom: 32px;
+  }
+
+  .mat-form-field-prefix,
+  .mat-form-field-prefix .mat-icon {
+    color: $grey;
+    font-size: 17px;
+  }
+
+  .mat-form-field-suffix {
+    top: 0;
+
+    button.mat-icon-button {
+      width: 20px;
+      height: 20px;
+    }
+
+    .mat-icon {
+      font-size: 14px;
+    }
+  }
+
+  .mat-form-field-flex {
+    border-radius: 2px;
+
+    &:hover,
+    &:active {
+      .mat-form-field-prefix .mat-icon {
+        color: $cdm-blue;
+      }
+    }
+  }
+
+  .mat-form-field-outline {
+    border-radius: 2px;
+    border-color: white;
+
+    & > * {
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    &-thick {
+      border-color: $cdm-grey-light;
+      color: $cdm-grey-light;
+      border-radius: 2px;
+      opacity: 1;
+    }
+
+    &.mat-form-field-invalid &-thick {
+      color: red;
+    }
+
+  }
+
+  &.mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 0 0 6px;
+  }
+
+  &.mat-focused {
+    .mat-form-field-outline-thick {
+      border-color: $cdm-grey-light;
+      color: $cdm-grey-light;
+      border-radius: 2px;
+      opacity: 1;
+
+    }
+  }
+
+  &.search-by-name {
+    .mat-form-field-appearance-outline .mat-form-field-infix {
+      padding: 2px 0 8px 0;
+    }
+
+    .mat-form-field-outline {
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+
+      &-thick {
+        color: white;
+        background-color: transparent;
+        box-shadow: 0 0 8px $cdm-blue-light;
+      }
+    }
+  }
+}
+
+.vocabulary-config-tabs .mat-tab-body .mat-tab-body-content {
+  height: 300px;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+}
+

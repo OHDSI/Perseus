@@ -1,0 +1,29 @@
+<h3>{{data.header}}</h3>
+<mat-icon class="close"
+          mat-dialog-close>close
+</mat-icon>
+<div mat-dialog-content>
+  <mat-form-field appearance="standard">
+    <mat-label>{{data.label}}</mat-label>
+  <mat-select *ngIf="data.type === 'select'" [(value)]="resultValue">
+      <mat-option *ngFor="let item of data.items"
+                  [value]="item">
+        {{item}}
+      </mat-option>
+    </mat-select>
+ <input *ngIf="data.type === 'input'" [(ngModel)]="resultValue" matInput>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-dialog-close
+          mat-flat-button>
+    Cancel
+  </button>
+  <button [mat-dialog-close]="{action: data.okButton, value: resultValue}"
+          mat-flat-button
+          color="accent"
+          [disabled]="data.type === 'input' && (!resultValue || resultValue === '' || inputNameError())">
+    {{data.okButton}}
+  </button>
+</div>
+<div class="error-message" *ngIf="inputNameError()">{{data.errorMessage}}</div>

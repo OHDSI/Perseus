@@ -1,48 +1,57 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  Renderer,
-  Renderer2
-} from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { debounceTime, map } from 'rxjs/operators';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { fromEvent } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
+
 import { BridgeService } from './services/bridge.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { StateService } from './services/state.service';
-import { OpenMappingDialogComponent } from './components/popaps/open-mapping-dialog/open-mapping-dialog.component';
-import { UploadService } from './services/upload.service';
-import { environment } from 'src/environments/environment';
+
+const ICON_NAMES = [
+  'CDM_version',
+  'folder',
+  'folder_2',
+  'mapping',
+  'reset',
+  'save',
+  'help',
+  'new_mapping',
+  'edit',
+  'delete',
+  'scan_data',
+  'search',
+  'convert_data',
+  'generate_and_save',
+  'generate_fake',
+  'generate_report',
+  'generate_word',
+  'generate_html',
+  'generate_md',
+  'quality_check',
+  'vocabulary'
+];
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: [ './app.component.scss' ]
 })
-export class AppComponent implements OnDestroy {
-  @ViewChild('sourceUpload') fileInput: ElementRef;
-
+export class AppComponent implements OnDestroy, OnInit {
   mobileQuery: MediaQueryList;
-
-  private mobileQueryListener: () => void;
-
-  private snakbarOptions = {
-    duration: 3000
-  };
+  currentUrl;
+  private readonly mobileQueryListener: () => void;
 
   constructor(
     cd: ChangeDetectorRef,
     media: MediaMatcher,
     private bridgeService: BridgeService,
-    private matDialog: MatDialog,
-    private state: StateService,
-    private renderer: Renderer,
-    private uploadService: UploadService,
-    private snakbar: MatSnackBar
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
+    private router: Router
   ) {
+    this.addIcons();
+
     this.mobileQueryListener = () => cd.detectChanges();
 
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -56,74 +65,28 @@ export class AppComponent implements OnDestroy {
       .subscribe(window => {
         this.bridgeService.refreshAll();
       });
+
+    this.router.events.subscribe((res) => this.currentUrl = this.router.url.replace('/', ''));
+  }
+
+  ngOnInit() {
+    window.addEventListener('beforeunload', event => {
+      event.preventDefault();
+      event.returnValue = false;
+    });
   }
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this.mobileQueryListener);
   }
 
-  resetAllMappings() {
-    this.bridgeService.resetAllMappings();
-  }
-
-  openSaveMappingDialog(action: OpenMappingDialog) {
-    const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
-      closeOnNavigation: true,
-      disableClose: true,
-      data: { action, target: this.state.Target }
+  addIcons() {
+    ICON_NAMES.forEach(key => {
+      this.matIconRegistry.addSvgIcon(
+        key,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`./assets/icons/${key}.svg`)
+      );
     });
-
-    matDialog.afterClosed().subscribe(result => {
-      console.log(result);
-    });
-  }
-
-  onOpenSourceClick(): void {
-    if (this.fileInput.nativeElement.files[0]) {
-      this.fileInput.nativeElement.value = '';
-    }
-
-    const event = document.createEvent('MouseEvent');
-    event.initMouseEvent(
-      'click',
-      true,
-      true,
-      window,
-      0,
-      0,
-      0,
-      0,
-      0,
-      false,
-      false,
-      false,
-      false,
-      0,
-      null
-    );
-
-    this.renderer.invokeElementMethod(
-      this.fileInput.nativeElement,
-      'dispatchEvent',
-      [event]
-    );
-  }
-
-  onFileUpload(event: any): void {
-    const files = event.srcElement.files;
-    const url = environment.url.concat('/load_schema');
-    this.uploadService
-      .putFileOnServer('POST', url, [], files)
-      .then(okResponce => {
-        this.snakbar.open(
-          `Success file upload`,
-          ' DISMISS ',
-          this.snakbarOptions
-        );
-      })
-      .catch(errResponce => {
-        console.log(errResponce);
-      });
   }
 }
 

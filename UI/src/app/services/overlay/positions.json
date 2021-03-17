@@ -1,0 +1,108 @@
+{
+  "positions": {
+    "advanced-transform": {
+      "offsetX": -200,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    },
+    "simple-transform": {
+      "offsetX": 183,
+      "offsetY": 28,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    },
+    "column-info": {
+      "offsetX": 40,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
+    },
+    "comments-source": {
+      "offsetX": 40,
+      "offsetY": 32,
+      "originX": "start",
+      "originY": "bottom",
+      "overlayX": "start",
+      "overlayY": "bottom"
+    },
+    "comments-target": {
+      "offsetX": -205,
+      "offsetY": -35,
+      "originX": "start",
+      "originY": "bottom",
+      "overlayX": "start",
+      "overlayY": "bottom"
+    },
+    "right-bottom": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "left-top": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    },
+    "tour-toolbar": {
+      "offsetX": 80,
+      "offsetY": 64,
+      "originX": "end",
+      "originY": "bottom",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "sql-editor": {
+      "offsetX": 160,
+      "offsetY": 170,
+      "originX": "end",
+      "originY": "bottom",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "create-group": {
+      "offsetX": -35,
+      "offsetY": 30,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
+    },
+    "table-dropdown":{
+      "offsetX": 40,
+      "offsetY": 30,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    },
+    "clone-target": {
+      "offsetX": 2,
+      "offsetY": 25,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
+    },
+    "concept-fields-dropdown":{
+      "offsetX": 0,
+      "offsetY": 38,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
+    }
+  }
+}

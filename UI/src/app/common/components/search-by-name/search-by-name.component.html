@@ -1,0 +1,29 @@
+<mat-form-field
+  appearance="outline"
+  class="search-by-name"
+  floatLabel="auto">
+  <mat-icon matPrefix>search</mat-icon>
+  <input
+    #nameSearchInput
+    matInput
+    [formControl]="dbNameFormControl"
+    (input)="search(nameSearchInput.value)"
+    [matAutocomplete]="auto"
+    [placeholder]="placeholder"
+  />
+  <button
+    *ngIf="criteria.length > 0"
+    mat-button
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="clear()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngFor="let option of filteredNames"
+              [value]="option">
+    {{ option | prettyName }}
+  </mat-option>
+</mat-autocomplete>

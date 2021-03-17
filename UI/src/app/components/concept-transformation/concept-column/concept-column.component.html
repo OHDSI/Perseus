@@ -1,0 +1,15 @@
+<div class="flex-div">
+    <input type="text"
+    class="constant-input"
+    [(ngModel)]="constant"
+    *ngIf="field.constantSelected">
+    <div *ngIf="field && field.field">{{field.field}}</div>
+    <mat-icon class="error-icon"
+    *ngIf="field.alreadySelected"
+    [matTooltip]="errorText">error</mat-icon>
+    <mat-icon class="right-icon-18-padding" color="accent"
+    *ngIf="field.sqlApplied && !field.constantSelected && !field.selected">flash_on</mat-icon>
+    <mat-icon class="right-pointer-icon"
+    *ngIf="conceptFields.length && field.selected"
+    (click)="openConceptFieldsDropdown($event.target)">arrow_drop_down</mat-icon>
+</div>

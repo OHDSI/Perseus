@@ -1,65 +1,71 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { IRow } from 'src/app/models/row';
-import { DataService } from 'src/app/services/data.service';
-import { ValuesPopupComponent } from '../popaps/values-popup/values-popup.component';
-import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
+import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { ColumnInfoComponent } from '../field-information/column-info.component';
 
 @Component({
   selector: 'app-columns-list',
   templateUrl: './columns-list.component.html',
   styleUrls: ['./columns-list.component.scss']
 })
-export class ColumnsListComponent implements OnInit, OnChanges {
-  @Input() sourceRows: IRow[];
+export class ColumnsListComponent {
+  @Input() uniqSourceRows: IRow[];
+
+  @Input() allSourceRows: IRow[];
+
+  @Input() columnListHeight = '100%';
 
   @Output() columnsSelected = new EventEmitter<string[]>();
 
-  selectedColumns = [];
+  selected = [];
 
-  constructor(
-    private dataService: DataService,
-    private overlayService: OverlayService
-  ) {}
-
-  ngOnInit() {}
-
-  ngOnChanges() {}
-
-  onSelectColumn(name: string) {
-    const idx = this.selectedColumns.findIndex(x => x === name);
-    if (idx > -1) {
-      this.selectedColumns.splice(idx, 1);
+  onSelect(name: string) {
+    const itemSelected = this.selected.find(x => x === name);
+    if (itemSelected) {
+      this.selected = this.selected.filter(it => it !== name);
     } else {
-      this.selectedColumns.push(name);
+      this.selected = [...this.selected, name];
     }
 
-    this.selectedColumns = Object.assign([], this.selectedColumns);
-    this.columnsSelected.emit(this.selectedColumns);
+    this.columnsSelected.emit(this.selected);
   }
 
-  showTop10Values(event: any, htmlElement: any, item: IRow) {
+  constructor(
+    private overlayService: OverlayService
+  ) {
+  }
+
+  deselectAll() {
+    if (this.selected.length) {
+      this.selected = [];
+      this.columnsSelected.emit(this.selected);
+    }
+  }
+
+  showColumnInfo(event: any, htmlElement: any, item: IRow) {
     event.stopPropagation();
 
-    const { tableName, name } = item;
-    this.dataService.getTopValues(tableName, name).subscribe(result => {
-      const component = ValuesPopupComponent;
+    const columnName = item.name;
+    const tableNames = this.allSourceRows
+      .filter(row => row.name === columnName)
+      .map(row => row.tableName);
 
-      const dialogOptions: OverlayConfigOptions = {
-        hasBackdrop: true,
-        backdropClass: 'custom-backdrop',
-        positionStrategyFor: 'values',
-        payload: { items: result }
-      };
+    const payload = {
+      columnName,
+      tableNames
+    };
 
-      this.overlayService.open(dialogOptions, htmlElement, component);
-    });
+    const componentType = ColumnInfoComponent;
+
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'custom-backdrop',
+      positionStrategyFor: 'column-info',
+      panelClass: 'field-info-popup',
+      payload
+    };
+
+    this.overlayService.open(dialogOptions, htmlElement, componentType);
   }
 }

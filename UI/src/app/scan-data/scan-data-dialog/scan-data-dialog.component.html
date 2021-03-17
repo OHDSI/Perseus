@@ -1,0 +1,20 @@
+<div class="scan-dialog">
+  <div class="scan-dialog__header">
+    <h4>Scan Data</h4>
+    <app-close-dialog-button class="scan-dialog__header-close" (click)="onCloseByDagger()"></app-close-dialog-button>
+  </div>
+
+  <div class="scan-dialog__content">
+    <app-scan-data-form *ngIf="index === 0; else scanProgressBlock" style="width: 100%"
+                        (scanTables)="onScanTables($event)"
+                        (cancel)="onClose()"></app-scan-data-form>
+
+    <ng-template #scanProgressBlock>
+      <app-scan-data-console-wrapper style="width: 100%"
+                                     [params]="websocketParams"
+                                     [reportName]="dbName"
+                                     (cancel)="onCancel()"
+                                     (close)="onClose()"></app-scan-data-console-wrapper>
+    </ng-template>
+  </div>
+</div>

@@ -1,38 +1,3 @@
-<mat-toolbar color="primary" class="app-toolbar">
-  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="cdm menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <span style="flex: 1 1 auto"></span>
-  <h1>CDM ETL</h1>
-  <mat-menu #menu="matMenu">
-    <input
-      #sourceUpload
-      type="file"
-      (change)="onFileUpload($event)"
-      style="display: none"
-    />
-    <button mat-menu-item (click)="onOpenSourceClick()">
-      <mat-icon>folder_open</mat-icon>
-      <span>Open new source</span>
-    </button>
-    <button mat-menu-item (click)="openSaveMappingDialog('open')">
-      <mat-icon>description</mat-icon>
-      <span>Open mappings</span>
-    </button>
-    <button mat-menu-item (click)="openSaveMappingDialog('save')">
-      <mat-icon>save</mat-icon>
-      <span>Save mappings</span>
-    </button>
-    <button
-      mat-menu-item
-      matTooltip="Reset current mappings"
-      matTolltipPosition="right"
-      (click)="resetAllMappings()"
-    >
-      <mat-icon>delete</mat-icon>
-      <span>Reset mappings</span>
-    </button>
-  </mat-menu>
-</mat-toolbar>
+<app-toolbar [class]="currentUrl"></app-toolbar>
 
 <router-outlet></router-outlet>

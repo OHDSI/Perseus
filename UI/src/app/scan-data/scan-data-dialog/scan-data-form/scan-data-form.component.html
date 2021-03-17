@@ -1,0 +1,24 @@
+<div class="scan-data-form">
+  <div class="scan-data-form__content">
+    <app-connect-form [dataType]="dataType"
+                      [dbSettings]="dbSettings"
+                      [fileSettings]="fileSettings"
+                      [filesToScan]="filesToScan"
+                      [correctConnectionSettingsLoaded]="connectionResult?.canConnect"
+                      (tablesToScanChange)="onTablesToScanChange($event)"
+                      (connectionResultChange)="onConnectionResultChange($event)"
+                      (connectionPropsChanged)="reset()"></app-connect-form>
+
+    <app-tables-to-scan [scanParams]="scanParams"
+                        [tablesToScan]="tablesToScan"
+                        [filteredTablesToScan]="filteredTablesToScan"
+                        [connectionResult]="connectionResult"></app-tables-to-scan>
+  </div>
+
+  <div class="scan-data-form__action">
+    <button class="scan-data-form__action-cancel cancel" (click)="cancel.emit()">Cancel</button>
+    <button class="scan-data-form__action-scan confirm"
+            [disabled]="tablesToScan.length === 0"
+            (click)="onScanTables()">Scan Tables</button>
+  </div>
+</div>

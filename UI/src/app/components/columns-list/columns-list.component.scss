@@ -1,5 +1,22 @@
-.data-list {
+@import '~@angular/material/theming';
+@import "../../styles/variables.scss";
 
+.selected {
+  direction: ltr;
+  font-size: smaller;
+  position: absolute;
+  display: block;
+  width: 200px;
+  top: 95px;
+  left: 75px;
+
+  span {
+    color: $cdm-grey;
+  }
+
+  a {
+    margin-left: 32px;
+  }
 }
 
 .data-item {
@@ -7,36 +24,63 @@
   white-space: nowrap;
   overflow: hidden;
   display: flex;
+  padding: 10px 15px 5px;
+  font-size: larger;
   align-items: center;
-  padding-right: 5px;
+
+  .mat-icon {
+    font-size: 15px;
+    height: 16px;
+    &.checked {
+      display: none;
+    }
+  }
+  span {
+    font-weight: bolder;
+  }
 }
 
 .data-item-caption {
   position: relative;
-  padding: 1rem;
-  color: #000d37;
-  font-size: 1.142857142857143rem;
-  line-height: 1.357142857142857rem;
-  width: 100%;
+  width: 292px;
   text-transform: uppercase;
-  background: #F9F9F9;
   cursor: pointer;
+  background-color: $cdm-grey-lighter;
+  border: 1px solid $cdm-grey-lighter;
+  @include mat-elevation-transition;
+  @include mat-elevation(1, $cdm-grey, 0.8);
+}
+
+mat-list-item.mat-list-item {
+  direction: ltr;
+  width: 292px;
+
+  & + & {
+    margin-top: 7px;
+  }
 }
 
 .virtual-scroll-container {
-  height: 90vh;
   overflow-x: hidden;
+  top: -1px;
 }
 
-div[highlighted=true] {
-  background-color: #A6D2F4;
-  font-weight: 400;
+[highlighted="true"] {
+  @include mat-elevation-transition;
+  background-color: $cdm-blue-lightest;
+  border-color: $cdm-blue;
+  border-radius: 2px;
+  .mat-icon.checked {
+    display: block;
+  }
 }
 
-.list-item {
-  padding-bottom: 16px !important;
-  height: 60px !important;
-  direction: ltr;
+.rotate{
+  transform: rotate(270deg) !important;
+  text-align: center;
+  font-size: 14px !important;
 }
 
-
+.source-columns-list {
+  height: 100%;
+}

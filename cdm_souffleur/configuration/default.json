@@ -1,6 +1,6 @@
 {
   "schema": {
     "name": "default",
-    "path": "C:\\_WorkProjects\\CDMSouffleur\\source_schema\\mdcr.xlsx"
+    "path": "/app/cdm_builder/source_schema/mdcr.xlsx"
   }
 }

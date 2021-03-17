@@ -1,53 +1,48 @@
-<table #tableComponent id="{{ table.name }}" mat-table [dataSource]="datasource">
+<table #tableComponent [id]="table.name" mat-table [dataSource]="datasource" multiTemplateDataRows>
   <ng-container matColumnDef="column_indicator">
-    <th mat-header-cell *matHeaderCellDef>
-      <button
-        mat-icon-button
-        disableRipple="true"
-        #menuTrigger="matMenuTrigger"
-        [matMenuTriggerFor]="filter"
-        class="button-filter"
-      >
-        <mat-icon svgIcon="filter" class="filter"> </mat-icon>
-        <mat-menu #filter="matMenu">
-          <ng-template matMenuContent>
-            <app-filter [menuTrigger]="menuTrigger" [data]="rows"></app-filter>
-          </ng-template>
-        </mat-menu>
-      </button>
-    </th>
+    <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let column" class="drag_indicator">
       <div #anchor class="anchor">
         <mat-icon *ngIf="area === 'source'" class="icon-indicator">
           drag_indicator
         </mat-icon>
-        <button
-          mat-icon-button
-          *ngIf="area === 'target'"
-          (click)="openConstantDialog(anchor, column)"
-        >
-          <mat-icon [ngClass]="{ active: column.hasConstant }">
-            add_box
-          </mat-icon>
+        <button mat-icon-button
+                *ngIf="area === 'target' && !column.uniqueIdentifier"
+                (click)="openConstantDialog(anchor, column)">
+          <div class="constant-increment-icon"
+               [ngClass]="{ active: isConstant(column) }">C</div>
+        </button>
+        <button mat-icon-button
+                *ngIf="area === 'target' && column.uniqueIdentifier"
+                (click)="selectIncrement(anchor, column)">
+          <div class="constant-increment-icon"
+               [ngClass]="{ active: column.hasIncrement }">A</div>
         </button>
       </div>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="column_name">
-    <th mat-header-cell *matHeaderCellDef class="caption-item">
-      Item : {{ visibleRowsNumber }}/{{ totalRowsNumber }}
-    </th>
-    <td mat-cell *matCellDef="let row">
-      {{ row.name | prettyName }}
+    <th mat-header-cell
+        *matHeaderCellDef
+        class="caption-item">Field</th>
+    <td mat-cell
+        *matCellDef="let row">
+      <div class="required-field">
+        <mat-icon class="group-icon"
+                  svgIcon="folder_2"
+                  *ngIf="row.grouppedFields && row.grouppedFields.length"
+                  (click)="expandRow(row)"></mat-icon>
+        <div>{{ row.name }}</div>
+        <div *ngIf="!row.isRowNullable"
+             class="red">*</div>
+      </div>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="column_type">
-    <th mat-header-cell *matHeaderCellDef>Type</th>
-    <td mat-cell *matCellDef="let row">
-      {{ row.type | prettyName }}
-    </td>
+    <th mat-header-cell *matHeaderCellDef class="caption-item">Type</th>
+    <td mat-cell *matCellDef="let row">{{ row.type | prettyName }}</td>
   </ng-container>
 
   <ng-container matColumnDef="values">
@@ -63,12 +58,27 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="remove_group">
+    <th mat-header-cell
+        *matHeaderCellDef
+        class="caption-item"></th>
+    <td mat-cell
+        *matCellDef="let row">
+      <div class='remove-group'>
+        <mat-icon class="remove-group-icon"
+                  *ngIf="row.grouppedFields && row.grouppedFields.length"
+                  (click)="removeGroup(row)">delete_outline</mat-icon>
+      </div>
+    </td>
+  </ng-container>
+
   <ng-container matColumnDef="comments">
-    <th mat-header-cell *matHeaderCellDef>Comments</th>
+    <th mat-header-cell *matHeaderCellDef class="caption-item">Comments</th>
     <td mat-cell *matCellDef="let row" class="no-right-padding">
       <div #anchor class="anchor">
         <button
           mat-icon-button
+          class="comments-button"
           (click)="openCommentDialog(anchor, row)"
           [disableRipple]="true"
         >
@@ -79,18 +89,60 @@
             comment
           </mat-icon>
         </button>
-        <span style="flex: 1 1 auto"></span>
-        <div *ngFor="let connectorType of row.connectorTypes"
-          #bridgeButton
-          id="item-{{ row.tableName }}-{{ row.name }}"
-          class="connector-pin hide"
-          (click)="onTransformDialogOpen($event, row, bridgeButton)"
-        >
-          <div class="connector-type">
-            <span>{{ connectorType }}</span>
-          </div>
-        </div>
+        <span class="divider"></span>
       </div>
+    </td>
+  </ng-container>
+
+   <!-- Expanded Content Column - The detail row is made up of this one column -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell
+        *matCellDef="let detail"
+        class="inner-table"
+        colspan="5">
+      <table mat-table
+             [dataSource]="getDataSourceForExpandedPanel(detail)">
+
+        <ng-container matColumnDef="inner_column_indicator">
+          <td mat-cell
+              *matCellDef="let inner_column"
+              class="drag_indicator">
+            <div #anchor
+                 class="anchor">
+              <mat-icon *ngIf="area === 'source'"
+                        class="icon-indicator">
+                drag_indicator
+              </mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="inner_column_name">
+          <td mat-cell
+              *matCellDef="let inner_row">
+            <div class="required-field">
+              <div>{{ inner_row.name }}</div>
+              <div *ngIf="!inner_row.isRowNullable"
+                   class="red">*</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="inner_column_type">
+          <td mat-cell *matCellDef="let inner_row">{{ inner_row.type | prettyName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="remove_from_group">
+          <td mat-cell *matCellDef="let inner_row" class="no-right-padding">
+              <mat-icon class="remove-from-group-icon"
+                        (click)="removeFromGroup(detail, inner_row)">close</mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-row
+            *matRowDef="let inner_row; columns: ['inner_column_indicator', 'inner_column_name', 'inner_column_type', 'remove_from_group']">
+        </tr>
+      </table>
     </td>
   </ng-container>
 
@@ -98,16 +150,28 @@
 
   <tr
     #htmlElement
-    id="{{ row.name }}"
+    [id]="row.name"
     appDraggable
     [area]="area"
     [table]="table"
     [row]="row"
+    [mappingConfig]="mappingConfig"
     mat-row
+    [matTooltip]="row.name"
+    [matTooltipDisabled]="area !== 'source'"
     *matRowDef="let row; columns: displayedColumns"
-    (mousedown)="setActiveRow($event, row)"
-    (click)="selectTableRow($event, row)"
-    [class.draggable]="area == 'source'"
-    class="item-{{ row.tableName }}-{{ row.name }}"
+    [hidden]="isHidden(row) || isFiltered(row)"
+    class="item-{{row.area}}-{{row.tableName}}-{{row.cloneTableName ? row.cloneTableName : ''}}-{{row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}}-{{row.name}} {{area}}Row draggable"
+    [ngClass]="{ rowHasLink: isRowHasConnection(row) }"
+    (click)="rowClick($event)"
+    (dragstart)="rowClick($event)"
+    (addToGroup)='addRowToGroup($event)'
+    (reorderRows)='reorderRows($event)'
   ></tr>
+  <tr mat-row
+  class="inner-table"
+  *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+  [attr.colspan]="displayedColumns.length"
+  [@detailExpand]="checkExpanded(row)">
+</tr>
 </table>

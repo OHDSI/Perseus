@@ -1,8 +1,10 @@
+@import "../../styles/variables.scss";
+
 mat-card {
     padding: 18px 16px;
     height: 424px;
     width: 212px;
-    background: #F9F9F9;
+    background: $cdm-grey-lighter;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
     border-radius: 0;
 
@@ -21,7 +23,7 @@ mat-card {
         }
 
         label {
-            color: #808080;
+            color: $grey;
             line-height: normal;
             font-style: italic;
             margin-top: 15px;
@@ -48,7 +50,7 @@ mat-card {
 
     footer {
         button {
-            color: #066BBB;
+            color: $blue;
             width: 34px;
             align-self: flex-end;
             font-size: 13px;
@@ -65,19 +67,6 @@ section {
     align-items: center;
 }
 
-// mat-checkbox {
-//     color: rgb(0,178,0);
-//     /deep/ .mat-checkbox-background {
-//         background-color: rgb(0,178,0);
-//     }
-
-//     /deep/ &.mat-checkbox-focused{
-//         .mat-ink-ripple{
-//             background-color: rgba(0, 178, 0, .26);
-//         }
-//     }
-// }
-
 mat-card ::-webkit-scrollbar-track
 {
 	border-radius: 100px;
@@ -92,6 +81,6 @@ mat-card ::-webkit-scrollbar-thumb
 {
     width: 5px;
 	border-radius: 100px;
-	-webkit-box-shadow: #E5E5E5;
+	-webkit-box-shadow: $cdm-grey-light;
 	background-color: #C6C6C6;
 }

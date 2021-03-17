@@ -1,0 +1,39 @@
+<div class="source-form">
+  <div *ngIf="tryConnect" class="connect-progress-bar">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <div class="scan-step-header">
+    <div class="source-form__header-number scan-step">
+      <h5 class="scan-step__number">1</h5>
+    </div>
+    <h5 class="scan-step-header__name">Source Data Location</h5>
+  </div>
+
+  <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
+    <label>Data type</label>
+    <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
+      <mat-option *ngFor="let type of dataTypes" [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <app-db-settings-form *ngIf="isDbSettings; else delimitedFileBlock"
+                        [form]="form"
+                        [requireSchema]="requireSchema"></app-db-settings-form>
+
+  <ng-template #delimitedFileBlock>
+    <app-file-settings-form [form]="fileSettingsForm"
+                            [fileInputText]="fileInputText"
+                            (fileToScanChanged)="onFileToScanChanged($event)"></app-file-settings-form>
+  </ng-template>
+
+  <a (click)="resetForm()">Clear all</a>
+
+  <app-test-connection class="source-form__test-connection"
+    [connectionResult]="connectionResult"
+    [disabled]="testConnectionDisabled"
+                       (testConnection)="onTestConnection()">
+  </app-test-connection>
+</div>

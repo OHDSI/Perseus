@@ -1,3 +1,5 @@
+import { IComment } from './comment';
+
 export interface MappingLookupSqlFiled {
   source_field: string;
   sql_field: string;
@@ -18,10 +20,18 @@ export interface MappingLookup {
 }
 
 export interface MappingNode {
+  concept_id?: any;
   source_field: string;
   target_field: string;
   sql_field: string;
   sql_alias: string;
+  lookup?: string;
+  lookupType?: string;
+  sqlTransformation?: string;
+  comments?: IComment[];
+  condition?: string;
+  targetCloneName?: string;
+  groupName?: string;
 }
 
 export interface MappingPair {
@@ -29,10 +39,13 @@ export interface MappingPair {
   target_table: string;
   mapping: Array<MappingNode>;
   lookup?: Array<MappingLookup>;
+  sqlTransformation?: string;
+  clones?: {name: string, condition: string}[];
 }
 
 export interface Mapping {
   mapping_items: Array<MappingPair>;
+  views?: object;
 }
 
 

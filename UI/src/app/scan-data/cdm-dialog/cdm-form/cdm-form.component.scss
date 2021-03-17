@@ -1,0 +1,61 @@
+@import "../../styles/variables";
+
+.cdm-form {
+  width: 100%;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+
+    width: 608px;
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      width: 296px;
+      height: $form-height;
+
+      border: 1px solid rgba(#066BBB, 0.1);
+      border-radius: 2px;
+
+      &__progress-bar {
+        background-color: #F9F9F9;
+      }
+
+      &__apply {
+        margin-top: auto;
+        padding-bottom: 21px;
+        box-sizing: content-box;
+      }
+
+      .mat-form-field {
+        margin: 15px 9px 0 9px !important;
+      }
+
+      a {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  &__action {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+
+    height: 33px;
+
+    &-cancel {
+      width: 80px;
+      margin-right: 15px;
+    }
+
+    &-convert {
+      width: 80px;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+}

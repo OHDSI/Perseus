@@ -1,11 +1,11 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-
-import { CommonService } from 'src/app/services/common.service';
 import { IRow } from 'src/app/models/row';
 
-import { parseArrowKey } from './business/rules';
+import { CommonService } from 'src/app/services/common.service';
 import { Arrow } from '../models/arrow';
 import { IConnector } from '../models/interface/connector.interface';
+
+import { parseArrowKey } from './business/rules';
 
 @Injectable()
 export class DrawService {
@@ -20,6 +20,7 @@ export class DrawService {
   }
 
   private renderer: Renderer2;
+
   constructor(
     private commonService: CommonService,
     rendererFactory: RendererFactory2
@@ -27,7 +28,7 @@ export class DrawService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  drawLine(entityId: string, source: IRow, target: IRow): IConnector {
+  drawLine(entityId: string, source: IRow, target: IRow, type: any): IConnector {
     const canvas = this.commonService.svgCanvas;
 
     const drawEntity = new Arrow(
@@ -35,6 +36,7 @@ export class DrawService {
       entityId,
       source,
       target,
+      type,
       this.renderer
     );
 
@@ -43,7 +45,7 @@ export class DrawService {
       drawEntity.draw();
     }
 
-    return drawEntity;
+    return this.cache[entityId];
   }
 
   deleteAllConnectors() {
@@ -53,13 +55,15 @@ export class DrawService {
   }
 
   deleteConnector(key) {
-    this.cache[key].remove();
-    delete this.cache[key];
+    if (this.cache[key]) {
+      this.cache[key].remove();
+      delete this.cache[key];
+    }
   }
 
-  deleteConnectorsBoundToTable({ id, area }) {
+  deleteConnectorsBoundToTable({id, area}) {
     Object.keys(this.cache).forEach(key => {
-      const { sourceTableId, targetTableId } = parseArrowKey(key);
+      const {sourceTableId, targetTableId} = parseArrowKey(key);
 
       switch (area) {
         case 'source': {

@@ -1,0 +1,17 @@
+.console-wrapper {
+  &__action {
+    width: 350px;
+
+    button {
+      margin: 0 auto;
+    }
+
+    &-back {
+      width: 70px;
+    }
+
+    &-save, &-link {
+      width: 120px;
+    }
+  }
+}

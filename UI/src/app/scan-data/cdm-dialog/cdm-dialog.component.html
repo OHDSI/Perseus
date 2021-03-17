@@ -1,0 +1,29 @@
+<div class="scan-dialog">
+  <div class="scan-dialog__header">
+    <h4>{{header()}}</h4>
+    <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
+  </div>
+
+  <div class="scan-dialog__content" [ngSwitch]="index">
+    <app-cdm-form *ngSwitchCase="0" style="width: 100%"
+                  (convert)="onConvert($event)"
+                  (cancel)="onClose()"
+                  (generateFakeData)="onGenerateFakeData($event)"></app-cdm-form>
+
+    <app-cdm-console-wrapper *ngSwitchCase="1" style="width: 100%"
+                             [params]="websocketParams"
+                             (dataQualityCheck)="onDataQualityCheck()"
+                             (cancel)="onCancel()"
+                             (close)="onClose()"></app-cdm-console-wrapper>
+
+    <app-fake-data-console-wrapper *ngSwitchCase="2" style="width: 100%"
+                                   [params]="whiteRabbitWebsocketParams"
+                                   (cancel)="onCancel()"
+                                   (close)="onClose()"></app-fake-data-console-wrapper>
+
+    <app-dqd-console-wrapper *ngSwitchCase="3" style="width: 100%"
+                             [params]="dqdWebsocketParams"
+                             (cancel)="onCancel()"
+                             (close)="onClose()"></app-dqd-console-wrapper>
+  </div>
+</div>

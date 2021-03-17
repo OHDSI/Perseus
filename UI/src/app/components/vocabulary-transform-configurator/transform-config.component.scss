@@ -1,34 +1,74 @@
-.lookup-name {
-  padding-right: 10px;
-  padding-left: 10px;
+@import 'src/app/styles/variables.scss';
+
+h3 {
+  span {
+    margin-left: 15px;
+    font-size: 12px;
+  }
 }
 
-.configuration-element {
-  margin-right: 7px;
-}
-
-.vocabularies-header{
-  display: grid;
-  grid-template-columns: 100px 175px 75px;
-  align-items: center;
-}
-
-.add-configuration {
-  margin-left: 7px;
-}
-
-.mapping-component-progress {
-  height: 100%;
+.apply-transformation {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 100%;
+
+  .mat-tab-group {
+    max-height: calc(100% - 50px);
+  }
 }
 
-.configuration-header {
-  width: 400px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+.buttons {
+  position: relative;
+  margin: 10px auto;
+  width: 185px;
+
+  .button-add {
+    background-color: $blue;
+    color: $white;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .button-cancel {
+    background-color: $cdm-grey-light;
+    color: $cdm-grey-dark;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
+
+
+
+// .lookup-name {
+//   padding-right: 10px;
+//   padding-left: 10px;
+// }
+
+// .configuration-element {
+//   margin-right: 7px;
+// }
+
+// .vocabularies-header{
+//   display: grid;
+//   grid-template-columns: 100px 175px 75px;
+//   align-items: center;
+// }
+
+// .add-configuration {
+//   margin-left: 7px;
+// }
+
+// .mapping-component-progress {
+//   height: 100%;
+//   width: 100%;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+// .configuration-header {
+//   width: 400px;
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
+//   overflow: hidden;
+// }
 

@@ -1,0 +1,17 @@
+.console-wrapper {
+  &__action {
+    width: 340px;
+
+    button {
+      margin: 0 auto;
+    }
+
+    &-back {
+      width: 70px;
+    }
+
+    &-dqd {
+      width: 150px;
+    }
+  }
+}

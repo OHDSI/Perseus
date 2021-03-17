@@ -1,63 +1,9 @@
 @import "styles/variables.scss";
 
-.app-container {
+app-toolbar.comfy {
+  background-color: $cdm-grey-dark;
   display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  justify-content: center;
+  align-content: center;
 }
-
-.app-is-mobile .app-toolbar {
-  position: fixed;
-  z-index: 2;
-}
-
-h1.app-name {
-  margin-left: 8px;
-}
-
-.mat-sidenav-container {
-  flex: 1;
-  height: calc(100% - 70px);
-}
-
-.app-is-mobile .app-sidenav-container {
-  flex: 1 0 auto;
-}
-
-.mat-list {
-  display: flex;
-  justify-content: flex-end;
-
-  a {
-    text-decoration: none;
-    color: $black;
-    font-weight: bold;
-  }
-
-  .active {
-    color: $blue;
-  }
-
-  mat-list-item {
-    width: inherit;
-  }
-}
-
-.mat-sidenav-content {
-  background-color: $white;
-  overflow-y: hidden;
-
-  mat-list {
-    margin: 0 20px;
-  }
-}
-
-.options {
-  padding: 0 20px;
-}
-
 

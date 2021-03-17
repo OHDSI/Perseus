@@ -2,12 +2,15 @@ import { IRow, Row } from 'src/app/models/row';
 import { Area } from './area';
 
 export interface ITable {
-    id: number;
-    area: Area;
-    name: string;
-    rows: IRow[];
-    visible: boolean;
-    expanded: boolean;
+  id: number;
+  area: Area;
+  name: string;
+  rows: IRow[];
+  visible: boolean;
+  sql: string;
+  cloneName: string;
+  condition: string;
+  cloneConnectedToSourceName: string;
 }
 
 
@@ -17,23 +20,32 @@ export interface ITableOptions {
   name?: string;
   rows?: IRow[];
   visible?: boolean;
-  expanded?: boolean;
+  sql?: string;
+  cloneName?: string;
+  condition?: string;
+  cloneConnectedToSourceName?: string;
 }
 
 export class Table {
-   id: number;
-   area: Area;
-   name: string;
-   rows: IRow[];
-   visible = true;
-   expanded = false;
+  id: number;
+  area: Area;
+  name: string;
+  rows: IRow[];
+  visible = true;
+  sql: string;
+  cloneName: string;
+  condition: string;
+  cloneConnectedToSourceName: string;
 
   constructor(options: ITableOptions = {}) {
     this.id = options.id;
     this.area = options.area;
     this.name = options.name;
-    this.rows = options.rows.map((row: any) => new Row(row));
+    this.rows = options.rows ? options.rows.map((row: any) => new Row(row)) : [];
     this.visible = options.visible || true;
-    this.expanded = options.expanded || false;
-   }
+    this.sql = options.sql || '';
+    this.cloneName = options.cloneName;
+    this.condition = options.condition;
+    this.cloneConnectedToSourceName = options.cloneConnectedToSourceName;
+  }
 }
