@@ -31,12 +31,6 @@ Screenshot
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/concept.PNG" alt="Concept configuration" title="Concept configuration" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/lookup.PNG" alt="Lookup configuration" title="Lookup configuration" />
 
-Dependencies
-============
-* Scans native schema  and generates documentation [WhiteRabbit](https://github.com/SoftwareCountry/WhiteRabbit).
-* Conversion from native to CDM [CDMBuilder](https://github.com/SoftwareCountry/ETL-CDMBuilder).
-* Check data quality [DataQualityDashboard](https://github.com/SoftwareCountry/DataQualityDashboard).
-
 Technology
 ============
 - Angular 9
