@@ -39,6 +39,15 @@ Technology
 - PostgreSQL 13.2
 - .NET Core 3.1
 
+Deployment server requirements
+===============
+
+ - Docker,
+ - 4GB RAM, 100 GB HDD,
+ - Sudo user,
+ - Open ports: 443, 80, 8001.
+
+
 Getting Started
 ===============
 
