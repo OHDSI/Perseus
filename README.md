@@ -1,7 +1,8 @@
 Introduction
 ========
-Perseus combines intuitive and easy to use Web-based UI for ETL configuration and service for
-conversion native data to the CDM.
+Perseus combines intuitive and easy to use Web-based UI for design and  implement ETL (extract, transform, and load) configuration and service for conversion the native/raw data to the OMOP Common Data Model (CDM).
+
+Additionally Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
 
 Features
 ========
@@ -29,6 +30,12 @@ Screenshot
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/link_fields.PNG" alt="Link fields" title="Link fields" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/concept.PNG" alt="Concept configuration" title="Concept configuration" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/lookup.PNG" alt="Lookup configuration" title="Lookup configuration" />
+
+Dependencies
+============
+* Scans native schema  and generates documentation [WhiteRabbit](https://github.com/SoftwareCountry/WhiteRabbit).
+* Conversion from native to CDM [CDMBuilder](https://github.com/SoftwareCountry/ETL-CDMBuilder).
+* Check data quality [DataQualityDashboard](https://github.com/SoftwareCountry/DataQualityDashboard).
 
 Technology
 ============
