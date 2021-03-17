@@ -41,7 +41,39 @@ Technology
 
 Getting Started
 ===============
-TODO
+
+###Database
+
+    cd database
+    docker build -t perseus-database .
+    run --name perseus-database -d -p 5431:5432 perseus-database
+
+###Back-end
+
+    docker build -t perseus-backend .
+    docker run -e CDM_SOUFFLEUR_ENV='default' --name perseus-backend -d --network host perseus-backend
+
+###Front-end
+    
+    cd UI
+    docker build -t perseus-frontend .
+    docker run --name perseus-frontend -d --network host perseus-frontend
+
+Perseus uses auxiliary services to scan, convert and validate data. 
+
+Below are links to these services, which should be included in the app build. 
+
+###White-rabbit service
+
+https://github.com/SoftwareCountry/WhiteRabbit
+
+###Cdm-builder service
+
+https://github.com/SoftwareCountry/ETL-CDMBuilder
+
+###Data-quality-check service
+
+https://github.com/SoftwareCountry/DataQualityDashboard
 
 License
 =======
