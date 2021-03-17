@@ -1,0 +1,27 @@
+.file-input {
+  display: flex;
+
+  input::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+
+  input {
+    flex: 1;
+    cursor: pointer;
+    color: transparent;
+  }
+
+  &__text {
+    display: flex;
+    align-items: center;
+    flex-basis: 0;
+    white-space: nowrap;
+    width: 0;
+    z-index: 1001;
+
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 14px;
+    color: #404040;
+  }
+}

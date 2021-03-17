@@ -1,0 +1,13 @@
+<h3 class="error-header">
+    <mat-icon class="error-icon">warning</mat-icon>
+    <div class="error-title">{{title}}</div>
+</h3>
+<mat-icon class="close"
+          mat-dialog-close>close</mat-icon>
+<mat-label class="error-message">{{message}}</mat-label>
+<button class="error-close"
+        mat-flat-button
+        [mat-dialog-close]="true">
+    OK
+</button>
+  

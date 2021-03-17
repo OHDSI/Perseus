@@ -1,0 +1,23 @@
+.vocabulary-search__filters-item {
+  margin: 0 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  cursor: pointer;
+
+  &__name {
+    font-size: 14px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 8px;
+    }
+  }
+
+  &.opened .section-arrow {
+    transform: rotate(180deg);
+  }
+}

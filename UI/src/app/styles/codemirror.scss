@@ -1,0 +1,25 @@
+@import './variables.scss';
+
+.CodeMirror.cm-s-default {
+  border: 2px solid $cdm-grey-light;
+  box-sizing: border-box;
+  height: 250px;
+  padding: 10px 15px;
+
+  .cm-keyword {
+    color: $cdm-blue;
+    text-transform: uppercase;
+  }
+}
+
+.invalid .CodeMirror.cm-s-default {
+  border-color: red !important;
+}
+
+.invalid-with-border .CodeMirror.cm-s-default {
+  border: 1px solid red !important;
+}
+
+.CodeMirror-hints.default {
+  z-index: 1000;
+}

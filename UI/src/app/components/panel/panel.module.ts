@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { MatExpansionModule } from '@angular/material/expansion';
-import { PanelComponent } from 'src/app/components/panel/panel.component';
+import { CdmCommonModule } from 'src/app/common/cdm-common.module';
+import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { PanelTableComponent } from 'src/app/components/panel/panel-table/panel-table.component';
+import { PanelComponent } from 'src/app/components/panel/panel.component';
 import { DraggableDirective } from 'src/app/directives/draggable.directive';
 import { DrawService } from 'src/app/services/draw.service';
-import { FilterComponent } from 'src/app/components/filter/filter.component';
-import { CommentPopupComponent } from 'src/app/components/popaps/comment-popup/comment-popup.component';
-import { CdmCustomMaterialModule } from 'src/app/common/cdm-custom-material.module';
-import { CdmCommonModule } from 'src/app/common/cdm-common.module';
+import { AreaComponent } from 'src/app/components/area/area.component';
 
 @NgModule({
   declarations: [
+    AreaComponent,
     PanelComponent,
     PanelTableComponent,
     DraggableDirective,
@@ -21,18 +21,16 @@ import { CdmCommonModule } from 'src/app/common/cdm-common.module';
   exports: [
     PanelComponent,
     PanelTableComponent,
-    FilterComponent
-  ],
-  entryComponents: [
-    CommentPopupComponent
+    FilterComponent,
+    CdmCommonModule
   ],
   imports: [
-  MatExpansionModule,
+    MatExpansionModule,
     CommonModule,
-    CdmCustomMaterialModule,
     CdmCommonModule
   ],
   providers: [DrawService]
 
 })
-export class PanelModule { }
+export class PanelModule {
+}

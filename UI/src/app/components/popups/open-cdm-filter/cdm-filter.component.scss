@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  background-color: white;
+  .mat-list-base {
+    padding-top: 0;
+    .mat-list-item-content {
+      padding: 0;
+    }
+  }
+}
+
+.option-text {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.filter-header {
+  margin: 8px 16px 0 16px;
+  font-size: 14px;
+}
+
+.mat-list-option{
+  height: 35px !important;
+  padding-right: 60px !important;
+}
+
+.mat-selection-list{
+  padding-bottom: 10px;
+}
+

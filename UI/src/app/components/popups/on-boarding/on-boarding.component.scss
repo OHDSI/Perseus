@@ -1,0 +1,58 @@
+@import 'src/app/styles/variables.scss';
+
+:host {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+  padding: 16px;
+  background-color: $blue;
+  border-radius: 2px;
+  color: white;
+  width: 210px;
+
+  h3 {
+    text-transform: uppercase;
+  }
+
+  .bullets {
+    display: flex;
+  }
+
+  .bullet {
+    display: block;
+    box-sizing: border-box;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid white;
+    cursor: pointer;
+
+    & + .bullet {
+      margin-left: 8px;
+    }
+
+    &.active {
+      background-color: white;
+    }
+  }
+
+  &:before {
+    position: absolute;
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    top: -10px;
+    left: 35px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent $blue transparent;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+}

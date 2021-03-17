@@ -1,0 +1,13 @@
+<div class="scan-data-console">
+  <div class="scan-data-console__bar">
+    <p>Scanning... Estimated time depends on selected database</p>
+    <mat-progress-bar mode="determinate" [value]="progressValue"></mat-progress-bar>
+  </div>
+
+  <div class="scan-data-console__content">
+    <p>Console</p>
+    <div #console class="scan-data-console__content-console">
+      <p *ngFor="let notification of progressNotifications">{{notification.message}}</p>
+    </div>
+  </div>
+</div>

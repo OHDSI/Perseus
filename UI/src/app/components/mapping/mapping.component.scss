@@ -1,0 +1,196 @@
+@import '../../styles/variables';
+
+:host {
+  //width: 1440px;
+  display: flex;
+  height: calc(100% - 40px);
+  align-self: stretch;
+  justify-content: stretch;
+}
+
+.area-source {
+  position: relative;
+  width: 35%;
+  float: left;
+  height: 100%;
+}
+
+.area-target {
+  position: relative;
+  width: 35%;
+  float: right;
+  height: 100%;
+
+  .targetFilter {
+    position: absolute;
+    float: right;
+    right: 5px;
+    top: 25px;
+    z-index: 2;
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    text-align: right;
+  }
+}
+
+section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  main {
+    width: 100%;
+    position: relative;
+    float: left;
+  }
+
+  .hint {
+    position: absolute;
+    bottom: 0;
+    left: 35%;
+    color: $cdm-grey-dark;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: calc(30% + 10px);
+    height: calc(100% - 139px); // 139 - header height
+    z-index: 2;
+
+    p {
+      top: 20%;
+      position: absolute;
+      font-size: 14px;
+    }
+
+    .patch-top {
+      @extend .patch;
+      top: -94%;
+    }
+
+    .patch-bottom {
+      @extend .patch;
+      bottom: -100%;
+    }
+  }
+}
+
+.canvas {
+  height: 100%;
+  width: 100%;
+}
+
+.mapping-footer {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: 23px;
+  display: flex;
+  justify-content: space-between;
+
+  &__block {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+      height: 33px;
+
+      outline: none;
+      cursor: pointer;
+
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+      border: 0;
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  &__right {
+    display: flex;
+    justify-content: space-between;
+    width: 710px;
+  }
+
+  &__block.secondary {
+    width: 225px;
+  }
+
+  &__block.general {
+    width: 375px;
+  }
+
+  &__delete-links, &__preview {
+    width: 100px;
+  }
+
+  &__fake {
+    width: 120px;
+  }
+
+  &__report {
+    width: 83px;
+  }
+
+  &__cdm {
+    width: 140px;
+    svg {
+      margin-bottom: 2px;
+      margin-left: 8px;
+    }
+  }
+}
+
+.red-color {
+  color: #FF4646;
+}
+
+.blue-color {
+  color: #066BBB;
+}
+
+.white-color {
+  color: #FFF;
+}
+
+.grey-button {
+  background-color: #F9F9F9;
+}
+
+.blue-button {
+  background-color: #066BBB;
+}
+
+.patch {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1000;
+}
+
+.mapping-component-progress {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.export-actions {
+  display: flex;
+  flex-direction: row;
+  padding-left: 50px;
+}
+
+.app-mapping {
+  padding: 0 50px 0 50px;
+  height: 100%;
+  width: 100%;
+}
+

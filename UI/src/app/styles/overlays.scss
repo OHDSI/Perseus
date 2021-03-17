@@ -1,0 +1,124 @@
+@import '~@angular/material/_theming';
+@import './variables.scss';
+
+%common-dialog {
+  border-radius: 2px;
+
+  .close {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.cdm-version-dialog {
+  @extend %common-dialog;
+
+  .mat-dialog-container {
+    position: relative;
+    padding: 40px;
+  }
+
+  .mat-form-field-infix {
+    width: 163px;
+  }
+
+  .mat-dialog-actions {
+    justify-content: space-between;
+  }
+}
+
+.warning-dialog {
+  @extend %common-dialog;
+
+   border-radius: 2px;
+   width: 250px;
+   height: 240px;
+
+  .mat-dialog-container {
+    position: relative;
+    padding: 40px;
+  }
+
+  .mat-dialog-actions {
+    justify-content: space-between;
+  }
+}
+
+
+.sql-editor-dialog {
+  @extend %common-dialog;
+
+  .mat-icon[svgIcon="help"] {
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: white;
+    svg {
+      width: 16px;
+      height: 16px;
+
+      path {
+        fill: $cdm-blue
+      }
+    }
+  }
+
+  .mat-form-field {
+    display: block;
+  }
+
+  .mat-dialog-container {
+    position: relative;
+    width: 570px;
+    padding: 40px 35px;
+  }
+
+  .mat-dialog-actions {
+    justify-content: center;
+
+    button.mat-button-base + button.mat-button-base {
+      margin-left: 15px;
+    }
+  }
+}
+
+.sql-editor-dialog-padding-15 {
+  @extend .sql-editor-dialog;
+
+  .mat-dialog-container {
+    background: $cdm-grey-lighter;
+    padding-bottom: 15px;
+  }
+}
+
+.sql-editor-dialog-padding-15-width-650 {
+  @extend .sql-editor-dialog-padding-15;
+
+  .mat-dialog-container {
+    width: 650px;
+  }
+}
+
+.filter-popup, .field-info-popup {
+  background: white;
+  @include mat-elevation-transition;
+  @include mat-elevation(4);
+}
+
+.on-boarding-backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.on-boarding-anchor {
+  position: relative;
+  z-index: 10000;
+  background-color: rgba(75, 176, 255, 0.4);;
+}

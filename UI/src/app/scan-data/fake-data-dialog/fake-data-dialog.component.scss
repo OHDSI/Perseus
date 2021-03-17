@@ -1,0 +1,28 @@
+.scan-dialog {
+  padding: 42px 35px 35px 38px;
+
+  &__header {
+    margin-bottom: 18px;
+
+    &-cancel {
+      width: 80px;
+      background: #E5E5E5;
+      color: #404040;
+      margin-right: 15px;
+    }
+
+    &-scan {
+      background: #066BBB;
+      width: 129px;
+      color: #FFFFFF;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &__content {
+    min-width: 180px;
+  }
+}

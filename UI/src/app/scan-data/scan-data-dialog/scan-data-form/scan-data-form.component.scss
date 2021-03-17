@@ -1,0 +1,29 @@
+.scan-data-form {
+  width: 629px;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__action {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+
+    height: 33px;
+
+    &-cancel {
+      width: 80px;
+      margin-right: 15px;
+    }
+
+    &-scan {
+      width: 129px;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+}

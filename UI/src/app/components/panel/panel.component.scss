@@ -1,29 +1,47 @@
 @import 'src/app/styles/variables.scss';
 
-.mat-expansion-panel {
-    background-color: $yellowish;
-    margin-bottom: 5px;
-    border-radius: 1px;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-
-    mat-expansion-panel-header {
-         font-weight: bold;
-    }
-
-    mat-panel-title {
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-
-        mat-icon {
-            margin-right: 10px;
-            align-self: center;
-            color: $grey;
-        }
-    }
+.mapping-filter-by-name {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
 }
 
-.table-has-a-link-true {
-  border-right: 2px solid #80808033;
-  background-color: #0000000d;
+.flex-div{
+  display: flex;
+}
+
+.min-height-25{
+  min-height: 25px;
+}
+
+.flex-div-align-center {
+  @extend .flex-div;
+  align-items: center;
+  color: #066BBB;
+  font-size: 15px;
+  font-weight: bold;
+  .mat-icon{
+    cursor: pointer;
+  }
+}
+
+.margin-left{
+  margin-left: auto;
+}
+
+.create-group-disabled{
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.info-icon{
+  color: #066BBB;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 3px;
+}
+
+.condition{
+  margin-left: 10px;
 }

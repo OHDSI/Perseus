@@ -1,0 +1,26 @@
+<h3>Set CDM Version</h3>
+<mat-icon class="close"
+          mat-dialog-close>close
+</mat-icon>
+<div mat-dialog-content>
+  <mat-form-field appearance="standard">
+    <mat-label>Version</mat-label>
+    <mat-select #version [(value)]="selectedVersion">
+      <mat-option *ngFor="let version of versions"
+                  [value]="version">
+        {{version}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-dialog-close
+          mat-flat-button>
+    Cancel
+  </button>
+  <button [mat-dialog-close]="selectedVersion"
+          mat-flat-button
+          color="accent">
+    Apply
+  </button>
+</div>

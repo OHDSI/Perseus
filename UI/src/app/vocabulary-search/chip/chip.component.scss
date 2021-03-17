@@ -1,0 +1,21 @@
+.vocabulary-search__chips-item {
+  margin-bottom: 4px;
+  border-radius: 16px;
+  width: fit-content;
+  padding: 8px 10px 9px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+  color: #fff;
+
+  span {
+    padding-right: 8px;
+  }
+
+  svg {
+    cursor: pointer;
+  }
+}

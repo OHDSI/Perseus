@@ -1,0 +1,36 @@
+<mat-card class="dialog">
+  <h4>Constant value</h4>
+  <div class="buttons-top {{mode}}">
+    <ng-container *ngIf="mode !== 'add'">
+      <mat-icon (click)="delete()">delete
+      </mat-icon>
+      <mat-icon
+        *ngIf="mode === 'view'"
+        color="accent"
+        (click)="changeMode('edit')">edit
+      </mat-icon>
+    </ng-container>
+  </div>
+  <input
+    class="inputValue"
+    *ngIf="mode !== 'view'"
+    [(ngModel)]="value"
+    placeholder="Input value"
+  />
+  <label class="validation-error" *ngIf="validationError">{{validationError}}</label>
+  <span class="viewValue" *ngIf="mode === 'view'">{{value}}</span>
+  <div class="buttons-bottom" *ngIf="mode !== 'view'">
+    <button
+      mat-button
+      (click)="add()"
+      disableRipple="true"
+      class="button button-add">{{mode === 'add' ? 'Add' : 'Apply'}}
+    </button>
+    <button
+      mat-button
+      (click)="cancel()"
+      disableRipple="true"
+      class="button button-cancel">Cancel
+    </button>
+  </div>
+</mat-card>

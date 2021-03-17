@@ -43,20 +43,27 @@ Technology
 Deployment server requirements
 ===============
 
- - Docker,
+ - Unix OS (Ubuntu), Docker,
  - 4GB RAM, 100 GB HDD,
  - Sudo user,
  - Open ports: 443, 80, 8001.
-
 
 Getting Started
 ===============
 
 ### Database
 
+Get link to the vocabulary from [Athena](http://athena.ohdsi.org).
+
+    cd database
+
+Open load_csv.sh
+
+Replace the vocabulary link with your own
+
     cd database
     docker build -t perseus-database .
-    run --name perseus-database -d -p 5431:5432 perseus-database
+    docker run --name perseus-database -d -p 5431:5432 perseus-database
 
 ### Back-end
 

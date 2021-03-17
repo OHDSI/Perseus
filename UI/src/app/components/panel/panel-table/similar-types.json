@@ -1,0 +1,28 @@
+{
+
+"char": [
+  "varchar",
+  "nvarchar",
+  "character",
+  "character varying",
+  "char",
+  "text"
+],
+
+"int": [
+  "int",
+  "bigint",
+  "smallint",
+  "integer"
+],
+
+"boolean": ["boolean"],
+
+"date": ["date"],
+
+"float": [
+"real",
+"decimal",
+"double precision"]
+
+}

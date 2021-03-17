@@ -1,0 +1,14 @@
+<form [formGroup]="form" style="height: 100%">
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': disabled}">
+    <label for="files">Select files</label>
+    <div class="file-input">
+      <span class="file-input__text">{{fileInputText}}</span>
+      <input id="files" type="file" multiple (change)="onFileInputChange($event)" [disabled]="disabled" accept=".csv">
+    </div>
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': disabled}">
+    <label for="delimiter">Delimiter</label>
+    <input id="delimiter" type="text" formControlName="delimiter">
+  </div>
+</form>

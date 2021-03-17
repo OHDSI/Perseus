@@ -1,8 +1,10 @@
 import * as pako from 'pako';
 import * as buf from 'buffer';
+import { stringify } from 'flatted';
 declare const Buffer;
 
-window["Buffer"] = window["Buffer"] || buf.Buffer;
+const bufferKey = 'Buffer';
+window[bufferKey] = window[bufferKey] || buf.Buffer;
 
 const find = (
   symbol: string,
@@ -28,37 +30,18 @@ const find = (
 };
 
 const findStartIndex = (buffer: Uint8Array): number => {
-  const quote = '"'.charCodeAt(0);
+  const quote = '\''.charCodeAt(0);
   const comma = ','.charCodeAt(0);
   const colon = ':'.charCodeAt(0);
 
   if (buffer[0] === quote) {
     if (buffer[1] === colon) {
-      return find('"', buffer, 1, buffer.length);
+      return find('\'', buffer, 1, buffer.length);
     } else {
       return 0;
     }
   } else {
     return find(',', buffer, 0, buffer.length) + 1;
-  }
-};
-
-const findEndIndex = (buffer: Uint8Array): number => {
-  const quote = '"'.charCodeAt(0);
-  const comma = ','.charCodeAt(0);
-  const colon = ':'.charCodeAt(0);
-
-  const lastColonIndex = findLast(':', buffer);
-  const lastCommaIndex = findLast(',', buffer);
-
-  if (lastColonIndex > lastCommaIndex) {
-    if (buffer.length - 1 - lastColonIndex > 0) {
-      return buffer.length - 1;
-    } else {
-      return findLast(',', buffer) - 1;
-    }
-  } else {
-    return lastCommaIndex - 1;
   }
 };
 
@@ -86,6 +69,25 @@ const findLast = (symbol: string, buffer: Uint8Array): number => {
   return -1;
 };
 
+const findEndIndex = (buffer: Uint8Array): number => {
+  const quote = '\''.charCodeAt(0);
+  const comma = ','.charCodeAt(0);
+  const colon = ':'.charCodeAt(0);
+
+  const lastColonIndex = findLast(':', buffer);
+  const lastCommaIndex = findLast(',', buffer);
+
+  if (lastColonIndex > lastCommaIndex) {
+    if (buffer.length - 1 - lastColonIndex > 0) {
+      return buffer.length - 1;
+    } else {
+      return findLast(',', buffer) - 1;
+    }
+  } else {
+    return lastCommaIndex - 1;
+  }
+};
+
 const toUTF8Array = str => {
   const utf8 = [];
   for (let i = 0; i < str.length; i++) {
@@ -106,8 +108,7 @@ const toUTF8Array = str => {
       // UTF-16 encodes 0x10000-0x10FFFF by
       // subtracting 0x10000 and splitting the
       // 20 bits of 0x0-0xFFFFF into two halves
-      charcode =
-        0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
+      charcode = 0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
       utf8.push(
         0xf0 | (charcode >> 18),
         0x80 | ((charcode >> 12) & 0x3f),
@@ -120,7 +121,7 @@ const toUTF8Array = str => {
 };
 
 function compressObjectToString(obj: any): string {
-  const input = new Uint8Array(toUTF8Array(JSON.stringify(obj)));
+  const input = new Uint8Array(toUTF8Array(stringify(obj)));
   return pako.deflate(input).toString();
 }
 

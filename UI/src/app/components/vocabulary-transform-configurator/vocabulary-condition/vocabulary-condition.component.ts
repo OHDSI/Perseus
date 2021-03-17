@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BaseComponent } from '../../base/base.component';
 import { takeUntil } from 'rxjs/operators';
+import { BaseComponent } from '../../../base/base.component';
 
 @Component({
   selector: 'app-vocabulary-condition',
