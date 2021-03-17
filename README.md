@@ -23,7 +23,7 @@ Features
 - Auto domain switching 
 - Create ETL specification
 
-Screenshot
+Screenshots
 ===========
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/start.PNG" alt="Start page" title="Start page" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/link_tables.PNG" alt="Link tables" title="Link tables" />
