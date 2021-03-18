@@ -217,14 +217,14 @@ def add_lookup_data(folder, basepath, lookup, template):
 
 
 def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
-    if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
-        rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
+    if os.path.isdir(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}"):
+        rmtree(F"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
     try:
-        os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created')
+        os.makedirs(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
+        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user} created')
     except FileExistsError:
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist')
+        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user} already exist')
 
     if target_field.endswith('source_concept_id'):
         return False
@@ -232,7 +232,7 @@ def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_
         pair_target_field = target_field.replace('concept_id', 'source_concept_id')
 
     if lookup.endswith('userDefined'):
-        basepath = INCOME_LOOKUPS_PATH
+        basepath = f"{INCOME_LOOKUPS_PATH}/{current_user}"
     else:
         basepath = PREDEFINED_LOOKUPS_PATH
 
@@ -248,7 +248,7 @@ def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_
 
         results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
 
-    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
+    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, current_user, f'{lookup.split(".")[0]}.sql')
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
     return True
@@ -364,7 +364,7 @@ def find_all_concept_id_fields(mapping):
     return concept_ids_fields
 
 
-def generate_bath_sql_file(mapping, source_table, views):
+def generate_bath_sql_file(current_user, mapping, source_table, views):
     view = ''
     sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM '
     if views:
@@ -384,15 +384,15 @@ def generate_bath_sql_file(mapping, source_table, views):
             sql = sql.replace('{person_id}', source_field)
         if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
-    with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
+    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}", mode='w') as f:
         f.write(sql)
 
 
-def clear():
-    delete_generated_xml()
-    delete_generated_sql()
+def clear(current_user):
+    delete_generated_xml(current_user)
+    delete_generated_sql(current_user)
 
-    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH)
+    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user)
     try:
         os.unlink(file_path)
     except Exception as err:
@@ -401,7 +401,7 @@ def clear():
 
 def get_xml(current_user, json_):
     """prepare XML for CDM"""
-    clear()
+    clear(current_user)
     result = {}
     previous_target_table = ''
     previous_source_table = ''
@@ -414,7 +414,7 @@ def get_xml(current_user, json_):
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
-        sql = prepare_sql(mapping_items, source_table, views, pd.unique(target_tables.get('target_table')))
+        sql = prepare_sql(current_user, mapping_items, source_table, views, pd.unique(target_tables.get('target_table')))
         query_tag.text = sql
 
         skip_write_file = False
@@ -591,16 +591,16 @@ def get_xml(current_user, json_):
                 previous_target_table = target_table
                 previous_source_table = source_table
                 if target_table == 'person':
-                    generate_bath_sql_file(groupList, source_table, views)
+                    generate_bath_sql_file(current_user, groupList, source_table, views)
 
                 if target_table.lower() in ('location', 'care_site', 'provider'):
                     skip_write_file = True
-                    write_xml(query_definition_tag, f'L_{target_table}', result)
+                    write_xml(current_user, query_definition_tag, f'L_{target_table}', result)
 
         if skip_write_file:
             continue
 
-        write_xml(query_definition_tag, source_table, result)
+        write_xml(current_user, query_definition_tag, source_table, result)
     return result
 
 def apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag):
@@ -615,15 +615,15 @@ def apply_sql_transformation(sql_transformation, source_field, target_field, clo
             query_tag.text = query_tag.text.replace(f',\n{match_item},\n', ' ')
             query_tag.text = query_tag.text.replace(f',\n{match_item}\n', ' ')
 
-def write_xml(tag, filename, result):
+def write_xml(current_user, tag, filename, result):
     xml = ElementTree(tag)
     try:
-        os.mkdir(GENERATE_CDM_XML_PATH)
-        print(f'Directory {GENERATE_CDM_XML_PATH} created')
+        os.mkdir(f"{GENERATE_CDM_XML_PATH}/{current_user}")
+        print(f'Directory {GENERATE_CDM_XML_PATH}/{current_user} created')
     except FileExistsError:
-        print(f'Directory {GENERATE_CDM_XML_PATH} already exist')
+        print(f'Directory {GENERATE_CDM_XML_PATH}/{current_user} already exist')
 
-    xml.write(GENERATE_CDM_XML_PATH / (filename + '.xml'))
+    xml.write(GENERATE_CDM_XML_PATH / current_user / (filename + '.xml'))
     result.update({filename: _prettify(tag)})
 
 
@@ -718,18 +718,18 @@ def add_files_to_zip(zip_file, path):
             zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
 
 
-def zip_xml():
+def zip_xml(current_user):
     """add mapping XMLs and lookup sql's to archive"""
     try:
         zip_file = zipfile.ZipFile(
-            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
+            GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, GENERATE_CDM_XML_PATH)
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}")
         add_files_to_zip(zip_file, GENERATE_CDM_LOOKUP_SQL_PATH)
 
-        if os.path.isfile(GENERATE_BATCH_SQL_PATH):
-            zip_file.write(GENERATE_BATCH_SQL_PATH, arcname='Batch.sql')
+        if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}"):
+            zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}", arcname='Batch.sql')
         zip_file.close()
     except FileNotFoundError:
         raise
@@ -744,9 +744,9 @@ def delete_generated_xml(current_user):
     """clean mapping folder"""
     delete_generated(f"{GENERATE_CDM_XML_PATH}/{current_user}")
 
-def delete_generated_sql():
+def delete_generated_sql(current_user):
     """clean lookup sql folder"""
-    delete_generated(GENERATE_CDM_LOOKUP_SQL_PATH)
+    delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
 def get_lookups_list(lookup_type):
     lookups_list = []

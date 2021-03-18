@@ -174,25 +174,18 @@ def xml(current_user):
     return jsonify(xml_)
 
 
-@bp.route('/api/get_lookup_sql', methods=['POST'])
-def get_lookup_sql_call():
-    """generate sql's for lookups, also return to front"""
-    json = request.get_json()
-    sql_ = get_lookups_sql(json)
-    return jsonify(sql_)
-
-
 @bp.route('/api/get_zip_xml')
-def zip_xml_call():
+@token_required
+def zip_xml_call(current_user):
     """return attached ZIP of XML's from back-end folder
     TODO  - now the folder is not cleared
     """
     try:
-        zip_xml()
+        zip_xml(current_user)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return send_from_directory(
-        GENERATE_CDM_XML_ARCHIVE_PATH,
+        f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}",
         filename='.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
         as_attachment=True
     )
