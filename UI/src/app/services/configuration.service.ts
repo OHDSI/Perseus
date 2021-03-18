@@ -68,7 +68,7 @@ export class ConfigurationService {
   saveOnLocalDisk(newConfiguration: Configuration) {
     const config = JSON.stringify(newConfiguration);
     const blobMapping = new Blob([ config ], { type: 'application/json' });
-    this.createZip([ blobMapping, this.storeService.state.reportFile ], [ `${newConfiguration.name}.json`, `${this.storeService.state.report}.xlsx` ], newConfiguration.name)
+    this.createZip([ blobMapping, this.storeService.state.reportFile ], [ `${newConfiguration.name}.json`, this.storeService.state.report ], newConfiguration.name)
   }
 
   async createZip(files: any[], names: any[], zipName: string) {

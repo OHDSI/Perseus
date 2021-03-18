@@ -89,41 +89,20 @@ def save_source_schema_to_db_call(current_user):
 def get_View(current_user):
     try:
         view_sql = request.get_json()
-        view_result=get_view_from_db(current_user, view_sql['sql'])
+        view_result = get_view_from_db(current_user, view_sql['sql'])
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(view_result)
 
 @bp.route('/api/validate_sql', methods=['POST'])
-def validate_Sql():
+@token_required
+def validate_Sql(current_user):
     try:
         sql_transformation = request.get_json()
-        sql_result = run_sql_transformation(sql_transformation['sql'])
+        sql_result = run_sql_transformation(current_user, sql_transformation['sql'])
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(sql_result)
-
-@bp.route('/api/get_view', methods=['GET'])
-def get_view_call():
-    try:
-        view_sql = request.args['sql']
-        pg_db.connect()
-        cursor = pg_db.execute_sql(view_sql)
-        pg_db.close()
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return jsonify('OK')
-
-@bp.route('/api/delete_saved_source_schema', methods=['GET'])
-def delete_saved_source_schema_call():
-    """delete saved source schema by name"""
-    schema_name = request.args['schema_name']
-    if schema_name in get_existing_source_schemas_list(
-            app.config['UPLOAD_FOLDER']):
-        os.remove(app.config['UPLOAD_FOLDER'] / schema_name)
-        return 'OK'
-    else:
-        raise InvalidUsage('Schema was not loaded', 404)
 
 
 @bp.route('/api/get_cdm_versions')
@@ -134,38 +113,24 @@ def get_cdm_versions_call(current_user):
 
 
 @bp.route('/api/get_cdm_schema')
-def get_cdm_schema_call():
+@token_required
+def get_cdm_schema_call(current_user):
     """return CDM schema for target version"""
     cdm_version = request.args['cdm_version']
     cdm_schema = get_schema(cdm_version)
     return jsonify([s.to_json() for s in cdm_schema])
 
 
-@bp.route('/api/get_source_schema')
-def get_source_schema_call():
-    """return with source schema based on White Rabbit report"""
-    path = request.args['path']
-    source_schema = get_source_schema(path)
-    return jsonify([s.to_json() for s in source_schema])
-
-
-@bp.route('/api/get_top_values')
-def get_top_values_call():
-    """return top 10 values by freq for table and row(optionally)
-    based on WR report
-    """
-    table_name = request.args['table_name']
-    column_name = request.args.get('column_name')
-    return jsonify(get_top_values(table_name, column_name))
-
 @bp.route('/api/get_column_info')
-def get_column_info_call():
+@token_required
+def get_column_info_call(current_user):
     """return top 10 values by freq for table and row(optionally)
     based on WR report
     """
     table_name = request.args['table_name']
     column_name = request.args.get('column_name')
-    info = get_column_info(table_name, column_name);
+    report_name = request.args.get('report_name')
+    info = get_column_info(current_user, report_name, table_name, column_name);
     if not info:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
     else:
@@ -198,34 +163,14 @@ def handle_invalid_req_key_header(error):
     return response
 
 
-@bp.route('/api/get_lookup_list')
-def get_lookups_call():
-    """return lookups list of ATHENA vocabulary"""
-    lookups = return_lookup_list()
-    return jsonify(lookups)
-
-
-@bp.route('/api/get_domain_list')
-def get_domains_call():
-    """return domains list of ATHENA vocabulary"""
-    domains = return_domain_list()
-    return jsonify(domains)
-
-
-@bp.route('/api/get_concept_class_list')
-def get_concept_classes_call():
-    """return concept class list of ATHENA vocabulary"""
-    concept_classes = return_concept_class_list()
-    return jsonify(concept_classes)
-
-
 @bp.route('/api/get_xml', methods=['POST'])
-def xml():
+@token_required
+def xml(current_user):
     """return XML for CDM builder in map {source_table: XML, } and
     create file on back-end
     """
     json = request.get_json()
-    xml_ = get_xml(json)
+    xml_ = get_xml(current_user, json)
     return jsonify(xml_)
 
 

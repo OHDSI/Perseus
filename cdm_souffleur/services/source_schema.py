@@ -139,9 +139,10 @@ def addSchemaNames(current_user, view_sql):
         view_sql = re.sub(f"(?i)from {row[0]} ", f'from {current_user}.{row[0]} ', view_sql)
     return view_sql
 
-def run_sql_transformation(sql_transformation):
+def run_sql_transformation(current_user, sql_transformation):
     pg_db.connect()
     for val in sql_transformation:
+        val = addSchemaNames(current_user, val)
         pg_db.execute_sql(val).description
     pg_db.close()
     return True
@@ -181,16 +182,16 @@ def get_top_values(table_name, column_name=None):
         except KeyError as e:
             raise InvalidUsage('Column invalid' + e.__str__(), 404)
 
-def get_column_info(table_name, column_name=None):
+def get_column_info(current_user, report_name, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
+    path_to_schema = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{report_name}"
     try:
-        table_overview = pd.read_excel(book, table_name, dtype=str,
+        table_overview = pd.read_excel(path_to_schema, table_name, dtype=str,
                                        na_filter=False,
                                        engine='xlrd')
-        overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
+        overview = pd.read_excel(path_to_schema, dtype=str, na_filter=False, engine='xlrd')
         sql = f"select * from overview where `table`=='{table_name}' and `field`=='{column_name}'"
         tables_pd = sqldf(sql)._series
-        test = tables_pd.keys()
     except xlrd.biffh.XLRDError as e:
         raise InvalidUsage(e.__str__(), 404)
     try:

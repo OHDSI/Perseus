@@ -216,7 +216,7 @@ def add_lookup_data(folder, basepath, lookup, template):
     return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
 
 
-def create_lookup(lookup, target_field, mapping, lookup_source_to_source_included):
+def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
     if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
         rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
 
@@ -399,7 +399,7 @@ def clear():
         print(f'Failed to delete {file_path}. Reason: {err}')
 
 
-def get_xml(json_):
+def get_xml(current_user, json_):
     """prepare XML for CDM"""
     clear()
     result = {}
@@ -470,7 +470,7 @@ def get_xml(json_):
                     if lookup_name:
                         attrib_key = 'key'
                         if lookup_name not in lookups:
-                            lookup_created = create_lookup(lookup_name, target_field, groupList, lookup_source_to_source_included)
+                            lookup_created = create_lookup(current_user, lookup_name, target_field, groupList, lookup_source_to_source_included)
                             if lookup_created:
                                 concepts_tag = prepare_concepts_tag(
                                     concept_tags,

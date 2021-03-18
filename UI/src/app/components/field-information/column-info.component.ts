@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from '../../services/overlay/overlay-dialog-data';
 import { DataService } from '../../services/data.service';
+import { StoreService } from 'src/app/services/store.service';
 
 export interface ValueInfo {
   value: string;
@@ -38,7 +39,8 @@ export class ColumnInfoComponent implements OnInit {
   } = {};
 
   constructor(@Inject(OVERLAY_DIALOG_DATA) public payload: { columnName: string, tableNames: string[] },
-              private dataService: DataService) {
+              private dataService: DataService,
+              private storeService: StoreService) {
   }
 
   ngOnInit(): void {
@@ -57,7 +59,7 @@ export class ColumnInfoComponent implements OnInit {
     const tableName = this.tableNames[index];
 
     if (this.columnInfos[tableName].status === ColumnInfoStatus.LOADING) {
-      this.dataService.getColumnInfo(tableName, this.columnName)
+      this.dataService.getColumnInfo(this.storeService.state.report ,tableName, this.columnName)
         .subscribe(result => {
           this.columnInfos[tableName].value = result;
           this.columnInfos[tableName].status = ColumnInfoStatus.READY;
