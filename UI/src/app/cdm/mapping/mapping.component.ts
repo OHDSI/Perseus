@@ -9,11 +9,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-import { PanelComponent } from '../panel/panel.component';
-import { RulesPopupService } from '../popups/rules-popup/services/rules-popup.service';
-import { PanelComponent } from '../../panel/panel.component';
 import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
-import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent } from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
@@ -35,11 +31,13 @@ import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-d
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 import { LookupService } from '../../services/lookup.service';
 import { getLookupType } from '../../services/utilites/lookup-util';
-import * as conceptFields from '../concept-fileds-list.json';
-import { ConceptTransformationComponent } from '../concept-transformation/concept-transformation.component';
+import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
+import { PanelComponent } from '../../panel/panel.component';
+import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
+import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 
 @Component({
   selector: 'app-mapping',

@@ -16,7 +16,7 @@ import { CdmDialogComponent } from '../scan-data/cdm-dialog/cdm-dialog.component
 import { DqdDialogComponent } from '../scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '../base/base.component';
 import { VocabularyObserverService } from '../services/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
 
 @Component({
   selector: 'app-toolbar',
