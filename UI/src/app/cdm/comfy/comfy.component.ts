@@ -38,6 +38,7 @@ import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-d
 import { Observable } from 'rxjs/internal/Observable';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
+import { mainPageRouter } from '../../app.constants';
 
 @Component({
   selector: 'app-comfy',
@@ -347,7 +348,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   async afterOpenMapping(event?: any) {
     if (!event || event.index !== 0)
-      this.router.navigate(['/cdm/mapping']);
+      this.router.navigate([`${mainPageRouter}/mapping`]);
   }
 
   getMappingConfig() {

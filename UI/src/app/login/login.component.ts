@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { parseHtmlError } from '../services/utilites/error';
+import { mainPageRouter } from '../app.constants';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +32,7 @@ export class LoginComponent implements OnInit {
     const user: User = this.form.value
     this.authService.login(user.login, user.password)
       .subscribe(() =>
-        this.router.navigate(['/cdm']),
+        this.router.navigate([mainPageRouter]),
         error => {
           this.error = parseHtmlError(error)
           this.loading = false

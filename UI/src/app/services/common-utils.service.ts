@@ -21,7 +21,7 @@ import { StoreService } from './store.service';
 })
 export class CommonUtilsService {
   private renderer: Renderer2;
-  private readonly loadReport = new BehaviorSubject<any>(true);
+  private readonly loadReport = new BehaviorSubject<any>(false);
   readonly loadSourceReport$ = this.loadReport.asObservable();
 
   constructor(

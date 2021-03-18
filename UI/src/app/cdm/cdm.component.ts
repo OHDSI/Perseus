@@ -7,6 +7,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ICON_NAMES } from './icons';
 import { BaseComponent } from '../base/base.component';
 import { Router } from '@angular/router';
+import { mainPageRouter } from '../app.constants';
 
 @Component({
   selector: 'app-cdm',
@@ -55,7 +56,7 @@ export class CdmComponent extends BaseComponent implements OnInit {
   private subscribeOnUrlChange() {
     this.router.events
       .subscribe(() =>
-        this.currentUrl = this.router.url.replace('/cdm', '')
+        this.currentUrl = this.router.url.replace(mainPageRouter, '')
       )
   }
 }

@@ -7,7 +7,7 @@ import { HttpService } from './http.service';
 import { Configuration } from '../models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject } from 'rxjs';
-import * as jsZip from 'jszip'; 
+import * as jsZip from 'jszip';
 import { MediaType } from './utilites/base64-util';
 
 @Injectable({
@@ -96,7 +96,7 @@ export class UploadService {
     this.bridgeService.applyConfiguration(resultConfig);
   }
 
-  async loadReport(file: any){
+  async loadReport(file: any) {
     this.storeService.add('reportFile', file[0]);
     this.uploadSchema(file, true)
       .subscribe(res => {

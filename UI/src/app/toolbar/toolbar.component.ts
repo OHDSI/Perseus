@@ -17,6 +17,7 @@ import { DqdDialogComponent } from '../scan-data/dqd-dialog/dqd-dialog.component
 import { BaseComponent } from '../base/base.component';
 import { VocabularyObserverService } from '../services/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
+import { mainPageRouter } from '../app.constants';
 
 @Component({
   selector: 'app-toolbar',
@@ -24,7 +25,7 @@ import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../s
   templateUrl: './toolbar.component.html',
 })
 export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy {
-  @ViewChild('sourceUpload', {static: true}) fileInput: ElementRef;
+  @ViewChild('sourceUpload', {static: true}) reportInput: ElementRef;
   @ViewChild('mappingUpload', {static: true}) mappingInput: ElementRef;
 
   cdmVersion: string;
@@ -68,7 +69,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
     this.commonUtilsService.loadSourceReport$.subscribe(res => {
       if (res) {
-        this.uploadService.onFileInputClick(this.fileInput);
+        this.uploadService.onFileInputClick(this.reportInput);
       }
     });
 
@@ -82,7 +83,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   goToComfy() {
-    this.router.navigateByUrl(`/comfy`);
+    this.router.navigateByUrl(`${mainPageRouter}/comfy`);
   }
 
   IsCreateNewMappingDisabled() {

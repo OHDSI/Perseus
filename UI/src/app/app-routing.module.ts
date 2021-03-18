@@ -9,7 +9,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'cdm',
+    path: 'perseus',
     canActivate: [AuthGuard],
     loadChildren: () => import('./cdm/cdm.module')
       .then(module => module.CdmModule),
