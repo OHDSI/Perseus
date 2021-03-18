@@ -1,0 +1,34 @@
+@import '../../styles/variables';
+
+.breadcrumb {
+  background: none;
+  margin: 0 20px 0 0;
+
+  li {
+    list-style: none;
+    float: left;
+  }
+
+  mat-icon {
+    color: $white;
+    float: left;
+    font-size: 18px;
+    line-height: 18px;
+    margin-top: 9px;
+    margin-left: 5px;
+  }
+
+  li span {
+    color: #A8A8A8;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    font-size: 16px;
+    line-height: 18px;
+  }
+
+  li:last-child span {
+    color: $white;
+    cursor: default;
+  }
+}

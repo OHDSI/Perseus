@@ -1,0 +1,30 @@
+@import '../../styles/variables';
+
+:host {
+  display: block;
+}
+
+.label {
+  display: inline-block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 14px;
+}
+
+.mat-dialog-container {
+  background: $cdm-grey-lighter;
+}
+
+.button {
+  font-weight: bold;
+}
+
+.delete-button {
+  color: red;
+  background: $white;
+}
+
+.cancel-button {
+  color: $black;
+  background: $cdm-grey-light;
+}
