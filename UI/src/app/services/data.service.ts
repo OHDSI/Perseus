@@ -9,7 +9,7 @@ import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
-import { ColumnInfo } from '../cdm/comfy/columns-list/column-info/column-info.component';
+import { ColumnInfo } from '../components/field-information/column-info.component';
 
 const URL = environment.url;
 

@@ -20,21 +20,9 @@ body {
 }
 
 app-root {
-  width: 100%;
-  height: 100%;
-}
-
-app-cdm {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-app-toolbar.comfy {
-  background-color: $cdm-grey-dark;
-  display: flex;
-  justify-content: center;
-  align-content: center;
 }
 
 .divider {
@@ -82,6 +70,7 @@ a {
 app-dialog {
   width: 240px;
 }
+
 
 .drag-over {
   background-color: $light-blue;
@@ -150,6 +139,7 @@ article {
     margin-left: auto !important;
   }
 }
+
 
 app-toolbar.comfy > mat-toolbar.app-toolbar {
   width: 1440px !important;
@@ -359,4 +349,24 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
       margin-right: 5px;
     }
   }
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: #000000;
+  animation: spinner .8s linear infinite;
 }

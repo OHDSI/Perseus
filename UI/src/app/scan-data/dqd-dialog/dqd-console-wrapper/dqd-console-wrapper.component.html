@@ -8,7 +8,10 @@
 
     <ng-template #scanningFinishedBlock>
       <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
-      <button class="console-wrapper__action-save confirm" (click)="onSaveResult()">Save result</button>
+      <button class="console-wrapper__action-save confirm"
+              [class.spinner]="fileLoading"
+              [disabled]="fileLoading"
+              (click)="onSaveResult()">Save result</button>
       <button class="console-wrapper__action-save confirm" (click)="onShowResult()">Show result</button>
     </ng-template>
 

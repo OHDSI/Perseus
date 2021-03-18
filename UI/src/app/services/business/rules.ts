@@ -1,4 +1,4 @@
-export function parseArrowKey(key) {
+function parseArrowKey(key) {
   const ids = key.split('/');
   const sourceTableRowIds = ids[0];
   const targetTableRowIds = ids[1];
@@ -11,3 +11,5 @@ export function parseArrowKey(key) {
     targetTableId: targetTableRowIds.split('-')[0]
   };
 }
+
+export { parseArrowKey };

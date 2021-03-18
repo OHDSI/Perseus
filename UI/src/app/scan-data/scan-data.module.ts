@@ -1,15 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 import { TablesToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/tables-to-scan.component';
 import { TableToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/table-to-scan/table-to-scan.component';
 import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-data-form.component';
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
 import { WebsocketModule } from '../websocket/websocket.module';
 import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
+import { MatIconModule } from '@angular/material/icon';
 import { DbSettingsFormComponent } from './scan-data-dialog/scan-data-form/connect-form/db-settings-form/db-settings-form.component';
 import { FileSettingsFormComponent } from './scan-data-dialog/scan-data-form/connect-form/file-settings-form/file-settings-form.component';
 import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.component';
@@ -31,7 +35,7 @@ import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
 import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
-import { CdmCommonModule } from '../common/cdm-common.module';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -69,8 +73,12 @@ import { CdmCommonModule } from '../common/cdm-common.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CdmCommonModule,
-    WebsocketModule
+    MatSelectModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatIconModule,
+    WebsocketModule,
+    SharedModule
   ],
   exports: [
     ScanDataDialogComponent,

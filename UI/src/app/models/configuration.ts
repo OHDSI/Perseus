@@ -1,7 +1,7 @@
 import { ArrowCache } from './arrow-cache';
 import { Row } from './row';
 import { IConnection } from '../services/bridge.service';
-import { SqlFunction } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
+import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
 import { parse, stringify } from 'flatted';
 import { Table } from './table';
 
@@ -80,9 +80,9 @@ export class Configuration {
     const clones = parse(this.targetTablesClones);
     Object.keys(clones).forEach(item => {
       const cloneTables = [];
-      const cloneList = clones[item];
-      cloneList.forEach(it => cloneTables.push(new Table(it)));
-      clonesResult[item] = cloneTables;
+       const cloneList = clones[item];
+       cloneList.forEach(it => cloneTables.push(new Table(it)));
+       clonesResult[item] = cloneTables;
     });
     return clonesResult;
   }
