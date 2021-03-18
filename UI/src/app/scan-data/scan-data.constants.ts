@@ -69,7 +69,7 @@ export const cdmWebsocketConfig = {
 
 export const dictionaryDbSettingForCdmBuilder = {
   vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
-  vocabularyServer: '185.134.75.47',
+  vocabularyServer: '192.168.20.47',
   vocabularyPort: 5431,
   vocabularyDatabase: 'cdm_souffleur',
   vocabularySchema: 'vocabulary',
