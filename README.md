@@ -53,6 +53,14 @@ Getting Started
 
 ### Database
 
+Get link to the vocabulary from [Athena](http://athena.ohdsi.org).
+
+    cd database
+
+Open load_csv.sh
+
+Replace the vocabulary link with your own
+
     cd database
     docker build -t perseus-database .
     docker run --name perseus-database -d -p 5431:5432 perseus-database
