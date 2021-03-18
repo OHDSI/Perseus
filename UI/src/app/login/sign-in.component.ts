@@ -12,7 +12,7 @@ import { mainPageRouter } from '../app.constants';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class SignInComponent implements OnInit {
 
   form: FormGroup
 

@@ -25,3 +25,4 @@ export const numberOfPanelsWithTwoSimilar = 4;
 export const conceptFieldsTypes = ['concept_id', 'source_value', 'source_concept_id', 'type_concept_id'];
 
 export const mainPageRouter = '/perseus'
+export const loginRouter = '/sign-in'
