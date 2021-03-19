@@ -17,7 +17,7 @@ import { DqdDialogComponent } from '../scan-data/dqd-dialog/dqd-dialog.component
 import { BaseComponent } from '../base/base.component';
 import { VocabularyObserverService } from '../services/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
-import { mainPageRouter } from '../app.constants';
+import { codesRouter, mainPageRouter } from '../app.constants';
 
 @Component({
   selector: 'app-toolbar',
@@ -182,6 +182,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   generateReport() {
     this.reportGenerationService.emit(ReportGenerationEvent.PREPARE)
+  }
+
+  codeMapping() {
+    this.router.navigateByUrl(mainPageRouter + codesRouter)
   }
 
   private initStreamsOfDisabledButtons() {

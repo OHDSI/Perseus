@@ -23,6 +23,11 @@ const routes: Routes = [
           .then(module => module.MappingModule)
       },
       {
+        path: 'codes',
+        loadChildren: () => import('./code-mapping/code-mapping.module')
+          .then(module => module.CodeMappingModule)
+      },
+      {
         path: '**',
         redirectTo: '/comfy'
       },

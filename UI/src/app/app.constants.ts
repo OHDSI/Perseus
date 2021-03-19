@@ -26,3 +26,4 @@ export const conceptFieldsTypes = ['concept_id', 'source_value', 'source_concept
 
 export const mainPageRouter = '/perseus'
 export const loginRouter = '/sign-in'
+export const codesRouter = '/codes'

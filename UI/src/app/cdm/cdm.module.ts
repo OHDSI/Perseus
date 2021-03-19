@@ -7,7 +7,9 @@ import { RouterModule } from '@angular/router';
 import { CdmRoutingModule } from './cdm-routing.module';
 
 @NgModule({
-  declarations: [CdmComponent],
+  declarations: [
+    CdmComponent
+  ],
   imports: [
     CommonModule,
     CdmCommonModule,

@@ -18,6 +18,8 @@ export interface IBreadCrumb {
 export class BreadcrumbComponent implements OnInit {
   public breadcrumbs: IBreadCrumb[] = [];
 
+  private readonly singleBreadcrumbLabels = ['Link Fields', 'Import codes'];
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -33,12 +35,15 @@ export class BreadcrumbComponent implements OnInit {
   }
 
   buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrumb[] = []): IBreadCrumb[] {
-    const label = route.routeConfig && route.routeConfig.data ? route.routeConfig.data.breadcrumb : '';
-    const path = route.routeConfig && route.routeConfig.data ? route.routeConfig.path : '';
+    const label = route.routeConfig?.data?.breadcrumb;
+    const path = route.routeConfig?.data ? route.routeConfig.path : null;
 
     const nextUrl = path ? `${url}/${path}` : url;
 
-    const existedBreadcrumb = this.breadcrumbs ? this.breadcrumbs.find(item => item.label === label && item.url === nextUrl) : undefined;
+    const existedBreadcrumb = this.breadcrumbs?.find(item =>
+      item.label === label && item.url === nextUrl
+    );
+
     if (existedBreadcrumb) {
       return [existedBreadcrumb];
     }
@@ -48,7 +53,7 @@ export class BreadcrumbComponent implements OnInit {
         url: nextUrl,
     };
 
-    if (label === 'Link Fields' && this.breadcrumbs.length === 0) {
+    if (this.breadcrumbs.length === 0 && label === 'Link Fields') {
       return;
     }
     const newBreadcrumbs = breadcrumb.label ? [ ...breadcrumbs, breadcrumb ] : [ ...breadcrumbs];
