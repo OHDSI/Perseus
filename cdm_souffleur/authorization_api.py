@@ -25,3 +25,12 @@ def login():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(auth_token)
+
+@authorization_api.route('/api/logout', methods=['POST'])
+@token_required
+def logout():
+    try:
+        auth_token = user_logout()
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 404)
+    return jsonify(auth_token)

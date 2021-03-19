@@ -191,104 +191,42 @@ def zip_xml_call(current_user):
     )
 
 
-@bp.route('/api/clear_xml_dir')
-def clear_xml_dir_call():
-    """clear directory with mapping items"""
-    try:
-        delete_generated_xml()
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return 'OK'
-
-
-@bp.route('/api/clear_sql_dir')
-def clear_sql_dir_call():
-    """clear directory with lookup sql's items"""
-    try:
-        delete_generated_sql()
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return 'OK'
-
-
-@bp.route('/api/find_domain')
-def find_domain_call():
-    """load report and vocabulary before, return matched codes"""
-    column_name = request.args['column_name']
-    table_name = request.args['table_name']
-    try:
-        found_codes = find_domain(column_name, table_name).to_json(
-            orient='records')
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return jsonify(found_codes)
-
-
-@bp.route('/api/get_generated_sql', methods=['GET'])
-def get_sql_call():
-    """return sql's from generated mapping"""
-    source_table_name = request.args['source_table_name']
-    sql = extract_sql(source_table_name)
-    return jsonify(sql)
-
-
-@bp.route('/api/load_report')
-def load_report_call():
-    """load report about source schema"""
-    schema_name = request.args['schema_name']
-    try:
-        load_report(app.config['UPLOAD_FOLDER'] / schema_name)
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return 'OK'
-
-
-@bp.route('/api/load_vocabulary')
-def load_vocabulary_call():
-    """load vocabulary"""
-    # TODO rewrite to threading instead _thread?
-    path = request.args['path']
-    start_new_thread(load_vocabulary, (path,))
-    return 'OK'
-
 @bp.route('/api/get_lookup')
-def get_lookup_by_name():
+@token_required
+def get_lookup_by_name(current_user):
     name = request.args['name']
     lookup_type = request.args['lookupType']
-    lookup = get_lookup(name, lookup_type)
+    lookup = get_lookup(current_user, name, lookup_type)
     return jsonify(lookup)
 
 @bp.route('/api/get_lookups_list')
-def get_lookups():
+@token_required
+def get_lookups(current_user):
     lookup_type = request.args['lookupType']
-    lookups_list = get_lookups_list(lookup_type)
+    lookups_list = get_lookups_list(current_user, lookup_type)
     return jsonify(lookups_list)
 
 @bp.route('/api/save_lookup', methods=['POST'])
-def save_lookup():
+@token_required
+def save_lookup(current_user):
     try:
         lookup = request.json
-        add_lookup(lookup)
+        add_lookup(current_user, lookup)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 400)
     return jsonify(success=True)
 
 @bp.route('/api/delete_lookup', methods=['DELETE'])
-def delete_lookup():
+@token_required
+def delete_lookup(current_user):
     try:
         name = request.args['name']
         lookup_type = request.args['lookupType']
-        del_lookup(name, 'source_to_standard')
-        del_lookup(name, 'source_to_source')
+        del_lookup(current_user, name, 'source_to_standard')
+        del_lookup(current_user, name, 'source_to_source')
     except Exception as error:
         raise InvalidUsage(error.__str__(), 404)
     return jsonify(success=True)
-
-@bp.route('/api/set_db_connection')
-def set_db_connection_call():
-    #connection_string = request.headers['connection-string']
-    #Database().get_engine(connection_string)
-    return 'OK'
 
 app.register_blueprint(bp)
 app.register_blueprint(vocab_search_api)

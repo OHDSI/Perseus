@@ -23,3 +23,5 @@ def user_login(username, password):
     except Exception as e:
         return 'Login failed'
 
+def user_logout():
+    return True

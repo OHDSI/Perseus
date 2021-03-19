@@ -216,15 +216,19 @@ def add_lookup_data(folder, basepath, lookup, template):
     return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
 
 
+def create_user_directory(path, current_user):
+    try:
+        os.makedirs(f"{path}/{current_user}")
+        print(f'Directory {path}/{current_user} created')
+    except FileExistsError:
+        print(f'Directory {path}/{current_user} already exist')
+
+
 def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
     if os.path.isdir(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}"):
         rmtree(F"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
-    try:
-        os.makedirs(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user} created')
-    except FileExistsError:
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user} already exist')
+    create_user_directory(GENERATE_CDM_LOOKUP_SQL_PATH, current_user)
 
     if target_field.endswith('source_concept_id'):
         return False
@@ -617,12 +621,7 @@ def apply_sql_transformation(sql_transformation, source_field, target_field, clo
 
 def write_xml(current_user, tag, filename, result):
     xml = ElementTree(tag)
-    try:
-        os.mkdir(f"{GENERATE_CDM_XML_PATH}/{current_user}")
-        print(f'Directory {GENERATE_CDM_XML_PATH}/{current_user} created')
-    except FileExistsError:
-        print(f'Directory {GENERATE_CDM_XML_PATH}/{current_user} already exist')
-
+    create_user_directory(GENERATE_CDM_XML_PATH, current_user)
     xml.write(GENERATE_CDM_XML_PATH / current_user / (filename + '.xml'))
     result.update({filename: _prettify(tag)})
 
@@ -712,21 +711,23 @@ def get_lookups_sql(cond: dict):
     return result
 
 
-def add_files_to_zip(zip_file, path):
+def add_files_to_zip(zip_file, path, directory):
     for root, dirs, files in os.walk(path):
         for file in files:
-            zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+            zip_file.write(os.path.join(root, file), arcname=os.path.join(directory, file))
 
 
 def zip_xml(current_user):
     """add mapping XMLs and lookup sql's to archive"""
     try:
+        create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
+
         zip_file = zipfile.ZipFile(
             GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}")
-        add_files_to_zip(zip_file, GENERATE_CDM_LOOKUP_SQL_PATH)
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "Definitions")
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "Lookups")
 
         if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}"):
             zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}", arcname='Batch.sql')
@@ -748,7 +749,7 @@ def delete_generated_sql(current_user):
     """clean lookup sql folder"""
     delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
-def get_lookups_list(lookup_type):
+def get_lookups_list(current_user, lookup_type):
     lookups_list = []
 
     def updateList(base_path):
@@ -760,14 +761,14 @@ def get_lookups_list(lookup_type):
             )
 
     updateList(PREDEFINED_LOOKUPS_PATH)
-    updateList(INCOME_LOOKUPS_PATH)
+    updateList(f"{INCOME_LOOKUPS_PATH}/{current_user}")
 
     return lookups_list
 
-def get_lookup(name, lookup_type):
+def get_lookup(current_user, name, lookup_type):
     lookup = ''
     if len(name.split('.')) > 1:
-        path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
+        path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
     else:
         if 'template' in name:
             path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
@@ -778,10 +779,10 @@ def get_lookup(name, lookup_type):
             lookup = f.readlines()
     return ''.join(lookup)
 
-def add_lookup(lookup):
+def add_lookup(current_user, lookup):
     name = lookup['name']
     lookup_type = lookup['lookupType']
-    filepath = os.path.join(INCOME_LOOKUPS_PATH, lookup_type)
+    filepath = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type)
     filename = os.path.join(filepath, f'{name}.txt')
     if not os.path.isdir(filepath):
         os.makedirs(filepath)
@@ -789,8 +790,8 @@ def add_lookup(lookup):
     with open(filename, mode='w') as f:
         f.write(lookup['value'])
 
-def del_lookup(name, lookup_type):
-    path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
+def del_lookup(current_user, name, lookup_type):
+    path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
     if os.path.isfile(path):
         os.remove(path)
 
