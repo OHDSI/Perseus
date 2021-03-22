@@ -1,10 +1,10 @@
 from cdm_souffleur.model.user import *
 
-def register_user_in_db(username, password):
+def register_user_in_db(username, password, first_name, last_name, email):
     encrypted_password = bcrypt.generate_password_hash(
         password, app.config.get('BCRYPT_LOG_ROUNDS')
     ).decode()
-    user = User(username=username, password=encrypted_password)
+    user = User(username=username, first_name = first_name, last_name = last_name, email = email, password=encrypted_password)
     user.save()
     auth_token = user.encode_auth_token(user.username)
     return auth_token

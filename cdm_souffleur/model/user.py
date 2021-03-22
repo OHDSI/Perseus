@@ -15,6 +15,9 @@ class User(BaseModel):
     user_id = AutoField()
     username = CharField(unique=True)
     password = CharField()
+    first_name = CharField()
+    last_name = CharField()
+    email = CharField()
 
     def encode_auth_token(self, user_id, **kwargs):
         try:
