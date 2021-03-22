@@ -6,23 +6,27 @@ import { FilterItemComponent } from './filter-item/filter-item.component';
 import { FilterListComponent } from './filter-list/filter-list.component';
 import { ChipComponent } from './chip/chip.component';
 import { FormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/shared.module';
+import { VocabularyButtonComponent } from './vocabulary-button/vocabulary-button.component';
+import { CdmCommonModule } from '../common/cdm-common.module';
 
 @NgModule({
   declarations: [
     VocabularySearchComponent,
     FilterItemComponent,
     FilterListComponent,
-    ChipComponent
+    ChipComponent,
+    VocabularyButtonComponent
   ],
   exports: [
-    VocabularySearchComponent
+    VocabularySearchComponent,
+    VocabularyButtonComponent
   ],
-    imports: [
-        CommonModule,
-        MatProgressSpinnerModule,
-        FormsModule,
-        SharedModule
-    ]
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    FormsModule,
+    CdmCommonModule
+  ]
 })
-export class VocabularySearchModule { }
+export class VocabularySearchModule {
+}

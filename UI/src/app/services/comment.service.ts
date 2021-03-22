@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { Comment, IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CommentService {
 
     constructor() {}

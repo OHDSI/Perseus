@@ -20,9 +20,21 @@ body {
 }
 
 app-root {
+  width: 100%;
+  height: 100%;
+}
+
+app-cdm {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+app-toolbar.comfy {
+  background-color: $cdm-grey-dark;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 .divider {
@@ -70,7 +82,6 @@ a {
 app-dialog {
   width: 240px;
 }
-
 
 .drag-over {
   background-color: $light-blue;
@@ -139,7 +150,6 @@ article {
     margin-left: auto !important;
   }
 }
-
 
 app-toolbar.comfy > mat-toolbar.app-toolbar {
   width: 1440px !important;
