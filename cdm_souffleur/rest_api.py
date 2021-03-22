@@ -12,7 +12,7 @@ from cdm_souffleur.services.source_schema import load_report, get_source_schema,
     get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, \
     load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, get_column_info
 from cdm_souffleur.services.cdm_schema import get_exist_version, get_schema
-from cdm_souffleur.utils.exceptions import InvalidUsage
+from cdm_souffleur.utils.exceptions import InvalidUsage, AuthorizationError
 import traceback
 from werkzeug.exceptions import BadRequestKeyError
 import os
@@ -144,6 +144,13 @@ def handle_invalid_usage(error):
     traceback.print_tb(error.__traceback__)
     return response
 
+@app.errorhandler(AuthorizationError)
+def handle_invalid_usage(error):
+    """handle error of wrong usage on functions"""
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    traceback.print_tb(error.__traceback__)
+    return response
 
 @app.errorhandler(BadRequestKeyError)
 def handle_invalid_req_key(error):

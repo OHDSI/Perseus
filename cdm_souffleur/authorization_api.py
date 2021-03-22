@@ -14,8 +14,10 @@ def register_user():
         last_name = request.json['last_name'] if 'last_name' in request.json else None
         email = request.json['email'] if 'email' in request.json else None
         auth_token = register_user_in_db(username, password, first_name, last_name, email)
+    except IntegrityError as error:
+        raise InvalidUsage('This username already exists', 409)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(auth_token)
 
 
@@ -25,8 +27,12 @@ def login():
         username = request.json['username']
         password = request.json['password']
         auth_token = user_login(username, password)
+    except InvalidUsage as error:
+        raise error
+    except AuthorizationError as error:
+        raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(auth_token)
 
 @authorization_api.route('/api/logout', methods=['POST'])

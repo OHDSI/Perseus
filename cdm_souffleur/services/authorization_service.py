@@ -1,4 +1,7 @@
 from cdm_souffleur.model.user import *
+from cdm_souffleur.utils import InvalidUsage
+from cdm_souffleur.utils.exceptions import AuthorizationError
+
 
 def register_user_in_db(username, password, first_name, last_name, email):
     encrypted_password = bcrypt.generate_password_hash(
@@ -10,18 +13,19 @@ def register_user_in_db(username, password, first_name, last_name, email):
     return auth_token
 
 def user_login(username, password):
-    try:
-        user = User.select().where(User.username == username)
-        if user.exists():
-            for item in user:
-                if bcrypt.check_password_hash(item.password, password):
-                    auth_token = item.encode_auth_token(item.user_id)
-                if auth_token:
-                    return auth_token
-        else:
-            return 'User does not exist'
-    except Exception as e:
-        return 'Login failed'
+
+    auth_token = None
+    user = User.select().where(User.username == username)
+    if user.exists():
+        for item in user:
+            if bcrypt.check_password_hash(item.password, password):
+                auth_token = item.encode_auth_token(item.user_id)
+            if auth_token:
+                return auth_token
+            else:
+                raise AuthorizationError('Login failed', 401)
+    else:
+        raise InvalidUsage('User does not exist', 401)
 
 def user_logout():
     return True
