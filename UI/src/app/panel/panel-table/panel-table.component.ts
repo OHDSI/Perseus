@@ -327,11 +327,11 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     let typesArray = [];
     if (groupType) {
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(groupType))));
+        filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
       const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
-      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(firstGroupRowType))));
+      typesArray = Object.values(this.fieldTypes).
+        filter(( v ) => v.includes(firstGroupRowType.toUpperCase()));
     }
     return this.rowFocusedElements.some(item => {
       const rowType = this.getTypeWithoutLength(item.id);
