@@ -48,15 +48,17 @@ def load_saved_source_schema_call(current_user):
 @token_required
 def save_and_load_schema_call(current_user):
     """save schema to server and load it from server in the same request"""
-    delete_generated_xml(current_user)
-    if request.method == 'POST':
-        file = request.files['file']
-        load_schema_to_server(file, current_user)
-    saved_schema = load_saved_source_schema_from_server(current_user, file.filename)
-    if saved_schema is not None:
-        return jsonify([s.to_json() for s in saved_schema])
-    else:
-        raise InvalidUsage('Schema was not loaded', 404)
+    try:
+        delete_generated_xml(current_user)
+        if request.method == 'POST':
+            file = request.files['file']
+            load_schema_to_server(file, current_user)
+        saved_schema = load_saved_source_schema_from_server(current_user, file.filename)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify([s.to_json() for s in saved_schema])
 
 @bp.route(f'/api/load_schema_to_server', methods=['POST'])
 @token_required

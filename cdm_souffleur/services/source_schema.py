@@ -217,7 +217,7 @@ def load_saved_source_schema_from_server(current_user, schema_name):
             f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{schema_name}")
         return source_schema
     else:
-        return None
+        raise InvalidUsage('Schema was not loaded', 404)
 
 # def remove_existing_mappings():
 #     for root, dirs, files in os.walk(GENERATE_CDM_XML_PATH):
