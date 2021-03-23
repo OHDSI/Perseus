@@ -200,7 +200,7 @@ def load_schema_to_server(file, current_user):
     if file and _allowed_file(file.filename):
         filename = secure_filename(file.filename)
         try:
-            os.mkdir(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}")
+            os.makedirs(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}")
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} created")
         except FileExistsError:
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} already exist")
