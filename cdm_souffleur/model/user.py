@@ -1,17 +1,14 @@
+from jwt import ExpiredSignatureError, InvalidTokenError
 from peewee import *
-from cdm_souffleur.db import pg_db
-from cdm_souffleur import app, bcrypt
+from cdm_souffleur import app
 import jwt
-from flask import request, jsonify
+from flask import request
 from functools import wraps
-
+import datetime
+from cdm_souffleur.model.baseModel import BaseModel
+from cdm_souffleur.model.blacklist_token import blacklist_token
 from cdm_souffleur.utils import InvalidUsage
 
-
-class BaseModel(Model):
-    class Meta:
-        database = pg_db
-        schema = 'cdm'
 
 class User(BaseModel):
     user_id = AutoField()
@@ -21,10 +18,12 @@ class User(BaseModel):
     last_name = CharField()
     email = CharField()
 
-    def encode_auth_token(self, user_id, **kwargs):
+    def encode_auth_token(self, username, **kwargs):
         try:
             payload = {
-                'sub': user_id
+                'sub': username,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=86400),
+                'iat': datetime.datetime.utcnow(),
             }
             return jwt.encode(
                 payload,
@@ -37,6 +36,9 @@ class User(BaseModel):
     @staticmethod
     def decode_auth_token(auth_token):
         payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms='HS256')
+        is_blacklisted_token = blacklist_token.check_blacklist(auth_token)
+        if is_blacklisted_token:
+           raise InvalidTokenError
         return payload['sub']
 
 def token_required(f):
@@ -49,11 +51,13 @@ def token_required(f):
          token = request.headers['Authorization']
 
       if not token:
-         raise InvalidUsage('A valid token is missing', 403)
+         raise InvalidUsage('A valid token is missing', 401)
 
       try:
          current_user = User.decode_auth_token(token)
-      except:
+      except ExpiredSignatureError as error:
+         raise InvalidUsage('Token expired. Please log in again', 403)
+      except Exception as error:
          raise InvalidUsage('Token is invalid', 403)
 
       return f(current_user, *args, **kwargs)
