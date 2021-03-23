@@ -18,7 +18,7 @@ export interface IBreadCrumb {
 export class BreadcrumbComponent implements OnInit {
   public breadcrumbs: IBreadCrumb[] = [];
 
-  private readonly singleBreadcrumbLabels = ['Link Fields', 'Import codes'];
+  private readonly singleBreadcrumbLabels = ['Link Tables', 'Import codes'];
 
   constructor(
     private router: Router,
@@ -56,7 +56,11 @@ export class BreadcrumbComponent implements OnInit {
     if (this.breadcrumbs.length === 0 && label === 'Link Fields') {
       return;
     }
-    const newBreadcrumbs = breadcrumb.label ? [ ...breadcrumbs, breadcrumb ] : [ ...breadcrumbs];
+
+    const getBreadCrumbs = () => this.singleBreadcrumbLabels.includes(label) ? [] : breadcrumbs
+
+    const newBreadcrumbs = breadcrumb.label ? [ ...getBreadCrumbs(), breadcrumb ] : [ ...breadcrumbs];
+
     if (route.firstChild) {
         return this.buildBreadCrumb(route.firstChild, this.router.url, newBreadcrumbs);
     }
