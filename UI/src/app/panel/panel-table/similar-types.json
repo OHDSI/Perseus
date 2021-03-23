@@ -1,28 +1,28 @@
 {
 
-"char": [
-  "varchar",
-  "nvarchar",
-  "character",
-  "character varying",
-  "char",
-  "text"
+"CHAR": [
+  "VARCHAR",
+  "NVARCHAR",
+  "CHARACTER",
+  "CHARACTER VARYING",
+  "CHAR",
+  "TEXT"
 ],
 
-"int": [
-  "int",
-  "bigint",
-  "smallint",
-  "integer"
+"INT": [
+  "INT",
+  "BIGINT",
+  "SMALLINT",
+  "INTEGER"
 ],
 
-"boolean": ["boolean"],
+"BOOLEAN": ["BOOLEAN"],
 
-"date": ["date"],
+"DATE": ["DATE"],
 
-"float": [
-"real",
-"decimal",
-"double precision"]
+"FLOAT": [
+"REAL",
+"DECIMAL",
+"DOUBLE PRECISION"]
 
 }
