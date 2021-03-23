@@ -250,3 +250,12 @@ CREATE TABLE "cdm"."user"
     email VARCHAR ( 50 ),
 	password VARCHAR ( 255 ) NOT NULL
 );
+
+--- create table for blacklisted tokens
+CREATE TABLE "cdm"."blacklist_token"
+(
+    id SERIAL PRIMARY KEY,
+    token VARCHAR ( 500 ) UNIQUE NOT NULL,
+    blacklisted_on TIMESTAMP NOT NULL 
+    
+);

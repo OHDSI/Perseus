@@ -35,11 +35,11 @@ def login():
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(auth_token)
 
-@authorization_api.route('/api/logout', methods=['POST'])
+@authorization_api.route('/api/logout', methods=['GET'])
 @token_required
-def logout():
+def logout(current_user):
     try:
-        auth_token = user_logout()
+        user_logout(request.headers['Authorization'])
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
-    return jsonify(auth_token)
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify()

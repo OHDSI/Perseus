@@ -1,6 +1,8 @@
+from cdm_souffleur.model.blacklist_token import blacklist_token
 from cdm_souffleur.model.user import *
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.exceptions import AuthorizationError
+from cdm_souffleur import bcrypt
 
 
 def register_user_in_db(username, password, first_name, last_name, email):
@@ -19,13 +21,15 @@ def user_login(username, password):
     if user.exists():
         for item in user:
             if bcrypt.check_password_hash(item.password, password):
-                auth_token = item.encode_auth_token(item.user_id)
+                auth_token = item.encode_auth_token(item.username)
             if auth_token:
-                return auth_token
+                return {'username': username, 'token': auth_token}
             else:
                 raise AuthorizationError('Login failed', 401)
     else:
         raise InvalidUsage('User does not exist', 401)
 
-def user_logout():
+def user_logout(auth_token):
+    blacklisted_token = blacklist_token(token=auth_token, blacklisted_on=datetime.datetime.now())
+    blacklisted_token.save()
     return True
