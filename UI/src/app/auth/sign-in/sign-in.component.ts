@@ -1,11 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AuthService } from './auth.service';
-import { authInjector } from './auth-injector';
+import { AuthService } from '../auth.service';
+import { authInjector } from '../auth-injector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../models/user';
-import { parseHtmlError } from '../services/utilites/error';
-import { mainPageRouter } from '../app.constants';
+import { parseHtmlError } from '../../services/utilites/error';
+import { mainPageRouter } from '../../app.constants';
 
 @Component({
   selector: 'app-login',
@@ -29,8 +28,8 @@ export class SignInComponent implements OnInit {
 
   onSubmit() {
     this.loading = true
-    const user: User = this.form.value
-    this.authService.login(user.login, user.password)
+    const {username, password} = this.form.value
+    this.authService.login(username, password)
       .subscribe(() =>
         this.router.navigate([mainPageRouter]),
         error => {
@@ -42,7 +41,7 @@ export class SignInComponent implements OnInit {
 
   private initForm() {
     this.form = new FormGroup({
-      login: new FormControl(null, [Validators.required]),
+      username: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required])
     })
   }

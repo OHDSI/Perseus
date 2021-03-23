@@ -1,4 +1,4 @@
-import { SignInComponent } from './sign-in.component';
+import { SignInComponent } from './sign-in/sign-in.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
