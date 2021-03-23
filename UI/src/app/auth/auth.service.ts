@@ -7,7 +7,9 @@ export interface AuthService {
 
   isUserLoggedIn: boolean
 
-  login(login: string, password: string): Observable<User>
+  login(username: string, password: string): Observable<User>
 
   logout(): Observable<void>
 }
+
+export const localStorageUserField = 'currentUser'

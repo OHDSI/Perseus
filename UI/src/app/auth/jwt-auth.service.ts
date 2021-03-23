@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
-import { User } from '../models/user';
 import { AuthService, localStorageUserField } from './auth.service';
+import { User } from '../models/user';
 import { Observable } from 'rxjs/internal/Observable';
-import { delay, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { apiUrl } from '../app.constants';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FakeAuthService implements AuthService {
+export class JwtAuthService implements AuthService {
 
-  private currentUser$: BehaviorSubject<User>
+  private currentUser$: BehaviorSubject<User>;
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
     this.currentUser$ = new BehaviorSubject<User>(user)
   }
@@ -26,11 +28,10 @@ export class FakeAuthService implements AuthService {
   }
 
   login(username: string, password: string): Observable<User> {
-    return of({
+    return this.httpClient.post<User>(`${apiUrl}/login`, {
       username,
-      token: Math.random().toString(36).substring(7)
+      password
     }).pipe(
-      delay(2000),
       tap(user => {
         localStorage.setItem(localStorageUserField, JSON.stringify(user))
         this.currentUser$.next(user)
@@ -39,7 +40,7 @@ export class FakeAuthService implements AuthService {
   }
 
   logout(): Observable<void> {
-    return of(null)
+    return this.httpClient.post<void>(`${apiUrl}/logout`, {})
       .pipe(
         tap(() => {
           localStorage.removeItem(localStorageUserField);
