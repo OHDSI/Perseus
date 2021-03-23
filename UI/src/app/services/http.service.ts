@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 import { Mapping } from '../models/mapping';
 
 // use for dev purposes
-// import * as schemaData from '../mockups/schema.mockup.json';
+// import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
 
 const {url: URL} = environment;
 const API_URLS = {

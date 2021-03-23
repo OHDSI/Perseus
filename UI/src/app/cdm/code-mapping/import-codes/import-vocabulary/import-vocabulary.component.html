@@ -1,0 +1,29 @@
+<div class="import">
+  <div class="import__header">Please select and open .csv file to import data or edit existing vocabulary</div>
+
+  <button class="import__button">Import CSV</button>
+
+  <div *ngIf="vocabularies?.length > 0" class="import__list">
+    <div *ngFor="let vocab of vocabularies" class="import__list__item">
+      {{vocab.name}}
+
+      <app-import-vocabulary-buttons></app-import-vocabulary-buttons>
+    </div>
+
+    <button *ngIf="otherVocabularies?.length > 0" class="import__list__show-other"
+            (click)="onShowOther()">
+      Select other
+      <svg [class.clicked]="showOther" width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0L4 4L8 0H0Z" fill="#066BBB"/>
+      </svg>
+    </button>
+
+    <div *ngIf="showOther" class="import__list__other">
+      <div *ngFor="let vocabulary of otherVocabularies" class="import__list__other__item">
+        {{vocabulary.name}}
+
+        <app-import-vocabulary-buttons></app-import-vocabulary-buttons>
+      </div>
+    </div>
+  </div>
+</div>

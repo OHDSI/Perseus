@@ -1,3 +1,5 @@
+@import "variables";
+
 @mixin cdm-label {
   font-size: 12px;
   line-height: 15px;
@@ -26,4 +28,18 @@
   line-height: 18px;
   text-align: center;
   cursor: pointer;
+}
+
+@mixin vocabulary-button {
+  @include cmd-button();
+  width: 150px;
+  height: 33px;
+  color: $blue;
+  border: 1px solid #066BBB;
+  box-sizing: border-box;
+  border-radius: 2px;
+  background-color: transparent;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
 }
