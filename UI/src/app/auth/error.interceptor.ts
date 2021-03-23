@@ -16,7 +16,6 @@ export class ErrorInterceptor implements HttpInterceptor {
         catchError(error => {
           if (error.status === 401) {
             this.authService.logout()
-            location.reload()
           }
 
           return throwError(error)
