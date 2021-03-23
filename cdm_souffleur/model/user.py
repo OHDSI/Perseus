@@ -5,6 +5,8 @@ import jwt
 from flask import request, jsonify
 from functools import wraps
 
+from cdm_souffleur.utils import InvalidUsage
+
 
 class BaseModel(Model):
     class Meta:
@@ -47,12 +49,12 @@ def token_required(f):
          token = request.headers['Authorization']
 
       if not token:
-         return jsonify({'message': 'a valid token is missing'})
+         raise InvalidUsage('A valid token is missing', 403)
 
       try:
          current_user = User.decode_auth_token(token)
       except:
-         return jsonify({'message': 'token is invalid'})
+         raise InvalidUsage('Token is invalid', 403)
 
       return f(current_user, *args, **kwargs)
    return decorator

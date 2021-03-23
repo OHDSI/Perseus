@@ -236,3 +236,17 @@ VACUUM FULL "vocabulary"."vocabulary";
 --- permissions
 GRANT USAGE ON SCHEMA vocabulary TO cdm_builder;
 GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO cdm_builder;
+
+
+--- create cdm schema and user table
+create schema cdm;
+
+CREATE TABLE "cdm"."user"
+(
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR ( 30 ) UNIQUE NOT NULL,
+    first_name VARCHAR ( 30 ),
+    last_name VARCHAR ( 30 ),
+    email VARCHAR ( 50 ),
+	password VARCHAR ( 255 ) NOT NULL
+);
