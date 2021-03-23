@@ -4,18 +4,13 @@ from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from cdm_souffleur.services.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_sql, delete_generated_sql, get_lookups_list, get_lookup, add_lookup, del_lookup
-from _thread import start_new_thread
-from cdm_souffleur.model.detector import find_domain, load_vocabulary, \
-    return_lookup_list, return_domain_list, return_concept_class_list
-from cdm_souffleur.services.source_schema import load_report, get_source_schema, \
-    get_existing_source_schemas_list, get_top_values, extract_sql, load_schema_to_server, \
+    delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
+from cdm_souffleur.services.source_schema import load_schema_to_server, \
     load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, get_column_info
 from cdm_souffleur.services.cdm_schema import get_exist_version, get_schema
-from cdm_souffleur.utils.exceptions import InvalidUsage, AuthorizationError
+from cdm_souffleur.utils.exceptions import AuthorizationError
 import traceback
 from werkzeug.exceptions import BadRequestKeyError
-import os
 from flask import Blueprint
 from cdm_souffleur.vocab_search_api import vocab_search_api
 from cdm_souffleur.authorization_api import authorization_api
