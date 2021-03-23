@@ -15,12 +15,10 @@ export class JwtInterceptor implements HttpInterceptor {
   constructor(@Inject(authInjector) private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const {token} = this.authService.user
-
-    if (token) {
+    if (this.authService.isUserLoggedIn) {
       request = request.clone({
         setHeaders: {
-          Authorization: token
+          Authorization: this.authService.user.token
         }
       })
     }
