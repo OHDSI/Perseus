@@ -1,0 +1,12 @@
+<div class="logout">
+  <div class="logout__header">
+    <h2>Logout</h2>
+
+    <app-close-dialog-button (click)="onClose()"></app-close-dialog-button>
+  </div>
+
+  <p>You’re going to quit session in Perseus app. Are you sure?</p>
+
+  <button [class.spinner]="loading"
+          (click)="logout()" >Logout</button>
+</div>
