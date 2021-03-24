@@ -4,8 +4,9 @@ import { User } from '../models/user';
 import { Observable } from 'rxjs/internal/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl } from '../app.constants';
+import { apiUrl, loginRouter } from '../app.constants';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class JwtAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private router: Router) {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
     this.currentUser$ = new BehaviorSubject<User>(user)
   }
@@ -40,11 +41,12 @@ export class JwtAuthService implements AuthService {
   }
 
   logout(): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/logout`, {})
+    return this.httpClient.get<void>(`${apiUrl}/logout`)
       .pipe(
         tap(() => {
-          localStorage.removeItem(localStorageUserField);
-          this.currentUser$.next(null);
+          localStorage.removeItem(localStorageUserField)
+          this.currentUser$.next(null)
+          this.router.navigateByUrl(loginRouter)
         })
       )
   }

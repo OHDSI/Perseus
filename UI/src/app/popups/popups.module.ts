@@ -20,6 +20,7 @@ import { CdmCommonModule } from '../common/cdm-common.module';
 import { TransformationTypeComponent } from './transformation-type/transformation-type.component';
 import { SqlFunctionsInjector } from './rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-string-functions';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-stri
     SelectConceptFieldComponent,
     SelectTableDropdownComponent,
     SetConnectionTypePopupComponent,
-    TransformationTypeComponent
+    TransformationTypeComponent,
+    LogoutComponent
   ],
   imports: [
     CommonModule,
