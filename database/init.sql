@@ -251,6 +251,10 @@ CREATE TABLE "cdm"."user"
 	password VARCHAR ( 255 ) NOT NULL
 );
 
+--- inserting default users to user table
+INSERT INTO "cdm"."user" ("username", "password") VALUES ('test_user', '$2b$12$jgJapclm8oeV2FgCPTxXl.MCrcB61uKm82GDTbsbkJeOGIoU0oe0S');
+INSERT INTO "cdm"."user" ("username", "password") VALUES ('test_user_2', '$2b$12$3RwT1MKcqpk1usn.hmCklODI4XEwkuTCOzRyxD5OwjwQPqhVwZ6Qi');
+
 --- create table for blacklisted tokens
 CREATE TABLE "cdm"."blacklist_token"
 (
