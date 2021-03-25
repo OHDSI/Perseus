@@ -185,12 +185,10 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
     return sql
 
 def addSchemaNames(sql, view_sql):
-    pg_db.connect()
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
         view_sql = re.sub(f"(?i)join {row[0]} ", f'join {{sc}}.{row[0]} ', view_sql)
         view_sql = re.sub(f"(?i)from {row[0]} ", f'from {{sc}}.{row[0]} ', view_sql)
-    pg_db.close()
     return view_sql
 
 def has_pair(field_name, mapping):

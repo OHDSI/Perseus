@@ -59,7 +59,6 @@ def get_source_schema(current_user, schemaname):
         create_table_sql += ' );'
         cursor = pg_db.execute_sql(create_table_sql)
         schema.append(table_)
-    pg_db.close()
     return schema
 
 
@@ -74,7 +73,6 @@ def reset_schema(pg_db, name='public'):
 
 
 def save_source_schema_in_db(current_user, source_tables):
-    pg_db.connect()
     reset_schema(pg_db, name=current_user)
 
     for row in source_tables:
@@ -93,11 +91,9 @@ def save_source_schema_in_db(current_user, source_tables):
             create_table_sql = create_table_sql.rstrip(',')
             create_table_sql += ' );'
             cursor = pg_db.execute_sql(create_table_sql)
-    pg_db.close()
 
 
 def get_view_from_db(current_user, view_sql):
-    pg_db.connect()
     view_sql = addSchemaNames(current_user, view_sql)
     view_cursor = pg_db.execute_sql(view_sql).description
     view_key= lambda a: a.name
@@ -115,8 +111,7 @@ def get_view_from_db(current_user, view_sql):
                 res_item['name'] = item.name
             view_res.append(res_item)
 
-    pg_db.close()
-    return view_res;
+    return view_res
 
 def addSchemaNames(current_user, view_sql):
     user_schema_tables = pg_db.execute_sql(
@@ -127,11 +122,9 @@ def addSchemaNames(current_user, view_sql):
     return view_sql
 
 def run_sql_transformation(current_user, sql_transformation):
-    pg_db.connect()
     for val in sql_transformation:
         val = addSchemaNames(current_user, val)
         pg_db.execute_sql(val).description
-    pg_db.close()
     return True
 
 def _open_book(filepath=None):

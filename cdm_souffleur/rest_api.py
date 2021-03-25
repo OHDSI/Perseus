@@ -1,3 +1,4 @@
+from cdm_souffleur.db import pg_db
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT, \
     UPLOAD_SOURCE_SCHEMA_FOLDER, VOCABULARY_FILTERS
@@ -21,6 +22,19 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 app.secret_key = 'mdcr'
 
 bp = Blueprint('bp', __name__, url_prefix=app.config["CDM_SOUFFLEUR_PREFIX"])
+
+@app.before_request
+def before_request():
+    if pg_db.is_closed():
+        pg_db.connect()
+
+
+@app.after_request
+def after_request(response):
+    if not pg_db.is_closed():
+        pg_db.close()
+    return response
+
 
 @bp.route('/api/load_schema', methods=['GET', 'POST'])
 @token_required
