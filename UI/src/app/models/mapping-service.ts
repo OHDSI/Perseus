@@ -191,7 +191,7 @@ export class MappingService {
       lookup,
       lookupType: this.getConceptLookupType(concept.fields[ fieldType ].targetFieldName),
       sqlTransformation: this.getConceptSqlTransformation(concept.fields[ fieldType ].sqlApplied, concept.fields[ fieldType ].sql, concept.fields[ fieldType ].targetFieldName, concept.fields[ fieldType ].targetCloneName),
-      comments: [],
+      comments: concept.fields[ fieldType ].comments ?? [],
       condition: concept.fields[ fieldType ].condition,
       targetCloneName: concept.fields[ fieldType ].targetCloneName ? concept.fields[ fieldType ].targetCloneName : ''
     };
