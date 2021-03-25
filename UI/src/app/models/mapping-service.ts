@@ -85,7 +85,7 @@ export class MappingService {
 
           if (!(conceptTables.includes(arrow.targetTable) && this.conceptFieldsMap[ arrow.targetTable ].includes(arrow.targetColumn))) {
             const node: MappingNode = {
-              concept_id: '',
+              concept_id: undefined,
               source_field: arrow.sourceColumn,
               target_field: arrow.targetColumn,
               sql_field: arrow.sourceColumn,
@@ -192,7 +192,7 @@ export class MappingService {
       lookup,
       lookupType: this.getConceptLookupType(concept.fields[ fieldType ].targetFieldName),
       sqlTransformation: this.getConceptSqlTransformation(concept.fields[ fieldType ].sqlApplied, concept.fields[ fieldType ].sql, concept.fields[ fieldType ].targetFieldName, concept.fields[ fieldType ].targetCloneName),
-      comments: concept.fields[ fieldType ].targetFieldName,
+      comments: concept.fields[ fieldType ].comments ?? [],
       condition: concept.fields[ fieldType ].condition,
       targetCloneName: concept.fields[ fieldType ].targetCloneName ? concept.fields[ fieldType ].targetCloneName : ''
     };
@@ -230,7 +230,7 @@ export class MappingService {
         }
         const constantObj = {
           source_field: '',
-          concept_id: '',
+          concept_id: undefined,
           sql_field: `'${row.constant}'`,
           sql_alias: row.name,
           target_field: row.name,
@@ -267,7 +267,7 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
         const mappingsToAdd: MappingNode[] = field.grouppedFields.map(groupedField => {
           const regex = new RegExp('(' + field.name + ')(\\s|,|\\))', 'gi');
           return {
-            concept_id: '',
+            concept_id: undefined,
             source_field: groupedField.name,
             target_field: item.target_field,
             sql_field: groupedField.name,
