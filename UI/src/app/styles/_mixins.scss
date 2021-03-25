@@ -32,6 +32,7 @@
 
 @mixin vocabulary-button {
   @include cmd-button();
+  cursor: default;
   width: 150px;
   height: 33px;
   color: $blue;

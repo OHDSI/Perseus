@@ -6,9 +6,10 @@ import { CodeMappingRoutingModule } from './code-mapping-routing.module';
 import { CdmCommonModule } from '../../common/cdm-common.module';
 import { ImportVocabularyComponent } from './import-codes/import-vocabulary/import-vocabulary.component';
 import { ImportVocabularyButtonsComponent } from './import-codes/import-vocabulary/import-vocabulary-buttons/import-vocabulary-buttons.component';
+import { VocabularyGridComponent } from './import-codes/vocabulary-grid/vocabulary-grid.component';
 
 @NgModule({
-  declarations: [ImportCodesComponent, MappingCodesComponent, ImportVocabularyComponent, ImportVocabularyButtonsComponent],
+  declarations: [ImportCodesComponent, MappingCodesComponent, ImportVocabularyComponent, ImportVocabularyButtonsComponent, VocabularyGridComponent],
   imports: [
     CommonModule,
     CodeMappingRoutingModule,

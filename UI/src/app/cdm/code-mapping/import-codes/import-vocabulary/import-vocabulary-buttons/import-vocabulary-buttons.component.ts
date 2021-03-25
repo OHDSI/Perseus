@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-import-vocabulary-buttons',
   templateUrl: './import-vocabulary-buttons.component.html',
   styleUrls: ['./import-vocabulary-buttons.component.scss']
 })
-export class ImportVocabularyButtonsComponent implements OnInit {
+export class ImportVocabularyButtonsComponent {
 
-  constructor() { }
+  @Output()
+  edit = new EventEmitter<void>()
 
-  ngOnInit(): void {
-  }
-
+  @Output()
+  remove = new EventEmitter<void>()
 }

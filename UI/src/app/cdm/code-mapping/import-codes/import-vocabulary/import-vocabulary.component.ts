@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-import',
+  selector: 'app-import-vocabulary',
   templateUrl: './import-vocabulary.component.html',
   styleUrls: ['./import-vocabulary.component.scss']
 })
@@ -16,10 +16,7 @@ export class ImportVocabularyComponent implements OnInit {
     },
     {
       name: 'APC'
-    }
-  ]
-
-  otherVocabularies = [
+    },
     {
       name: 'BDPB'
     },
@@ -34,7 +31,11 @@ export class ImportVocabularyComponent implements OnInit {
     }
   ]
 
+  visibleVocabCount = 3
+
   showOther = false;
+
+  @ViewChild('csvInput', {static: true}) csvInput: ElementRef;
 
   constructor() { }
 
@@ -43,5 +44,21 @@ export class ImportVocabularyComponent implements OnInit {
 
   onShowOther() {
     this.showOther = !this.showOther
+  }
+
+  onImport() {
+    this.csvInput.nativeElement.click()
+  }
+
+  onFileUpload(event: Event) {
+    console.log(event)
+  }
+
+  onEdit(index: number) {
+    console.log(index)
+  }
+
+  onRemove(index: number) {
+    console.log(index)
   }
 }

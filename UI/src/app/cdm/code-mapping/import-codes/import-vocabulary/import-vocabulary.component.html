@@ -1,16 +1,23 @@
 <div class="import">
   <div class="import__header">Please select and open .csv file to import data or edit existing vocabulary</div>
 
-  <button class="import__button">Import CSV</button>
+  <input #csvInput
+         type="file"
+         accept=".csv, xlsx, .xls"
+         (change)="onFileUpload($event)"
+         hidden />
+
+  <button class="import__button" (click)="onImport()">Import CSV</button>
 
   <div *ngIf="vocabularies?.length > 0" class="import__list">
-    <div *ngFor="let vocab of vocabularies" class="import__list__item">
+    <div *ngFor="let vocab of vocabularies | slice: 0: visibleVocabCount; index as i" class="import__list__item">
       {{vocab.name}}
 
-      <app-import-vocabulary-buttons></app-import-vocabulary-buttons>
+      <app-import-vocabulary-buttons (edit)="onEdit(i)"
+                                     (remove)="onRemove(i)"></app-import-vocabulary-buttons>
     </div>
 
-    <button *ngIf="otherVocabularies?.length > 0" class="import__list__show-other"
+    <button *ngIf="vocabularies?.length > visibleVocabCount" class="import__list__show-other"
             (click)="onShowOther()">
       Select other
       <svg [class.clicked]="showOther" width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,10 +26,11 @@
     </button>
 
     <div *ngIf="showOther" class="import__list__other">
-      <div *ngFor="let vocabulary of otherVocabularies" class="import__list__other__item">
+      <div *ngFor="let vocabulary of vocabularies | slice: visibleVocabCount; index as i" class="import__list__other__item">
         {{vocabulary.name}}
 
-        <app-import-vocabulary-buttons></app-import-vocabulary-buttons>
+        <app-import-vocabulary-buttons (edit)="onEdit(i + visibleVocabCount)"
+                                       (remove)="onRemove(i + visibleVocabCount)"></app-import-vocabulary-buttons>
       </div>
     </div>
   </div>
