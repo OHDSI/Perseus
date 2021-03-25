@@ -386,7 +386,8 @@ def generate_bath_sql_file(current_user, mapping, source_table, views):
             sql = sql.replace('{person_id}', source_field)
         if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
-    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}", mode='w') as f:
+    create_user_directory(GENERATE_BATCH_SQL_PATH, current_user)
+    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", mode='w') as f:
         f.write(sql)
 
 
@@ -394,7 +395,7 @@ def clear(current_user):
     delete_generated_xml(current_user)
     delete_generated_sql(current_user)
 
-    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user)
+    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql')
     try:
         os.unlink(file_path)
     except Exception as err:
@@ -727,8 +728,8 @@ def zip_xml(current_user):
         add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "Definitions")
         add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "Lookups")
 
-        if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}"):
-            zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}", arcname='Batch.sql')
+        if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
+            zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
         zip_file.close()
     except FileNotFoundError:
         raise
