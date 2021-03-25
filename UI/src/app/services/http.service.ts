@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { Mapping } from '../models/mapping';
+import { map } from 'rxjs/operators';
 
 // use for dev purposes
 // import * as schemaData from '../mockups/schema.mockup.json';
@@ -16,6 +17,7 @@ const API_URLS = {
   getSourceSchemaData: (name) => `${URL}/load_saved_source_schema?schema_name=${name}`,
   getColumnInfo: (reportName, tableName, columnName) => `${URL}/get_column_info?report_name=${reportName}&table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
+  getZipXml: () => `${URL}/get_zip_xml`,
   getSqlPreview: (name) => `${URL}/get_generated_sql?source_table_name=${name}`,
   postLoadSchema: () => `${URL}/load_schema`,
   postSaveLoadSchema: () => `${URL}/save_and_load_schema`,
@@ -62,12 +64,15 @@ export class HttpService {
     return this.httpClient.post(API_URLS.getXmlPreview(), mapping);
   }
 
-  getSqlPreview(name: string): Observable<any> {
-    return this.httpClient.get(API_URLS.getSqlPreview(name));
+  getZipXml(): Observable<File> {
+    return this.httpClient.get(API_URLS.getZipXml(), {responseType: 'blob'})
+      .pipe(
+        map(blob => new File([blob], 'mapping-xml.zip'))
+      )
   }
 
-  postLoadSchema(formData: FormData) {
-    return this.httpClient.post(API_URLS.postLoadSchema(), formData);
+  getSqlPreview(name: string): Observable<any> {
+    return this.httpClient.get(API_URLS.getSqlPreview(name));
   }
 
   postSaveLoadSchema(formData: FormData) {

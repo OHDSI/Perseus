@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
@@ -97,16 +97,7 @@ export class DataService {
         const url = `${URL}/get_zip_xml`;
         const request = new Request(url, init);
 
-        return from(
-          new Promise((resolve) => {
-            fetch(request)
-              .then(responce => responce.blob())
-              .then(blob => {
-                const file = new File([blob], 'mapping-xml.zip');
-                resolve(file);
-              });
-          })
-        );
+        return this.httpService.getZipXml();
       })
     );
   }
