@@ -348,7 +348,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   async afterOpenMapping(event?: any) {
     if (!event || event.index !== 0)
-      this.router.navigate([`${mainPageRouter}/mapping`]);
+      this.router.navigate([`${mainPageRouter}/mapping`], { queryParams: event, skipLocationChange: true});
   }
 
   getMappingConfig() {
