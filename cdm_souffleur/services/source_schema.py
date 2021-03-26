@@ -119,6 +119,7 @@ def addSchemaNames(current_user, view_sql):
     for row in user_schema_tables.fetchall():
         view_sql = re.sub(f"(?i)join {row[0]} ", f'join {current_user}.{row[0]} ', view_sql)
         view_sql = re.sub(f"(?i)from {row[0]} ", f'from {current_user}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]};", f'from {current_user}.{row[0]};', view_sql)
     return view_sql
 
 def run_sql_transformation(current_user, sql_transformation):
