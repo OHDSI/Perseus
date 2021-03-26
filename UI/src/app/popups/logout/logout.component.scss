@@ -1,0 +1,56 @@
+@import "variables";
+@import "mixins";
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.logout {
+  background: #F9F9F9;
+  border-radius: 2px;
+  width: 320px;
+  height: 226px;
+  box-sizing: border-box;
+  padding: 41px 35px 35px 35px;
+  color: $cdm-grey-dark;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+
+    h2 {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 23px;
+      margin: 0;
+    }
+
+    app-close-dialog-button {
+      position: absolute;
+      bottom: 20px;
+      right: -5px;
+    }
+  }
+
+  p {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 150%;
+    margin-top: 22px;
+  }
+
+  button {
+    background: #E5E5E5;
+    border-radius: 2px;
+    width: 80px;
+    height: 33px;
+    margin-top: 30px;
+    @include cmd-button()
+  }
+}

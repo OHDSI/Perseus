@@ -18,6 +18,7 @@ import { BaseComponent } from '../base/base.component';
 import { VocabularyObserverService } from '../services/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
 import { codesRouter, mainPageRouter } from '../app.constants';
+import { LogoutComponent } from '../popups/logout/logout.component';
 
 @Component({
   selector: 'app-toolbar',
@@ -182,6 +183,14 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   generateReport() {
     this.reportGenerationService.emit(ReportGenerationEvent.PREPARE)
+  }
+
+  logout() {
+    this.matDialog.open(LogoutComponent, {
+      width: '301',
+      height: '220',
+      panelClass: 'scan-data-dialog'
+    });
   }
 
   codeMapping() {

@@ -94,6 +94,6 @@ export class StoreService {
 export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
   return {
     cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
-    reportName: state.report || 'Report name'
+    reportName: state.report ? state.report.slice(0, state.report.lastIndexOf('.')) : 'Report name'
   };
 }

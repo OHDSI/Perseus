@@ -16,10 +16,8 @@ from shutil import rmtree
 import zipfile
 import os
 from pathlib import Path
-from cdm_souffleur.model.similar_names_map import similar_names_map
+from cdm_souffleur.utils.similar_names_map import similar_names_map
 from itertools import groupby
-from peewee import PostgresqlDatabase
-from flask import current_app as app
 from cdm_souffleur.db import pg_db
 
 
@@ -70,7 +68,7 @@ def unique(sequence):
             seen.append(x)
     return seen
 
-def prepare_sql(mapping_items, source_table, views, tagret_tables):
+def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables):
     """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
@@ -175,7 +173,7 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
                 else:
                     after_quote = double_quote[0]
                     before_quote = double_quote[0]
-        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\'', after_quote)
+        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), after_quote)
         view = f'{before_quote}\'{after_quote_replaced}'
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
@@ -187,12 +185,10 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
     return sql
 
 def addSchemaNames(sql, view_sql):
-    pg_db.connect()
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
-        view_sql = re.sub(f"(?i)join {row[0]}", f'join {{sc}}.{row[0]}', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]}", f'from {{sc}}.{row[0]}', view_sql)
-    pg_db.close()
+        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {{sc}}.{row[0]} ', view_sql)
     return view_sql
 
 def has_pair(field_name, mapping):
@@ -218,15 +214,19 @@ def add_lookup_data(folder, basepath, lookup, template):
     return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
 
 
-def create_lookup(lookup, target_field, mapping, lookup_source_to_source_included):
-    if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
-        rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
-
+def create_user_directory(path, current_user):
     try:
-        os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created')
+        os.makedirs(f"{path}/{current_user}")
+        print(f'Directory {path}/{current_user} created')
     except FileExistsError:
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist')
+        print(f'Directory {path}/{current_user} already exist')
+
+
+def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
+    if os.path.isdir(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}"):
+        rmtree(F"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
+
+    create_user_directory(GENERATE_CDM_LOOKUP_SQL_PATH, current_user)
 
     if target_field.endswith('source_concept_id'):
         return False
@@ -234,7 +234,7 @@ def create_lookup(lookup, target_field, mapping, lookup_source_to_source_include
         pair_target_field = target_field.replace('concept_id', 'source_concept_id')
 
     if lookup.endswith('userDefined'):
-        basepath = INCOME_LOOKUPS_PATH
+        basepath = f"{INCOME_LOOKUPS_PATH}/{current_user}"
     else:
         basepath = PREDEFINED_LOOKUPS_PATH
 
@@ -250,7 +250,7 @@ def create_lookup(lookup, target_field, mapping, lookup_source_to_source_include
 
         results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
 
-    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
+    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, current_user, f'{lookup.split(".")[0]}.sql')
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
     return True
@@ -366,7 +366,7 @@ def find_all_concept_id_fields(mapping):
     return concept_ids_fields
 
 
-def generate_bath_sql_file(mapping, source_table, views):
+def generate_bath_sql_file(current_user, mapping, source_table, views):
     view = ''
     sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM '
     if views:
@@ -386,24 +386,25 @@ def generate_bath_sql_file(mapping, source_table, views):
             sql = sql.replace('{person_id}', source_field)
         if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
-    with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
+    create_user_directory(GENERATE_BATCH_SQL_PATH, current_user)
+    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", mode='w') as f:
         f.write(sql)
 
 
-def clear():
-    delete_generated_xml()
-    delete_generated_sql()
+def clear(current_user):
+    delete_generated_xml(current_user)
+    delete_generated_sql(current_user)
 
-    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH)
+    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql')
     try:
         os.unlink(file_path)
     except Exception as err:
         print(f'Failed to delete {file_path}. Reason: {err}')
 
 
-def get_xml(json_):
+def get_xml(current_user, json_):
     """prepare XML for CDM"""
-    clear()
+    clear(current_user)
     result = {}
     previous_target_table = ''
     previous_source_table = ''
@@ -416,7 +417,7 @@ def get_xml(json_):
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
-        sql = prepare_sql(mapping_items, source_table, views, pd.unique(target_tables.get('target_table')))
+        sql = prepare_sql(current_user, mapping_items, source_table, views, pd.unique(target_tables.get('target_table')))
         query_tag.text = sql
 
         skip_write_file = False
@@ -472,7 +473,7 @@ def get_xml(json_):
                     if lookup_name:
                         attrib_key = 'key'
                         if lookup_name not in lookups:
-                            lookup_created = create_lookup(lookup_name, target_field, groupList, lookup_source_to_source_included)
+                            lookup_created = create_lookup(current_user, lookup_name, target_field, groupList, lookup_source_to_source_included)
                             if lookup_created:
                                 concepts_tag = prepare_concepts_tag(
                                     concept_tags,
@@ -593,16 +594,16 @@ def get_xml(json_):
                 previous_target_table = target_table
                 previous_source_table = source_table
                 if target_table == 'person':
-                    generate_bath_sql_file(groupList, source_table, views)
+                    generate_bath_sql_file(current_user, groupList, source_table, views)
 
                 if target_table.lower() in ('location', 'care_site', 'provider'):
                     skip_write_file = True
-                    write_xml(query_definition_tag, f'L_{target_table}', result)
+                    write_xml(current_user, query_definition_tag, f'L_{target_table}', result)
 
         if skip_write_file:
             continue
 
-        write_xml(query_definition_tag, source_table, result)
+        write_xml(current_user, query_definition_tag, source_table, result)
     return result
 
 def apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag):
@@ -617,15 +618,10 @@ def apply_sql_transformation(sql_transformation, source_field, target_field, clo
             query_tag.text = query_tag.text.replace(f',\n{match_item},\n', ' ')
             query_tag.text = query_tag.text.replace(f',\n{match_item}\n', ' ')
 
-def write_xml(tag, filename, result):
+def write_xml(current_user, tag, filename, result):
     xml = ElementTree(tag)
-    try:
-        os.mkdir(GENERATE_CDM_XML_PATH)
-        print(f'Directory {GENERATE_CDM_XML_PATH} created')
-    except FileExistsError:
-        print(f'Directory {GENERATE_CDM_XML_PATH} already exist')
-
-    xml.write(GENERATE_CDM_XML_PATH / (filename + '.xml'))
+    create_user_directory(GENERATE_CDM_XML_PATH, current_user)
+    xml.write(GENERATE_CDM_XML_PATH / current_user / (filename + '.xml'))
     result.update({filename: _prettify(tag)})
 
 
@@ -714,24 +710,26 @@ def get_lookups_sql(cond: dict):
     return result
 
 
-def add_files_to_zip(zip_file, path):
+def add_files_to_zip(zip_file, path, directory):
     for root, dirs, files in os.walk(path):
         for file in files:
-            zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+            zip_file.write(os.path.join(root, file), arcname=os.path.join(directory, file))
 
 
-def zip_xml():
+def zip_xml(current_user):
     """add mapping XMLs and lookup sql's to archive"""
     try:
+        create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
+
         zip_file = zipfile.ZipFile(
-            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
+            GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, GENERATE_CDM_XML_PATH)
-        add_files_to_zip(zip_file, GENERATE_CDM_LOOKUP_SQL_PATH)
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "Definitions")
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "Lookups")
 
-        if os.path.isfile(GENERATE_BATCH_SQL_PATH):
-            zip_file.write(GENERATE_BATCH_SQL_PATH, arcname='Batch.sql')
+        if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
+            zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
         zip_file.close()
     except FileNotFoundError:
         raise
@@ -742,15 +740,15 @@ def delete_generated(path):
     except Exception:
         print(f'Directory {path} does not exist')
 
-def delete_generated_xml():
+def delete_generated_xml(current_user):
     """clean mapping folder"""
-    delete_generated(GENERATE_CDM_XML_PATH)
+    delete_generated(f"{GENERATE_CDM_XML_PATH}/{current_user}")
 
-def delete_generated_sql():
+def delete_generated_sql(current_user):
     """clean lookup sql folder"""
-    delete_generated(GENERATE_CDM_LOOKUP_SQL_PATH)
+    delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
-def get_lookups_list(lookup_type):
+def get_lookups_list(current_user, lookup_type):
     lookups_list = []
 
     def updateList(base_path):
@@ -762,14 +760,14 @@ def get_lookups_list(lookup_type):
             )
 
     updateList(PREDEFINED_LOOKUPS_PATH)
-    updateList(INCOME_LOOKUPS_PATH)
+    updateList(f"{INCOME_LOOKUPS_PATH}/{current_user}")
 
     return lookups_list
 
-def get_lookup(name, lookup_type):
+def get_lookup(current_user, name, lookup_type):
     lookup = ''
     if len(name.split('.')) > 1:
-        path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
+        path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
     else:
         if 'template' in name:
             path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
@@ -780,10 +778,10 @@ def get_lookup(name, lookup_type):
             lookup = f.readlines()
     return ''.join(lookup)
 
-def add_lookup(lookup):
+def add_lookup(current_user, lookup):
     name = lookup['name']
     lookup_type = lookup['lookupType']
-    filepath = os.path.join(INCOME_LOOKUPS_PATH, lookup_type)
+    filepath = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type)
     filename = os.path.join(filepath, f'{name}.txt')
     if not os.path.isdir(filepath):
         os.makedirs(filepath)
@@ -791,8 +789,8 @@ def add_lookup(lookup):
     with open(filename, mode='w') as f:
         f.write(lookup['value'])
 
-def del_lookup(name, lookup_type):
-    path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
+def del_lookup(current_user, name, lookup_type):
+    path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
     if os.path.isfile(path):
         os.remove(path)
 

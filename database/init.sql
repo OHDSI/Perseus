@@ -236,3 +236,30 @@ VACUUM FULL "vocabulary"."vocabulary";
 --- permissions
 GRANT USAGE ON SCHEMA vocabulary TO cdm_builder;
 GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO cdm_builder;
+
+
+--- create cdm schema and user table
+create schema cdm;
+
+CREATE TABLE "cdm"."user"
+(
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR ( 30 ) UNIQUE NOT NULL,
+    first_name VARCHAR ( 30 ),
+    last_name VARCHAR ( 30 ),
+    email VARCHAR ( 50 ),
+	password VARCHAR ( 255 ) NOT NULL
+);
+
+--- inserting default users to user table
+INSERT INTO "cdm"."user" ("username", "password") VALUES ('test_user', '$2b$12$jgJapclm8oeV2FgCPTxXl.MCrcB61uKm82GDTbsbkJeOGIoU0oe0S');
+INSERT INTO "cdm"."user" ("username", "password") VALUES ('test_user_2', '$2b$12$3RwT1MKcqpk1usn.hmCklODI4XEwkuTCOzRyxD5OwjwQPqhVwZ6Qi');
+
+--- create table for blacklisted tokens
+CREATE TABLE "cdm"."blacklist_token"
+(
+    id SERIAL PRIMARY KEY,
+    token VARCHAR ( 500 ) UNIQUE NOT NULL,
+    blacklisted_on TIMESTAMP NOT NULL 
+    
+);

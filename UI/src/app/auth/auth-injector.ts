@@ -1,3 +1,3 @@
-import { FakeAuthService } from './fake-auth.service';
+import { JwtAuthService } from './jwt-auth.service';
 
-export const authInjector = FakeAuthService
+export const authInjector = JwtAuthService

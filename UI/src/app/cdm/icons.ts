@@ -20,5 +20,6 @@ export const ICON_NAMES = [
   'generate_md',
   'quality_check',
   'vocabulary',
+  'logout',
   'code_mapping'
 ];

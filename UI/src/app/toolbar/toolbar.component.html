@@ -72,6 +72,11 @@
       <mat-icon svgIcon="reset"></mat-icon>
       <span>Delete All Mappings</span>
     </button>
+    <button mat-menu-item
+            (click)="logout()">
+      <mat-icon svgIcon="logout"></mat-icon>
+      <span>Logout</span>
+    </button>
   </mat-menu>
 
   <mat-menu #createMapping="matMenu">
