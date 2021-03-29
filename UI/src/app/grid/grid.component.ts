@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Column } from './grid';
 
 @Component({
   selector: 'app-grid',
@@ -7,13 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GridComponent implements OnInit {
 
-  columns: {field: string, name: string, className: string}[];
+  @Input()
+  data: {[key: string]: any}[];
+
+  @Input()
+  columns: Column[];
+
+  requestInProgress = false;
+
+  error: string;
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  onSort(event: MouseEvent) {
   }
 }

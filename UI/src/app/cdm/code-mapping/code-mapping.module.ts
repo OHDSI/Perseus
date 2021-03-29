@@ -7,13 +7,17 @@ import { CdmCommonModule } from '../../common/cdm-common.module';
 import { ImportVocabularyComponent } from './import-codes/import-vocabulary/import-vocabulary.component';
 import { ImportVocabularyButtonsComponent } from './import-codes/import-vocabulary/import-vocabulary-buttons/import-vocabulary-buttons.component';
 import { VocabularyGridComponent } from './import-codes/vocabulary-grid/vocabulary-grid.component';
+import { GridModule } from '../../grid/grid.module';
+import { ImportCodesService } from './import-codes.service';
 
 @NgModule({
   declarations: [ImportCodesComponent, MappingCodesComponent, ImportVocabularyComponent, ImportVocabularyButtonsComponent, VocabularyGridComponent],
   imports: [
     CommonModule,
     CodeMappingRoutingModule,
-    CdmCommonModule
-  ]
+    CdmCommonModule,
+    GridModule
+  ],
+  providers: [ImportCodesService]
 })
 export class CodeMappingModule { }

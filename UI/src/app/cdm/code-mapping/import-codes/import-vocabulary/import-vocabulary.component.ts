@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ImportCodesService } from '../../import-codes.service';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -35,9 +36,9 @@ export class ImportVocabularyComponent implements OnInit {
 
   showOther = false;
 
-  @ViewChild('csvInput', {static: true}) csvInput: ElementRef;
+  @ViewChild('csvInput', {static: true}) csvInput: ElementRef
 
-  constructor() { }
+  constructor(private importCodesService: ImportCodesService) { }
 
   ngOnInit(): void {
   }
@@ -51,7 +52,8 @@ export class ImportVocabularyComponent implements OnInit {
   }
 
   onFileUpload(event: Event) {
-    console.log(event)
+    const csv = (event.target as HTMLInputElement).files[0]
+    this.importCodesService.loadCsv(csv)
   }
 
   onEdit(index: number) {

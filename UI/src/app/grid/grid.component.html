@@ -1,0 +1,21 @@
+<div class="grid-wrapper">
+  <div class="grid">
+    <div class="row header">
+      <div *ngFor="let column of columns" class="column cell" [className]="column.className">
+        {{column.name}}
+      </div>
+    </div>
+
+    <div *ngFor="let row of data" class="row">
+      <div *ngFor="let column of columns" class="cell id">
+        {{row[column.field]}}
+      </div>
+    </div>
+
+    <div *ngIf="error" class="row error-row">{{error}}</div>
+  </div>
+
+  <div *ngIf="requestInProgress" class="ui-blocker">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
