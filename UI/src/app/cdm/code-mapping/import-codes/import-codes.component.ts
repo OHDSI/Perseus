@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImportCodesComponent implements OnInit {
 
+  imported = false
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  onImport() {
+    this.imported = true
+  }
 }

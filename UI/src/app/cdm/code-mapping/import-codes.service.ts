@@ -1,24 +1,40 @@
 import { Injectable } from '@angular/core';
 import { Column } from '../../grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
+import { map, tap } from 'rxjs/operators';
+
+export interface Code {
+  [key: string]: any
+}
 
 @Injectable()
 export class ImportCodesService {
 
   csv: File
 
-  data: { [key: string]: any }[]
+  codes: Code[]
 
   columns: Column[]
 
   constructor() {
   }
 
-  loadCsv(csv: File) {
-    this.readFile(csv).subscribe(text => {
-      const jsonArray = this.csvTextToJson(text)
-      console.log(jsonArray)
-    })
+  loadCsv(csv: File): Observable<Code[]> {
+    return this.readFile(csv)
+      .pipe(
+        map(text => this.csvTextToJson(text)),
+        tap(codes => {
+          if (codes.length > 0) {
+            this.codes = codes
+            this.columns = Object.keys(codes[0]).map(key => ({
+              field: key,
+              name: key
+            }))
+          } else {
+            throw new Error('Empty csv file')
+          }
+        })
+      )
   }
 
   private readFile(file: File): Observable<string> {
@@ -39,11 +55,18 @@ export class ImportCodesService {
     });
   }
 
-  private csvTextToJson(csv: string): {[key: string]: any}[] {
+  private csvTextToJson(csv: string): Code[] {
     const separator = ','
-    const lines = csv.split('\n')
-    const keys = lines.shift().split(separator)
     const resultJsonArray = []
+    const lines = csv.split('\n')
+    const keys = lines
+      .shift()
+      .split(separator)
+      .map(key => key.trim())
+
+    if (lines[lines.length - 1] === '') {
+      lines.pop()
+    }
 
     lines.forEach(line => {
       const jsonValue = {}

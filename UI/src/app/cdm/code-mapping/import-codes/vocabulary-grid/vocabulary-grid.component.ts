@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ImportCodesService } from '../../import-codes.service';
 
 @Component({
   selector: 'app-vocabulary-grid',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VocabularyGridComponent implements OnInit {
 
-  constructor() { }
+  constructor(public importCodesService: ImportCodesService) { }
 
   ngOnInit(): void {
   }

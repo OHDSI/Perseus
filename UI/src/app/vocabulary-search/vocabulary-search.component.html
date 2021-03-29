@@ -115,7 +115,8 @@
     <div class="vocabulary-search__table-wrapper">
       <div class="vocabulary-search__table">
         <div class="row header" (click)="onSort($event)">
-          <div *ngFor="let column of columns" class="column cell"
+          <div *ngFor="let column of columns"
+               class="column cell"
                [className]="column.className"
                [ngClass]="{'sortable-asc': column.field === sort?.field && sort.order === 'asc',
                'sortable-desc': column.field === sort?.field && sort.order === 'desc'}">

@@ -2,7 +2,6 @@
 
 $row-height: 32px;
 $header-border: 1px solid rgba(230, 230, 230, .2);
-$table-height: 385px;
 
 .grid-wrapper {
   position: relative;
@@ -23,7 +22,6 @@ $table-height: 385px;
 
 .grid {
   margin-top: 12px;
-  height: $table-height;
   min-width: 1064px;
   border-radius: 2px;
   overflow-y: auto;
@@ -60,6 +58,30 @@ $table-height: 385px;
         display: flex;
         justify-content: space-between;
         padding-right: 10px;
+
+        svg {
+          cursor: pointer;
+          display: none;
+        }
+
+        &:hover {
+          svg {
+            display: block;
+          }
+        }
+
+        &.sortable-asc,
+        &.sortable-desc {
+          svg {
+            display: block;
+          }
+        }
+
+        &.sortable-asc {
+          svg {
+            transform: rotate(270deg);
+          }
+        }
       }
 
       .cell {
@@ -72,7 +94,7 @@ $table-height: 385px;
     }
 
     &.error-row {
-      height: $table-height - $row-height;
+      height: 100%;
       display: flex;
       color: red;
       justify-content: center;

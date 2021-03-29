@@ -6,7 +6,11 @@
 
   <div class="import">
     <div class="import__content">
-      <app-import-vocabulary></app-import-vocabulary>
+      <app-vocabulary-grid *ngIf="imported else importBlock"></app-vocabulary-grid>
+
+      <ng-template #importBlock>
+        <app-import-vocabulary (import)="onImport()"></app-import-vocabulary>
+      </ng-template>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-export function parseHtmlError(error) {
+export function parseHttpError(error) {
   if (typeof error === 'string') {
     return error;
   } else if (error.statusText) {
@@ -6,7 +6,7 @@ export function parseHtmlError(error) {
   } else if (error.message) {
     return error.message;
   } else if (error.error) {
-    return parseHtmlError(error.error);
+    return parseHttpError(error.error);
   } else {
     return 'Error';
   }

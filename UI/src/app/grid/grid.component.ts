@@ -14,6 +14,14 @@ export class GridComponent implements OnInit {
   @Input()
   columns: Column[];
 
+  @Input()
+  height: string
+
+  sort: {
+    field: string;
+    order: string
+  };
+
   requestInProgress = false;
 
   error: string;

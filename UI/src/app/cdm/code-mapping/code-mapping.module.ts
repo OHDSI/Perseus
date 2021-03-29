@@ -9,15 +9,25 @@ import { ImportVocabularyButtonsComponent } from './import-codes/import-vocabula
 import { VocabularyGridComponent } from './import-codes/vocabulary-grid/vocabulary-grid.component';
 import { GridModule } from '../../grid/grid.module';
 import { ImportCodesService } from './import-codes.service';
+import { ImportVocabulariesService } from './import-vocabularies.service';
 
 @NgModule({
-  declarations: [ImportCodesComponent, MappingCodesComponent, ImportVocabularyComponent, ImportVocabularyButtonsComponent, VocabularyGridComponent],
+  declarations: [
+    ImportCodesComponent,
+    MappingCodesComponent,
+    ImportVocabularyComponent,
+    ImportVocabularyButtonsComponent,
+    VocabularyGridComponent
+  ],
   imports: [
     CommonModule,
     CodeMappingRoutingModule,
     CdmCommonModule,
     GridModule
   ],
-  providers: [ImportCodesService]
+  providers: [
+    ImportCodesService,
+    ImportVocabulariesService
+  ]
 })
 export class CodeMappingModule { }

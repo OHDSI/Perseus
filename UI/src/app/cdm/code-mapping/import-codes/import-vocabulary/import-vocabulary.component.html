@@ -9,7 +9,7 @@
 
   <button class="import__button" (click)="onImport()">Import CSV</button>
 
-  <div *ngIf="vocabularies?.length > 0" class="import__list">
+  <div *ngIf="vocabularies else loadingVocabulariesBlock" class="import__list">
     <div *ngFor="let vocab of vocabularies | slice: 0: visibleVocabCount; index as i" class="import__list__item">
       {{vocab.name}}
 
@@ -33,5 +33,20 @@
                                        (remove)="onRemove(i + visibleVocabCount)"></app-import-vocabulary-buttons>
       </div>
     </div>
+  </div>
+
+  <ng-template #loadingVocabulariesBlock>
+    <div class="import__loading">
+      Loading existing vocabularies...
+    </div>
+  </ng-template>
+
+  <div *ngIf="error" class="import__error">
+    {{error}}
+    <app-close-dialog-button class="import__error__close" (click)="onRemoveError()"></app-close-dialog-button>
+  </div>
+
+  <div *ngIf="loading" class="import__blocker">
+    <mat-spinner></mat-spinner>
   </div>
 </div>
