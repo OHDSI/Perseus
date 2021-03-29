@@ -3,15 +3,16 @@ mat-toolbar.app-toolbar {
   padding-right: 80px;
   height: 40px;
   min-width: 1475px;
+  display: flex;
+  align-items: center;
 
   .logo {
-    color: #A8A8A8;
-    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 13px;
+    width: 94px;
     cursor: pointer;
-    font-size: 16px;
-    line-height: 18px;
-    font-weight: bolder;
-    margin-top: 4px;
   }
 
   .info-label {
