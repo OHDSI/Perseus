@@ -223,8 +223,6 @@ def create_user_directory(path, current_user):
 
 
 def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
-    if os.path.isdir(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}"):
-        rmtree(F"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
     create_user_directory(GENERATE_CDM_LOOKUP_SQL_PATH, current_user)
 
