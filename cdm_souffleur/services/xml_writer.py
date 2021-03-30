@@ -192,6 +192,7 @@ def addSchemaNames(sql, view_sql):
     for row in cursor.fetchall():
         view_sql = re.sub(f"(?i)join {row[0]}", f'join {{sc}}.{row[0]}', view_sql)
         view_sql = re.sub(f"(?i)from {row[0]}", f'from {{sc}}.{row[0]}', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]};", f'from {current_user}.{row[0]};', view_sql)
     pg_db.close()
     return view_sql
 
@@ -219,8 +220,6 @@ def add_lookup_data(folder, basepath, lookup, template):
 
 
 def create_lookup(lookup, target_field, mapping, lookup_source_to_source_included):
-    if os.path.isdir(GENERATE_CDM_LOOKUP_SQL_PATH):
-        rmtree(GENERATE_CDM_LOOKUP_SQL_PATH)
 
     try:
         os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)

@@ -335,7 +335,7 @@ export class PanelTableComponent extends BaseComponent
         filter(([ k, v ]) => v.includes(firstGroupRowType))));
     }
     return this.rowFocusedElements.some(item => {
-      const rowType = this.getTypeWithoutLength(item.id);
+      const rowType = this.getTypeWithoutLength(item.id).toUpperCase();
       return !typesArray[ 0 ].includes(rowType);
     }
     );
