@@ -12,10 +12,8 @@ const CONCEPT_TABLES = [
 
 export const environment = {
   production: true,
-  url: 'http://10.110.1.7/api',
-  conceptTables: CONCEPT_TABLES,
-  whiteRabbitUrl: 'http://10.110.1.7',
-  cdmBuilderUrl: 'http://10.110.1.7',
-  dqdUrl: 'http://10.110.1.7/dqd',
-  dqdWsUrl: 'ws://10.110.1.7:8001/dqd/progress'
+  server: window['env']['server'] ?? '10.110.1.7',
+  dbServer: window['env']['dbServer'] ?? '10.110.1.7',
+  port: 80,
+  conceptTables: CONCEPT_TABLES
 };
