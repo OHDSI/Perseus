@@ -13,6 +13,7 @@ export interface SqlFunctionDefinition {
   parameters?: Array<string>;
   hint?: string;
   maxNumberOfParameters?: number;
+  withoutFunctionName?: boolean;
 }
 
 export class SqlFunction {
@@ -25,6 +26,7 @@ export class SqlFunction {
   displayParameters: Array<string>;
   maxNumberOfParameters: number;
   hint?: string;
+  withoutFunctionName?: boolean;
 
   constructor(opt: SqlFunctionDefinition = {}) {
     this.name = opt.name || '';
@@ -34,20 +36,23 @@ export class SqlFunction {
       opt.maxNumberOfParameters || this.parameters.length;
 
     this.displayParameters = [...this.parameters];
+    this.withoutFunctionName = opt.withoutFunctionName;
   }
 
   getTemplate(columnName?: string) {
     const functionName = this.name;
 
     if (columnName && this.valueIndex > -1) {
-      this.displayParameters[this.valueIndex] = columnName;
+      this.displayParameters[ this.valueIndex ] = columnName;
     }
 
     const parameters =
-      this.displayParameters.length > 0
-        ? `('${this.displayParameters.join('\', \'')}')`
+      this.displayParameters.length > 0 ?
+        this.withoutFunctionName ?
+          `${this.displayParameters.join('\', \'')}` :
+          `('${this.displayParameters.join('\', \'')}')`
         : '';
-    return `${functionName}${parameters}`;
+    return this.withoutFunctionName ? `${parameters}` : `${functionName}${parameters}`;
   }
 
   getSql(value: string, transform: SqlFunction) {
@@ -124,7 +129,8 @@ export const SQL_FUNCTIONS: Array<SqlFunction> = [
   new SqlFunction({ name: 'DATEPART', parameters: ['interval', 'value'] }),
   new SqlFunction({
     name: 'DATEADD',
-    parameters: ['interval', 'number', 'value']
+    parameters: ['\'value\'::TIMESTAMP + (\'number\' * interval \'1 {interval}\')'],
+    withoutFunctionName: true
   }),
   new SqlFunction({ name: 'ISNULL', parameters: ['check_expression', 'replacement_value'] }),
   new SqlFunction({
