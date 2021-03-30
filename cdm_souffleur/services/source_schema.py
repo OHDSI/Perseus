@@ -309,6 +309,7 @@ def load_schema_to_server(file):
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
         file.save(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{filename}")
         file.close()
+    _open_book(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{filename}")
     return
 
 
