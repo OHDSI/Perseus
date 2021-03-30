@@ -190,9 +190,9 @@ def addSchemaNames(sql, view_sql):
     pg_db.connect()
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
-        view_sql = re.sub(f"(?i)join {row[0]}", f'join {{sc}}.{row[0]}', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]}", f'from {{sc}}.{row[0]}', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]};", f'from {current_user}.{row[0]};', view_sql)
+        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]};", f'from {{sc}}.{row[0]};', view_sql)
     pg_db.close()
     return view_sql
 
