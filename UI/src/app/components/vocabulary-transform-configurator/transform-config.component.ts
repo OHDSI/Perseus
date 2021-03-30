@@ -236,9 +236,9 @@ export class TransformConfigComponent implements OnInit, OnChanges {
           }
         }
       );
-      uniq(tables).forEach(it => sqlTransformation.push(it));
+      uniq(tables).forEach(it => sqlTransformation.push(this.addSemicolon(it)));
     } else {
-      sqlTransformation.push(this.getViewSql(sql, this.connector.source.tableName));
+      sqlTransformation.push(this.addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
     }
     this.httpService.validateSql({ sql: sqlTransformation }).subscribe(() => {
       this.dialogRef.close({ sql: this.sql });
@@ -253,6 +253,10 @@ export class TransformConfigComponent implements OnInit, OnChanges {
           }
         });
       });
+  }
+
+  private addSemicolon(str: string){
+    return str.slice(-1) === ';'? str : `${str};`
   }
 
   private getViewSql(sql: string, tableName: string) {
