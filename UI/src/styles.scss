@@ -173,7 +173,9 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   border-radius: 0 !important;
 }
 
-.scan-params__input-control, .scan-data-connect-form-control {
+.scan-params__input-control,
+.scan-data-connect-form-control,
+.column-mapping__control {
   .mat-form-field-wrapper {
     padding: 0 !important;
   }

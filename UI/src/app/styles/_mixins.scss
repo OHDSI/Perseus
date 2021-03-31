@@ -57,3 +57,44 @@
   justify-content: center;
   align-items: center;
 }
+
+@mixin perseus-control {
+  label {
+    @include cdm-label();
+  }
+
+  input, .mat-select {
+    @include cdm-input();
+  }
+
+  &.disabled {
+    label {
+      opacity: 0.6;
+    }
+
+    input {
+      opacity: 0.6;
+      border-bottom: 1px solid #808080;
+    }
+  }
+}
+
+@mixin form-control {
+  display: flex;
+  flex-direction: column;
+
+  input, .mat-select {
+    background: #F9F9F9;
+
+    &.ng-invalid.ng-touched {
+      border-bottom: 1px solid red;
+    }
+  }
+}
+
+@mixin code-mapping-header {
+  color: $cdm-grey-dark;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+}
