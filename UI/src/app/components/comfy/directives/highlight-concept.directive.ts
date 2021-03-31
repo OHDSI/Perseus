@@ -1,12 +1,5 @@
-import {
-  Directive,
-  ElementRef,
-  Input,
-  Renderer2,
-  OnInit,
-  OnChanges
-} from '@angular/core';
-import { environment } from 'src/environments/environment.prod';
+import { Directive, ElementRef, Input, OnChanges, Renderer2 } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 
 @Directive({
   selector: '[concept]'
