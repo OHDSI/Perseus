@@ -40,7 +40,7 @@
   }
 
   &__button {
-    @include cmd-button();
+    @include cdm-button();
     margin-top: 42px;
     width: 150px;
     height: 33px;

@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { GridComponent } from './grid.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NavigationGridComponent } from './navigation-grid/navigation-grid.component';
+import { SelectableGridComponent } from './selectable-grid/selectable-grid.component';
+import { GridCheckboxComponent } from './selectable-grid/grid-checkbox/grid-checkbox.component';
 
 @NgModule({
   declarations: [
     GridComponent,
-    NavigationGridComponent
+    NavigationGridComponent,
+    SelectableGridComponent,
+    GridCheckboxComponent
   ],
   imports: [
     CommonModule,
@@ -15,7 +19,8 @@ import { NavigationGridComponent } from './navigation-grid/navigation-grid.compo
   ],
   exports: [
     GridComponent,
-    NavigationGridComponent
+    NavigationGridComponent,
+    SelectableGridComponent
   ]
 })
 export class GridModule { }

@@ -84,7 +84,7 @@
         background: #066BBB;
         color: #FFFFFF;
 
-        @include cmd-button();
+        @include cdm-button();
 
         &:disabled {
           opacity: 0.5;

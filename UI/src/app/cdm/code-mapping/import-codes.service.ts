@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Column } from '../../grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
+import { stateCodes, stateColumns } from './state';
 
 export interface Code {
+  selected: boolean
   [key: string]: any
 }
 
@@ -17,6 +19,12 @@ export class ImportCodesService {
   columns: Column[]
 
   constructor() {
+    this.codes = stateCodes
+    this.columns = stateColumns
+  }
+
+  get imported(): boolean {
+    return !!this.codes && !!this.columns
   }
 
   loadCsv(csv: File): Observable<Code[]> {
@@ -25,11 +33,17 @@ export class ImportCodesService {
         map(text => this.csvTextToJson(text)),
         tap(codes => {
           if (codes.length > 0) {
-            this.codes = codes
+            this.codes = codes.map(code => ({
+              ...code,
+              selected: false
+            }))
             this.columns = Object.keys(codes[0]).map(key => ({
               field: key,
               name: key
             }))
+
+            console.log(this.codes)
+            console.log(this.columns)
           } else {
             throw new Error('Empty csv file')
           }

@@ -1,3 +1,13 @@
-<app-grid height="100%"
-          [data]="importCodesService.codes"
-          [columns]="importCodesService.columns"></app-grid>
+<div class="vocabulary-grid">
+  <div class="vocabulary-grid__grid-wrapper">
+    <app-selectable-grid height="100%"
+                         [data]="importCodesService.codes"
+                         [columns]="importCodesService.columns"></app-selectable-grid>
+  </div>
+
+  <div class="vocabulary-grid__buttons">
+    <button class="back">Back</button>
+
+    <button class="apply">Apply</button>
+  </div>
+</div>

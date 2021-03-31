@@ -1,5 +1,6 @@
 @import "search-input";
 @import "mixins";
+@import "variables";
 
 $row-height: 32px;
 $header-border: 1px solid rgba(230, 230, 230, .2);
@@ -69,27 +70,19 @@ $table-height: 385px;
     padding-top: 9px;
 
     button {
+      @include cdm-button();
       height: 33px;
       width: 80px;
       margin-right: 15px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 18px;
-      border: 0;
-
-      &:focus {
-        outline: none;
-      }
 
       &.clear {
         color: #404040;
-        background-color: #E5E5E5;
+        background-color: $cdm-grey-light;
       }
 
       &.apply {
         color: #fff;
-        background-color: #066BBB;
+        background-color: $blue;
       }
     }
   }

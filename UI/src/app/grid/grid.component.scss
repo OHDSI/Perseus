@@ -124,6 +124,15 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
       font-size: 14px;
       line-height: 18px;
       color: #404040;
+
+      &.select-cell {
+        width: 28px;
+        max-width: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+      }
     }
   }
 }

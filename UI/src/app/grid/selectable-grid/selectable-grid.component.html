@@ -1,6 +1,11 @@
 <div class="grid-wrapper">
   <div class="grid" [style.height]="height">
     <div class="row header">
+      <div class="column cell select-cell">
+        <app-grid-checkbox [checked]="checkedAll"
+                           (click)="selectAll()"></app-grid-checkbox>
+      </div>
+
       <div *ngFor="let column of columns"
            class="column cell"
            [style.minWidth]="column.width"
@@ -16,6 +21,11 @@
     </div>
 
     <div *ngFor="let row of data" class="row">
+      <div class="cell select-cell">
+        <app-grid-checkbox [checked]="row.selected"
+                           (click)="select(row)"></app-grid-checkbox>
+      </div>
+
       <div *ngFor="let column of columns" class="cell" [style.minWidth]="column.width">
         {{row[column.field]}}
       </div>

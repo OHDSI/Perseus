@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ImportCodesService } from '../import-codes.service';
 
 @Component({
   selector: 'app-import-codes',
@@ -7,11 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImportCodesComponent implements OnInit {
 
-  imported = false
+  imported: boolean
 
-  constructor() { }
+  constructor(private importCodesService: ImportCodesService) { }
 
   ngOnInit(): void {
+    this.imported = this.importCodesService.imported
   }
 
   onImport() {

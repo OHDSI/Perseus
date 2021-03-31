@@ -20,7 +20,7 @@
   }
 }
 
-@mixin cmd-button {
+@mixin cdm-button {
   border: none;
   outline: none;
   font-weight: 500;
@@ -31,7 +31,7 @@
 }
 
 @mixin vocabulary-button {
-  @include cmd-button();
+  @include cdm-button();
   cursor: default;
   width: 150px;
   height: 33px;
