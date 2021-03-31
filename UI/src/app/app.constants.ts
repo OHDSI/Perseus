@@ -5,8 +5,10 @@ export const similarTableName = 'similar';
 export const isProd = environment.production;
 export const isDev = !isProd;
 
+export const dbServer = environment.dbServer;
+
 // urls
-export const server = environment.server
+export const server = environment.server;
 
 export const serverUrl = environment.port === 80 ?
   `http://${server}` :
