@@ -328,11 +328,11 @@ export class PanelTableComponent extends BaseComponent
     let typesArray = [];
     if (groupType) {
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(groupType))));
+        filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
       const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(firstGroupRowType))));
+        filter(([ k, v ]) => v.includes(firstGroupRowType.toUpperCase()))));
     }
     return this.rowFocusedElements.some(item => {
       const rowType = this.getTypeWithoutLength(item.id).toUpperCase();
