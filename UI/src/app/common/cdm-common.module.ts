@@ -8,6 +8,7 @@ import { SearchByNameComponent } from './search-by-name/search-by-name.component
 import { CdmCustomMaterialModule } from './cdm-custom-material.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
+import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-b
     TypeToIconPipe,
     PrettyXmlPipe,
     SearchByNameComponent,
-    CloseDialogButtonComponent
+    CloseDialogButtonComponent,
+    CdmCheckboxComponent
   ],
   exports: [
     PrettyNamePipe,
@@ -24,7 +26,8 @@ import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-b
     SearchByNameComponent,
     CdmCustomMaterialModule,
     NgxMatSelectSearchModule,
-    CloseDialogButtonComponent
+    CloseDialogButtonComponent,
+    CdmCheckboxComponent
   ],
   imports: [
     CommonModule,

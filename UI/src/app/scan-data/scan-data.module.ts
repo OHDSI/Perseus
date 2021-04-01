@@ -5,7 +5,6 @@ import { TablesToScanComponent } from './scan-data-dialog/scan-data-form/tables-
 import { TableToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/table-to-scan/table-to-scan.component';
 import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-data-form.component';
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
-import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
 import { WebsocketModule } from '../websocket/websocket.module';
 import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
@@ -39,7 +38,6 @@ import { CdmCommonModule } from '../common/cdm-common.module';
     TableToScanComponent,
     ScanParamsComponent,
     ScanDataFormComponent,
-    ScanDataCheckboxComponent,
     ConnectionErrorPopupComponent,
     ScanDataDialogComponent,
     ConnectFormComponent,
