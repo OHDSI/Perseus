@@ -7,7 +7,7 @@ import { HttpService } from './http.service';
 import { Configuration } from '../models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject } from 'rxjs';
-import * as jsZip from 'jszip'; 
+import * as jsZip from 'jszip';
 import { MediaType } from './utilites/base64-util';
 
 @Injectable({
@@ -45,7 +45,6 @@ export class UploadService {
 
   onFileChange(event: any): void {
     const files = event.target.files;
-    const dotPosition = files[ 0 ].name.lastIndexOf('.');
     this.storeService.add('reportFile', files[0]);
     this.uploadSchema(files)
       .subscribe(res => {
@@ -55,7 +54,7 @@ export class UploadService {
         );
         this.bridgeService.resetAllMappings();
         this.dataService.prepareTables(res, 'source');
-        this.dataService.saveReportName(files[0].name.slice(0, dotPosition), 'report');
+        this.dataService.saveReportName(files[0].name, 'report');
         this.bridgeService.saveAndLoadSchema$.next();
       }, () => this.bridgeService.reportLoading$.next(false));
   }
@@ -96,7 +95,7 @@ export class UploadService {
     this.bridgeService.applyConfiguration(resultConfig);
   }
 
-  async loadReport(file: any){
+  async loadReport(file: any) {
     this.storeService.add('reportFile', file[0]);
     this.uploadSchema(file, true)
       .subscribe(res => {

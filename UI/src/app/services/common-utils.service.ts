@@ -2,30 +2,26 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
-import { OpenMappingDialog } from '../app.component';
-import { CdmVersionDialogComponent } from '../components/popups/cdm-version-dialog/cdm-version-dialog.component';
-import { DeleteWarningComponent } from '../components/popups/delete-warning/delete-warning.component';
-import { OnBoardingComponent } from '../components/popups/on-boarding/on-boarding.component';
-import { OpenMappingDialogComponent } from '../components/popups/open-mapping-dialog/open-mapping-dialog.component';
-import { OpenSaveDialogComponent } from '../components/popups/open-save-dialog/open-save-dialog.component';
-import { ResetWarningComponent } from '../components/popups/reset-warning/reset-warning.component';
+import { CdmVersionDialogComponent } from '../popups/cdm-version-dialog/cdm-version-dialog.component';
+import { DeleteWarningComponent } from '../popups/delete-warning/delete-warning.component';
+import { OnBoardingComponent } from '../popups/on-boarding/on-boarding.component';
+import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-dialog.component';
+import { ResetWarningComponent } from '../popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
 import { ConfigurationService } from './configuration.service';
 import { DataService } from './data.service';
 import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
-import { UploadService } from './upload.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonUtilsService {
   private renderer: Renderer2;
-  private readonly loadReport = new BehaviorSubject<any>(true);
+  private readonly loadReport = new BehaviorSubject<any>(false);
   readonly loadSourceReport$ = this.loadReport.asObservable();
 
   constructor(
@@ -64,42 +60,6 @@ export class CommonUtilsService {
     ).subscribe();
   }
 
-  openSaveMappingDialog(action: OpenMappingDialog, deleteAfterSave: boolean) {
-    const matDialog = this.matDialog.open(OpenMappingDialogComponent, {
-      closeOnNavigation: true,
-      disableClose: true,
-      data: { action, target: this.storeService.state.targetConfig }
-    });
-    matDialog.afterClosed().subscribe(res => {
-      if (deleteAfterSave) {
-        this.bridgeService.resetAllMappings();
-        this.storeService.resetAllData();
-      }
-      this.router.navigateByUrl(`/comfy`);
-    });
-  }
-
-  loadMappingDialog() {
-    const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
-      closeOnNavigation: false,
-      disableClose: false,
-      panelClass: 'cdm-version-dialog',
-      data: {
-        header: 'Open Mapping',
-        label: 'Select Configuration',
-        okButton: 'Open',
-        items: this.configService.configurations.map(config => config.name),
-        type: 'select'
-      }
-    });
-    matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        const message = this.configService.openConfiguration(res.value);
-        this.openSnackbarMessage(message);
-      }
-    });
-  }
-
   saveMappingDialog(deleteSourceAndTargetAfterSave: boolean, loadReport: boolean) {
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
@@ -109,7 +69,6 @@ export class CommonUtilsService {
         header: 'Save Mapping',
         label: 'Name',
         okButton: 'Save',
-        items: this.configService.configurations.map(config => config.name),
         type: 'input'
       }
     });

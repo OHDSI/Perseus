@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Mapping } from '../models/mapping';
+import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
 
 // use for dev purposes
@@ -14,8 +15,9 @@ const API_URLS = {
   getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
   getSourceSchema: (path) => `${URL}/get_source_schema?path=${path}`,
   getSourceSchemaData: (name) => `${URL}/load_saved_source_schema?schema_name=${name}`,
-  getColumnInfo: (tableName, columnName) => `${URL}/get_column_info?table_name=${tableName}&column_name=${columnName}`,
+  getColumnInfo: (reportName, tableName, columnName) => `${URL}/get_column_info?report_name=${reportName}&table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
+  getZipXml: () => `${URL}/get_zip_xml`,
   getSqlPreview: (name) => `${URL}/get_generated_sql?source_table_name=${name}`,
   postLoadSchema: () => `${URL}/load_schema`,
   postSaveLoadSchema: () => `${URL}/save_and_load_schema`,
@@ -54,20 +56,23 @@ export class HttpService {
     return this.httpClient.get<any>(API_URLS.getSourceSchemaData(name));
   }
 
-  getColumnInfo(tableName: string, columnName: string): Observable<any> {
-    return this.httpClient.get<any>(API_URLS.getColumnInfo(tableName, columnName));
+  getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<any> {
+    return this.httpClient.get<any>(API_URLS.getColumnInfo(reportName, tableName, columnName));
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {
     return this.httpClient.post(API_URLS.getXmlPreview(), mapping);
   }
 
-  getSqlPreview(name: string): Observable<any> {
-    return this.httpClient.get(API_URLS.getSqlPreview(name));
+  getZipXml(): Observable<File> {
+    return this.httpClient.get(API_URLS.getZipXml(), {responseType: 'blob'})
+      .pipe(
+        map(blob => new File([blob], 'mapping-xml.zip'))
+      )
   }
 
-  postLoadSchema(formData: FormData) {
-    return this.httpClient.post(API_URLS.postLoadSchema(), formData);
+  getSqlPreview(name: string): Observable<any> {
+    return this.httpClient.get(API_URLS.getSqlPreview(name));
   }
 
   postSaveLoadSchema(formData: FormData) {

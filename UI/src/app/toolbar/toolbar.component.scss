@@ -1,0 +1,27 @@
+mat-toolbar.app-toolbar {
+  padding-left: 0;
+  padding-right: 80px;
+  height: 40px;
+  min-width: 1475px;
+  display: flex;
+  align-items: center;
+
+  .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 13px;
+    width: 94px;
+    cursor: pointer;
+  }
+
+  .info-label {
+    font-size: 70%;
+    padding: 15px;
+  }
+
+}
+
+.new-mapping {
+  opacity: 0.6;
+}

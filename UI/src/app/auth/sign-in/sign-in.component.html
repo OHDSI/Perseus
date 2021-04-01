@@ -1,0 +1,27 @@
+<div class="wrapper">
+  <form class="login" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="login__color"></div>
+
+    <div class="login__image"></div>
+
+    <div class="login__form">
+      <div class="login__form__header">
+        Login to CDM
+      </div>
+
+      <div class="login__form__control">
+        <label for="username">login</label>
+        <input id="username" type="text" formControlName="username">
+      </div>
+
+      <div class="login__form__control">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="on" formControlName="password">
+      </div>
+
+      <div class="login__form__submit">
+        <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Login</button>
+      </div>
+    </div>
+  </form>
+</div>
