@@ -245,8 +245,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       sqlTransformation.push(this.addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
     }
     this.httpService.validateSql({ sql: sqlTransformation }).subscribe(() => {
-      this.dialogRef.close({ sql: this.sql });
-    },
+        this.dialogRef.close({ sql: this.sql });
+      },
       error => {
         const dialog = this.matDialog.open(ErrorPopupComponent, {
           closeOnNavigation: false,
@@ -259,18 +259,12 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       });
   }
 
-<<<<<<< HEAD:UI/src/app/components/vocabulary-transform-configurator/transform-config.component.ts
-=======
 
->>>>>>> development:UI/src/app/cdm/mapping/vocabulary-transform-configurator/transform-config.component.ts
   private addSemicolon(str: string){
     return str.slice(-1) === ';'? str : `${str};`
   }
 
-<<<<<<< HEAD:UI/src/app/components/vocabulary-transform-configurator/transform-config.component.ts
-=======
 
->>>>>>> development:UI/src/app/cdm/mapping/vocabulary-transform-configurator/transform-config.component.ts
   private getViewSql(sql: string, tableName: string) {
     let viewSql = this.sourceTables.find(item => item.name === tableName).sql.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
     if (viewSql) {
@@ -281,7 +275,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   addDisabled() {
     return this.tab === 'Lookup' &&
-    (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
+      (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
   }
 
   closeDialog() {
