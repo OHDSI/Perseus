@@ -98,6 +98,7 @@ export class ConceptTransformationService {
             conceptsList: []
         };
         this.conceptsTable = new TableConcepts(conceptTableOptions);
+        this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] = {} : this.conceptsTable.lookup['Default'] = {};
 
         if (connectedFields) {
             connectedFields.forEach(it => {

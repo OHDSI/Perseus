@@ -43,7 +43,7 @@ def get_source_schema(current_user, schemaname):
         table_name = row['Table']
         fields = row['fields'].split(',')
         table_ = Table(table_name)
-        create_table_sql += 'CREATE TABLE {0}.{1} ('.format(current_user, table_name)
+        create_table_sql += 'CREATE TABLE {0}."{1}" ('.format(current_user, table_name)
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
@@ -135,6 +135,7 @@ def _open_book(filepath=None):
 
 def get_column_info(current_user, report_name, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
+    report_name = secure_filename(report_name)
     path_to_schema = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{report_name}"
     try:
         table_overview = pd.read_excel(path_to_schema, table_name, dtype=str,
@@ -161,7 +162,7 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
                 info[field] = tables_pd[field][0]
         return info
     except KeyError as e:
-        raise InvalidUsage('Column invalid' + e.__str__(), 404)
+        raise InvalidUsage('Column invalid' + e.__str__(), 500)
 
 
 def extract_sql(source_table_name):
@@ -205,6 +206,7 @@ def load_schema_to_server(file, current_user):
 
 def load_saved_source_schema_from_server(current_user, schema_name):
     """load saved source schema by name"""
+    schema_name = secure_filename(schema_name)
     if schema_name in get_existing_source_schemas_list(
             f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"):
         source_schema = get_source_schema(current_user,
