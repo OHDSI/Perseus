@@ -28,7 +28,7 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
   }
 
   onUploadReport() {
-    this.scanDataUploadService.uploadScanReport(this.result, this.reportName)
+    this.scanDataUploadService.uploadScanReport(this.result, `${this.reportName}.xlsx`)
       .subscribe(() => this.close.emit());
   }
 
