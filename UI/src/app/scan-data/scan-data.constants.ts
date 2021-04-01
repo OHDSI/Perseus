@@ -1,4 +1,4 @@
-import { cdmBuilderLogUrl, whiteRabbitPrefix, whiteRabbitUrl } from '../app.constants';
+import { cdmBuilderLogUrl, dbServer, serverUrl, whiteRabbitPrefix } from '../app.constants';
 import { DbSettings } from './model/db-settings';
 import { adaptDbType } from './util/cdm-adapter';
 
@@ -56,7 +56,7 @@ export const cdmBuilderDatabaseTypes: string[] = [
 export const fakeData = 'Fake Data';
 
 export const whiteRabbitWebsocketConfig = {
-  url: whiteRabbitUrl,
+  url: serverUrl,
   prefix: whiteRabbitPrefix,
   progressMessagesDestination: '/user/queue/reply',
 };
@@ -69,7 +69,7 @@ export const cdmWebsocketConfig = {
 
 export const dictionaryDbSettingForCdmBuilder = {
   vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
-  vocabularyServer: '192.168.20.47',
+  vocabularyServer: dbServer,
   vocabularyPort: 5431,
   vocabularyDatabase: 'cdm_souffleur',
   vocabularySchema: 'vocabulary',
@@ -82,11 +82,12 @@ export const uniformSamplingTooltipText = 'For all fields, choose every possible
 
 export const fakeDataDbSettings: DbSettings = {
   dbType: DbTypes.POSTGRESQL,
-  server: '10.110.1.7',
+  server: dbServer,
   database: 'cdm_souffleur',
   user: 'postgres',
   password: '5eC_DkMr^3',
-  schema: 'public'
+  schema: 'public',
+  port: 5431
 };
 
 export const dqdDatabaseTypes = [

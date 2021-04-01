@@ -245,8 +245,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       sqlTransformation.push(this.addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
     }
     this.httpService.validateSql({ sql: sqlTransformation }).subscribe(() => {
-      this.dialogRef.close({ sql: this.sql });
-    },
+        this.dialogRef.close({ sql: this.sql });
+      },
       error => {
         const dialog = this.matDialog.open(ErrorPopupComponent, {
           closeOnNavigation: false,
@@ -275,7 +275,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   addDisabled() {
     return this.tab === 'Lookup' &&
-    (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
+      (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
   }
 
   closeDialog() {
