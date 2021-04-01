@@ -112,8 +112,8 @@
             <div>
                 <app-lookup #lookupComponent
                   [lookupType]="lookupType"
-                  [lookup]="conceptsTable.lookup"
-                  [name]="conceptsTable.lookup['name']"></app-lookup>
+                  [lookup]="getLookup()"
+                  [name]="getLookupName()"></app-lookup>
             </div>
         </mat-tab>
     </mat-tab-group>
