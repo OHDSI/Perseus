@@ -545,7 +545,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
       let found = false;
       similarRows.forEach(similarItem => {
         if (item.tableName.toUpperCase() === similarItem.tableName.toUpperCase() &&
-          item.name.toUpperCase() === similarItem.name.toUpperCase()) {
+          item.name.toUpperCase() === similarItem.name.toUpperCase() && item.cloneTableName === similarItem.cloneTableName) {
           found = true;
         }
       });
@@ -554,20 +554,26 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     if (type === 'increment') {
       const value = row.increment;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+      if (this.storeService.state.targetClones[ row.tableName ]) {
+        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[ row.tableName ], isSameRow, (item: any) => { item.increment = value; })
+      } else {
+        this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+      };
     } else {
       const value = row.constant;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
         item.constant = value;
-        if (row.constant) {
-            this.bridgeService.addConstant.execute(item);
-        } else {
-            this.bridgeService.dropConstant.execute(item);
-        }
-
       });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => {
+
+      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ? this.storeService.state.targetClones[ row.tableName ] : this.storeService.state.target
+
+      this.bridgeService.updateRowsProperties(tablesToUpdate, isSameRow, (item: any) => {
         item.constant = value;
+        if (row.constant) {
+          this.bridgeService.addConstant.execute(item);
+        } else {
+          this.bridgeService.dropConstant.execute(item);
+        }
       });
     }
   }

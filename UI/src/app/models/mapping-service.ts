@@ -148,7 +148,8 @@ export class MappingService {
             this.concepts[ key ].conceptsList.forEach(conc => {
               conceptFieldsTypes.forEach(fieldType => {
                 if (!(cloneExists && !conc.fields[ fieldType ].targetCloneName)) {
-                  const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup);
+                  const cloneKey = !conc.fields[ fieldType ].targetCloneName ? 'Default' : conc.fields[ fieldType ].targetCloneName;
+                  const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup[cloneKey]);
                   if (newMappingNode) {
                     mapping.mapping_items[ mappingItemIndex ].mapping.push(newMappingNode);
                   }

@@ -133,6 +133,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
   }
 
+  getLookup(){
+    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] : this.conceptsTable.lookup['Default'];
+  }
+
+  getLookupName(){
+    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName]['name'] : this.conceptsTable.lookup['Default']['name'];
+  }
+
   toggleSqlTransformation(event: any) {
     this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlApplied = event;
   }

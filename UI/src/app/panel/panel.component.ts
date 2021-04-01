@@ -245,12 +245,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   cloneConcepts(cloneFromTableName: string, cloneToTableName: string) {
-    const tableConcepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`];
+    const tableConcepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ];
 
     if (tableConcepts) {
+      const clonedLookup = cloneFromTableName ? cloneDeep(tableConcepts[ 'lookup' ][ cloneFromTableName ]) : cloneDeep(tableConcepts[ 'lookup' ][ 'Default' ]);
+      tableConcepts[ 'lookup' ][ cloneToTableName ] = clonedLookup;
       const clonedConcepts = [];
       tableConcepts.conceptsList.forEach(it => {
-        if (it.fields['concept_id'].targetCloneName === cloneFromTableName) {
+        if (it.fields[ 'concept_id' ].targetCloneName === cloneFromTableName) {
           const clonedConcept = cloneDeep(it);
           clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
           Object.values(clonedConcept.fields).forEach(field => {
