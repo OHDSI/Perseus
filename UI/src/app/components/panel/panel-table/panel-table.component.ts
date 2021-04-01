@@ -328,14 +328,14 @@ export class PanelTableComponent extends BaseComponent
     let typesArray = [];
     if (groupType) {
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(groupType))));
+        filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
       const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(firstGroupRowType))));
+        filter(([ k, v ]) => v.includes(firstGroupRowType.toUpperCase()))));
     }
     return this.rowFocusedElements.some(item => {
-      const rowType = this.getTypeWithoutLength(item.id);
+      const rowType = this.getTypeWithoutLength(item.id).toUpperCase();
       return !typesArray[ 0 ].includes(rowType);
     }
     );
@@ -546,7 +546,7 @@ export class PanelTableComponent extends BaseComponent
       let found = false;
       similarRows.forEach(similarItem => {
         if (item.tableName.toUpperCase() === similarItem.tableName.toUpperCase() &&
-          item.name.toUpperCase() === similarItem.name.toUpperCase()) {
+          item.name.toUpperCase() === similarItem.name.toUpperCase() && item.cloneTableName === similarItem.cloneTableName) {
           found = true;
         }
       });
@@ -555,21 +555,27 @@ export class PanelTableComponent extends BaseComponent
     if (type === 'increment') {
       const value = row.increment;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+      if (this.storeService.state.targetClones[ row.tableName ]) {
+        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[ row.tableName ], isSameRow, (item: any) => { item.increment = value; })
+      } else {
+        this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+      };
     } else {
       const value = row.constant;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
         item.constant = value;
-        if (row.constant) {
-            this.bridgeService.addConstant.execute(item);
-        } else {
-            this.bridgeService.dropConstant.execute(item);
-        }
+      });
 
-      });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => {
+      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ? this.storeService.state.targetClones[ row.tableName ] : this.storeService.state.target;
+
+      this.bridgeService.updateRowsProperties(tablesToUpdate, isSameRow, (item: any) => {
         item.constant = value;
-      });
+        if (row.constant) {
+          this.bridgeService.addConstant.execute(item);
+        } else {
+          this.bridgeService.dropConstant.execute(item);
+        }
+      })
     }
   }
 

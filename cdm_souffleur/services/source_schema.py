@@ -55,7 +55,7 @@ def get_source_schema(schemaname):
         table_name = row['Table']
         fields = row['fields'].split(',')
         table_ = Table(table_name)
-        create_table_sql += 'CREATE TABLE public.{0} ('.format(table_name)
+        create_table_sql += 'CREATE TABLE public."{0}" ('.format(table_name)
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
@@ -309,11 +309,13 @@ def load_schema_to_server(file):
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} already exist")
         file.save(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{filename}")
         file.close()
+    _open_book(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{filename}")
     return
 
 
 def load_saved_source_schema_from_server(schema_name):
     """load saved source schema by name"""
+    schema_name = secure_filename(schema_name)
     if schema_name in get_existing_source_schemas_list(
             UPLOAD_SOURCE_SCHEMA_FOLDER):
         source_schema = get_source_schema(

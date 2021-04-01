@@ -4,14 +4,14 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
-import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { ColumnInfo } from '../components/field-information/column-info.component';
+import { apiUrl } from '../app.constants';
 
-const URL = environment.url;
+const URL = apiUrl;
 
 @Injectable({
   providedIn: 'root'
