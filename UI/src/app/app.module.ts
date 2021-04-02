@@ -69,6 +69,7 @@ import { SelectConceptFieldComponent } from './components/popups/select-concept-
 import { ConceptColumnComponent } from './components/concept-transformation/concept-column/concept-column.component';
 import { VocabularySearchModule } from './vocabulary-search/vocabulary-search.module';
 import { SharedModule } from './shared/shared.module';
+import { PersonMappingWarningDialogComponent } from './components/mapping/person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,8 @@ import { SharedModule } from './shared/shared.module';
     ColumnInfoComponent,
     ConceptTransformationComponent,
     SelectConceptFieldComponent,
-    ConceptColumnComponent
+    ConceptColumnComponent,
+    PersonMappingWarningDialogComponent
   ],
   imports: [
     BrowserModule,
