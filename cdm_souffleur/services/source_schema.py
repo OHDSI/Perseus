@@ -23,7 +23,7 @@ from itertools import groupby
 from cdm_souffleur.db import pg_db
 
 book = None
-ALLOWED_EXTENSIONS = {'xlsx'}
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
 with open('configuration/default.json', 'r') as configuration_file:
     configuration = json.load(configuration_file)
@@ -294,14 +294,20 @@ def set_book_to_none():
 
 def _allowed_file(filename):
     """check allowed extension of file"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    if '.' not in filename:
+        return f"{filename}.xlsx"
+    else:
+        if filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
+            return filename
+        else:
+            return None
 
 
 def load_schema_to_server(file):
     """save source schema to server side"""
-    if file and _allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+    checked_filename = _allowed_file(file.filename)
+    if file and checked_filename:
+        filename = secure_filename(checked_filename)
         try:
             os.mkdir(UPLOAD_SOURCE_SCHEMA_FOLDER)
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER} created")
