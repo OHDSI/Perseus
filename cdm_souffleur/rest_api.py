@@ -31,9 +31,14 @@ bp = Blueprint('bp', __name__, url_prefix=app.config["CDM_SOUFFLEUR_PREFIX"])
 @bp.route('/api/load_schema', methods=['GET', 'POST'])
 def load_schema():
     """save source schema to server side"""
-    if request.method == 'POST':
-        file = request.files['file']
-        load_schema_to_server(file)
+    try:
+        if request.method == 'POST':
+            file = request.files['file']
+            load_schema_to_server(file)
+    except InvalidUsage as e:
+        raise e
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(success=True)
 
 @bp.route('/api/search_concepts', methods=['GET'])
