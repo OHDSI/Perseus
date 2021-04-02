@@ -1,6 +1,8 @@
+import { DbSettings } from './db-settings';
+
 export interface FakeDataParams {
   maxRowCount: number;
   doUniformSampling: boolean;
-  schema?: string;
   scanReportBase64?: string;
+  dbSettings: DbSettings
 }
