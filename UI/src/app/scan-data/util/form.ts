@@ -1,7 +1,6 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { FakeDataParams } from '../model/fake-data-params';
 
-export function createFakeDataForm(value: FakeDataParams =
+export function createFakeDataForm(value =
                                      {maxRowCount: 10e3, doUniformSampling: false}) {
   return new FormGroup(
     {
