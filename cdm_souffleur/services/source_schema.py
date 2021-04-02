@@ -300,7 +300,7 @@ def _allowed_file(filename):
         if filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
             return filename
         else:
-            return None
+            raise InvalidUsage("Incorrect report extension", 400)
 
 
 def load_schema_to_server(file):
