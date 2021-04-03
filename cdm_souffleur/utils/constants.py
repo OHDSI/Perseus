@@ -48,7 +48,9 @@ TYPES_WITH_MAX_LENGTH = [
   "character",
   "character varying",
   "char",
-  "text"
+  "text",
+  "timestamp",
+  "timestamp(p) with time zone"
 ]
 
 LIST_OF_COLUMN_INFO_FIELDS = [

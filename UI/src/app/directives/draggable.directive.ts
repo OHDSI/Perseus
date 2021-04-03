@@ -125,8 +125,9 @@ export class DraggableDirective implements OnInit {
 
     const element = e.currentTarget;
     if (element) {
+      const elementId = element.id.startsWith('cdm~') ? element.id.replace('cdm~', '') : element.id;
       const row = this.row;
-      const targetRow = this.table.rows.find(item => item.name === element.id);
+      const targetRow = this.table.rows.find(item => item.name === elementId);
 
       if (targetRow.grouppedFields.length) {
         const rowToAdd = this.table.rows[this.bridgeService.draggedRowIndex];

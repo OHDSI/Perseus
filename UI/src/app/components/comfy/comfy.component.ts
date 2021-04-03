@@ -352,6 +352,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.router.navigate(['/mapping'], { queryParams: event, skipLocationChange: true});
   }
 
+  getTableName(tableName) {
+    return tableName.startsWith('cdm~') ? tableName.replace('cdm~', '') : tableName;
+  }
+
   getMappingConfig() {
     const mappingConfig = [];
     Object.keys(this.targetConfig).forEach(key => {

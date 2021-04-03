@@ -18,6 +18,7 @@ const URL = apiUrl;
 })
 export class DataService {
   batch = [];
+  prefix = '';
 
   constructor(
     private httpService: HttpService,
@@ -27,12 +28,15 @@ export class DataService {
   }
 
   _normalize(data, area) {
+    if (area === 'target') {
+      this.prefix = 'cdm~';
+    }
     const tables = [];
     const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       const id = i;
-      const name = item.table_name;
+      const name = `${this.prefix}${item.table_name}`;
       const rows = [];
 
       for (let j = 0; j < item.column_list.length; j++) {
@@ -47,7 +51,7 @@ export class DataService {
         const rowOptions: RowOptions = {
           id: j,
           tableId: i,
-          tableName: item.table_name,
+          tableName: `${this.prefix}${item.table_name}`,
           name: item.column_list[j].column_name,
           type: item.column_list[j].column_type,
           isNullable: item.column_list[j].is_column_nullable ?
@@ -184,10 +188,10 @@ export class DataService {
     data.map(table => {
       const tableName = table.table_name;
       if (COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === tableName) < 0) {
-        targetConfig[tableName] = {
-          name: `target-${tableName}`,
-          first: tableName,
-          data: [tableName]
+        targetConfig[`cdm~${tableName}`] = {
+          name: `target-cdm~${tableName}`,
+          first: `cdm~${tableName}`,
+          data: [`cdm~${tableName}`]
         };
       }
     });

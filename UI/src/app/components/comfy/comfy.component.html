@@ -67,9 +67,8 @@
                 <mat-icon>drag_indicator</mat-icon>
                 <div class="table-description source caption"
                      [matTooltip]="item"
-                     matTooltipPosition="right"
-                     [concept]="item">
-                  {{ item }}
+                     matTooltipPosition="right">
+                  {{item}}
                 </div>
                 <div class="cdm-box-actions"
                      *ngIf="isEditable(item)">
@@ -81,7 +80,7 @@
 
                 <div *cdkDragPreview
                      class="table-description source preview">
-                  {{ item }}
+                  {{item}}
                 </div>
               </div>
             </div>
@@ -171,7 +170,7 @@
                     <div class="table-description target caption"
                          [matTooltip]="tableName"
                          matTooltipPosition="right">
-                      <span class="target-label">{{ tableName }}</span>
+                      <span class="target-label">{{ getTableName(tableName) }}</span>
                       <span class="divider"></span>
                       <mat-icon *ngIf="i > 0"
                                 class="remove-mapping-table"
@@ -180,7 +179,7 @@
                     </div>
                     <div *cdkDragPreview
                          class="table-description target preview">
-                      {{ tableName }}
+                      {{ tableName.replace('cdm~', '') }}
                     </div>
                   </div>
                 </div>
