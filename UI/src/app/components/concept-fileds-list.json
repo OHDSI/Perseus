@@ -1,41 +1,41 @@
 {
-   "condition_occurrence": [
+   "cdm~condition_occurrence": [
       "condition_concept_id",
       "condition_source_value",
       "condition_source_concept_id",
       "condition_type_concept_id"
    ],
-   "drug_exposure": [
+   "cdm~drug_exposure": [
       "drug_concept_id",
       "drug_source_value",
       "drug_source_concept_id",
       "drug_type_concept_id"
    ],
-   "measurement": [
+   "cdm~measurement": [
       "measurement_concept_id",
       "measurement_source_value",
       "measurement_source_concept_id",
       "measurement_type_concept_id"
    ],
-   "observation": [
+   "cdm~observation": [
       "observation_concept_id",
       "observation_source_value",
       "observation_source_concept_id",
       "observation_type_concept_id"
    ],
-   "device_exposure": [
+   "cdm~device_exposure": [
       "device_concept_id",
       "device_source_value",
       "device_source_concept_id",
       "device_type_concept_id"
    ],
-   "procedure_occurrence": [
+   "cdm~procedure_occurrence": [
       "procedure_concept_id",
       "procedure_source_value",
       "procedure_source_concept_id",
       "procedure_type_concept_id"
    ],
-   "specimen": [
+   "cdm~specimen": [
       "specimen_concept_id",
       "specimen_source_value",
       "specimen_type_concept_id"

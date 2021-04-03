@@ -8,7 +8,7 @@
                      *ngFor="let table of payload.tables"
                      [value]="table">
                      <div class="flex-div">
-                       <div>{{payload.clone ? table.cloneName : table.name}}</div>
+                       <div>{{getName(table)}}</div>
                        <mat-icon (click)="remove(table)"
                                  *ngIf="payload.remove && table.cloneName !== payload.itemNotToRemove">delete_outline</mat-icon>
                      </div>

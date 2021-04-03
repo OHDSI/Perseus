@@ -24,6 +24,10 @@ export class SelectTableDropdownComponent implements OnInit {
       this.dialogRef.close();
   }
 
+  getName(table: any){
+    return this.payload.clone ? table.cloneName : table.name.startsWith('cdm~') ? table.name.replace('cdm~', '') : table.name;
+  }
+
   remove(table: any){
     this.dialogRef.close(table);
   }

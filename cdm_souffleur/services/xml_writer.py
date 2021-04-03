@@ -176,7 +176,10 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
                     after_quote = double_quote[0]
                     before_quote = double_quote[0]
         after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\'', after_quote)
-        view = f'{before_quote}\'{after_quote_replaced}'
+        if not before_quote:
+            view = after_quote_replaced
+        else:
+            view = f'{before_quote}\'{after_quote_replaced}'
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
