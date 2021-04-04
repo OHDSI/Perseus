@@ -28,9 +28,7 @@ export class DataService {
   }
 
   _normalize(data, area) {
-    if (area === 'target') {
-      this.prefix = 'cdm~';
-    }
+    this.prefix = area === 'target' ? 'cdm~' : '';
     const tables = [];
     const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
