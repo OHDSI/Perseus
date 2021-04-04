@@ -30,29 +30,12 @@ export class Configuration {
       row.source = Object.setPrototypeOf(source, Row.prototype);
       row.target = Object.setPrototypeOf(target, Row.prototype);
       row.transforms = transforms.map(t => new SqlFunction(t));
-      if (!row.target.tableName.startsWith('cdm~')) {
-        const prefixedTableName = `cdm~${row.target.tableName}`;
-        row.target.tableName = prefixedTableName;
-        row.connector.target.tableName = prefixedTableName;
-      }
     });
     return rows;
   }
 
   get tables(): any {
-    const tablesConfig = JSON.parse(this.tablesConfiguration);
-    if(!Object.keys(tablesConfig)[0].startsWith('cdm~')){
-      const newTablesConfig = {};
-      Object.keys(tablesConfig).forEach(key => {
-          const prefixedTableName = `cdm~${key}`;
-          tablesConfig[ key ].data[ 0 ] = prefixedTableName;
-          tablesConfig[ key ].first = prefixedTableName;
-          tablesConfig[ key ].name = tablesConfig[ key ].name.replace('target', 'target-cdm~');
-          newTablesConfig[prefixedTableName] = tablesConfig[ key ];
-      })
-      return newTablesConfig
-    }
-    return tablesConfig;
+    return JSON.parse(this.tablesConfiguration);
   }
 
   get sourceTables(): Table[] {
@@ -64,9 +47,6 @@ export class Configuration {
   get targetTables(): Table[] {
     const tables = [];
     parse(this.target).map(item => tables.push(new Table(item)));
-    if (!tables[0].name.startsWith('cdm~')) {
-      tables.forEach(it => it.name = `cdm~${it.name}`);
-    }
     return tables;
   }
 
@@ -90,9 +70,6 @@ export class Configuration {
       } catch {
         constants = JSON.parse(this.constants)
       }
-      if (Object.keys(constants).length && !(Object.values(constants)[0] as any).tableName.startsWith('cdm~')) {
-        (Object.values(constants) as any).forEach(item => item.tableName = `cdm~${item.tableName}`)
-      }
       return constants;
     }
     return {};
@@ -107,14 +84,6 @@ export class Configuration {
        cloneList.forEach(it => cloneTables.push(new Table(it)));
        clonesResult[item] = cloneTables;
     });
-    if(Object.keys(clonesResult).length && !Object.keys(clonesResult)[0].startsWith('cdm~')){
-      const prefixedClones = {};
-      Object.keys(clonesResult).forEach(key => {
-        clonesResult[key].forEach(it => it.name = `cdm~${it.name}`);
-        prefixedClones[`cdm~${key}`] = clonesResult[key];
-      })
-      return prefixedClones;
-    }
     return clonesResult;
   }
 
@@ -143,13 +112,7 @@ export class Configuration {
 
   get tableConcepts(): any {
     if (this.concepts) {
-      const parsedConcepts =  JSON.parse(this.concepts);
-      if(Object.keys(parsedConcepts).length && !Object.keys(parsedConcepts)[0].startsWith('cdm~')){
-        const prefixedConcepts = {}
-        Object.keys(parsedConcepts).forEach(key => prefixedConcepts[`cdm~${key}`] = parsedConcepts[key]);
-        return prefixedConcepts
-      }
-      return parsedConcepts;
+      return JSON.parse(this.concepts);
     }
     return {};
   }

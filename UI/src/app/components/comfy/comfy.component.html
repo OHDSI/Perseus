@@ -170,7 +170,7 @@
                     <div class="table-description target caption"
                          [matTooltip]="tableName"
                          matTooltipPosition="right">
-                      <span class="target-label">{{ getTableName(tableName) }}</span>
+                      <span class="target-label">{{ tableName }}</span>
                       <span class="divider"></span>
                       <mat-icon *ngIf="i > 0"
                                 class="remove-mapping-table"
@@ -179,7 +179,7 @@
                     </div>
                     <div *cdkDragPreview
                          class="table-description target preview">
-                      {{ tableName.replace('cdm~', '') }}
+                      {{ tableName }}
                     </div>
                   </div>
                 </div>

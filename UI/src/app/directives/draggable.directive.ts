@@ -87,7 +87,7 @@ export class DraggableDirective implements OnInit {
 
     if (e.currentTarget.nodeName === 'TR') {
       const row = e.currentTarget;
-      const targetRow = this.table.rows.find(item => item.name === row.id);
+      const targetRow = this.table.rows.find(item => `${this.area}-${item.name}` === row.id);
       const classToAdd = (this.area === 'source' && this.bridgeService.sourceRow && !this.bridgeService.targetRow
         || this.area === 'target' && this.bridgeService.targetRow && !this.bridgeService.sourceRow) &&
         (!targetRow.grouppedFields || !targetRow.grouppedFields.length) ?
@@ -125,9 +125,8 @@ export class DraggableDirective implements OnInit {
 
     const element = e.currentTarget;
     if (element) {
-      const elementId = element.id.startsWith('cdm~') ? element.id.replace('cdm~', '') : element.id;
       const row = this.row;
-      const targetRow = this.table.rows.find(item => item.name === elementId);
+      const targetRow = this.table.rows.find(item => `${this.area}-${item.name}` === element.id);
 
       if (targetRow.grouppedFields.length) {
         const rowToAdd = this.table.rows[this.bridgeService.draggedRowIndex];
