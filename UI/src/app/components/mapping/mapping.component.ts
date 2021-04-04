@@ -218,9 +218,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           }
         };
 
-        const htmlElementId = arrow.target.name.startsWith('cdm~') ? arrow.target.name : `cdm~${arrow.target.name}`;
-        const htmlElement = document.getElementById(htmlElementId);
-        if (!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(arrow.target.name))) {
+        const htmlElementId = arrow.target.name;
+        const htmlElement = document.getElementById(`target-${htmlElementId}`);
+        if (!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
 
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {

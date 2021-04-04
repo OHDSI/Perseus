@@ -174,7 +174,7 @@ export class PanelTableComponent extends BaseComponent
   }
   
   getRowId(name: string) {
-    return this.area === 'target' ? `cdm~${name}` : name;
+    return `${this.area}-${name}`;
   }
 
   isConstant(column: any) {

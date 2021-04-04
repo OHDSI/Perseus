@@ -104,7 +104,7 @@ export class MappingService {
         });
         mapPairs.push({
           source_table: sourceTable,
-          target_table: targetTable.replace('cdm~', ''),
+          target_table: targetTable,
           mapping: mappings
         });
       });
@@ -135,16 +135,16 @@ export class MappingService {
         }
         if (this.concepts[ key ]) {
           if (conceptSourceTable !== 'similar' && (!this.sourceTableName || this.sourceTableName === conceptSourceTable)) {
-            let mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable.replace('cdm~', ''));
+            let mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
             if (mappingItemIndex === -1) {
               const mappingPair = {
                 source_table: conceptSourceTable,
-                target_table: conceptTargetTable.replace('cdm~', ''),
+                target_table: conceptTargetTable,
                 mapping: []
               };
               mapping.mapping_items.push(mappingPair)
             }
-            mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable.replace('cdm~', ''));
+            mappingItemIndex = mapping.mapping_items.findIndex(item => item.source_table === conceptSourceTable && item.target_table === conceptTargetTable);
             this.concepts[ key ].conceptsList.forEach(conc => {
               conceptFieldsTypes.forEach(fieldType => {
                 if (!(cloneExists && !conc.fields[ fieldType ].targetCloneName)) {
@@ -226,7 +226,7 @@ export class MappingService {
     });
     mappings.forEach((mapping: {}) => {
       rows.forEach(row => {
-        if (mapping['table'] !== row.tableName.replace('cdm~', '')) {
+        if (mapping['table'] !== row.tableName) {
           return;
         }
         const constantObj = {
