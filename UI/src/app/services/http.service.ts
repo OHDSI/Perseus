@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
 import { Mapping } from '../models/mapping';
 import { map } from 'rxjs/operators';
+import { apiUrl } from '../app.constants';
 
 // use for dev purposes
 // import * as schemaData from '../mockups/schema.mockup.json';
 
-const {url: URL} = environment;
+const URL = apiUrl;
 const API_URLS = {
   getCDMVersions: () => `${URL}/get_cdm_versions`,
   getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
