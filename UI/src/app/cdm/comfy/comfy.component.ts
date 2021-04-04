@@ -126,7 +126,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       const data = container.data;
       const [ area ] = container.id.split('-');
       const [ previousArea ] = previousContainer.id.split('-');
-      const exists = container.data.find(tableName => previousContainer.data[ previousIndex ] === tableName);
 
       if (area === previousArea) {
         if (area === Area.Target) {
@@ -146,7 +145,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             moveItemInArray(this.storeService.state.source, previousIndex, currentIndex);
           }
         }
-      } else if (!exists) {
+      } else {
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         this.storeService.add('targetConfig', this.targetConfig);
         this.storeService.state.recalculateSimilar = true;

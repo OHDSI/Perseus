@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from cdm_souffleur.utils import FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
+from cdm_souffleur.utils.column_types_mapping import postgres_types_mapping
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME
 import xml.etree.ElementTree as ElementTree
 import os
@@ -47,10 +48,12 @@ def get_source_schema(current_user, schemaname):
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
-            column_max_length = ""
+            column_type = convert_column_type(column_description[1])
             if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
-                column_max_length = '({0})'.format(column_description[2])
-            column_type = '{0}{1}'.format(column_description[1], column_max_length)
+                if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
+                    column_type = column_type.replace('(P)', f'({column_description[2]})')
+                else:
+                    column_type = '{0}({1})'.format(column_description[1], column_description[2])
             column = Column(column_name, column_type)
             table_.column_list.append(column)
             create_column_sql = '"{0}" {1},'.format(column_name, column_type)
@@ -92,6 +95,12 @@ def save_source_schema_in_db(current_user, source_tables):
             create_table_sql += ' );'
             cursor = pg_db.execute_sql(create_table_sql)
 
+
+def convert_column_type(type):
+    if type.upper() in postgres_types_mapping:
+        return postgres_types_mapping[type.upper()]
+    else:
+        return type.upper()
 
 def get_view_from_db(current_user, view_sql):
     view_sql = addSchemaNames(current_user, view_sql)

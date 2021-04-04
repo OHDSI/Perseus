@@ -578,6 +578,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     }
   }
 
+  getRowId(name: string) {
+    return `${this.area}-${name}`;
+  }
+
   onTransformDialogOpen(event: any, row: IRow, element: any) {
     event.stopPropagation();
     this.openTransform.emit({ row, element });

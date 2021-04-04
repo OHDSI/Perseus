@@ -16,4 +16,23 @@ column_map = {
      1266: 'time',
      1700: 'decimal',
      2950: 'uuid',  # UUID
+},
+
+postgres_types_mapping = {
+     'BINARY': 'BYTEA',
+     'BIT': 'BOOLEAN',
+     'VARCHAR(MAX)': 'TEXT',
+     'VARBINARY': 'BYTEA',
+     'NVARCHAR': 'VARCHAR',
+     'NTEXT': 'TEXT',
+     'FLOAT': 'DOUBLE PRECISION',
+     'DATETIME': 'TIMESTAMP(3)',
+     'DATETIME2': 'TIMESTAMP',
+     'DATETIMEOFFSET': 'TIMESTAMP(P) WITH TIME ZONE',
+     'SMALLDATETIME': 'TIMESTAMP(0)',
+     'TINYINT': 'SMALLINT',
+     'UNIQUEIDENTIFIER': 'CHAR(16)',
+     'ROWVERSION': 'BYTEA',
+     'SMALLMONEY': 'MONEY',
+     'IMAGE': 'BYTEA'
 }
