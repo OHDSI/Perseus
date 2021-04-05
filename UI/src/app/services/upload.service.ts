@@ -80,13 +80,18 @@ export class UploadService {
 
     return fromPromise(jsZip.loadAsync(event.target.files[0]))
       .pipe(
-        switchMap(zip => forkJoin(
-          Object.keys(zip.files).map(key => {
-            const dotIndex = key.lastIndexOf('.');
-            const isJson = key.substring(dotIndex + 1) === 'json';
-            return this.loadMappingAndReport(zip.files[key], isJson as boolean)
-          }))
-        ),
+        switchMap(zip => {
+          const fileNames = Object.keys(zip.files);
+          if (fileNames.length === 0) {
+            throw new Error('Empty archive')
+          }
+          return forkJoin(
+            fileNames.map(key => {
+              const dotIndex = key.lastIndexOf('.');
+              const isJson = key.substring(dotIndex + 1) === 'json';
+              return this.loadMappingAndReport(zip.files[key], isJson as boolean)
+            }))
+        }),
         catchError(error => {
           const templateMessage = 'Failed to load mapping'
           const errorMessage = parseHttpError(error)
@@ -117,10 +122,10 @@ export class UploadService {
     } else {
       return readFile('blob')
         .pipe(
-          tap(content => {
+          switchMap(content => {
             const blob = new Blob([content], {type: MediaType.XLSX});
             const reportFile = new File([blob], file.name, {type: MediaType.XLSX});
-            this.loadReport([reportFile]);
+            return this.loadReport([reportFile]);
           })
         )
     }
@@ -133,7 +138,7 @@ export class UploadService {
     this.bridgeService.applyConfiguration(resultConfig);
   }
 
-  loadReport(file: any) {
+  loadReport(file: any): Observable<any> {
     this.storeService.add('reportFile', file[0]);
     return this.uploadSchema(file, true)
       .pipe(
