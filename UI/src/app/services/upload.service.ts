@@ -7,8 +7,13 @@ import { HttpService } from './http.service';
 import { Configuration } from '../models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject } from 'rxjs';
-import * as jsZip from 'jszip'; 
+import * as jsZip from 'jszip';
 import { MediaType } from './utilites/base64-util';
+import { Observable } from 'rxjs/internal/Observable';
+import { fromPromise } from 'rxjs/internal-compatibility';
+import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { parseHttpError } from './utilites/error';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +40,7 @@ export class UploadService {
     this.loading$.next(value);
   }
 
-  uploadSchema(files: File[], loadWithoutDb?: boolean) {
+  uploadSchema(files: File[], loadWithoutDb?: boolean): Observable<any> {
     const formData: FormData = new FormData();
     for (const file of files) {
       formData.append('file', file, file.name);
@@ -43,68 +48,105 @@ export class UploadService {
     return loadWithoutDb ? this.httpService.loadReportToServer(formData) : this.httpService.postSaveLoadSchema(formData);
   }
 
-  onFileChange(event: any): void {
+  onScanReportChange(event: any): Observable<any> {
     const files = event.target.files;
-    const dotPosition = files[ 0 ].name.lastIndexOf('.');
+    const dotPosition = files[0].name.lastIndexOf('.');
     this.storeService.add('reportFile', files[0]);
-    this.uploadSchema(files)
-      .subscribe(res => {
-        this.snackbar.open(
-          'Success file upload',
-          ' DISMISS '
-        );
-        this.bridgeService.resetAllMappings();
-        this.dataService.prepareTables(res, 'source');
-        this.dataService.saveReportName(files[0].name.slice(0, dotPosition), 'report');
-        this.bridgeService.saveAndLoadSchema$.next();
-      }, () => this.bridgeService.reportLoading$.next(false));
+    return this.uploadSchema(files)
+      .pipe(
+        tap(res => {
+          this.snackbar.open(
+            'Success file upload',
+            ' DISMISS '
+          );
+          this.bridgeService.resetAllMappings();
+          this.dataService.prepareTables(res, 'source');
+          this.dataService.saveReportName(files[0].name.slice(0, dotPosition), 'report');
+          this.bridgeService.saveAndLoadSchema$.next();
+        }),
+        catchError(error => {
+          this.bridgeService.reportLoading$.next(false)
+          const templateMessage = 'Failed to load report'
+          const errorMessage = parseHttpError(error)
+          throw new Error(
+            errorMessage ? `${templateMessage}: ${errorMessage}` : templateMessage
+          );
+        })
+      );
   }
 
-
-  async onMappingChange(event: any): Promise<any> {
+  onMappingChange(event: any): Observable<any> {
     this.mappingLoading = true;
-    const zip = await jsZip.loadAsync(event.target.files[ 0 ]);
 
-    Object.keys(zip.files).forEach(obj => {
-      const dotIndex = obj.lastIndexOf('.');
-      const isJson = obj.substring(dotIndex + 1) === 'json';
-      if (isJson) {
-        this.loadMappingAndReport(zip.files[ obj ], true);
-      } else {
-        this.loadMappingAndReport(zip.files[ obj ], false);
-      }
+    return fromPromise(jsZip.loadAsync(event.target.files[0]))
+      .pipe(
+        switchMap(zip => {
+          const fileNames = Object.keys(zip.files);
+          if (fileNames.length === 0) {
+            throw new Error('Empty archive')
+          }
+          return forkJoin(
+            fileNames.map(key => {
+              const dotIndex = key.lastIndexOf('.');
+              const isJson = key.substring(dotIndex + 1) === 'json';
+              return this.loadMappingAndReport(zip.files[key], isJson as boolean)
+            }))
+        }),
+        catchError(error => {
+          const templateMessage = 'Failed to load mapping'
+          const errorMessage = parseHttpError(error)
+          throw new Error(
+            errorMessage ? `${templateMessage}: ${errorMessage}` : templateMessage
+          );
+        }),
+        finalize(() => this.mappingLoading = false)
+      )
+  }
+
+  loadMappingAndReport(file: any, isJson: boolean): Observable<string | BlobPart> {
+    const readFile = type => new Observable<string | BlobPart>(subscriber => {
+      file.async(type).then(
+        result => {
+          subscriber.next(result)
+          subscriber.complete()
+        },
+        error => subscriber.error(error)
+      )
     })
 
-  }
-
-  async loadMappingAndReport(file: any, isJson: boolean) {
     if (isJson) {
-      const content = await file.async('string');
-      this.loadMapping(content);
+      return readFile('string')
+        .pipe(
+          tap(content => this.loadMapping(content))
+        )
     } else {
-      const content = await file.async('blob');
-      const blob = new Blob([content], { type: MediaType.XLSX });
-      const reportFile = new File([blob], file.name, {type: MediaType.XLSX});
-      this.loadReport([reportFile]);
+      return readFile('blob')
+        .pipe(
+          switchMap(content => {
+            const blob = new Blob([content], {type: MediaType.XLSX});
+            const reportFile = new File([blob], file.name, {type: MediaType.XLSX});
+            return this.loadReport([reportFile]);
+          })
+        )
     }
   }
 
   loadMapping(content: any) {
     const loadedConfig = JSON.parse(content as string);
     const resultConfig = new Configuration();
-    Object.keys(loadedConfig).forEach(key => resultConfig[ key ] = loadedConfig[ key ]);
+    Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
     this.bridgeService.applyConfiguration(resultConfig);
   }
 
-  async loadReport(file: any){
+  loadReport(file: any): Observable<any> {
     this.storeService.add('reportFile', file[0]);
-    this.uploadSchema(file, true)
-      .subscribe(res => {
-        this.snackbar.open(
+    return this.uploadSchema(file, true)
+      .pipe(
+        tap(() => this.snackbar.open(
           'Success file upload',
           ' DISMISS '
-        );
-      });
+        ))
+      )
   }
 
   onFileInputClick(el: ElementRef) {

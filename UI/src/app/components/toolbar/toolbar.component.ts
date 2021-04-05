@@ -17,6 +17,7 @@ import { DqdDialogComponent } from '../../scan-data/dqd-dialog/dqd-dialog.compon
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
+import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
 
 @Component({
   selector: 'app-toolbar',
@@ -53,6 +54,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     private reportGenerationService: ReportGenerationService
   ) {
     super();
+  }
+
+  get isNotComfyPage() {
+    return !this.router.url.includes('comfy')
   }
 
   ngOnInit() {
@@ -107,11 +112,31 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   onFileUpload(event: Event) {
     this.bridgeService.reportLoading();
-    this.uploadService.onFileChange(event);
+    this.uploadService.onScanReportChange(event)
+      .subscribe(
+        () => {},
+        error => this.matDialog.open(ErrorPopupComponent, {
+          data: {
+            title: 'Failed to load new report',
+            message: error.message
+          },
+          panelClass: 'scan-data-dialog'
+        })
+      )
   }
 
   onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event);
+    this.uploadService.onMappingChange(event)
+      .subscribe(
+        () => {},
+        error => this.matDialog.open(ErrorPopupComponent, {
+          data: {
+            title: 'Failed to open mapping',
+            message: error.message
+          },
+          panelClass: 'scan-data-dialog'
+        })
+      )
   }
 
   openSetCDMDialog() {

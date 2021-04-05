@@ -10,15 +10,17 @@ import {
   ViewChild
 } from '@angular/core';
 import {
-  VocabSearchFilters, VocabSearchMode,
-  VocabSearchReqParams, VocabSearchResult,
+  VocabSearchFilters,
+  VocabSearchMode,
+  VocabSearchReqParams,
+  VocabSearchResult,
   VocabularySearchService
 } from '../services/vocabulary-search.service';
 import { Concept } from './concept';
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
-import { parseHtmlError } from '../services/utilites/error';
+import { parseHttpError } from '../services/utilites/error';
 import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
 import { of } from 'rxjs';
@@ -319,7 +321,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       this.searchService.search(params, this.mode)
         .pipe(
           catchError(error => {
-            this.error = parseHtmlError(error);
+            this.error = parseHttpError(error);
             const result: VocabSearchResult = {
               content: [],
               totalPages: 1,

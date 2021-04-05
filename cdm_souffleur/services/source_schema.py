@@ -3,6 +3,8 @@ import ntpath
 from pathlib import Path
 from pyspark import Row
 import pandas as pd
+import re
+from cdm_souffleur.column_types_mapping import postgres_types_mapping
 from cdm_souffleur.utils.utils import spark
 from cdm_souffleur.utils import GENERATE_CDM_SOURCE_METADATA_PATH, \
     GENERATE_CDM_SOURCE_DATA_PATH, FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
@@ -59,10 +61,12 @@ def get_source_schema(schemaname):
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
-            column_max_length = ""
+            column_type = convert_column_type(column_description[1])
             if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
-                column_max_length = '({0})'.format(column_description[2])
-            column_type = '{0}{1}'.format(column_description[1], column_max_length)
+                if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
+                    column_type = column_type.replace('(P)', f'({column_description[2]})')
+                else:
+                    column_type = '{0}({1})'.format(column_description[1], column_description[2])
             column = Column(column_name, column_type)
             table_.column_list.append(column)
             create_column_sql = '"{0}" {1},'.format(column_name, column_type)
@@ -74,6 +78,12 @@ def get_source_schema(schemaname):
     pg_db.close()
     return schema
 
+
+def convert_column_type(type):
+    if type.upper() in postgres_types_mapping:
+        return postgres_types_mapping[type.upper()]
+    else:
+        return type.upper()
 
 def reset_schema(pg_db, name='public'):
     exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)

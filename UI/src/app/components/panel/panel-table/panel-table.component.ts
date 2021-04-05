@@ -173,6 +173,10 @@ export class PanelTableComponent extends BaseComponent
     });
   }
   
+  getRowId(name: string) {
+    return `${this.area}-${name}`;
+  }
+
   isConstant(column: any) {
     const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
     const isConceptTable = this.conceptFieldNames[ this.table.name ] ? this.conceptFieldNames[ this.table.name ].includes(column.name) : undefined
@@ -233,7 +237,7 @@ export class PanelTableComponent extends BaseComponent
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
-        const fieldsToGroup = this.rowFocusedElements.map(item => item.id);
+        const fieldsToGroup = this.rowFocusedElements.map(item => item.id.replace(`${this.area}-`, ''));
         const groupType = this.table.rows.find(item => item.name === fieldsToGroup[ 0 ]).type;
         const groupRows = this.table.rows.filter(item => fieldsToGroup.includes(item.name)) as Row[];
         const rowOptions: RowOptions = {
@@ -241,7 +245,7 @@ export class PanelTableComponent extends BaseComponent
           tableId: this.table.id,
           tableName: this.table.name,
           name: res.value,
-          type: groupType.substr(0, groupType.indexOf('(')),
+          type: groupType.indexOf('(') !== -1 ? groupType.substr(0, groupType.indexOf('(')) : groupType,
           isNullable: true,
           comments: [],
           uniqueIdentifier: false,
@@ -313,7 +317,7 @@ export class PanelTableComponent extends BaseComponent
     const linkedTables = [];
     this.rowFocusedElements.forEach(item =>
       this.storeService.state.target.forEach(tbl => {
-        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, tbl.id)) {
+        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id.replace(`${this.area}-`, '')), this.area, tbl.id)) {
           linkedTables.push(tbl.name);
         }
       }));
@@ -321,7 +325,7 @@ export class PanelTableComponent extends BaseComponent
   }
 
   checkGrouppedFields() {
-    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id).grouppedFields.length);
+    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id.replace(`${this.area}-`, '')).grouppedFields.length);
   }
 
   checkDifferentTypes(groupType?: string) {
@@ -330,12 +334,12 @@ export class PanelTableComponent extends BaseComponent
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
         filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
-      const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
+      const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id.replace(`${this.area}-`, ''));
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
         filter(([ k, v ]) => v.includes(firstGroupRowType.toUpperCase()))));
     }
     return this.rowFocusedElements.some(item => {
-      const rowType = this.getTypeWithoutLength(item.id).toUpperCase();
+      const rowType = this.getTypeWithoutLength(item.id.replace(`${this.area}-`, '')).toUpperCase();
       return !typesArray[ 0 ].includes(rowType);
     }
     );
@@ -351,7 +355,7 @@ export class PanelTableComponent extends BaseComponent
 
   addRowToGroup(rows: IRow[]) {
     const group = rows[ 0 ];
-    const focusedRowsNames = this.rowFocusedElements.map(item => item.id);
+    const focusedRowsNames = this.rowFocusedElements.map(item => item.id.replace(`${this.area}-`, ''));
     const rowsToAdd = this.table.rows.filter(item => focusedRowsNames.includes(item.name));
     if (!this.validateGroupFields(group.type)) {
       return;

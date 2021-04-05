@@ -39,11 +39,12 @@ import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-d
 import { Observable } from 'rxjs/internal/Observable';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
+import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
 
 @Component({
   selector: 'app-comfy',
   templateUrl: './comfy.component.html',
-  styleUrls: [ './comfy.component.scss' ]
+  styleUrls: ['./comfy.component.scss']
 })
 export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -116,18 +117,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   mappingHeight = '100%';
   columnListHeight = '100%';
 
-  @ViewChild('scrollEl', { static: false }) scrollEl: ElementRef<HTMLElement>;
-  @ViewChild('sourceUpload', { static: false }) fileInput: ElementRef<HTMLElement>;
+  @ViewChild('scrollEl', {static: false}) scrollEl: ElementRef<HTMLElement>;
+  @ViewChild('sourceUpload', {static: false}) fileInput: ElementRef<HTMLElement>;
   @ViewChildren(CdkDrag) dragEls: QueryList<CdkDrag>;
-  @ViewChild('mappingUpload', { static: false }) mappingInput: ElementRef;
+  @ViewChild('mappingUpload', {static: false}) mappingInput: ElementRef;
 
   drop = new Command({
     execute: (event: any) => {
-      const { container, previousContainer, previousIndex, currentIndex } = event;
+      const {container, previousContainer, previousIndex, currentIndex} = event;
       const data = container.data;
-      const [ area ] = container.id.split('-');
-      const [ previousArea ] = previousContainer.id.split('-');
-      const exists = container.data.find(tableName => previousContainer.data[ previousIndex ] === tableName);
+      const [area] = container.id.split('-');
+      const [previousArea] = previousContainer.id.split('-');
 
       if (area === previousArea) {
         if (area === Area.Target) {
@@ -135,8 +135,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
           const nodes = this.element.nativeElement.querySelectorAll('.vertical-list-item');
           const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
           const curInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${this.dropTargetId}`);
-          const prevTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[ prevInd ]);
-          const curTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[ curInd ]);
+          const prevTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[prevInd]);
+          const curTargetIndex = this.storeService.state.target.findIndex(item => item.name === this.targetTableNames[curInd]);
           moveItemInArray(this.targetTableNames, prevInd, curInd);
           moveItemInArray(this.storeService.state.target, prevTargetIndex, curTargetIndex);
         }
@@ -147,7 +147,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             moveItemInArray(this.storeService.state.source, previousIndex, currentIndex);
           }
         }
-      } else if (!exists) {
+      } else {
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         this.storeService.add('targetConfig', this.targetConfig);
         this.storeService.state.recalculateSimilar = true;
@@ -157,7 +157,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   private animationFrame: number | undefined;
 
-  @HostListener('document:click', [ '$event' ])
+  @HostListener('document:click', ['$event'])
   onClick(event) {
     if (!event) {
       return;
@@ -204,7 +204,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(_ => {
         Object.values(this.targetConfig).forEach((item: any) => {
-          item.data = [ item.first ];
+          item.data = [item.first];
         });
         this.initializeData();
 
@@ -275,7 +275,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   private scroll($event: CdkDragMove) {
-    const { y } = $event.pointerPosition;
+    const {y} = $event.pointerPosition;
     if (!this.scrollEl) {
       return;
     }
@@ -349,13 +349,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   afterOpenMapping(event?: any) {
     if (!event || event.index !== 0)
-      this.router.navigate(['/mapping'], { queryParams: event, skipLocationChange: true});
+      this.router.navigate(['/mapping'], {queryParams: event, skipLocationChange: true});
   }
 
   getMappingConfig() {
     const mappingConfig = [];
     Object.keys(this.targetConfig).forEach(key => {
-      const item = this.targetConfig[ key ].data;
+      const item = this.targetConfig[key].data;
       if (item.length > 1) {
         mappingConfig.push(item);
       }
@@ -374,12 +374,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         let rowNames = [];
         table.rows.forEach(item => {
           item.grouppedFields.length > 0 ? rowNames = rowNames.concat(item.grouppedFields) : rowNames.push(item);
-          });
+        });
 
-        indexes[ table.name ] = tableIncludesColumns(rowNames.map(item => item.name), selectedSourceColumns);
+        indexes[table.name] = tableIncludesColumns(rowNames.map(item => item.name), selectedSourceColumns);
       });
 
-      this.highlightedTables = Object.keys(indexes).filter(tableName => indexes[ tableName ]);
+      this.highlightedTables = Object.keys(indexes).filter(tableName => indexes[tableName]);
 
       this.source = Object.assign([], this.source);
     } else {
@@ -396,8 +396,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       event.stopPropagation();
     }
 
-    const table = this.targetConfig[ targetTableName ];
-    const { data } = table;
+    const table = this.targetConfig[targetTableName];
+    const {data} = table;
 
     const index = data.findIndex(tablename => tablename === sourceTableName);
 
@@ -405,29 +405,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       data.splice(index, 1);
     }
 
-    if (this.storeService.state.targetClones[ targetTableName ]) {
-      delete this.storeService.state.targetClones[ targetTableName ];
+    if (this.storeService.state.targetClones[targetTableName]) {
+      delete this.storeService.state.targetClones[targetTableName];
     }
 
-    if (this.storeService.state.concepts[ `${targetTableName}|${sourceTableName}` ]) {
-      delete this.storeService.state.concepts[ `${targetTableName}|${sourceTableName}` ];
+    if (this.storeService.state.concepts[`${targetTableName}|${sourceTableName}`]) {
+      delete this.storeService.state.concepts[`${targetTableName}|${sourceTableName}`];
     }
-
-
-    // previous version of remove mapping algorithm. Has been commented since logic with deleting links from all concept tables is not required
-    /*     if (isConceptTable(targetTableName)) {
-          environment.conceptTables.forEach(conceptTable => {
-            this.bridgeService.deleteArrowsForMapping(
-              conceptTable,
-              sourceTableName
-            );
-          });
-        } else {
-          this.bridgeService.deleteArrowsForMapping(
-            targetTableName,
-            sourceTableName
-          );
-        } */
 
     this.bridgeService.deleteArrowsForMapping(
       targetTableName,
@@ -453,7 +437,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         break;
       }
       case Area.SourceColumn: {
-        const rows = this.data.source.reduce((prev, cur) => [ ...prev, ...cur.rows ], []);
+        const rows = this.data.source.reduce((prev, cur) => [...prev, ...cur.rows], []);
         this.uniqSourceRows = uniqBy(rows, 'name').filter(row => filterByName(row.name));
         this.data.linkTablesSearch.sourceColumns = byName.criteria;
         break;
@@ -475,7 +459,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   filterByType(): void {
     const uniqueTargetNames = this.data.target.map(item => item.name);
-    const { items: selectedTables } = this.data.filteredTables;
+    const {items: selectedTables} = this.data.filteredTables;
     if (selectedTables.length === 0) {
       this.targetTableNames = uniqueTargetNames;
       return;
@@ -514,9 +498,19 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.commonUtilsService.openSetCDMDialog();
   }
 
-  onFileUpload(event: Event) {
+  onScanReportUpload(event: Event) {
     this.bridgeService.reportLoading();
-    this.uploadService.onFileChange(event);
+    this.uploadService.onScanReportChange(event)
+      .subscribe(
+        () => {},
+        error => this.matDialog.open(ErrorPopupComponent, {
+          data: {
+            title: 'Failed to load new report',
+            message: error.message
+          },
+          panelClass: 'scan-data-dialog'
+        })
+      );
   }
 
   openFilter(target) {
@@ -526,7 +520,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
       panelClass: 'filter-popup',
-      payload: { title: 'Target tables', saveKey: 'filteredTables', types, checkedTypes, options: (cdmTypes as any).default }
+      payload: {
+        title: 'Target tables',
+        saveKey: 'filteredTables',
+        types,
+        checkedTypes,
+        options: (cdmTypes as any).default
+      }
     };
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
@@ -536,9 +536,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.targetConfig[ it ]
-      && this.targetConfig[ it ].data
-      && this.targetConfig[ it ].data.length > 1);
+    return !!this.targetTableNames.find(it => this.targetConfig[it]
+      && this.targetConfig[it].data
+      && this.targetConfig[it].data.length > 1);
   }
 
   openSqlDialog(data) {
@@ -551,25 +551,25 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openCreateSqlDialog() {
-    const matDialog = this.openSqlDialog({ tables: this.data.source, action: 'Create' });
+    const matDialog = this.openSqlDialog({tables: this.data.source, action: 'Create'});
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.add(Area.Source, [ res, ...this.data.source ]);
+        if (res) {
+          this.storeService.add(Area.Source, [res, ...this.data.source]);
+        }
       }
-    }
     );
   }
 
   openEditSqlDialog(name) {
     const table = this.findSourceTableByName(name);
-    const matDialog = this.openSqlDialog({ tables: this.data.source, table, action: 'Edit' });
+    const matDialog = this.openSqlDialog({tables: this.data.source, table, action: 'Edit'});
 
     matDialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.storeService.updateTable(Area.Source, table, res);
+        if (res) {
+          this.storeService.updateTable(Area.Source, table, res);
+        }
       }
-    }
     );
   }
 
@@ -580,7 +580,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         const table = this.findSourceTableByName(tableName);
         this.storeService.removeTable(Area.Source, table);
         Object.keys(this.targetConfig).forEach(source => {
-          if (this.targetConfig[ source ].data.includes(tableName)) {
+          if (this.targetConfig[source].data.includes(tableName)) {
             this.removeTableMapping(tableName, source);
           }
         });
@@ -635,7 +635,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event);
+    this.uploadService.onMappingChange(event)
+      .subscribe(
+        () => {},
+        error => this.matDialog.open(ErrorPopupComponent, {
+          data: {
+            title: 'Failed to open mapping',
+            message: error.message
+          },
+          panelClass: 'scan-data-dialog'
+        })
+      )
   }
 
   showVocabulary() {
@@ -668,7 +678,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 }
 
 export function bound(target: object, propKey: string | symbol) {
-  const originalMethod = (target as any)[ propKey ] as Function;
+  const originalMethod = (target as any)[propKey] as Function;
 
   // Ensure the above type-assertion is valid at runtime.
   if (typeof originalMethod !== 'function') {
@@ -701,7 +711,7 @@ export function bound(target: object, propKey: string | symbol) {
         // The first invocation (per instance) will return the bound method from here.
         // Subsequent calls will never reach this point, due to the way
         // JavaScript runtimes look up properties on objects; the bound method, defined on the instance, will effectively hide it.
-        return instance[ propKey ];
+        return instance[propKey];
       }
     } as PropertyDescriptor;
   }

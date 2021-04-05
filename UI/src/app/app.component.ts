@@ -29,7 +29,9 @@ const ICON_NAMES = [
   'generate_html',
   'generate_md',
   'quality_check',
-  'vocabulary'
+  'vocabulary',
+  'logo_grey',
+  'logo_white'
 ];
 
 @Component({
