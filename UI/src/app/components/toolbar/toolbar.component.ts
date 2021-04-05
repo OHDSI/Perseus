@@ -56,6 +56,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     super();
   }
 
+  get isNotComfyPage() {
+    return !this.router.url.includes('comfy')
+  }
+
   ngOnInit() {
     this.storeService.state$
       .pipe(
