@@ -167,10 +167,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     });
   }
 
-  getRowId(name: string) {
-    return `${this.area}-${name}`;
-  }
-
   isConstant(column: any) {
     const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
     const isConceptTable = this.conceptFieldNames[ this.table.name ] ? this.conceptFieldNames[ this.table.name ].includes(column.name) : undefined
