@@ -15,7 +15,7 @@ export class StoreService {
     targetConfig: {},
     source: [],
     mappedSource: [],
-    report: undefined, //full report name with extention
+    report: undefined, // full report name with extension
     linkTablesSearch: {
       source: undefined,
       target: undefined,

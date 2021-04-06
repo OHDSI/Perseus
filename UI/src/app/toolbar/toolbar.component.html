@@ -6,7 +6,7 @@
     <mat-icon>more_vert</mat-icon>
   </button>
 
-  <div class="logo" (click)="goToComfy()">
+  <div class="logo" (click)="goToComfy()" [ngClass]="{pointer: isNotComfyPage}">
     <mat-icon class="logo" svgIcon="logo_white"></mat-icon>
   </div>
 

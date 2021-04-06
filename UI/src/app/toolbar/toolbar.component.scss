@@ -12,7 +12,10 @@ mat-toolbar.app-toolbar {
     align-items: center;
     height: 13px;
     width: 94px;
-    cursor: pointer;
+
+    &.pointer {
+      cursor: pointer;
+    }
   }
 
   .info-label {

@@ -145,11 +145,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
   }
 
-  getLookup(){
+  getLookup() {
     return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] : this.conceptsTable.lookup['Default'];
   }
 
-  getLookupName(){
+  getLookupName() {
+    if (!this.conceptsTable.lookup[this.targetCloneName] && !this.conceptsTable.lookup['Default'] ) {
+      return this.conceptsTable.lookup['name'];
+    }
     return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName]['name'] : this.conceptsTable.lookup['Default']['name'];
   }
 

@@ -59,7 +59,7 @@ export class ColumnInfoComponent implements OnInit {
     const tableName = this.tableNames[index];
 
     if (this.columnInfos[tableName].status === ColumnInfoStatus.LOADING) {
-      this.dataService.getColumnInfo(this.storeService.state.report ,tableName, this.columnName)
+      this.dataService.getColumnInfo(this.storeService.state.report, tableName, this.columnName)
         .subscribe(result => {
           this.columnInfos[tableName].value = result;
           this.columnInfos[tableName].status = ColumnInfoStatus.READY;

@@ -77,9 +77,6 @@ export class HttpService {
 
   postSaveLoadSchema(formData: FormData) {
     return this.httpClient.post(API_URLS.postSaveLoadSchema(), formData);
-
-    // use this for dev purposes to use mockup for schemaData (to speed up)
-    // return of(schemaData.data);
   }
 
   getLookupsList(lookupType) {
