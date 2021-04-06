@@ -11,7 +11,7 @@ import { VocabularyConditionComponent } from '../vocabulary-condition/vocabulary
 })
 export class ConditionDialogComponent implements OnInit {
   config: TransformationConfig;
-  sourceFields: string[];
+  sourceFields: DictionaryItem[];
   condition: any;
 
   constructor(

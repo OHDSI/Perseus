@@ -79,18 +79,18 @@
   }
 
   &:after {
-      content: "";
-      position: absolute;
-      bottom: -2px;
-      right: 10px;
-      width: 0;
-      height: 0;
-      box-sizing: border-box;
-      border: 5px solid $black;
-      border-color: transparent white white transparent;
-      transform-origin: 0 0;
-      transform: rotate(45deg);
-      box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.15);
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    box-sizing: border-box;
+    border: 5px solid $black;
+    border-color: transparent white white transparent;
+    transform-origin: 0 0;
+    transform: rotate(45deg);
+    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.15);
   }
 
   .buttons-bottom {

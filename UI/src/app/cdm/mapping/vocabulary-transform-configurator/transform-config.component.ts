@@ -259,14 +259,15 @@ export class TransformConfigComponent implements OnInit, OnChanges {
       });
   }
 
-
-  private addSemicolon(str: string){
-    return str.slice(-1) === ';'? str : `${str};`
+  private addSemicolon(str: string) {
+    return str.slice(-1) === ';' ? str : `${str};`
   }
 
-
   private getViewSql(sql: string, tableName: string) {
-    let viewSql = this.sourceTables.find(item => item.name === tableName).sql.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
+    let viewSql = this.sourceTables
+      .find(item => item.name === tableName).sql
+      .replace(/^(\r\n)|(\n)/gi, ' ')
+      .replace(/\s\s+/g, ' ');
     if (viewSql) {
       viewSql = `WITH ${tableName} AS (${viewSql}) `;
     }

@@ -138,7 +138,7 @@ export class DataService {
   }
 
   getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<ColumnInfo> {
-    return this.httpService.getColumnInfo(reportName,tableName, columnName)
+    return this.httpService.getColumnInfo(reportName, tableName, columnName)
       .pipe(
         map(info => {
           if (info.top_10[info.top_10.length - 1] === 'List truncated...') {
