@@ -1,14 +1,12 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { CdmBuilderService } from '../../../services/cdm-builder.service';
-import { dqdDatabaseTypes } from '../../scan-data.constants';
-import { CdmSettings } from '../../model/cdm-settings';
+import { whiteRabbitDatabaseTypes } from '../../scan-data.constants';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { adaptDbSettingsForDestination } from '../../util/cdm-adapter';
 import { DbSettings } from '../../model/db-settings';
 import { DqdConnectionSettingsStateService } from '../../../services/dqd-connection-settings-state.service';
 import { AbstractResourceForm } from '../../shared/resource-form/abstract-resource-form';
+import { WhiteRabbitService } from '../../../services/white-rabbit.service';
 
 @Component({
   selector: 'app-dqd-form',
@@ -25,7 +23,7 @@ export class DqdFormComponent extends AbstractResourceForm implements OnInit, On
 
   formControlNames = ['server', 'port', 'user', 'password', 'database', 'schema'];
 
-  dataTypes = dqdDatabaseTypes;
+  dataTypes = whiteRabbitDatabaseTypes;
 
   @Output()
   check = new EventEmitter<DbSettings>();
@@ -35,7 +33,7 @@ export class DqdFormComponent extends AbstractResourceForm implements OnInit, On
 
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
-              private cdmBuilderService: CdmBuilderService,
+              private whiteRabbitService: WhiteRabbitService, // todo interface with testConnection method
               private stateService: DqdConnectionSettingsStateService) {
     super(formBuilder, matDialog);
   }
@@ -64,16 +62,20 @@ export class DqdFormComponent extends AbstractResourceForm implements OnInit, On
   onTestConnection(): void {
     this.tryConnect = true;
 
-    const dbSettings = adaptDbSettingsForDestination(this.form.value) as CdmSettings;
+    const dbSettings = this.form.value as DbSettings;
 
-    this.cdmBuilderService.testDestinationConnection(dbSettings)
+    this.whiteRabbitService.testConnection(dbSettings)
       .pipe(
         finalize(() => this.tryConnect = false)
       )
       .subscribe(
         result => {
           this.connectionResult = result;
-          this.subscribeFormChange();
+          if (this.connectionResult.canConnect) {
+            this.subscribeFormChange();
+          } else {
+            this.showErrorPopup(this.connectionResult.message);
+          }
         },
         error => {
           this.connectionResult = {

@@ -92,6 +92,12 @@ https://github.com/SoftwareCountry/ETL-CDMBuilder
 
 https://github.com/SoftwareCountry/DataQualityDashboard
 
+### Getting Involved
+
+* User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
+* We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues) 
+
+
 License
 =======
 Perseus is licensed under Apache License 2.0

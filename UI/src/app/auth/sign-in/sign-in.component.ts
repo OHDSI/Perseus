@@ -3,7 +3,7 @@ import { AuthService } from '../auth.service';
 import { authInjector } from '../auth-injector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { parseHtmlError } from '../../services/utilites/error';
+import { parseHttpError } from '../../services/utilites/error';
 import { mainPageRouter } from '../../app.constants';
 
 @Component({
@@ -33,7 +33,7 @@ export class SignInComponent implements OnInit {
       .subscribe(() =>
         this.router.navigate([mainPageRouter]),
         error => {
-          this.error = parseHtmlError(error)
+          this.error = parseHttpError(error)
           this.loading = false
         }
       )

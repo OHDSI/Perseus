@@ -1,12 +1,10 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostListener,
   Input,
-  OnChanges,
   OnInit,
   Output,
   Renderer2,
@@ -49,7 +47,7 @@ import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
     ]),
   ],
 })
-export class PanelTableComponent extends BaseComponent implements OnInit, OnChanges, AfterViewInit {
+export class PanelTableComponent extends BaseComponent implements OnInit {
   @Input() tables: ITable[];
   @Input() table: ITable;
   @Input() tabIndex: any;
@@ -122,9 +120,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     }
   }
 
-  ngOnChanges() {
-  }
-
   equals(name1: string, name2: string): boolean {
     return name1.toUpperCase() === name2.toUpperCase();
   }
@@ -172,6 +167,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     });
   }
 
+  getRowId(name: string) {
+    return `${this.area}-${name}`;
+  }
+
   isConstant(column: any) {
     const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
     const isConceptTable = this.conceptFieldNames[ this.table.name ] ? this.conceptFieldNames[ this.table.name ].includes(column.name) : undefined
@@ -194,9 +193,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     const replacerowindex = this.table.rows.findIndex(selectedRow => selectedRow.name === row.name);
     moveItemInArray(this.table.rows, this.bridgeService.draggedRowIndex, replacerowindex);
     this.updateRowsIndexesAnsSaveChanges();
-  }
-
-  ngAfterViewInit() {
   }
 
   getAllPanelRowNames() {
@@ -232,7 +228,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
-        const fieldsToGroup = this.rowFocusedElements.map(item => item.id);
+        const fieldsToGroup = this.rowFocusedElements.map(item => item.id.replace(`${this.area}-`, ''));
         const groupType = this.table.rows.find(item => item.name === fieldsToGroup[ 0 ]).type;
         const groupRows = this.table.rows.filter(item => fieldsToGroup.includes(item.name)) as Row[];
         const rowOptions: RowOptions = {
@@ -240,7 +236,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
           tableId: this.table.id,
           tableName: this.table.name,
           name: res.value,
-          type: groupType.substr(0, groupType.indexOf('(')),
+          type: groupType.indexOf('(') !== -1 ? groupType.substr(0, groupType.indexOf('(')) : groupType,
           isNullable: true,
           comments: [],
           uniqueIdentifier: false,
@@ -312,7 +308,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     const linkedTables = [];
     this.rowFocusedElements.forEach(item =>
       this.storeService.state.target.forEach(tbl => {
-        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, tbl.id)) {
+        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id.replace(`${this.area}-`, '')), this.area, tbl.id)) {
           linkedTables.push(tbl.name);
         }
       }));
@@ -320,7 +316,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
   }
 
   checkGrouppedFields() {
-    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id).grouppedFields.length);
+    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id.replace(`${this.area}-`, '')).grouppedFields.length);
   }
 
   checkDifferentTypes(groupType?: string) {
@@ -329,15 +325,16 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
         filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
-      const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
-      typesArray = Object.values(this.fieldTypes).
-        filter(( v ) => v.includes(firstGroupRowType.toUpperCase()));
+      const firstGroupRowType = this.getTypeWithoutLength(
+        this.rowFocusedElements[0].id.replace(`${this.area}-`, '')
+      );
+      typesArray = Object.values(this.fieldTypes)
+        .filter((v) => v.includes(firstGroupRowType.toUpperCase()));
     }
     return this.rowFocusedElements.some(item => {
-      const rowType = this.getTypeWithoutLength(item.id).toUpperCase();
-      return !typesArray[ 0 ].includes(rowType);
-    }
-    );
+      const rowType = this.getTypeWithoutLength(item.id.replace(`${this.area}-`, '')).toUpperCase();
+      return !typesArray[0].includes(rowType);
+    });
   }
 
   private getTypeWithoutLength(rowName: string) {
@@ -350,7 +347,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
 
   addRowToGroup(rows: IRow[]) {
     const group = rows[ 0 ];
-    const focusedRowsNames = this.rowFocusedElements.map(item => item.id);
+    const focusedRowsNames = this.rowFocusedElements.map(item => item.id.replace(`${this.area}-`, ''));
     const rowsToAdd = this.table.rows.filter(item => focusedRowsNames.includes(item.name));
     if (!this.validateGroupFields(group.type)) {
       return;
@@ -558,14 +555,14 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
         this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[ row.tableName ], isSameRow, (item: any) => { item.increment = value; })
       } else {
         this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
-      };
+      }
     } else {
       const value = row.constant;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
         item.constant = value;
       });
 
-      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ? this.storeService.state.targetClones[ row.tableName ] : this.storeService.state.target
+      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ? this.storeService.state.targetClones[ row.tableName ] : this.storeService.state.target;
 
       this.bridgeService.updateRowsProperties(tablesToUpdate, isSameRow, (item: any) => {
         item.constant = value;

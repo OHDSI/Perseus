@@ -204,13 +204,13 @@ export class MappingService {
   }
 
   getConceptSqlTransformation(sqlApplied: boolean, sql: string, fieldName: string, cloneTableName: string) {
-    const target_column_name = cloneTableName ? `${cloneTableName}_${fieldName}` : fieldName;
-    return sql && sqlApplied ? `${sql} as ${target_column_name}` : '';
+    const targetColumnName = cloneTableName ? `${cloneTableName}_${fieldName}` : fieldName;
+    return sql && sqlApplied ? `${sql} as ${targetColumnName}` : '';
   }
 
   getSqlTransformation(arrow: any) {
-    const target_column_name = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
-    return arrow.sql && arrow.sql[ 'applied' ] ? `${arrow.sql[ 'name' ]} as ${target_column_name}` : '';
+    const targetColumnName = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
+    return arrow.sql && arrow.sql[ 'applied' ] ? `${arrow.sql[ 'name' ]} as ${targetColumnName}` : '';
   }
 
   applyTransforms(node: MappingNode, connector: any) {
