@@ -16,7 +16,7 @@
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('password').disabled}">
     <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password">
+    <input id="password" type="password" formControlName="password" autocomplete="on">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('database').disabled}">

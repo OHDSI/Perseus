@@ -19,6 +19,7 @@ import { VocabularyConditionComponent } from './vocabulary-transform-configurato
 import { VocabularyConfigComponent } from './vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
 import { SqlEditorModule } from '../../sql-editor/sql-editor.module';
 import { PopupsModule } from '../../popups/popups.module';
+import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { PopupsModule } from '../../popups/popups.module';
     ConditionDialogComponent,
     LookupComponent,
     VocabularyConditionComponent,
-    VocabularyConfigComponent
+    VocabularyConfigComponent,
+    PersonMappingWarningDialogComponent,
   ],
   imports: [
     CommonModule,
