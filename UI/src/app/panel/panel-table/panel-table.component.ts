@@ -1,12 +1,10 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostListener,
   Input,
-  OnChanges,
   OnInit,
   Output,
   Renderer2,
@@ -49,7 +47,7 @@ import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
     ]),
   ],
 })
-export class PanelTableComponent extends BaseComponent implements OnInit, OnChanges, AfterViewInit {
+export class PanelTableComponent extends BaseComponent implements OnInit {
   @Input() tables: ITable[];
   @Input() table: ITable;
   @Input() tabIndex: any;
@@ -120,9 +118,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     if (clickedOutside) {
       this.unsetRowFocus();
     }
-  }
-
-  ngOnChanges() {
   }
 
   equals(name1: string, name2: string): boolean {
@@ -198,9 +193,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     const replacerowindex = this.table.rows.findIndex(selectedRow => selectedRow.name === row.name);
     moveItemInArray(this.table.rows, this.bridgeService.draggedRowIndex, replacerowindex);
     this.updateRowsIndexesAnsSaveChanges();
-  }
-
-  ngAfterViewInit() {
   }
 
   getAllPanelRowNames() {

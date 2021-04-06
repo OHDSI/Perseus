@@ -820,13 +820,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   private checkIsPersonMapped(): Observable<boolean> {
     const mapping = this.bridgeService.generateMapping();
-    const mandatoryPersonFileds = [
+    const mandatoryPersonFields = [
       'person_id',
       'person_source_value'
     ]
     const personMapped = mapping.mapping_items
       .find(mappingPair =>
-        mappingPair.target_table.toLowerCase() === 'person' && mandatoryPersonFileds
+        mappingPair.target_table.toLowerCase() === 'person' && mandatoryPersonFields
           .every(field => mappingPair.mapping
             .find(mappingNode => mappingNode.target_field.toLowerCase() === field)
           )
