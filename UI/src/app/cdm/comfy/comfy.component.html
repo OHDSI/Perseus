@@ -72,9 +72,8 @@
                 <mat-icon>drag_indicator</mat-icon>
                 <div class="table-description source caption"
                      [matTooltip]="item"
-                     matTooltipPosition="right"
-                     [concept]="item">
-                  {{ item }}
+                     matTooltipPosition="right">
+                  {{item}}
                 </div>
                 <div class="cdm-box-actions"
                      *ngIf="isEditable(item)">
@@ -86,7 +85,7 @@
 
                 <div *cdkDragPreview
                      class="table-description source preview">
-                  {{ item }}
+                  {{item}}
                 </div>
               </div>
             </div>
@@ -99,7 +98,7 @@
             <input #sourceUpload
                    type="file"
                    accept=".xlsx, .xls"
-                   (change)="onFileUpload($event)"
+                   (change)="onScanReportUpload($event)"
                    hidden/>
 
             <input #mappingUpload

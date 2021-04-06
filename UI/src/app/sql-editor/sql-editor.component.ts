@@ -140,7 +140,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
         area: Area.Source,
         id: viewTableId,
         name: this.name,
-        sql: this.editorContent
+        sql: viewSql
       };
       const newTable = new Table(settings);
       this.removeLinksForDeletedRows(newTable);
