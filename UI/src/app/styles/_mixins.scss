@@ -1,3 +1,5 @@
+@import "variables";
+
 @mixin cdm-label {
   font-size: 12px;
   line-height: 15px;
@@ -11,7 +13,7 @@
 
   font-size: 14px;
   line-height: 15px;
-  color: #404040;
+  color: $cdm-grey-dark;
 
   &:focus {
     outline: none;
@@ -26,4 +28,30 @@
   line-height: 18px;
   text-align: center;
   cursor: pointer;
+}
+
+@mixin perseus-header {
+  font-size: 18px;
+  font-weight: 550;
+  line-height: 23px;
+  color: $cdm-grey-dark;
+}
+
+@mixin perseus-blue-button {
+  background: $cdm-blue;
+  color: #FFFFFF;
+}
+
+@mixin invalid-text-decoration {
+  &.ng-invalid.ng-touched {
+    border-bottom: 1px solid #FF4646;
+  }
+}
+
+@mixin perseus-error-message {
+  font-size: 12px;
+  line-height: 15px;
+  font-style: italic;
+  font-weight: 300;
+  color: #FF4646;
 }

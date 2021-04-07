@@ -1,0 +1,6 @@
+@import "mixins";
+
+.validate-message {
+  padding-left: 4.5px;
+  @include perseus-error-message();
+}

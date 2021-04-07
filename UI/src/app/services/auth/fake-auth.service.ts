@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
-import { User } from '../models/user';
+import { User } from '../../models/user';
 import { AuthService, localStorageUserField } from './auth.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { delay, tap } from 'rxjs/operators';
@@ -25,9 +25,9 @@ export class FakeAuthService implements AuthService {
     return !!this.user?.token;
   }
 
-  login(username: string, password: string): Observable<User> {
+  login(email: string, password: string): Observable<User> {
     return of({
-      username,
+      email,
       token: Math.random().toString(36).substring(7)
     }).pipe(
       delay(2000),
