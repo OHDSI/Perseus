@@ -55,12 +55,14 @@ def load_schema(current_user):
 @token_required
 def load_saved_source_schema_call(current_user):
     """load saved source schema by name"""
-    schema_name = request.args['schema_name']
-    saved_schema = load_saved_source_schema_from_server(current_user, schema_name)
-    if saved_schema is not None:
-        return jsonify([s.to_json() for s in saved_schema])
-    else:
-        raise InvalidUsage('Schema was not loaded', 404)
+    try:
+        schema_name = request.args['schema_name']
+        saved_schema = load_saved_source_schema_from_server(current_user, schema_name)
+    except InvalidUsage as e:
+        raise e
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify([s.to_json() for s in saved_schema])
 
 
 @bp.route(f'/api/save_and_load_schema', methods=['GET', 'POST'])
@@ -87,7 +89,7 @@ def load_schema_call(current_user):
         file = request.files['file']
         load_schema_to_server(file, current_user)
     except Exception as error:
-        raise InvalidUsage('Schema was not loaded', 404)
+        raise InvalidUsage('Schema was not loaded', 500)
     return jsonify('OK')
 
 @bp.route('/api/save_source_schema_to_db', methods=['POST'])
@@ -97,7 +99,7 @@ def save_source_schema_to_db_call(current_user):
         source_tables = request.json
         save_source_schema_in_db(current_user, source_tables)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify('OK')
 
 @bp.route('/api/get_view', methods=['POST'])
@@ -107,7 +109,7 @@ def get_View(current_user):
         view_sql = request.get_json()
         view_result = get_view_from_db(current_user, view_sql['sql'])
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(view_result)
 
 @bp.route('/api/validate_sql', methods=['POST'])
@@ -117,7 +119,7 @@ def validate_Sql(current_user):
         sql_transformation = request.get_json()
         sql_result = run_sql_transformation(current_user, sql_transformation['sql'])
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(sql_result)
 
 
@@ -143,14 +145,16 @@ def get_column_info_call(current_user):
     """return top 10 values by freq for table and row(optionally)
     based on WR report
     """
-    table_name = request.args['table_name']
-    column_name = request.args.get('column_name')
-    report_name = request.args.get('report_name')
-    info = get_column_info(current_user, report_name, table_name, column_name);
-    if not info:
+    try:
+        table_name = request.args['table_name']
+        column_name = request.args.get('column_name')
+        report_name = request.args.get('report_name')
+        info = get_column_info(current_user, report_name, table_name, column_name);
+    except InvalidUsage as error:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
-    else:
-        return jsonify(info)
+    except Exception as e:
+        raise InvalidUsage(e.__str__(), 500)
+    return jsonify(info)
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
@@ -236,7 +240,7 @@ def save_lookup(current_user):
         lookup = request.json
         add_lookup(current_user, lookup)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 400)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(success=True)
 
 @bp.route('/api/delete_lookup', methods=['DELETE'])
@@ -248,7 +252,7 @@ def delete_lookup(current_user):
         del_lookup(current_user, name, 'source_to_standard')
         del_lookup(current_user, name, 'source_to_source')
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(success=True)
 
 app.register_blueprint(bp)

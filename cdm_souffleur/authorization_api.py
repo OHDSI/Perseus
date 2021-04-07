@@ -8,14 +8,13 @@ authorization_api = Blueprint('authorization_api', __name__)
 @authorization_api.route('/api/register', methods=['POST'])
 def register_user():
     try:
-        username = request.json['username']
         password = request.json['password']
-        first_name = request.json['first_name'] if 'first_name' in request.json else None
-        last_name = request.json['last_name'] if 'last_name' in request.json else None
-        email = request.json['email'] if 'email' in request.json else None
-        auth_token = register_user_in_db(username, password, first_name, last_name, email)
+        first_name = request.json['firstName']
+        last_name = request.json['lastName']
+        email = request.json['email']
+        auth_token = register_user_in_db(password, first_name, last_name, email)
     except IntegrityError as error:
-        raise InvalidUsage('This username already exists', 409)
+        raise InvalidUsage('This email already exists in database', 409)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(auth_token)
@@ -24,9 +23,9 @@ def register_user():
 @authorization_api.route('/api/login', methods=['POST'])
 def login():
     try:
-        username = request.json['username']
+        email = request.json['email']
         password = request.json['password']
-        auth_token = user_login(username, password)
+        auth_token = user_login(email, password)
     except InvalidUsage as error:
         raise error
     except AuthorizationError as error:
