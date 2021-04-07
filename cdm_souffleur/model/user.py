@@ -16,7 +16,7 @@ class User(BaseModel):
     password = CharField()
     first_name = CharField()
     last_name = CharField()
-    email = CharField()
+    email = CharField(unique=True)
 
     def encode_auth_token(self, username, **kwargs):
         try:
