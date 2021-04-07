@@ -32,7 +32,7 @@ def user_login(email, password):
             if auth_token:
                 return {'username': item.username, 'token': auth_token}
             else:
-                raise AuthorizationError('Incorrect login or password', 401)
+                raise AuthorizationError('Incorrect password', 401)
     else:
         raise InvalidUsage('User does not exist', 401)
 
