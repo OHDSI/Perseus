@@ -1,5 +1,5 @@
 <app-auth-background class="sign-in">
-  <form class="sign-in__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form class="sign-in__form" [formGroup]="form" (ngSubmit)="submit()">
     <div class="sign-in__form__header">
       <app-auth-logo></app-auth-logo>
     </div>
@@ -14,32 +14,11 @@
       <input id="email" type="email" formControlName="email" placeholder="email@example.com">
     </div>
 
-    <div class="sign-in__form__control password">
-      <label for="password">Password</label>
-      <div class="password-wrapper">
-        <input #passwordInput id="password" type="password" autocomplete="on" formControlName="password">
+    <div class="sign-in__form__password-wrapper">
+      <app-auth-password-input formControlName="password"></app-auth-password-input>
 
-        <svg *ngIf="passwordInput.type === 'password'; else showPasswordBlock"
-             width="16" height="8" viewBox="0 0 16 8" fill="none" xmlns="http://www.w3.org/2000/svg"
-             (click)="passwordInput.type = 'text'">
-          <path d="M0.968464 4.25819C0.865494 4.16281 0.774858 4.07599 0.697337 4C0.774858 3.92401 0.865494 3.83719 0.968464 3.74181C1.36001 3.3791 1.92722 2.89498 2.62732 2.4114C4.03703 1.43765 5.93638 0.5 8 0.5C10.0636 0.5 11.963 1.43765 13.3727 2.4114C14.0728 2.89498 14.64 3.3791 15.0315 3.74181C15.1345 3.83719 15.2251 3.92401 15.3027 4C15.2251 4.07599 15.1345 4.16281 15.0315 4.25819C14.64 4.6209 14.0728 5.10502 13.3727 5.5886C11.963 6.56235 10.0636 7.5 8 7.5C5.93638 7.5 4.03703 6.56235 2.62732 5.5886C1.92722 5.10502 1.36001 4.6209 0.968464 4.25819Z" stroke="black"/>
-          <circle cx="8" cy="4" r="2.5" stroke="black"/>
-        </svg>
-
-        <ng-template #showPasswordBlock>
-          <svg width="16" height="9" viewBox="0 0 16 9" fill="none" xmlns="http://www.w3.org/2000/svg"
-               (click)="passwordInput.type = 'password'">
-            <path d="M15 1C15 1 11.866 5 8 5C4.13401 5 1 1 1 1" stroke="black"/>
-            <path d="M5.375 4.5L4.5 8" stroke="black"/>
-            <path d="M11.5 8L10.625 4.5" stroke="black"/>
-            <path d="M8 5V8.5" stroke="black"/>
-            <path d="M3.625 3.5L1.875 6" stroke="black"/>
-            <path d="M14.125 6L12.375 3.5" stroke="black"/>
-          </svg>
-        </ng-template>
-      </div>
-
-      <app-auth-error-message class="sign-in__form__error" *ngIf="error" [message]="error"></app-auth-error-message>
+      <app-auth-error-message *ngIf="error" class="sign-in__form__password-wrapper__error"
+                              [message]="error"></app-auth-error-message>
     </div>
 
     <div class="sign-in__form__submit">

@@ -1,0 +1,69 @@
+@import "mixins";
+@import "variables";
+
+.sign-in, .sign-out {
+  &__form {
+    box-sizing: border-box;
+    background: #F9F9F9;
+    border-radius: 2px;
+    padding: 38px;
+
+    &__header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    &__control {
+      @include login-control();
+    }
+
+    &__password-wrapper {
+      position: relative;
+
+      &__error {
+        position: absolute;
+        bottom: -24px;
+      }
+    }
+
+    &__submit {
+      margin-top: 35px;
+      display: flex;
+      justify-content: center;
+
+      button {
+        width: 278px;
+        height: 33px;
+
+        @include cmd-button();
+        @include perseus-blue-button();
+
+        &:disabled {
+          opacity: .3;
+          cursor: default;
+        }
+      }
+    }
+
+    &__redirect {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: $cdm-blue;
+      font-size: 12px;
+      line-height: 15px;
+
+      * {
+        margin-right: 4px;
+      }
+
+      a {
+        cursor: pointer;
+        text-decoration: none;
+      }
+    }
+  }
+}

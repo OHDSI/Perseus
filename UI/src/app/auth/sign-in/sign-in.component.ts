@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { authInjector } from '../../services/auth/auth-injector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -6,33 +6,32 @@ import { Router } from '@angular/router';
 import { parseHttpError } from '../../services/utilites/error';
 import { mainPageRouter } from '../../app.constants';
 import { finalize } from 'rxjs/operators';
+import { AuthComponent } from '../auth.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.scss']
+  styleUrls: [
+    './sign-in.component.scss',
+    '../auth.component.scss'
+  ]
 })
-export class SignInComponent implements OnInit {
+export class SignInComponent extends AuthComponent {
 
-  form: FormGroup
-
-  error: string
-
-  loading = false
-
-  constructor(@Inject(authInjector) private authService: AuthService,
-              private router: Router) {
+  constructor(@Inject(authInjector) authService: AuthService,
+              router: Router) {
+    super(authService, router)
   }
 
   get email() {
     return this.form.get('email')
   }
 
-  ngOnInit(): void {
-    this.initForm()
+  get password() {
+    return this.form.get('password')
   }
 
-  onSubmit() {
+  submit() {
     this.loading = true
     const {email, password} = this.form.value
     this.authService.login(email, password)
@@ -41,11 +40,17 @@ export class SignInComponent implements OnInit {
       )
       .subscribe(
         () => this.router.navigate([mainPageRouter]),
-        error => this.error = parseHttpError(error) ?? 'Incorrect login or password'
+        error => {
+          if (error.status === 0 || error.status >= 500) {
+            // todo handling server error
+          } else {
+            this.error = parseHttpError(error) ?? 'Incorrect login or password'
+          }
+        }
       )
   }
 
-  private initForm() {
+  protected initForm() {
     this.form = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required])

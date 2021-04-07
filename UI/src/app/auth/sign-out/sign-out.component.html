@@ -1,0 +1,35 @@
+<app-auth-background class="sign-out">
+  <form class="sign-out__form" [formGroup]="form">
+    <div class="sign-out__form__header">
+      <app-auth-logo></app-auth-logo>
+    </div>
+
+    <div class="sign-out__form__control">
+      <label for="firstName">First Name</label>
+      <input id="firstName" type="text" formControlName="firstName">
+    </div>
+
+    <div class="sign-out__form__control">
+      <label for="lastName">Last Name</label>
+      <input id="lastName" type="text" formControlName="lastName">
+    </div>
+
+    <div class="sign-out__form__control email">
+      <label for="email">
+        E-mail
+        <app-validate-message *ngIf="email.invalid && email.touched">
+          Invalid address
+        </app-validate-message>
+      </label>
+      <input id="email" type="email" formControlName="email" placeholder="email@example.com">
+    </div>
+
+    <div class="sign-out__form__password-wrapper">
+      <app-auth-password-input formControlName="password"></app-auth-password-input>
+
+      <app-auth-password-input formControlName="confirmPassword"></app-auth-password-input>
+
+      <app-auth-error-message class="sign-out__form__password-wrapper__error" *ngIf="error" [message]="error"></app-auth-error-message>
+    </div>
+  </form>
+</app-auth-background>
