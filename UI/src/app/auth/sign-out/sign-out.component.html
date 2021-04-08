@@ -1,35 +1,69 @@
 <app-auth-background class="sign-out">
-  <form class="sign-out__form" [formGroup]="form">
+  <form class="sign-out__form" [formGroup]="form" (ngSubmit)="submit()">
     <div class="sign-out__form__header">
       <app-auth-logo></app-auth-logo>
     </div>
 
     <div class="sign-out__form__control">
-      <label for="firstName">First Name</label>
+      <label for="firstName">
+        First Name
+        <app-validate-message *ngIf="firstName.dirty && firstName.invalid">
+          Invalid format
+        </app-validate-message>
+      </label>
       <input id="firstName" type="text" formControlName="firstName">
     </div>
 
     <div class="sign-out__form__control">
-      <label for="lastName">Last Name</label>
+      <label for="lastName">
+        Last Name
+        <app-validate-message *ngIf="lastName.dirty && lastName.invalid">
+          Invalid format
+        </app-validate-message>
+      </label>
       <input id="lastName" type="text" formControlName="lastName">
     </div>
 
     <div class="sign-out__form__control email">
       <label for="email">
         E-mail
-        <app-validate-message *ngIf="email.invalid && email.touched">
+        <app-validate-message *ngIf="email.touched && email.invalid">
           Invalid address
         </app-validate-message>
       </label>
       <input id="email" type="email" formControlName="email" placeholder="email@example.com">
     </div>
 
-    <div class="sign-out__form__password-wrapper">
+    <div class="sign-out__form__control">
+      <label>
+        Password
+        <app-validate-message *ngIf="password.touched && password.invalid">
+          Min 8 chars, max - 14, one uppercase letter, one lowercase and one number
+        </app-validate-message>
+      </label>
       <app-auth-password-input formControlName="password"></app-auth-password-input>
+    </div>
 
+    <div class="sign-out__form__control sign-out__form__password-wrapper">
+      <label>
+        Confirm Password
+        <app-validate-message *ngIf="confirmPassword.touched && confirmPassword.invalid">
+          Password mismatch
+        </app-validate-message>
+      </label>
       <app-auth-password-input formControlName="confirmPassword"></app-auth-password-input>
 
       <app-auth-error-message class="sign-out__form__password-wrapper__error" *ngIf="error" [message]="error"></app-auth-error-message>
+    </div>
+
+    <div class="sign-out__form__submit">
+      <button type="submit" [disabled]="form.invalid || loading">Register</button>
+    </div>
+
+    <div class="sign-out__form__redirect">
+      <span class="sign-out__form__redirect__text">Already registered?</span>
+      <span>|</span>
+      <a [routerLink]="['/sign-in']">Log In</a>
     </div>
   </form>
 </app-auth-background>

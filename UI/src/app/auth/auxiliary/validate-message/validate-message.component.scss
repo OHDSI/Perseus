@@ -2,5 +2,11 @@
 
 .validate-message {
   padding-left: 4.5px;
+  display: flex;
   @include perseus-error-message();
+
+  &__content {
+    margin-left: 5px;
+    flex: 1;
+  }
 }

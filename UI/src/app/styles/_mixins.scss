@@ -56,24 +56,12 @@
   color: #FF4646;
 }
 
-@mixin login-control() {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+@mixin login-input() {
+  background: #F9F9F9;
+  @include cdm-input();
+  @include invalid-text-decoration();
 
-  label {
-    @include cdm-label;
-    font-weight: 400;
-    display: flex;
-  }
-
-  input {
-    background: #F9F9F9;
-    @include cdm-input();
-    @include invalid-text-decoration();
-
-    &::placeholder {
-      color: rgba(64, 64, 64, 0.2);
-    }
+  &::placeholder {
+    color: rgba(64, 64, 64, 0.2);
   }
 }

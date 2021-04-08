@@ -16,7 +16,19 @@
     }
 
     &__control {
-      @include login-control();
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+
+      label {
+        @include cdm-label;
+        font-weight: 400;
+        display: flex;
+      }
+
+      input {
+        @include login-input()
+      }
     }
 
     &__password-wrapper {
@@ -63,6 +75,10 @@
       a {
         cursor: pointer;
         text-decoration: none;
+      }
+
+      &__text {
+        color: $cdm-grey-dark;
       }
     }
   }

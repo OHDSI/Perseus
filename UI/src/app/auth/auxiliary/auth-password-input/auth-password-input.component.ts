@@ -41,7 +41,7 @@ export class AuthPasswordInputComponent implements ControlValueAccessor, AfterVi
   onTouched = () => {}
 
   ngAfterViewInit() {
-    this.listener = this.renderer.listen(this.passwordInput.nativeElement, 'focus', this.onFocus.bind(this))
+    this.listener = this.renderer.listen(this.passwordInput.nativeElement, 'blur', this.onBlur.bind(this))
   }
 
   ngOnDestroy(): void {
@@ -62,7 +62,7 @@ export class AuthPasswordInputComponent implements ControlValueAccessor, AfterVi
     this.password = value
   }
 
-  onFocus() {
+  onBlur() {
     this.touched = true
     this.onTouched()
     this.listener()
