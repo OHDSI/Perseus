@@ -16,7 +16,7 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
   scanDataConsoleComponent: WhiteRabbitScanDataConsoleComponent;
 
   @Input()
-  private reportName: string;
+  private reportName: string;  //without extension
 
   constructor(private scanDataUploadService: ScanDataUploadService) {
     super();
