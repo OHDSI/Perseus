@@ -1,5 +1,5 @@
-from cdm_souffleur.model.blacklist_token import blacklist_token
 from cdm_souffleur.model.user import *
+from cdm_souffleur.services.mailout_service import send_reset_password_email
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.exceptions import AuthorizationError
 from cdm_souffleur import bcrypt
@@ -39,4 +39,13 @@ def user_login(email, password):
 def user_logout(auth_token):
     blacklisted_token = blacklist_token(token=auth_token, blacklisted_on=datetime.datetime.now())
     blacklisted_token.save()
+    return True
+
+def reset_password_for_user(email):
+    user = User.select().where(User.email == email)
+    if user.exists():
+        for item in user:
+            send_reset_password_email(item.email)
+    else:
+        raise InvalidUsage('User does not exist', 401)
     return True

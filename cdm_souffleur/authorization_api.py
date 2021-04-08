@@ -42,3 +42,12 @@ def logout(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify()
+
+@authorization_api.route('/api/reset_password', methods=['POST'])
+def reset_password():
+    try:
+        email = request.json['username']
+        reset_password_for_user(email)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify()
