@@ -201,7 +201,7 @@ def _allowed_file(filename):
         if filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
             return filename
         else:
-            raise InvalidUsage("Incorrect report extension", 400)
+            raise InvalidUsage("Incorrect scan report extension. Only xlsx or xls are allowed", 400)
 
 
 def load_schema_to_server(file, current_user):

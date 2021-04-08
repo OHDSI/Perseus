@@ -50,7 +50,6 @@ export class UploadService {
 
   onScanReportChange(event: any): Observable<any> {
     const files = event.target.files;
-    const dotPosition = files[0].name.lastIndexOf('.');
     this.storeService.add('reportFile', files[0]);
     return this.uploadSchema(files)
       .pipe(
@@ -61,7 +60,7 @@ export class UploadService {
           );
           this.bridgeService.resetAllMappings();
           this.dataService.prepareTables(res, 'source');
-          this.dataService.saveReportName(files[0].name.slice(0, dotPosition), 'report');
+          this.dataService.saveReportName(files[0].name, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
         }),
         catchError(error => {
@@ -138,9 +137,9 @@ export class UploadService {
     this.bridgeService.applyConfiguration(resultConfig);
   }
 
-  loadReport(file: any): Observable<any> {
-    this.storeService.add('reportFile', file[0]);
-    return this.uploadSchema(file, true)
+  loadReport(files: File []): Observable<any> {
+    this.storeService.add('reportFile', files[0]);
+    return this.uploadSchema(files, true)
       .pipe(
         tap(() => this.snackbar.open(
           'Success file upload',
