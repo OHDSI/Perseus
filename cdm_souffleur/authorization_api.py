@@ -23,7 +23,7 @@ def register_user():
 @authorization_api.route('/api/login', methods=['POST'])
 def login():
     try:
-        email = request.json['email']
+        email = request.json['username']
         password = request.json['password']
         auth_token = user_login(email, password)
     except InvalidUsage as error:
