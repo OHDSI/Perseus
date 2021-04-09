@@ -47,4 +47,8 @@ export class FakeAuthService implements AuthService {
         })
       )
   }
+
+  register(user: User): Observable<void> {
+    return of(null).pipe(delay(2000))
+  }
 }

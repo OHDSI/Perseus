@@ -50,4 +50,8 @@ export class JwtAuthService implements AuthService {
         })
       )
   }
+
+  register(user: User): Observable<void> {
+    return this.httpClient.post<void>(`${apiUrl}/register`, user)
+  }
 }

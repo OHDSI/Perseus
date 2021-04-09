@@ -4,6 +4,8 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { AuthComponent } from '../auth.component';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
+import { parseHttpError } from '../../services/utilites/error';
 
 @Component({
   selector: 'app-sign-out',
@@ -14,6 +16,8 @@ import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from
   ]
 })
 export class SignOutComponent extends AuthComponent {
+
+  private accountCreated = false;
 
   constructor(@Inject(authInjector) authService: AuthService,
               router: Router) {
@@ -40,11 +44,31 @@ export class SignOutComponent extends AuthComponent {
     return this.form.get('confirmPassword')
   }
 
+  get accountNotCreated() {
+    return !this.accountCreated
+  }
+
   submit(): void {
+    this.loading = true;
+    const user = this.form.value
+    this.authService.register(user)
+      .pipe(
+        finalize(() => this.loading = false)
+      )
+      .subscribe(
+        () => this.accountCreated = true,
+        error => {
+          if (error.status === 0 || error.status >= 500) {
+            // todo handling server error
+          } else {
+            this.error = parseHttpError(error) ?? 'Incorrect login or password'
+          }
+        }
+      )
   }
 
   protected initForm(): void {
-    const nameValidator = Validators.pattern(/[A-Za-z]+/)
+    const nameValidator = Validators.pattern(/^[A-Za-z]+$/)
 
     this.form = new FormGroup({
       firstName: new FormControl(null , [

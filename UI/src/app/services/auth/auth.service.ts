@@ -10,6 +10,8 @@ export interface AuthService {
   login(email: string, password: string): Observable<User>
 
   logout(): Observable<void>
+
+  register(user: User): Observable<void>;
 }
 
 export const localStorageUserField = 'currentUser'
