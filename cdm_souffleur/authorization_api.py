@@ -12,13 +12,24 @@ def register_user():
         first_name = request.json['firstName']
         last_name = request.json['lastName']
         email = request.json['email']
-        auth_token = register_user_in_db(password, first_name, last_name, email)
-    except IntegrityError as error:
-        raise InvalidUsage('This email already exists in database', 409)
+        register_user_in_db(password, first_name, last_name, email)
+    except InvalidUsage as error:
+        raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(auth_token)
+    return jsonify(True)
 
+
+@authorization_api.route('/api/activate_user', methods=['GET'])
+def activate_user():
+    try:
+        random_string = request.args['rnd_str']
+        activate_user_in_db(random_string)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(True)
 
 @authorization_api.route('/api/login', methods=['POST'])
 def login():
@@ -49,5 +60,5 @@ def reset_password():
         email = request.json['username']
         reset_password_for_user(email)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise error
     return jsonify()
