@@ -395,6 +395,7 @@ def generate_bath_sql_file(current_user, mapping, source_table, views):
 def clear(current_user):
     delete_generated_xml(current_user)
     delete_generated_sql(current_user)
+    delete_generated_archive(current_user)
 
     file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql')
     try:
@@ -748,6 +749,10 @@ def delete_generated_xml(current_user):
 def delete_generated_sql(current_user):
     """clean lookup sql folder"""
     delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
+
+def delete_generated_archive(current_user):
+    """clean lookup sql folder"""
+    delete_generated(f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}")
 
 def get_lookups_list(current_user, lookup_type):
     lookups_list = []
