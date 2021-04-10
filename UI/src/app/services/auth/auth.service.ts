@@ -12,6 +12,10 @@ export interface AuthService {
   logout(): Observable<void>
 
   register(user: User): Observable<void>;
+
+  restorePassword(email: string): Observable<void>;
+
+  reset(password: string): Observable<void>;
 }
 
 export const localStorageUserField = 'currentUser'

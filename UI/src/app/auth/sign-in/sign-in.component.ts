@@ -5,7 +5,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { parseHttpError } from '../../services/utilites/error';
 import { mainPageRouter } from '../../app.constants';
-import { finalize } from 'rxjs/operators';
 import { AuthComponent } from '../auth.component';
 
 @Component({
@@ -32,12 +31,8 @@ export class SignInComponent extends AuthComponent {
   }
 
   submit() {
-    this.loading = true
     const {email, password} = this.form.value
-    this.authService.login(email, password)
-      .pipe(
-        finalize(() => this.loading = false)
-      )
+    this.sendRequestAndShowLoading(this.authService.login(email, password))
       .subscribe(
         () => this.router.navigate([mainPageRouter]),
         error => {

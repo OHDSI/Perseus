@@ -12,6 +12,8 @@ export class FakeAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>
 
+  private readonly delay = 2000;
+
   constructor() {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
     this.currentUser$ = new BehaviorSubject<User>(user)
@@ -30,7 +32,7 @@ export class FakeAuthService implements AuthService {
       email,
       token: Math.random().toString(36).substring(7)
     }).pipe(
-      delay(2000),
+      delay(this.delay),
       tap(user => {
         localStorage.setItem(localStorageUserField, JSON.stringify(user))
         this.currentUser$.next(user)
@@ -49,6 +51,14 @@ export class FakeAuthService implements AuthService {
   }
 
   register(user: User): Observable<void> {
-    return of(null).pipe(delay(2000))
+    return of(null).pipe(delay(this.delay))
+  }
+
+  restorePassword(email: string): Observable<void> {
+    return of(null).pipe(delay(this.delay))
+  }
+
+  reset(password: string): Observable<void> {
+    return of(null).pipe(delay(this.delay))
   }
 }

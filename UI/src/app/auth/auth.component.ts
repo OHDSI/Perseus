@@ -2,8 +2,11 @@ import { OnInit } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs/internal/Observable';
+import { finalize } from 'rxjs/operators';
+import { BaseComponent } from '../base/base.component';
 
-export abstract class AuthComponent implements OnInit {
+export abstract class AuthComponent extends BaseComponent implements OnInit {
 
   form: FormGroup
 
@@ -13,6 +16,7 @@ export abstract class AuthComponent implements OnInit {
 
   protected constructor(protected authService: AuthService,
                         protected router: Router) {
+    super()
   }
 
   ngOnInit(): void {
@@ -22,4 +26,11 @@ export abstract class AuthComponent implements OnInit {
   abstract submit(): void
 
   protected abstract initForm(): void
+
+  protected sendRequestAndShowLoading(request: Observable<any>): Observable<any> {
+    this.loading = true
+    return request.pipe(
+      finalize(() => this.loading = false)
+    )
+  }
 }

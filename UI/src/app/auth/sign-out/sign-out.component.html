@@ -1,5 +1,5 @@
 <app-auth-background class="sign-out">
-  <form class="sign-out__form" [formGroup]="form" (ngSubmit)="submit()">
+  <form *ngIf="accountNotCreated else accountCreatedBlock" class="sign-out__form" [formGroup]="form" (ngSubmit)="submit()">
     <div class="sign-out__form__header">
       <app-auth-logo></app-auth-logo>
     </div>
@@ -24,7 +24,7 @@
       <input id="lastName" type="text" formControlName="lastName">
     </div>
 
-    <div class="sign-out__form__control email">
+    <div class="sign-out__form__control">
       <label for="email">
         E-mail
         <app-validate-message *ngIf="email.touched && email.invalid">
@@ -57,7 +57,7 @@
     </div>
 
     <div class="sign-out__form__submit">
-      <button type="submit" [disabled]="form.invalid || loading">Register</button>
+      <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Register</button>
     </div>
 
     <div class="sign-out__form__redirect">
@@ -66,4 +66,27 @@
       <a [routerLink]="['/sign-in']">Log In</a>
     </div>
   </form>
+
+  <ng-template #accountCreatedBlock>
+    <div class="sign-out__result">
+      <div class="sign-out__result__header">
+        <app-auth-logo></app-auth-logo>
+      </div>
+
+      <p class="sign-out__result__message">
+        Your account was successfully created. We sent you an E-mail with an activation link.
+        <span>Please follow this link to activate your account.</span>
+      </p>
+
+      <div class="sign-out__result__submit">
+        <button [routerLink]="['/sign-in']">Back to Login Page</button>
+      </div>
+
+      <div class="sign-out__result__redirect">
+        <a [routerLink]="['/sign-in']">Log In</a>
+        <span>|</span>
+        <a (click)="onRegisterClick()">Register</a>
+      </div>
+    </div>
+  </ng-template>
 </app-auth-background>

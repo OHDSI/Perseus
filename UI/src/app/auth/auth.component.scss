@@ -1,8 +1,8 @@
 @import "mixins";
 @import "variables";
 
-.sign-in, .sign-out {
-  &__form {
+.sign-in, .sign-out, .restore-password, .reset-password {
+  &__form, &__result {
     box-sizing: border-box;
     background: #F9F9F9;
     border-radius: 2px;
@@ -79,6 +79,20 @@
 
       &__text {
         color: $cdm-grey-dark;
+      }
+    }
+
+    &__message {
+      color: $cdm-grey-dark;
+      font-size: 14px;
+      line-height: 15px;
+      font-style: normal;
+      font-weight: normal;
+      width: 100%;
+      margin: 0;
+
+      span {
+        white-space: nowrap;
       }
     }
   }
