@@ -1,7 +1,7 @@
 @import "mixins";
 @import "variables";
 
-.sign-in, .sign-out, .restore-password, .reset-password {
+.sign-in, .sign-out, .recover-password, .reset-password {
   &__form, &__result {
     box-sizing: border-box;
     background: #F9F9F9;

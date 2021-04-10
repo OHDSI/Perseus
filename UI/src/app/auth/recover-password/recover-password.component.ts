@@ -7,14 +7,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { parseHttpError } from '../../services/utilites/error';
 
 @Component({
-  selector: 'app-restore-password',
-  templateUrl: './restore-password.component.html',
+  selector: 'app-recover-password',
+  templateUrl: './recover-password.component.html',
   styleUrls: [
-    './restore-password.component.scss',
+    './recover-password.component.scss',
     '../auth.component.scss'
   ]
 })
-export class RestorePasswordComponent extends AuthComponent {
+export class RecoverPasswordComponent extends AuthComponent {
 
   restored = false
 
