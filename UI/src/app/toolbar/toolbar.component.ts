@@ -150,7 +150,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.commonUtilsService.resetSourceAndTargetWithWarning();
   }
 
-  startOnBoarding(target: EventTarget) {
+  openHelpPage() {
     this.matDialog.open(HelpPopupComponent, {
       panelClass: 'perseus-dialog'
     })
