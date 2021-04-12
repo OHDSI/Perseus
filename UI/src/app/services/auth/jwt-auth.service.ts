@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
-import { User } from '../models/user';
+import { User } from '../../models/user';
 import { Observable } from 'rxjs/internal/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl, loginRouter } from '../app.constants';
+import { apiUrl, loginRouter } from '../../app.constants';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -28,9 +28,9 @@ export class JwtAuthService implements AuthService {
     return !!this.user?.token;
   }
 
-  login(username: string, password: string): Observable<User> {
+  login(email: string, password: string): Observable<User> {
     return this.httpClient.post<User>(`${apiUrl}/login`, {
-      username,
+      email,
       password
     }).pipe(
       tap(user => {
@@ -49,5 +49,17 @@ export class JwtAuthService implements AuthService {
           this.router.navigateByUrl(loginRouter)
         })
       )
+  }
+
+  register(user: User): Observable<void> {
+    return this.httpClient.post<void>(`${apiUrl}/register`, user)
+  }
+
+  restorePassword(email: string): Observable<void> {
+    return this.httpClient.post<void>(`${apiUrl}/restore-password`, {email})
+  }
+
+  reset(password: string): Observable<void> {
+    return this.httpClient.post<void>(`${apiUrl}/reset-password`, {password})
   }
 }
