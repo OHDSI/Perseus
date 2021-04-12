@@ -31,8 +31,8 @@ export class AuthPasswordInputComponent implements ControlValueAccessor, AfterVi
 
   focused = false;
 
-  private focusListener: () => void
-  private blurListener: () => void
+  private focusUnsub: () => void
+  private blurUnsub: () => void
 
   constructor(private renderer: Renderer2) {
   }
@@ -42,16 +42,16 @@ export class AuthPasswordInputComponent implements ControlValueAccessor, AfterVi
   onTouched = () => {}
 
   ngAfterViewInit() {
-    this.focusListener = this.renderer.listen(this.passwordInput.nativeElement, 'focus', this.onFocus.bind(this))
-    this.blurListener = this.renderer.listen(this.passwordInput.nativeElement, 'blur', this.onBlur.bind(this))
+    this.focusUnsub = this.renderer.listen(this.passwordInput.nativeElement, 'focus', this.onFocus.bind(this))
+    this.blurUnsub = this.renderer.listen(this.passwordInput.nativeElement, 'blur', this.onBlur.bind(this))
   }
 
   ngOnDestroy(): void {
-    if (this.focusListener) {
-      this.focusListener()
+    if (this.focusUnsub) {
+      this.focusUnsub()
     }
-    if (this.blurListener) {
-      this.blurListener()
+    if (this.blurUnsub) {
+      this.blurUnsub()
     }
   }
 
@@ -69,11 +69,11 @@ export class AuthPasswordInputComponent implements ControlValueAccessor, AfterVi
 
   onFocus() {
     this.focused = true
-    this.focusListener()
+    this.focusUnsub()
   }
 
   onBlur() {
     this.onTouched()
-    this.blurListener()
+    this.blurUnsub()
   }
 }

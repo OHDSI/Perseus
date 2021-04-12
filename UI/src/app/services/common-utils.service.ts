@@ -172,7 +172,7 @@ export class CommonUtilsService {
   }
 
   deleteTableWithWarning() {
-    const dialog = this.matDialog.open(DeleteWarningComponent, {
+    return this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog',
@@ -181,8 +181,6 @@ export class CommonUtilsService {
         message: 'You want to delete the view'
       }
     });
-
-    return dialog;
   }
 
   openSnackbarMessage(message: string) {

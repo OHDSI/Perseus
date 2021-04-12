@@ -27,7 +27,7 @@ export abstract class AuthComponent extends BaseComponent implements OnInit {
 
   protected abstract initForm(): void
 
-  protected sendRequestAndShowLoading(request: Observable<any>): Observable<any> {
+  protected sendRequestAndShowLoading<T>(request: Observable<T>): Observable<T> {
     this.loading = true
     return request.pipe(
       finalize(() => this.loading = false)
