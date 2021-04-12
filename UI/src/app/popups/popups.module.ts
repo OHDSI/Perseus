@@ -21,6 +21,7 @@ import { TransformationTypeComponent } from './transformation-type/transformatio
 import { SqlFunctionsInjector } from './rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-string-functions';
 import { LogoutComponent } from './logout/logout.component';
+import { HelpPopupComponent } from './help-popup/help-popup.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LogoutComponent } from './logout/logout.component';
     SelectTableDropdownComponent,
     SetConnectionTypePopupComponent,
     TransformationTypeComponent,
-    LogoutComponent
+    LogoutComponent,
+    HelpPopupComponent
   ],
   imports: [
     CommonModule,
