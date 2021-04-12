@@ -19,7 +19,6 @@ from cdm_souffleur.model.user import *
 
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
-app.secret_key = 'mdcr'
 
 bp = Blueprint('bp', __name__, url_prefix=app.config["CDM_SOUFFLEUR_PREFIX"])
 

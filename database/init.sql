@@ -263,3 +263,11 @@ CREATE TABLE "cdm"."blacklist_token"
     blacklisted_on TIMESTAMP NOT NULL 
     
 );
+
+--- create table for logging reports about unauthorized requests for reset password
+CREATE TABLE "cdm"."unauthorized_reset_pwd_request"
+(
+    report_id SERIAL PRIMARY KEY,
+    username VARCHAR ( 30 ) NOT NULL,
+    report_date TIMESTAMP
+);
