@@ -23,7 +23,7 @@ def register_user():
 @authorization_api.route('/api/confirm_registration', methods=['GET'])
 def confirm_registration():
     try:
-        random_string = request.args['registration_key']
+        random_string = request.args['token']
         activate_user_in_db(random_string)
     except InvalidUsage as error:
         raise error

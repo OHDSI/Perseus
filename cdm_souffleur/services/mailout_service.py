@@ -46,8 +46,6 @@ def create_message(receiver_email, first_name, type, request_parameter):
 
 
 def get_registration_html(first_name, registration_key):
-    #{request.host_url}api/confirm_registration?registration_key={registration_key}
-
     html = f"""\
 <div class="registration"
      style="width: 509px; height: 314px; padding: 10px; box-sizing: border-box">
