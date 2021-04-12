@@ -35,13 +35,7 @@ export class SignInComponent extends AuthComponent {
     this.sendRequestAndShowLoading(this.authService.login(email, password))
       .subscribe(
         () => this.router.navigate([mainPageRouter]),
-        error => {
-          if (error.status === 0 || error.status >= 500) {
-            // todo handling server error
-          } else {
-            this.error = parseHttpError(error) ?? 'Incorrect login or password'
-          }
-        }
+        error => this.error = parseHttpError(error) ?? 'Incorrect login or password'
       )
   }
 

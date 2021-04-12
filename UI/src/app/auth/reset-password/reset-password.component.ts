@@ -42,13 +42,7 @@ export class ResetPasswordComponent extends AuthComponent {
     this.sendRequestAndShowLoading(this.authService.reset(password))
       .subscribe(
         () => this.reset = true,
-        error => {
-          if (error.status === 0 || error.status >= 500) {
-            // todo handling server error
-          } else {
-            this.error = parseHttpError(error) ?? 'Could not restore password'
-          }
-        }
+        error => this.error = parseHttpError(error) ?? 'Could not reset password'
       )
   }
 

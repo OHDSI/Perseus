@@ -54,13 +54,7 @@ export class SignOutComponent extends AuthComponent {
     this.sendRequestAndShowLoading(this.authService.register(user))
       .subscribe(
         () => this.accountCreated = true,
-        error => {
-          if (error.status === 0 || error.status >= 500) {
-            // todo handling server error
-          } else {
-            this.error = parseHttpError(error) ?? 'Can not register'
-          }
-        }
+        error => this.error = parseHttpError(error) ?? 'Can not register'
       )
   }
 
