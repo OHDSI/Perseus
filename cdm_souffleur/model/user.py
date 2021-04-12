@@ -22,7 +22,7 @@ class User(BaseModel):
         try:
             payload = {
                 'sub': username,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=86400),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=43200),
                 'iat': datetime.datetime.utcnow(),
             }
             return jwt.encode(
@@ -56,9 +56,9 @@ def token_required(f):
       try:
          current_user = User.decode_auth_token(token)
       except ExpiredSignatureError as error:
-         raise InvalidUsage('Token expired. Please log in again', 403)
+         raise InvalidUsage('Token expired. Please log in again', 401)
       except Exception as error:
-         raise InvalidUsage('Token is invalid', 403)
+         raise InvalidUsage('Token is invalid', 401)
 
       return f(current_user, *args, **kwargs)
    return decorator
