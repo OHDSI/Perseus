@@ -8,7 +8,7 @@ import { mainPageRouter } from '../../app.constants';
 import { AuthComponent } from '../auth.component';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: [
     './sign-in.component.scss',
