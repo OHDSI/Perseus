@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
-import { User } from '../models/user';
+import { User } from '../../models/user';
 import { AuthService, localStorageUserField } from './auth.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { delay, tap } from 'rxjs/operators';
@@ -11,6 +11,8 @@ import { delay, tap } from 'rxjs/operators';
 export class FakeAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>
+
+  private readonly delay = 2000;
 
   constructor() {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
@@ -25,12 +27,12 @@ export class FakeAuthService implements AuthService {
     return !!this.user?.token;
   }
 
-  login(username: string, password: string): Observable<User> {
+  login(email: string, password: string): Observable<User> {
     return of({
-      username,
+      email,
       token: Math.random().toString(36).substring(7)
     }).pipe(
-      delay(2000),
+      delay(this.delay),
       tap(user => {
         localStorage.setItem(localStorageUserField, JSON.stringify(user))
         this.currentUser$.next(user)
@@ -46,5 +48,17 @@ export class FakeAuthService implements AuthService {
           this.currentUser$.next(null);
         })
       )
+  }
+
+  register(user: User): Observable<void> {
+    return of(null).pipe(delay(this.delay))
+  }
+
+  restorePassword(email: string): Observable<void> {
+    return of(null).pipe(delay(this.delay))
+  }
+
+  reset(password: string): Observable<void> {
+    return of(null).pipe(delay(this.delay))
   }
 }

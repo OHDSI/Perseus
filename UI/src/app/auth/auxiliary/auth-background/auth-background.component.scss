@@ -1,0 +1,29 @@
+.auth-background {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #2E2E2E 0%, #255C87 47.92%, #066BBB 100%);
+
+  &__image {
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    svg {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
+  &__content {
+    z-index: 2;
+  }
+}

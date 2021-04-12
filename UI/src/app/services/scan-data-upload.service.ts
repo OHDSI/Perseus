@@ -21,7 +21,8 @@ export class ScanDataUploadService {
   uploadScanReport(reportBase64: string, reportName: string): Observable<void> {
     this.bridgeService.reportLoading();
 
-    return base64ToFileAsObservable(reportBase64, `${reportName}.xlsx`)
+    const reportNameWithExt = `${reportName}.xlsx`;
+    return base64ToFileAsObservable(reportBase64, reportNameWithExt)
       .pipe(
         switchMap(file => {
           this.storeService.add('reportFile', file);
@@ -30,7 +31,7 @@ export class ScanDataUploadService {
         switchMap(res => {
           this.bridgeService.resetAllMappings();
           this.dataService.prepareTables(res, 'source');
-          this.dataService.saveReportName(reportName, 'report');
+          this.dataService.saveReportName(reportNameWithExt, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
           return of(null);
         })

@@ -20,6 +20,7 @@ import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../s
 import { mainPageRouter } from '../app.constants';
 import { LogoutComponent } from '../popups/logout/logout.component';
 import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
+import { HelpPopupComponent } from '../popups/help-popup/help-popup.component';
 
 @Component({
   selector: 'app-toolbar',
@@ -149,8 +150,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.commonUtilsService.resetSourceAndTargetWithWarning();
   }
 
-  startOnBoarding(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
+  openHelpPage() {
+    this.matDialog.open(HelpPopupComponent, {
+      panelClass: 'perseus-dialog'
+    })
   }
 
   generateAndSave() {
