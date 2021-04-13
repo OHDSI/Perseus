@@ -12,11 +12,11 @@ def send_email(receiver_email, first_name, type, request_parameter = ''):
 
     context = ssl.create_default_context()
     try:
-        server = smtplib.SMTP(app.config['SMTP_SERVER'], app.config['SMTP_PORT'])
-        if app.config['SMTP_PORT'] == SMTP_PORT_STL:
+        server = smtplib.SMTP(app.config.get('SMTP_SERVER'), app.config.get('SMTP_PORT'))
+        if app.config.get('SMTP_PORT') == SMTP_PORT_STL:
             start_tls(server, context)
-        server.login(app.config['SMTP_USER'], app.config['SMTP_PWD'])
-        server.sendmail(app.config['SMTP_EMAIL'], receiver_email, message.as_string())
+        server.login(app.config.get('SMTP_USER'), app.config.get('SMTP_PWD'))
+        server.sendmail(app.config.get('SMTP_EMAIL'), receiver_email, message.as_string())
     except Exception as e:
         raise e
     finally:
@@ -31,7 +31,7 @@ def start_tls(server, context):
 
 def create_message(receiver_email, first_name, type, request_parameter):
     message = MIMEMultipart("alternative")
-    message["From"] = app.config['SMTP_EMAIL']
+    message["From"] = app.config.get('SMTP_EMAIL')
     message["To"] = receiver_email
 
     if type == 'registration':
