@@ -1,7 +1,6 @@
 class DefaultConfig:
     CDM_SOUFFLEUR_PREFIX = ''
     CDM_SOUFFLEUR_PORT = 5000
-    REMOTE_PORT = 4200
     DB_NAME = 'cdm_souffleur'
     DB_USER = 'postgres'
     DB_PASSWORD = '5eC_DkMr^3'
@@ -13,11 +12,11 @@ class DefaultConfig:
     SMTP_EMAIL = 'perseus_test@arcadialab.ru'
     SMTP_USER = 'perseus_test'
     SMTP_PWD = 'PT4TYxou@?cH8J'
+    SERVER_HOST = 'localhost'
 
 class DevelopmentConfig:
     CDM_SOUFFLEUR_PREFIX = ''
     CDM_SOUFFLEUR_PORT = 5001
-    REMOTE_PORT = 4200
     DB_NAME = 'cdm_souffleur'
     DB_USER = 'postgres'
     DB_PASSWORD = '5eC_DkMr^3'
@@ -29,3 +28,5 @@ class DevelopmentConfig:
     SMTP_EMAIL = 'perseus_test@arcadialab.ru'
     SMTP_USER = 'perseus_test'
     SMTP_PWD = 'PT4TYxou@?cH8J'
+    SERVER_HOST = '10.110.1.7:8080'
+

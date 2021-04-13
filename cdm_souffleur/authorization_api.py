@@ -29,7 +29,7 @@ def confirm_registration():
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return redirect(f"http://{request.remote_addr}:{app.config.get('REMOTE_PORT')}", code=302)
+    return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
 
 
 @authorization_api.route('/api/login', methods=['POST'])
@@ -75,7 +75,7 @@ def reset_password():
         reset_password_for_user(new_pwd, random_string)
     except Exception as error:
         raise error
-    return redirect(f"http://{request.remote_addr}:{app.config.get('REMOTE_PORT')}", code=302)
+    return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
 
 
 @authorization_api.route('/api/register_unauthorized_reset_pwd_request', methods=['GET'])
@@ -85,4 +85,4 @@ def register_unauthorized_reset_pwd():
         register_unauthorized_reset_pwd_in_db(user_key)
     except Exception as error:
         raise error
-    return redirect(f"http://{request.remote_addr}:{app.config.get('REMOTE_PORT')}", code=302)
+    return redirect(f"{app.config['SERVER_HOST']}", code=302)
