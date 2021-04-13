@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AuthComponent } from '../auth.component';
 import { authInjector } from '../../services/auth/auth-injector';
 import { AuthService } from '../../services/auth/auth.service';
@@ -18,7 +18,7 @@ import { filter } from 'rxjs/operators';
     '../auth.component.scss'
   ]
 })
-export class ResetPasswordComponent extends AuthComponent implements OnInit {
+export class ResetPasswordComponent extends AuthComponent implements OnInit, OnDestroy {
 
   private reset = false;
 
@@ -51,6 +51,11 @@ export class ResetPasswordComponent extends AuthComponent implements OnInit {
         this.resetPasswordTokenService.token = params['token']
         this.router.navigate([])
       })
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.resetPasswordTokenService.token = null
   }
 
   submit(): void {
