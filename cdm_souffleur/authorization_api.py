@@ -57,7 +57,7 @@ def logout(current_user):
     return jsonify()
 
 
-@authorization_api.route('/api/restore-password', methods=['POST'])
+@authorization_api.route('/api/recover-password', methods=['POST'])
 def reset_password_request():
     try:
         email = request.json['email']
