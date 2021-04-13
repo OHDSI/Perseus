@@ -64,7 +64,7 @@ def reset_password_request():
         send_reset_password_email(email)
     except Exception as error:
         raise error
-    return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
+    return jsonify(True)
 
 
 @authorization_api.route('/api/reset-password', methods=['POST'])
