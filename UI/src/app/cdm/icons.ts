@@ -22,5 +22,6 @@ export const ICON_NAMES = [
   'vocabulary',
   'logout',
   'logo_grey',
-  'logo_white'
+  'logo_white',
+  'three_dot_menu'
 ];
