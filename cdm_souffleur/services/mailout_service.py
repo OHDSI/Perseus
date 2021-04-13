@@ -1,25 +1,25 @@
+from cdm_souffleur import app
 import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from cdm_souffleur import app
 from flask import request
 from cdm_souffleur.utils.constants import SMTP_PORT_STL
 
 
 def send_email(receiver_email, first_name, type, request_parameter = ''):
+    print(app.config['SMTP_SERVER'])
+    print(app.config['SMTP_PORT'])
     message = create_message(receiver_email, first_name, type, request_parameter)
 
     context = ssl.create_default_context()
     try:
-        server = smtplib.SMTP(app.config.get('SMTP_SERVER'), app.config.get('SMTP_PORT'))
-        print(app.config.get('SMTP_SERVER'))
-        print(app.config.get('SMTP_PORT'))
-        server.connect(host=app.config.get('SMTP_SERVER'), port=app.config.get('SMTP_PORT'))
-        if app.config.get('SMTP_PORT') == SMTP_PORT_STL:
+        server = smtplib.SMTP(app.config['SMTP_SERVER'], app.config['SMTP_PORT'])
+        server.connect(host=app.config['SMTP_SERVER'], port=app.config['SMTP_PORT'])
+        if app.config['SMTP_PORT'] == SMTP_PORT_STL:
             start_tls(server, context)
-        server.login(app.config.get('SMTP_USER'), app.config.get('SMTP_PWD'))
-        server.sendmail(app.config.get('SMTP_EMAIL'), receiver_email, message.as_string())
+        server.login(app.config['SMTP_USER'], app.config['SMTP_PWD'])
+        server.sendmail(app.config['SMTP_EMAIL'], receiver_email, message.as_string())
     except Exception as e:
         raise e
     finally:
@@ -34,7 +34,7 @@ def start_tls(server, context):
 
 def create_message(receiver_email, first_name, type, request_parameter):
     message = MIMEMultipart("alternative")
-    message["From"] = app.config.get('SMTP_EMAIL')
+    message["From"] = app.config['SMTP_EMAIL']
     message["To"] = receiver_email
 
     if type == 'registration':
@@ -97,7 +97,7 @@ def get_reset_password_html(first_name, reset_pwd_key):
       <br>
       we recieved a request to change your Perseus password.
       <br>
-      Please <a href="http://{request.remote_addr}:{app.config.get('REMOTE_PORT')}/reset-password?reset_pwd_key={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to reset your password.</a>
+      Please <a href="http://{request.remote_addr}:{app.config['REMOTE_PORT']}/reset-password?reset_pwd_key={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to reset your password.</a>
       <br><br>
       <b>Did not request this change?</b> <a href="{request.host_url}api/ egister_unauthorized_reset_pwd_request?reset_pwd_key={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">Let us know</a>, if it were not you.
       <br><br>
@@ -105,7 +105,7 @@ def get_reset_password_html(first_name, reset_pwd_key):
 
     <span class="recovery__button" style="display: inline-block; text-align: center; background: #066BBB; border-radius: 2px">
       <span style="display: inline-block">
-        <a href="http://{request.remote_addr}:{app.config.get('REMOTE_PORT')}/reset-password?reset_pwd_key={reset_pwd_key}"
+        <a href="http://{request.remote_addr}:{app.config['REMOTE_PORT']}/reset-password?reset_pwd_key={reset_pwd_key}"
            style="color: #fff; border-color: #066BBB; border-width: 9px 34px; border-style: solid; text-align: center; text-decoration: none; outline: none; font-weight: 500; font-size: 14px; line-height: 18px;">
           Reset Account
         </a>
