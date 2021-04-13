@@ -56,7 +56,7 @@ export class CdmComponent extends BaseComponent implements OnInit {
   private subscribeOnUrlChange() {
     this.router.events
       .subscribe(() =>
-        this.currentUrl = this.router.url.replace(mainPageRouter, '')
+        this.currentUrl = this.router.url.replace(`${mainPageRouter}/`, '')
       )
   }
 }

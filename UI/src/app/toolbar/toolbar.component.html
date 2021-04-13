@@ -1,25 +1,23 @@
-<mat-toolbar color="primary"
-             class="app-toolbar">
-  <button mat-icon-button
-          [matMenuTriggerFor]="menu"
-          aria-label="cdm menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
+<div class="toolbar">
 
-  <div class="logo" (click)="goToComfy()" [ngClass]="{pointer: isNotComfyPage}">
-    <mat-icon class="logo" svgIcon="logo_white"></mat-icon>
-  </div>
+  <mat-icon class="toolbar__three-dot-menu-button"
+            svgIcon="three_dot_menu"
+            [matMenuTriggerFor]="menu"></mat-icon>
+
+  <mat-icon class="toolbar__logo" svgIcon="logo_white"
+            [ngClass]="{pointer: isNotComfyPage}"
+            (click)="goToComfy()"></mat-icon>
 
   <app-breadcrumb></app-breadcrumb>
 
   <span class="divider"></span>
 
-  <label class="info-label">{{reportName}} - {{cdmVersion}}</label>
+  <label class="toolbar__info-label">{{reportName}} - {{cdmVersion}}</label>
 
-  <button mat-icon-button
+  <div class="toolbar__help-button"
           (click)="openHelpPage()">
     <mat-icon svgIcon="help"></mat-icon>
-  </button>
+  </div>
 
   <mat-menu #menu="matMenu">
     <button mat-menu-item [matMenuTriggerFor]="createMapping">
@@ -122,5 +120,4 @@
       <span>Report</span>
     </button>
   </mat-menu>
-
-</mat-toolbar>
+</div>

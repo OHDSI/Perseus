@@ -1,28 +1,63 @@
-mat-toolbar.app-toolbar {
-  padding-left: 0;
-  padding-right: 80px;
+@import "variables";
+
+:host {
+  width: 100%;
   height: 40px;
-  min-width: 1475px;
+  background-color: $cdm-grey-dark;
+  display: flex;
+  justify-content: center;
+
+  &.comfy {
+    .toolbar {
+      max-width: 1440px;
+      width: 1440px;
+    }
+  }
+}
+
+.toolbar {
+  height: 100%;
+  padding-left: 74px;
+  padding-right: 80px;
   display: flex;
   align-items: center;
+  width: 100%;
 
-  .logo {
+  * {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &__three-dot-menu-button {
+    width: 10px;
+    height: 18px;
+    cursor: pointer;
+    margin-right: 16px;
+  }
+
+  &__logo {
     height: 13px;
     width: 94px;
+    margin-bottom: 1px;
 
     &.pointer {
       cursor: pointer;
     }
   }
 
-  .info-label {
-    font-size: 70%;
-    padding: 15px;
+  &__info-label {
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    margin-right: 39px;
   }
 
+  &__help-button {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 }
 
 .new-mapping {
