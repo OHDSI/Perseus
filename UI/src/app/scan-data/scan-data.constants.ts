@@ -1,4 +1,4 @@
-import { cdmBuilderLogUrl, dbServer, serverUrl, whiteRabbitPrefix } from '../app.constants';
+import { cdmBuilderLogUrl, dbServer, whiteRabbitPrefix, whiteRabbitWsUrl } from '../app.constants';
 import { DbSettings } from './model/db-settings';
 import { adaptDbType } from './util/cdm-adapter';
 
@@ -56,7 +56,7 @@ export const cdmBuilderDatabaseTypes: string[] = [
 export const fakeData = 'Fake Data';
 
 export const whiteRabbitWebsocketConfig = {
-  url: serverUrl,
+  url: whiteRabbitWsUrl,
   prefix: whiteRabbitPrefix,
   progressMessagesDestination: '/user/queue/reply',
 };

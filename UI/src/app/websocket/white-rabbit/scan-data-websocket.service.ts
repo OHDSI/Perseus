@@ -7,9 +7,11 @@ import { WebsocketConfig } from '../websocket.config';
 import { isProd } from '../../app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { WhiteRabbitService } from '../../services/white-rabbit.service';
+import { DbSettings } from '../../scan-data/model/db-settings';
 
 @Injectable()
-export class WhiteRabbitWebsocketService extends WebsocketService implements OnDestroy {
+export class ScanDataWebsocketService extends WebsocketService implements OnDestroy {
 
   status$: Observable<boolean>;
 
@@ -17,7 +19,13 @@ export class WhiteRabbitWebsocketService extends WebsocketService implements OnD
 
   private websocketConfig: WebsocketConfig;
 
-  constructor() {
+  private wsSessionId: string;
+
+  get userId() {
+    return this.wsSessionId;
+  }
+
+  constructor(private whiteRabbitService: WhiteRabbitService) {
     super();
   }
 
@@ -61,11 +69,15 @@ export class WhiteRabbitWebsocketService extends WebsocketService implements OnD
       this.stompClient.subscribe(destination, message => {
         subscriber.next(message.body);
       });
+      this.stompClient.deactivate()
+        .then(() => subscriber.complete())
     });
   }
 
-  send(destination: string, data: string): void {
+  send(destination: string, data: DbSettings): void {
     const {prefix} = this.websocketConfig;
+
+    this.whiteRabbitService.generateScanReportByDb(data)
 
     this.stompClient.publish({
       destination: prefix + destination,
@@ -74,10 +86,10 @@ export class WhiteRabbitWebsocketService extends WebsocketService implements OnD
   }
 
   private initStompClient(): void {
-    const {url, prefix, endPoint} = this.websocketConfig;
+    const {url, endPoint} = this.websocketConfig;
 
     this.stompClient = Stomp.over(() => {
-      return new SockJS(url + prefix + endPoint);
+      return new SockJS(url + endPoint);
     });
 
     this.stompClient.splitLargeFrames = true;

@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { whiteRabbitApiUrl } from '../app.constants';
 import { TableToScan } from '../scan-data/model/table-to-scan';
 import { map } from 'rxjs/operators';
+import { DelimitedTextFileSettings } from '../scan-data/model/delimited-text-file-settings';
+import { FakeDataParams } from '../scan-data/model/fake-data-params';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +29,28 @@ export class WhiteRabbitService {
           selected: true
         })))
       );
+  }
+
+  generateScanReportByDb(dbSettings: DbSettings, userId: string): Observable<void> {
+    return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/db/${userId}`, dbSettings)
+  }
+
+  generateScanReportByFiles(fileSettings: DelimitedTextFileSettings, userId: string, files: File[]): Observable<void> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('files', file))
+    formData.append('settings', JSON.stringify(fileSettings))
+
+    return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/files/${userId}`, formData)
+  }
+
+  downloadScanReport(userId: string): Observable<Blob> {
+    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/${userId}`)
+  }
+
+  generateFakeData(fakeDataSettings: FakeDataParams, userId: string, scanReport: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('file', scanReport)
+    formData.append('settings', JSON.stringify(fakeDataSettings))
+    return this.http.post<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`, formData)
   }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractScanDataConsoleComponent } from './abstract-scan-data-console.component';
-import { WhiteRabbitWebsocketService } from '../../../../websocket/white-rabbit/white-rabbit-websocket.service';
+import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data-websocket.service';
 import { takeUntil } from 'rxjs/operators';
 import {
   ProgressNotification,
@@ -12,13 +12,13 @@ import {
   selector: 'app-white-rabbit-scan-data-console',
   templateUrl: './scan-data-console.component.html',
   styleUrls: ['./scan-data-console.component.scss'],
-  providers: [WhiteRabbitWebsocketService]
+  providers: [ScanDataWebsocketService]
 })
 export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsoleComponent {
 
   private startedScanningItemsCount = 0;
 
-  constructor(whiteRabbitWebSocketService: WhiteRabbitWebsocketService) {
+  constructor(whiteRabbitWebSocketService: ScanDataWebsocketService) {
     super(whiteRabbitWebSocketService);
   }
 
