@@ -81,7 +81,7 @@ def reset_password():
 @authorization_api.route('/api/register_unauthorized_reset_pwd_request', methods=['GET'])
 def register_unauthorized_reset_pwd():
     try:
-        user_key = request.args['reset_pwd_key']
+        user_key = request.args['token']
         register_unauthorized_reset_pwd_in_db(user_key)
     except Exception as error:
         raise error
