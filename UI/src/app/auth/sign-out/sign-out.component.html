@@ -47,7 +47,7 @@
     <div class="sign-out__form__control sign-out__form__password-wrapper">
       <label>
         Confirm Password
-        <app-validate-message *ngIf="confirmPassword.touched && confirmPassword.invalid">
+        <app-validate-message *ngIf="confirmPassword.dirty && confirmPassword.invalid">
           Password mismatch
         </app-validate-message>
       </label>
