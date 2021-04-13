@@ -3,7 +3,7 @@ import { AuthService } from '../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
-import { finalize } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
 
 export abstract class AuthComponent extends BaseComponent implements OnInit {
@@ -30,7 +30,10 @@ export abstract class AuthComponent extends BaseComponent implements OnInit {
   protected sendRequestAndShowLoading<T>(request: Observable<T>): Observable<T> {
     this.loading = true
     return request.pipe(
-      finalize(() => this.loading = false)
+      catchError(error => {
+        this.loading = false
+        throw error
+      })
     )
   }
 }
