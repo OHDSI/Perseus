@@ -17,6 +17,7 @@ class DefaultConfig:
 class DevelopmentConfig:
     CDM_SOUFFLEUR_PREFIX = ''
     CDM_SOUFFLEUR_PORT = 5001
+    REMOTE_PORT = 4200
     DB_NAME = 'cdm_souffleur'
     DB_USER = 'postgres'
     DB_PASSWORD = '5eC_DkMr^3'
