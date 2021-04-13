@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { SignOutComponent } from './sign-out/sign-out.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ResetPasswordGuardGuard } from './reset-password/reset-password-guard.guard';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'reset-password',
+    canActivate: [ResetPasswordGuardGuard],
     component: ResetPasswordComponent
   }
 ];

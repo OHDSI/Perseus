@@ -55,11 +55,11 @@ export class JwtAuthService implements AuthService {
     return this.httpClient.post<void>(`${apiUrl}/register`, user)
   }
 
-  restorePassword(email: string): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/restore-password`, {email})
+  recoverPassword(email: string): Observable<void> {
+    return this.httpClient.post<void>(`${apiUrl}/recover-password`, {email})
   }
 
-  reset(password: string): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/reset-password`, {password})
+  reset(password: string, token: string): Observable<void> {
+    return this.httpClient.post<void>(`${apiUrl}/reset-password`, {password, token})
   }
 }
