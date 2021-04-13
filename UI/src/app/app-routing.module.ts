@@ -10,6 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'perseus',
+    canLoad: [AuthGuard],
     canActivate: [AuthGuard],
     loadChildren: () => import('./cdm/cdm.module')
       .then(module => module.CdmModule),
