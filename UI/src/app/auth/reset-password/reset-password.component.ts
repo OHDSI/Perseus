@@ -1,12 +1,14 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AuthComponent } from '../auth.component';
 import { authInjector } from '../../services/auth/auth-injector';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordRegex } from '../auxiliary/regexes';
 import { parseHttpError } from '../../services/utilites/error';
 import { configurePasswordFormControls } from '../auxiliary/password-form-controls';
+import { ResetPasswordTokenService } from '../reset-password-token.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,12 +18,14 @@ import { configurePasswordFormControls } from '../auxiliary/password-form-contro
     '../auth.component.scss'
   ]
 })
-export class ResetPasswordComponent extends AuthComponent {
+export class ResetPasswordComponent extends AuthComponent implements OnInit {
 
   private reset = false;
 
   constructor(@Inject(authInjector) authService: AuthService,
-              router: Router) {
+              router: Router,
+              private route: ActivatedRoute,
+              private resetPasswordTokenService: ResetPasswordTokenService) {
     super(authService, router)
   }
 
@@ -37,9 +41,21 @@ export class ResetPasswordComponent extends AuthComponent {
     return !this.reset
   }
 
+  ngOnInit() {
+    super.ngOnInit()
+    this.route.queryParams
+      .pipe(
+        filter(params => !!params['token'])
+      )
+      .subscribe(params => {
+        this.resetPasswordTokenService.token = params['token']
+        this.router.navigate([])
+      })
+  }
+
   submit(): void {
     const {password} = this.form.value
-    this.sendRequestAndShowLoading(this.authService.reset(password))
+    this.sendRequestAndShowLoading(this.authService.reset(password, this.resetPasswordTokenService.token))
       .subscribe(
         () => this.reset = true,
         error => this.error = parseHttpError(error) ?? 'Could not reset password'

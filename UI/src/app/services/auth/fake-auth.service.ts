@@ -54,11 +54,11 @@ export class FakeAuthService implements AuthService {
     return of(null).pipe(delay(this.delay))
   }
 
-  restorePassword(email: string): Observable<void> {
+  recoverPassword(email: string): Observable<void> {
     return of(null).pipe(delay(this.delay))
   }
 
-  reset(password: string): Observable<void> {
+  reset(password: string, token: string): Observable<void> {
     return of(null).pipe(delay(this.delay))
   }
 }

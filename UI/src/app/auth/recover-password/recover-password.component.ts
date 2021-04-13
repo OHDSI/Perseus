@@ -33,7 +33,7 @@ export class RecoverPasswordComponent extends AuthComponent {
 
   submit(): void {
     const {email} = this.form.value
-    this.sendRequestAndShowLoading(this.authService.restorePassword(email))
+    this.sendRequestAndShowLoading(this.authService.recoverPassword(email))
       .subscribe(
         () => this.restored = true,
         error => this.error = parseHttpError(error) ?? 'Could not recover password'
