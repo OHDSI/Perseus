@@ -13,6 +13,7 @@ def send_email(receiver_email, first_name, type, request_parameter = ''):
     context = ssl.create_default_context()
     try:
         server = smtplib.SMTP(app.config.get('SMTP_SERVER'), app.config.get('SMTP_PORT'))
+        server.connect(app.config.get('SMTP_SERVER'), app.config.get('SMTP_PORT'))
         if app.config.get('SMTP_PORT') == SMTP_PORT_STL:
             start_tls(server, context)
         server.login(app.config.get('SMTP_USER'), app.config.get('SMTP_PWD'))
