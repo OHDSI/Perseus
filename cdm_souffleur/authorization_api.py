@@ -75,7 +75,7 @@ def reset_password():
         reset_password_for_user(new_pwd, random_string)
     except Exception as error:
         raise error
-    return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
+    return jsonify(True)
 
 
 @authorization_api.route('/api/register_unauthorized_reset_pwd_request', methods=['GET'])
