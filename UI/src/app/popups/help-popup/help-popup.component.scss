@@ -39,4 +39,10 @@
     color: $cdm-blue;
     outline: none;
   }
+
+  &__github {
+    span {
+      margin: 0 4px;
+    }
+  }
 }
