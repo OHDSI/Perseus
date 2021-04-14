@@ -31,7 +31,7 @@ export class WhiteRabbitScanDataConsoleComponent extends AbstractScanDataConsole
 
   protected sendData(): void {
     this.websocketService
-      .send(this.params.endPoint, JSON.stringify(this.params.payload));
+      .send(this.params.endPoint, this.params.payload);
   }
 
   protected handleProgressMessage(message: string): void {

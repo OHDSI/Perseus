@@ -4,16 +4,19 @@ import { WebsocketService } from '../websocket.service';
 import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import { WebsocketConfig } from '../websocket.config';
-import { isProd } from '../../app.constants';
+import { isProd, whiteRabbitWsUrl } from '../../app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { WhiteRabbitService } from '../../services/white-rabbit.service';
 import { DbSettings } from '../../scan-data/model/db-settings';
+import { generateSessionId } from '../session';
 
 @Injectable()
 export class ScanDataWebsocketService extends WebsocketService implements OnDestroy {
 
   status$: Observable<boolean>;
+
+  private socket: SockJS;
 
   private stompClient: Client;
 
@@ -21,12 +24,15 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
 
   private wsSessionId: string;
 
+  private sessionRegex: RegExp;
+
   get userId() {
     return this.wsSessionId;
   }
 
   constructor(private whiteRabbitService: WhiteRabbitService) {
     super();
+    this.sessionRegex = new RegExp(/(\w|\d)+\/websocket/)
   }
 
   ngOnDestroy(): void {
@@ -43,6 +49,10 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
     this.stompClient.activate();
 
     this.stompClient.onConnect = (frame: IFrame) => {
+      const match = this.socket._transport.url.match(this.sessionRegex);
+      this.wsSessionId = match.length > 0 && !!match[0] ?
+        match[0].replace('/websocket', '') :
+        generateSessionId();
       this.connection$.next(frame.command === 'CONNECTED');
     };
 
@@ -75,21 +85,19 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
   }
 
   send(destination: string, data: DbSettings): void {
-    const {prefix} = this.websocketConfig;
-
-    this.whiteRabbitService.generateScanReportByDb(data)
-
-    this.stompClient.publish({
-      destination: prefix + destination,
-      body: data
-    });
+    this.whiteRabbitService.generateScanReportByDb(data, this.userId)
+      .subscribe(
+        () => this.connection$.next(true),
+        error => this.connection$.error(error)
+      )
   }
 
   private initStompClient(): void {
-    const {url, endPoint} = this.websocketConfig;
+    const url = `${whiteRabbitWsUrl}/queue`
 
     this.stompClient = Stomp.over(() => {
-      return new SockJS(url + endPoint);
+      this.socket = new SockJS(url);
+      return this.socket;
     });
 
     this.stompClient.splitLargeFrames = true;

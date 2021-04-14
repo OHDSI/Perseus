@@ -5,6 +5,7 @@ import { ConnectionResult } from '../scan-data/model/connection-result';
 import { ScanParams } from '../scan-data/model/scan-params';
 import { DelimitedTextFileSettings } from '../scan-data/model/delimited-text-file-settings';
 import { FileToScan } from '../scan-data/model/file-to-scan';
+import { DbTypes } from '../scan-data/scan-data.constants';
 
 export interface IScanDataStateService {
   state: any;
@@ -22,13 +23,14 @@ export interface ScanDataState {
 }
 
 const initialState: ScanDataState = {
-  dataType: null,
+  dataType: DbTypes.SQL_SERVER,
   dbSettings: {
-    dbType: null,
-    server: null,
-    user: null,
-    password: null,
-    database: null,
+    server: '822JNJ16S03V',
+    user: 'cdm_builder',
+    password: 'builder1!',
+    database: 'mdcd_native_test',
+    schema: 'dbo',
+    port: 1433
   },
   fileSettings: {
     fileType: null,
