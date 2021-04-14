@@ -5,13 +5,17 @@ import { loginRouter } from '../../app.constants';
 @Injectable({
   providedIn: 'root'
 })
-export class ResetPasswordGuardGuard implements CanActivate {
-
+export class LinkExpiredGuard implements CanActivate {
   constructor(private router: Router) {
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (!!state.root.queryParams['token']) {
+    const linkTypes = [
+      'email',
+      'password'
+    ]
+    const linkType = state.root.queryParams['linkType']
+    if (linkType && linkTypes.includes(linkType)) {
       return true
     }
 
