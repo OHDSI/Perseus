@@ -7,15 +7,13 @@ import { SearchByNameComponent } from './search-by-name/search-by-name.component
 import { CdmCustomMaterialModule } from '../../material/cdm-custom-material.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
-import { GreyLogoComponent } from './grey-logo/grey-logo.component';
 
 @NgModule({
   declarations: [
     PrettyNamePipe,
     TypeToIconPipe,
     SearchByNameComponent,
-    CloseDialogButtonComponent,
-    GreyLogoComponent
+    CloseDialogButtonComponent
   ],
   exports: [
     PrettyNamePipe,
@@ -23,8 +21,7 @@ import { GreyLogoComponent } from './grey-logo/grey-logo.component';
     SearchByNameComponent,
     CdmCustomMaterialModule,
     NgxMatSelectSearchModule,
-    CloseDialogButtonComponent,
-    GreyLogoComponent
+    CloseDialogButtonComponent
   ],
   imports: [
     CommonModule,
