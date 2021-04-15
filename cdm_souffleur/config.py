@@ -13,6 +13,7 @@ class DefaultConfig:
     SMTP_USER = 'perseus_test'
     SMTP_PWD = 'PT4TYxou@?cH8J'
     SERVER_HOST = 'localhost'
+    EMAIL_ENCODE_KEY = 'DiTdwHZMCnfj4CzSV12RzC64H3SRp-iY-0euf2grz7s='
 
 class DevelopmentConfig:
     CDM_SOUFFLEUR_PREFIX = ''
@@ -29,4 +30,5 @@ class DevelopmentConfig:
     SMTP_USER = 'perseus_test'
     SMTP_PWD = 'PT4TYxou@?cH8J'
     SERVER_HOST = '10.110.1.7:8080'
+    EMAIL_ENCODE_KEY = 'DiTdwHZMCnfj4CzSV12RzC64H3SRp-iY-0euf2grz7s='
 

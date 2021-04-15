@@ -15,3 +15,5 @@ psycopg2
 numpy
 flask-bcrypt
 pyjwt
+cryptography
+apscheduler

@@ -1,4 +1,4 @@
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, flash, url_for
 from werkzeug.utils import redirect
 from cdm_souffleur.services.authorization_service import *
 
@@ -23,13 +23,14 @@ def register_user():
 @authorization_api.route('/api/confirm_registration', methods=['GET'])
 def confirm_registration():
     try:
-        random_string = request.args['token']
-        activate_user_in_db(random_string)
+        encrypted_email = request.args['token']
+        redirect_to_page = activate_user_in_db(encrypted_email)
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
+
+    return redirect_to_page
 
 
 @authorization_api.route('/api/login', methods=['POST'])
@@ -67,12 +68,23 @@ def reset_password_request():
     return jsonify(True)
 
 
+@authorization_api.route('/api/check_password_link', methods=['GET'])
+def check_reset_password_link():
+    try:
+        encrypted_email = request.args['token']
+        if password_link_active(encrypted_email):
+            return redirect(f"http://{app.config['SERVER_HOST']}/reset-password?token={encrypted_email}", code=302)
+    except Exception as error:
+        raise error
+    return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=password", code=302)
+
+
 @authorization_api.route('/api/reset-password', methods=['POST'])
 def reset_password():
     try:
         new_pwd = request.json['password']
-        random_string = request.json['token']
-        reset_password_for_user(new_pwd, random_string)
+        encrypted_email = request.json['token']
+        reset_password_for_user(new_pwd, encrypted_email)
     except Exception as error:
         raise error
     return jsonify(True)
@@ -85,4 +97,4 @@ def register_unauthorized_reset_pwd():
         register_unauthorized_reset_pwd_in_db(user_key)
     except Exception as error:
         raise error
-    return redirect(f"{app.config['SERVER_HOST']}", code=302)
+    return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
