@@ -1,35 +1,30 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WebsocketService } from '../websocket.service';
 import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import { WebsocketConfig } from '../websocket.config';
 import { isProd, whiteRabbitWsUrl } from '../../app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { WhiteRabbitService } from '../../services/white-rabbit.service';
-import { DbSettings } from '../../scan-data/model/db-settings';
-import { generateSessionId } from '../session';
 
-@Injectable()
-export class ScanDataWebsocketService extends WebsocketService implements OnDestroy {
+export abstract class WhiteRabbitWebsocketService extends WebsocketService implements OnDestroy {
 
-  status$: Observable<boolean>;
+  protected abstract endPoint: string
 
   private socket: SockJS;
 
   private stompClient: Client;
 
-  private websocketConfig: WebsocketConfig;
-
   private wsSessionId: string;
 
-  get userId() {
-    return this.wsSessionId;
+  protected constructor(protected whiteRabbitService: WhiteRabbitService) {
+    super()
   }
 
-  constructor(private whiteRabbitService: WhiteRabbitService) {
-    super()
+  /* Return WebSocket connection session id */
+  get userId() {
+    return this.wsSessionId;
   }
 
   ngOnDestroy(): void {
@@ -38,8 +33,7 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
     }
   }
 
-  connect(config: WebsocketConfig): Observable<boolean> {
-    this.websocketConfig = config;
+  connect(): Observable<boolean> {
     this.initStompClient();
     this.stompClient.activate();
 
@@ -66,27 +60,17 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
       });
   }
 
-  on(destination: string): Observable<string> {
+  on(): Observable<string> {
     return new Observable(subscriber => {
-      this.stompClient.subscribe(destination, message => {
+      this.stompClient.subscribe('/user/queue/reply', message => {
         subscriber.next(message.body);
       });
-      this.stompClient.deactivate()
-        .then(() => subscriber.complete())
     });
-  }
-
-  send(destination: string, data: DbSettings): void {
-    this.whiteRabbitService.generateScanReportByDb(data, this.userId)
-      .subscribe(
-        () => this.connection$.next(true),
-        error => this.connection$.error(error)
-      )
   }
 
   private initStompClient(): void {
     this.stompClient = Stomp.over(() => {
-      this.socket = new SockJS(`${whiteRabbitWsUrl}/queue`);
+      this.socket = new SockJS(`${whiteRabbitWsUrl}/${this.endPoint}`);
       return this.socket;
     });
 
@@ -101,8 +85,9 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
   private sessionId(): string {
     const sessionRegex = new RegExp(/(\w|\d)+\/websocket/)
     const match = this.socket._transport.url.match(sessionRegex);
-    return match.length > 0 && !!match[0] ?
-      match[0].replace('/websocket', '') :
-      generateSessionId();
+    if (match.length === 0) {
+      throw Error('Could not get WhiteRabbit session id')
+    }
+    return match[0].replace('/websocket', '')
   }
 }

@@ -43,8 +43,18 @@ export class WhiteRabbitService {
     return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/files/${userId}`, formData)
   }
 
-  downloadScanReport(userId: string): Observable<Blob> {
-    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/${userId}`)
+  /* Return scan-report file server location */
+  result(userId: string): Observable<string> {
+    return this.http.get<{payload: string}>(`${whiteRabbitApiUrl}/scan-report/result/${userId}`)
+      .pipe(
+        map(result => result.payload)
+      )
+  }
+
+  downloadScanReport(fileLocation: string): Observable<Blob> {
+    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/${fileLocation}`, {
+      responseType: 'blob' as 'json'
+    })
   }
 
   generateFakeData(fakeDataSettings: FakeDataParams, userId: string, scanReport: File): Observable<void> {
@@ -52,5 +62,9 @@ export class WhiteRabbitService {
     formData.append('file', scanReport)
     formData.append('settings', JSON.stringify(fakeDataSettings))
     return this.http.post<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`, formData)
+  }
+
+  abort(userId: string): Observable<void> {
+    return this.http.get<void>(`${whiteRabbitApiUrl}/scan-report/abort/${userId}`)
   }
 }

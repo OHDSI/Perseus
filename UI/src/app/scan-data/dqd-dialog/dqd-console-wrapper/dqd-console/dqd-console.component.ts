@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { AbstractScanDataConsoleComponent } from '../../../shared/scan-console-wrapper/scan-data-console/abstract-scan-data-console.component';
+import { ConsoleComponent } from '../../../shared/scan-console-wrapper/console/console.component';
 import { DqdWebsocketService } from '../../../../websocket/dqd/dqd-websocket.service';
 import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
 import { DqdService } from '../../../../services/dqd.service';
 
 @Component({
   selector: 'app-dqd-console',
-  templateUrl: '../../../shared/scan-console-wrapper/scan-data-console/scan-data-console.component.html',
-  styleUrls: ['../../../shared/scan-console-wrapper/scan-data-console/scan-data-console.component.scss'],
+  templateUrl: '../../../shared/scan-console-wrapper/console/console.component.html',
+  styleUrls: ['../../../shared/scan-console-wrapper/console/console.component.scss'],
   providers: [DqdWebsocketService]
 })
-export class DqdConsoleComponent extends AbstractScanDataConsoleComponent {
+export class DqdConsoleComponent extends ConsoleComponent {
 
   private readonly checkCount = 22;
 

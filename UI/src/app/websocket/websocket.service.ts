@@ -1,5 +1,4 @@
 import { Observable, Observer } from 'rxjs';
-import { WebsocketConfig } from './websocket.config';
 import { distinctUntilChanged, share } from 'rxjs/operators';
 
 export abstract class WebsocketService {
@@ -11,11 +10,15 @@ export abstract class WebsocketService {
     this.initStatusStream();
   }
 
-  abstract connect(config: WebsocketConfig): Observable<boolean>;
+  handleError(error: any): string {
+    return `Error: ${error.reason ? error.reason : error.message}`
+  }
 
-  abstract on(destination: string): Observable<string | any>;
+  abstract connect(): Observable<boolean>;
 
-  abstract send(destination: string, data: string | any): void;
+  abstract on(): Observable<string | any>;
+
+  abstract send(data: string | any): void;
 
   abstract disconnect(): void;
 

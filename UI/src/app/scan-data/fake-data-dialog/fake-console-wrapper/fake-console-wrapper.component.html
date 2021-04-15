@@ -1,7 +1,7 @@
 <div class="console-wrapper">
 
-  <app-white-rabbit-scan-data-console [params]="params"
-                                      (finish)="onFinish($event)"></app-white-rabbit-scan-data-console>
+  <scan-data-console [params]="params"
+                     (finish)="onFinish($event)"></scan-data-console>
 
   <div class="console-wrapper__action">
     <ng-container *ngIf="result; then scanningFinishedBlock; else scanningBlock"></ng-container>

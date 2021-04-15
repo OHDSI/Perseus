@@ -1,5 +1,4 @@
 import { WebsocketService } from '../websocket.service';
-import { WebsocketConfig } from '../websocket.config';
 import { Observable } from 'rxjs/internal/Observable';
 import { DqdService } from '../../services/dqd.service';
 import { dqdWsUrl } from '../../app.constants';
@@ -21,7 +20,7 @@ export class DqdWebsocketService extends WebsocketService {
     super();
   }
 
-  connect(config: WebsocketConfig): Observable<boolean> {
+  connect(): Observable<boolean> {
     this.socket = new WebSocket(dqdWsUrl);
 
     this.socket.onerror = error => {
@@ -51,7 +50,7 @@ export class DqdWebsocketService extends WebsocketService {
       }, error => this.connection$.error(error));
   }
 
-  on(destination: string): Observable<any> {
+  on(): Observable<any> {
     return new Observable<string>(subscriber => {
       this.socket.onmessage = event => {
         subscriber.next(event.data);
@@ -59,7 +58,7 @@ export class DqdWebsocketService extends WebsocketService {
     });
   }
 
-  send(destination: string, data: DbSettings): void {
+  send(data: DbSettings): void {
     this.dqdService.dataQualityCheck(data, this.userId)
       .subscribe(
         () => this.connection$.next(true),

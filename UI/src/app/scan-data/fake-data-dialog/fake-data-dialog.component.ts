@@ -27,16 +27,13 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
     const itemsToScanCount = state.source.length;
     const fakeDataParams: FakeDataParams = {
       ...params,
-      scanReportBase64,
       dbSettings: fakeDataDbSettings
     };
 
     this.websocketParams = {
       ...whiteRabbitWebsocketConfig,
-      endPoint: '/fake-data',
       payload: fakeDataParams,
       itemsToScanCount,
-      resultDestination: '/user/queue/fake-data'
     };
 
     this.index = 1;

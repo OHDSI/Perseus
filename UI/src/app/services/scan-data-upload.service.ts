@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { UploadService } from './upload.service';
-import { base64ToFileAsObservable } from './utilites/base64-util';
 import { BridgeService } from './bridge.service';
 import { DataService } from './data.service';
 import { switchMap } from 'rxjs/operators';
@@ -18,23 +17,19 @@ export class ScanDataUploadService {
               private storeService: StoreService) {
   }
 
-  uploadScanReport(reportBase64: string, reportName: string): Observable<void> {
+  uploadScanReport(report: File): Observable<void> {
     this.bridgeService.reportLoading();
+    this.storeService.add('reportFile', report);
+    this.dataService.saveReportName(report.name, 'report');
 
-    const reportNameWithExt = `${reportName}.xlsx`;
-    return base64ToFileAsObservable(reportBase64, reportNameWithExt)
+    return this.uploadService.uploadSchema([report])
       .pipe(
-        switchMap(file => {
-          this.storeService.add('reportFile', file);
-          return this.uploadService.uploadSchema([file]);
-        }),
         switchMap(res => {
           this.bridgeService.resetAllMappings();
           this.dataService.prepareTables(res, 'source');
-          this.dataService.saveReportName(reportNameWithExt, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
           return of(null);
         })
-      );
+      )
   }
 }

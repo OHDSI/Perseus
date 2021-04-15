@@ -1,9 +1,8 @@
 import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
-import { WebsocketConfig } from '../websocket.config';
 import { CdmBuilderService } from '../../services/cdm-builder.service';
 import * as SignalR from '@microsoft/signalr';
-import { isProd } from '../../app.constants';
+import { cdmBuilderLogUrl, isProd } from '../../app.constants';
 import { switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { Injectable } from '@angular/core';
@@ -12,19 +11,15 @@ import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 @Injectable()
 export class CdmBuilderWebsocketService extends WebsocketService {
 
-  private websocketConfig: WebsocketConfig;
-
   private hubConnection: SignalR.HubConnection;
 
-  private errorMessage = 'Can not connect to CDM builder service';
+  private readonly errorMessage = 'Can not connect to CDM builder service';
 
   constructor(private cdmBuilderService: CdmBuilderService) {
     super();
   }
 
-  connect(config: WebsocketConfig): Observable<boolean> {
-    this.websocketConfig = config;
-
+  connect(): Observable<boolean> {
     this.cdmBuilderService.addMapping()
       .pipe(
         switchMap(result => {
@@ -44,15 +39,15 @@ export class CdmBuilderWebsocketService extends WebsocketService {
     return this.status$;
   }
 
-  on(destination: string): Observable<any> {
+  on(): Observable<any> {
     return new Observable<string>(subscriber => {
-      this.hubConnection.on(destination, message => {
+      this.hubConnection.on('', message => {
         subscriber.next(message);
       });
     });
   }
 
-  send(destination: string, data: string | any): void {
+  send(data: string | any): void {
     this.cdmBuilderService.convert(data)
       .subscribe(result => this.connection$.next(result));
   }
@@ -70,7 +65,7 @@ export class CdmBuilderWebsocketService extends WebsocketService {
 
   private createSignalRConnection() {
     return new SignalR.HubConnectionBuilder()
-      .withUrl(this.websocketConfig.url, {
+      .withUrl(cdmBuilderLogUrl, {
         skipNegotiation: true,
         transport: SignalR.HttpTransportType.WebSockets
       })
