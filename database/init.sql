@@ -248,12 +248,13 @@ CREATE TABLE "cdm"."user"
     first_name VARCHAR ( 30 ) NOT NULL,
     last_name VARCHAR ( 30 ) NOT NULL,
     email VARCHAR ( 50 ) UNIQUE NOT NULL,
-    password VARCHAR ( 255 ) NOT NULL
+    password VARCHAR ( 255 ) NOT NULL,
+    active BOOLEAN NOT NULL
 );
 
 --- inserting default users to user table
-INSERT INTO "cdm"."user" ("username", "first_name", "last_name", "email", "password") VALUES ('test1', 'name', 'surname', 'test_email@test.ru', '$2b$12$jgJapclm8oeV2FgCPTxXl.MCrcB61uKm82GDTbsbkJeOGIoU0oe0S');
-INSERT INTO "cdm"."user" ("username",  "first_name", "last_name", "email", "password") VALUES ('test2', 'name', 'surname', 'test_email2@test.ru', '$2b$12$3RwT1MKcqpk1usn.hmCklODI4XEwkuTCOzRyxD5OwjwQPqhVwZ6Qi');
+INSERT INTO "cdm"."user" ("username", "first_name", "last_name", "email", "password", "active") VALUES ('test1', 'name', 'surname', 'test_email@test.ru', '$2b$12$jgJapclm8oeV2FgCPTxXl.MCrcB61uKm82GDTbsbkJeOGIoU0oe0S', '1');
+INSERT INTO "cdm"."user" ("username",  "first_name", "last_name", "email", "password", "active") VALUES ('test2', 'name', 'surname', 'test_email2@test.ru', '$2b$12$3RwT1MKcqpk1usn.hmCklODI4XEwkuTCOzRyxD5OwjwQPqhVwZ6Qi', '1');
 
 --- create table for blacklisted tokens
 CREATE TABLE "cdm"."blacklist_token"

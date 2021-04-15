@@ -20,7 +20,7 @@ fernet = Fernet(app.config.get('EMAIL_ENCODE_KEY'))
 def refresh_registration_links():
     global user_registration_links, reset_pwd_links
     user_registration_links = {key: value for key, value in user_registration_links.items() if
-      (datetime.datetime.now() - value['date_time']).total_seconds() < REGISTRATION_LINK_EXPIRATION_TIME}
+      (datetime.datetime.now() - value).total_seconds() < REGISTRATION_LINK_EXPIRATION_TIME}
     reset_pwd_links = {key: value for key, value in reset_pwd_links.items() if
       (datetime.datetime.now() - value).total_seconds() < PASSWORD_LINK_EXPIRATION_TIME}
 
@@ -33,12 +33,17 @@ atexit.register(lambda: scheduler.shutdown())
 
 
 def register_user_in_db(password, first_name, last_name, email):
-    email_exists = User.select().where(User.email == email)
-    if email_exists.exists():
-        raise InvalidUsage('This email already registered', 409)
     encrypted_password = bcrypt.generate_password_hash(
         password, app.config.get('BCRYPT_LOG_ROUNDS')
     ).decode()
+    user = User.select().where(User.email == email)
+    if user.exists():
+        if user.get().active:
+            raise InvalidUsage('This email already exists', 409)
+        else:
+            update_user_fields(user.get(), first_name, last_name, encrypted_password)
+            send_link_to_user(email, first_name, 'registration', user_registration_links)
+            return
     username = f"{first_name[0].lower()}{last_name.lower()}"
     match_pattern = f"{username}\d*"
     users_with_same_username = User.select(fn.Count(User.user_id).alias('count')).where(User.username.regexp(match_pattern))
@@ -46,30 +51,61 @@ def register_user_in_db(password, first_name, last_name, email):
         count = item.count
         if count:
             username = f"{username}{count}"
-    user = User(username=username, first_name=first_name, last_name=last_name, email=email, password=encrypted_password)
+    user = User(username=username, first_name=first_name, last_name=last_name, email=email, password=encrypted_password, active=False)
+    user.save()
+    send_link_to_user(email, first_name, 'registration', user_registration_links)
+
+
+def decrypt_email(str):
+    return fernet.decrypt(str.encode()).decode()
+
+
+def update_user_fields(user, first_name, last_name, encrypted_password):
+    user = user.get()
+    user.first_name = first_name
+    user.last_name = last_name
+    user.password = encrypted_password
+    user.save()
+
+
+def send_link_to_user(email, first_name, link_type, links_storage):
     encrypted_email = fernet.encrypt(email.encode()).decode()
-    user_registration_links[email] = {'user': user, 'date_time': datetime.datetime.now()}
-    send_email(email, first_name, 'registration', encrypted_email)
+    links_storage[email] = datetime.datetime.now()
+    send_email(email, first_name, link_type, encrypted_email)
+
+
+def send_link_to_user_repeatedly(email, linkType):
+    user = User.select().where(User.email == email)
+    if user.exists():
+        if not user.get().active:
+            raise InvalidUsage('User has not been activated', 401)
+        if linkType == 'registration':
+            send_link_to_user(email, user.get().first_name, linkType, user_registration_links)
+        else:
+            send_link_to_user(email, user.get().first_name, linkType, reset_pwd_links)
 
 
 def activate_user_in_db(str):
     decrypted_email = fernet.decrypt(str.encode()).decode()
-    email_exists = User.select().where(User.email == decrypted_email)
-    if email_exists.exists():
+    user = User.select().where(User.email == decrypted_email)
+    if user.exists() and user.get().active:
         return redirect(f"http://{app.config['SERVER_HOST']}/already-registered?email={decrypted_email}", code=302)
     if decrypted_email in user_registration_links:
-        user = user_registration_links[decrypted_email]['user']
-        user.save()
+        selected_user = user.get()
+        selected_user.active = True
+        selected_user.save()
         user_registration_links.pop(decrypted_email, None)
         return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
     else:
-        return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=email", code=302)
+        return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=email&email={decrypted_email}", code=302)
 
 
 def user_login(email, password):
     auth_token = None
     user = User.select().where(User.email == email)
     if user.exists():
+        if not user.get().active:
+            raise InvalidUsage('User has not been activated', 401)
         for item in user:
             if bcrypt.check_password_hash(item.password, password):
                 auth_token = item.encode_auth_token(item.username)
@@ -90,9 +126,10 @@ def user_logout(auth_token):
 def send_reset_password_email(email):
     user = User.select().where(User.email == email)
     if user.exists():
+        if not user.get().active:
+            raise InvalidUsage('User has not been activated', 401)
         for item in user:
-            reset_pwd_links[email] = datetime.datetime.now()
-            send_email(item.email, item.first_name, 'reset_password', fernet.encrypt(email.encode()).decode())
+            send_link_to_user(item.email, item.first_name, 'reset_password', reset_pwd_links)
     else:
         raise InvalidUsage('Email wasn\'t registered', 401)
     return True
@@ -105,6 +142,8 @@ def password_link_active(encrypted_email):
 def reset_password_for_user(new_pwd, encrypted_email):
     decrypted_email = fernet.decrypt(encrypted_email.encode()).decode()
     user = User.select().where(User.email == decrypted_email).get()
+    if not user.active:
+        raise InvalidUsage('User is not active', 401)
     encrypted_password = bcrypt.generate_password_hash(new_pwd, app.config.get('BCRYPT_LOG_ROUNDS')).decode()
     user.password = encrypted_password
     user.save()
