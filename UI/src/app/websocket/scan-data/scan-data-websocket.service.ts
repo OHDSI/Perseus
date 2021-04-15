@@ -24,35 +24,27 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
 
   private wsSessionId: string;
 
-  private sessionRegex: RegExp;
-
   get userId() {
     return this.wsSessionId;
   }
 
   constructor(private whiteRabbitService: WhiteRabbitService) {
-    super();
-    this.sessionRegex = new RegExp(/(\w|\d)+\/websocket/)
+    super()
   }
 
   ngOnDestroy(): void {
-    if (this.stompClient && this.stompClient.active) {
+    if (this.stompClient?.active) {
       this.disconnect();
     }
   }
 
   connect(config: WebsocketConfig): Observable<boolean> {
     this.websocketConfig = config;
-
     this.initStompClient();
-
     this.stompClient.activate();
 
     this.stompClient.onConnect = (frame: IFrame) => {
-      const match = this.socket._transport.url.match(this.sessionRegex);
-      this.wsSessionId = match.length > 0 && !!match[0] ?
-        match[0].replace('/websocket', '') :
-        generateSessionId();
+      this.wsSessionId = this.sessionId()
       this.connection$.next(frame.command === 'CONNECTED');
     };
 
@@ -93,20 +85,24 @@ export class ScanDataWebsocketService extends WebsocketService implements OnDest
   }
 
   private initStompClient(): void {
-    const url = `${whiteRabbitWsUrl}/queue`
-
     this.stompClient = Stomp.over(() => {
-      this.socket = new SockJS(url);
+      this.socket = new SockJS(`${whiteRabbitWsUrl}/queue`);
       return this.socket;
     });
 
-    this.stompClient.splitLargeFrames = true;
-
+    this.stompClient.splitLargeFrames = true; // Need to send large messages
     // todo reconnect
     // this.stompClient.reconnectDelay = 1000;
-
-    if (isProd) {
+    if (isProd) { // Disable logging
       this.stompClient.debug = msg => {};
     }
+  }
+
+  private sessionId(): string {
+    const sessionRegex = new RegExp(/(\w|\d)+\/websocket/)
+    const match = this.socket._transport.url.match(sessionRegex);
+    return match.length > 0 && !!match[0] ?
+      match[0].replace('/websocket', '') :
+      generateSessionId();
   }
 }

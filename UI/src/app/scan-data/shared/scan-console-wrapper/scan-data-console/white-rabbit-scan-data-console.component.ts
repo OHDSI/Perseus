@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractScanDataConsoleComponent } from './abstract-scan-data-console.component';
-import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data-websocket.service';
+import { ScanDataWebsocketService } from '../../../../websocket/scan-data/scan-data-websocket.service';
 import { takeUntil } from 'rxjs/operators';
 import {
   ProgressNotification,

@@ -11,7 +11,6 @@ import { SignOutComponent } from './sign-out/sign-out.component';
 import { AuthPasswordInputComponent } from './auxiliary/auth-password-input/auth-password-input.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { AlreadyRegisteredComponent } from './already-registered/already-registered.component';
 
 @NgModule({
   declarations: [
@@ -23,8 +22,7 @@ import { AlreadyRegisteredComponent } from './already-registered/already-registe
     SignOutComponent,
     AuthPasswordInputComponent,
     RecoverPasswordComponent,
-    ResetPasswordComponent,
-    AlreadyRegisteredComponent
+    ResetPasswordComponent
   ],
   imports: [
     CommonModule,
