@@ -7,7 +7,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordRegex } from '../auxiliary/regexes';
 import { parseHttpError } from '../../services/utilites/error';
 import { configurePasswordFormControls } from '../auxiliary/password-form-controls';
-import { ResetPasswordTokenService } from '../reset-password-token.service';
+import { AuthStateService } from '../auth-state.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -25,7 +25,7 @@ export class ResetPasswordComponent extends AuthComponent implements OnInit, OnD
   constructor(@Inject(authInjector) authService: AuthService,
               router: Router,
               private route: ActivatedRoute,
-              private resetPasswordTokenService: ResetPasswordTokenService) {
+              private authStateService: AuthStateService) {
     super(authService, router)
   }
 
@@ -48,19 +48,19 @@ export class ResetPasswordComponent extends AuthComponent implements OnInit, OnD
         filter(params => !!params['token'])
       )
       .subscribe(params => {
-        this.resetPasswordTokenService.token = params['token']
+        this.authStateService.state = params['token']
         this.router.navigate([])
       })
   }
 
   ngOnDestroy() {
     super.ngOnDestroy();
-    this.resetPasswordTokenService.token = null
+    this.authStateService.state = null
   }
 
   submit(): void {
     const {password} = this.form.value
-    this.sendRequestAndShowLoading(this.authService.reset(password, this.resetPasswordTokenService.token))
+    this.sendRequestAndShowLoading(this.authService.reset(password, this.authStateService.state))
       .subscribe(
         () => this.reset = true,
         error => this.error = parseHttpError(error) ?? 'Could not reset password'
