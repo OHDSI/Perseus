@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConnectionResult } from '../scan-data/model/connection-result';
-import { DbSettings } from '../scan-data/model/db-settings';
+import { ConnectionResult } from '../../scan-data/model/connection-result';
+import { DbSettings } from '../../scan-data/model/db-settings';
 import { HttpClient } from '@angular/common/http';
-import { whiteRabbitApiUrl } from '../app.constants';
-import { TableToScan } from '../scan-data/model/table-to-scan';
+import { whiteRabbitApiUrl } from '../../app.constants';
+import { TableToScan } from '../../scan-data/model/table-to-scan';
 import { map } from 'rxjs/operators';
-import { DelimitedTextFileSettings } from '../scan-data/model/delimited-text-file-settings';
-import { FakeDataParams } from '../scan-data/model/fake-data-params';
+import { DelimitedTextFileSettings } from '../../scan-data/model/delimited-text-file-settings';
+import { FakeDataParams } from '../../scan-data/model/fake-data-params';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WhiteRabbitService {
+export class ScanDataService {
 
   constructor(private http: HttpClient) {
   }
@@ -35,10 +35,15 @@ export class WhiteRabbitService {
     return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/db/${userId}`, dbSettings)
   }
 
-  generateScanReportByFiles(fileSettings: DelimitedTextFileSettings, userId: string, files: File[]): Observable<void> {
+  generateScanReportByFiles(fileSettings: DelimitedTextFileSettings, userId: string): Observable<void> {
     const formData = new FormData();
-    files.forEach(file => formData.append('files', file))
-    formData.append('settings', JSON.stringify(fileSettings))
+    const settings = {
+      fileType: fileSettings.fileType,
+      delimiter: fileSettings.delimiter,
+      scanParams: fileSettings.scanParams
+    }
+    formData.append('settings', JSON.stringify(settings))
+    fileSettings.files.forEach(file => formData.append('files', file))
 
     return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/files/${userId}`, formData)
   }

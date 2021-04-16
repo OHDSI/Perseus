@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ConsoleComponent } from '../../../shared/scan-console-wrapper/console/console.component';
 import { DqdWebsocketService } from '../../../../websocket/dqd/dqd-websocket.service';
 import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
-import { DqdService } from '../../../../services/dqd.service';
+import { DqdService } from '../../../../services/data-quality-check/dqd.service';
 
 @Component({
   selector: 'app-dqd-console',

@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '../scan-data/model/db-settings';
-import { TableToScan } from '../scan-data/model/table-to-scan';
-import { ConnectionResult } from '../scan-data/model/connection-result';
-import { ScanParams } from '../scan-data/model/scan-params';
-import { DelimitedTextFileSettings } from '../scan-data/model/delimited-text-file-settings';
-import { FileToScan } from '../scan-data/model/file-to-scan';
-import { DbTypes } from '../scan-data/scan-data.constants';
+import { DbSettings } from '../../scan-data/model/db-settings';
+import { TableToScan } from '../../scan-data/model/table-to-scan';
+import { ConnectionResult } from '../../scan-data/model/connection-result';
+import { ScanParams } from '../../scan-data/model/scan-params';
+import { DelimitedTextFileSettings } from '../../scan-data/model/delimited-text-file-settings';
 
 export interface IScanDataStateService {
   state: any;
@@ -18,19 +16,19 @@ export interface ScanDataState {
   scanParams: ScanParams;
   tablesToScan: TableToScan[];
   filteredTablesToScan: TableToScan[];
-  filesToScan: FileToScan[];
+  filesToScan: File[];
   connectionResult: ConnectionResult;
 }
 
 const initialState: ScanDataState = {
-  dataType: DbTypes.SQL_SERVER,
+  dataType: null,
   dbSettings: {
-    server: '822JNJ16S03V',
-    user: 'cdm_builder',
-    password: 'builder1!',
-    database: 'mdcd_native_test',
-    schema: 'dbo',
-    port: 1433
+    server: null,
+    user: null,
+    password: null,
+    database: null,
+    schema: null,
+    port: null
   },
   fileSettings: {
     fileType: null,

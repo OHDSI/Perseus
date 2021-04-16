@@ -1,5 +1,4 @@
 import { ScanParams } from './scan-params';
-import { FileToScan } from './file-to-scan';
 import { TableToScan } from './table-to-scan';
 import { ScanSettings } from './scan-settings';
 
@@ -7,7 +6,7 @@ export interface DelimitedTextFileSettings extends ScanSettings {
   fileType: string;
   delimiter: string;
   itemsToScanCount?: number;
-  filesToScan?: FileToScan[];
+  files?: File[];
   scanParams?: ScanParams;
 }
 
@@ -15,7 +14,7 @@ export class DelimitedTextFileSettingsBuilder {
   private fileSettings: DelimitedTextFileSettings;
   private scanParams: ScanParams;
   private tablesToScan: TableToScan[];
-  private filesToScan: FileToScan[];
+  private files: File[];
   private fileType: string;
 
   setFileSettings(fileSettings: DelimitedTextFileSettings) {
@@ -33,8 +32,8 @@ export class DelimitedTextFileSettingsBuilder {
     return this;
   }
 
-  setFilesToScan(filesToScan: FileToScan[]) {
-    this.filesToScan = filesToScan;
+  setFilesToScan(files: File[]) {
+    this.files = files;
     return this;
   }
 
@@ -47,17 +46,14 @@ export class DelimitedTextFileSettingsBuilder {
     const result = Object.assign({}, this.fileSettings) as DelimitedTextFileSettings;
     const filteredFiles = this.tablesToScan
       .filter(table => table.selected)
-      .map(table => ({
-        fileName: table.tableName,
-        base64: this.filesToScan
-          .find(fileToScan => fileToScan.fileName === table.tableName)
-          .base64
-      }));
+      .map(table =>
+        this.files.find(file => file.name === table.tableName)
+      );
 
     result.fileType = this.fileType;
     result.scanParams = this.scanParams;
     result.itemsToScanCount = filteredFiles.length;
-    result.filesToScan = filteredFiles;
+    result.files = filteredFiles;
 
     return result;
   }

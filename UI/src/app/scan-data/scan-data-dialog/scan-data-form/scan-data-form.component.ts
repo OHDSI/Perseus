@@ -4,14 +4,13 @@ import { TableToScan } from '../../model/table-to-scan';
 import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
 import { ScanParams } from '../../model/scan-params';
-import { ScanDataStateService } from '../../../services/scan-data-state.service';
+import { ScanDataStateService } from '../../../services/white-rabbit/scan-data-state.service';
 import { ConnectFormComponent } from './connect-form/connect-form.component';
 import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../../model/delimited-text-file-settings';
 import { ScanSettings } from '../../model/scan-settings';
-import { FileToScan } from '../../model/file-to-scan';
 import { WebsocketParams } from '../../model/websocket-params';
 import { cdmBuilderDatabaseTypes } from '../../scan-data.constants';
-import { CdmStateService } from '../../../services/cdm-state.service';
+import { CdmStateService } from '../../../services/cdm-builder/cdm-state.service';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -32,7 +31,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   filteredTablesToScan: TableToScan[];
 
-  filesToScan: FileToScan[];
+  filesToScan: File[];
 
   connectionResult: ConnectionResult;
 

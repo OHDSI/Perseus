@@ -7,7 +7,7 @@ import {
   ProgressNotificationStatusCode
 } from '../../../model/progress-notification';
 import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data/scan-data-websocket.service';
-import { WhiteRabbitService } from '../../../../services/white-rabbit.service';
+import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
 
 @Component({
   selector: 'scan-data-console',
@@ -20,7 +20,7 @@ export class ScanDataConsoleComponent extends ConsoleComponent {
   private startedScanningItemsCount = 0;
 
   constructor(private scanDataWebsocketService: ScanDataWebsocketService,
-              private whiteRabbitService: WhiteRabbitService) {
+              private whiteRabbitService: ScanDataService) {
     super(scanDataWebsocketService);
   }
 

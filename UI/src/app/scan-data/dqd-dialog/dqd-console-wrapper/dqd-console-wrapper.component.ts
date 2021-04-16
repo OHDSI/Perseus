@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
 import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
 import { dqdUrl } from '../../../app.constants';
-import { DqdService } from '../../../services/dqd.service';
+import { DqdService } from '../../../services/data-quality-check/dqd.service';
 import * as fileSaver from 'file-saver';
 import { DbSettings } from '../../model/db-settings';
 

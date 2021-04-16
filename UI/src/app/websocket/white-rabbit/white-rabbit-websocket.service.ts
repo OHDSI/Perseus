@@ -6,7 +6,6 @@ import * as SockJS from 'sockjs-client';
 import { isProd, whiteRabbitWsUrl } from '../../app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { WhiteRabbitService } from '../../services/white-rabbit.service';
 
 export abstract class WhiteRabbitWebsocketService extends WebsocketService implements OnDestroy {
 
@@ -18,7 +17,7 @@ export abstract class WhiteRabbitWebsocketService extends WebsocketService imple
 
   private wsSessionId: string;
 
-  protected constructor(protected whiteRabbitService: WhiteRabbitService) {
+  protected constructor() {
     super()
   }
 

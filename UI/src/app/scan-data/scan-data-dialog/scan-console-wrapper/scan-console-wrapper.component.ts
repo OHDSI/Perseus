@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
-import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
+import { ScanDataUploadService } from '../../../services/white-rabbit/scan-data-upload.service';
 import { saveAs } from 'file-saver';
 import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.component';
-import { WhiteRabbitService } from '../../../services/white-rabbit.service';
+import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
 import { switchMap } from 'rxjs/operators';
 import { blobToFile } from '../../util/file';
 
@@ -22,7 +22,7 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
   @Input()
   private reportName: string;  // Without extension
 
-  constructor(private whiteRabbitService: WhiteRabbitService,
+  constructor(private whiteRabbitService: ScanDataService,
               private scanDataUploadService: ScanDataUploadService) {
     super();
   }

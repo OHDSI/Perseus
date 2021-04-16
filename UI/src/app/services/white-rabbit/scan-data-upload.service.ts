@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { UploadService } from './upload.service';
-import { BridgeService } from './bridge.service';
-import { DataService } from './data.service';
+import { UploadService } from '../upload.service';
+import { BridgeService } from '../bridge.service';
+import { DataService } from '../data.service';
 import { switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { StoreService } from './store.service';
+import { StoreService } from '../store.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WhiteRabbitWebsocketService } from '../white-rabbit-websocket.service';
-import { WhiteRabbitService } from '../../../services/white-rabbit.service';
+import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
 import { FakeDataParams } from '../../../scan-data/model/fake-data-params';
 
 @Injectable()
@@ -8,8 +8,8 @@ export class FakeDataWebsocketService extends WhiteRabbitWebsocketService {
 
   endPoint = 'fake-data'
 
-  constructor(whiteRabbitService: WhiteRabbitService) {
-    super(whiteRabbitService)
+  constructor(private whiteRabbitService: ScanDataService) {
+    super()
   }
 
   send(data: {params: FakeDataParams, report: File}): void {

@@ -1,6 +1,6 @@
 import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
-import { CdmBuilderService } from '../../services/cdm-builder.service';
+import { CdmBuilderService } from '../../services/cdm-builder/cdm-builder.service';
 import * as SignalR from '@microsoft/signalr';
 import { cdmBuilderLogUrl, isProd } from '../../app.constants';
 import { switchMap } from 'rxjs/operators';

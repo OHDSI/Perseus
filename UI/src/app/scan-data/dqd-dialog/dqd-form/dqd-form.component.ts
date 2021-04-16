@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { whiteRabbitDatabaseTypes } from '../../scan-data.constants';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { DbSettings } from '../../model/db-settings';
-import { DqdConnectionSettingsStateService } from '../../../services/dqd-connection-settings-state.service';
+import { DqdConnectionSettingsStateService } from '../../../services/data-quality-check/dqd-connection-settings-state.service';
 import { AbstractResourceForm } from '../../shared/resource-form/abstract-resource-form';
-import { WhiteRabbitService } from '../../../services/white-rabbit.service';
+import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
 
 @Component({
   selector: 'app-dqd-form',
@@ -33,7 +33,7 @@ export class DqdFormComponent extends AbstractResourceForm implements OnInit, On
 
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
-              private whiteRabbitService: WhiteRabbitService, // todo interface with testConnection method
+              private whiteRabbitService: ScanDataService, // todo interface with testConnection method
               private stateService: DqdConnectionSettingsStateService) {
     super(formBuilder, matDialog);
   }
