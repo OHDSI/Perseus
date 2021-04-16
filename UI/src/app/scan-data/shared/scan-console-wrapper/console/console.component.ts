@@ -1,15 +1,11 @@
-import {
-  ElementRef,
-  EventEmitter, Input,
-  OnInit, Output, ViewChild
-} from '@angular/core';
-import { ProgressNotification} from '../../../model/progress-notification';
+import { ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../base/base.component';
 import { WebsocketParams } from '../../../model/websocket-params';
 import { WebsocketService } from '../../../../websocket/websocket.service';
 
-export abstract class AbstractScanDataConsoleComponent extends BaseComponent implements OnInit {
+export abstract class ConsoleComponent extends BaseComponent implements OnInit {
 
   scanningStarted = false;
 
@@ -22,7 +18,7 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
   params: WebsocketParams;
 
   @Output()
-  finish = new EventEmitter<string>();
+  finish = new EventEmitter<any>();
 
   @ViewChild('console')
   private console: ElementRef;
@@ -32,7 +28,7 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
   }
 
   ngOnInit(): void {
-    this.websocketService.connect(this.params)
+    this.websocketService.connect()
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
@@ -43,7 +39,7 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
           }
         }, error => {
           this.showNotificationMessage({
-            message: `Error: ${error.reason ? error.reason : error.message}`,
+            message: this.websocketService.handleError(error),
             status: null
           });
         }
@@ -54,6 +50,11 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
     this.websocketService.disconnect();
   }
 
+  showNotificationMessage(notification: ProgressNotification) {
+    this.progressNotifications.push(notification);
+    this.scrollToConsoleBottom();
+  }
+
   protected onConnect(): void {
     this.scanningStarted = true;
     this.subscribeOnProgressMessages();
@@ -61,23 +62,23 @@ export abstract class AbstractScanDataConsoleComponent extends BaseComponent imp
   }
 
   protected sendData(): void {
-    this.websocketService
-      .send(this.params.endPoint, this.params.payload);
+    this.websocketService.send(this.params.payload);
   }
 
   protected subscribeOnProgressMessages(): void {
-    this.websocketService
-      .on(this.params.progressMessagesDestination)
+    this.websocketService.on()
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(message => {
-        this.handleProgressMessage(message);
-      });
-  }
-
-  protected showNotificationMessage(notification: ProgressNotification) {
-    this.progressNotifications.push(notification);
+      .subscribe(
+        message => this.handleProgressMessage(message),
+        error => this.showNotificationMessage({
+          message: this.websocketService.handleError(error),
+          status: {
+            code: ProgressNotificationStatusCode.ERROR
+          }
+        })
+      );
   }
 
   protected abstract handleProgressMessage(message: any): void;

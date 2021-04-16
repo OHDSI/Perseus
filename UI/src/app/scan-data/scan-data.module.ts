@@ -24,14 +24,15 @@ import { TestConnectionComponent } from './shared/test-connection/test-connectio
 import { CdmDestinationFormComponent } from './cdm-dialog/cdm-form/cdm-destination-form/cdm-destination-form.component';
 import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cdm-source-form.component';
 import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/cdm-scan-data-console.component';
-import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
+import { CdmConsoleComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console/cdm-console.component';
+import { ScanDataConsoleComponent } from './scan-data-dialog/scan-console-wrapper/scan-data-console/scan-data-console.component';
 import { DataBaseExistWarningPopupComponent } from './shared/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
 import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { CdmCommonModule } from '../common/cdm-common.module';
+import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
 
 @NgModule({
   declarations: [
@@ -57,13 +58,14 @@ import { CdmCommonModule } from '../common/cdm-common.module';
     CdmDestinationFormComponent,
     CdmSourceFormComponent,
     CdmConsoleWrapperComponent,
-    CdmScanDataConsoleComponent,
-    WhiteRabbitScanDataConsoleComponent,
+    CdmConsoleComponent,
+    ScanDataConsoleComponent,
     DataBaseExistWarningPopupComponent,
     DqdDialogComponent,
     DqdConsoleWrapperComponent,
     DqdConsoleComponent,
-    DqdFormComponent
+    DqdFormComponent,
+    FakeConsoleComponent
   ],
   imports: [
     CommonModule,

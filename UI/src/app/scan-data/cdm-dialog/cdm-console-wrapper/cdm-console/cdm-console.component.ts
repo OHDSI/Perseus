@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractScanDataConsoleComponent } from './abstract-scan-data-console.component';
+import { ConsoleComponent } from '../../../shared/scan-console-wrapper/console/console.component';
 import { CdmBuilderWebsocketService } from '../../../../websocket/cdm-builder/cdm-builder-websocket.service';
 import { CdmProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
 
 @Component({
-  selector: 'app-cdm-scan-data-console',
-  templateUrl: './scan-data-console.component.html',
-  styleUrls: ['./scan-data-console.component.scss'],
+  selector: 'app-cdm-console',
+  templateUrl: '../../../shared/scan-console-wrapper/console/console.component.html',
+  styleUrls: ['../../../shared/scan-console-wrapper/console/console.component.scss'],
   providers: [CdmBuilderWebsocketService]
 })
-export class CdmScanDataConsoleComponent extends AbstractScanDataConsoleComponent implements OnInit {
+export class CdmConsoleComponent extends ConsoleComponent implements OnInit {
 
   constructor(private cdmWebSocketService: CdmBuilderWebsocketService) {
     super(cdmWebSocketService);
@@ -21,7 +21,6 @@ export class CdmScanDataConsoleComponent extends AbstractScanDataConsoleComponen
       status: {code: notification.status},
       message: notification.text
     });
-    this.scrollToConsoleBottom();
 
     switch (notification.status) {
       case ProgressNotificationStatusCode.FINISHED: {

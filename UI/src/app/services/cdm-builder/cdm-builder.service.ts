@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { CdmBuilderStatus } from '../scan-data/model/cdm-builder-status';
-import { cdmBuilderApiUrl } from '../app.constants';
-import { CdmSettings } from '../scan-data/model/cdm-settings';
+import { CdmBuilderStatus } from '../../scan-data/model/cdm-builder-status';
+import { cdmBuilderApiUrl } from '../../app.constants';
+import { CdmSettings } from '../../scan-data/model/cdm-settings';
 import { map, switchMap } from 'rxjs/operators';
-import { ConnectionResult } from '../scan-data/model/connection-result';
-import { DataService } from './data.service';
-import { BridgeService } from './bridge.service';
-import { StoreService } from './store.service';
-import { dictionaryDbSettingForCdmBuilder } from '../scan-data/scan-data.constants';
+import { ConnectionResult } from '../../scan-data/model/connection-result';
+import { DataService } from '../data.service';
+import { BridgeService } from '../bridge.service';
+import { StoreService } from '../store.service';
+import { dictionaryDbSettingForCdmBuilder } from '../../scan-data/scan-data.constants';
 
 @Injectable({
   providedIn: 'root'

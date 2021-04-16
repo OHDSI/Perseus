@@ -217,7 +217,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(LogoutComponent, {
       width: '301',
       height: '220',
-      panelClass: 'scan-data-dialog'
+      panelClass: 'white-rabbit-dialog'
     });
   }
 

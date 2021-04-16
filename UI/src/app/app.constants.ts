@@ -17,7 +17,8 @@ export const serverUrl = environment.port === 80 ?
 export const apiUrl = `${serverUrl}/api`;
 
 export const whiteRabbitPrefix = '/white-rabbit-service';
-export const whiteRabbitApiUrl = `${serverUrl}/${whiteRabbitPrefix}/api`;
+export const whiteRabbitWsUrl = `${serverUrl}${whiteRabbitPrefix}`
+export const whiteRabbitApiUrl = `${serverUrl}${whiteRabbitPrefix}/api`;
 
 export const cdmBuilderLogUrl = `${serverUrl}/log`;
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`;

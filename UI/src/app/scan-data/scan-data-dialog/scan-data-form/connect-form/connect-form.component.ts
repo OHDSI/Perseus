@@ -1,21 +1,14 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, of } from 'rxjs';
 import { DbSettings } from '../../../model/db-settings';
 import { DelimitedTextFileSettings } from '../../../model/delimited-text-file-settings';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ScanSettings } from '../../../model/scan-settings';
-import { FileToScan } from '../../../model/file-to-scan';
 import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
 import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { MatDialog } from '@angular/material/dialog';
-import { WhiteRabbitService } from '../../../../services/white-rabbit.service';
+import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
 import { TableToScan } from '../../../model/table-to-scan';
 import { ConnectionResult } from '../../../model/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
@@ -43,7 +36,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
   fileSettings: DelimitedTextFileSettings;
 
   @Input()
-  filesToScan: FileToScan[];
+  filesToScan: File[];
 
   @Input()
   correctConnectionSettingsLoaded: boolean;
@@ -62,7 +55,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     ...whiteRabbitDatabaseTypes
   ];
 
-  private filesChange$ = new Subject<FileToScan[]>();
+  private filesChange$ = new Subject<File[]>();
 
   private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => void } = {
     dbSettings: (settings: ScanSettings) => {
@@ -103,8 +96,8 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
       this.connectionResult = {canConnect: true, message: ''};
       this.subscribeFormChange();
       const tables = this.filesToScan
-        .map(fileToScan => ({
-          tableName: fileToScan.fileName,
+        .map(file => ({
+          tableName: file.name,
           selected: true
         }));
       this.connectionResultChange.emit(this.connectionResult);
@@ -114,13 +107,13 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
 
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
-              private whiteRabbitService: WhiteRabbitService) {
+              private whiteRabbitService: ScanDataService) {
     super(formBuilder, matDialog);
   }
 
   get fileInputText() {
     const result = this.filesToScan
-      .map(fileToScan => fileToScan.fileName)
+      .map(file => file.name)
       .join(', ');
 
     const maxLength = 37;
@@ -155,7 +148,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     strategy(scanSettings);
   }
 
-  onFileToScanChanged(files: FileToScan[]) {
+  onFileToScanChanged(files: File[]) {
     this.filesToScan = files;
     this.filesChange$.next(files);
   }

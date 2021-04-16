@@ -835,7 +835,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       return of(true)
     } else {
       const dialogRef = this.matDialog.open(PersonMappingWarningDialogComponent, {
-        panelClass: 'scan-data-dialog'
+        panelClass: 'perseus-dialog'
       })
       return dialogRef.afterClosed()
     }

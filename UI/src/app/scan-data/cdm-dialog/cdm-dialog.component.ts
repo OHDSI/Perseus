@@ -3,12 +3,10 @@ import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
 import { CdmSettings } from '../model/cdm-settings';
-import { cdmWebsocketConfig, fakeDataDbSettings, whiteRabbitWebsocketConfig } from '../scan-data.constants';
+import { fakeDataDbSettings } from '../scan-data.constants';
 import { FakeDataParams } from '../model/fake-data-params';
 import { WebsocketParams } from '../model/websocket-params';
-import { fileToBase64 } from '../../services/utilites/base64-util';
 import { StoreService } from '../../services/store.service';
-import { dqdWsUrl } from '../../app.constants';
 import { DbSettings } from '../model/db-settings';
 import { adaptDestinationCdmSettings } from '../util/cdm-adapter';
 
@@ -35,12 +33,8 @@ export class CdmDialogComponent extends AbstractScanDialog {
   onConvert(cdmSettings: CdmSettings): void {
     this.cdmSettings = cdmSettings;
     this.websocketParams = {
-      ...cdmWebsocketConfig,
-      endPoint: '',
-      resultDestination: '',
       payload: cdmSettings
     };
-
     this.index = 1;
   }
 
@@ -63,30 +57,26 @@ export class CdmDialogComponent extends AbstractScanDialog {
     const dbSettings: DbSettings = adaptDestinationCdmSettings(this.cdmSettings);
 
     this.dqdWebsocketParams = {
-      url: dqdWsUrl,
       payload: dbSettings
     };
     this.index = 3;
   }
 
-  async onGenerateFakeData(params: FakeDataParams) {
-    const state = this.storeService.state;
-    const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;
-    const itemsToScanCount = state.source.length;
+  async onGenerateFakeData(params: { maxRowCount: number, doUniformSampling: boolean }) {
+    const {reportFile, source} = this.storeService.state;
+    const itemsToScanCount = source.length;
     const fakeDataParams: FakeDataParams = {
       ...params,
-      scanReportBase64,
       dbSettings: fakeDataDbSettings
     };
 
     this.whiteRabbitWebsocketParams = {
-      ...whiteRabbitWebsocketConfig,
-      endPoint: '/fake-data',
-      payload: fakeDataParams,
+      payload: {
+        params: fakeDataParams,
+        report: reportFile
+      },
       itemsToScanCount,
-      resultDestination: '/user/queue/fake-data'
     };
-
     this.index = 2;
   }
 }

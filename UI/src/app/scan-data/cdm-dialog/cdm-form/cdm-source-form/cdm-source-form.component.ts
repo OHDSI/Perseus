@@ -9,7 +9,7 @@ import {
   fakeDataDbSettings
 } from '../../../scan-data.constants';
 import { FakeDataParams } from '../../../model/fake-data-params';
-import { CdmBuilderService } from '../../../../services/cdm-builder.service';
+import { CdmBuilderService } from '../../../../services/cdm-builder/cdm-builder.service';
 import { adaptDbSettingsForSource } from '../../../util/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
