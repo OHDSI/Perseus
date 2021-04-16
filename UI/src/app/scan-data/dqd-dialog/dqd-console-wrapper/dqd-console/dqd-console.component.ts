@@ -32,6 +32,7 @@ export class DqdConsoleComponent extends ConsoleComponent {
       }
       case ProgressNotificationStatusCode.FINISHED: {
         this.progressValue = 100;
+        this.websocketService.disconnect();
         this.getResult();
         break;
       }

@@ -1,5 +1,5 @@
 import { ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ProgressNotification } from '../../../model/progress-notification';
+import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../base/base.component';
 import { WebsocketParams } from '../../../model/websocket-params';
@@ -70,9 +70,15 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit {
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(message => {
-        this.handleProgressMessage(message);
-      });
+      .subscribe(
+        message => this.handleProgressMessage(message),
+        error => this.showNotificationMessage({
+          message: this.websocketService.handleError(error),
+          status: {
+            code: ProgressNotificationStatusCode.ERROR
+          }
+        })
+      );
   }
 
   protected abstract handleProgressMessage(message: any): void;

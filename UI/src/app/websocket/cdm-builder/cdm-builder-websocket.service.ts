@@ -41,7 +41,7 @@ export class CdmBuilderWebsocketService extends WebsocketService {
 
   on(): Observable<any> {
     return new Observable<string>(subscriber => {
-      this.hubConnection.on('', message => {
+      this.hubConnection.on('Log', message => {
         subscriber.next(message);
       });
     });
