@@ -76,7 +76,7 @@ def check_reset_password_link():
             return redirect(f"http://{app.config['SERVER_HOST']}/reset-password?token={encrypted_email}", code=302)
     except Exception as error:
         raise error
-    return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=password", code=302)
+    return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=password&email={decrypt_email(encrypted_email)}", code=302)
 
 
 @authorization_api.route('/api/reset-password', methods=['POST'])
@@ -85,6 +85,17 @@ def reset_password():
         new_pwd = request.json['password']
         encrypted_email = request.json['token']
         reset_password_for_user(new_pwd, encrypted_email)
+    except Exception as error:
+        raise error
+    return jsonify(True)
+
+
+@authorization_api.route('/api/resend_activation_link', methods=['POST'])
+def resend_activation_link():
+    try:
+        email = request.json['email']
+        linkType = request.json['linkType']
+        send_link_to_user_repeatedly(email, linkType)
     except Exception as error:
         raise error
     return jsonify(True)
