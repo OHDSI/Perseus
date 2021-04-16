@@ -2,8 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { StoreService } from '../../services/store.service';
-import { fileToBase64 } from '../../services/utilites/base64-util';
-import { fakeDataDbSettings, whiteRabbitWebsocketConfig } from '../scan-data.constants';
+import { fakeDataDbSettings } from '../scan-data.constants';
 import { FakeConsoleWrapperComponent } from './fake-console-wrapper/fake-console-wrapper.component';
 import { FakeDataParams } from '../model/fake-data-params';
 
@@ -22,17 +21,18 @@ export class FakeDataDialogComponent extends AbstractScanDialog {
   }
 
   async onGenerate(params: { maxRowCount: number, doUniformSampling: boolean }) {
-    const state = this.storeService.state;
-    const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;
-    const itemsToScanCount = state.source.length;
+    const {reportFile, source} = this.storeService.state;
+    const itemsToScanCount = source.length;
     const fakeDataParams: FakeDataParams = {
       ...params,
       dbSettings: fakeDataDbSettings
     };
 
     this.websocketParams = {
-      ...whiteRabbitWebsocketConfig,
-      payload: fakeDataParams,
+      payload: {
+        params: fakeDataParams,
+        report: reportFile
+      },
       itemsToScanCount,
     };
 

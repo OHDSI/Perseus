@@ -6,6 +6,7 @@ import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.
 import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
 import { switchMap } from 'rxjs/operators';
 import { blobToFile } from '../../util/file';
+import { parseHttpError } from '../../../services/utilites/error';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -29,7 +30,10 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
 
   onSaveReport() {
     this.whiteRabbitService.downloadScanReport(this.result)
-      .subscribe(file => saveAs(file, `${this.reportName}.xlsx`))
+      .subscribe(
+        file => saveAs(file, `${this.reportName}.xlsx`),
+        error => this.showErrorMessage(parseHttpError(error))
+      )
   }
 
   onUploadReport() {
@@ -39,7 +43,10 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
           blobToFile(blob, `${this.reportName}.xlsx`))
         )
       )
-      .subscribe(() => this.close.emit())
+      .subscribe(
+        () => this.close.emit(),
+        error => this.showErrorMessage(parseHttpError(error))
+      )
   }
 
   onFinish(userId: string) {

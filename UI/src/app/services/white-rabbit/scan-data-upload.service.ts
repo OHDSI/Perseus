@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UploadService } from '../upload.service';
 import { BridgeService } from '../bridge.service';
 import { DataService } from '../data.service';
-import { switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { StoreService } from '../store.service';
 
@@ -29,7 +29,8 @@ export class ScanDataUploadService {
           this.dataService.prepareTables(res, 'source');
           this.bridgeService.saveAndLoadSchema$.next();
           return of(null);
-        })
+        }),
+        finalize(() => this.bridgeService.reportLoaded())
       )
   }
 }

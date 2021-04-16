@@ -7,7 +7,6 @@ import { whiteRabbitApiUrl } from '../../app.constants';
 import { TableToScan } from '../../scan-data/model/table-to-scan';
 import { map } from 'rxjs/operators';
 import { DelimitedTextFileSettings } from '../../scan-data/model/delimited-text-file-settings';
-import { FakeDataParams } from '../../scan-data/model/fake-data-params';
 
 @Injectable({
   providedIn: 'root'
@@ -60,13 +59,6 @@ export class ScanDataService {
     return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/${fileLocation}`, {
       responseType: 'blob' as 'json'
     })
-  }
-
-  generateFakeData(fakeDataSettings: FakeDataParams, userId: string, scanReport: File): Observable<void> {
-    const formData = new FormData();
-    formData.append('file', scanReport)
-    formData.append('settings', JSON.stringify(fakeDataSettings))
-    return this.http.post<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`, formData)
   }
 
   abort(userId: string): Observable<void> {

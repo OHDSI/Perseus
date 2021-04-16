@@ -6,7 +6,6 @@ import { CdmSettings } from '../model/cdm-settings';
 import { fakeDataDbSettings } from '../scan-data.constants';
 import { FakeDataParams } from '../model/fake-data-params';
 import { WebsocketParams } from '../model/websocket-params';
-import { fileToBase64 } from '../../services/utilites/base64-util';
 import { StoreService } from '../../services/store.service';
 import { DbSettings } from '../model/db-settings';
 import { adaptDestinationCdmSettings } from '../util/cdm-adapter';
@@ -63,20 +62,21 @@ export class CdmDialogComponent extends AbstractScanDialog {
     this.index = 3;
   }
 
-  async onGenerateFakeData(params: FakeDataParams) {
-    const state = this.storeService.state;
-    const scanReportBase64 = (await fileToBase64(state.reportFile)).base64;
-    const itemsToScanCount = state.source.length;
+  async onGenerateFakeData(params: { maxRowCount: number, doUniformSampling: boolean }) {
+    const {reportFile, source} = this.storeService.state;
+    const itemsToScanCount = source.length;
     const fakeDataParams: FakeDataParams = {
       ...params,
       dbSettings: fakeDataDbSettings
     };
 
     this.whiteRabbitWebsocketParams = {
-      payload: fakeDataParams,
+      payload: {
+        params: fakeDataParams,
+        report: reportFile
+      },
       itemsToScanCount,
     };
-
     this.index = 2;
   }
 }

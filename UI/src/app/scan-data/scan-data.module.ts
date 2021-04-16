@@ -32,6 +32,7 @@ import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd
 import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { CdmCommonModule } from '../common/cdm-common.module';
+import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { CdmCommonModule } from '../common/cdm-common.module';
     DqdDialogComponent,
     DqdConsoleWrapperComponent,
     DqdConsoleComponent,
-    DqdFormComponent
+    DqdFormComponent,
+    FakeConsoleComponent
   ],
   imports: [
     CommonModule,

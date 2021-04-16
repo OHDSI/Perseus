@@ -18,7 +18,7 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit {
   params: WebsocketParams;
 
   @Output()
-  finish = new EventEmitter<string>();
+  finish = new EventEmitter<any>();
 
   @ViewChild('console')
   private console: ElementRef;
@@ -50,6 +50,11 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit {
     this.websocketService.disconnect();
   }
 
+  showNotificationMessage(notification: ProgressNotification) {
+    this.progressNotifications.push(notification);
+    this.scrollToConsoleBottom();
+  }
+
   protected onConnect(): void {
     this.scanningStarted = true;
     this.subscribeOnProgressMessages();
@@ -68,10 +73,6 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit {
       .subscribe(message => {
         this.handleProgressMessage(message);
       });
-  }
-
-  protected showNotificationMessage(notification: ProgressNotification) {
-    this.progressNotifications.push(notification);
   }
 
   protected abstract handleProgressMessage(message: any): void;

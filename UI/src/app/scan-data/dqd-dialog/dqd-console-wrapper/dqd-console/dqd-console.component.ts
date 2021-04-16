@@ -23,9 +23,7 @@ export class DqdConsoleComponent extends ConsoleComponent {
   protected handleProgressMessage(message: any): void {
     const notification = JSON.parse(message) as ProgressNotification;
     const status = parseInt(notification.status as string, 10);
-
     this.showNotificationMessage(notification);
-    this.scrollToConsoleBottom();
 
     switch (status) {
       case ProgressNotificationStatusCode.IN_PROGRESS: {

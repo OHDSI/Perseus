@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { WhiteRabbitWebsocketService } from '../white-rabbit-websocket.service';
-import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
 import { FakeDataParams } from '../../../scan-data/model/fake-data-params';
+import { FakeDataService } from '../../../services/white-rabbit/fake-data.service';
 
 @Injectable()
 export class FakeDataWebsocketService extends WhiteRabbitWebsocketService {
 
   endPoint = 'fake-data'
 
-  constructor(private whiteRabbitService: ScanDataService) {
+  constructor(private fakeDataService: FakeDataService) {
     super()
   }
 
   send(data: {params: FakeDataParams, report: File}): void {
     const {params, report} = data
-    this.whiteRabbitService.generateFakeData(params, this.userId, report)
+    this.fakeDataService.generateFakeData(params, this.userId, report)
       .subscribe(
         () => this.connection$.next(true),
         error => this.connection$.error(error)

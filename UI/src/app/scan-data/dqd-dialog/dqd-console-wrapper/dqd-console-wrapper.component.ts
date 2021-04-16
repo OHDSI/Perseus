@@ -5,6 +5,7 @@ import { dqdUrl } from '../../../app.constants';
 import { DqdService } from '../../../services/data-quality-check/dqd.service';
 import * as fileSaver from 'file-saver';
 import { DbSettings } from '../../model/db-settings';
+import { parseHttpError } from '../../../services/utilites/error';
 
 @Component({
   selector: 'app-dqd-console-wrapper',
@@ -44,7 +45,10 @@ export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent 
 
         fileSaver.saveAs(blob, `${dbSettings.database}.${dbSettings.schema}.json`);
         this.fileLoading = false
-      }, error => this.fileLoading = false);
+      }, error => {
+        this.fileLoading = false
+        this.showErrorMessage(parseHttpError(error))
+      });
   }
 }
 
