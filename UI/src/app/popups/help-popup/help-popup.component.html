@@ -1,7 +1,7 @@
 <div class="help">
   <app-close-dialog-button class="help__close" (click)="dialogRef.close()"></app-close-dialog-button>
 
-  <app-grey-logo class="help__logo"></app-grey-logo>
+  <mat-icon class="help__logo" svgIcon="logo_grey"></mat-icon>
 
   <p>
     © 2020-2021, Perseus. All rights reserved.
@@ -10,5 +10,9 @@
 
   <a target="_blank" href="mailto:perseus.support@arcadia.spb.ru">perseus.support@arcadia.spb.ru</a>
 
-  <a target="_blank" href="https://github.com/SoftwareCountry/Perseus/wiki">Github | Wiki</a>
+  <div class="help__github">
+    <a target="_blank" href="https://github.com/SoftwareCountry/Perseus">Github</a>
+    <span>|</span>
+    <a target="_blank" href="https://github.com/SoftwareCountry/Perseus/wiki">Wiki</a>
+  </div>
 </div>

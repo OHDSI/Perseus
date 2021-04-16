@@ -13,9 +13,9 @@ export interface AuthService {
 
   register(user: User): Observable<void>;
 
-  restorePassword(email: string): Observable<void>;
+  recoverPassword(email: string): Observable<void>;
 
-  reset(password: string): Observable<void>;
+  reset(password: string, token: string): Observable<void>;
 }
 
 export const localStorageUserField = 'currentUser'

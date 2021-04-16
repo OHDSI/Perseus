@@ -19,8 +19,9 @@
   }
 
   &__logo {
-    margin-bottom: 30px;
+    width: 192px;
     height: 26px;
+    margin-bottom: 30px;
   }
 
   p {
@@ -38,5 +39,11 @@
     line-height: 15px;
     color: $cdm-blue;
     outline: none;
+  }
+
+  &__github {
+    span {
+      margin: 0 4px;
+    }
   }
 }

@@ -17,6 +17,7 @@ class User(BaseModel):
     first_name = CharField()
     last_name = CharField()
     email = CharField(unique=True)
+    active = BooleanField()
 
     def encode_auth_token(self, username, **kwargs):
         try:
@@ -36,8 +37,9 @@ class User(BaseModel):
     @staticmethod
     def decode_auth_token(auth_token):
         payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms='HS256')
+        user = User.select().where(User.username == payload['sub']).get()
         is_blacklisted_token = blacklist_token.check_blacklist(auth_token)
-        if is_blacklisted_token:
+        if is_blacklisted_token or not user.active:
            raise InvalidTokenError
         return payload['sub']
 

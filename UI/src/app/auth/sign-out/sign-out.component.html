@@ -11,7 +11,7 @@
           Invalid format
         </app-validate-message>
       </label>
-      <input id="firstName" type="text" formControlName="firstName" maxlength="25">
+      <input id="firstName" type="text" formControlName="firstName" maxlength="50">
     </div>
 
     <div class="sign-out__form__control">
@@ -21,7 +21,7 @@
           Invalid format
         </app-validate-message>
       </label>
-      <input id="lastName" type="text" formControlName="lastName" maxlength="25">
+      <input id="lastName" type="text" formControlName="lastName" maxlength="50">
     </div>
 
     <div class="sign-out__form__control">
@@ -31,7 +31,7 @@
           Invalid address
         </app-validate-message>
       </label>
-      <input id="email" type="email" formControlName="email" placeholder="email@example.com" maxlength="25">
+      <input id="email" type="email" formControlName="email" placeholder="email@example.com" maxlength="50">
     </div>
 
     <div class="sign-out__form__control">
@@ -47,7 +47,7 @@
     <div class="sign-out__form__control sign-out__form__password-wrapper">
       <label>
         Confirm Password
-        <app-validate-message *ngIf="confirmPassword.touched && confirmPassword.invalid">
+        <app-validate-message *ngIf="confirmPassword.dirty && confirmPassword.invalid">
           Password mismatch
         </app-validate-message>
       </label>
