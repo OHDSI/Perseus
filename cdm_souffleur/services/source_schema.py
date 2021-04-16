@@ -65,6 +65,8 @@ def get_source_schema(schemaname):
             if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
                 if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
                     column_type = column_type.replace('(P)', f'({column_description[2]})')
+                elif column_type == 'TEXT':
+                    column_type = '{0}'.format(column_description[1])
                 else:
                     column_type = '{0}({1})'.format(column_description[1], column_description[2])
             column = Column(column_name, column_type)
