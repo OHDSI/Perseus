@@ -112,7 +112,7 @@ def user_login(email, password):
             auth_token = item.encode_auth_token(item.username)
             token = get_refresh_token(email)
         if auth_token:
-            return {'username': item.username, 'token': auth_token, 'refresh_token': token}
+            return {'email': item.email, 'token': auth_token, 'refresh_token': token}
         else:
             raise AuthorizationError('Incorrect password', 401)
 
@@ -157,7 +157,7 @@ def get_refresh_access_token_pair(email, token):
         update_refresh_token(random_string, token)
         user = get_active_user(email).get()
         auth_token = user.encode_auth_token(user.username)
-        return {'username': user.username, 'token': auth_token, 'refresh_token': random_string}
+        return {'email': user.email, 'token': auth_token, 'refresh_token': random_string}
     else:
         raise InvalidUsage('Token has expired. Please log in again', 401)
 
