@@ -272,3 +272,13 @@ CREATE TABLE "cdm"."unauthorized_reset_pwd_request"
     username VARCHAR ( 30 ) NOT NULL,
     report_date TIMESTAMP
 );
+
+
+--- create table for rfresh tokens
+CREATE TABLE "cdm"."refresh_token"
+(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR ( 50 ) UNIQUE NOT NULL,
+    refresh_token VARCHAR ( 255 ) NOT NULL,
+    expiration_date TIMESTAMP
+);

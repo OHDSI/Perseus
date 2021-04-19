@@ -54,7 +54,7 @@ def get_registration_html(first_name, registration_key):
      style="width: 509px; height: 314px; padding: 10px; box-sizing: border-box">
   <div class="registration__header"
        style="padding-bottom: 15px; border-bottom: 1px solid #e5e5e5">
-    <img alt="Perseus" src="http://{app.config['SERVER_HOST']}/assets/icons/logo_grey.svg">
+    <img alt="Perseus" src="http://localhost:4200/img/logo.png">
   </div>
   <br>
 
@@ -84,12 +84,13 @@ def get_registration_html(first_name, registration_key):
 
 
 def get_reset_password_html(first_name, reset_pwd_key):
+
     html = f"""\
         <div class="recovery" style="width: 509px; height: 314px; padding: 10px; box-sizing: border-box">
   <div class="recovery__header"
        style="padding-bottom: 15px; border-bottom: 1px solid #e5e5e5">
-       <img alt="Perseus" src="http://{app.config['SERVER_HOST']}/assets/icons/logo_grey.svg">
-       </div>
+    <img alt="Perseus" src="http://localhost:4200/img/logo.png">
+  </div>
   <br>
 
   <div class="recovery__content"

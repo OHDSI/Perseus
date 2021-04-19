@@ -254,6 +254,12 @@ def delete_lookup(current_user):
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(success=True)
 
+
+@bp.route('/api/get_user_schema_name', methods=['GET'])
+@token_required
+def get_schema_name(current_user):
+    return jsonify(current_user)
+
 app.register_blueprint(bp)
 app.register_blueprint(vocab_search_api)
 app.register_blueprint(authorization_api)
