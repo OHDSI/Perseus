@@ -6,7 +6,6 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
 import { CdmCommonModule } from './common/cdm-common.module';
 import { JwtInterceptor } from './services/auth/jwt.interceptor';
-import { ErrorInterceptor } from './services/auth/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -20,8 +19,7 @@ import { ErrorInterceptor } from './services/auth/error.interceptor';
     CdmCommonModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [ AppComponent ]
 })

@@ -3,7 +3,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { User } from '../../models/user';
 import { AuthService, localStorageUserField } from './auth.service';
 import { Observable } from 'rxjs/internal/Observable';
-import { delay, tap } from 'rxjs/operators';
+import { catchError, delay, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,16 +27,9 @@ export class FakeAuthService implements AuthService {
     return !!this.user?.token;
   }
 
-  login(email: string, password: string): Observable<User> {
-    return of({
-      email,
-      token: Math.random().toString(36).substring(7)
-    }).pipe(
-      delay(this.delay),
-      tap(user => {
-        localStorage.setItem(localStorageUserField, JSON.stringify(user))
-        this.currentUser$.next(user)
-      })
+  login(email: string, password: string, ): Observable<User> {
+    return this.saveUser(
+      of({email, token: this.token(), refresh_token: this.token()}).pipe(delay(this.delay))
     )
   }
 
@@ -60,5 +53,29 @@ export class FakeAuthService implements AuthService {
 
   reset(password: string, token: string): Observable<void> {
     return of(null).pipe(delay(this.delay))
+  }
+
+  refreshToken(email, token): Observable<User> {
+    return this.saveUser(
+      of({email, token: this.token(), refresh_token: this.token()}).pipe(delay(this.delay))
+    ).pipe(
+      catchError(error => {
+        localStorage.removeItem(localStorageUserField)
+        this.currentUser$.next(null)
+        throw error
+      })
+    )
+  }
+
+  private token = () => Math.random().toString(36).substring(7)
+
+  private saveUser(request$: Observable<User>): Observable<User> {
+    return request$
+      .pipe(
+        tap(user => {
+          localStorage.setItem(localStorageUserField, JSON.stringify(user))
+          this.currentUser$.next(user)
+        })
+      )
   }
 }

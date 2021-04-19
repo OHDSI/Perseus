@@ -11,11 +11,13 @@ export interface AuthService {
 
   logout(): Observable<void>
 
-  register(user: User): Observable<void>;
+  register(user: User): Observable<void>
 
-  recoverPassword(email: string): Observable<void>;
+  recoverPassword(email: string): Observable<void>
 
-  reset(password: string, token: string): Observable<void>;
+  reset(password: string, token: string): Observable<void>
+
+  refreshToken(email, token): Observable<User>
 }
 
 export const localStorageUserField = 'currentUser'
