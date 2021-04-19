@@ -38,7 +38,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon",
-              "src/assets"
+              "src/assets",
+              "src/img"
             ],
             "styles": [
               "node_modules/codemirror/lib/codemirror.css",
@@ -149,7 +150,8 @@
             "scripts": [],
             "assets": [
               "src/favicon",
-              "src/assets"
+              "src/assets",
+              "src/img"
             ]
           }
         },
