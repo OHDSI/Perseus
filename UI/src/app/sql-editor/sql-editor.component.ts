@@ -16,6 +16,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { DataService } from 'src/app/services/data.service';
 import { Row, RowOptions } from 'src/app/models/row';
 import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
+import { StoreService } from '../services/store.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -42,6 +43,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     private bridgeService: BridgeService,
     private dataService: DataService,
     private matDialog: MatDialog,
+    private storeService: StoreService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -117,9 +119,12 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
 
   createSourceTableData() {
     const viewTableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
+    let viewSql = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
+    viewSql = this.handleSelectAllCases(viewSql);
+
     const viewResultColumns = [];
-    const viewSql = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
-    this.dataService.getView({sql: viewSql}).subscribe(res => {
+
+    this.dataService.getView({ sql: viewSql }).subscribe(res => {
       res.forEach((row, index) => {
         const rowOptions: RowOptions = {
           id: index,
@@ -146,16 +151,56 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       this.removeLinksForDeletedRows(newTable);
       this.dialogRef.close(newTable);
     },
-    error => {
-      const dialog = this.matDialog.open(ErrorPopupComponent, {
-        closeOnNavigation: false,
-        disableClose: false,
-        data: {
-          title: 'View error',
-          message: error.error.message
-        }
+      error => {
+        const dialog = this.matDialog.open(ErrorPopupComponent, {
+          closeOnNavigation: false,
+          disableClose: false,
+          data: {
+            title: 'View error',
+            message: error.error.message
+          }
+        });
       });
-    });
+  }
+
+  handleSelectAllCases(viewSql: string) {
+    if (this.editorContent.match(/select \*/gi)) {
+      const columns = [];
+      Object.keys(this.aliasTableMapping).forEach(item => {
+        this.createColumnAliases(item, columns);
+      });
+      const allColumns = columns.join(',')
+      viewSql = viewSql.replace(/select \*/gi, `select ${allColumns}`)
+    } else {
+      const totalColumns = [];
+      Object.keys(this.aliasTableMapping).forEach(item => {
+        const columns = [];
+        const matchPattern = `${item}\\.\\*`
+        const re = new RegExp(matchPattern, 'gi');
+        if (this.editorContent.match(re)) {
+          this.createColumnAliases(item, columns, totalColumns);
+          const allColumns = columns.join(',')
+          viewSql = viewSql.replace(re, allColumns)
+        }
+      })
+    }
+    return viewSql;
+  }
+
+  createColumnAliases(tableAlias: string, columns: any, totalColumns?: any){
+    const tableName = this.aliasTableMapping[ tableAlias ];
+    const table = this.storeService.state.source.find(it => it.name === tableName);
+    let duplicateColumns;
+    table.rows.forEach(row => {
+      duplicateColumns = totalColumns ? totalColumns : columns
+      const columnName = !duplicateColumns.find(col => col.substring(col.indexOf(".") + 1) === row.name) ?
+      `${tableAlias}.${row.name}` :
+      `${tableAlias}.${row.name} AS ${row.name}_${tableName}`;
+      if(totalColumns){
+        totalColumns.push(columnName)
+      }
+      columns.push(columnName)
+    })
   }
 
   removeLinksForDeletedRows(newTable: Table) {

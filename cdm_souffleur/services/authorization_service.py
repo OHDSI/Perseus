@@ -1,6 +1,10 @@
+import random
+import string
+
 from werkzeug.utils import redirect
 from cdm_souffleur.model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
 from cdm_souffleur.model.user import *
+from cdm_souffleur.model.refresh_token import *
 from cdm_souffleur.services.mailout_service import send_email
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME
@@ -102,24 +106,69 @@ def activate_user_in_db(str):
 
 def user_login(email, password):
     auth_token = None
-    user = User.select().where(User.email == email)
+    user = get_active_user(email)
+    for item in user:
+        if bcrypt.check_password_hash(item.password, password):
+            auth_token = item.encode_auth_token(item.username)
+            token = get_refresh_token(email)
+        if auth_token:
+            return {'username': item.username, 'token': auth_token, 'refresh_token': token}
+        else:
+            raise AuthorizationError('Incorrect password', 401)
+
+
+def get_active_user(param, type = ''):
+    if type == 'username':
+        user = User.select().where(User.username == param)
+    else:
+        user = User.select().where(User.email == param)
     if user.exists():
         if not user.get().active:
             raise InvalidUsage('User has not been activated', 401)
-        for item in user:
-            if bcrypt.check_password_hash(item.password, password):
-                auth_token = item.encode_auth_token(item.username)
-            if auth_token:
-                return {'username': item.username, 'token': auth_token}
-            else:
-                raise AuthorizationError('Incorrect password', 401)
+        else:
+            return user
     else:
         raise InvalidUsage('User does not exist', 401)
 
 
-def user_logout(auth_token):
+def get_refresh_token(email):
+    random_string = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(100))
+    token = refresh_token.select().where(refresh_token.email == email)
+    if not token.exists():
+        token = refresh_token(email=email, refresh_token=random_string,
+                              expiration_date=datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=2592000))
+        token.save()
+    else:
+        update_refresh_token(random_string, token)
+    return random_string
+
+
+def update_refresh_token(random_string, token):
+    selected_token = token.get()
+    selected_token.refresh_token = random_string
+    selected_token.expiration_date = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=2592000)
+    selected_token.save()
+
+
+def get_refresh_access_token_pair(email, token):
+    token = refresh_token.select().where((refresh_token.email == email) & (refresh_token.refresh_token == token) & (refresh_token.expiration_date < datetime.datetime.utcnow()))
+    if token.exists():
+        random_string = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(100))
+        update_refresh_token(random_string, token)
+        user = get_active_user(email).get()
+        auth_token = user.encode_auth_token(user.username)
+        return {'username': user.username, 'token': auth_token, 'refresh_token': random_string}
+    else:
+        raise InvalidUsage('Token has expired. Please log in again', 401)
+
+
+def user_logout(current_user, auth_token):
     blacklisted_token = blacklist_token(token=auth_token, blacklisted_on=datetime.datetime.now())
     blacklisted_token.save()
+    user = get_active_user(current_user, 'username').get()
+    token = refresh_token.select().where(refresh_token.email == user.email)
+    if token.exists():
+        token.get().delete_instance()
     return True
 
 

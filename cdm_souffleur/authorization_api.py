@@ -52,7 +52,7 @@ def login():
 @token_required
 def logout(current_user):
     try:
-        user_logout(request.headers['Authorization'])
+        user_logout(current_user, request.headers['Authorization'])
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify()
@@ -64,7 +64,7 @@ def reset_password_request():
         email = request.json['email']
         send_reset_password_email(email)
     except Exception as error:
-        raise error
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(True)
 
 
@@ -75,7 +75,7 @@ def check_reset_password_link():
         if password_link_active(encrypted_email):
             return redirect(f"http://{app.config['SERVER_HOST']}/reset-password?token={encrypted_email}", code=302)
     except Exception as error:
-        raise error
+        raise InvalidUsage(error.__str__(), 500)
     return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=password&email={decrypt_email(encrypted_email)}", code=302)
 
 
@@ -86,7 +86,7 @@ def reset_password():
         encrypted_email = request.json['token']
         reset_password_for_user(new_pwd, encrypted_email)
     except Exception as error:
-        raise error
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(True)
 
 
@@ -97,7 +97,7 @@ def resend_activation_link():
         linkType = request.json['linkType']
         send_link_to_user_repeatedly(email, linkType)
     except Exception as error:
-        raise error
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(True)
 
 
@@ -107,5 +107,18 @@ def register_unauthorized_reset_pwd():
         user_key = request.args['token']
         register_unauthorized_reset_pwd_in_db(user_key)
     except Exception as error:
-        raise error
+        raise InvalidUsage(error.__str__(), 500)
     return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
+
+
+@authorization_api.route('/api/update_refresh_access_token', methods=['POST'])
+def refresh_access_token():
+    try:
+        token = request.json['token']
+        email = request.json['email']
+        tokens = get_refresh_access_token_pair(email, token)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(tokens)
