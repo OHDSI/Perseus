@@ -84,7 +84,7 @@ export abstract class WhiteRabbitWebsocketService extends WebsocketService imple
   private sessionId(): string {
     const sessionRegex = new RegExp(/(\w|\d)+\/websocket/)
     const match = this.socket._transport.url.match(sessionRegex);
-    if (match.length === 0) {
+    if (match?.length === 0) {
       throw Error('Could not get WhiteRabbit session id')
     }
     return match[0].replace('/websocket', '')
