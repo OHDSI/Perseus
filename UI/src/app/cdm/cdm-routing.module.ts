@@ -1,6 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CdmComponent } from './cdm.component';
+import { MappingGuard } from './mapping/mapping.guard';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
       },
       {
         path: `mapping`,
+        canLoad: [MappingGuard],
         loadChildren: () => import('./mapping/mapping.module')
           .then(module => module.MappingModule)
       },
