@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FakeDataParams } from '../../scan-data/model/fake-data-params';
 import { Observable } from 'rxjs';
-import { whiteRabbitApiUrl } from '../../app.constants';
+import { apiUrl, whiteRabbitApiUrl } from '../../app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,9 @@ export class FakeDataService {
 
   abort(userId: string): Observable<void> {
     return this.http.get<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`)
+  }
+
+  getUserSchema(): Observable<string> {
+    return this.http.get<string>(`${apiUrl}/get_user_schema_name`)
   }
 }

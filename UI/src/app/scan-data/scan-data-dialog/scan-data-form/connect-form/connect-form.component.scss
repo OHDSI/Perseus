@@ -14,8 +14,9 @@
     margin: 15px 9px 0 9px;
   }
 
-  a {
-    margin-left: 10px;
+  &__clear-all {
+    width: 72px;
+    padding: 0 10px;
   }
 
   &__test-connection {
