@@ -3,5 +3,6 @@ export interface User {
   password?: string;
   token?: string;
   firstName?: string;
-  lastName?: string
+  lastName?: string;
+  refresh_token?: string;
 }

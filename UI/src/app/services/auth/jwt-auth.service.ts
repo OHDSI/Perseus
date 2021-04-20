@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl, loginRouter } from '../../app.constants';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -29,14 +29,8 @@ export class JwtAuthService implements AuthService {
   }
 
   login(email: string, password: string): Observable<User> {
-    return this.httpClient.post<User>(`${apiUrl}/login`, {
-      email,
-      password
-    }).pipe(
-      tap(user => {
-        localStorage.setItem(localStorageUserField, JSON.stringify(user))
-        this.currentUser$.next(user)
-      })
+    return this.saveUser(
+      this.httpClient.post<User>(`${apiUrl}/login`, {email, password})
     )
   }
 
@@ -61,5 +55,27 @@ export class JwtAuthService implements AuthService {
 
   reset(password: string, token: string): Observable<void> {
     return this.httpClient.post<void>(`${apiUrl}/reset-password`, {password, token})
+  }
+
+  refreshToken(email, token): Observable<User> {
+    return this.saveUser(
+      this.httpClient.post<User>(`${apiUrl}/update_refresh_access_token`, {email, token})
+    ).pipe(
+      catchError(error => {
+        localStorage.removeItem(localStorageUserField)
+        this.currentUser$.next(null)
+        throw error
+      })
+    )
+  }
+
+  private saveUser(request$: Observable<User>): Observable<User> {
+    return request$
+      .pipe(
+        tap(user => {
+          localStorage.setItem(localStorageUserField, JSON.stringify(user))
+          this.currentUser$.next(user)
+        })
+      )
   }
 }
