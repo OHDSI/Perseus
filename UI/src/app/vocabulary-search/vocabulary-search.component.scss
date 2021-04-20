@@ -32,6 +32,11 @@ $table-height: 385px;
     border-radius: 0 12px 12px 0;
     display: flex;
     flex-direction: column;
+    position: relative;
+
+    &.blocked {
+      opacity: .3;
+    }
 
     &__header {
       font-weight: bold;
@@ -39,6 +44,14 @@ $table-height: 385px;
       line-height: 20px;
       padding-top: 44px;
       padding-left: 38px;
+    }
+
+    &__blocker {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
     }
   }
 
@@ -326,11 +339,29 @@ $table-height: 385px;
       }
 
       &.error-row {
-        height: $table-height - $row-height;
+        height: $table-height - $row-height - 5;
         display: flex;
-        color: red;
         justify-content: center;
         align-items: center;
+        $error-height: 32px;
+
+        .error-icon-wrapper {
+          height: $error-height;
+        }
+
+        .error-icon {
+          height: 17px;
+          width: 22px;
+          margin-right: 6px;
+        }
+
+        .error-text {
+          width: 314px;
+          height: $error-height;
+          font-style: italic;
+          font-size: 14px;
+          line-height: 16px;
+        }
       }
 
       &:nth-child(2n) {

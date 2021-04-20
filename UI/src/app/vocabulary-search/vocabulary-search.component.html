@@ -1,36 +1,39 @@
 <div class="vocabulary-search" [style.bottom]="bottom">
-  <div class="vocabulary-search__side-panel">
+  <div class="vocabulary-search__side-panel" [ngClass]="{blocked: disableAll}">
     <h2 class="vocabulary-search__side-panel__header">
       Filters
     </h2>
 
-    <div class="vocabulary-search__chips" [style.height]="chipsHeight">
-      <ng-container *ngIf="filters?.length > 0">
+    <ng-container *ngIf="filters?.length > 0">
+      <div class="vocabulary-search__chips" [style.height]="chipsHeight">
         <app-chip *ngFor="let filter of selectedFilters; let i = index"
                   [id]="i"
                   [name]="filter.name"
                   [backgroundColor]="chipBackgroundColor(filter.filterIndex)"
                   (delete)="onDeleteFilter($event)"></app-chip>
-      </ng-container>
-    </div>
-
-    <div class="vocabulary-search__filters">
-      <div *ngFor="let filter of filters" class="vocabulary-search__filters-wrapper">
-
-        <app-filter-item [name]="filter.name"
-                         [color]="filter.color"
-                         [opened]="openedFilter === filter.name"
-                         (open)="onOpen($event)"></app-filter-item>
-
-        <app-filter-list *ngIf="filter.name === openedFilter"
-                         [values]="filter.values"
-                         (check)="onCheckFilter($event)"></app-filter-list>
       </div>
-    </div>
 
-    <div class="vocabulary-search__apply">
-      <button class="clear" (click)="onClear()">Clear</button>
-      <button class="apply" (click)="onEnterOrApply()">Apply</button>
+      <div class="vocabulary-search__filters">
+        <div *ngFor="let filter of filters" class="vocabulary-search__filters-wrapper">
+
+          <app-filter-item [name]="filter.name"
+                           [color]="filter.color"
+                           [opened]="openedFilter === filter.name"
+                           (open)="onOpen($event)"></app-filter-item>
+
+          <app-filter-list *ngIf="filter.name === openedFilter"
+                           [values]="filter.values"
+                           (check)="onCheckFilter($event)"></app-filter-list>
+        </div>
+      </div>
+
+      <div class="vocabulary-search__apply">
+        <button class="clear" (click)="onClear()">Clear</button>
+        <button class="apply" (click)="onEnterOrApply()">Apply</button>
+      </div>
+    </ng-container>
+
+    <div *ngIf="disableAll" class="vocabulary-search__side-panel__blocker">
     </div>
   </div>
 
@@ -139,7 +142,15 @@
           <div class="cell vocab">{{concept.vocabulary}}</div>
         </div>
 
-        <div *ngIf="error" class="row error-row">{{error}}</div>
+        <div *ngIf="disableAll" class="row error-row">
+          <div class="error-icon-wrapper">
+            <mat-icon class="error-icon" svgIcon="error"></mat-icon>
+          </div>
+          <div class="error-text">
+            Athena’s server error occured. Please try again later
+            or use Local Vocabulary
+          </div>
+        </div>
       </div>
 
       <div *ngIf="requestInProgress" class="ui-blocker">

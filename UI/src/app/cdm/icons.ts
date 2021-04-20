@@ -23,5 +23,6 @@ export const ICON_NAMES = [
   'logout',
   'logo_grey',
   'logo_white',
-  'three_dot_menu'
+  'three_dot_menu',
+  'error'
 ];
