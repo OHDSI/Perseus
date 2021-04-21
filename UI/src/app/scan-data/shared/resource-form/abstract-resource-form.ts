@@ -124,7 +124,7 @@ export abstract class AbstractResourceForm extends BaseComponent implements OnIn
     const disabled = !this.dataType;
     const formValue = this.dbSettings;
 
-    this.requireSchema = !disabled;
+    this.requireSchema = dbTypesRequireSchema.includes(this.dataType);
     this.form = this.createForm(disabled);
     this.subscribeOnDataTypeChange(this.form, this.formControlNames);
     this.form.patchValue(formValue);
