@@ -1,4 +1,4 @@
-import { MappingNode } from '../../models/mapping';
+import { MappingNode } from '../models/mapping';
 
 export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingNode[] {
   const groupReducer = (accumulator: {[key: string]: MappingNode}, currentValue: MappingNode) => {

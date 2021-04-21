@@ -11,12 +11,22 @@ import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 @Injectable()
 export class CdmBuilderWebsocketService extends WebsocketService {
 
+  constructor(private cdmBuilderService: CdmBuilderService) {
+    super();
+  }
+
   private hubConnection: SignalR.HubConnection;
 
   private readonly errorMessage = 'Can not connect to CDM builder service';
 
-  constructor(private cdmBuilderService: CdmBuilderService) {
-    super();
+  private static createSignalRConnection() {
+    return new SignalR.HubConnectionBuilder()
+      .withUrl(cdmBuilderLogUrl, {
+        skipNegotiation: true,
+        transport: SignalR.HttpTransportType.WebSockets
+      })
+      .configureLogging(isProd ? SignalR.LogLevel.None : SignalR.LogLevel.Information)
+      .build();
   }
 
   connect(): Observable<boolean> {
@@ -24,7 +34,7 @@ export class CdmBuilderWebsocketService extends WebsocketService {
       .pipe(
         switchMap(result => {
           if (result) {
-            this.hubConnection = this.createSignalRConnection();
+            this.hubConnection = CdmBuilderWebsocketService.createSignalRConnection();
             return fromPromise(this.hubConnection.start());
           } else {
             throw new Error(this.errorMessage);
@@ -61,15 +71,5 @@ export class CdmBuilderWebsocketService extends WebsocketService {
         this.connection$.next(false);
         this.connection$.complete();
       });
-  }
-
-  private createSignalRConnection() {
-    return new SignalR.HubConnectionBuilder()
-      .withUrl(cdmBuilderLogUrl, {
-        skipNegotiation: true,
-        transport: SignalR.HttpTransportType.WebSockets
-      })
-      .configureLogging(isProd ? SignalR.LogLevel.None : SignalR.LogLevel.Information)
-      .build();
   }
 }

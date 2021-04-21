@@ -5,7 +5,7 @@ import { dqdUrl } from '../../../app.constants';
 import { DqdService } from '../../../services/data-quality-check/dqd.service';
 import * as fileSaver from 'file-saver';
 import { DbSettings } from '../../model/db-settings';
-import { parseHttpError } from '../../../services/utilites/error';
+import { parseHttpError } from '../../../utilites/error';
 import { finalize } from 'rxjs/operators';
 
 @Component({

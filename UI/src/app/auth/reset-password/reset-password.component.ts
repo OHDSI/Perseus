@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordRegex } from '../auxiliary/regexes';
-import { parseHttpError } from '../../services/utilites/error';
+import { parseHttpError } from '../../utilites/error';
 import { configurePasswordFormControls } from '../auxiliary/password-form-controls';
 import { AuthStateService } from '../auth-state.service';
 import { filter } from 'rxjs/operators';

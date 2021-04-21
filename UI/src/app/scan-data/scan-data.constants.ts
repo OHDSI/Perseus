@@ -1,6 +1,6 @@
 import { cdmBuilderLogUrl, dbServer, whiteRabbitPrefix, whiteRabbitWsUrl } from '../app.constants';
 import { DbSettings } from './model/db-settings';
-import { adaptDbType } from './util/cdm-adapter';
+import { adaptDbType } from '../utilites/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
@@ -74,8 +74,7 @@ export const dictionaryDbSettingForCdmBuilder = {
   vocabularyDatabase: 'cdm_souffleur',
   vocabularySchema: 'vocabulary',
   vocabularyUser: 'cdm_builder',
-  vocabularyPassword: 'N7jscuS3ca',
-  mappingsName: 'TestMappings'
+  vocabularyPassword: 'N7jscuS3ca'
 };
 
 export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';

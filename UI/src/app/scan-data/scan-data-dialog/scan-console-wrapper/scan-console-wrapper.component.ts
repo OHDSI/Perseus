@@ -5,8 +5,8 @@ import { saveAs } from 'file-saver';
 import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.component';
 import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
 import { switchMap } from 'rxjs/operators';
-import { blobToFile } from '../../util/file';
-import { parseHttpError } from '../../../services/utilites/error';
+import { blobToFile } from '../../../utilites/file';
+import { parseHttpError } from '../../../utilites/error';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',

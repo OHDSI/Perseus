@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Table } from '../models/table';
 import { uniq } from '../infrastructure/utility';
+import { removeExtension } from '../utilites/file';
 
 @Injectable()
 export class StoreService {
@@ -92,6 +93,6 @@ export class StoreService {
 export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
   return {
     cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
-    reportName: state.report ? state.report.slice(0, state.report.lastIndexOf('.')) : 'Report name'
+    reportName: state.report ? removeExtension(state.report) : 'Report name'
   };
 }

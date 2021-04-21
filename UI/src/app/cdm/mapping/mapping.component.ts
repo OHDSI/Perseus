@@ -30,7 +30,7 @@ import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown
 import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 import { LookupService } from '../../services/lookup.service';
-import { getLookupType } from '../../services/utilites/lookup-util';
+import { getLookupType } from '../../utilites/lookup-util';
 import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';

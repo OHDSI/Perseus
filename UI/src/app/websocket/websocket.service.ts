@@ -1,7 +1,7 @@
 import { Observable, Observer } from 'rxjs';
 import { catchError, distinctUntilChanged, share } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { parseHttpError } from '../services/utilites/error';
+import { parseHttpError } from '../utilites/error';
 
 export abstract class WebsocketService {
   status$: Observable<boolean>;

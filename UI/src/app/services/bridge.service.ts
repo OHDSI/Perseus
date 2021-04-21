@@ -18,7 +18,7 @@ import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
-import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
+import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
 
 export interface IConnection {
   source: IRow;

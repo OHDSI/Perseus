@@ -33,7 +33,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '../../base/base.component';
 import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../../cdm/mapping/concept-transformation/concept-transformation.component';
-import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
+import { getConceptFieldType } from 'src/app/utilites/concept-util';
 
 @Component({
   selector: 'app-panel-table',
