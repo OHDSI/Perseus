@@ -7,9 +7,7 @@ const initialState = {
   doUniformSampling: false
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FakeDataStateService implements IScanDataStateService {
 
   private fakeDataState: FakeDataParams;

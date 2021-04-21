@@ -29,7 +29,7 @@ import { OverlayConfigOptions } from '../../services/overlay/overlay-config-opti
 import { OverlayService } from '../../services/overlay/overlay.service';
 import { StoreService } from '../../services/store.service';
 import { UploadService } from '../../services/upload.service';
-import { Criteria } from '../../common/search-by-name/search-by-name.component';
+import { Criteria } from '../../shared/search-by-name/search-by-name.component';
 import { CdmFilterComponent } from '../../popups/cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '../../sql-editor/sql-editor.component';
 import { DataService } from 'src/app/services/data.service';

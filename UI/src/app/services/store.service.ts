@@ -3,9 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Table } from '../models/table';
 import { uniq } from '../infrastructure/utility';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class StoreService {
   private initialState = {
     version: undefined,

@@ -5,7 +5,6 @@ import { PrettyNamePipe } from './pipes/pretty-name.pipe';
 import { TypeToIconPipe } from './pipes/type-to-icon.pipe';
 import { SearchByNameComponent } from './search-by-name/search-by-name.component';
 import { CdmCustomMaterialModule } from '../material/cdm-custom-material.module';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
 
 @NgModule({
@@ -16,18 +15,17 @@ import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-b
     CloseDialogButtonComponent
   ],
   exports: [
+    CommonModule,
+    CdmCustomMaterialModule,
     PrettyNamePipe,
     TypeToIconPipe,
     SearchByNameComponent,
-    CdmCustomMaterialModule,
-    NgxMatSelectSearchModule,
     CloseDialogButtonComponent
   ],
   imports: [
     CommonModule,
-    CdmCustomMaterialModule,
-    NgxMatSelectSearchModule
+    CdmCustomMaterialModule
   ]
 })
-export class CdmCommonModule { }
+export class SharedModule { }
 

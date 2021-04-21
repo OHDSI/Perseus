@@ -15,9 +15,7 @@ import {
 } from 'src/app/services/utilites/concept-util';
 import { Arrow } from '../models/arrow';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class ConceptTransformationService {
 
     arrow: Arrow;

@@ -13,9 +13,7 @@ import { apiUrl } from '../app.constants';
 
 const URL = apiUrl;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DataService {
   batch = [];
 

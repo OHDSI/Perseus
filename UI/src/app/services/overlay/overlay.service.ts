@@ -33,9 +33,7 @@ export class OverlayDialogRef {
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OverlayService {
   readonly strategies = (positionsData as any).positions;
 

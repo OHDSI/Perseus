@@ -31,9 +31,7 @@ export interface IConnection {
   sql?: {};
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BridgeService {
   set sourceRow(row: IRow) {
     this.sourcerow = row;

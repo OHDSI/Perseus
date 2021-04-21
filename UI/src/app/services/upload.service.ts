@@ -15,9 +15,7 @@ import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { parseHttpError } from './utilites/error';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UploadService {
 
   // mapping json loading

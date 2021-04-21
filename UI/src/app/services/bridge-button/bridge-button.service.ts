@@ -11,9 +11,7 @@ import { BridgeButtonData } from './model/bridge-button-data';
 import { isConceptTable } from '../../cdm/comfy/services/concept.service';
 import { CommonService } from 'src/app/services/common.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BridgeButtonService {
   drawEntity: IConnector;
   active = false;

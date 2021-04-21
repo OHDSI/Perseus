@@ -3,9 +3,7 @@ import { CanLoad, Route, Router, UrlSegment } from '@angular/router';
 import { StoreService } from '../../services/store.service';
 import { mainPageRouter } from '../../app.constants';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MappingGuard implements CanLoad {
 
   constructor(private storeService: StoreService,

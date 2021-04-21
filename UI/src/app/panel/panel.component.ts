@@ -6,7 +6,7 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { BridgeButtonData } from '../services/bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '../services/bridge-button/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
-import { Criteria } from '../common/search-by-name/search-by-name.component';
+import { Criteria } from '../shared/search-by-name/search-by-name.component';
 import { StoreService } from '../services/store.service';
 import { CommonUtilsService } from 'src/app/services/common-utils.service';
 import { TargetCloneDialogComponent } from './target-clone-dialog/target-clone-dialog.component';
@@ -19,7 +19,7 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
-  styleUrls: [ './panel.component.scss' ]
+  styleUrls: [ './panel.component.scss' ],
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;

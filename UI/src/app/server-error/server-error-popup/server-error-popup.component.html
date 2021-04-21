@@ -1,0 +1,16 @@
+<div class="server-error">
+  <app-close-dialog-button class="server-error__close" (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <div class="server-error__header">
+    <app-server-error-icon class="server-error__header__icon"></app-server-error-icon>
+    Server Error
+  </div>
+
+  <p>Server error occurred. Please contact our support:
+    <a target="_blank" href="mailto:perseus.support@arcadia.spb.ru?Subject=Server Error">
+      perseus.support@arcadia.spb.ru
+    </a>
+  </p>
+
+  <button (click)="dialogRef.close()">Cancel</button>
+</div>

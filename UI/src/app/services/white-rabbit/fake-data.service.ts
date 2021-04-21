@@ -4,9 +4,7 @@ import { FakeDataParams } from '../../scan-data/model/fake-data-params';
 import { Observable } from 'rxjs';
 import { apiUrl, whiteRabbitApiUrl } from '../../app.constants';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FakeDataService {
 
   constructor(private http: HttpClient) {

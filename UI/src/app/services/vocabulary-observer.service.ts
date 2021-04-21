@@ -8,9 +8,7 @@ interface ValueWrapper {
   emit: boolean
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class VocabularyObserverService {
 
   private showVocabulary$ = new BehaviorSubject<ValueWrapper>({

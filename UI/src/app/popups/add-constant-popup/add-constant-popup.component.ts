@@ -6,7 +6,8 @@ import { ValidationService } from 'src/app/services/validation.service';
 @Component({
   selector: 'app-add-constant-popup',
   templateUrl: './add-constant-popup.component.html',
-  styleUrls: ['./add-constant-popup.component.scss']
+  styleUrls: ['./add-constant-popup.component.scss'],
+  providers: [ValidationService]
 })
 export class AddConstantPopupComponent {
   @ViewChild('readOnlyTemplate', { static: false }) readOnlyTemplate: TemplateRef<any>;

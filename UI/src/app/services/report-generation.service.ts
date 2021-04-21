@@ -22,9 +22,7 @@ export enum ReportGenerationEvent {
   READY
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ReportGenerationService {
 
   private source: ITable[]

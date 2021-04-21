@@ -36,9 +36,7 @@ export enum VocabSearchMode {
   ATHENA = 'athena'
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class VocabularySearchService {
 
   private mandatoryParams = [
