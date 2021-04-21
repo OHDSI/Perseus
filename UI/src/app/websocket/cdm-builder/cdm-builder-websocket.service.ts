@@ -5,13 +5,16 @@ import * as SignalR from '@microsoft/signalr';
 import { cdmBuilderLogUrl, isProd } from '../../app.constants';
 import { switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { authInjector } from '../../services/auth/auth-injector';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable()
 export class CdmBuilderWebsocketService extends WebsocketService {
 
-  constructor(private cdmBuilderService: CdmBuilderService) {
+  constructor(private cdmBuilderService: CdmBuilderService,
+              @Inject(authInjector) private authService: AuthService) {
     super();
   }
 
@@ -19,9 +22,9 @@ export class CdmBuilderWebsocketService extends WebsocketService {
 
   private readonly errorMessage = 'Can not connect to CDM builder service';
 
-  private static createSignalRConnection() {
+  private static createSignalRConnection(token: string) {
     return new SignalR.HubConnectionBuilder()
-      .withUrl(cdmBuilderLogUrl, {
+      .withUrl(`${cdmBuilderLogUrl}?Authorization=${token}`, {
         skipNegotiation: true,
         transport: SignalR.HttpTransportType.WebSockets
       })
@@ -34,7 +37,7 @@ export class CdmBuilderWebsocketService extends WebsocketService {
       .pipe(
         switchMap(result => {
           if (result) {
-            this.hubConnection = CdmBuilderWebsocketService.createSignalRConnection();
+            this.hubConnection = CdmBuilderWebsocketService.createSignalRConnection(this.authService.user.token);
             return fromPromise(this.hubConnection.start());
           } else {
             throw new Error(this.errorMessage);
