@@ -29,12 +29,9 @@ const API_URLS = {
   getView: () => `${URL}/get_view`,
   validateSql: () => `${URL}/validate_sql`,
   loadReportToServer: () => `${URL}/load_schema_to_server`
-
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HttpService {
 
   constructor(private httpClient: HttpClient) {

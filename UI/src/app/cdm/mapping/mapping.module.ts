@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MappingComponent } from './mapping.component';
 import { MappingRoutingModule } from './mapping-routing.module';
-import { CdmCommonModule } from '../../common/cdm-common.module';
+import { SharedModule } from '../../shared/shared.module';
 import { VocabularySearchModule } from '../../vocabulary-search/vocabulary-search.module';
 import { ScanDataModule } from '../../scan-data/scan-data.module';
 import { PanelModule } from '../../panel/panel.module';
@@ -38,8 +37,7 @@ import { PersonMappingWarningDialogComponent } from './person-mapping-warning-di
     PersonMappingWarningDialogComponent,
   ],
   imports: [
-    CommonModule,
-    CdmCommonModule,
+    SharedModule,
     MappingRoutingModule,
     VocabularySearchModule,
     ScanDataModule,

@@ -11,9 +11,7 @@ const initialState: DbSettings = {
   password: null
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DqdConnectionSettingsStateService {
 
   private dqdState: DbSettings;

@@ -6,9 +6,7 @@ import { finalize, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { StoreService } from '../store.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ScanDataUploadService {
 
   constructor(private uploadService: UploadService,

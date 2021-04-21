@@ -34,7 +34,7 @@ export class SignInComponent extends AuthComponent {
     const {email, password} = this.form.value
     this.sendRequestAndShowLoading(this.authService.login(email, password))
       .subscribe(
-        () => this.router.navigate([mainPageRouter]),
+        result => result && this.router.navigate([mainPageRouter]),
         error => this.error = parseHttpError(error) ?? 'Incorrect login or password'
       )
   }

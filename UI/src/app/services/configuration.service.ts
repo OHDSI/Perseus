@@ -5,9 +5,7 @@ import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ConfigurationService {
 
   constructor(

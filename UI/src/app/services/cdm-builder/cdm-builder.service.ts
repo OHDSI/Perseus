@@ -11,9 +11,7 @@ import { BridgeService } from '../bridge.service';
 import { StoreService } from '../store.service';
 import { dictionaryDbSettingForCdmBuilder } from '../../scan-data/scan-data.constants';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CdmBuilderService {
 
   constructor(private httpClient: HttpClient,

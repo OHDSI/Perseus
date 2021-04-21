@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AddConstantPopupComponent } from './add-constant-popup/add-constant-popup.component';
 import { CdmVersionDialogComponent } from './cdm-version-dialog/cdm-version-dialog.component';
 import { CommentPopupComponent } from './comment-popup/comment-popup.component';
@@ -16,7 +15,7 @@ import { TransformationInputComponent } from './rules-popup/transformation-input
 import { SelectConceptFieldComponent } from './select-concept-field/select-concept-field.component';
 import { SelectTableDropdownComponent } from './select-table-dropdown/select-table-dropdown.component';
 import { SetConnectionTypePopupComponent } from './set-connection-type-popup/set-connection-type-popup.component';
-import { CdmCommonModule } from '../common/cdm-common.module';
+import { SharedModule } from '../shared/shared.module';
 import { TransformationTypeComponent } from './transformation-type/transformation-type.component';
 import { SqlFunctionsInjector } from './rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-string-functions';
@@ -46,8 +45,7 @@ import { HelpPopupComponent } from './help-popup/help-popup.component';
     HelpPopupComponent
   ],
   imports: [
-    CommonModule,
-    CdmCommonModule
+    SharedModule
   ],
   exports: [
     AddConstantPopupComponent,

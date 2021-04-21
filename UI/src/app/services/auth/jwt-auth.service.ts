@@ -73,8 +73,10 @@ export class JwtAuthService implements AuthService {
     return request$
       .pipe(
         tap(user => {
-          localStorage.setItem(localStorageUserField, JSON.stringify(user))
-          this.currentUser$.next(user)
+          if (user) {
+            localStorage.setItem(localStorageUserField, JSON.stringify(user))
+            this.currentUser$.next(user)
+          }
         })
       )
   }

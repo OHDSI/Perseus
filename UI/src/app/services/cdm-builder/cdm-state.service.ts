@@ -26,9 +26,7 @@ const initialState = {
   }
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CdmStateService implements IScanDataStateService {
 
   private isInit = false;

@@ -4,8 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
-import { CdmCommonModule } from './common/cdm-common.module';
 import { JwtInterceptor } from './services/auth/jwt.interceptor';
+import { ServerErrorInterceptor } from './server-error/server-error.interceptor';
 
 @NgModule({
   declarations: [
@@ -15,11 +15,11 @@ import { JwtInterceptor } from './services/auth/jwt.interceptor';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    AppRoutingModule,
-    CdmCommonModule
+    AppRoutingModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true }
   ],
   bootstrap: [ AppComponent ]
 })

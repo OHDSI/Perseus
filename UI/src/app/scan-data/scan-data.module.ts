@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TablesToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/tables-to-scan.component';
 import { TableToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/table-to-scan/table-to-scan.component';
 import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-data-form.component';
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
 import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
-import { WebsocketModule } from '../websocket/websocket.module';
 import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
@@ -31,7 +29,7 @@ import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
 import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
-import { CdmCommonModule } from '../common/cdm-common.module';
+import { SharedModule } from '../shared/shared.module';
 import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
 
 @NgModule({
@@ -68,16 +66,14 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     FakeConsoleComponent
   ],
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CdmCommonModule,
-    WebsocketModule
+    SharedModule
   ],
   exports: [
     ScanDataDialogComponent,
     FakeDataDialogComponent,
     CdmDialogComponent
-  ],
+  ]
 })
 export class ScanDataModule { }

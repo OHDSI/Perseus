@@ -8,9 +8,7 @@ import { TableToScan } from '../../scan-data/model/table-to-scan';
 import { map } from 'rxjs/operators';
 import { DelimitedTextFileSettings } from '../../scan-data/model/delimited-text-file-settings';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ScanDataService {
 
   constructor(private http: HttpClient) {

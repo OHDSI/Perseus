@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ComfyComponent } from './comfy.component';
 import { ComfyRoutingModule } from './comfy-routing.module';
-import { CdmCommonModule } from '../../common/cdm-common.module';
+import { SharedModule } from '../../shared/shared.module';
 import { ColumnsListComponent } from './columns-list/columns-list.component';
 import { HighlightTableDirective } from './highlight-table/highlight-table.directive';
 import { VocabularySearchModule } from '../../vocabulary-search/vocabulary-search.module';
@@ -19,9 +18,8 @@ import { ScanDataModule } from '../../scan-data/scan-data.module';
     HighlightTableDirective
   ],
   imports: [
-    CommonModule,
     ComfyRoutingModule,
-    CdmCommonModule,
+    SharedModule,
     VocabularySearchModule,
     SqlEditorModule,
     PopupsModule,

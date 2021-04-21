@@ -8,7 +8,8 @@ import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-dat
 @Component({
   selector: 'app-dialog',
   templateUrl: './comment-popup.component.html',
-  styleUrls: ['./comment-popup.component.scss']
+  styleUrls: ['./comment-popup.component.scss'],
+  providers: [CommentService]
 })
 export class CommentPopupComponent {
   @ViewChild('readOnlyTemplate', { static: true }) readOnlyTemplate: TemplateRef<any>;

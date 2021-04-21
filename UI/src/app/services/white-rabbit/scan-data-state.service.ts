@@ -48,9 +48,7 @@ const initialState: ScanDataState = {
   connectionResult: null
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ScanDataStateService implements IScanDataStateService {
 
   private scanDataState: ScanDataState;

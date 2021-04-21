@@ -4,9 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { DbSettings } from '../../scan-data/model/db-settings';
 import { dqdApiUrl } from '../../app.constants';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DqdService {
 
   constructor(private httpClient: HttpClient) { }

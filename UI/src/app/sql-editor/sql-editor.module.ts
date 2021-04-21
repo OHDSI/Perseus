@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SqlEditorComponent } from './sql-editor.component';
-import { CdmCommonModule } from '../common/cdm-common.module';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
     SqlEditorComponent
   ],
   imports: [
-    CommonModule,
-    CdmCommonModule
+    SharedModule
   ],
   exports: [
     SqlEditorComponent

@@ -16,9 +16,7 @@ import { OverlayConfigOptions } from './overlay/overlay-config-options.interface
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CommonUtilsService {
   private renderer: Renderer2;
   private readonly loadReport = new BehaviorSubject<any>(false);
