@@ -173,7 +173,7 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
                 info[field] = tables_pd[field][0]
         return info
     except KeyError as e:
-        raise InvalidUsage('Column invalid' + e.__str__(), 500)
+        raise InvalidUsage('Column invalid' + e.__str__(), 400)
 
 
 def extract_sql(source_table_name):
