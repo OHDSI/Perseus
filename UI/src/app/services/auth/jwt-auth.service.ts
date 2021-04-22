@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '../../models/user';
 import { Observable } from 'rxjs/internal/Observable';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl, loginRouter } from '../../app.constants';
 import { catchError, tap } from 'rxjs/operators';
@@ -58,6 +58,9 @@ export class JwtAuthService implements AuthService {
   }
 
   refreshToken(email, token): Observable<User> {
+    if (!token) {
+      return throwError('User is not logged in')
+    }
     return this.saveUser(
       this.httpClient.post<User>(`${apiUrl}/update_refresh_access_token`, {email, token})
     ).pipe(
