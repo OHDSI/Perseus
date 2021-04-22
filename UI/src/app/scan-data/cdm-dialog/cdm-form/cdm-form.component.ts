@@ -10,7 +10,7 @@ import { CdmDestinationFormComponent } from './cdm-destination-form/cdm-destinat
 import { CdmSettings } from '../../model/cdm-settings';
 import { dictionaryDbSettingForCdmBuilder } from '../../scan-data.constants';
 import { StoreService } from '../../../services/store.service';
-import { adaptCdmVersions } from '../../util/cdm-adapter';
+import { adaptCdmVersions } from '../../../utilites/cdm-adapter';
 import { Observable } from 'rxjs/internal/Observable';
 import { CdmBuilderService } from '../../../services/cdm-builder/cdm-builder.service';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -120,15 +120,16 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   }
 
   private createCdmBuilderSettings(): CdmSettings {
-    const cdmVersion = adaptCdmVersions(this.storeService.state.version);
+    const cdmVersion = adaptCdmVersions(this.storeService.state.version)
+    const mappingsName = this.cdmBuilderService.getMappingName()
 
-    const result = {
+    return {
       ...this.sourceFormComponent.settings,
       ...this.destinationFormComponent.settings,
       ...dictionaryDbSettingForCdmBuilder,
+      mappingsName,
       cdmVersion
     };
-    return result as CdmSettings;
   }
 
   // If destination db exist show warning popup

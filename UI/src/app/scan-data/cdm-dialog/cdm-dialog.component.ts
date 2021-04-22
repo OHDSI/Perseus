@@ -8,7 +8,7 @@ import { FakeDataParams } from '../model/fake-data-params';
 import { WebsocketParams } from '../model/websocket-params';
 import { StoreService } from '../../services/store.service';
 import { DbSettings } from '../model/db-settings';
-import { adaptDestinationCdmSettings } from '../util/cdm-adapter';
+import { adaptDestinationCdmSettings } from '../../utilites/cdm-adapter';
 
 @Component({
   selector: 'app-cdm-dialog',

@@ -5,18 +5,31 @@ import * as SignalR from '@microsoft/signalr';
 import { cdmBuilderLogUrl, isProd } from '../../app.constants';
 import { switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { authInjector } from '../../services/auth/auth-injector';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable()
 export class CdmBuilderWebsocketService extends WebsocketService {
+
+  constructor(private cdmBuilderService: CdmBuilderService,
+              @Inject(authInjector) private authService: AuthService) {
+    super();
+  }
 
   private hubConnection: SignalR.HubConnection;
 
   private readonly errorMessage = 'Can not connect to CDM builder service';
 
-  constructor(private cdmBuilderService: CdmBuilderService) {
-    super();
+  private static createSignalRConnection(token: string) {
+    return new SignalR.HubConnectionBuilder()
+      .withUrl(`${cdmBuilderLogUrl}?Authorization=${token}`, {
+        skipNegotiation: true,
+        transport: SignalR.HttpTransportType.WebSockets
+      })
+      .configureLogging(isProd ? SignalR.LogLevel.None : SignalR.LogLevel.Information)
+      .build();
   }
 
   connect(): Observable<boolean> {
@@ -24,7 +37,7 @@ export class CdmBuilderWebsocketService extends WebsocketService {
       .pipe(
         switchMap(result => {
           if (result) {
-            this.hubConnection = this.createSignalRConnection();
+            this.hubConnection = CdmBuilderWebsocketService.createSignalRConnection(this.authService.user.token);
             return fromPromise(this.hubConnection.start());
           } else {
             throw new Error(this.errorMessage);
@@ -61,15 +74,5 @@ export class CdmBuilderWebsocketService extends WebsocketService {
         this.connection$.next(false);
         this.connection$.complete();
       });
-  }
-
-  private createSignalRConnection() {
-    return new SignalR.HubConnectionBuilder()
-      .withUrl(cdmBuilderLogUrl, {
-        skipNegotiation: true,
-        transport: SignalR.HttpTransportType.WebSockets
-      })
-      .configureLogging(isProd ? SignalR.LogLevel.None : SignalR.LogLevel.Information)
-      .build();
   }
 }

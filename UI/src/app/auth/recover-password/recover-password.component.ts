@@ -4,7 +4,7 @@ import { authInjector } from '../../services/auth/auth-injector';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { parseHttpError } from '../../services/utilites/error';
+import { parseHttpError } from '../../utilites/error';
 
 @Component({
   selector: 'app-recover-password',

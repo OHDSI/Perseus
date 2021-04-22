@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { authInjector } from '../../services/auth/auth-injector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { parseHttpError } from '../../services/utilites/error';
+import { parseHttpError } from '../../utilites/error';
 import { mainPageRouter } from '../../app.constants';
 import { AuthComponent } from '../auth.component';
 

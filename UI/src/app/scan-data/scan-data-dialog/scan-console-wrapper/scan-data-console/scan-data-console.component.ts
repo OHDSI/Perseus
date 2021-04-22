@@ -8,7 +8,7 @@ import {
 } from '../../../model/progress-notification';
 import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data/scan-data-websocket.service';
 import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
-import { parseHttpError } from '../../../../services/utilites/error';
+import { parseHttpError } from '../../../../utilites/error';
 
 @Component({
   selector: 'scan-data-console',

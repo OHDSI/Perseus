@@ -12,7 +12,7 @@ import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
 import { BaseComponent } from '../../../base/base.component';
-import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/services/utilites/concept-util';
+import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utilites/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
 
 @Component({

@@ -8,12 +8,12 @@ import { Configuration } from '../models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject } from 'rxjs';
 import * as jsZip from 'jszip';
-import { MediaType } from './utilites/base64-util';
+import { MediaType } from '../utilites/base64-util';
 import { Observable } from 'rxjs/internal/Observable';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import { parseHttpError } from './utilites/error';
+import { parseHttpError } from '../utilites/error';
 
 @Injectable()
 export class UploadService {

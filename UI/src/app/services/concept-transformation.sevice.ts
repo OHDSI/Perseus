@@ -12,7 +12,7 @@ import {
   getConceptFieldType,
   updateConceptsIndexes,
   updateConceptsList
-} from 'src/app/services/utilites/concept-util';
+} from 'src/app/utilites/concept-util';
 import { Arrow } from '../models/arrow';
 
 @Injectable()

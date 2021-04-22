@@ -1,5 +1,5 @@
-import { DbSettings } from '../model/db-settings';
-import { CdmSettings } from '../model/cdm-settings';
+import { DbSettings } from '../scan-data/model/db-settings';
+import { CdmSettings } from '../scan-data/model/cdm-settings';
 
 /* Adapt white-rabbit dbSettings to CDM-builder settings */
 const dbTypeIdentifiers = {

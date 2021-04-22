@@ -12,7 +12,7 @@ import { ScanDataService } from '../../../../services/white-rabbit/scan-data.ser
 import { TableToScan } from '../../../model/table-to-scan';
 import { ConnectionResult } from '../../../model/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
-import { createDbConnectionForm } from '../../../util/form';
+import { createDbConnectionForm } from '../../../../utilites/form';
 
 @Component({
   selector: 'app-connect-form',

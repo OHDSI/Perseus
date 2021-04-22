@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { CdmBuilderStatus } from '../../scan-data/model/cdm-builder-status';
@@ -9,7 +9,9 @@ import { ConnectionResult } from '../../scan-data/model/connection-result';
 import { DataService } from '../data.service';
 import { BridgeService } from '../bridge.service';
 import { StoreService } from '../store.service';
-import { dictionaryDbSettingForCdmBuilder } from '../../scan-data/scan-data.constants';
+import { removeExtension } from '../../utilites/file';
+import { authInjector } from '../auth/auth-injector';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class CdmBuilderService {
@@ -17,7 +19,8 @@ export class CdmBuilderService {
   constructor(private httpClient: HttpClient,
               private dataService: DataService,
               private bridgeService: BridgeService,
-              private storeService: StoreService) {
+              private storeService: StoreService,
+              @Inject(authInjector) private authService: AuthService) {
   }
 
   status(): Observable<CdmBuilderStatus> {
@@ -38,13 +41,14 @@ export class CdmBuilderService {
   addMapping(): Observable<boolean> {
     const source = this.storeService.state.mappedSource;
     const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(source);
+    const mappingName = this.getMappingName();
 
     return this.dataService.getZippedXml(mappingJSON)
       .pipe(
         switchMap(file => {
           const formData = new FormData();
           formData.append('File', file);
-          formData.append('Name', dictionaryDbSettingForCdmBuilder.mappingsName);
+          formData.append('Name', mappingName);
           return this.httpClient.post(`${cdmBuilderApiUrl}/addmappings`, formData, {observe: 'response'});
         }),
         map(response => response.status === 200)
@@ -66,6 +70,13 @@ export class CdmBuilderService {
       .pipe(
         map(response => response.status === 200)
       );
+  }
+
+  getMappingName(): string {
+    const reportName = removeExtension(this.storeService.state.report)
+    const email = this.authService.user.email
+
+    return `${reportName}_${email}`
   }
 
   private testConnection(settings: CdmSettings, url: string): Observable<ConnectionResult> {

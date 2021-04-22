@@ -4,7 +4,7 @@ import { Mapping, MappingNode, MappingPair } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
-import { getLookupType } from '../services/utilites/lookup-util';
+import { getLookupType } from '../utilites/lookup-util';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
 import { IConcept, ITableConcepts } from '../cdm/mapping/concept-transformation/model/concept';
 import { conceptFieldsTypes } from '../app.constants';

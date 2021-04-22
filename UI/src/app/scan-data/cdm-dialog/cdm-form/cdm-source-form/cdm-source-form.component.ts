@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { createDbConnectionForm, createFakeDataForm } from '../../../util/form';
+import { createDbConnectionForm, createFakeDataForm } from '../../../../utilites/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } from '../../../scan-data.constants';
 import { FakeDataParams } from '../../../model/fake-data-params';
 import { CdmBuilderService } from '../../../../services/cdm-builder/cdm-builder.service';
-import { adaptDbSettingsForSource } from '../../../util/cdm-adapter';
+import { adaptDbSettingsForSource } from '../../../../utilites/cdm-adapter';
 import { CdmSettings } from '../../../model/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
