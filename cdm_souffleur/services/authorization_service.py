@@ -159,7 +159,7 @@ def get_refresh_access_token_pair(email, token):
         auth_token = user.encode_auth_token(user.username)
         return {'email': user.email, 'token': auth_token, 'refresh_token': random_string}
     else:
-        raise InvalidUsage('Token has expired. Please log in again', 401)
+        raise InvalidUsage('Token has expired. Please log in again', 400)
 
 
 def user_logout(current_user, auth_token):
