@@ -32,7 +32,10 @@ export class StoreService {
     isMappingPage: false
   };
   private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
-  readonly state$ = this.storeState.asObservable();
+
+  get state$() {
+    return this.storeState.asObservable()
+  }
 
   get state() {
     return this.storeState.getValue();

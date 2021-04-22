@@ -1,0 +1,9 @@
+@import "src/app/styles/variables";
+
+.tooltip {
+  padding: 8px;
+  background-color: $cdm-grey-dark;
+  color: #fff;
+  font-size: 12px;
+  line-height: 12px;
+}
