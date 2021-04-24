@@ -58,6 +58,24 @@
     height: 20px;
     cursor: pointer;
   }
+
+  &__user-profile {
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 40px;
+    color: $blue;
+  }
+
+  &__user-profile-menu {
+    width: 148px;
+  }
 }
 
 .new-mapping {
