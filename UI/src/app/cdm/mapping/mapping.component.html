@@ -20,9 +20,8 @@
           <mat-tab>
             <ng-template mat-tab-label>
               <div class="drop-down-label"
-                   (wheel) = "onWheel($event, 'source')"
                    (click)="openTablesDropdown($event.target, 'source')">
-                <div>{{selectedSourceTable.name}}</div>
+                <div class="mat-dropdown-text">{{selectedSourceTable.name}}</div>
                 <mat-icon *ngIf="this.sourceTablesWithoutSimilar.length > 1">arrow_drop_down</mat-icon>
               </div>
             </ng-template>
@@ -212,9 +211,8 @@
           <mat-tab>
             <ng-template mat-tab-label>
               <div class="drop-down-label"
-                   (wheel)="onWheel($event, 'target')"
                    (click)="openTablesDropdown($event.target, 'target')">
-                <div>{{selectedTargetTable.name}}</div>
+                <div class="mat-dropdown-text">{{selectedTargetTable.name}}</div>
                 <mat-icon *ngIf="getEnabledTargetTables().length > 1">arrow_drop_down</mat-icon>
               </div>
             </ng-template>
