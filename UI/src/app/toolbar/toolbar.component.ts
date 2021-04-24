@@ -67,7 +67,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   get userInitials(): string {
-    const {firstName = 'P', lastName = 'Z'} = this.authService.user
+    const {firstName = '?', lastName = '?'} = this.authService.user
     return `${firstName[0]}${lastName[0]}`
   }
 
