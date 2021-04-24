@@ -73,7 +73,8 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
   exports: [
     ScanDataDialogComponent,
     FakeDataDialogComponent,
-    CdmDialogComponent
+    CdmDialogComponent,
+    DqdDialogComponent
   ]
 })
 export class ScanDataModule { }

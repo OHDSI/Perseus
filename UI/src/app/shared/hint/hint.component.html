@@ -1,0 +1,9 @@
+<div class="hint">
+  <mat-icon #hintIcon class="hint__icon" svgIcon="hint" (click)="showHint()"></mat-icon>
+
+  <div *ngIf="show" #hintContent class="hint__content"
+       [style.width]="width">
+    {{hint.text}}
+    <a class="hint__content__link" target="_blank" [href]="hint.link">See More</a>
+  </div>
+</div>

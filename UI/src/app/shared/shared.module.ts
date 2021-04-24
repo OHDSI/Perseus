@@ -6,14 +6,15 @@ import { TypeToIconPipe } from './pipes/type-to-icon.pipe';
 import { SearchByNameComponent } from './search-by-name/search-by-name.component';
 import { CdmCustomMaterialModule } from '../material/cdm-custom-material.module';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
-import { TooltipModule } from '../tooltip/tooltip.module';
+import { HintComponent } from './hint/hint.component';
 
 @NgModule({
   declarations: [
     PrettyNamePipe,
     TypeToIconPipe,
     SearchByNameComponent,
-    CloseDialogButtonComponent
+    CloseDialogButtonComponent,
+    HintComponent
   ],
   exports: [
     CommonModule,
@@ -22,12 +23,11 @@ import { TooltipModule } from '../tooltip/tooltip.module';
     TypeToIconPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
-    TooltipModule
+    HintComponent
   ],
   imports: [
     CommonModule,
-    CdmCustomMaterialModule,
-    TooltipModule
+    CdmCustomMaterialModule
   ]
 })
 export class SharedModule { }
