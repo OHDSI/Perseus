@@ -48,8 +48,12 @@
                               (complete)="filterByName('source', $event)"
                               (reset)="filterByNameReset('source')"></app-search-by-name>
 
-          <a *ngIf="data.source?.length"
-             (click)="openCreateSqlDialog()">Create View</a>
+          <div *ngIf="data.source?.length" class="create-view">
+            <a (click)="openCreateSqlDialog()">
+              Create View
+            </a>
+            <app-hint key="createView"></app-hint>
+          </div>
 
           <div class="scrolled-items-rtl"
                *ngIf="data.source?.length"

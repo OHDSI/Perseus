@@ -75,19 +75,9 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return this.table.rows.length;
   }
 
-  get visibleRowsNumber() {
-    return this.table.rows.filter((row: IRow) => row.visible).length;
-  }
-
   datasource: MatTableDataSource<IRow>;
   rowFocusedElements: any[] = [];
-  focusedRowsNames: string[] = [];
   fieldTypes = (fieldTypes as any).default as Map<string, string[]>;
-
-  get connectionTypes(): any[] {
-    return Object.keys(this.connectortype);
-  }
-
   connectortype = {};
   expandedElement: any = undefined;
   groupDialogOpened = false;
@@ -107,14 +97,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
 
   @HostListener('document:click', [ '$event' ])
   onClick(event) {
-    if (!event) {
+    if (!event?.target || !this.rowFocusedElements || !this.rowFocusedElements.length) {
       return;
     }
-    const target = event.target;
-    if (!target || !this.rowFocusedElements || !this.rowFocusedElements.length) {
-      return;
-    }
-    const clickedOutside = target.id !== this.createGroupElementId && !this.groupDialogOpened;
+    const clickedOutside = event.target.id !== this.createGroupElementId && !this.groupDialogOpened;
     if (clickedOutside) {
       this.unsetRowFocus();
     }

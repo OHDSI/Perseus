@@ -12,9 +12,12 @@ export class HintOverlayComponent implements OnInit {
 
   width: string;
 
+  position: string
+
   constructor(@Inject(OVERLAY_DIALOG_DATA) public hint: Hint) { }
 
   ngOnInit(): void {
     this.width = this.hint.width ?? calculateWidth(this.hint.text)
+    this.position = this.hint.position ?? 'right'
   }
 }

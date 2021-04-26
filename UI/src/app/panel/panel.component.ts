@@ -8,7 +8,6 @@ import { BridgeButtonService } from '../services/bridge-button/bridge-button.ser
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '../shared/search-by-name/search-by-name.component';
 import { StoreService } from '../services/store.service';
-import { CommonUtilsService } from 'src/app/services/common-utils.service';
 import { TargetCloneDialogComponent } from './target-clone-dialog/target-clone-dialog.component';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-dialog.component';
@@ -71,7 +70,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private bridgeService: BridgeService,
     private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
-    private commonUtilsService: CommonUtilsService,
     private matDialog: MatDialog,
     private overlayService: OverlayService
   ) {
@@ -161,16 +159,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
   }
 
-  openOnBoardingTip(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'create-group');
-  }
-
-  openOnBoardingTipClone(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'clone-target');
-  }
-
   openConditionDialog() {
-
     const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
