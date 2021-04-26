@@ -23,7 +23,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if (this.externalUrls.find(url => request.url.includes(url)) || (error.status !== 0 && error.status < 500)) {
+          if ((error.status !== 0 && error.status < 500) || this.externalUrls.find(url => request.url.includes(url))) {
             throw error
           }
 
