@@ -275,11 +275,17 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
         height: 40px;
         padding: 0 15px;
         min-width: auto;
-        color: $blue;
+        color: rgba(64, 64, 64, 0.87);
       }
 
       .mat-tab-label-active .mat-tab-label-content {
-        color: rgba(64, 64, 64, 0.87);
+        color: $blue;
+        border-bottom: 2px solid $blue;
+        padding-bottom: 2px;
+
+        .mat-icon {
+          text-decoration: none;
+        }
       }
 
       .mat-tab-label-content {

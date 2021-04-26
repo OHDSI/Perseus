@@ -2,7 +2,7 @@
 
   <mat-icon class="toolbar__three-dot-menu-button"
             svgIcon="three_dot_menu"
-            [matMenuTriggerFor]="menu"></mat-icon>
+            [matMenuTriggerFor]="mainMenu"></mat-icon>
 
   <mat-icon class="toolbar__logo" svgIcon="logo_white"
             [ngClass]="{pointer: isNotComfyPage}"
@@ -14,12 +14,12 @@
 
   <label class="toolbar__info-label">{{reportName}} - {{cdmVersion}}</label>
 
-  <div class="toolbar__help-button"
-          (click)="openHelpPage()">
-    <mat-icon svgIcon="help"></mat-icon>
+  <div class="toolbar__user-profile"
+       [matMenuTriggerFor]="userProfileMenu">
+    {{userInitials}}
   </div>
 
-  <mat-menu #menu="matMenu">
+  <mat-menu #mainMenu="matMenu">
     <button mat-menu-item [matMenuTriggerFor]="createMapping">
       <mat-icon svgIcon="new_mapping"></mat-icon>
       <span>New Mapping</span>
@@ -57,11 +57,6 @@
             (click)="resetAllMappings()">
       <mat-icon svgIcon="reset"></mat-icon>
       <span>Delete All Mappings</span>
-    </button>
-    <button mat-menu-item
-            (click)="logout()">
-      <mat-icon svgIcon="logout"></mat-icon>
-      <span>Logout</span>
     </button>
   </mat-menu>
 
@@ -118,6 +113,20 @@
             (click)="generateReport()">
       <mat-icon svgIcon="generate_report"></mat-icon>
       <span>Report</span>
+    </button>
+  </mat-menu>
+
+  <mat-menu #userProfileMenu="matMenu" class="toolbar__user-profile-menu">
+    <button mat-menu-item
+            (click)="openHelpPage()">
+      <mat-icon svgIcon="help"></mat-icon>
+      <span>Help</span>
+    </button>
+
+    <button mat-menu-item
+            (click)="logout()">
+      <mat-icon svgIcon="logout"></mat-icon>
+      <span>Logout</span>
     </button>
   </mat-menu>
 </div>
