@@ -436,6 +436,29 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return enabledTargetTable;
   }
 
+  onWheel(event: any, area: string) {
+    const up = event.deltaY > 0;
+    let newIndex;
+    if (area === 'source' && this.currentSourceTable.name !== 'similar') {
+      const index = this.source.indexOf(this.currentSourceTable);
+      if (up) {
+        newIndex = index === this.source.length - 1 ? this.similarSourceTable ? 1 : 0 : index + 1;
+      } else {
+        newIndex = index === 1 ? this.similarSourceTable ? this.source.length - 1 : 0 : index === 0 ? this.source.length - 1 : index - 1;
+      }
+      this.refreshSourcePanel(this.source[newIndex]);
+    }
+    if (area === 'target' && this.currentTargetTable.name !== 'similar') {
+      const index = this.getEnabledTargetTables().findIndex(item => item.name === this.currentTargetTable.name);
+      if (up) {
+        newIndex = index === this.getEnabledTargetTables().length - 1 ? 0 : index + 1;
+      } else {
+        newIndex = index === 0 ? this.getEnabledTargetTables().length - 1 : index - 1;
+      }
+      this.refreshTargetPanel(this.getNewCurrentTable(newIndex));
+    }
+  }
+
   getNewCurrentTable(newIndex: number) {
     const newTable = this.getEnabledTargetTables()[newIndex];
     return this.storeService.state.targetClones[newTable.name] ?
