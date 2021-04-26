@@ -47,11 +47,11 @@ export class HintComponent implements OnDestroy {
 
   private openHint() {
     const hint = hints[this.key]
-    const position = hint.position ?? ''
+    const position = hint.position ?? 'right'
     this.show = true
     this.hintOverlayRef = this.overlayService.open({
       disableClose: true,
-      positionStrategyFor: `hint${position}`,
+      positionStrategyFor: `hint-${position}`,
       payload: hint
     }, this.hintIcon.nativeElement, HintOverlayComponent);
   }

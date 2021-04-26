@@ -104,7 +104,7 @@
       "overlayX": "end",
       "overlayY": "top"
     },
-    "hint": {
+    "hint-right": {
       "offsetX": 0,
       "offsetY": 0,
       "originX": "end",
@@ -115,10 +115,10 @@
     "hint-top": {
       "offsetX": 0,
       "offsetY": 0,
-      "originX": "end",
+      "originX": "start",
       "originY": "top",
       "overlayX": "end",
-      "overlayY": "top"
+      "overlayY": "bottom"
     }
   }
 }
