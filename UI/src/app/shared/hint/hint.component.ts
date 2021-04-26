@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { Hint, hints } from './hint';
+import { Hint, hints } from './hints';
 
 @Component({
   selector: 'app-hint',
