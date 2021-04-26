@@ -19,26 +19,4 @@
     justify-content: center;
     align-items: center;
   }
-
-  &__content {
-    z-index: 1001;
-    position: absolute;
-    left: 22px;
-    top: -10px;
-    padding: 8px;
-    background-color: $cdm-grey-dark;
-    color: #fff;
-    font-size: 12px;
-    line-height: 12px;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: -10px;
-      top: 10px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: transparent $cdm-grey-dark transparent transparent;
-    }
-  }
 }

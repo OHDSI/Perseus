@@ -1,72 +1,77 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { Hint, hints } from './hints';
+import { Component, ElementRef, Input, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { hints } from './hints';
+import { OverlayDialogRef, OverlayService } from '../../services/overlay/overlay.service';
+import { HintOverlayComponent } from './hint-overlay/hint-overlay.component';
 
 @Component({
   selector: 'app-hint',
   templateUrl: './hint.component.html',
   styleUrls: ['./hint.component.scss']
 })
-export class HintComponent implements OnInit, OnDestroy {
+export class HintComponent implements OnDestroy {
 
   @Input()
   key: string
 
-  hint: Hint
-
-  show = false
-
-  width: string
-
   @ViewChild('hintIcon', {read: ElementRef})
   hintIcon: ElementRef
 
-  @ViewChild('hintContent')
-  hintContent: ElementRef
+  private show = false
 
-  clickOutsideUnsub: () => void
+  private clickOutsideUnsub: () => void
 
-  constructor(private renderer: Renderer2) {
-  }
+  private hintOverlayRef: OverlayDialogRef;
 
-  ngOnInit(): void {
-    this.hint = hints[this.key]
-    this.width = calculateWidth(this.hint.text)
+  constructor(private renderer: Renderer2,
+              private overlayService: OverlayService) {
   }
 
   ngOnDestroy(): void {
     if (this.clickOutsideUnsub) {
       this.clickOutsideUnsub()
     }
+    if (this.hintOverlayRef) {
+      this.hintOverlayRef.close()
+    }
   }
 
   showHint() {
     if (this.show) {
       this.unsubOnClickOutside()
-      this.show = false
+      this.closeHint()
     } else {
-      this.show = true
-      this.clickOutsideUnsub = this.renderer.listen('document', 'click', event => {
-        const notClickedInside = !this.hintContent.nativeElement.contains(event.target)
-        const notClickedOnHintIcon = !this.hintIcon.nativeElement.contains(event.target)
-
-        if (notClickedInside && notClickedOnHintIcon) {
-          this.unsubOnClickOutside()
-          this.show = false
-        }
-      })
+      this.openHint()
+      this.clickOutsideUnsub = this.renderer.listen('document', 'click', this.onClick.bind(this))
     }
+  }
+
+  private openHint() {
+    this.show = true
+    this.hintOverlayRef = this.overlayService.open({
+      disableClose: true,
+      positionStrategyFor: 'hint',
+      payload: hints[this.key]
+    }, this.hintIcon.nativeElement, HintOverlayComponent);
+  }
+
+  private closeHint() {
+    this.show = false
+    this.hintOverlayRef.close()
+    this.hintOverlayRef = null
   }
 
   private unsubOnClickOutside() {
     this.clickOutsideUnsub()
     this.clickOutsideUnsub = null
   }
-}
 
-function calculateWidth(text: string): string {
-  const longestWordLength = Math.max(...text
-    .split(' ')
-    .map(s => s.length)
-  ) * 4 // 4 - Char length
-  return `${longestWordLength * 4}px` // 4 Words count
+  private onClick(event: MouseEvent) {
+    const notClickedInside = !this.hintOverlayRef.overlayElement.contains(event.target as Element)
+    const notClickedOnHintIcon = !this.hintIcon.nativeElement.contains(event.target)
+
+    if (notClickedInside && notClickedOnHintIcon) {
+      this.unsubOnClickOutside()
+      this.closeHint()
+    }
+  }
 }
