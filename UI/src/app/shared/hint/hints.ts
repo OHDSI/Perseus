@@ -25,7 +25,7 @@ export const hints: {[key: string]: Hint} = {
   },
   createGroup: {
     text: 'Use Ctrl to select multiple fields and then click on Create group.',
-    link: 'https://github.com/SoftwareCountry/Perseus/wiki',
+    link: 'https://github.com/SoftwareCountry/Perseus/wiki/Link-native-fields-to-CDM-fields#fields-groups',
     width: '237px'
   },
   addCondition: {
