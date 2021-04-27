@@ -273,7 +273,8 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
         opacity: 1;
         float: left;
         height: 40px;
-        padding: 0 15px;
+        padding: 0 15px 2px;
+        border-bottom: 2px solid transparent;
         min-width: auto;
         color: rgba(64, 64, 64, 0.87);
       }
@@ -281,7 +282,6 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
       .mat-tab-label-active .mat-tab-label-content {
         color: $blue;
         border-bottom: 2px solid $blue;
-        padding-bottom: 2px;
 
         .mat-icon {
           text-decoration: none;
