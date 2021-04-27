@@ -1,12 +1,10 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostListener,
   Input,
-  OnChanges,
   OnInit,
   Output,
   Renderer2,
@@ -35,7 +33,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '../../base/base.component';
 import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../../cdm/mapping/concept-transformation/concept-transformation.component';
-import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
+import { getConceptFieldType } from 'src/app/utilites/concept-util';
 
 @Component({
   selector: 'app-panel-table',
@@ -49,7 +47,7 @@ import { getConceptFieldType } from 'src/app/services/utilites/concept-util';
     ]),
   ],
 })
-export class PanelTableComponent extends BaseComponent implements OnInit, OnChanges, AfterViewInit {
+export class PanelTableComponent extends BaseComponent implements OnInit {
   @Input() tables: ITable[];
   @Input() table: ITable;
   @Input() tabIndex: any;
@@ -77,19 +75,9 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     return this.table.rows.length;
   }
 
-  get visibleRowsNumber() {
-    return this.table.rows.filter((row: IRow) => row.visible).length;
-  }
-
   datasource: MatTableDataSource<IRow>;
   rowFocusedElements: any[] = [];
-  focusedRowsNames: string[] = [];
   fieldTypes = (fieldTypes as any).default as Map<string, string[]>;
-
-  get connectionTypes(): any[] {
-    return Object.keys(this.connectortype);
-  }
-
   connectortype = {};
   expandedElement: any = undefined;
   groupDialogOpened = false;
@@ -109,20 +97,13 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
 
   @HostListener('document:click', [ '$event' ])
   onClick(event) {
-    if (!event) {
+    if (!event?.target || !this.rowFocusedElements || !this.rowFocusedElements.length) {
       return;
     }
-    const target = event.target;
-    if (!target || !this.rowFocusedElements || !this.rowFocusedElements.length) {
-      return;
-    }
-    const clickedOutside = target.id !== this.createGroupElementId && !this.groupDialogOpened;
+    const clickedOutside = event.target.id !== this.createGroupElementId && !this.groupDialogOpened;
     if (clickedOutside) {
       this.unsetRowFocus();
     }
-  }
-
-  ngOnChanges() {
   }
 
   equals(name1: string, name2: string): boolean {
@@ -196,9 +177,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     this.updateRowsIndexesAnsSaveChanges();
   }
 
-  ngAfterViewInit() {
-  }
-
   getAllPanelRowNames() {
     let existingRowNames = [];
     this.tables.forEach(tbl => {
@@ -232,7 +210,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
-        const fieldsToGroup = this.rowFocusedElements.map(item => item.id);
+        const fieldsToGroup = this.rowFocusedElements.map(item => item.id.replace(`${this.area}-`, ''));
         const groupType = this.table.rows.find(item => item.name === fieldsToGroup[ 0 ]).type;
         const groupRows = this.table.rows.filter(item => fieldsToGroup.includes(item.name)) as Row[];
         const rowOptions: RowOptions = {
@@ -240,7 +218,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
           tableId: this.table.id,
           tableName: this.table.name,
           name: res.value,
-          type: groupType.substr(0, groupType.indexOf('(')),
+          type: groupType.indexOf('(') !== -1 ? groupType.substr(0, groupType.indexOf('(')) : groupType,
           isNullable: true,
           comments: [],
           uniqueIdentifier: false,
@@ -312,7 +290,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     const linkedTables = [];
     this.rowFocusedElements.forEach(item =>
       this.storeService.state.target.forEach(tbl => {
-        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id), this.area, tbl.id)) {
+        if (this.bridgeService.rowHasAnyConnection(this.table.rows.find(r => r.name === item.id.replace(`${this.area}-`, '')), this.area, tbl.id)) {
           linkedTables.push(tbl.name);
         }
       }));
@@ -320,7 +298,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
   }
 
   checkGrouppedFields() {
-    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id).grouppedFields.length);
+    return this.rowFocusedElements.some(item => this.table.rows.find(r => r.name === item.id.replace(`${this.area}-`, '')).grouppedFields.length);
   }
 
   checkDifferentTypes(groupType?: string) {
@@ -329,15 +307,16 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
       typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
         filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
-      const firstGroupRowType = this.getTypeWithoutLength(this.rowFocusedElements[ 0 ].id);
-      typesArray = Object.values(this.fieldTypes).
-        filter(( v ) => v.includes(firstGroupRowType.toUpperCase()));
+      const firstGroupRowType = this.getTypeWithoutLength(
+        this.rowFocusedElements[0].id.replace(`${this.area}-`, '')
+      );
+      typesArray = Object.values(this.fieldTypes)
+        .filter((v) => v.includes(firstGroupRowType.toUpperCase()));
     }
     return this.rowFocusedElements.some(item => {
-      const rowType = this.getTypeWithoutLength(item.id).toUpperCase();
-      return !typesArray[ 0 ].includes(rowType);
-    }
-    );
+      const rowType = this.getTypeWithoutLength(item.id.replace(`${this.area}-`, '')).toUpperCase();
+      return !typesArray[0].includes(rowType);
+    });
   }
 
   private getTypeWithoutLength(rowName: string) {
@@ -350,7 +329,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
 
   addRowToGroup(rows: IRow[]) {
     const group = rows[ 0 ];
-    const focusedRowsNames = this.rowFocusedElements.map(item => item.id);
+    const focusedRowsNames = this.rowFocusedElements.map(item => item.id.replace(`${this.area}-`, ''));
     const rowsToAdd = this.table.rows.filter(item => focusedRowsNames.includes(item.name));
     if (!this.validateGroupFields(group.type)) {
       return;
@@ -545,7 +524,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
       let found = false;
       similarRows.forEach(similarItem => {
         if (item.tableName.toUpperCase() === similarItem.tableName.toUpperCase() &&
-          item.name.toUpperCase() === similarItem.name.toUpperCase()) {
+          item.name.toUpperCase() === similarItem.name.toUpperCase() && item.cloneTableName === similarItem.cloneTableName) {
           found = true;
         }
       });
@@ -554,22 +533,32 @@ export class PanelTableComponent extends BaseComponent implements OnInit, OnChan
     if (type === 'increment') {
       const value = row.increment;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+      if (this.storeService.state.targetClones[ row.tableName ]) {
+        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[ row.tableName ], isSameRow, (item: any) => { item.increment = value; })
+      } else {
+        this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+      }
     } else {
       const value = row.constant;
       this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
         item.constant = value;
-        if (row.constant) {
-            this.bridgeService.addConstant.execute(item);
-        } else {
-            this.bridgeService.dropConstant.execute(item);
-        }
-
       });
-      this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => {
+
+      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ? this.storeService.state.targetClones[ row.tableName ] : this.storeService.state.target;
+
+      this.bridgeService.updateRowsProperties(tablesToUpdate, isSameRow, (item: any) => {
         item.constant = value;
+        if (row.constant) {
+          this.bridgeService.addConstant.execute(item);
+        } else {
+          this.bridgeService.dropConstant.execute(item);
+        }
       });
     }
+  }
+
+  getRowId(name: string) {
+    return `${this.area}-${name}`;
   }
 
   onTransformDialogOpen(event: any, row: IRow, element: any) {

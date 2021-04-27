@@ -1,7 +1,7 @@
 <div class="console-wrapper">
 
-  <app-cdm-scan-data-console [params]="params"
-                             (finish)="onFinish($event)"></app-cdm-scan-data-console>
+  <app-cdm-console [params]="params"
+                   (finish)="onFinish($event)"></app-cdm-console>
 
   <div class="console-wrapper__action">
     <ng-container *ngIf="result; then scanningFinishedBlock; else scanningBlock"></ng-container>

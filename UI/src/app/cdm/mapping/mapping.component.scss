@@ -1,7 +1,6 @@
 @import '../../styles/variables';
 
 :host {
-  //width: 1440px;
   display: flex;
   height: calc(100% - 40px);
   align-self: stretch;
@@ -114,7 +113,7 @@ section {
   &__right {
     display: flex;
     justify-content: space-between;
-    width: 710px;
+    width: 817px;
   }
 
   &__block.secondary {
@@ -122,7 +121,7 @@ section {
   }
 
   &__block.general {
-    width: 375px;
+    width: 482px;
   }
 
   &__delete-links, &__preview {
@@ -130,11 +129,11 @@ section {
   }
 
   &__fake {
-    width: 120px;
+    width: 148px;
   }
 
   &__report {
-    width: 83px;
+    width: 144px;
   }
 
   &__cdm {
@@ -189,7 +188,7 @@ section {
 }
 
 .app-mapping {
-  padding: 0 50px 0 50px;
+  padding: 0 80px;
   height: 100%;
   width: 100%;
 }

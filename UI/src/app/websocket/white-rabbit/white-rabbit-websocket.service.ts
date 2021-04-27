@@ -1,40 +1,43 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WebsocketService } from '../websocket.service';
 import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import { WebsocketConfig } from '../websocket.config';
-import { isProd } from '../../app.constants';
+import { isProd, whiteRabbitWsUrl } from '../../app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
 
-@Injectable()
-export class WhiteRabbitWebsocketService extends WebsocketService implements OnDestroy {
+export abstract class WhiteRabbitWebsocketService extends WebsocketService implements OnDestroy {
 
-  status$: Observable<boolean>;
+  protected abstract endPoint: string
+
+  private socket: SockJS;
 
   private stompClient: Client;
 
-  private websocketConfig: WebsocketConfig;
+  private wsSessionId: string;
 
-  constructor() {
-    super();
+  protected constructor() {
+    super()
+  }
+
+  /* Return WebSocket connection session id */
+  get userId() {
+    return this.wsSessionId;
   }
 
   ngOnDestroy(): void {
-    if (this.stompClient && this.stompClient.active) {
+    if (this.stompClient?.active) {
       this.disconnect();
     }
   }
 
-  connect(config: WebsocketConfig): Observable<boolean> {
-    this.websocketConfig = config;
-
+  connect(): Observable<boolean> {
     this.initStompClient();
-
     this.stompClient.activate();
 
     this.stompClient.onConnect = (frame: IFrame) => {
+      this.wsSessionId = this.sessionId()
       this.connection$.next(frame.command === 'CONNECTED');
     };
 
@@ -56,37 +59,34 @@ export class WhiteRabbitWebsocketService extends WebsocketService implements OnD
       });
   }
 
-  on(destination: string): Observable<string> {
+  on(): Observable<string> {
     return new Observable(subscriber => {
-      this.stompClient.subscribe(destination, message => {
+      this.stompClient.subscribe('/user/queue/reply', message => {
         subscriber.next(message.body);
       });
     });
   }
 
-  send(destination: string, data: string): void {
-    const {prefix} = this.websocketConfig;
-
-    this.stompClient.publish({
-      destination: prefix + destination,
-      body: data
-    });
-  }
-
   private initStompClient(): void {
-    const {url, prefix, endPoint} = this.websocketConfig;
-
     this.stompClient = Stomp.over(() => {
-      return new SockJS(url + prefix + endPoint);
+      this.socket = new SockJS(`${whiteRabbitWsUrl}/${this.endPoint}`);
+      return this.socket;
     });
 
-    this.stompClient.splitLargeFrames = true;
-
+    this.stompClient.splitLargeFrames = true; // Need to send large messages
     // todo reconnect
     // this.stompClient.reconnectDelay = 1000;
-
-    if (isProd) {
+    if (isProd) { // Disable logging
       this.stompClient.debug = msg => {};
     }
+  }
+
+  private sessionId(): string {
+    const sessionRegex = new RegExp(/(\w|\d)+\/websocket/)
+    const match = this.socket._transport.url.match(sessionRegex);
+    if (match?.length === 0) {
+      throw Error('Could not get WhiteRabbit session id')
+    }
+    return match[0].replace('/websocket', '')
   }
 }

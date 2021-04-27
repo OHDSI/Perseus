@@ -1,6 +1,6 @@
-import { cdmBuilderLogUrl, whiteRabbitPrefix, whiteRabbitUrl } from '../app.constants';
+import { cdmBuilderLogUrl, dbServer, whiteRabbitPrefix, whiteRabbitWsUrl } from '../app.constants';
 import { DbSettings } from './model/db-settings';
-import { adaptDbType } from './util/cdm-adapter';
+import { adaptDbType } from '../utilites/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
@@ -56,7 +56,7 @@ export const cdmBuilderDatabaseTypes: string[] = [
 export const fakeData = 'Fake Data';
 
 export const whiteRabbitWebsocketConfig = {
-  url: whiteRabbitUrl,
+  url: whiteRabbitWsUrl,
   prefix: whiteRabbitPrefix,
   progressMessagesDestination: '/user/queue/reply',
 };
@@ -69,24 +69,23 @@ export const cdmWebsocketConfig = {
 
 export const dictionaryDbSettingForCdmBuilder = {
   vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
-  vocabularyServer: '192.168.20.47',
+  vocabularyServer: dbServer,
   vocabularyPort: 5431,
   vocabularyDatabase: 'cdm_souffleur',
   vocabularySchema: 'vocabulary',
   vocabularyUser: 'cdm_builder',
-  vocabularyPassword: 'N7jscuS3ca',
-  mappingsName: 'TestMappings'
+  vocabularyPassword: 'N7jscuS3ca'
 };
 
 export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';
 
 export const fakeDataDbSettings: DbSettings = {
   dbType: DbTypes.POSTGRESQL,
-  server: '10.110.1.7',
+  server: dbServer,
   database: 'cdm_souffleur',
   user: 'postgres',
   password: '5eC_DkMr^3',
-  schema: 'public'
+  port: 5431
 };
 
 export const dqdDatabaseTypes = [

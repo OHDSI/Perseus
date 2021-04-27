@@ -12,12 +12,10 @@ import {
   getConceptFieldType,
   updateConceptsIndexes,
   updateConceptsList
-} from 'src/app/services/utilites/concept-util';
+} from 'src/app/utilites/concept-util';
 import { Arrow } from '../models/arrow';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class ConceptTransformationService {
 
     arrow: Arrow;
@@ -98,6 +96,7 @@ export class ConceptTransformationService {
             conceptsList: []
         };
         this.conceptsTable = new TableConcepts(conceptTableOptions);
+        this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] = {} : this.conceptsTable.lookup['Default'] = {};
 
         if (connectedFields) {
             connectedFields.forEach(it => {

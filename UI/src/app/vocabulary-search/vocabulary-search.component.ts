@@ -20,7 +20,6 @@ import { Concept } from './concept';
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
-import { parseHttpError } from '../services/utilites/error';
 import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
 import { of } from 'rxjs';
@@ -48,7 +47,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   requestInProgress = false;
 
-  error: string;
+  disableAll = false; // When Athena API return error
 
   columns = [
     {field: 'id', name: 'ID', className: 'id'},
@@ -175,6 +174,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   @HostListener('document:keyup.enter')
   onEnterOrApply() {
+    if (this.disableAll) {
+      return
+    }
+
     const changes = this.findChanges();
     const filtersChanged = this.isFilterChanged();
 
@@ -321,13 +324,14 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       this.searchService.search(params, this.mode)
         .pipe(
           catchError(error => {
-            this.error = parseHttpError(error);
-            const result: VocabSearchResult = {
+            if (this.mode === VocabSearchMode.ATHENA) {
+              this.disableAll = true
+            }
+            return of({
               content: [],
               totalPages: 1,
               totalElements: 0
-            };
-            return of(result);
+            } as VocabSearchResult);
           })
         );
 
@@ -346,7 +350,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
           this.updateFilters(result.facets);
         }
         if (this.concepts.length > 0) {
-          this.error = null;
+          this.disableAll = false;
         }
         this.requestInProgress = false;
       });

@@ -1,13 +1,24 @@
 import { ReportCreator } from './report-creator';
-import { AlignmentType, Document, HeadingLevel, Media, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
+import {
+  AlignmentType,
+  Document,
+  HeadingLevel,
+  Media,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  TextRun,
+  WidthType
+} from 'docx';
 import { MappingNode } from '../../models/mapping';
 import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
-import { MappingImage, MappingForImage, MappingImageStyles } from './image/mapping-image';
+import { MappingForImage, MappingImage, MappingImageStyles } from './image/mapping-image';
 import { logicForReport } from './logic-for-report';
 import { IRow } from '../../models/row';
 import { commentsForReport } from './comments-for-report';
 import { doubleQuote, singleQuote, sqlKeyWords } from './sql-keywords';
-import { parseMappingNodesByGroups } from './mapping-util';
+import { parseMappingNodesByGroups } from '../../utilites/mapping-util';
 
 const paragraph = {
   spacing: {

@@ -3,7 +3,6 @@ import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DqdConsoleWrapperComponent } from './dqd-console-wrapper/dqd-console-wrapper.component';
 import { DbSettings } from '../model/db-settings';
-import { dqdWsUrl } from '../../app.constants';
 
 @Component({
   selector: 'app-dqd-dialog',
@@ -25,7 +24,6 @@ export class DqdDialogComponent extends AbstractScanDialog {
 
   onCheck(dbSettings: DbSettings): void {
     this.websocketParams = {
-      url: dqdWsUrl,
       payload: dbSettings
     };
     this.index = 1;

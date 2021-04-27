@@ -4,18 +4,16 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
-import { environment } from 'src/environments/environment';
 import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { ColumnInfo } from '../cdm/comfy/columns-list/column-info/column-info.component';
+import { apiUrl } from '../app.constants';
 
-const URL = environment.url;
+const URL = apiUrl;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DataService {
   batch = [];
 
@@ -138,7 +136,7 @@ export class DataService {
   }
 
   getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<ColumnInfo> {
-    return this.httpService.getColumnInfo(reportName,tableName, columnName)
+    return this.httpService.getColumnInfo(reportName, tableName, columnName)
       .pipe(
         map(info => {
           if (info.top_10[info.top_10.length - 1] === 'List truncated...') {

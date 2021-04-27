@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from cdm_souffleur.utils import FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
+from cdm_souffleur.utils.column_types_mapping import postgres_types_mapping
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME
 import xml.etree.ElementTree as ElementTree
 import os
@@ -14,7 +15,7 @@ from itertools import groupby
 from cdm_souffleur.db import pg_db
 import re
 
-ALLOWED_EXTENSIONS = {'xlsx'}
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
 with open('configuration/default.json', 'r') as configuration_file:
     configuration = json.load(configuration_file)
@@ -43,14 +44,18 @@ def get_source_schema(current_user, schemaname):
         table_name = row['Table']
         fields = row['fields'].split(',')
         table_ = Table(table_name)
-        create_table_sql += 'CREATE TABLE {0}.{1} ('.format(current_user, table_name)
+        create_table_sql += 'CREATE TABLE {0}."{1}" ('.format(current_user, table_name)
         for field in fields:
             column_description = field.split(':')
             column_name = column_description[0]
-            column_max_length = ""
+            column_type = convert_column_type(column_description[1])
             if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
-                column_max_length = '({0})'.format(column_description[2])
-            column_type = '{0}{1}'.format(column_description[1], column_max_length)
+                if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
+                    column_type = column_type.replace('(P)', f'({column_description[2]})')
+                elif column_type == 'TEXT':
+                    column_type = '{0}'.format(column_description[1])
+                else:
+                    column_type = '{0}({1})'.format(column_description[1], column_description[2])
             column = Column(column_name, column_type)
             table_.column_list.append(column)
             create_column_sql = '"{0}" {1},'.format(column_name, column_type)
@@ -92,6 +97,12 @@ def save_source_schema_in_db(current_user, source_tables):
             create_table_sql += ' );'
             cursor = pg_db.execute_sql(create_table_sql)
 
+
+def convert_column_type(type):
+    if type.upper() in postgres_types_mapping:
+        return postgres_types_mapping[type.upper()]
+    else:
+        return type.upper()
 
 def get_view_from_db(current_user, view_sql):
     view_sql = addSchemaNames(current_user, view_sql)
@@ -135,6 +146,7 @@ def _open_book(filepath=None):
 
 def get_column_info(current_user, report_name, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
+    report_name = secure_filename(report_name)
     path_to_schema = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{report_name}"
     try:
         table_overview = pd.read_excel(path_to_schema, table_name, dtype=str,
@@ -185,14 +197,20 @@ def get_existing_source_schemas_list(path):
 
 def _allowed_file(filename):
     """check allowed extension of file"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    if '.' not in filename:
+        return f"{filename}.xlsx"
+    else:
+        if filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
+            return filename
+        else:
+            raise InvalidUsage("Incorrect scan report extension. Only xlsx or xls are allowed", 400)
 
 
 def load_schema_to_server(file, current_user):
     """save source schema to server side"""
-    if file and _allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+    checked_filename = _allowed_file(file.filename)
+    if file and checked_filename:
+        filename = secure_filename(checked_filename)
         try:
             os.makedirs(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}")
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} created")
@@ -205,6 +223,7 @@ def load_schema_to_server(file, current_user):
 
 def load_saved_source_schema_from_server(current_user, schema_name):
     """load saved source schema by name"""
+    schema_name = secure_filename(schema_name)
     if schema_name in get_existing_source_schemas_list(
             f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"):
         source_schema = get_source_schema(current_user,

@@ -3,9 +3,7 @@ import { DataService } from './data.service';
 import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LookupService {
 
   constructor(private dataService: DataService, private httpService: HttpService) { }

@@ -18,7 +18,7 @@ import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
-import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
+import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
 
 export interface IConnection {
   source: IRow;
@@ -31,9 +31,7 @@ export interface IConnection {
   sql?: {};
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BridgeService {
   set sourceRow(row: IRow) {
     this.sourcerow = row;
@@ -492,8 +490,9 @@ export class BridgeService {
       .filter(item => item.fields[ 'concept_id' ].targetCloneName === cloneName);
 
     const arrows = Object.values(this.arrowsCache).filter(item => item.source.tableName === sourceTable &&
-      item.target.tableName === targetTable && item.target.cloneTableName === cloneName && 
-      this.conceptFieldNames[targetTable].includes(item.target.name));
+      item.target.tableName === targetTable && item.target.cloneTableName === cloneName &&
+      this.conceptFieldNames[targetTable].includes(item.target.name)
+    );
 
     if (!concepts.length) {
       arrows.forEach(item => this.setArrowType(item.connector.id, 'None'));

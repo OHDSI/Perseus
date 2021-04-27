@@ -1,10 +1,11 @@
 import { EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { AbstractScanDataConsoleComponent } from './scan-data-console/abstract-scan-data-console.component';
+import { ConsoleComponent } from './console/console.component';
 import { WebsocketParams } from '../../model/websocket-params';
+import { ProgressNotificationStatusCode } from '../../model/progress-notification';
 
 export abstract class AbstractConsoleWrapperComponent {
 
-  result: string;
+  result: any;
 
   @Input()
   params: WebsocketParams;
@@ -15,8 +16,8 @@ export abstract class AbstractConsoleWrapperComponent {
   @Output()
   close = new EventEmitter<void>();
 
-  @ViewChild(AbstractScanDataConsoleComponent)
-  abstract scanDataConsoleComponent: AbstractScanDataConsoleComponent;
+  @ViewChild(ConsoleComponent)
+  abstract scanDataConsoleComponent: ConsoleComponent;
 
   onAbortAndCancel() {
     this.scanDataConsoleComponent.abortAndCancel();
@@ -25,5 +26,14 @@ export abstract class AbstractConsoleWrapperComponent {
 
   onBack() {
     this.cancel.emit();
+  }
+
+  protected showErrorMessage(message: string) {
+    this.scanDataConsoleComponent.showNotificationMessage({
+      message,
+      status: {
+        code: ProgressNotificationStatusCode.ERROR
+      }
+    })
   }
 }

@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
 import { Mapping } from '../models/mapping';
 import { map } from 'rxjs/operators';
+import { apiUrl } from '../app.constants';
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
 
-const {url: URL} = environment;
+const URL = apiUrl;
 const API_URLS = {
   getCDMVersions: () => `${URL}/get_cdm_versions`,
   getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
@@ -29,12 +29,9 @@ const API_URLS = {
   getView: () => `${URL}/get_view`,
   validateSql: () => `${URL}/validate_sql`,
   loadReportToServer: () => `${URL}/load_schema_to_server`
-
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HttpService {
 
   constructor(private httpClient: HttpClient) {
@@ -77,9 +74,6 @@ export class HttpService {
 
   postSaveLoadSchema(formData: FormData) {
     return this.httpClient.post(API_URLS.postSaveLoadSchema(), formData);
-
-    // use this for dev purposes to use mockup for schemaData (to speed up)
-    // return of(schemaData.data);
   }
 
   getLookupsList(lookupType) {

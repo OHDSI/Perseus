@@ -1,0 +1,16 @@
+<div class="server-not-responding">
+  <app-close-dialog-button class="server-not-responding__close" (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <div class="server-not-responding__header">
+    <app-server-error-icon class="server-not-responding__header__icon"></app-server-error-icon>
+    Server Not Responding
+  </div>
+
+  <p>Server not responding. Please check internet connection or contact our support
+    <a target="_blank" href="mailto:perseus.support@arcadia.spb.ru?Subject=Server Not Responding">
+      perseus.support@arcadia.spb.ru
+    </a>
+  </p>
+
+  <button (click)="dialogRef.close()">Cancel</button>
+</div>

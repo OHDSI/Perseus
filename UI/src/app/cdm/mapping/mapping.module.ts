@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MappingComponent } from './mapping.component';
 import { MappingRoutingModule } from './mapping-routing.module';
-import { CdmCommonModule } from '../../common/cdm-common.module';
+import { SharedModule } from '../../shared/shared.module';
 import { VocabularySearchModule } from '../../vocabulary-search/vocabulary-search.module';
 import { ScanDataModule } from '../../scan-data/scan-data.module';
 import { PanelModule } from '../../panel/panel.module';
@@ -19,6 +18,7 @@ import { VocabularyConditionComponent } from './vocabulary-transform-configurato
 import { VocabularyConfigComponent } from './vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
 import { SqlEditorModule } from '../../sql-editor/sql-editor.module';
 import { PopupsModule } from '../../popups/popups.module';
+import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 
 @NgModule({
   declarations: [
@@ -33,11 +33,11 @@ import { PopupsModule } from '../../popups/popups.module';
     ConditionDialogComponent,
     LookupComponent,
     VocabularyConditionComponent,
-    VocabularyConfigComponent
+    VocabularyConfigComponent,
+    PersonMappingWarningDialogComponent,
   ],
   imports: [
-    CommonModule,
-    CdmCommonModule,
+    SharedModule,
     MappingRoutingModule,
     VocabularySearchModule,
     ScanDataModule,

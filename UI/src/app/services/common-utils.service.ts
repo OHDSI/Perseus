@@ -16,9 +16,7 @@ import { OverlayConfigOptions } from './overlay/overlay-config-options.interface
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CommonUtilsService {
   private renderer: Renderer2;
   private readonly loadReport = new BehaviorSubject<any>(false);
@@ -172,7 +170,7 @@ export class CommonUtilsService {
   }
 
   deleteTableWithWarning() {
-    const dialog = this.matDialog.open(DeleteWarningComponent, {
+    return this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
       panelClass: 'warning-dialog',
@@ -181,8 +179,6 @@ export class CommonUtilsService {
         message: 'You want to delete the view'
       }
     });
-
-    return dialog;
   }
 
   openSnackbarMessage(message: string) {

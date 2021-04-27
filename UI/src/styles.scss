@@ -17,6 +17,7 @@ html, body {
 
 body {
   margin: 0;
+  min-width: 1440px;
 }
 
 app-root {
@@ -28,13 +29,6 @@ app-cdm {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-app-toolbar.comfy {
-  background-color: $cdm-grey-dark;
-  display: flex;
-  justify-content: center;
-  align-content: center;
 }
 
 .divider {
@@ -151,11 +145,6 @@ article {
   }
 }
 
-app-toolbar.comfy > mat-toolbar.app-toolbar {
-  width: 1440px !important;
-  padding-right: 55px;
-}
-
 .mat-pseudo-checkbox.mat-pseudo-checkbox-checked {
   color: #066BBB !important;
   background: rgba(6, 107, 187, 0.2) !important;
@@ -210,7 +199,7 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
   }
 }
 
-.scan-data-dialog {
+.scan-data-dialog, .perseus-dialog {
   .mat-dialog-container {
     padding: 0;
   }
@@ -286,13 +275,19 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
         opacity: 1;
         float: left;
         height: 40px;
-        padding: 0 15px;
+        padding: 0 15px 2px;
+        border-bottom: 2px solid transparent;
         min-width: auto;
-        color: $blue;
+        color: rgba(64, 64, 64, 0.87);
       }
 
       .mat-tab-label-active .mat-tab-label-content {
-        color: rgba(64, 64, 64, 0.87);
+        color: $blue;
+        border-bottom: 2px solid $blue;
+
+        .mat-icon {
+          text-decoration: none;
+        }
       }
 
       .mat-tab-label-content {

@@ -48,8 +48,12 @@
                               (complete)="filterByName('source', $event)"
                               (reset)="filterByNameReset('source')"></app-search-by-name>
 
-          <a *ngIf="data.source?.length"
-             (click)="openCreateSqlDialog()">Create View</a>
+          <div *ngIf="data.source?.length" class="create-view">
+            <a (click)="openCreateSqlDialog()">
+              Create View
+            </a>
+            <app-hint key="createView"></app-hint>
+          </div>
 
           <div class="scrolled-items-rtl"
                *ngIf="data.source?.length"
@@ -72,9 +76,8 @@
                 <mat-icon>drag_indicator</mat-icon>
                 <div class="table-description source caption"
                      [matTooltip]="item"
-                     matTooltipPosition="right"
-                     [concept]="item">
-                  {{ item }}
+                     matTooltipPosition="right">
+                  {{item}}
                 </div>
                 <div class="cdm-box-actions"
                      *ngIf="isEditable(item)">
@@ -86,7 +89,7 @@
 
                 <div *cdkDragPreview
                      class="table-description source preview">
-                  {{ item }}
+                  {{item}}
                 </div>
               </div>
             </div>
@@ -99,7 +102,7 @@
             <input #sourceUpload
                    type="file"
                    accept=".xlsx, .xls"
-                   (change)="onFileUpload($event)"
+                   (change)="onScanReportUpload($event)"
                    hidden/>
 
             <input #mappingUpload

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
+import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
 import { SelectConceptFieldComponent } from '../../../../popups/select-concept-field/select-concept-field.component';
 import * as conceptMap from '../../concept-fileds-list.json'
 

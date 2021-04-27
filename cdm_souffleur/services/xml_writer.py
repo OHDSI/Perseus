@@ -174,7 +174,10 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
                     after_quote = double_quote[0]
                     before_quote = double_quote[0]
         after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), after_quote)
-        view = f'{before_quote}\'{after_quote_replaced}'
+        if not before_quote:
+            view = after_quote_replaced
+        else:
+            view = f'{before_quote}\'{after_quote_replaced}'
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
@@ -392,6 +395,7 @@ def generate_bath_sql_file(current_user, mapping, source_table, views):
 def clear(current_user):
     delete_generated_xml(current_user)
     delete_generated_sql(current_user)
+    delete_generated_archive(current_user)
 
     file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql')
     try:
@@ -745,6 +749,10 @@ def delete_generated_xml(current_user):
 def delete_generated_sql(current_user):
     """clean lookup sql folder"""
     delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
+
+def delete_generated_archive(current_user):
+    """clean lookup sql folder"""
+    delete_generated(f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}")
 
 def get_lookups_list(current_user, lookup_type):
     lookups_list = []

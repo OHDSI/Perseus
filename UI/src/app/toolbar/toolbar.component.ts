@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BridgeService } from '../services/bridge.service';
 import { CommonUtilsService } from '../services/common-utils.service';
 import { stateToInfo, StoreService } from '../services/store.service';
@@ -19,6 +19,10 @@ import { VocabularyObserverService } from '../services/vocabulary-observer.servi
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
 import { codesRouter, mainPageRouter } from '../app.constants';
 import { LogoutComponent } from '../popups/logout/logout.component';
+import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
+import { HelpPopupComponent } from '../popups/help-popup/help-popup.component';
+import { authInjector } from '../services/auth/auth-injector';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -52,9 +56,19 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     private matDialog: MatDialog,
     private dataService: DataService,
     private vocabularyObserverService: VocabularyObserverService,
-    private reportGenerationService: ReportGenerationService
+    private reportGenerationService: ReportGenerationService,
+    @Inject(authInjector) private authService: AuthService
   ) {
     super();
+  }
+
+  get isNotComfyPage() {
+    return !this.router.url.includes('comfy')
+  }
+
+  get userInitials(): string {
+    const {firstName = '?', lastName = '?'} = this.authService.user
+    return `${firstName[0]}${lastName[0]}`
   }
 
   ngOnInit() {
@@ -109,11 +123,31 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   onFileUpload(event: Event) {
     this.bridgeService.reportLoading();
-    this.uploadService.onFileChange(event);
+    this.uploadService.onScanReportChange(event)
+      .subscribe(
+        () => {},
+        error => this.matDialog.open(ErrorPopupComponent, {
+          data: {
+            title: 'Failed to load new report',
+            message: error.message
+          },
+          panelClass: 'scan-data-dialog'
+        })
+      )
   }
 
   onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event);
+    this.uploadService.onMappingChange(event)
+      .subscribe(
+        () => {},
+        error => this.matDialog.open(ErrorPopupComponent, {
+          data: {
+            title: 'Failed to open mapping',
+            message: error.message
+          },
+          panelClass: 'scan-data-dialog'
+        })
+      )
   }
 
   openSetCDMDialog() {
@@ -124,8 +158,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.commonUtilsService.resetSourceAndTargetWithWarning();
   }
 
-  startOnBoarding(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'tour-toolbar');
+  openHelpPage() {
+    this.matDialog.open(HelpPopupComponent, {
+      panelClass: 'perseus-dialog'
+    })
   }
 
   generateAndSave() {
@@ -189,7 +225,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.matDialog.open(LogoutComponent, {
       width: '301',
       height: '220',
-      panelClass: 'scan-data-dialog'
+      panelClass: 'perseus-dialog'
     });
   }
 

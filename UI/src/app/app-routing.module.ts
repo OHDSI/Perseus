@@ -1,27 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './services/auth/auth.guard';
+import { AlreadyLoggedInGuard } from './services/auth/already-logged-in.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'sign-in',
-    pathMatch: 'full'
+    canActivate: [AlreadyLoggedInGuard],
+    loadChildren: () => import('./auth/auth.module')
+      .then(module => module.AuthModule)
   },
   {
     path: 'perseus',
+    canLoad: [AuthGuard],
     canActivate: [AuthGuard],
     loadChildren: () => import('./cdm/cdm.module')
       .then(module => module.CdmModule),
   },
   {
-    path: 'sign-in',
-    loadChildren: () => import('./auth/auth.module')
-      .then(module => module.AuthModule)
-  },
-  {
     path: '**',
-    redirectTo: 'sign-in'
+    redirectTo: 'perseus'
   }
 ];
 

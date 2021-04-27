@@ -16,13 +16,14 @@ class User(BaseModel):
     password = CharField()
     first_name = CharField()
     last_name = CharField()
-    email = CharField()
+    email = CharField(unique=True)
+    active = BooleanField()
 
     def encode_auth_token(self, username, **kwargs):
         try:
             payload = {
                 'sub': username,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=86400),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=43200),
                 'iat': datetime.datetime.utcnow(),
             }
             return jwt.encode(
@@ -36,8 +37,9 @@ class User(BaseModel):
     @staticmethod
     def decode_auth_token(auth_token):
         payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms='HS256')
+        user = User.select().where(User.username == payload['sub']).get()
         is_blacklisted_token = blacklist_token.check_blacklist(auth_token)
-        if is_blacklisted_token:
+        if is_blacklisted_token or not user.active:
            raise InvalidTokenError
         return payload['sub']
 
@@ -56,9 +58,9 @@ def token_required(f):
       try:
          current_user = User.decode_auth_token(token)
       except ExpiredSignatureError as error:
-         raise InvalidUsage('Token expired. Please log in again', 403)
+         raise InvalidUsage('Token expired. Please log in again', 401)
       except Exception as error:
-         raise InvalidUsage('Token is invalid', 403)
+         raise InvalidUsage('Token is invalid', 401)
 
       return f(current_user, *args, **kwargs)
    return decorator

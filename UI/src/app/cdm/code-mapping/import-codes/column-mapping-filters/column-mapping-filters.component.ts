@@ -13,5 +13,4 @@ export class ColumnMappingFiltersComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

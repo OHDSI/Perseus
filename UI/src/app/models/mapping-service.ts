@@ -4,7 +4,7 @@ import { Mapping, MappingNode, MappingPair } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
-import { getLookupType } from '../services/utilites/lookup-util';
+import { getLookupType } from '../utilites/lookup-util';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
 import { IConcept, ITableConcepts } from '../cdm/mapping/concept-transformation/model/concept';
 import { conceptFieldsTypes } from '../app.constants';
@@ -148,7 +148,8 @@ export class MappingService {
             this.concepts[ key ].conceptsList.forEach(conc => {
               conceptFieldsTypes.forEach(fieldType => {
                 if (!(cloneExists && !conc.fields[ fieldType ].targetCloneName)) {
-                  const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup);
+                  const cloneKey = !conc.fields[ fieldType ].targetCloneName ? 'Default' : conc.fields[ fieldType ].targetCloneName;
+                  const newMappingNode = this.createConceptMappingNode(conc, fieldType, this.concepts[ key ].lookup[cloneKey]);
                   if (newMappingNode) {
                     mapping.mapping_items[ mappingItemIndex ].mapping.push(newMappingNode);
                   }

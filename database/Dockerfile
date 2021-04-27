@@ -1,6 +1,8 @@
 FROM postgres 
 
 # Install csv files
+ARG voc_url="https://athena.ohdsi.org/api/v1/vocabularies/zip/0f85a705-2000-4934-8b1a-5dcb77492071"
+ENV VOC_URL=${voc_url}
 COPY load_csv.sh load_csv.sh
 RUN chmod 770 load_csv.sh
 RUN ./load_csv.sh

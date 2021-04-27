@@ -1,33 +1,33 @@
 <form [formGroup]="form" style="height: 100%">
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('server').disabled}">
     <label [for]="id('server')">Server location</label>
-    <input [id]="id('server')" type="text" formControlName="server">
+    <input [id]="id('server')" type="text" formControlName="server" trim="blur">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('port').disabled}">
     <label [for]="id('port')">Port</label>
-    <input [id]="id('port')" type="text" formControlName="port">
+    <input [id]="id('port')" type="number" formControlName="port">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('user').disabled}">
     <label [for]="id('username')">User name</label>
-    <input [id]="id('username')" type="text" formControlName="user">
+    <input [id]="id('username')" type="text" formControlName="user" trim="blur">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('password').disabled}">
     <label [for]="id('password')">Password</label>
-    <input [id]="id('password')" type="password" formControlName="password">
+    <input [id]="id('password')" type="password" formControlName="password" autocomplete="on">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('database').disabled}">
     <label [for]="id('dbName')">Database Name</label>
-    <input [id]="id('dbName')" type="text" formControlName="database">
+    <input [id]="id('dbName')" type="text" formControlName="database" trim="blur">
   </div>
 
   <div *ngIf="requireSchema" class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('schema').disabled}">
     <label [for]="id('schema')">Schema Name</label>
-    <input [id]="id('schema')" type="text" formControlName="schema">
+    <input [id]="id('schema')" type="text" formControlName="schema" trim="blur">
   </div>
 
-  <a (click)="resetForm()">Clear all</a>
+  <a class="source-form__clear-all" (click)="resetForm()">Clear all</a>
 </form>

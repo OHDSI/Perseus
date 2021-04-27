@@ -1,0 +1,33 @@
+<app-auth-background class="link-expired">
+  <div class="link-expired__result">
+    <div class="link-expired__result__header">
+      <app-auth-logo></app-auth-logo>
+    </div>
+
+    <ng-container *ngIf="linkType === 'email' else passwordBlock">
+      <p class="link-expired__result__message">
+        Verification link from e-mail is expired.
+      </p>
+
+      <div class="link-expired__result__submit">
+        <button [routerLink]="['/sign-out']">Go to Registration Page</button>
+      </div>
+    </ng-container>
+
+    <ng-template #passwordBlock>
+      <p class="link-expired__result__message">
+        Password reset link is expired.
+      </p>
+
+      <div class="link-expired__result__submit">
+        <button [routerLink]="['/recover-password']">Go to Recover Password</button>
+      </div>
+    </ng-template>
+
+    <div class="link-expired__result__redirect">
+      <a [routerLink]="['/sign-in']">Log In</a>
+      <span>|</span>
+      <a [routerLink]="['/sign-out']">Register</a>
+    </div>
+  </div>
+</app-auth-background>

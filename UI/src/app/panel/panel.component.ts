@@ -6,9 +6,8 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { BridgeButtonData } from '../services/bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '../services/bridge-button/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
-import { Criteria } from '../common/search-by-name/search-by-name.component';
+import { Criteria } from '../shared/search-by-name/search-by-name.component';
 import { StoreService } from '../services/store.service';
-import { CommonUtilsService } from 'src/app/services/common-utils.service';
 import { TargetCloneDialogComponent } from './target-clone-dialog/target-clone-dialog.component';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-dialog.component';
@@ -19,7 +18,7 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
-  styleUrls: [ './panel.component.scss' ]
+  styleUrls: [ './panel.component.scss' ],
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
@@ -71,7 +70,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private bridgeService: BridgeService,
     private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
-    private commonUtilsService: CommonUtilsService,
     private matDialog: MatDialog,
     private overlayService: OverlayService
   ) {
@@ -161,16 +159,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
   }
 
-  openOnBoardingTip(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'create-group');
-  }
-
-  openOnBoardingTipClone(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'clone-target');
-  }
-
   openConditionDialog() {
-
     const matDialog = this.matDialog.open(TargetCloneDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -245,12 +234,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   cloneConcepts(cloneFromTableName: string, cloneToTableName: string) {
-    const tableConcepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`];
+    const tableConcepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ];
 
     if (tableConcepts) {
+      const clonedLookup = cloneFromTableName ? cloneDeep(tableConcepts[ 'lookup' ][ cloneFromTableName ]) : cloneDeep(tableConcepts[ 'lookup' ][ 'Default' ]);
+      tableConcepts[ 'lookup' ][ cloneToTableName ] = clonedLookup;
       const clonedConcepts = [];
       tableConcepts.conceptsList.forEach(it => {
-        if (it.fields['concept_id'].targetCloneName === cloneFromTableName) {
+        if (it.fields[ 'concept_id' ].targetCloneName === cloneFromTableName) {
           const clonedConcept = cloneDeep(it);
           clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
           Object.values(clonedConcept.fields).forEach(field => {

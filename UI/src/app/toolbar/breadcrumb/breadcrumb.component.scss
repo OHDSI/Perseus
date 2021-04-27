@@ -3,6 +3,8 @@
 .breadcrumb {
   background: none;
   margin: 0 20px 0 0;
+  display: flex;
+  align-items: center;
 
   li {
     list-style: none;
@@ -14,7 +16,7 @@
     float: left;
     font-size: 18px;
     line-height: 18px;
-    margin-top: 9px;
+    margin-top: 4px;
     margin-left: 5px;
   }
 

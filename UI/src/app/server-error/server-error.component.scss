@@ -1,0 +1,57 @@
+@import "src/app/styles/variables";
+@import "src/app/styles/mixins";
+
+.server-error {
+  height: 236px;
+}
+
+.server-not-responding {
+  height: 257px;
+}
+
+.server-error, .server-not-responding {
+  width: 386px;
+  color: $cdm-grey-dark;
+  position: relative;
+  background: #F9F9F9;
+  border-radius: 2px;
+  padding: 41px 35px 35px 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__close {
+    position: absolute;
+    top: 21px;
+    right: 20px;
+  }
+
+  &__header {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 23px;
+    width: 100%;
+    margin-bottom: 22px;
+    display: flex;
+
+    &__icon {
+      margin-right: 6px;
+    }
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 150%;
+    margin-bottom: 40px;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  button {
+    @include cdm-button();
+    width: 80px;
+    height: 33px;
+  }
+}

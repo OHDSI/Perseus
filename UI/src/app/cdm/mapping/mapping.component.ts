@@ -30,7 +30,7 @@ import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown
 import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
 import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
 import { LookupService } from '../../services/lookup.service';
-import { getLookupType } from '../../services/utilites/lookup-util';
+import { getLookupType } from '../../utilites/lookup-util';
 import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '../../base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
@@ -38,6 +38,9 @@ import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../.
 import { PanelComponent } from '../../panel/panel.component';
 import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
+import { of } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
+import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 
 @Component({
   selector: 'app-mapping',
@@ -77,6 +80,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   mainHeight = '';
 
+  similarSourceTable: ITable
+
+  similarTargetTable: ITable
+
   get hint(): string {
     return 'no hint';
   }
@@ -89,16 +96,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
   }
 
-  get similarSourceTable() {
-    return this.source.find(item => item.name === 'similar');
-  }
-
-  get similarTargetTable() {
-    return this.target.find(item => item.name === 'similar');
-  }
-
-  @ViewChild('arrowsarea', { read: ElementRef, static: true }) svgCanvas: ElementRef;
-  @ViewChild('maincanvas', { read: ElementRef, static: true }) mainCanvas: ElementRef;
+  @ViewChild('arrowsarea', {read: ElementRef, static: true}) svgCanvas: ElementRef;
+  @ViewChild('maincanvas', {read: ElementRef, static: true}) mainCanvas: ElementRef;
   @ViewChild('sourcePanel') sourcePanel: PanelComponent;
   @ViewChild('targetPanel') targetPanel: PanelComponent;
   @ViewChild('sourcePanelSimilar') sourcePanelSimilar: PanelComponent;
@@ -131,6 +130,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     this.loadMapping();
 
+    this.init()
+
     this.initHasScanReport();
 
     this.setMainHeight();
@@ -140,12 +141,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.subscribeOnPrepareReportGenerationConfig()
 
     this.storeService.add('isMappingPage', true)
+
+    this.subscribeOnUpdateMapping()
   }
 
   ngAfterViewInit() {
     this.svgCanvas.nativeElement.addEventListener('mouseup', (event: any) => {
       const markerWidth = 16;
-      const { offsetX, offsetY, currentTarget } = event;
+      const {offsetX, offsetY, currentTarget} = event;
 
       if (offsetX < markerWidth) {
         event.stopPropagation();
@@ -172,14 +175,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   startMarkerClick(offset: number, currentTarget: any) {
     let i = currentTarget.children.length - 1;
     while (i >= 0) {
-      const child = currentTarget.children[ i ];
+      const child = currentTarget.children[i];
       i--;
       if (child.localName !== 'path') {
         continue;
       }
 
       const startXYAttributeIndex = 6;
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[ startXYAttributeIndex ].value);
+      const {upperLimit, lowerLimit} = this.getLimits(child.attributes[startXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
         this.bridgeService.deleteArrow(child.id);
       }
@@ -192,10 +195,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         continue;
       }
 
-      const arrow = this.bridgeService.arrowsCache[ child.id ];
+      const arrow = this.bridgeService.arrowsCache[child.id];
 
       const endXYAttributeIndex = 7;
-      const { upperLimit, lowerLimit } = this.getLimits(child.attributes[ endXYAttributeIndex ].value);
+      const {upperLimit, lowerLimit} = this.getLimits(child.attributes[endXYAttributeIndex].value);
       if (offset >= upperLimit && offset <= lowerLimit) {
 
         const dialogOptions: OverlayConfigOptions = {
@@ -208,7 +211,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         };
 
         const htmlElementId = arrow.target.name;
-        const htmlElement = document.getElementById(htmlElementId);
+        const htmlElement = document.getElementById(`target-${htmlElementId}`);
         if (!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
 
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
@@ -281,15 +284,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   getLimits(value: string) {
     const offset = 8;
-    const point = parseInt(value.split(',')[ 1 ], 0);
+    const point = parseInt(value.split(',')[1], 0);
     const upperLimit = point - offset;
     const lowerLimit = point + offset;
-    return { upperLimit, lowerLimit };
+    return {upperLimit, lowerLimit};
   }
 
   prepareTables(data, area) {
     const rowsKey = `${area}Rows`;
-    this[ area ] = this.bridgeService.prepareTables(data, area, this[ rowsKey ]);
+    this[area] = this.bridgeService.prepareTables(data, area, this[rowsKey]);
   }
 
   prepareMappedTables(mappingConfig) {
@@ -300,10 +303,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   addSimilar(area) {
-    const lastIndex = this[ area ].length - 1;
-    const lastTableName = this[ area ][ lastIndex ].name;
+    const lastIndex = this[area].length - 1;
+    const lastTableName = this[area][lastIndex].name;
     if (lastTableName === this.similarTableName) {
-      this[ `${area}Similar` ](this[ area ][ lastIndex ].rows);
+      this[`${area}Similar`](this[area][lastIndex].rows);
     }
   }
 
@@ -353,15 +356,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   moveSimilar(area) {
-    if (this[ area ][ this[ area ].length - 1 ].name === this.similarTableName) {
-      this[ area ].unshift(this[ area ].pop());
+    if (this[area][this[area].length - 1].name === this.similarTableName) {
+      this[area].unshift(this[area].pop());
     }
   }
 
   getMappingConfig() {
     const mappingConfig = [];
     Object.keys(this.storeService.state.targetConfig).forEach(key => {
-      const item = this.storeService.state.targetConfig[ key ].data;
+      const item = this.storeService.state.targetConfig[key].data;
       if (item.length > 1) {
         mappingConfig.push(cloneDeep(item));
       }
@@ -381,10 +384,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     if (area === 'source' && this.currentSourceTable.name !== 'similar' && this.sourceTablesWithoutSimilar.length > 1 ||
       area === 'target' && this.currentTargetTable.name !== 'similar' && enabledTargetTables.length > 1) {
       const data = area === 'source' ? {
-          tables: this.sourceTablesWithoutSimilar,
-          selected: this.selectedSourceTable,
-          uppercase: true
-        } : {tables: enabledTargetTables, selected: this.selectedTargetTable, uppercase: true};
+        tables: this.sourceTablesWithoutSimilar,
+        selected: this.selectedSourceTable,
+        uppercase: true
+      } : {tables: enabledTargetTables, selected: this.selectedTargetTable, uppercase: true};
 
       const dialogOptions: OverlayConfigOptions = {
         hasBackdrop: true,
@@ -422,12 +425,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   getSelectedTargetTable() {
-    const enabledTargetTable = this.getEnabledTargetTables()[ 0 ];
-    const clones = this.storeService.state.targetClones[ enabledTargetTable.name ];
+    const enabledTargetTable = this.getEnabledTargetTables()[0];
+    const clones = this.storeService.state.targetClones[enabledTargetTable.name];
     if (clones) {
       const enabledClones = clones.filter(item => item.cloneConnectedToSourceName === this.currentSourceTable.name);
       if (enabledClones && enabledClones.length) {
-        return enabledClones[ 0 ];
+        return enabledClones[0];
       }
     }
     return enabledTargetTable;
@@ -443,7 +446,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       } else {
         newIndex = index === 1 ? this.similarSourceTable ? this.source.length - 1 : 0 : index === 0 ? this.source.length - 1 : index - 1;
       }
-      this.refreshSourcePanel(this.source[ newIndex ]);
+      this.refreshSourcePanel(this.source[newIndex]);
     }
     if (area === 'target' && this.currentTargetTable.name !== 'similar') {
       const index = this.getEnabledTargetTables().findIndex(item => item.name === this.currentTargetTable.name);
@@ -468,7 +471,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.refreshTargetPanel(table);
   }
 
-  @HostListener('document:keyup', [ '$event' ])
+  @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
       this.bridgeService.deleteSelectedArrows();
@@ -516,12 +519,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     const optionalSaveKey = this.currentTargetTable.name;
 
-    const filteredFields = this.filteredFields ? this.filteredFields[ optionalSaveKey ] : this.filteredFields;
+    const filteredFields = this.filteredFields ? this.filteredFields[optionalSaveKey] : this.filteredFields;
     const types = filteredFields ? filteredFields.types : [];
     const checkedTypes = filteredFields ? filteredFields.checkedTypes : [];
 
     const options = (groups as any).default;
-    options[ 'individual' ] = this.currentTargetTable.rows.map(row => {
+    options['individual'] = this.currentTargetTable.rows.map(row => {
       if (!options.common.includes(row.name.toUpperCase()) && !options.concept.includes(row.name.toUpperCase())) {
         return row.name;
       }
@@ -543,7 +546,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   getFilteredFields() {
-    return this.filteredFields ? this.filteredFields[ this.currentTargetTable.name ] : [];
+    return this.filteredFields ? this.filteredFields[this.currentTargetTable.name] : [];
   }
 
   onPanelOpen() {
@@ -600,18 +603,18 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   changeTargetTabIndex() {
-    const sourceTableName = this.source[ this.sourceTabIndex ].name;
-    let targetTableName = this.target[ this.targetTabIndex ].name;
+    const sourceTableName = this.source[this.sourceTabIndex].name;
+    let targetTableName = this.target[this.targetTabIndex].name;
 
     if (this.mappingConfig.find(item => item.includes(sourceTableName) && item.includes(targetTableName))) {
       return;
     }
 
-    if (sourceTableName === this.similarTableName && this.target[ 0 ].name === this.similarTableName) {
+    if (sourceTableName === this.similarTableName && this.target[0].name === this.similarTableName) {
       this.targetTabIndex = 0;
     } else {
       const tagretTableNameIndex = 0;
-      targetTableName = this.mappingConfig.find(item => item.includes(sourceTableName))[ tagretTableNameIndex ];
+      targetTableName = this.mappingConfig.find(item => item.includes(sourceTableName))[tagretTableNameIndex];
       this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
     }
   }
@@ -636,9 +639,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     if (this.target && this.filteredFields) {
       return !(
         this.filteredFields &&
-        this.filteredFields[ this.currentTargetTable.name ] &&
-        this.filteredFields[ this.currentTargetTable.name ].types &&
-        this.filteredFields[ this.currentTargetTable.name ].types.length
+        this.filteredFields[this.currentTargetTable.name] &&
+        this.filteredFields[this.currentTargetTable.name].types &&
+        this.filteredFields[this.currentTargetTable.name].types.length
       );
     }
   }
@@ -691,12 +694,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   convertToCdm() {
     this.addMappedSourceToStore();
 
-    this.matDialog.open(CdmDialogComponent, {
-      width: '700',
-      height: '674',
-      disableClose: true,
-      panelClass: 'scan-data-dialog'
-    });
+    this.checkIsPersonMapped()
+      .subscribe(result => {
+        if (result) {
+          this.matDialog.open(CdmDialogComponent, {
+            width: '700',
+            height: '674',
+            disableClose: true,
+            panelClass: 'scan-data-dialog'
+          });
+        }
+      })
   }
 
   showVocabulary() {
@@ -730,7 +738,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private loadMapping() {
-    const { source, target } = this.storeService.getMappedTables();
+    const {source, target} = this.storeService.getMappedTables();
 
     this.prepareTables(source, Area.Source);
     this.prepareTables(target, Area.Target);
@@ -760,13 +768,74 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
       this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
 
+    this.similarSourceTable = this.source.find(item => item.name === 'similar');
+    this.similarTargetTable = this.target.find(item => item.name === 'similar');
+
     setTimeout(() => {
       this.bridgeService.refresh(this.currentTargetTable);
       this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
       this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
       this.bridgeService.adjustArrowsPositions();
     }, 200);
+  }
 
+  private subscribeOnVocabularyOpening() {
+    this.vocabularyObserverService.show$.subscribe(visible => {
+      this.isVocabularyVisible = visible;
+      this.setMainHeight();
+    })
+  }
+
+  private subscribeOnPrepareReportGenerationConfig() {
+    this.reportGenerationService.reportConfigPrepare$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => this.reportGenerationService
+        .setSource(this.source)
+        .setMappingConfig(this.mappingConfig)
+        .setSimilarTableName(this.similarTableName)
+        .emit(ReportGenerationEvent.READY)
+      )
+  }
+
+  private checkIsPersonMapped(): Observable<boolean> {
+    const mapping = this.bridgeService.generateMapping();
+    const mandatoryPersonFields = [
+      'person_id',
+      'person_source_value'
+    ]
+    const personMapped = mapping.mapping_items
+      .find(mappingPair =>
+        mappingPair.target_table.toLowerCase() === 'person' && mandatoryPersonFields
+          .every(field => mappingPair.mapping
+            .find(mappingNode => mappingNode.target_field.toLowerCase() === field)
+          )
+      )
+    if (personMapped) {
+      return of(true)
+    } else {
+      const dialogRef = this.matDialog.open(PersonMappingWarningDialogComponent, {
+        panelClass: 'perseus-dialog'
+      })
+      return dialogRef.afterClosed()
+    }
+  }
+
+  /**
+   * Listen open new mapping event
+   */
+  private subscribeOnUpdateMapping() {
+    this.bridgeService.applyConfiguration$
+      .subscribe(() => {
+        this.reset()
+        this.loadMapping()
+        this.onTabIndexChanged(this.sourceTabIndex, 'source') // Update source rows UI
+        this.onTabIndexChanged(this.targetTabIndex, 'target') // Update target rows UI
+      })
+  }
+
+  private init() {
     this.rulesPopupService.deleteConnector$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connectorKey => {
@@ -790,23 +859,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
-  private subscribeOnVocabularyOpening() {
-    this.vocabularyObserverService.show$.subscribe(visible => {
-      this.isVocabularyVisible = visible;
-      this.setMainHeight();
-    })
-  }
-
-  private subscribeOnPrepareReportGenerationConfig() {
-    this.reportGenerationService.reportConfigPrepare$
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(() => this.reportGenerationService
-        .setSource(this.source)
-        .setMappingConfig(this.mappingConfig)
-        .setSimilarTableName(this.similarTableName)
-        .emit(ReportGenerationEvent.READY)
-      )
+  private reset() {
+    this.sourceRows = [];
+    this.targetRows = [];
+    this.mappingConfig = [];
+    this.sourceTabIndex = 0;
+    this.targetTabIndex = 0;
   }
 }

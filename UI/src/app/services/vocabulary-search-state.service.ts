@@ -16,9 +16,7 @@ export interface VocabSearchState {
   sort: { field: string; order: string };
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class VocabularySearchStateService {
 
   private searchState: VocabSearchState;

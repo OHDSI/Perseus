@@ -1,27 +1,25 @@
-<mat-toolbar color="primary"
-             class="app-toolbar">
-  <button mat-icon-button
-          [matMenuTriggerFor]="menu"
-          aria-label="cdm menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
+<div class="toolbar">
 
-  <div class="logo" (click)="goToComfy()">
-    <mat-icon class="logo" svgIcon="logo_white"></mat-icon>
-  </div>
+  <mat-icon class="toolbar__three-dot-menu-button"
+            svgIcon="three_dot_menu"
+            [matMenuTriggerFor]="mainMenu"></mat-icon>
+
+  <mat-icon class="toolbar__logo" svgIcon="logo_white"
+            [ngClass]="{pointer: isNotComfyPage}"
+            (click)="goToComfy()"></mat-icon>
 
   <app-breadcrumb></app-breadcrumb>
 
   <span class="divider"></span>
 
-  <label class="info-label">{{reportName}} - {{cdmVersion}}</label>
+  <label class="toolbar__info-label">{{reportName}} - {{cdmVersion}}</label>
 
-  <button mat-icon-button
-          (click)="startOnBoarding($event.currentTarget)">
-    <mat-icon svgIcon="help"></mat-icon>
-  </button>
+  <div class="toolbar__user-profile"
+       [matMenuTriggerFor]="userProfileMenu">
+    {{userInitials}}
+  </div>
 
-  <mat-menu #menu="matMenu">
+  <mat-menu #mainMenu="matMenu">
     <button mat-menu-item [matMenuTriggerFor]="createMapping">
       <mat-icon svgIcon="new_mapping"></mat-icon>
       <span>New Mapping</span>
@@ -72,11 +70,6 @@
             (click)="resetAllMappings()">
       <mat-icon svgIcon="reset"></mat-icon>
       <span>Delete All Mappings</span>
-    </button>
-    <button mat-menu-item
-            (click)="logout()">
-      <mat-icon svgIcon="logout"></mat-icon>
-      <span>Logout</span>
     </button>
   </mat-menu>
 
@@ -136,4 +129,17 @@
     </button>
   </mat-menu>
 
-</mat-toolbar>
+  <mat-menu #userProfileMenu="matMenu" class="toolbar__user-profile-menu">
+    <button mat-menu-item
+            (click)="openHelpPage()">
+      <mat-icon svgIcon="help"></mat-icon>
+      <span>Help</span>
+    </button>
+
+    <button mat-menu-item
+            (click)="logout()">
+      <mat-icon svgIcon="logout"></mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</div>

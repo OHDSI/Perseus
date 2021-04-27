@@ -5,9 +5,7 @@ import { Arrow } from '../models/arrow';
 import { IConnector } from '../models/connector.interface';
 import { parseArrowKey } from './business/rules';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DrawService {
   get list(): { [key: string]: IConnector } {
     return Object.assign({}, this.cache);

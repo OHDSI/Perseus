@@ -1,9 +1,12 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../shared/scan-console-wrapper/abstract-console-wrapper.component';
-import { ScanDataUploadService } from '../../../services/scan-data-upload.service';
-import { base64ToFileAsObservable, getBase64Header, MediaType } from '../../../services/utilites/base64-util';
+import { ScanDataUploadService } from '../../../services/white-rabbit/scan-data-upload.service';
 import { saveAs } from 'file-saver';
-import { WhiteRabbitScanDataConsoleComponent } from '../../shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
+import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.component';
+import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
+import { switchMap } from 'rxjs/operators';
+import { blobToFile } from '../../../utilites/file';
+import { parseHttpError } from '../../../utilites/error';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -12,27 +15,41 @@ import { WhiteRabbitScanDataConsoleComponent } from '../../shared/scan-console-w
 })
 export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
 
-  @ViewChild(WhiteRabbitScanDataConsoleComponent)
-  scanDataConsoleComponent: WhiteRabbitScanDataConsoleComponent;
+  result: string // scan-report server file location
+
+  @ViewChild(ScanDataConsoleComponent)
+  scanDataConsoleComponent: ScanDataConsoleComponent;
 
   @Input()
-  private reportName: string;
+  private reportName: string;  // Without extension
 
-  constructor(private scanDataUploadService: ScanDataUploadService) {
+  constructor(private whiteRabbitService: ScanDataService,
+              private scanDataUploadService: ScanDataUploadService) {
     super();
   }
 
   onSaveReport() {
-    base64ToFileAsObservable(this.result, `${this.reportName}.xlsx`)
-      .subscribe(file => saveAs(file));
+    this.whiteRabbitService.downloadScanReport(this.result)
+      .subscribe(
+        file => saveAs(file, `${this.reportName}.xlsx`),
+        error => this.showErrorMessage(parseHttpError(error))
+      )
   }
 
   onUploadReport() {
-    this.scanDataUploadService.uploadScanReport(this.result, this.reportName)
-      .subscribe(() => this.close.emit());
+    this.whiteRabbitService.downloadScanReport(this.result)
+      .pipe(
+        switchMap(blob => this.scanDataUploadService.uploadScanReport(
+          blobToFile(blob, `${this.reportName}.xlsx`))
+        )
+      )
+      .subscribe(
+        () => this.close.emit(),
+        error => this.showErrorMessage(parseHttpError(error))
+      )
   }
 
-  onFinish(base64: string) {
-    this.result = getBase64Header(MediaType.XLSX) + base64;
+  onFinish(userId: string) {
+    this.result = userId;
   }
 }

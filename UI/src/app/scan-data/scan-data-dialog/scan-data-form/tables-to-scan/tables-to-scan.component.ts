@@ -1,6 +1,8 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
-  Component, ElementRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
@@ -52,7 +54,7 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   @ViewChild('scanParamsButton')
   scanParamsButton: ElementRef;
 
-  private clickOutsideScanParamsListener: () => void;
+  private clickOutsideScanParamsUnsub: () => void;
 
   constructor(private formBuilder: FormBuilder,
               private renderer: Renderer2,
@@ -66,8 +68,8 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.clickOutsideScanParamsListener) {
-      this.clickOutsideScanParamsListener();
+    if (this.clickOutsideScanParamsUnsub) {
+      this.clickOutsideScanParamsUnsub();
     }
   }
 
@@ -103,24 +105,21 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
 
   onShowScanParams() {
     if (this.showScanParamsPopup) {
-      this.clickOutsideScanParamsListener();
-      this.clickOutsideScanParamsListener = null;
+      this.unsubOnClickOutsideScanParams();
       this.showScanParamsPopup = false;
     } else {
       this.showScanParamsPopup = true;
-      this.clickOutsideScanParamsListener = this.renderer
-        .listen('document', 'click', event => {
-          const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
-          const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
-          const dropdown = document.querySelector('.mat-select-panel');
+      this.clickOutsideScanParamsUnsub = this.renderer.listen('document', 'click', event => {
+        const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
+        const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
+        const dropdown = document.querySelector('.mat-select-panel');
 
-          if (notClickedInside && notClickedScanParamsButton && dropdown === null) {
-            this.showScanParamsPopup = false;
-            this.clickOutsideScanParamsListener();
-            this.clickOutsideScanParamsListener = null;
-            this.cdr.detectChanges();
-          }
-        });
+        if (notClickedInside && notClickedScanParamsButton && dropdown === null) {
+          this.showScanParamsPopup = false;
+          this.unsubOnClickOutsideScanParams();
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
@@ -169,5 +168,10 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
     this.tablesToScan = this.tablesToScan
       .map(table => table.tableName === newValue.tableName ? newValue : table);
     return newValue;
+  }
+
+  private unsubOnClickOutsideScanParams() {
+    this.clickOutsideScanParamsUnsub();
+    this.clickOutsideScanParamsUnsub = null;
   }
 }

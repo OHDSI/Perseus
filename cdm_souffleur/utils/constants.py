@@ -7,7 +7,7 @@ GENERATE_CDM_SOURCE_DATA_PATH = Path('model/generate/CDM_source_data')
 GENERATE_CDM_SOURCE_METADATA_PATH = Path('model/generate/CDM_source_data/metadata')
 GENERATE_CDM_XML_PATH = Path('model/generate/Definitions')
 GENERATE_CDM_LOOKUP_SQL_PATH = Path('model/generate/Lookups')
-GENERATE_BATCH_SQL_PATH = Path('model/generate/')
+GENERATE_BATCH_SQL_PATH = Path('model/generate/batch')
 GENERATE_CDM_XML_ARCHIVE_PATH = Path('model/generate')
 GENERATE_CDM_XML_ARCHIVE_FILENAME = 'CDM_xml'
 GENERATE_CDM_XML_ARCHIVE_FORMAT = 'zip'
@@ -21,6 +21,9 @@ CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5', '6', 
 UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema')
 PREDEFINED_LOOKUPS_PATH = Path('model/Lookups')
 INCOME_LOOKUPS_PATH = Path('model/UserDefinedLookups')
+SMTP_PORT_STL = 587
+PASSWORD_LINK_EXPIRATION_TIME = 172800  # 48 hours
+REGISTRATION_LINK_EXPIRATION_TIME = 172800 # 48 hours
 
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
@@ -48,7 +51,9 @@ TYPES_WITH_MAX_LENGTH = [
   "character",
   "character varying",
   "char",
-  "text"
+   "text",
+  "timestamp",
+  "timestamp(p) with time zone"
 ]
 
 LIST_OF_COLUMN_INFO_FIELDS = [

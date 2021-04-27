@@ -12,7 +12,7 @@ import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
 import { BaseComponent } from '../../../base/base.component';
-import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/services/utilites/concept-util';
+import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utilites/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
 
 @Component({
@@ -78,6 +78,18 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
     this.conceptsTable = this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ];
 
+    if ( this.conceptsTable.lookup['name'] ) {
+      const copiedLookup = cloneDeep(this.conceptsTable.lookup);
+      const lookups = {};
+      this.targetCloneName ? lookups[ this.targetCloneName] = copiedLookup : lookups['Default'] = copiedLookup;
+      this.conceptsTable.lookup = lookups;
+    } else {
+      if (!this.targetCloneName && this.conceptsTable.lookup['Default'] || !this.conceptsTable.lookup[this.targetCloneName]) {
+        const copiedLookup = cloneDeep(Object.values(this.conceptsTable.lookup)[0])
+        this.targetCloneName ? this.conceptsTable.lookup[ this.targetCloneName] = copiedLookup : this.conceptsTable.lookup['Default'] = copiedLookup;
+      }
+    }
+
     this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList
       .filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
 
@@ -131,6 +143,17 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.sqlTransformation.setConeptSqlValue(this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql);
     }
 
+  }
+
+  getLookup() {
+    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] : this.conceptsTable.lookup['Default'];
+  }
+
+  getLookupName() {
+    if (!this.conceptsTable.lookup[this.targetCloneName] && !this.conceptsTable.lookup['Default'] ) {
+      return this.conceptsTable.lookup['name'];
+    }
+    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName]['name'] : this.conceptsTable.lookup['Default']['name'];
   }
 
   toggleSqlTransformation(event: any) {
