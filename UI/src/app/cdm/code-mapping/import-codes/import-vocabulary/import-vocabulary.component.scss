@@ -88,12 +88,14 @@
     }
   }
 
-  &__loading {
+  &__loading,
+  &__no-saved-vocabularies {
     margin-top: 25px;
   }
 
   &__header,
   &__loading,
+  &__no-saved-vocabularies,
   &__error {
     font-weight: 300;
     font-size: 14px;

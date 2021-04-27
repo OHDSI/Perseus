@@ -9,9 +9,9 @@ import { VocabularyGridComponent } from './import-codes/vocabulary-grid/vocabula
 import { GridModule } from '../../grid/grid.module';
 import { ImportCodesService } from './import-codes.service';
 import { ImportVocabulariesService } from './import-vocabularies.service';
-import { ColumnMappingPanelComponent } from './import-codes/column-mapping-panel/column-mapping-panel.component';
+import { ColumnMappingPanelComponent } from './import-codes/auxiliary/column-mapping-panel/column-mapping-panel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ColumnMappingFiltersComponent } from './import-codes/column-mapping-filters/column-mapping-filters.component';
+import { ColumnMappingFiltersComponent } from './import-codes/auxiliary/column-mapping-filters/column-mapping-filters.component';
 import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({

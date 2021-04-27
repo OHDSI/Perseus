@@ -7,29 +7,7 @@ export interface Vocabulary {
   name: string
 }
 
-const vocabularies = [
-  {
-    name: 'ABMS'
-  },
-  {
-    name: 'AMT'
-  },
-  {
-    name: 'APC'
-  },
-  {
-    name: 'BDPB'
-  },
-  {
-    name: 'CCAM'
-  },
-  {
-    name: 'CDM'
-  },
-  {
-    name: 'CGI'
-  }
-]
+const vocabularies = []
 
 @Injectable()
 export class ImportVocabulariesService {

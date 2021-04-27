@@ -28,10 +28,7 @@ export class GridComponent implements OnInit {
   error: string;
 
   @Output()
-  sort = new EventEmitter<{
-    field: string;
-    order: string
-  }>()
+  sort = new EventEmitter<{field: string; order: string}>()
 
   ngOnInit(): void {
   }

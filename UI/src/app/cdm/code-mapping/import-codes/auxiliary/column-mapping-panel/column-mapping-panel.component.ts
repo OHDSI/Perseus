@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ImportCodesService } from '../../import-codes.service';
+import { ImportCodesService } from '../../../import-codes.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Column } from '../../../../grid/grid';
+import { Column } from '../../../../../grid/grid';
 
 @Component({
   selector: 'app-column-mapping-panel',

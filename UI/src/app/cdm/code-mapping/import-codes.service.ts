@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Column } from '../../grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
+import { stateCodes, stateColumns } from './state';
 
 export interface Code {
   selected: boolean
@@ -18,8 +19,8 @@ export class ImportCodesService {
   columns: Column[]
 
   constructor() {
-    // this.codes = stateCodes
-    // this.columns = stateColumns
+    this.codes = stateCodes
+    this.columns = stateColumns
   }
 
   get imported(): boolean {
