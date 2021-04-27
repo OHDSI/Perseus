@@ -6,13 +6,10 @@ import { AppConnectorService } from '../services/app-connector.service';
 import { ServerErrorComponent } from './server-error.component';
 import { ServerNotRespondingPopupComponent } from './server-not-responding-popup/server-not-responding-popup.component';
 import { ServerErrorPopupComponent } from './server-error-popup/server-error-popup.component';
+import { externalUrls } from '../app.constants';
 
 @Injectable()
 export class ServerErrorInterceptor implements HttpInterceptor {
-
-  private externalUrls = [
-    'athena.ohdsi.org'
-  ]
 
   constructor(private appConnector: AppConnectorService,
               private compiler: Compiler,
@@ -23,7 +20,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if ((error.status !== 0 && error.status < 500) || this.externalUrls.find(url => request.url.includes(url))) {
+          if ((error.status !== 0 && error.status < 500) || externalUrls.find(url => request.url.includes(url))) {
             throw error
           }
 
