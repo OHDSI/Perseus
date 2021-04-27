@@ -8,6 +8,7 @@ import { CdmCustomMaterialModule } from '../material/cdm-custom-material.module'
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
 import { HintComponent } from './hint/hint.component';
 import { HintOverlayComponent } from './hint/hint-overlay/hint-overlay.component';
+import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { HintOverlayComponent } from './hint/hint-overlay/hint-overlay.component
   exports: [
     CommonModule,
     CdmCustomMaterialModule,
+    NgxTrimDirectiveModule,
     PrettyNamePipe,
     TypeToIconPipe,
     SearchByNameComponent,
@@ -29,7 +31,8 @@ import { HintOverlayComponent } from './hint/hint-overlay/hint-overlay.component
   ],
   imports: [
     CommonModule,
-    CdmCustomMaterialModule
+    CdmCustomMaterialModule,
+    NgxTrimDirectiveModule
   ]
 })
 export class SharedModule { }
