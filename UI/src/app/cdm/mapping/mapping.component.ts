@@ -80,6 +80,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   mainHeight = '';
 
+  similarSourceTable: ITable
+
+  similarTargetTable: ITable
+
   get hint(): string {
     return 'no hint';
   }
@@ -90,14 +94,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   get currentSourceTable() {
     return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
-  }
-
-  get similarSourceTable() {
-    return this.source.find(item => item.name === 'similar');
-  }
-
-  get similarTargetTable() {
-    return this.target.find(item => item.name === 'similar');
   }
 
   @ViewChild('arrowsarea', {read: ElementRef, static: true}) svgCanvas: ElementRef;
@@ -134,6 +130,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     this.loadMapping();
 
+    this.init()
+
     this.initHasScanReport();
 
     this.setMainHeight();
@@ -143,6 +141,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.subscribeOnPrepareReportGenerationConfig()
 
     this.storeService.add('isMappingPage', true)
+
+    this.subscribeOnUpdateMapping()
   }
 
   ngAfterViewInit() {
@@ -768,34 +768,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.numberOfPanels = this.source.find(item => item.name === 'similar') ?
       this.target.find(item => item.name === 'similar') ? numberOfPanelsWithTwoSimilar : numberOfPanelsWithOneSimilar : numberOfPanelsWithoutSimilar;
 
+    this.similarSourceTable = this.source.find(item => item.name === 'similar');
+    this.similarTargetTable = this.target.find(item => item.name === 'similar');
+
     setTimeout(() => {
       this.bridgeService.refresh(this.currentTargetTable);
       this.sourcePanel.panel.reflectConnectorsPin(this.currentSourceTable);
       this.targetPanel.panel.reflectConnectorsPin(this.currentTargetTable);
       this.bridgeService.adjustArrowsPositions();
     }, 200);
-
-    this.rulesPopupService.deleteConnector$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(connectorKey => {
-        this.bridgeService.deleteArrow(connectorKey);
-      });
-
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.filteredFields = res.filteredFields;
-        this.bridgeService.refreshAll();
-      }
-    });
-    this.activatedRoute.queryParams.subscribe(data => {
-      if (Object.keys(data).length !== 0) {
-        this.targetTabIndex = 1;
-        this.sourceTabIndex = 1;
-        const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
-        this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
-        this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
-      }
-    });
   }
 
   private subscribeOnVocabularyOpening() {
@@ -839,5 +820,50 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       })
       return dialogRef.afterClosed()
     }
+  }
+
+  /**
+   * Listen open new mapping event
+   */
+  private subscribeOnUpdateMapping() {
+    this.bridgeService.applyConfiguration$
+      .subscribe(() => {
+        this.reset()
+        this.loadMapping()
+        this.onTabIndexChanged(this.sourceTabIndex, 'source') // Update source rows UI
+        this.onTabIndexChanged(this.targetTabIndex, 'target') // Update target rows UI
+      })
+  }
+
+  private init() {
+    this.rulesPopupService.deleteConnector$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(connectorKey => {
+        this.bridgeService.deleteArrow(connectorKey);
+      });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields;
+        this.bridgeService.refreshAll();
+      }
+    });
+    this.activatedRoute.queryParams.subscribe(data => {
+      if (Object.keys(data).length !== 0) {
+        this.targetTabIndex = 1;
+        this.sourceTabIndex = 1;
+        const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
+        this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
+        this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
+      }
+    });
+  }
+
+  private reset() {
+    this.sourceRows = [];
+    this.targetRows = [];
+    this.mappingConfig = [];
+    this.sourceTabIndex = 0;
+    this.targetTabIndex = 0;
   }
 }
