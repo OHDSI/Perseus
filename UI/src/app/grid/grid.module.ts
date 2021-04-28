@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { GridComponent } from './grid.component';
-import { NavigationGridComponent } from './navigation-grid/navigation-grid.component';
 import { SelectableGridComponent } from './selectable-grid/selectable-grid.component';
 import { GridCheckboxComponent } from './selectable-grid/grid-checkbox/grid-checkbox.component';
 import { SharedModule } from '../shared/shared.module';
@@ -8,7 +7,6 @@ import { SharedModule } from '../shared/shared.module';
 @NgModule({
   declarations: [
     GridComponent,
-    NavigationGridComponent,
     SelectableGridComponent,
     GridCheckboxComponent
   ],
@@ -17,7 +15,6 @@ import { SharedModule } from '../shared/shared.module';
   ],
   exports: [
     GridComponent,
-    NavigationGridComponent,
     SelectableGridComponent
   ]
 })

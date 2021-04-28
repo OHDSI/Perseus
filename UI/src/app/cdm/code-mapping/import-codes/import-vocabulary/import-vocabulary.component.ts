@@ -1,12 +1,16 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { ImportCodesService } from '../../import-codes.service';
-import { ImportVocabulariesService, Vocabulary } from '../../import-vocabularies.service';
+import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
+import { ImportVocabulariesService, Vocabulary } from '../../../../services/import-codes/import-vocabularies.service';
 import { parseHttpError } from '../../../../utilites/error';
 
 @Component({
   selector: 'app-import-vocabulary',
   templateUrl: './import-vocabulary.component.html',
-  styleUrls: ['./import-vocabulary.component.scss']
+  styleUrls: [
+    './import-vocabulary.component.scss',
+    '../styles/column-mapping-panel.scss',
+    '../styles/import-codes-wrapper.scss'
+  ]
 })
 export class ImportVocabularyComponent implements OnInit {
 

@@ -38,7 +38,7 @@ import { MappingGuard } from './mapping/mapping.guard';
 
 @NgModule({
   declarations: [
-    CdmComponent
+    CdmComponent,
   ],
   imports: [
     SharedModule,

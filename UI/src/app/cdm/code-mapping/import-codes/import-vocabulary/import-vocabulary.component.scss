@@ -18,9 +18,8 @@
   height: 100%;
 }
 
-.import {
-  width: 100%;
-  height: 100%;
+.import-vocabulary {
+  @include import-codes-content();
   background: rgba(231, 244, 255, 0.2);
   border: 1px dashed #CDE0EF;
   box-sizing: border-box;

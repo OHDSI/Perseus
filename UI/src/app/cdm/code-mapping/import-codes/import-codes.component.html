@@ -1,24 +1,7 @@
 <div class="import-codes">
-  <div class="column-mapping">
-    <div class="column-mapping__background"></div>
-    <div class="column-mapping__header">Column mapping</div>
+  <app-column-mapping *ngIf="imported else importBlock"></app-column-mapping>
 
-    <ng-container *ngIf="imported">
-      <app-column-mapping-panel></app-column-mapping-panel>
-
-      <div class="column-mapping__border top-border"></div>
-
-      <div class="column-mapping__border"></div>
-    </ng-container>
-  </div>
-
-  <div class="import">
-    <div class="import__content">
-      <app-vocabulary-grid *ngIf="imported else importBlock"></app-vocabulary-grid>
-
-      <ng-template #importBlock>
-        <app-import-vocabulary (import)="onImport()"></app-import-vocabulary>
-      </ng-template>
-    </div>
-  </div>
+  <ng-template #importBlock>
+    <app-import-vocabulary></app-import-vocabulary>
+  </ng-template>
 </div>

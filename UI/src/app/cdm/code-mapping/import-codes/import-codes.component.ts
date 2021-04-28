@@ -1,22 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { ImportCodesService } from '../import-codes.service';
+import { Component } from '@angular/core';
+import { ImportCodesService } from '../../../services/import-codes/import-codes.service';
 
 @Component({
   selector: 'app-import-codes',
   templateUrl: './import-codes.component.html',
   styleUrls: ['./import-codes.component.scss']
 })
-export class ImportCodesComponent implements OnInit {
-
-  imported: boolean
+export class ImportCodesComponent {
 
   constructor(private importCodesService: ImportCodesService) { }
 
-  ngOnInit(): void {
-    this.imported = this.importCodesService.imported
-  }
-
-  onImport() {
-    this.imported = true
+  get imported(): boolean {
+    return this.importCodesService.imported
   }
 }

@@ -1,30 +1,28 @@
 <div class="grid-wrapper">
-  <div class="grid" [style.height]="height">
-    <div class="row header">
-      <div *ngFor="let column of columns"
-           class="column cell"
-           [style.minWidth]="column.width"
-           [ngClass]="{'sortable-asc': column.field === sortParams?.field && sortParams.order === 'asc',
+  <table class="grid" cdk-table
+         [dataSource]="data"
+         [style.height]="height"
+         [style.width]="width">
+
+    <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
+      <th class="column cell" cdk-header-cell *cdkHeaderCellDef
+          [ngClass]="{'sortable-asc': column.field === sortParams?.field && sortParams.order === 'asc',
                'sortable-desc': column.field === sortParams?.field && sortParams.order === 'desc'}">
         {{column.name}}
-
         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg"
              (click)="onSort(column.field)">
           <path opacity="0.6" d="M0 12H6V10H0V12ZM0 0V2H18V0H0ZM0 7H12V5H0V7Z" fill="white"/>
         </svg>
-      </div>
-    </div>
+      </th>
 
-    <div *ngFor="let row of data" class="row">
-      <div *ngFor="let column of columns" class="cell" [style.minWidth]="column.width">
-        {{row[column.field]}}
-      </div>
-    </div>
+      <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
+    </ng-container>
 
-    <div *ngIf="error" class="row error-row">{{error}}</div>
-  </div>
+    <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr class="row" cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 
-  <div *ngIf="requestInProgress" class="ui-blocker">
+  <div *ngIf="loading" class="ui-blocker">
     <mat-spinner></mat-spinner>
   </div>
 </div>

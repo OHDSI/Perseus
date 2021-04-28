@@ -1,5 +1,5 @@
-<form class="column-mapping" [formGroup]="form">
-  <mat-form-field class="column-mapping__control" floatLabel="never" appearance="none">
+<form class="column-mapping-form" [formGroup]="form">
+  <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
     <label>Source code column</label>
     <mat-select formControlName="sourceCode">
       <mat-option *ngFor="let column of columns" [value]="column.field">
@@ -8,7 +8,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="column-mapping__control" floatLabel="never" appearance="none">
+  <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
     <label>Source name column</label>
     <mat-select formControlName="sourceName">
       <mat-option *ngFor="let column of columns" [value]="column.field">
@@ -17,7 +17,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="column-mapping__control" floatLabel="never" appearance="none">
+  <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
     <label>Source frequency column</label>
     <mat-select formControlName="sourceFrequency">
       <mat-option *ngFor="let column of columns" [value]="column.field">
@@ -26,7 +26,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="column-mapping__control" floatLabel="never" appearance="none">
+  <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
     <label>Auto concept ID column</label>
     <mat-select formControlName="autoConceptId">
       <mat-option *ngFor="let column of columns" [value]="column.field">
@@ -35,7 +35,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="column-mapping__control" floatLabel="never" appearance="none">
+  <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
     <label>Additional info column</label>
     <mat-select formControlName="additionalInfo">
       <mat-option *ngFor="let column of columns" [value]="column.field">

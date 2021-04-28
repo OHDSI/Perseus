@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Column } from './grid';
+import { Column, Sort } from './grid';
 
 @Component({
   selector: 'app-grid',
@@ -16,21 +16,22 @@ export class GridComponent implements OnInit {
   columns: Column[]
 
   @Input()
-  height: string
+  height = '100%'
 
-  sortParams: {
-    field: string
-    order: string
-  };
+  @Input()
+  width = '100%'
 
-  requestInProgress = false;
+  sortParams: Sort;
 
-  error: string;
+  loading = false;
+
+  displayedColumns: string[]; // For CDK table
 
   @Output()
-  sort = new EventEmitter<{field: string; order: string}>()
+  sort = new EventEmitter<Sort>()
 
   ngOnInit(): void {
+    this.displayedColumns = this.columns.map(col => col.field)
   }
 
   onSort(field: string) {

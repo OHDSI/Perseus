@@ -29,6 +29,11 @@
   text-align: center;
   cursor: pointer;
   border-radius: 2px;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 }
 
 @mixin perseus-header {
@@ -134,4 +139,10 @@
   font-weight: bold;
   font-size: 16px;
   line-height: 20px;
+}
+
+@mixin import-codes-content {
+  padding: 23px 80px 20px 56px;
+  width: calc(100% - 394px); // 394 - import-codes-panel width
+  height: 100%;
 }

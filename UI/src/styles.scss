@@ -164,7 +164,8 @@ article {
 
 .scan-params__input-control,
 .scan-data-connect-form-control,
-.column-mapping__control {
+.column-mapping__control,
+.column-mapping-form__control {
   .mat-form-field-wrapper {
     padding: 0 !important;
   }
@@ -215,7 +216,7 @@ article {
   }
 }
 
-.condition-text{
+.condition-text {
   margin-bottom: 20px;
 
   .CodeMirror.cm-s-default{

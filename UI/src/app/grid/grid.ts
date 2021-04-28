@@ -3,3 +3,8 @@ export interface Column {
   name: string;
   width?: string;
 }
+
+export interface Sort {
+  field: string;
+  order: string
+}

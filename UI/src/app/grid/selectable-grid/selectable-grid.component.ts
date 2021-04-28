@@ -18,9 +18,16 @@ export class SelectableGridComponent extends GridComponent implements OnInit {
     [key: string]: any
   }[]
 
+  @Input()
+  sortable = false
+
   checkedAll: boolean
 
   ngOnInit(): void {
+    this.displayedColumns = [
+      '__select__',
+      ...this.columns.map(col => col.field)
+    ]
     this.setCheckedAll()
   }
 

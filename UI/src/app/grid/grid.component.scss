@@ -1,10 +1,36 @@
 @import "variables";
 
 $row-height: 32px;
-$header-border: 1px solid rgba(230, 230, 230, .2);
+
+.grid, .row, .cell {
+  border: 1px solid #E6E6E6;
+}
+
+.header, .column {
+  border: 1px solid rgba(230, 230, 230, .2);
+}
+
 
 .grid-wrapper {
-  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  overflow-y: overlay;
+  border-radius: 2px;
+
+  &::-webkit-scrollbar {
+    width: 14px;
+    height: 18px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    height: 5px;
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 7px;
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+  }
 
   .ui-blocker {
     position: absolute;
@@ -21,84 +47,55 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
 }
 
 .grid {
-  margin-top: 12px;
-  min-width: 1064px;
-  border-radius: 2px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overflow: overlay;
-
-  &::-webkit-scrollbar {
-    width: 14px;
-    height: 18px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    height: 5px;
-    border: 4px solid rgba(0, 0, 0, 0);
-    background-clip: padding-box;
-    border-radius: 7px;
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
-  }
+  min-width: 100%;
+  border-spacing: 0;
 
   .row {
-    display: flex;
     min-height: $row-height;
-    border-left: $header-border;
     width: auto;
 
     &.header {
-      position: sticky;
-      top: 0;
-      background-color: #404040;
-      border-top: $header-border;
-
       .column {
-        display: flex;
-        justify-content: space-between;
         padding-right: 10px;
+        background-color: #404040;
 
-        svg {
-          cursor: pointer;
-          display: none;
-        }
+        .sortable-column {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
 
-        &:hover {
           svg {
-            display: block;
+            margin-left: 12px;
+            cursor: pointer;
           }
-        }
 
-        &.sortable-asc,
-        &.sortable-desc {
-          svg {
-            display: block;
+          &:hover {
+            svg {
+              display: block;
+            }
           }
-        }
 
-        &.sortable-asc {
-          svg {
-            transform: rotate(270deg);
+          &.sortable-asc,
+          &.sortable-desc {
+            svg {
+              display: block;
+            }
+          }
+
+          &.sortable-asc {
+            svg {
+              transform: rotate(270deg);
+            }
           }
         }
       }
 
       .cell {
-        border: $header-border;
         font-weight: 500;
         font-size: 12px;
         line-height: 15px;
         color: #fff;;
       }
-    }
-
-    &.error-row {
-      height: 100%;
-      display: flex;
-      color: red;
-      justify-content: center;
-      align-items: center;
     }
 
     &:nth-child(2n) {
@@ -108,17 +105,10 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
     background-color: rgba(6, 107, 187, 0.05);
 
     .cell {
-      flex: 1 1 0;
       word-wrap: break-word;
       overflow: hidden;
       box-sizing: border-box;
-      border: 1px solid #E6E6E6;
-      border-radius: 2px;
-      border-top: none;
-      border-left: none;
       min-height: $row-height;
-      display: flex;
-      align-items: center;
       padding: 8px 10px;
       font-weight: normal;
       font-size: 14px;
@@ -126,12 +116,7 @@ $header-border: 1px solid rgba(230, 230, 230, .2);
       color: #404040;
 
       &.select-cell {
-        width: 28px;
-        max-width: 28px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
+        padding: 8px 6px;
       }
     }
   }
