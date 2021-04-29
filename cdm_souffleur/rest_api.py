@@ -15,6 +15,7 @@ from werkzeug.exceptions import BadRequestKeyError
 from flask import Blueprint
 from cdm_souffleur.vocab_search_api import vocab_search_api
 from cdm_souffleur.authorization_api import authorization_api
+from cdm_souffleur.usagi_api import usagi_api
 from cdm_souffleur.model.user import *
 
 CORS(app)
@@ -263,6 +264,7 @@ def get_schema_name(current_user):
 app.register_blueprint(bp)
 app.register_blueprint(vocab_search_api)
 app.register_blueprint(authorization_api)
+app.register_blueprint(usagi_api)
 if __name__ == '__main__':
     # app.run(debug=True)
 
