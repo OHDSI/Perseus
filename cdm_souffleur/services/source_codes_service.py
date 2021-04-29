@@ -2,11 +2,14 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 from cdm_souffleur.model import atc_to_rxnorm
+from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder
 from cdm_souffleur.model.source_code import SourceCode
 from cdm_souffleur.utils import InvalidUsage
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING
 import pysolr
-from cdm_souffleur import app
+from cdm_souffleur import app, json
+
+solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/test1/", always_commit=True)
 
 def create_source_codes(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
     filepath = f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{file_name}"
@@ -65,7 +68,38 @@ def csv_to_json(filepath):
         json_file[col] = data[col].tolist()
     return json_file
 
+
+def create_derived_index(source_codes):
+    for item in source_codes:
+        solr.add({
+            "term": item.source_name,
+            "type": SOURCE_CODE_TYPE_STRING,
+        })
+    return
+
+def create_concept_mapping(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
+    source_codes = create_source_codes(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+    create_derived_index(source_codes)
+    global_mapping_list = []
+    for source_code in source_codes:
+        code_mapping = CodeMapping()
+        code_mapping.source_code = source_code
+        code_mapping.targetConcepts = search(source_code.source_name).docs
+        code_mapping.source_code.source_auto_assigned_concept_ids = list(code_mapping.source_code.source_auto_assigned_concept_ids)
+        global_mapping_list.append(code_mapping)
+    test = json.dumps(global_mapping_list, indent=4, cls=CodeMappingEncoder)
+    return json.dumps(global_mapping_list, indent=4, cls=CodeMappingEncoder)
+
+def search(query):
+    results = solr.search(f"term:{query}", **{
+        'rows': 100,
+    })
+    return results
+
 def test_solr():
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/test/", always_commit=True)
+    solr.add({
+        "term": "test_test1",
+        "type": "A test document",
+    })
     solr.ping()
     return True

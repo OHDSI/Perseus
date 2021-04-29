@@ -1,10 +1,11 @@
 from flask import request, jsonify, Blueprint, flash, url_for
 from cdm_souffleur.services.authorization_service import *
-from cdm_souffleur.services.source_codes_service import create_source_codes, load_codes_to_server, test_solr
+from cdm_souffleur.services.source_codes_service import create_source_codes, load_codes_to_server, test_solr, \
+    create_concept_mapping
 
 usagi_api = Blueprint('usagi_api', __name__)
 
-@usagi_api.route('/api/create_source_codes', methods=['POST'])
+@usagi_api.route('/api/import_source_codes', methods=['POST'])
 @token_required
 def create_codes(current_user):
     try:
@@ -15,12 +16,12 @@ def create_codes(current_user):
         auto_concept_id_column = request.json['autoConceptIdColumn']
         additional_info_columns = request.json['additionalInfoColumns']
         concept_ids_or_atc = request.json['conceptIdsOrAtc']
-        create_source_codes(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        result = create_concept_mapping(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(True)
+    return result
 
 
 @usagi_api.route('/api/load_codes_to_server', methods=['POST'])

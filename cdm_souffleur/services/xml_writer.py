@@ -153,31 +153,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         view = views.get(source_table, None)
 
     if view:
-        single_quote = view.rsplit('\'', 1)
-        double_quote = view.rsplit('\"', 1)
-        if len(single_quote) == 1:
-            if len(double_quote) == 1:
-                after_quote = double_quote[0]
-                before_quote = ''
-            else:
-                after_quote = double_quote[1]
-                before_quote = double_quote[0]
-        else:
-            if len(double_quote) == 1:
-                after_quote = single_quote[1]
-                before_quote = single_quote[0]
-            else:
-                if single_quote[1] < double_quote[1]:
-                    after_quote = single_quote[1]
-                    before_quote = single_quote[0]
-                else:
-                    after_quote = double_quote[0]
-                    before_quote = double_quote[0]
-        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), after_quote)
-        if not before_quote:
-            view = after_quote_replaced
-        else:
-            view = f'{before_quote}\'{after_quote_replaced}'
+        view = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), view)
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
@@ -190,8 +166,11 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
 def addSchemaNames(sql, view_sql):
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
-        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {{sc}}.{row[0]} ', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)join {row[0]} (?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))", f'join {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]} (?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))", f'from {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(f"(?i)join {row[0]}\)(?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))", f'join {{sc}}.{row[0]})', view_sql)
+        view_sql = re.sub(f"(?i)from {row[0]}\)(?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))", f'from {{sc}}.{row[0]})', view_sql)
+
     return view_sql
 
 def has_pair(field_name, mapping):
