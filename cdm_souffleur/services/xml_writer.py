@@ -153,8 +153,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         view = views.get(source_table, None)
 
     if view:
-        view = addSchemaNames(
-            'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), view)
+        view = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), view)
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
