@@ -164,7 +164,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
 
-
+#method adds {sc} to table names used in join and from clauses avoiding those cases when words similar to table names areinside double/single quotes
 def addSchemaNames(sql, view_sql):
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
