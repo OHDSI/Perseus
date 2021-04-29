@@ -53,7 +53,7 @@ def add_source_code(row, source_code_column, source_name_column, source_frequenc
     return new_code
 
 
-def load_codes_to_server(file, current_user):
+def load_codes_to_server(file, delimiter, current_user):
     try:
         if file:
             filename = secure_filename(file.filename)
@@ -64,17 +64,20 @@ def load_codes_to_server(file, current_user):
                 print(f"Directory {UPLOAD_SOURCE_CODES_FOLDER}/{current_user} already exist")
             file.save(f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{filename}")
             file.close()
-            codes_file = csv_to_json(f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{filename}")
+            codes_file = csv_to_json(f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{filename}", delimiter)
     except Exception as error:
         raise InvalidUsage('Codes were not loaded', 400)
     return codes_file
 
 
-def csv_to_json(filepath):
-    json_file = {}
-    data = pd.read_csv(filepath, delimiter=',').fillna('')
-    for col in data.columns:
-        json_file[col] = data[col].tolist()
+def csv_to_json(filepath, delimiter):
+    json_file = []
+    data = pd.read_csv(filepath, delimiter=delimiter).fillna('')
+    for row in data.iterrows():
+        json_row = {}
+        for col in data.columns:
+            json_row[col] = row[1][col]
+        json_file.append(json_row)
     return json_file
 
 

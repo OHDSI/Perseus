@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint, flash, url_for
 from cdm_souffleur.services.authorization_service import *
-from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, test_solr, \
+from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping
 
 usagi_api = Blueprint('usagi_api', __name__)
@@ -30,7 +30,8 @@ def load_codes_call(current_user):
     """save schema to server and load it from server in the same request"""
     try:
         file = request.files['file']
-        codes_file = load_codes_to_server(file, current_user)
+        delimiter = request.json['delimiter']
+        codes_file = load_codes_to_server(file, delimiter, current_user)
     except InvalidUsage as error:
         raise error
     except Exception as error:
