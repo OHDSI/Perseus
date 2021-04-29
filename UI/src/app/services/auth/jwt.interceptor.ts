@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { authInjector } from './auth-injector';
 import { AuthService } from './auth.service';
 import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
-import { loginRouter } from '../../app.constants';
+import { externalUrls, loginRouter } from '../../app.constants';
 import { Router } from '@angular/router';
 
 @Injectable()
@@ -14,11 +14,13 @@ export class JwtInterceptor implements HttpInterceptor {
 
   private refreshToken$ = new BehaviorSubject<string>(null);
 
+  private notExternalUrl = requestUrl => !externalUrls.find(url => requestUrl.includes(url))
+
   constructor(@Inject(authInjector) private authService: AuthService,
               private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.authService.isUserLoggedIn) {
+    if (this.authService.isUserLoggedIn && this.notExternalUrl(request.url)) {
       request = this.addAuthorizationHeader(request)
     }
 

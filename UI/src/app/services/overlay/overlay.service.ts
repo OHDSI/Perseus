@@ -13,13 +13,18 @@ import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
 import * as positionsData from './positions.json';
 
 export class OverlayDialogRef {
-  get afterClosed$(): Observable<OverlayConfigOptions> {
-    return this.closeSubject.asObservable();
-  }
 
   private closeSubject = new Subject<OverlayConfigOptions>();
 
   constructor(private overlayRef: OverlayRef) {
+  }
+
+  get afterClosed$(): Observable<OverlayConfigOptions> {
+    return this.closeSubject.asObservable();
+  }
+
+  get overlayElement(): HTMLElement {
+    return this.overlayRef.overlayElement
   }
 
   close(configOptions?: OverlayConfigOptions | any) {

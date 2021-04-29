@@ -33,6 +33,7 @@
     "jszip": "^3.6.0",
     "lodash-es": "^4.17.11",
     "ngx-mat-select-search": "^3.0.1",
+    "ngx-trim-directive": "^1.1.0",
     "pako": "^1.0.10",
     "prismjs": "^1.23.0",
     "rxjs": "~6.6.0",

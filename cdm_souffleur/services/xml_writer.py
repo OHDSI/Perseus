@@ -163,6 +163,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
 
+# method adds {sc} to table names used in join and from clauses avoiding those cases when words similar to table names areinside double/single quotes
 def addSchemaNames(sql, view_sql):
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
@@ -172,6 +173,7 @@ def addSchemaNames(sql, view_sql):
         view_sql = re.sub(f"(?i)from {row[0]}\)(?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))", f'from {{sc}}.{row[0]})', view_sql)
 
     return view_sql
+
 
 def has_pair(field_name, mapping):
     for item in mapping:

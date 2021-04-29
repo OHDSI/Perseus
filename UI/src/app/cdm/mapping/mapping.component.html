@@ -2,7 +2,7 @@
   <section>
     <main #maincanvas [style.height]="mainHeight" class="main">
       <div class="area-source">
-        <mat-tab-group selectedIndex="{{sourceTabIndex}}"
+        <mat-tab-group [(selectedIndex)]="sourceTabIndex"
                        (selectedIndexChange)="onTabIndexChanged($event, 'source')"
                        mat-align-tabs="start">
           <mat-tab [label]="'similar'"
@@ -20,9 +20,9 @@
           <mat-tab>
             <ng-template mat-tab-label>
               <div class="drop-down-label"
-                   (wheel) = "onWheel($event, 'source')"
+                   (wheel)="onWheel($event, 'source')"
                    (click)="openTablesDropdown($event.target, 'source')">
-                <div>{{selectedSourceTable.name}}</div>
+                <div class="mat-dropdown-text">{{selectedSourceTable.name}}</div>
                 <mat-icon *ngIf="this.sourceTablesWithoutSimilar.length > 1">arrow_drop_down</mat-icon>
               </div>
             </ng-template>
@@ -193,7 +193,7 @@
       </div>
       <!--End-of-the-Bridge-->
       <div class="area-target">
-        <mat-tab-group selectedIndex="{{targetTabIndex}}"
+        <mat-tab-group [(selectedIndex)]="targetTabIndex"
                        (selectedIndexChange)="onTabIndexChanged($event, 'target')">
           <mat-tab [label]="'similar'"
                    *ngIf="similarTargetTable">
@@ -214,7 +214,7 @@
               <div class="drop-down-label"
                    (wheel)="onWheel($event, 'target')"
                    (click)="openTablesDropdown($event.target, 'target')">
-                <div>{{selectedTargetTable.name}}</div>
+                <div class="mat-dropdown-text">{{selectedTargetTable.name}}</div>
                 <mat-icon *ngIf="getEnabledTargetTables().length > 1">arrow_drop_down</mat-icon>
               </div>
             </ng-template>
@@ -262,12 +262,12 @@
         <div class="mapping-footer__block general">
           <button class="mapping-footer__fake grey-button blue-color"
                   [disabled]="!hasScanReport"
-                  (click)="generateFakeData()">Generate Fake
+                  (click)="generateFakeData()">Generate Fake Data
           </button>
 
           <button class="mapping-footer__report grey-button blue-color"
                   [disabled]="isMappingEmpty()"
-                  (click)="generateReport()">Report
+                  (click)="generateReport()">Generate Report
           </button>
 
           <button class="mapping-footer__cdm blue-button white-color"

@@ -7,13 +7,13 @@
 
 <div class="min-height-25">
   <div class="flex-div"
-       *ngIf="area === 'source' && table.name !== 'similar'"> 
-      <a id="createGroup"
-        (click)="createGroup()"
-        [ngClass]="{'create-group-disabled': this.panel?.rowFocusedElements?.length < 2}">
-    Create Group</a>
-      <mat-icon class="info-icon"
-            (click)="openOnBoardingTip($event.currentTarget)">info</mat-icon>
+       *ngIf="area === 'source' && table.name !== 'similar'">
+    <a id="createGroup"
+       (click)="createGroup()"
+       [ngClass]="{'create-group-disabled': this.panel?.rowFocusedElements?.length < 2}">
+      Create Group
+    </a>
+    <app-hint key="createGroup"></app-hint>
   </div>
 </div>
 
@@ -26,20 +26,22 @@
               (click)="openClonesDropdown($event.target)">arrow_drop_down</mat-icon>
   </div>
 
-  <div class="margin-left">
-    <a id="clone"
-       (click)="createClone()">Clone</a>
-    <mat-icon class="info-icon"
-              (click)="openOnBoardingTipClone($event.currentTarget)">info</mat-icon>
-    <a id="condition"
-       class="condition"
-       (click)="openConditionDialog()">{{table.condition? "Modify Condition": "Add Condition"}}</a>
+  <div class="add-condition-or-clone">
+    <a id="clone" (click)="createClone()">
+      Clone
+    </a>
+    <app-hint key="clone"></app-hint>
+
+    <a id="condition" class="condition" (click)="openConditionDialog()">
+      {{table.condition? "Modify Condition": "Add Condition"}}
+    </a>
+    <app-hint key="addCondition"></app-hint>
   </div>
 </div>
 
 <app-area [area]="area">
   <app-panel-table #panel
-                   [createGroupElementId]="'createGroup'"
+                   createGroupElementId="createGroup"
                    [table]="table"
                    [tables]="tables"
                    [tabIndex]="tabIndex"

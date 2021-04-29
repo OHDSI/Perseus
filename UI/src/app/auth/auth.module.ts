@@ -14,6 +14,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { AuthStateService } from './auth-state.service';
 import { AlreadyRegisteredComponent } from './already-registered/already-registered.component';
 import { LinkExpiredComponent } from './link-expired/link-expired.component';
+import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { LinkExpiredComponent } from './link-expired/link-expired.component';
     CommonModule,
     AuthRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxTrimDirectiveModule
   ],
   providers: [
     AuthStateService

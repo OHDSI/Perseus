@@ -347,12 +347,13 @@ article {
 
   .comfy-filter-by-name {
     width: 420px;
+  }
 
-    + a {
-      position: absolute;
-      top: 75px;
-      left: 8px;
-    }
+  .create-view {
+    position: absolute;
+    top: 75px;
+    left: 8px;
+    display: flex;
   }
 
   .initial {
