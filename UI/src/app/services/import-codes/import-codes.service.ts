@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Column } from '../../grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { apiUrl } from '../../app.constants';
 
 export interface Code {
-  selected: boolean
+  selected?: boolean
   [key: string]: any
 }
 
@@ -17,33 +19,39 @@ export class ImportCodesService {
 
   columns: Column[]
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
   }
 
   get imported(): boolean {
     return !!this.codes && !!this.columns
   }
 
-  loadCsv(csv: File): Observable<Code[]> {
-    return this.readFile(csv)
-      .pipe(
-        map(text => this.csvTextToJson(text)),
-        tap(codes => {
-          if (codes.length > 0) {
-            this.codes = codes.map(code => ({
-              ...code,
-              selected: false
-            }))
-            this.columns = Object.keys(codes[0]).map(key => ({
-              field: key,
-              name: key
-            }))
+  loadCsv(csv: File, delimeter = ','): Observable<Code[]> {
+    const formData = new FormData()
+    formData.append('file', csv)
+    formData.append('delimeter', delimeter)
 
-            console.log(this.codes)
-            console.log(this.columns)
-          } else {
+    return this.httpClient.post<{[key: string]: string[]}>(`${apiUrl}/load_codes_to_server`, formData)
+      .pipe(
+        map(result => {
+          const keys = Object.keys(result)
+          if (keys.length === 0) {
             throw new Error('Empty csv file')
           }
+
+          this.columns = keys.map(key => ({
+            field: key,
+            name: key
+          }))
+
+          const firstColumnValues = result[keys[0]]
+          this.codes = firstColumnValues.map((value, index) => {
+            const code: Code = {}
+            keys.forEach(key => code[key] = result[key][index])
+            return code
+          })
+
+          return this.codes
         })
       )
   }
