@@ -2,6 +2,10 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { ImportVocabulariesService, Vocabulary } from '../../../../services/import-codes/import-vocabularies.service';
 import { parseHttpError } from '../../../../utilites/error';
+import { MatDialog } from '@angular/material/dialog';
+import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
+import { switchMap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -31,7 +35,8 @@ export class ImportVocabularyComponent implements OnInit {
   import = new EventEmitter<void>()
 
   constructor(private importCodesService: ImportCodesService,
-              private importVocabulariesService: ImportVocabulariesService) {
+              private importVocabulariesService: ImportVocabulariesService,
+              private dialogService: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -49,8 +54,15 @@ export class ImportVocabularyComponent implements OnInit {
 
   onFileUpload(event: Event) {
     const csv = (event.target as HTMLInputElement).files[0]
+
     if (csv) {
-      this.importCodesService.loadCsv(csv)
+      this.dialogService.open(SetDelimiterDialogComponent, {
+        panelClass: 'perseus-dialog',
+        disableClose: true
+      }).afterClosed()
+        .pipe(
+          switchMap(delimiter => delimiter ? this.importCodesService.loadCsv(csv) : EMPTY)
+        )
         .subscribe(
           () => this.import.emit(),
           error => this.error = error

@@ -34,7 +34,27 @@ export const stateColumns = [
   {
     field: 'invalid_reason',
     name: 'invalid_reason'
-  }
+  },
+  {
+    field: 'test_field_long_name1',
+    name: 'test_field_long_name1'
+  },
+  {
+    field: 'test_field_long_name2',
+    name: 'test_field_long_name2'
+  },
+  {
+    field: 'test_field_long_name3',
+    name: 'test_field_long_name3'
+  },
+  {
+    field: 'test_field_long_name4',
+    name: 'test_field_long_name4'
+  },
+  {
+    field: 'test_field_long_name5',
+    name: 'test_field_long_name5'
+  },
 ]
 
 export const stateCodes = [
@@ -48,7 +68,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '952',
@@ -60,7 +80,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '948',
@@ -72,7 +92,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '1446',
@@ -84,7 +104,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '1362',
@@ -96,7 +116,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '954',
@@ -108,7 +128,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '1145',
@@ -120,7 +140,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '950',
@@ -132,7 +152,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '955',
@@ -144,7 +164,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '951',
@@ -156,7 +176,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '953',
@@ -168,7 +188,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '1445',
@@ -180,7 +200,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '2182',
@@ -192,7 +212,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '1364',
@@ -204,7 +224,7 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   },
   {
     source_code: '1604',
@@ -216,6 +236,6 @@ export const stateCodes = [
     valid_start_date: '1/1/1970',
     valid_end_date: '12/31/2099',
     invalid_reason: '\r',
-    selected: false
+    selected: true
   }
 ]

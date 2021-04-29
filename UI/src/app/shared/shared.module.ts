@@ -11,6 +11,7 @@ import { HintOverlayComponent } from './hint/hint-overlay/hint-overlay.component
 import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
 import { CdkTableModule } from '@angular/cdk/table';
+import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CdkTableModule } from '@angular/cdk/table';
     CloseDialogButtonComponent,
     HintComponent,
     HintOverlayComponent,
-    CdmCheckboxComponent
+    CdmCheckboxComponent,
+    SetDelimiterDialogComponent
   ],
   exports: [
     CommonModule,
