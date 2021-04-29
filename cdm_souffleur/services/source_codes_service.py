@@ -2,7 +2,9 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 from cdm_souffleur.model import atc_to_rxnorm
-from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder
+from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, ScoredConcept, MappingTarget, \
+    MappingStatus
+from cdm_souffleur.model.concept import Concept
 from cdm_souffleur.model.source_code import SourceCode
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING
@@ -84,17 +86,31 @@ def create_concept_mapping(current_user, file_name, source_code_column, source_n
     for source_code in source_codes:
         code_mapping = CodeMapping()
         code_mapping.source_code = source_code
-        code_mapping.targetConcepts = search(source_code.source_name).docs
-        code_mapping.source_code.source_auto_assigned_concept_ids = list(code_mapping.source_code.source_auto_assigned_concept_ids)
+        scored_concepts = search(source_code.source_name)
+        code_mapping = CodeMapping()
+        if len(scored_concepts):
+            code_mapping.targetConcepts = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
+            code_mapping.matchScore = scored_concepts[0].match_score
+        else:
+            code_mapping.matchScore = 0
+        if len(source_code.source_auto_assigned_concept_ids) == 1 and len(scored_concepts):
+            code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED_TO_1
+        elif len(source_code.source_auto_assigned_concept_ids) > 1 and len(scored_concepts):
+            code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED
         global_mapping_list.append(code_mapping)
-    test = json.dumps(global_mapping_list, indent=4, cls=CodeMappingEncoder)
     return json.dumps(global_mapping_list, indent=4, cls=CodeMappingEncoder)
 
 def search(query):
+    scored_concepts = []
     results = solr.search(f"term:{query}", **{
         'rows': 100,
-    })
-    return results
+        'fl': 'concept_id, term, score'
+    }).docs
+    for item in results:
+        if 'concept_id' in item:
+            target_concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
+            scored_concepts.append(ScoredConcept(item['score'], target_concept, item['term']))
+    return scored_concepts
 
 def test_solr():
     solr.add({

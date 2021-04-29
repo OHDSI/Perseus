@@ -1,7 +1,8 @@
 from json import JSONEncoder
 import json
 from build.lib.cdm_souffleur.model.source_code import SourceCode
-from enum import Enum, auto
+from enum import Enum
+from cdm_souffleur.model.concept import *
 
 class MappingStatus(str, Enum):
     APPROVED = "APPROVED"
@@ -31,7 +32,7 @@ class CodeMapping:
     def __init__(self, source_code = SourceCode(),
                  matchScore = 0,
                  mappingStatus = MappingStatus.UNCHECKED,
-                 equivalence = Equivalence.UNMATCHED,
+                 equivalence = Equivalence.UNREVIEWED,
                  targetConcepts = [],
                  comment = '',
                  statusSetBy = '',
@@ -42,7 +43,6 @@ class CodeMapping:
         self.mappingStatus = mappingStatus
         self.equivalence = equivalence
         self.targetConcepts = targetConcepts
-        self.targetConcepts = targetConcepts
         self.comment = comment
         self.statusSetBy = statusSetBy
         self.statusSetOn = statusSetOn
@@ -52,7 +52,7 @@ class CodeMapping:
         return json.dumps(self, default=lambda o: o.__dict__)
 
 
-class MappingConcept:
+class TargetConcept:
     def __init__(self, conceptId=0, conceptName="Unmapped", conceptClassId = '', vocabularyId = '',
                  conceptCode = '', domainId = '', validStartDate = '', validEndDate = '', invalidReason='',
                  standardConcept = "", additionalInformation = "", parentCount = 0, childCount = 0):
@@ -72,12 +72,22 @@ class MappingConcept:
 
 
 class MappingTarget:
-    def __init__(self, concept=MappingConcept(), mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0):
+    def __init__(self, concept=Concept(), mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0):
         self.concept = concept
         self.mappingType = mappingType
         self.createdBy = createdBy
         self.createdTime = createdTime
 
+
 class CodeMappingEncoder(JSONEncoder):
     def default(self, o):
         return o.__dict__
+
+
+class ScoredConcept:
+    def __init__(self, match_score=0, concept=Concept(), term = ''):
+        self.match_score = match_score
+        self.concept = concept
+        self.term = term
+
+
