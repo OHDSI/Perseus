@@ -1,6 +1,6 @@
 from json import JSONEncoder
 import json
-from build.lib.cdm_souffleur.model.source_code import SourceCode
+from cdm_souffleur.model.source_code import SourceCode
 from enum import Enum
 from cdm_souffleur.model.concept import *
 
