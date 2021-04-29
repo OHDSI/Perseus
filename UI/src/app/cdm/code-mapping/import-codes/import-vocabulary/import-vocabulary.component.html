@@ -53,11 +53,6 @@
       </div>
     </ng-template>
 
-    <div *ngIf="error" class="import-vocabulary__error">
-      {{error}}
-      <app-close-dialog-button class="import-vocabulary__error__close" (click)="onRemoveError()"></app-close-dialog-button>
-    </div>
-
     <div *ngIf="loading" class="import-vocabulary__blocker">
       <mat-spinner></mat-spinner>
     </div>

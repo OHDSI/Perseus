@@ -1,3 +1,6 @@
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
+
 export function parseHttpError(error) {
   if (typeof error === 'string') {
     return error;
@@ -12,4 +15,14 @@ export function parseHttpError(error) {
   } else {
     return null;
   }
+}
+
+export function openErrorDialog(dialogService: MatDialog, title: string, message: string, panelClass = 'perseus-dialog') {
+  dialogService.open(ErrorPopupComponent, {
+    panelClass,
+    data: {
+      title,
+      message
+    }
+  })
 }

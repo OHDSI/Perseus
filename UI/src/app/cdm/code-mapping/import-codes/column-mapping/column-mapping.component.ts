@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { codesRouter } from '../../../../app.constants';
+import { MatDialog } from '@angular/material/dialog';
+import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 
 @Component({
   selector: 'app-column-mapping',
@@ -15,7 +19,9 @@ export class ColumnMappingComponent implements OnInit {
 
   form: FormGroup
 
-  constructor(public importCodesService: ImportCodesService) {
+  constructor(public importCodesService: ImportCodesService,
+              private router: Router,
+              private dialogService: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -27,6 +33,11 @@ export class ColumnMappingComponent implements OnInit {
   }
 
   onApply() {
+    this.importCodesService.calculateScore(this.form.value)
+      .subscribe(
+        () => this.router.navigateByUrl(`${codesRouter}/mapping`),
+        error => openErrorDialog(this.dialogService, 'Failed to create Mapping', parseHttpError(error))
+      )
   }
 
   private initForm() {

@@ -94,35 +94,9 @@
 
   &__header,
   &__loading,
-  &__no-saved-vocabularies,
-  &__error {
+  &__no-saved-vocabularies {
     font-weight: 300;
     font-size: 14px;
-  }
-
-  &__error {
-    margin-top: 20px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 150px;
-    height: 35px;
-    color: red;
-    $self: &;
-
-    &:hover {
-      #{$self}__close {
-        display: block;
-      }
-    }
-
-    &__close {
-      display: none;
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
   }
 
   &__blocker {

@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { ImportVocabulariesService, Vocabulary } from '../../../../services/import-codes/import-vocabularies.service';
-import { parseHttpError } from '../../../../utilites/error';
+import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
 import { switchMap } from 'rxjs/operators';
@@ -25,8 +25,6 @@ export class ImportVocabularyComponent implements OnInit {
   showOther = false;
 
   loading = false;
-
-  error: string;
 
   @ViewChild('csvInput', {static: true})
   csvInput: ElementRef
@@ -65,7 +63,7 @@ export class ImportVocabularyComponent implements OnInit {
         )
         .subscribe(
           () => this.import.emit(),
-          error => this.error = error
+          error => openErrorDialog(this.dialogService, 'Failed to load CSV', parseHttpError(error))
         )
     }
   }
@@ -82,12 +80,8 @@ export class ImportVocabularyComponent implements OnInit {
         this.vocabularies = this.importVocabulariesService.vocabularies
         this.loading = false
       }, error => {
-        this.error = parseHttpError(error)
+        openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
         this.loading = false
       })
-  }
-
-  onRemoveError() {
-    this.error = null
   }
 }
