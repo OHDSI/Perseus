@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint, flash, url_for
 from cdm_souffleur.services.authorization_service import *
-from cdm_souffleur.services.source_codes_service import create_source_codes, load_codes_to_server, test_solr, \
+from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, test_solr, \
     create_concept_mapping
 
 usagi_api = Blueprint('usagi_api', __name__)
@@ -36,12 +36,3 @@ def load_codes_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(codes_file)
-
-@usagi_api.route('/api/test_solr', methods=['GET'])
-def test_solr_call():
-    """save schema to server and load it from server in the same request"""
-    try:
-        test_solr()
-    except Exception as error:
-        raise InvalidUsage('Codes were not loaded', 500)
-    return jsonify('OK')
