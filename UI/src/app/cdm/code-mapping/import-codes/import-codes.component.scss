@@ -1,0 +1,12 @@
+@import "variables";
+@import "mixins";
+
+:host {
+  width: 100%;
+  height: calc(100% - 40px);
+}
+
+.import-codes {
+  width: 100%;
+  height: 100%;
+}

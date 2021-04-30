@@ -1,0 +1,7 @@
+<div class="import-codes">
+  <app-column-mapping *ngIf="imported else importBlock"></app-column-mapping>
+
+  <ng-template #importBlock>
+    <app-import-vocabulary></app-import-vocabulary>
+  </ng-template>
+</div>

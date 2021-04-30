@@ -37,7 +37,7 @@ import * as cdmTypes from '../../popups/cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
 import { Observable } from 'rxjs/internal/Observable';
 import { BaseComponent } from '../../base/base.component';
-import { VocabularyObserverService } from '../../services/vocabulary-observer.service';
+import { VocabularyObserverService } from '../../services/vocabulary-search/vocabulary-observer.service';
 import { mainPageRouter } from '../../app.constants';
 import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
 

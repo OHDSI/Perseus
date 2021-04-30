@@ -1,0 +1,16 @@
+<div class="set-delimiter">
+  <app-close-dialog-button class="set-delimiter__close-icon" (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <h4 class="set-delimiter__header">Set Delimiter</h4>
+
+  <div class="set-delimiter__form">
+    <div class="set-delimiter__form__control">
+      <label for="delimiter">Delimiter</label>
+      <input id="delimiter" type="text" [(ngModel)]="delimiter" maxlength="1">
+    </div>
+
+    <div class="set-delimiter__form__submit">
+      <button [disabled]="disabled" (click)="onApply()">Apply</button>
+    </div>
+  </div>
+</div>

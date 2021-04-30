@@ -1,0 +1,14 @@
+@import "variables";
+@import "mixins";
+
+.column-mapping-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+
+  &__control {
+    @include perseus-control();
+    @include form-control();
+    margin-bottom: 20px;
+  }
+}

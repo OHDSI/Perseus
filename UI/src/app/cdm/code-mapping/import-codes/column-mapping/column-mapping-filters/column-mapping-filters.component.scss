@@ -1,0 +1,30 @@
+@import "mixins";
+
+.column-filters {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  height: 253px;
+  padding: 20px 0;
+
+  &__header {
+    @include code-mapping-header;
+    margin-bottom: 16px;
+  }
+
+  &__form {
+    &__control {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+
+      svg {
+        margin-right: 8px;
+      }
+
+      label {
+        margin-left: 2px;
+      }
+    }
+  }
+}

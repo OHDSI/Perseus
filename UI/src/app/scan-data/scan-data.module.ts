@@ -4,7 +4,6 @@ import { TablesToScanComponent } from './scan-data-dialog/scan-data-form/tables-
 import { TableToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/table-to-scan/table-to-scan.component';
 import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-data-form.component';
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
-import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
 import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
@@ -38,7 +37,6 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     TableToScanComponent,
     ScanParamsComponent,
     ScanDataFormComponent,
-    ScanDataCheckboxComponent,
     ConnectionErrorPopupComponent,
     ScanDataDialogComponent,
     ConnectFormComponent,

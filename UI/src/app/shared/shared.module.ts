@@ -9,6 +9,9 @@ import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-b
 import { HintComponent } from './hint/hint.component';
 import { HintOverlayComponent } from './hint/hint-overlay/hint-overlay.component';
 import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
+import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
+import { CdkTableModule } from '@angular/cdk/table';
+import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,9 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
-    HintOverlayComponent
+    HintOverlayComponent,
+    CdmCheckboxComponent,
+    SetDelimiterDialogComponent
   ],
   exports: [
     CommonModule,
@@ -27,12 +32,15 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
     TypeToIconPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
-    HintComponent
+    HintComponent,
+    CdmCheckboxComponent,
+    CdkTableModule
   ],
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
-    NgxTrimDirectiveModule
+    NgxTrimDirectiveModule,
+    CdkTableModule
   ]
 })
 export class SharedModule { }

@@ -1,0 +1,23 @@
+<div class="column-filters">
+  <div class="column-filters__header">
+    Filters
+  </div>
+
+  <form class="column-filters__form">
+    <div class="column-filters__form__control">
+      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="4" cy="4" r="4" fill="#761C1C"/>
+      </svg>
+      <app-cdm-checkbox [background]="checkboxBackground"></app-cdm-checkbox>
+      <label>By user selected concepts</label>
+    </div>
+
+    <div class="column-filters__form__control">
+      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="4" cy="4" r="4" fill="#406C95"/>
+      </svg>
+      <app-cdm-checkbox [background]="checkboxBackground"></app-cdm-checkbox>
+      <label>By standard concepts</label>
+    </div>
+  </form>
+</div>

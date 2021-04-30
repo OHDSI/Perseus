@@ -15,7 +15,7 @@ import {
   VocabSearchReqParams,
   VocabSearchResult,
   VocabularySearchService
-} from '../services/vocabulary-search.service';
+} from '../services/vocabulary-search/vocabulary-search.service';
 import { Concept } from './concept';
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import { BaseComponent } from '../base/base.component';
 import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
 import { of } from 'rxjs';
-import { VocabularySearchStateService } from '../services/vocabulary-search-state.service';
+import { VocabularySearchStateService } from '../services/vocabulary-search/vocabulary-search-state.service';
 
 @Component({
   selector: 'app-vocabulary-search',

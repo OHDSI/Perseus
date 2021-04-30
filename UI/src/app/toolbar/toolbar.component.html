@@ -24,35 +24,48 @@
       <mat-icon svgIcon="new_mapping"></mat-icon>
       <span>New Mapping</span>
     </button>
+
     <input #sourceUpload
            type="file"
            accept=".xlsx, .xls"
            (change)="onFileUpload($event)"
            hidden />
+
     <input #mappingUpload
            type="file"
            accept=".etl"
            (change)="onMappingUpload($event)"
            hidden />
+
     <button mat-menu-item
             (click)="openLoadMappingDialog()">
       <mat-icon svgIcon="mapping"></mat-icon>
       <span>Open Mapping</span>
     </button>
+
     <button mat-menu-item
             (click)="openSaveMappingDialog()">
       <mat-icon svgIcon="save"></mat-icon>
       <span>Save Mapping</span>
     </button>
+
     <button mat-menu-item [matMenuTriggerFor]="convertData">
       <mat-icon svgIcon="convert_data"></mat-icon>
       <span>Convert Data</span>
     </button>
+
     <button mat-menu-item
             (click)="showVocabulary()">
       <mat-icon svgIcon="vocabulary"></mat-icon>
       <span>Vocabulary</span>
     </button>
+
+    <button mat-menu-item
+            (click)="codeMapping()">
+      <mat-icon svgIcon="code_mapping"></mat-icon>
+      <span>Code Mapping</span>
+    </button>
+
     <button mat-menu-item
             (click)="resetAllMappings()">
       <mat-icon svgIcon="reset"></mat-icon>

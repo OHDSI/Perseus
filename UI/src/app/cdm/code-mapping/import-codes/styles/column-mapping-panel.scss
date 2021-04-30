@@ -1,0 +1,43 @@
+@import "variables";
+@import "mixins";
+
+$filtersWidth: 394px;
+
+.column-mapping-panel {
+  position: relative;
+  width: $filtersWidth;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 30px 76px;
+
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, #E7E7E7 22.56%, #D8E3EC 100%);
+    opacity: 0.3;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
+    border-radius: 0 12px 12px 0;
+    z-index: -1;
+  }
+
+  &__header {
+    @include code-mapping-header()
+  }
+
+  &__border {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: #066BBB;
+    opacity: 0.2;
+
+    &.top-border {
+      margin-top: 10px;
+    }
+  }
+}

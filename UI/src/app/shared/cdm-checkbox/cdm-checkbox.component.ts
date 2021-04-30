@@ -3,18 +3,18 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => ScanDataCheckboxComponent),
+  useExisting: forwardRef(() => CdmCheckboxComponent),
   multi: true
 };
 
 @Component({
-  selector: 'app-scan-data-checkbox',
-  templateUrl: './scan-data-checkbox.component.html',
-  styleUrls: ['./scan-data-checkbox.component.scss'],
+  selector: 'app-cdm-checkbox',
+  templateUrl: './cdm-checkbox.component.html',
+  styleUrls: ['./cdm-checkbox.component.scss'],
   providers: [VALUE_ACCESSOR],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScanDataCheckboxComponent implements ControlValueAccessor {
+export class CdmCheckboxComponent implements ControlValueAccessor {
 
   @Input()
   background = '#FFFFFF';
