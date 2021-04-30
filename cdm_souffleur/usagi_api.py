@@ -30,7 +30,7 @@ def load_codes_call(current_user):
     """save schema to server and load it from server in the same request"""
     try:
         file = request.files['file']
-        delimiter = request.json['delimiter']
+        delimiter = request.form['delimiter']
         codes_file = load_codes_to_server(file, delimiter, current_user)
     except InvalidUsage as error:
         raise error
