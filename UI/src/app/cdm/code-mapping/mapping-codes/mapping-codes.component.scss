@@ -1,0 +1,25 @@
+@import "variables";
+@import "mixins";
+
+.mapping-codes {
+
+  &__header {
+    h3 {
+      @include perseus-header();
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      @include cdm-button();
+      width: 80px;
+
+      &.cancel {
+        margin-right: 15px;
+      }
+    }
+  }
+}

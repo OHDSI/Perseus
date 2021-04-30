@@ -19,6 +19,8 @@ export class ColumnMappingComponent implements OnInit {
 
   form: FormGroup
 
+  checkedAll: boolean;
+
   constructor(public importCodesService: ImportCodesService,
               private router: Router,
               private dialogService: MatDialog) {
@@ -26,6 +28,8 @@ export class ColumnMappingComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm()
+
+    this.setCheckedAll()
   }
 
   onBack() {
@@ -48,5 +52,9 @@ export class ColumnMappingComponent implements OnInit {
       autoConceptId: new FormControl(null),
       additionalInfo: new FormControl(null),
     })
+  }
+
+  private setCheckedAll() {
+    this.checkedAll = this.importCodesService.codes.every(code => code.selected)
   }
 }

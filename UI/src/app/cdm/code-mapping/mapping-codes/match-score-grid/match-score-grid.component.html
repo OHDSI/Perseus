@@ -5,25 +5,31 @@
          [style.height]="height"
          [style.width]="width">
 
-    <ng-container cdkColumnDef="__select__">
-      <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
-        <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
-      </th>
+    <ng-container *ngFor="let codeMapping of data">
+      <ng-container cdkColumnDef="__select__">
+        <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
+          <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
+        </th>
 
-      <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
-        <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
-      </td>
+        <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
+          <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container *ngFor="let sourceColumn of sourceColumns">
+
+      </ng-container>
     </ng-container>
 
     <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
-
       <th class="column cell"
           cdk-header-cell *cdkHeaderCellDef
           perseus-grid-column
           [column]="column"
           [sortable]="sortable"
           [sortParams]="sortParams"
-          (sort)="onSort($event)"></th>
+          (sort)="onSort($event)">
+      </th>
 
       <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
     </ng-container>

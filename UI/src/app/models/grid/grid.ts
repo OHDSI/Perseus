@@ -8,3 +8,5 @@ export interface Sort {
   field: string;
   order: string
 }
+
+export const columnToField = (column: Column) => column.field

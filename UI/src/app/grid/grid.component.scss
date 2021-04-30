@@ -61,36 +61,6 @@ $row-height: 32px;
       .column {
         padding-right: 10px;
         background-color: #404040;
-
-        .sortable-column {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-
-          svg {
-            margin-left: 12px;
-            cursor: pointer;
-          }
-
-          &:hover {
-            svg {
-              display: block;
-            }
-          }
-
-          &.sortable-asc,
-          &.sortable-desc {
-            svg {
-              display: block;
-            }
-          }
-
-          &.sortable-asc {
-            svg {
-              transform: rotate(270deg);
-            }
-          }
-        }
       }
 
       .cell {
