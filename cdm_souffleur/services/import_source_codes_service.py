@@ -103,9 +103,7 @@ def create_concept_mapping(current_user, file_name, source_code_column, source_n
         scored_concepts = search(source_code.source_name)
         code_mapping = CodeMapping()
         if len(scored_concepts):
-            concept = scored_concepts[0].concept
-            target_concept = create_target_concept(concept)
-            code_mapping.targetConcepts = MappingTarget(concept=target_concept, createdBy='<auto>')
+            code_mapping.targetConcepts = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
             code_mapping.matchScore = scored_concepts[0].match_score
         else:
             code_mapping.matchScore = 0
@@ -142,5 +140,6 @@ def search(query):
     for item in results:
         if 'concept_id' in item:
             target_concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
-            scored_concepts.append(ScoredConcept(item['score'], target_concept, item['term']))
+            concept = create_target_concept(target_concept)
+            scored_concepts.append(ScoredConcept(item['score'], concept, item['term']))
     return scored_concepts

@@ -151,7 +151,7 @@ export class DataService {
               .map((percentage, index) => ({
                 value: info.top_10[index],
                 frequency: info.frequency[index],
-                percentage: (percentage * 100).toFixed(2)
+                percentage: (percentage * 100).toFixed(5)
               }))
           };
         })

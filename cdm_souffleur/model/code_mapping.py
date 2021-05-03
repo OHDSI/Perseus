@@ -27,31 +27,6 @@ class Type(str, Enum):
     MAPS_TO_VALUE = "MAPS_TO_VALUE"
     MAPS_TO_UNIT = "MAPS_TO_UNIT"
 
-
-class CodeMapping:
-    def __init__(self, source_code = SourceCode(),
-                 matchScore = 0,
-                 mappingStatus = MappingStatus.UNCHECKED,
-                 equivalence = Equivalence.UNREVIEWED,
-                 targetConcepts = [],
-                 comment = '',
-                 statusSetBy = '',
-                 statusSetOn = 0,
-                 assignedReviewer = ''):
-        self.source_code = source_code
-        self.matchScore = matchScore
-        self.mappingStatus = mappingStatus
-        self.equivalence = equivalence
-        self.targetConcepts = targetConcepts
-        self.comment = comment
-        self.statusSetBy = statusSetBy
-        self.statusSetOn = statusSetOn
-        self.assignedReviewer = assignedReviewer
-
-    def toJson(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
-
-
 class TargetConcept:
     def __init__(self, conceptId=0, conceptName="Unmapped", conceptClassId = '', vocabularyId = '',
                  conceptCode = '', domainId = '', validStartDate = '', validEndDate = '', invalidReason='',
@@ -79,6 +54,30 @@ class MappingTarget:
         self.createdTime = createdTime
 
 
+class CodeMapping:
+    def __init__(self, source_code = SourceCode(),
+                 matchScore = 0,
+                 mappingStatus = MappingStatus.UNCHECKED,
+                 equivalence = Equivalence.UNREVIEWED,
+                 targetConcepts = TargetConcept(),
+                 comment = '',
+                 statusSetBy = '',
+                 statusSetOn = 0,
+                 assignedReviewer = ''):
+        self.source_code = source_code
+        self.matchScore = matchScore
+        self.mappingStatus = mappingStatus
+        self.equivalence = equivalence
+        self.targetConcepts = targetConcepts
+        self.comment = comment
+        self.statusSetBy = statusSetBy
+        self.statusSetOn = statusSetOn
+        self.assignedReviewer = assignedReviewer
+
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
+
+
 class CodeMappingEncoder(JSONEncoder):
     def default(self, o):
         return o.__dict__
@@ -91,3 +90,6 @@ class ScoredConcept:
         self.term = term
 
 
+class ScoredConceptEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
