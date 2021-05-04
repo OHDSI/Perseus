@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { CdmBuilderStatus } from '../../scan-data/model/cdm-builder-status';
+import { CdmBuilderStatus } from '../../models/scan-data/cdm-builder-status';
 import { cdmBuilderApiUrl } from '../../app.constants';
-import { CdmSettings } from '../../scan-data/model/cdm-settings';
+import { CdmSettings } from '../../models/scan-data/cdm-settings';
 import { map, switchMap } from 'rxjs/operators';
-import { ConnectionResult } from '../../scan-data/model/connection-result';
+import { ConnectionResult } from '../../models/scan-data/connection-result';
 import { DataService } from '../data.service';
 import { BridgeService } from '../bridge.service';
 import { StoreService } from '../store.service';

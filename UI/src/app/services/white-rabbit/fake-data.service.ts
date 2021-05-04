@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FakeDataParams } from '../../scan-data/model/fake-data-params';
+import { FakeDataParams } from '../../models/scan-data/fake-data-params';
 import { Observable } from 'rxjs';
 import { apiUrl, whiteRabbitApiUrl } from '../../app.constants';
 

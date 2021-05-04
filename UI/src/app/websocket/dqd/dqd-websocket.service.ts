@@ -2,7 +2,7 @@ import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { DqdService } from '../../services/data-quality-check/dqd.service';
 import { dqdWsUrl } from '../../app.constants';
-import { DbSettings } from '../../scan-data/model/db-settings';
+import { DbSettings } from '../../models/scan-data/db-settings';
 import { Injectable } from '@angular/core';
 
 @Injectable()

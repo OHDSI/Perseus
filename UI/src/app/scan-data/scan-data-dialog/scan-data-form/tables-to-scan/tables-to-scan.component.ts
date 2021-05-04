@@ -9,12 +9,12 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { TableToScan } from '../../../model/table-to-scan';
+import { TableToScan } from '../../../../models/scan-data/table-to-scan';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ConnectionResult } from '../../../model/connection-result';
+import { ConnectionResult } from '../../../../models/scan-data/connection-result';
 import { takeUntil } from 'rxjs/operators';
-import { ScanParams } from '../../../model/scan-params';
-import { BaseComponent } from '../../../../base/base.component';
+import { ScanParams } from '../../../../models/scan-data/scan-params';
+import { BaseComponent } from '../../../../shared/base/base.component';
 import { ScanParamsComponent } from './scan-params/scan-params.component';
 
 @Component({

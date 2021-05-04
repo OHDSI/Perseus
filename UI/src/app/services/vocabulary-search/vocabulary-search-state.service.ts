@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { VocabSearchMode, VocabSearchReqParams } from './vocabulary-search.service';
-import { FilterValue } from '../vocabulary-search/filter-list/filter-list.component';
-import { Concept } from '../vocabulary-search/concept';
-import { Filter } from '../vocabulary-search/filter-item/filter-item.component';
+import { FilterValue } from '../../vocabulary-search/filter-list/filter-list.component';
+import { Concept } from '../../models/vocabulary-search/concept';
+import { Filter } from '../../vocabulary-search/filter-item/filter-item.component';
 
 export interface VocabSearchState {
   requestParams: VocabSearchReqParams;
