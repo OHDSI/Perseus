@@ -5,7 +5,7 @@ from flask import request, jsonify, Blueprint, flash, url_for
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping, search
+    create_concept_mapping, search, create_core
 
 usagi_api = Blueprint('usagi_api', __name__)
 
@@ -48,7 +48,7 @@ def load_codes_call(current_user):
 def get_term_search_results_call(current_user):
     try:
         term = request.args['term']
-        search_result = search(term)
+        search_result = search(current_user, term)
     except InvalidUsage as error:
         raise error
     except Exception as error:

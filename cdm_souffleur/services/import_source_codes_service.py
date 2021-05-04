@@ -1,3 +1,6 @@
+from shutil import rmtree, copytree, copyfile, ignore_patterns, move, copy
+from urllib.request import urlopen
+
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -7,11 +10,14 @@ from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, Sc
 from cdm_souffleur.model.concept import Concept
 from cdm_souffleur.model.source_code import SourceCode
 from cdm_souffleur.utils import InvalidUsage
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH
 import pysolr
 from cdm_souffleur import app, json
+from os import path
+from urllib.request import urlopen
 
-solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/test1/", always_commit=True)
+
+solr_admin = pysolr.SolrCoreAdmin('http://localhost:8983/solr/admin/cores')
 
 
 def create_source_codes(current_user, file_name, source_code_column, source_name_column, source_frequency_column,
@@ -81,7 +87,9 @@ def csv_to_json(filepath, delimiter):
     return json_file
 
 
-def create_derived_index(source_codes):
+def create_derived_index(current_user, source_codes):
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
+                       always_commit=True)
     for item in source_codes:
         solr.add({
             "term": item.source_name,
@@ -95,13 +103,14 @@ def create_concept_mapping(current_user, file_name, source_code_column, source_n
     source_codes = create_source_codes(current_user, file_name, source_code_column, source_name_column,
                                        source_frequency_column, auto_concept_id_column, concept_ids_or_atc,
                                        additional_info_columns)
-    create_derived_index(source_codes)
+    create_core(current_user)
+    create_derived_index(current_user, source_codes)
     global_mapping_list = []
     for source_code in source_codes:
         code_mapping = CodeMapping()
         code_mapping.source_code = source_code
-        scored_concepts = search(source_code.source_name)
-        code_mapping = CodeMapping()
+        code_mapping.source_code.source_auto_assigned_concept_ids = list(code_mapping.source_code.source_auto_assigned_concept_ids)
+        scored_concepts = search(current_user, source_code.source_name)
         if len(scored_concepts):
             code_mapping.targetConcepts = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
             code_mapping.matchScore = scored_concepts[0].match_score
@@ -131,7 +140,9 @@ def create_target_concept(concept):
                          concept.parent_count)
 
 
-def search(query):
+def search(current_user, query):
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
+                       always_commit=True)
     scored_concepts = []
     results = solr.search(f"term:{query}", **{
         'rows': 100,
@@ -143,3 +154,33 @@ def search(query):
             concept = create_target_concept(target_concept)
             scored_concepts.append(ScoredConcept(item['score'], concept, item['term']))
     return scored_concepts
+
+
+def create_core(current_user):
+    core_path = f"{SOLR_PATH}/{current_user}"
+    if path.exists(core_path):
+        urlopen(f"http://localhost:8983/solr/admin/cores?action=UNLOAD&core={current_user}")
+        rmtree(f"{SOLR_PATH}/{current_user}")
+        create_user_core(core_path, current_user)
+    else:
+        create_user_core(core_path, current_user)
+    return True
+
+def create_user_core(core_path, current_user):
+    os.makedirs(core_path)
+    copytree(f"{SOLR_PATH}/concepts/conf", f"{core_path}/conf")
+    urlopen(f"http://localhost:8983/solr/admin/cores?action=CREATE&name={current_user}")
+    os.remove(os.path.join(f"{core_path}/data/index/segments_1"))
+    try:
+        urlopen(f"http://localhost:8983/solr/admin/cores?action=RELOAD&core={current_user}")
+    except:
+        copy_index(core_path, current_user)
+        urlopen(f"http://localhost:8983/solr/admin/cores?action=RELOAD&core={current_user}")
+    return True
+
+
+def copy_index(core_path, current_user):
+    file_names = os.listdir(f"{SOLR_PATH}/concepts/data/index")
+    for file_name in file_names:
+        if file_name != 'write.lock':
+            copyfile(os.path.join(f"{SOLR_PATH}/concepts/data/index", file_name), f"{core_path}/data/index/{file_name}")

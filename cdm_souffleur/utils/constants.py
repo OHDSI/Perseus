@@ -28,6 +28,7 @@ REGISTRATION_LINK_EXPIRATION_TIME = 172800 # 48 hours
 CONCEPT_IDS = 'Auto concept ID column'
 ATC = 'ATC column'
 SOURCE_CODE_TYPE_STRING = "S"
+SOLR_PATH = "../../solr-8.8.1/solr-8.8.1/server/solr"
 
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
