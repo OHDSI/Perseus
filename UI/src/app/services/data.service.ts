@@ -10,6 +10,7 @@ import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { ColumnInfo } from '../cdm/comfy/columns-list/column-info/column-info.component';
 import { apiUrl } from '../app.constants';
+import { removeExtension } from '../utilites/file';
 
 const URL = apiUrl;
 
@@ -79,25 +80,11 @@ export class DataService {
   }
 
   getZippedXml(mapping: Mapping): Observable<any> {
-    return this.getXmlPreview(mapping).pipe(
-      switchMap(() => {
-        const headers = new Headers();
-        headers.set('Content-type', 'application/json; charset=UTF-8');
-        headers.set('Cache-Control',  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0');
-        headers.set('Pragma', 'no-cache');
-        headers.set('Expires', '0');
-
-        const init = {
-          method: 'GET',
-          headers
-        };
-
-        const url = `${URL}/get_zip_xml`;
-        const request = new Request(url, init);
-
-        return this.httpService.getZipXml();
-      })
-    );
+    const reportName = removeExtension(this.storeService.state.report) ?? 'mapping'
+    return this.getXmlPreview(mapping)
+      .pipe(
+        switchMap(() => this.httpService.getZipXml(reportName))
+      )
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {
