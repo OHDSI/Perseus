@@ -1,7 +1,11 @@
+import json
+
 from flask import request, jsonify, Blueprint, flash, url_for
+
+from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping
+    create_concept_mapping, search
 
 usagi_api = Blueprint('usagi_api', __name__)
 
@@ -37,3 +41,16 @@ def load_codes_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(codes_file)
+
+
+@usagi_api.route('/api/get_term_search_results', methods=['GET'])
+@token_required
+def get_term_search_results_call(current_user):
+    try:
+        term = request.args['term']
+        search_result = search(term)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)

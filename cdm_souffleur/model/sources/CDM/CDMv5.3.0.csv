@@ -216,7 +216,7 @@ measurement_date,Yes,No,DATE,The date of the Measurement.,measurement
 measurement_type_concept_id,Yes,No,INTEGER,A foreign key to the predefined Concept in the Standardized Vocabularies reflecting the provenance from where the Measurement record was recorded.,measurement
 value_as_string,No,Yes,NVARCHAR,The metadata value stored as a string.,metadata
 value_as_concept_id,No,Yes,INTEGER,A foreign key to a metadata value stored as a Concept ID.,metadata
-metadata date,No,Yes,DATE,The date associated with the metadata,metadata
+metadata_date,No,Yes,DATE,The date associated with the metadata,metadata
 metadata_datetime,No,Yes,DATETIME,The date and time associated with the metadata,metadata
 metadata_concept_id,Yes,No,INTEGER,A foreign key that refers to a Standard Metadata Concept identifier in the Standardized Vocabularies.,metadata
 metadata_type_concept_id,Yes,No,INTEGER,A foreign key that refers to a Standard Type Concept identifier in the Standardized Vocabularies.,metadata
