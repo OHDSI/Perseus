@@ -4,8 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
-import { JwtInterceptor } from './services/auth/jwt.interceptor';
-import { ServerErrorInterceptor } from './server-error/server-error.interceptor';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { ServerErrorInterceptor } from './interceptors/server-error.interceptor';
 
 @NgModule({
   declarations: [

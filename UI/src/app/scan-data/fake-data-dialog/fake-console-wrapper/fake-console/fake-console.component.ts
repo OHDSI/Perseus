@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
-import { ConsoleComponent } from '../../../shared/scan-console-wrapper/console/console.component';
+import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { FakeDataWebsocketService } from '../../../../websocket/white-rabbit/fake-data/fake-data-websocket.service';
 import { FakeDataService } from '../../../../services/white-rabbit/fake-data.service';
 import {
   ProgressNotification,
   ProgressNotificationStatus,
   ProgressNotificationStatusCode
-} from '../../../model/progress-notification';
+} from '../../../../models/scan-data/progress-notification';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-fake-console',
-  templateUrl: '../../../shared/scan-console-wrapper/console/console.component.html',
-  styleUrls: ['../../../shared/scan-console-wrapper/console/console.component.scss'],
+  templateUrl: '../../../auxiliary/scan-console-wrapper/console/console.component.html',
+  styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [FakeDataWebsocketService]
 })
 export class FakeConsoleComponent extends ConsoleComponent {

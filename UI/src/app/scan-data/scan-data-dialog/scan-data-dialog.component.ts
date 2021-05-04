@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { ScanConsoleWrapperComponent } from './scan-console-wrapper/scan-console-wrapper.component';
-import { WebsocketParams } from '../model/websocket-params';
+import { WebsocketParams } from '../../models/scan-data/websocket-params';
 
 @Component({
   selector: 'app-scan-data-dialog',

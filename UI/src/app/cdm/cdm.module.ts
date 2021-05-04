@@ -17,10 +17,10 @@ import { ReportGenerationService } from '../services/report-generation.service';
 import { StoreService } from '../services/store.service';
 import { UploadService } from '../services/upload.service';
 import { VocabulariesService } from '../services/vocabularies.service';
-import { VocabularyObserverService } from '../services/vocabulary-observer.service';
+import { VocabularyObserverService } from '../services/vocabulary-search/vocabulary-observer.service';
 import { OverlayService } from '../services/overlay/overlay.service';
-import { VocabularySearchService } from '../services/vocabulary-search.service';
-import { VocabularySearchStateService } from '../services/vocabulary-search-state.service';
+import { VocabularySearchService } from '../services/vocabulary-search/vocabulary-search.service';
+import { VocabularySearchStateService } from '../services/vocabulary-search/vocabulary-search-state.service';
 import { ScanDataService } from '../services/white-rabbit/scan-data.service';
 import { ScanDataStateService } from '../services/white-rabbit/scan-data-state.service';
 import { ScanDataUploadService } from '../services/white-rabbit/scan-data-upload.service';
@@ -34,7 +34,7 @@ import { ICON_NAMES } from './icons';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
-import { MappingGuard } from './mapping/mapping.guard';
+import { MappingGuard } from '../guards/mapping/mapping.guard';
 
 @NgModule({
   declarations: [CdmComponent],
