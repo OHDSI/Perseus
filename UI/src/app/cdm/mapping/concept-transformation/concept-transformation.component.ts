@@ -210,14 +210,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   updateLookupValue(updatedLookup: string, lookupType: string) {
     if (updatedLookup) {
       this.conceptsTable.lookup[ 'value' ] = updatedLookup;
-      this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType).subscribe(res => {
+      this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType, this.getLookupName()).subscribe(res => {
         console.log(res);
       });
     } else {
       this.lookupService.getLookup(this.conceptsTable.lookup[ 'originName' ], lookupType).subscribe(data => {
         if (data) {
           this.conceptsTable.lookup[ 'value' ] = data;
-          this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType).subscribe(res => {
+          this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType, this.getLookupName()).subscribe(res => {
             console.log(res);
           });
 

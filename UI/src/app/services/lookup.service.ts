@@ -21,8 +21,9 @@ export class LookupService {
     return this.httpService.getLookupsList(lookupType);
   }
 
-  saveLookup(lookup, lookupType): Observable<any> {
-    const { name, value } = lookup;
+  saveLookup(lookup, lookupType, lookupName?): Observable<any> {
+    const { value } = lookup;
+    const name = lookupName || lookup['name']
     return this.httpService.saveLookup({ name, value, lookupType });
   }
 
