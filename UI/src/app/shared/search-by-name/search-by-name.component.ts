@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } 
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../base/base.component';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-search-by-name',

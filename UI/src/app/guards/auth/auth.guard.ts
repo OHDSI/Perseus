@@ -8,8 +8,8 @@ import {
   RouterStateSnapshot,
   UrlSegment
 } from '@angular/router';
-import { AuthService } from './auth.service';
-import { authInjector } from './auth-injector';
+import { AuthService } from '../../services/auth/auth.service';
+import { authInjector } from '../../services/auth/auth-injector';
 import { loginRouter } from '../../app.constants';
 import { Observable } from 'rxjs/internal/Observable';
 

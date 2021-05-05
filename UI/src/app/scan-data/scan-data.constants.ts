@@ -1,5 +1,5 @@
-import { cdmBuilderLogUrl, dbServer, whiteRabbitPrefix, whiteRabbitWsUrl } from '../app.constants';
-import { DbSettings } from './model/db-settings';
+import { dbServer } from '../app.constants';
+import { DbSettings } from '../models/scan-data/db-settings';
 import { adaptDbType } from '../utilites/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
@@ -54,18 +54,6 @@ export const cdmBuilderDatabaseTypes: string[] = [
 ];
 
 export const fakeData = 'Fake Data';
-
-export const whiteRabbitWebsocketConfig = {
-  url: whiteRabbitWsUrl,
-  prefix: whiteRabbitPrefix,
-  progressMessagesDestination: '/user/queue/reply',
-};
-
-export const cdmWebsocketConfig = {
-  url: cdmBuilderLogUrl,
-  prefix: '',
-  progressMessagesDestination: 'Log',
-};
 
 export const dictionaryDbSettingForCdmBuilder = {
   vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),

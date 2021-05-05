@@ -16,15 +16,14 @@
     </ng-container>
 
     <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
-
       <th class="column cell"
           cdk-header-cell *cdkHeaderCellDef
           perseus-grid-column
           [column]="column"
           [sortable]="sortable"
           [sortParams]="sortParams"
-          (sort)="onSort($event)"></th>
-
+          (sort)="onSort($event)">
+      </th>
       <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
     </ng-container>
 

@@ -20,11 +20,12 @@ export class LogoutComponent {
     this.loading = true
     this.authService.logout()
       .pipe(
-        finalize(() => this.loading = false)
+        finalize(() => {
+          this.loading = false
+          this.dialogRef.close()
+        })
       )
-      .subscribe(
-        () => this.dialogRef.close()
-      )
+      .subscribe(() => {})
   }
 
   onClose() {

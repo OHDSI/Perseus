@@ -1,21 +1,39 @@
 @import "variables";
 @import "mixins";
 
+:host {
+  width: 100%;
+  height: calc(100% - 40px); // 40px - header height
+}
+
 .mapping-codes {
+  padding: 23px 70px 23px 81px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &__header {
+    display: flex;
+    justify-content: space-between;
+
     h3 {
       @include perseus-header();
     }
   }
 
+  &__grid-wrapper {
+    height: calc(100% - 104px);
+  }
+
   &__footer {
     display: flex;
     justify-content: flex-end;
+    margin-top: 48px;
 
     button {
       @include cdm-button();
       width: 80px;
+      height: 33px;
 
       &.cancel {
         margin-right: 15px;

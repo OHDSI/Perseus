@@ -7,7 +7,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordRegex } from '../auxiliary/regexes';
 import { parseHttpError } from '../../utilites/error';
 import { configurePasswordFormControls } from '../auxiliary/password-form-controls';
-import { AuthStateService } from '../auth-state.service';
+import { AuthStateService } from '../../services/auth/auth-state.service';
 import { filter } from 'rxjs/operators';
 
 @Component({

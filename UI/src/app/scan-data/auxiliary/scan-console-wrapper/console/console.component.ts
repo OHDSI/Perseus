@@ -1,8 +1,11 @@
 import { ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
+import {
+  ProgressNotification,
+  ProgressNotificationStatusCode
+} from '../../../../models/scan-data/progress-notification';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../../../base/base.component';
-import { WebsocketParams } from '../../../model/websocket-params';
+import { BaseComponent } from '../../../../shared/base/base.component';
+import { WebsocketParams } from '../../../../models/scan-data/websocket-params';
 import { WebsocketService } from '../../../../websocket/websocket.service';
 
 export abstract class ConsoleComponent extends BaseComponent implements OnInit {

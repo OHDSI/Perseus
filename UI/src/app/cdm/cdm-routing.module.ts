@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CdmComponent } from './cdm.component';
-import { MappingGuard } from './mapping/mapping.guard';
+import { MappingGuard } from '../guards/mapping/mapping.guard';
 
 const routes: Routes = [
   {

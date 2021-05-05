@@ -14,7 +14,7 @@ import { FakeDataDialogComponent } from '../scan-data/fake-data-dialog/fake-data
 import { Observable } from 'rxjs/internal/Observable';
 import { CdmDialogComponent } from '../scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '../scan-data/dqd-dialog/dqd-dialog.component';
-import { BaseComponent } from '../base/base.component';
+import { BaseComponent } from '../shared/base/base.component';
 import { VocabularyObserverService } from '../services/vocabulary-search/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
 import { codesRouter, mainPageRouter } from '../app.constants';

@@ -16,10 +16,10 @@ import {
   VocabSearchResult,
   VocabularySearchService
 } from '../services/vocabulary-search/vocabulary-search.service';
-import { Concept } from './concept';
+import { Concept } from '../models/vocabulary-search/concept';
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { BaseComponent } from '../base/base.component';
+import { BaseComponent } from '../shared/base/base.component';
 import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
 import { of } from 'rxjs';

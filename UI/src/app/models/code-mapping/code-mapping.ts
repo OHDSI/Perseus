@@ -4,16 +4,16 @@ import { Selectable } from '../grid/selectable';
 
 export class CodeMapping implements Selectable {
 
-  constructor(public sourceCode: SourceConcept,
+  constructor(public sourceConcept: SourceConcept,
               public targetConcept: TargetConcept,
               public matchScore: number) {
   }
 
   get selected() {
-    return this.sourceCode.selected
+    return this.sourceConcept.selected
   }
 
   set selected(selected: boolean) {
-    this.sourceCode.selected = selected
+    this.sourceConcept.selected = selected
   }
 }

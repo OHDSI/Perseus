@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Column, Sort } from '../../models/grid/grid';
+import { Column, Sort } from '../../../models/grid/grid';
 
 @Component({
   selector: '[perseus-grid-column]',

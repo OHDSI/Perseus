@@ -3,9 +3,9 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { EMPTY, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppConnectorService } from '../services/app-connector.service';
-import { ServerErrorComponent } from './server-error.component';
-import { ServerNotRespondingPopupComponent } from './server-not-responding-popup/server-not-responding-popup.component';
-import { ServerErrorPopupComponent } from './server-error-popup/server-error-popup.component';
+import { ServerErrorComponent } from '../server-error/server-error.component';
+import { ServerNotRespondingPopupComponent } from '../server-error/server-not-responding-popup/server-not-responding-popup.component';
+import { ServerErrorPopupComponent } from '../server-error/server-error-popup/server-error-popup.component';
 import { externalUrls } from '../app.constants';
 
 @Injectable()
@@ -24,8 +24,12 @@ export class ServerErrorInterceptor implements HttpInterceptor {
             throw error
           }
 
+          if (this.appConnector.isOpen) {
+            return EMPTY
+          }
+
           let Component: Type<ServerErrorComponent>
-          import('./server-error.module')
+          import('../server-error/server-error.module')
             .then(({ServerErrorModule}) => {
               Component = ServerErrorModule.getComponent()
               return this.compiler.compileModuleAsync(ServerErrorModule)

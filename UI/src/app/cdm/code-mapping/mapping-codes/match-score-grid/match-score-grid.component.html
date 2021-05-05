@@ -1,44 +1,101 @@
-<div class="grid-wrapper">
-  <table class="grid"
-         cdk-table
-         [dataSource]="data"
-         [style.height]="height"
-         [style.width]="width">
+<div class="match-score-grid">
+  <div class="grid-wrapper">
+    <div class="source-grid-wrapper">
+      <table class="grid source-grid"
+             cdk-table
+             [dataSource]="sourceData"
+             [style.height]="height">
 
-    <ng-container *ngFor="let codeMapping of data">
-      <ng-container cdkColumnDef="__select__">
-        <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
-          <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
-        </th>
+        <ng-container cdkColumnDef="__select__">
+          <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
+            <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
+          </th>
 
-        <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
-          <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
-        </td>
-      </ng-container>
+          <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
+            <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
+          </td>
+        </ng-container>
 
-      <ng-container *ngFor="let sourceColumn of sourceColumns">
+        <ng-container *ngFor="let sourceColumn of sourceColumns"
+                      [cdkColumnDef]="sourceColumn.field">
+          <th class="column cell"
+              cdk-header-cell *cdkHeaderCellDef
+              perseus-grid-column
+              [column]="sourceColumn"
+              [sortable]="sortable"
+              [sortParams]="sortParams"
+              (sort)="onSort($event)">
+          </th>
 
-      </ng-container>
-    </ng-container>
+          <td class="cell" cdk-cell *cdkCellDef="let sourceConcept">
+            {{sourceConcept[sourceColumn.field]}}
+          </td>
+        </ng-container>
 
-    <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
-      <th class="column cell"
-          cdk-header-cell *cdkHeaderCellDef
-          perseus-grid-column
-          [column]="column"
-          [sortable]="sortable"
-          [sortParams]="sortParams"
-          (sort)="onSort($event)">
-      </th>
+        <tr class="row header" cdk-header-row *cdkHeaderRowDef="sourceDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: sourceDisplayedColumns"></tr>
+      </table>
+    </div>
 
-      <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
-    </ng-container>
+    <div class="match-score-grid-wrapper">
+      <table class="grid match-score-grid"
+             cdk-table
+             [dataSource]="matchScoreData"
+             [style.height]="height">
 
-    <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr class="row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+        <ng-container cdkColumnDef="matchScore">
+          <th class="column cell match-score-column"
+              cdk-header-cell *cdkHeaderCellDef
+              perseus-grid-column
+              [column]="matchScoreColumn"
+              [sortable]="sortable"
+              [sortParams]="sortParams"
+              (sort)="onSort($event)">
+          </th>
 
-  <div *ngIf="loading" class="ui-blocker">
-    <mat-spinner></mat-spinner>
+          <td class="cell match-score-cell" cdk-cell *cdkCellDef="let codeMapping">
+            {{codeMapping[matchScoreColumn.field]}}
+          </td>
+        </ng-container>
+
+        <tr class="row header" cdk-header-row *cdkHeaderRowDef="matchScoreDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: matchScoreDisplayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="target-grid-wrapper">
+      <table class="grid target-grid"
+             cdk-table
+             [dataSource]="targetData"
+             [style.height]="height">
+
+        <ng-container *ngFor="let targetColumn of targetColumns"
+                      [cdkColumnDef]="targetColumn.field">
+          <th class="column cell"
+              cdk-header-cell *cdkHeaderCellDef
+              perseus-grid-column
+              [column]="targetColumn"
+              [sortable]="sortable"
+              [sortParams]="sortParams"
+              (sort)="onSort($event)">
+          </th>
+
+          <td class="cell" cdk-cell *cdkCellDef="let targetConcept">
+            {{targetConcept[targetColumn.field]}}
+          </td>
+        </ng-container>
+
+        <tr class="row header" cdk-header-row *cdkHeaderRowDef="targetDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: targetDisplayedColumns"></tr>
+      </table>
+    </div>
+
+    <div *ngIf="loading" class="ui-blocker">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+
+  <div class="grid-select">
+    <mat-icon class="grid-select__edit-icon" svgIcon="edit"></mat-icon>
   </div>
 </div>

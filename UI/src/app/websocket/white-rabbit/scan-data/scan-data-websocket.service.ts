@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '../../../scan-data/model/db-settings';
+import { DbSettings } from '../../../models/scan-data/db-settings';
 import { WhiteRabbitWebsocketService } from '../white-rabbit-websocket.service';
 import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
-import { DelimitedTextFileSettings } from '../../../scan-data/model/delimited-text-file-settings';
+import { DelimitedTextFileSettings } from '../../../models/scan-data/delimited-text-file-settings';
 
 @Injectable()
 export class ScanDataWebsocketService extends WhiteRabbitWebsocketService {
