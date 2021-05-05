@@ -166,7 +166,7 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
         if N_ROWS_FIELD_NAME in tables_pd:
             for freq in info['frequency']:
                 if freq:
-                    percentage.append(int(freq) / int(tables_pd[N_ROWS_FIELD_NAME][0]))
+                    percentage.append('{0:.10f}'.format(int(freq) / int(tables_pd[N_ROWS_FIELD_NAME][0])))
             info['percentage'] = percentage
         for field in LIST_OF_COLUMN_INFO_FIELDS:
             if field in tables_pd:

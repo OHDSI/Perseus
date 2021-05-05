@@ -117,6 +117,8 @@ def validate_Sql(current_user):
     try:
         sql_transformation = request.get_json()
         sql_result = run_sql_transformation(current_user, sql_transformation['sql'])
+    except ProgrammingError as error:
+        raise InvalidUsage(error.__str__(), 400)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(sql_result)
