@@ -60,6 +60,14 @@ export class ImportCodesService {
       )
   }
 
+  saveCodes(name): Observable<void> {
+    const body = {
+      name,
+      codes: this.codeMappings.filter(codeMapping => codeMapping.selected)
+    }
+    return this.httpClient.post<void>(`${apiUrl}/save_codes`, body)
+  }
+
   reset() {
     this.csv = null
     this.codes = null

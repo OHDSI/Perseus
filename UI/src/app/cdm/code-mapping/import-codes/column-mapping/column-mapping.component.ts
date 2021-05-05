@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { codesRouter } from '../../../../app.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
+import { delay, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-column-mapping',
@@ -19,11 +20,17 @@ export class ColumnMappingComponent implements OnInit {
 
   form: FormGroup
 
-  checkedAll: boolean;
+  checkedAll: boolean
+
+  loading = false
 
   constructor(public importCodesService: ImportCodesService,
               private router: Router,
               private dialogService: MatDialog) {
+  }
+
+  get applyDisabled() {
+    return this.form.invalid || this.importCodesService.codes.every(code => !code.selected)
   }
 
   ngOnInit(): void {
@@ -37,7 +44,12 @@ export class ColumnMappingComponent implements OnInit {
   }
 
   onApply() {
+    this.loading = true
     this.importCodesService.calculateScore(this.form.value)
+      .pipe(
+        delay(2000),
+        finalize(() => this.loading = false)
+      )
       .subscribe(
         () => this.router.navigateByUrl(`${codesRouter}/mapping`),
         error => openErrorDialog(this.dialogService, 'Failed to create Mapping', parseHttpError(error))

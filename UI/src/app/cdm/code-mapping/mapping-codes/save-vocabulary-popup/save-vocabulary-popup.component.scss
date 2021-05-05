@@ -1,7 +1,7 @@
 @import "variables";
 @import "mixins";
 
-.set-delimiter {
+.save-vocabulary {
   width: 253px;
   height: 222px;
   @include perseus-popup();
@@ -21,12 +21,11 @@
 
     &__submit {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
 
       button {
         @include cdm-button();
-        @include perseus-blue-button();
-        width: 120px;
+        width: 80px;
         height: 33px;
         margin-top: 30px;
       }

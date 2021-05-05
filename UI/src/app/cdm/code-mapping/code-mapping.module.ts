@@ -16,6 +16,7 @@ import { ColumnMappingComponent } from './import-codes/column-mapping/column-map
 import { MatchScoreGridComponent } from './mapping-codes/match-score-grid/match-score-grid.component';
 import { MappingCodesGuard } from '../../guards/code-mapping/mapping-codes.guard';
 import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
+import { SaveVocabularyPopupComponent } from './mapping-codes/save-vocabulary-popup/save-vocabulary-popup.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
     ColumnMappingFormComponent,
     ColumnMappingFiltersComponent,
     ColumnMappingComponent,
-    MatchScoreGridComponent
+    MatchScoreGridComponent,
+    SaveVocabularyPopupComponent
   ],
   imports: [
     CommonModule,

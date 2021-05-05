@@ -1,3 +1,5 @@
+@import "mixins";
+
 .match-score-grid {
   position: relative;
   height: 100%;
@@ -7,17 +9,16 @@
     justify-content: space-between;
     height: 100%;
 
-    .source-grid-wrapper {
-      overflow-x: overlay;
-      width: calc(44% - 100px); // 100px - match score grid width (91px) + margin (9px)
-    }
-
-    .match-score-grid-wrapper {
-      width: 91px;
-    }
-
+    .match-score-grid-wrapper,
     .target-grid-wrapper {
-      width: calc(56% - 9px); // 9px - margin
+      overflow-y: overlay;
+      overflow-x: hidden;
+    }
+
+    .source-grid-wrapper {
+      width: calc(44% - 100px); // 100px - match score grid width (91px) + margin (9px)
+      overflow-x: overlay;
+      @include grid-scroll();
     }
 
     .source-grid-wrapper,
@@ -27,10 +28,13 @@
       }
     }
 
-    .match-score-grid-wrapper,
+    .match-score-grid-wrapper {
+      width: 91px;
+    }
+
     .target-grid-wrapper {
-      overflow-y: overlay;
-      overflow-x: hidden;
+      width: calc(56% - 9px); // 9px - margin
+      @include grid-scroll();
     }
 
     .source-grid,
@@ -60,14 +64,14 @@
 
   .grid-select {
     position: absolute;
-    width: calc(100% - 6px);
+    width: calc(100% - 2px);
     height: 35px;
     border: 1px solid #066BBB;
     display: flex;
     justify-content: center;
     align-items: center;
     pointer-events: none;
-    z-index: 1001;
+    z-index: 101;
 
     &__edit-icon {
       pointer-events: auto;
