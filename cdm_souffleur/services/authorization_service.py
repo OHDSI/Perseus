@@ -112,7 +112,7 @@ def user_login(email, password):
             auth_token = item.encode_auth_token(item.username)
             token = get_refresh_token(email)
         if auth_token:
-            return {'email': item.email, 'token': auth_token, 'refresh_token': token}
+            return {'email': item.email, 'token': auth_token, 'refresh_token': token, 'firstName': item.first_name, 'lastName': item.last_name}
         else:
             raise AuthorizationError('Incorrect password', 401)
 
