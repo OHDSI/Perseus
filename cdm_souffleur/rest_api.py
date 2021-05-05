@@ -107,6 +107,8 @@ def get_View(current_user):
     try:
         view_sql = request.get_json()
         view_result = get_view_from_db(current_user, view_sql['sql'])
+    except ProgrammingError as error:
+        raise InvalidUsage(error.__str__(), 400)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(view_result)
