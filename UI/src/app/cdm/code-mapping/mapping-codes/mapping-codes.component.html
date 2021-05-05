@@ -4,12 +4,12 @@
     <h3 class="mapping-codes__header__target">Target</h3>
   </div>
 
-  <div class="mapping-codes__grid-wrapper">
+  <div class="mapping-codes__content">
     <app-match-score-grid></app-match-score-grid>
   </div>
 
   <div class="mapping-codes__footer">
-    <button class="cancel">Back</button>
-    <button class="apply">Save</button>
+    <button class="cancel" (click)="onBack()">Back</button>
+    <button class="apply" [disabled]="applyDisabled" (click)="onApply()">Save</button>
   </div>
 </div>

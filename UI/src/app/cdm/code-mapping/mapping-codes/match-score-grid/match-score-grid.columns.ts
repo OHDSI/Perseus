@@ -30,7 +30,3 @@ export const targetColumns: Column[] = [
     name: 'Standard Code'
   }
 ]
-
-export const matchScoreColumn = () => ({
-  field: 'matchScore', name: 'Match Score'
-})

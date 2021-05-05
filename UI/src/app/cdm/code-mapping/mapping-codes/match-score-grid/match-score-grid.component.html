@@ -1,33 +1,30 @@
 <div class="match-score-grid">
-  <div class="grid-wrapper">
-    <div class="source-grid-wrapper">
+  <div class="grid-wrapper" (mouseover)="onMouseover($event)">
+    <div class="source-grid-wrapper"
+         #sourceGridWrapper
+         (wheel)="onWheel($event)">
       <table class="grid source-grid"
              cdk-table
              [dataSource]="sourceData"
              [style.height]="height">
 
-        <ng-container cdkColumnDef="__select__">
+        <ng-container cdkColumnDef="__select__" sticky>
           <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
             <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
           </th>
 
-          <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
+          <td class="cell select-cell" cdk-cell data-cell *cdkCellDef="let row">
             <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
           </td>
         </ng-container>
 
         <ng-container *ngFor="let sourceColumn of sourceColumns"
                       [cdkColumnDef]="sourceColumn.field">
-          <th class="column cell"
-              cdk-header-cell *cdkHeaderCellDef
-              perseus-grid-column
-              [column]="sourceColumn"
-              [sortable]="sortable"
-              [sortParams]="sortParams"
-              (sort)="onSort($event)">
+          <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+            {{sourceColumn.name}}
           </th>
 
-          <td class="cell" cdk-cell *cdkCellDef="let sourceConcept">
+          <td class="cell" cdk-cell data-cell *cdkCellDef="let sourceConcept">
             {{sourceConcept[sourceColumn.field]}}
           </td>
         </ng-container>
@@ -37,24 +34,21 @@
       </table>
     </div>
 
-    <div class="match-score-grid-wrapper">
+    <div class="match-score-grid-wrapper"
+         #matchScoreGridWrapper
+         (wheel)="onWheel($event)">
       <table class="grid match-score-grid"
              cdk-table
              [dataSource]="matchScoreData"
              [style.height]="height">
 
         <ng-container cdkColumnDef="matchScore">
-          <th class="column cell match-score-column"
-              cdk-header-cell *cdkHeaderCellDef
-              perseus-grid-column
-              [column]="matchScoreColumn"
-              [sortable]="sortable"
-              [sortParams]="sortParams"
-              (sort)="onSort($event)">
+          <th class="column cell match-score-column" cdk-header-cell *cdkHeaderCellDef>
+            Match Score
           </th>
 
-          <td class="cell match-score-cell" cdk-cell *cdkCellDef="let codeMapping">
-            {{codeMapping[matchScoreColumn.field]}}
+          <td class="cell match-score-cell" cdk-cell data-cell *cdkCellDef="let matchScore">
+            {{matchScore}}
           </td>
         </ng-container>
 
@@ -63,7 +57,9 @@
       </table>
     </div>
 
-    <div class="target-grid-wrapper">
+    <div class="target-grid-wrapper"
+         #targetGridWrapper
+         (wheel)="onWheel($event)">
       <table class="grid target-grid"
              cdk-table
              [dataSource]="targetData"
@@ -71,16 +67,11 @@
 
         <ng-container *ngFor="let targetColumn of targetColumns"
                       [cdkColumnDef]="targetColumn.field">
-          <th class="column cell"
-              cdk-header-cell *cdkHeaderCellDef
-              perseus-grid-column
-              [column]="targetColumn"
-              [sortable]="sortable"
-              [sortParams]="sortParams"
-              (sort)="onSort($event)">
+          <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+            {{targetColumn.name}}
           </th>
 
-          <td class="cell" cdk-cell *cdkCellDef="let targetConcept">
+          <td class="cell" cdk-cell data-cell *cdkCellDef="let targetConcept">
             {{targetConcept[targetColumn.field]}}
           </td>
         </ng-container>
@@ -95,7 +86,7 @@
     </div>
   </div>
 
-  <div class="grid-select">
+  <div class="grid-select" [style.top]="selectionTopInPx">
     <mat-icon class="grid-select__edit-icon" svgIcon="edit"></mat-icon>
   </div>
 </div>
