@@ -24,6 +24,10 @@ export class ServerErrorInterceptor implements HttpInterceptor {
             throw error
           }
 
+          if (this.appConnector.isOpen) {
+            return EMPTY
+          }
+
           let Component: Type<ServerErrorComponent>
           import('../server-error/server-error.module')
             .then(({ServerErrorModule}) => {
