@@ -65,7 +65,6 @@ def decrypt_email(str):
 
 
 def update_user_fields(user, first_name, last_name, encrypted_password):
-    user = user.get()
     user.first_name = first_name
     user.last_name = last_name
     user.password = encrypted_password
