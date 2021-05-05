@@ -19,11 +19,15 @@ CDM_SCHEMA_PATH = Path('model/sources/CDM/')
 VOCABULARY_DESCRIPTION_PATH = Path('model/sources/VOCABULARY.csv')
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5', '6', ]
 UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema')
+UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes')
 PREDEFINED_LOOKUPS_PATH = Path('model/Lookups')
 INCOME_LOOKUPS_PATH = Path('model/UserDefinedLookups')
 SMTP_PORT_STL = 587
 PASSWORD_LINK_EXPIRATION_TIME = 172800  # 48 hours
 REGISTRATION_LINK_EXPIRATION_TIME = 172800 # 48 hours
+CONCEPT_IDS = 'Auto concept ID column'
+ATC = 'ATC column'
+SOURCE_CODE_TYPE_STRING = "S"
 
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
