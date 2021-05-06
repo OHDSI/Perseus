@@ -1,6 +1,6 @@
 import { MatDialogRef } from '@angular/material/dialog';
-import { WebsocketParams } from './model/websocket-params';
-import { AbstractConsoleWrapperComponent } from './shared/scan-console-wrapper/abstract-console-wrapper.component';
+import { WebsocketParams } from '../models/scan-data/websocket-params';
+import { AbstractConsoleWrapperComponent } from './auxiliary/scan-console-wrapper/abstract-console-wrapper.component';
 
 export abstract class AbstractScanDialog {
 

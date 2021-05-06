@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { GridComponent } from '../grid.component';
+import { Selectable } from '../../models/grid/selectable';
+import { columnToField } from '../../models/grid/grid';
 
 @Component({
   selector: 'app-selectable-grid',
@@ -10,25 +12,22 @@ import { GridComponent } from '../grid.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectableGridComponent extends GridComponent implements OnInit {
+export class SelectableGridComponent<T extends Selectable> extends GridComponent<T> implements OnInit {
 
   @Input()
-  data: {
-    selected: boolean,
-    [key: string]: any
-  }[]
+  data: T[]
 
   @Input()
   sortable = false
 
+  @Input()
   checkedAll: boolean
 
   ngOnInit(): void {
     this.displayedColumns = [
       '__select__',
-      ...this.columns.map(col => col.field)
+      ...this.columns.map(columnToField)
     ]
-    this.setCheckedAll()
   }
 
   select(row: {selected: boolean; [key: string]: any}) {

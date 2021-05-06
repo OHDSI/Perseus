@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { Concept } from '../../vocabulary-search/concept';
+import { Concept } from '../../models/vocabulary-search/concept';
 import { apiUrl } from '../../app.constants';
 
 export interface VocabSearchReqParams {

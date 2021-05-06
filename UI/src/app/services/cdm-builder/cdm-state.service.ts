@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '../../scan-data/model/db-settings';
+import { DbSettings } from '../../models/scan-data/db-settings';
 import { IScanDataStateService } from '../white-rabbit/scan-data-state.service';
 
 export interface CdmState {

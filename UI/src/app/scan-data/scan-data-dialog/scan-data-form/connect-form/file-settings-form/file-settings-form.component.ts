@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BaseComponent } from '../../../../../base/base.component';
+import { BaseComponent } from '../../../../../shared/base/base.component';
 
 @Component({
   selector: 'app-file-settings-form',

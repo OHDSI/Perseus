@@ -1,0 +1,83 @@
+@import "mixins";
+
+.match-score-grid {
+  position: relative;
+  height: 100%;
+
+  .grid-wrapper {
+    display: flex;
+    justify-content: space-between;
+    max-height: 100%;
+
+    .match-score-grid-wrapper,
+    .target-grid-wrapper {
+      overflow-y: overlay;
+      overflow-x: hidden;
+    }
+
+    .source-grid-wrapper {
+      width: calc(44% - 100px); // 100px - match score grid width (91px) + margin (9px)
+      overflow-x: overlay;
+      @include grid-scroll();
+    }
+
+    .source-grid-wrapper,
+    .match-score-grid-wrapper {
+      &::-webkit-scrollbar {
+        width: 0;
+      }
+    }
+
+    .match-score-grid-wrapper {
+      width: 91px;
+    }
+
+    .target-grid-wrapper {
+      width: calc(56% - 9px); // 9px - margin
+      @include grid-scroll();
+    }
+
+    .source-grid,
+    .match-score-grid,
+    .target-grid {
+      width: 100%;
+    }
+
+    .match-score-column,
+    .match-score-cell {
+      margin-right: 9px;
+    }
+
+    .match-score-cell {
+      background-color: rgba(0, 146, 15, .1);
+    }
+
+    .row {
+      height: 32px;
+    }
+
+    .cell {
+      white-space: nowrap;
+      height: 32px;
+    }
+  }
+
+  .grid-select {
+    position: absolute;
+    width: calc(100% - 2px);
+    height: 35px;
+    border: 1px solid #066BBB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 101;
+
+    &__edit-icon {
+      pointer-events: auto;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+  }
+}

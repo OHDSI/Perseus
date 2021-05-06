@@ -1,0 +1,17 @@
+<div class="save-vocabulary">
+  <app-close-dialog-button class="save-vocabulary__close-icon" (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <h4 class="save-vocabulary__header">Save Vocabulary</h4>
+
+  <div class="save-vocabulary__form">
+    <div class="save-vocabulary__form__control">
+      <label for="delimiter">Vocabulary Name</label>
+      <input id="delimiter" type="text" [(ngModel)]="name" maxlength="50">
+    </div>
+
+    <div class="save-vocabulary__form__submit">
+      <button class="cancel" (click)="this.dialogRef.close()">Cancel</button>
+      <button class="apply" [disabled]="disabled" (click)="onApply()">Apply</button>
+    </div>
+  </div>
+</div>

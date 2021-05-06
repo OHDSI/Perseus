@@ -13,6 +13,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColumnMappingFiltersComponent } from './import-codes/column-mapping/column-mapping-filters/column-mapping-filters.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ColumnMappingComponent } from './import-codes/column-mapping/column-mapping.component';
+import { MatchScoreGridComponent } from './mapping-codes/match-score-grid/match-score-grid.component';
+import { MappingCodesGuard } from '../../guards/code-mapping/mapping-codes.guard';
+import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
+import { SaveVocabularyPopupComponent } from './mapping-codes/save-vocabulary-popup/save-vocabulary-popup.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,9 @@ import { ColumnMappingComponent } from './import-codes/column-mapping/column-map
     ImportVocabularyButtonsComponent,
     ColumnMappingFormComponent,
     ColumnMappingFiltersComponent,
-    ColumnMappingComponent
+    ColumnMappingComponent,
+    MatchScoreGridComponent,
+    SaveVocabularyPopupComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +40,9 @@ import { ColumnMappingComponent } from './import-codes/column-mapping/column-map
   ],
   providers: [
     ImportCodesService,
-    ImportVocabulariesService
+    ImportVocabulariesService,
+    ImportCodesGuard,
+    MappingCodesGuard
   ]
 })
 export class CodeMappingModule { }

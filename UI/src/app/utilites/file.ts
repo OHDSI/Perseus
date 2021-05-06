@@ -7,5 +7,8 @@ export function blobToFile(blob: Blob, name: string): File {
 }
 
 export function removeExtension(fileName): string {
+  if (!fileName) {
+    return null
+  }
   return fileName.slice(0, fileName.lastIndexOf('.'))
 }

@@ -4,7 +4,7 @@ import { ImportVocabulariesService, Vocabulary } from '../../../../services/impo
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
-import { switchMap } from 'rxjs/operators';
+import { finalize, switchMap, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 @Component({
@@ -59,7 +59,9 @@ export class ImportVocabularyComponent implements OnInit {
         disableClose: true
       }).afterClosed()
         .pipe(
-          switchMap(delimiter => delimiter ? this.importCodesService.loadCsv(csv) : EMPTY)
+          tap(() => this.loading = true),
+          switchMap(delimiter => delimiter ? this.importCodesService.loadCsv(csv) : EMPTY),
+          finalize(() => this.loading = false)
         )
         .subscribe(
           () => this.import.emit(),

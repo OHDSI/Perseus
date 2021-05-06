@@ -34,7 +34,7 @@ import { ICON_NAMES } from './icons';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
-import { MappingGuard } from './mapping/mapping.guard';
+import { MappingGuard } from '../guards/mapping/mapping.guard';
 
 @NgModule({
   declarations: [

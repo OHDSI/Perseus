@@ -31,4 +31,8 @@ export class AppConnectorService {
   set dynamicComponent(dynamicComponent: DynamicComponent) {
     this.componentRef = dynamicComponent
   }
+
+  get isOpen(): boolean {
+    return !!this.componentRef
+  }
 }

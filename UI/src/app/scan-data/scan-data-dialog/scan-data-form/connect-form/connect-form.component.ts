@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, of } from 'rxjs';
-import { DbSettings } from '../../../model/db-settings';
-import { DelimitedTextFileSettings } from '../../../model/delimited-text-file-settings';
+import { DbSettings } from '../../../../models/scan-data/db-settings';
+import { DelimitedTextFileSettings } from '../../../../models/scan-data/delimited-text-file-settings';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ScanSettings } from '../../../model/scan-settings';
+import { ScanSettings } from '../../../../models/scan-data/scan-settings';
 import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
-import { AbstractResourceForm } from '../../../shared/resource-form/abstract-resource-form';
+import { AbstractResourceForm } from '../../../auxiliary/resource-form/abstract-resource-form';
 import { MatDialog } from '@angular/material/dialog';
 import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
-import { TableToScan } from '../../../model/table-to-scan';
-import { ConnectionResult } from '../../../model/connection-result';
+import { TableToScan } from '../../../../models/scan-data/table-to-scan';
+import { ConnectionResult } from '../../../../models/scan-data/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
 import { createDbConnectionForm } from '../../../../utilites/form';
 
