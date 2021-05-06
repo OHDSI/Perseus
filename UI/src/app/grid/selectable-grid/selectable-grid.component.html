@@ -1,36 +1,29 @@
 <div class="grid-wrapper">
-  <table class="grid" cdk-table
+  <table class="grid"
+         cdk-table
          [dataSource]="data"
          [style.height]="height"
          [style.width]="width">
 
     <ng-container cdkColumnDef="__select__">
-      <th class="column cell select-cell" mat-header-cell *matHeaderCellDef>
+      <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
         <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
       </th>
 
-      <td class="cell select-cell" mat-cell *matCellDef="let row">
+      <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
         <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
       </td>
     </ng-container>
 
     <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
-      <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
-        <div *ngIf="sortable else defaultColumn" class="sortable-column"
-             [ngClass]="{'sortable-asc': column.field === sortParams?.field && sortParams.order === 'asc',
-               'sortable-desc': column.field === sortParams?.field && sortParams.order === 'desc'}">
-          {{column.name}}
-          <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg"
-               (click)="onSort(column.field)">
-            <path opacity="0.6" d="M0 12H6V10H0V12ZM0 0V2H18V0H0ZM0 7H12V5H0V7Z" fill="white"/>
-          </svg>
-        </div>
-
-        <ng-template #defaultColumn>
-          {{column.name}}
-        </ng-template>
+      <th class="column cell"
+          cdk-header-cell *cdkHeaderCellDef
+          perseus-grid-column
+          [column]="column"
+          [sortable]="sortable"
+          [sortParams]="sortParams"
+          (sort)="onSort($event)">
       </th>
-
       <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
     </ng-container>
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../../../base/base.component';
+import { BaseComponent } from '../../../../shared/base/base.component';
 import { DictionaryItem } from '../../vocabulary-dropdown/model/vocabulary';
 
 @Component({

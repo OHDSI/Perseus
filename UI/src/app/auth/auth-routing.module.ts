@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { SignOutComponent } from './sign-out/sign-out.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ResetPasswordGuardGuard } from './reset-password/reset-password-guard.guard';
-import { AlreadyRegisteredGuard } from './already-registered/already-registered.guard';
+import { ResetPasswordGuardGuard } from '../guards/auth/reset-password-guard.guard';
+import { AlreadyRegisteredGuard } from '../guards/auth/already-registered.guard';
 import { AlreadyRegisteredComponent } from './already-registered/already-registered.component';
 import { LinkExpiredComponent } from './link-expired/link-expired.component';
-import { LinkExpiredGuard } from './link-expired/link-expired.guard';
+import { LinkExpiredGuard } from '../guards/auth/link-expired.guard';
 
 const routes: Routes = [
   {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Mapping } from '../models/mapping';
 import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
+import { createNoCacheHeaders } from '../utilites/http-headers';
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -61,10 +62,11 @@ export class HttpService {
     return this.httpClient.post(API_URLS.getXmlPreview(), mapping);
   }
 
-  getZipXml(): Observable<File> {
-    return this.httpClient.get(API_URLS.getZipXml(), {responseType: 'blob'})
+  getZipXml(name: string): Observable<File> {
+    const headers = createNoCacheHeaders()
+    return this.httpClient.get(API_URLS.getZipXml(), {headers, responseType: 'blob'})
       .pipe(
-        map(blob => new File([blob], 'mapping-xml.zip'))
+        map(blob => new File([blob], `${name}-xml.zip`))
       )
   }
 

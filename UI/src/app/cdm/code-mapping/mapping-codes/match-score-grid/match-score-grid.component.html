@@ -1,0 +1,92 @@
+<div class="match-score-grid">
+  <div class="grid-wrapper" (mouseover)="onMouseover($event)">
+    <div class="source-grid-wrapper"
+         #sourceGridWrapper
+         (wheel)="onWheel($event)">
+      <table class="grid source-grid"
+             cdk-table
+             [dataSource]="sourceData"
+             [style.height]="height">
+
+        <ng-container cdkColumnDef="__select__" sticky>
+          <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
+            <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
+          </th>
+
+          <td class="cell select-cell" cdk-cell data-cell *cdkCellDef="let row">
+            <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container *ngFor="let sourceColumn of sourceColumns"
+                      [cdkColumnDef]="sourceColumn.field">
+          <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+            {{sourceColumn.name}}
+          </th>
+
+          <td class="cell" cdk-cell data-cell *cdkCellDef="let sourceConcept">
+            {{sourceConcept[sourceColumn.field]}}
+          </td>
+        </ng-container>
+
+        <tr class="row header" cdk-header-row *cdkHeaderRowDef="sourceDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: sourceDisplayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="match-score-grid-wrapper"
+         #matchScoreGridWrapper
+         (wheel)="onWheel($event)">
+      <table class="grid match-score-grid"
+             cdk-table
+             [dataSource]="matchScoreData"
+             [style.height]="height">
+
+        <ng-container cdkColumnDef="matchScore">
+          <th class="column cell match-score-column" cdk-header-cell *cdkHeaderCellDef>
+            Match Score
+          </th>
+
+          <td class="cell match-score-cell" cdk-cell data-cell *cdkCellDef="let matchScore">
+            {{matchScore}}
+          </td>
+        </ng-container>
+
+        <tr class="row header" cdk-header-row *cdkHeaderRowDef="matchScoreDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: matchScoreDisplayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="target-grid-wrapper"
+         #targetGridWrapper
+         (wheel)="onWheel($event)">
+      <table class="grid target-grid"
+             cdk-table
+             [dataSource]="targetData"
+             [style.height]="height">
+
+        <ng-container *ngFor="let targetColumn of targetColumns"
+                      [cdkColumnDef]="targetColumn.field">
+          <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+            {{targetColumn.name}}
+          </th>
+
+          <td class="cell" cdk-cell data-cell *cdkCellDef="let targetConcept">
+            {{targetConcept[targetColumn.field]}}
+          </td>
+        </ng-container>
+
+        <tr class="row header" cdk-header-row *cdkHeaderRowDef="targetDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: targetDisplayedColumns"></tr>
+      </table>
+    </div>
+
+    <div *ngIf="loading" class="ui-blocker">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+
+  <div class="grid-select" [style.top]="selectionTopInPx">
+    <mat-icon class="grid-select__edit-icon" svgIcon="edit"></mat-icon>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { filter } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthStateService } from '../auth-state.service';
+import { AuthStateService } from '../../services/auth/auth-state.service';
 
 @Component({
   selector: 'app-link-expired',

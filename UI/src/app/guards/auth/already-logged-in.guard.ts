@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { authInjector } from './auth-injector';
-import { AuthService } from './auth.service';
+import { authInjector } from '../../services/auth/auth-injector';
+import { AuthService } from '../../services/auth/auth.service';
 import { mainPageRouter } from '../../app.constants';
 
 @Injectable({

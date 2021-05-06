@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ConsoleComponent } from '../../../shared/scan-console-wrapper/console/console.component';
+import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { CdmBuilderWebsocketService } from '../../../../websocket/cdm-builder/cdm-builder-websocket.service';
-import { CdmProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
+import {
+  CdmProgressNotification,
+  ProgressNotificationStatusCode
+} from '../../../../models/scan-data/progress-notification';
 
 @Component({
   selector: 'app-cdm-console',
-  templateUrl: '../../../shared/scan-console-wrapper/console/console.component.html',
-  styleUrls: ['../../../shared/scan-console-wrapper/console/console.component.scss'],
+  templateUrl: '../../../auxiliary/scan-console-wrapper/console/console.component.html',
+  styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [CdmBuilderWebsocketService]
 })
 export class CdmConsoleComponent extends ConsoleComponent implements OnInit {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Column } from '../../grid/grid';
+import { Column } from '../../models/grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
 import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
-import { stateCodes, stateColumns } from './state';
+import { stateCodeMappings, stateCodes, stateColumns } from './state';
 import { SourceConcept } from '../../models/code-mapping/source-concept';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
@@ -18,13 +18,14 @@ export class ImportCodesService {
 
   columns: Column[]
 
-  codeMapping: CodeMapping
+  codeMappings: CodeMapping[]
 
   private csvFileName: string
 
   constructor(private httpClient: HttpClient) {
     this.codes = stateCodes
     this.columns = stateColumns
+    this.codeMappings = stateCodeMappings
   }
 
   get imported(): boolean {
@@ -52,17 +53,25 @@ export class ImportCodesService {
       )
   }
 
-  calculateScore(params: CodeMappingParams): Observable<CodeMapping> {
-    return this.httpClient.post<CodeMapping>(`${apiUrl}/import_source_codes`, params)
+  calculateScore(params: CodeMappingParams): Observable<CodeMapping[]> {
+    return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, params)
       .pipe(
-        tap(codeMapping => this.codeMapping = codeMapping)
+        tap(codeMappings => this.codeMappings = codeMappings)
       )
+  }
+
+  saveCodes(name): Observable<void> {
+    const body = {
+      name,
+      codes: this.codeMappings.filter(codeMapping => codeMapping.selected)
+    }
+    return this.httpClient.post<void>(`${apiUrl}/save_codes`, body)
   }
 
   reset() {
     this.csv = null
     this.codes = null
     this.columns = null
-    this.codeMapping = null
+    this.codeMappings = null
   }
 }

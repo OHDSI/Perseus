@@ -1,14 +1,17 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { ConnectionResult } from '../../model/connection-result';
-import { TableToScan } from '../../model/table-to-scan';
-import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
+import { ConnectionResult } from '../../../models/scan-data/connection-result';
+import { TableToScan } from '../../../models/scan-data/table-to-scan';
+import { DbSettings, DbSettingsBuilder } from '../../../models/scan-data/db-settings';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
-import { ScanParams } from '../../model/scan-params';
+import { ScanParams } from '../../../models/scan-data/scan-params';
 import { ScanDataStateService } from '../../../services/white-rabbit/scan-data-state.service';
 import { ConnectFormComponent } from './connect-form/connect-form.component';
-import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../../model/delimited-text-file-settings';
-import { ScanSettings } from '../../model/scan-settings';
-import { WebsocketParams } from '../../model/websocket-params';
+import {
+  DelimitedTextFileSettings,
+  DelimitedTextFileSettingsBuilder
+} from '../../../models/scan-data/delimited-text-file-settings';
+import { ScanSettings } from '../../../models/scan-data/scan-settings';
+import { WebsocketParams } from '../../../models/scan-data/websocket-params';
 import { cdmBuilderDatabaseTypes } from '../../scan-data.constants';
 import { CdmStateService } from '../../../services/cdm-builder/cdm-state.service';
 

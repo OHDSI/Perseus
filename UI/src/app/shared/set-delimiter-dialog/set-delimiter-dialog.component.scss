@@ -4,21 +4,7 @@
 .set-delimiter {
   width: 253px;
   height: 222px;
-  background: $cdm-grey-lighter;
-  border-radius: 2px;
-  padding: 42px 35px 35px 38px;
-  position: relative;
-
-  &__header {
-    @include popup-header();
-    margin-bottom: 18px;
-  }
-
-  &__close-icon {
-    position: absolute;
-    top: 21px;
-    right: 20px;
-  }
+  @include perseus-popup();
 
   &__form {
     &__control {

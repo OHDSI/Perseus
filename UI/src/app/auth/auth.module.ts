@@ -11,7 +11,7 @@ import { SignOutComponent } from './sign-out/sign-out.component';
 import { AuthPasswordInputComponent } from './auxiliary/auth-password-input/auth-password-input.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { AuthStateService } from './auth-state.service';
+import { AuthStateService } from '../services/auth/auth-state.service';
 import { AlreadyRegisteredComponent } from './already-registered/already-registered.component';
 import { LinkExpiredComponent } from './link-expired/link-expired.component';
 import { NgxTrimDirectiveModule } from 'ngx-trim-directive';

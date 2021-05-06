@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -6,17 +6,15 @@ import { MatDialogRef } from '@angular/material/dialog';
   templateUrl: './set-delimiter-dialog.component.html',
   styleUrls: ['./set-delimiter-dialog.component.scss']
 })
-export class SetDelimiterDialogComponent implements OnInit {
+export class SetDelimiterDialogComponent {
 
   delimiter = ','
 
-  constructor(public dialogRef: MatDialogRef<SetDelimiterDialogComponent>) { }
+  constructor(public dialogRef: MatDialogRef<SetDelimiterDialogComponent>) {
+  }
 
   get disabled() {
     return !this.delimiter
-  }
-
-  ngOnInit(): void {
   }
 
   onApply() {
