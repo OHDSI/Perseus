@@ -28,8 +28,12 @@ REGISTRATION_LINK_EXPIRATION_TIME = 172800 # 48 hours
 CONCEPT_IDS = 'Auto concept ID column'
 ATC = 'ATC column'
 SOURCE_CODE_TYPE_STRING = "S"
-SOLR_PATH = "../../solr-8.8.1/solr-8.8.1/server/solr"
-
+SOLR_PATH = "../solr-8.8.1/server/solr"
+SOLR_CREATE_MAIN_INDEX_CORE = "solr/admin/cores?action=CREATE&name=concepts&instanceDir=concepts&config=solrconfig.xml&dataDir=data"
+SOLR_FULL_DATA_IMPORT = "solr/concepts/dataimport?command=full-import"
+SOLR_CREATE_CORE = "solr/admin/cores?action=CREATE&name="
+SOLR_RELOAD_CORE = "solr/admin/cores?action=RELOAD&core="
+SOLR_UNLOAD_CORE = "solr/admin/cores?action=UNLOAD&core="
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
      17: 'blob',

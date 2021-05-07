@@ -1,6 +1,3 @@
-from shutil import rmtree, copytree, copyfile, ignore_patterns, move, copy
-from urllib.request import urlopen
-
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -9,15 +6,11 @@ from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, Sc
     MappingStatus, TargetConcept
 from cdm_souffleur.model.concept import Concept
 from cdm_souffleur.model.source_code import SourceCode
+from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH
 import pysolr
 from cdm_souffleur import app, json
-from os import path
-from urllib.request import urlopen
-
-
-solr_admin = pysolr.SolrCoreAdmin('http://localhost:8983/solr/admin/cores')
 
 
 def create_source_codes(current_user, file_name, source_code_column, source_name_column, source_frequency_column,
@@ -155,32 +148,3 @@ def search(current_user, query):
             scored_concepts.append(ScoredConcept(item['score'], concept, item['term']))
     return scored_concepts
 
-
-def create_core(current_user):
-    core_path = f"{SOLR_PATH}/{current_user}"
-    if path.exists(core_path):
-        urlopen(f"http://localhost:8983/solr/admin/cores?action=UNLOAD&core={current_user}")
-        rmtree(f"{SOLR_PATH}/{current_user}")
-        create_user_core(core_path, current_user)
-    else:
-        create_user_core(core_path, current_user)
-    return True
-
-def create_user_core(core_path, current_user):
-    os.makedirs(core_path)
-    copytree(f"{SOLR_PATH}/concepts/conf", f"{core_path}/conf")
-    urlopen(f"http://localhost:8983/solr/admin/cores?action=CREATE&name={current_user}")
-    os.remove(os.path.join(f"{core_path}/data/index/segments_1"))
-    try:
-        urlopen(f"http://localhost:8983/solr/admin/cores?action=RELOAD&core={current_user}")
-    except:
-        copy_index(core_path, current_user)
-        urlopen(f"http://localhost:8983/solr/admin/cores?action=RELOAD&core={current_user}")
-    return True
-
-
-def copy_index(core_path, current_user):
-    file_names = os.listdir(f"{SOLR_PATH}/concepts/data/index")
-    for file_name in file_names:
-        if file_name != 'write.lock':
-            copyfile(os.path.join(f"{SOLR_PATH}/concepts/data/index", file_name), f"{core_path}/data/index/{file_name}")
