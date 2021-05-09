@@ -8,6 +8,8 @@ WORKDIR /app/cdm_souffleur
 
 ENV PYTHONPATH=/app
 
+RUN apt-get update && apt-get install -y openjdk-11-jdk
+
 RUN wget "https://archive.apache.org/dist/lucene/solr/8.8.1/solr-8.8.1.tgz"
 
 RUN tar -xvzf /app/cdm_souffleur/solr-8.8.1.tgz
