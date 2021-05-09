@@ -14,4 +14,18 @@ RUN mkdir /app/cdm_souffleur/model/generate
 
 RUN mkdir /app/cdm_souffleur/model/generate/Definitions
 
+RUN wget "https://archive.apache.org/dist/lucene/solr/8.8.1/solr-8.8.1.tgz"
+
+RUN tar -xvzf /app/cdm_souffleur/solr-8.8.1.tgz
+
+RUN mkdir /app/cdm_souffleur/solr-8.8.1/contrib/dataimporthandler/lib
+
+RUN mkdir /app/cdm_souffleur/solr-8.8.1/server/solr/concepts
+
+RUN cp /app/cdm_souffleur/solr/postgresql-42.2.19.jar /app/cdm_souffleur/solr-8.8.1/contrib/dataimporthandler/lib
+
+RUN cp -r /app/cdm_souffleur/solr/concepts/conf  /app/cdm_souffleur/solr-8.8.1/server/solr/concepts
+
+RUN /app/cdm_souffleur/solr-8.8.1/bin/solr start
+
 CMD ["python", "rest_api.py"]

@@ -1,5 +1,6 @@
 import json
 
+import pysolr
 from flask import request, jsonify, Blueprint, flash, url_for
 
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
@@ -54,3 +55,16 @@ def get_term_search_results_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)
+
+
+@usagi_api.route('/api/test_solr', methods=['GET'])
+def test_solr_call(current_user):
+    try:
+        solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/",
+                           always_commit=True)
+        solr.ping()
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(True)
