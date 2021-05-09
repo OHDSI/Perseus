@@ -100,7 +100,8 @@ def solr_import_data_call():
 @usagi_api.route('/api/start_solr', methods=['GET'])
 def start_solr_call():
     try:
-        bashCmd = ["../solr-8.8.1/bin/solr", "start"]
+        term = request.args['str']
+        bashCmd = [f"{term}solr-8.8.1/bin/solr", "start"]
         process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
         output, error = process.communicate()
         print(output)
