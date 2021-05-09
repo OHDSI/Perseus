@@ -1,4 +1,5 @@
 import json
+import urllib
 
 import pysolr
 from flask import request, jsonify, Blueprint, flash, url_for
@@ -58,7 +59,7 @@ def get_term_search_results_call(current_user):
 
 
 @usagi_api.route('/api/test_solr', methods=['GET'])
-def test_solr_call(current_user):
+def test_solr_call():
     try:
         solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/",
                            always_commit=True)
@@ -68,3 +69,15 @@ def test_solr_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(True)
+
+
+@usagi_api.route('/api/solr_import_status', methods=['GET'])
+def solr_import_status_call():
+    try:
+        resource = urllib.request.urlopen('http://localhost:8983/solr/concepts/dataimport?command=status&indent=on&wt=json')
+        content = resource.read().decode(resource.headers.get_content_charset())
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(content)
