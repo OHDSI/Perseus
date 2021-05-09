@@ -104,7 +104,7 @@ def solr_import_data_call():
 def start_solr_call():
     try:
         term = request.args['str']
-        bashCmd = [f"{term}solr-8.8.1/bin/solr", "start"]
+        bashCmd = [f"{term}solr-8.8.1/bin/solr", "start -force"]
         process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
         output, error = process.communicate()
         print(output)
