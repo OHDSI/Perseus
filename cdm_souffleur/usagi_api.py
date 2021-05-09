@@ -62,7 +62,10 @@ def get_term_search_results_call(current_user):
 @usagi_api.route('/api/test_solr', methods=['GET'])
 def test_solr_call():
     try:
-        solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/",
+        host = request.args['host']
+        port = request.args['port']
+        trail = request.args['trail']
+        solr = pysolr.Solr(f"http://{host}:{port}/solr{trail}",
                            always_commit=True)
         solr.ping()
     except InvalidUsage as error:
