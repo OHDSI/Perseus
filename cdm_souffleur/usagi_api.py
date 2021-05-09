@@ -1,4 +1,5 @@
 import json
+import subprocess
 import urllib
 
 import pysolr
@@ -94,3 +95,17 @@ def solr_import_data_call():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(content)
+
+
+@usagi_api.route('/api/start_solr', methods=['GET'])
+def start_solr_call():
+    try:
+        bashCmd = ["../solr-8.8.1/bin/solr", "start"]
+        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        print(output)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(True)
