@@ -81,3 +81,16 @@ def solr_import_status_call():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(content)
+
+
+@usagi_api.route('/api/solr_import_data', methods=['GET'])
+def solr_import_data_call():
+    try:
+        test = urllib.request.urlopen('http://localhost:8983/solr/admin/cores?action=CREATE&name=concepts&instanceDir=concepts&config=solrconfig.xml&dataDir=data')
+        resource = urllib.request.urlopen('http://localhost:8983/solr/concepts/dataimport?command=full-import')
+        content = resource.read().decode(resource.headers.get_content_charset())
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(content)
