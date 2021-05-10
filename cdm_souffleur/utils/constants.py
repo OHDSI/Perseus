@@ -34,6 +34,7 @@ SOLR_FULL_DATA_IMPORT = "solr/concepts/dataimport?command=full-import"
 SOLR_CREATE_CORE = "solr/admin/cores?action=CREATE&name="
 SOLR_RELOAD_CORE = "solr/admin/cores?action=RELOAD&core="
 SOLR_UNLOAD_CORE = "solr/admin/cores?action=UNLOAD&core="
+SOLR_IMPORT_STATUS = "solr/concepts/dataimport?command=status&indent=on&wt=json"
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
      17: 'blob',
