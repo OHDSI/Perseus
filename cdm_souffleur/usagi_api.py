@@ -1,14 +1,13 @@
 import json
 import subprocess
-import urllib
-
-import pysolr
-from flask import request, jsonify, Blueprint, flash, url_for
-
+from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping, search, create_core
+from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
+    full_data_import
+from cdm_souffleur.utils.constants import SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, SOLR_IMPORT_STATUS
 
 usagi_api = Blueprint('usagi_api', __name__)
 
@@ -59,57 +58,37 @@ def get_term_search_results_call(current_user):
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)
 
 
-@usagi_api.route('/api/test_solr', methods=['GET'])
-def test_solr_call():
-    try:
-        host = request.args['host']
-        port = request.args['port']
-        trail = request.args['trail']
-        solr = pysolr.Solr(f"http://{host}:{port}/solr{trail}",
-                           always_commit=True)
-        solr.ping()
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
-    return jsonify(True)
-
-
 @usagi_api.route('/api/solr_import_status', methods=['GET'])
 def solr_import_status_call():
     try:
-        resource = urllib.request.urlopen('http://localhost:8983/solr/concepts/dataimport?command=status&indent=on&wt=json')
-        content = resource.read().decode(resource.headers.get_content_charset())
+        response = run_solr_command(SOLR_IMPORT_STATUS)
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(content)
+    return response
 
 
 @usagi_api.route('/api/solr_import_data', methods=['GET'])
 def solr_import_data_call():
     try:
-        test = urllib.request.urlopen('http://localhost:8983/solr/admin/cores?action=CREATE&name=concepts&instanceDir=concepts&config=solrconfig.xml&dataDir=data')
-        resource = urllib.request.urlopen('http://localhost:8983/solr/concepts/dataimport?command=full-import')
-        content = resource.read().decode(resource.headers.get_content_charset())
+        response = full_data_import()
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(content)
+    return response
 
 
 @usagi_api.route('/api/start_solr', methods=['GET'])
 def start_solr_call():
     try:
-        term = request.args['str']
-        bashCmd = [f"{term}solr-8.8.1/bin/solr", "start -force"]
-        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
-        output, error = process.communicate()
-        print(output)
+        p = subprocess.Popen([f"solr", "start"], stdout =subprocess.PIPE, stderr =subprocess.PIPE, shell=True)
+        output, error = p.communicate()
+        if p.returncode != 0:
+            print("failed %d %s %s" % (p.returncode, output, error))
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(True)
+    return jsonify(output)
