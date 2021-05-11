@@ -100,8 +100,8 @@ def create_concept_mapping(current_user, file_name, source_code_column, source_n
     global_mapping_list = []
     for source_code in source_codes:
         code_mapping = CodeMapping()
-        code_mapping.sourceConcept = source_code
-        code_mapping.sourceConcept.source_auto_assigned_concept_ids = list(code_mapping.sourceConcept.source_auto_assigned_concept_ids)
+        code_mapping.sourceCode = source_code
+        code_mapping.sourceCode.source_auto_assigned_concept_ids = list(code_mapping.sourceCode.source_auto_assigned_concept_ids)
         scored_concepts = search(current_user, source_code.source_name)
         if len(scored_concepts):
             code_mapping.targetConcept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
