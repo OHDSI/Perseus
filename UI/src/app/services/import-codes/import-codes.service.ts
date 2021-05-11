@@ -57,7 +57,7 @@ export class ImportCodesService {
       params,
       codes: this.codes
     }
-    return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, params)
+    return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
       .pipe(
         tap(codeMappings => {
           this.sourceNameColumn = params.sourceName
