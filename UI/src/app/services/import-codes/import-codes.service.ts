@@ -20,7 +20,7 @@ export class ImportCodesService {
 
   codeMappings: CodeMapping[]
 
-  private csvFileName: string
+  private sourceNameColumn: string
 
   constructor(private httpClient: HttpClient) {
     this.codes = stateCodes
@@ -43,7 +43,6 @@ export class ImportCodesService {
           if (codes.length === 0) {
             throw new Error('Empty csv file')
           }
-          this.csvFileName = csv.name
           this.codes = codes
           this.columns = Object.keys(codes[0]).map(key => ({
             field: key,
@@ -54,9 +53,16 @@ export class ImportCodesService {
   }
 
   calculateScore(params: CodeMappingParams): Observable<CodeMapping[]> {
+    const body = {
+      params,
+      codes: this.codes
+    }
     return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, params)
       .pipe(
-        tap(codeMappings => this.codeMappings = codeMappings)
+        tap(codeMappings => {
+          this.sourceNameColumn = params.sourceName
+          this.codeMappings = codeMappings
+        })
       )
   }
 
