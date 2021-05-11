@@ -462,3 +462,9 @@ INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id
     standard_concept
     from vocabulary.concept 
     where concept_id IN (select concept_id_2 from usagi.maps_to_concepts);
+
+
+--- adding username column to vocabulary.source_to_concept_map table
+
+ALTER TABLE vocabulary.source_to_concept_map
+ADD COLUMN username VARCHAR ( 30 );
