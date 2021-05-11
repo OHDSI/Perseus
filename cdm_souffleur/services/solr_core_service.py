@@ -10,8 +10,7 @@ def run_solr_command(command, current_user = ''):
     urlopen(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/{command}{current_user}")
 
 
-#run_solr_command(SOLR_CREATE_MAIN_INDEX_CORE)
-#run_solr_command(SOLR_FULL_DATA_IMPORT)
+
 
 
 def create_core(current_user):
