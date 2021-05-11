@@ -10,15 +10,15 @@ export const targetColumns: Column[] = [
     name: 'Concept Name'
   },
   {
-    field: 'domain',
+    field: 'domainId',
     name: 'Domain'
   },
   {
-    field: 'conceptClass',
+    field: 'conceptClassId',
     name: 'Concept Class'
   },
   {
-    field: 'vocabulary',
+    field: 'vocabularyId',
     name: 'Vocabulary'
   },
   {
@@ -26,7 +26,7 @@ export const targetColumns: Column[] = [
     name: 'Concept Code'
   },
   {
-    field: 'standardCode',
+    field: 'standardConcept',
     name: 'Standard Code'
   }
 ]

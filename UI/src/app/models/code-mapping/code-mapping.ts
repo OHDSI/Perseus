@@ -1,19 +1,19 @@
-import { SourceConcept } from './source-concept';
+import { SourceCode } from './source-code';
 import { TargetConcept } from './target-concept';
 import { Selectable } from '../grid/selectable';
 
 export class CodeMapping implements Selectable {
 
-  constructor(public sourceConcept: SourceConcept,
+  constructor(public sourceCode: SourceCode,
               public targetConcept: TargetConcept,
               public matchScore: number) {
   }
 
   get selected() {
-    return this.sourceConcept.selected
+    return this.sourceCode.code.selected
   }
 
   set selected(selected: boolean) {
-    this.sourceConcept.selected = selected
+    this.sourceCode.code.selected = selected
   }
 }

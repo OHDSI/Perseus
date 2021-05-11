@@ -5,16 +5,17 @@ import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
 import { stateCodeMappings, stateCodes, stateColumns } from './state';
-import { SourceConcept } from '../../models/code-mapping/source-concept';
+import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
+import { Code } from '../../models/code-mapping/code';
 
 @Injectable()
 export class ImportCodesService {
 
   csv: File
 
-  codes: SourceConcept[]
+  codes: Code[]
 
   columns: Column[]
 
@@ -32,12 +33,12 @@ export class ImportCodesService {
     return !!this.codes && !!this.columns
   }
 
-  loadCsv(csv: File, delimeter = ','): Observable<SourceConcept[]> {
+  loadCsv(csv: File, delimiter = ','): Observable<SourceCode[]> {
     const formData = new FormData()
     formData.append('file', csv)
-    formData.append('delimiter', delimeter)
+    formData.append('delimiter', delimiter)
 
-    return this.httpClient.post<SourceConcept[]>(`${apiUrl}/load_codes_to_server`, formData)
+    return this.httpClient.post<SourceCode[]>(`${apiUrl}/load_codes_to_server`, formData)
       .pipe(
         tap(codes => {
           if (codes.length === 0) {
@@ -59,8 +60,10 @@ export class ImportCodesService {
     }
     return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
       .pipe(
-        map(mappings => mappings.map(mapping =>
-          new CodeMapping({ ...mapping.sourceConcept, selected: false }, mapping.targetConcept, mapping.matchScore))),
+        map(mappings => {
+          mappings.forEach(mapping => mapping.selected = false)
+          return mappings
+        }),
         tap(codeMappings => {
           this.sourceNameColumn = params.sourceName
           this.codeMappings = codeMappings
@@ -71,9 +74,11 @@ export class ImportCodesService {
   saveCodes(name): Observable<void> {
     const body = {
       name,
-      codes: this.codeMappings.filter(codeMapping => codeMapping.selected)
+      mappedCodes: this.codeMappings
+        .filter(codeMapping => codeMapping.selected)
+        .map(codeMapping => codeMapping.targetConcept.concept)
     }
-    return this.httpClient.post<void>(`${apiUrl}/save_codes`, body)
+    return this.httpClient.post<void>(`${apiUrl}/save_mapped_codes`, body)
   }
 
   reset() {

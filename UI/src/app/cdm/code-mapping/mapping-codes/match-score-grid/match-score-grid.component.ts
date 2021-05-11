@@ -4,8 +4,8 @@ import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { Column, columnToField } from '../../../../models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
-import { SourceConcept } from '../../../../models/code-mapping/source-concept';
-import { TargetConcept } from '../../../../models/code-mapping/target-concept';
+import { Code } from '../../../../models/code-mapping/code';
+import { Concept } from '../../../../models/code-mapping/concept';
 
 @Component({
   selector: 'app-match-score-grid',
@@ -47,16 +47,16 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     super();
   }
 
-  get sourceData(): SourceConcept[] {
-    return this.data.map(codeMapping => codeMapping.sourceConcept)
+  get sourceData(): Code[] {
+    return this.data.map(codeMapping => codeMapping.sourceCode.code)
   }
 
   get matchScoreData(): number[] {
     return this.data.map(codeMapping => codeMapping.matchScore)
   }
 
-  get targetData(): TargetConcept[] {
-    return this.data.map(codeMapping => codeMapping.targetConcept)
+  get targetData(): Concept[] {
+    return this.data.map(codeMapping => codeMapping.targetConcept.concept)
   }
 
   get selectionTopInPx() {
