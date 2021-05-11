@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { codesRouter } from '../../../../app.constants';
+import { codesRouter, mainPageRouter } from '../../../../app.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { delay, finalize } from 'rxjs/operators';
@@ -51,7 +51,7 @@ export class ColumnMappingComponent implements OnInit {
         finalize(() => this.loading = false)
       )
       .subscribe(
-        () => this.router.navigateByUrl(`${codesRouter}/mapping`),
+        () => this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`),
         error => openErrorDialog(this.dialogService, 'Failed to create Mapping', parseHttpError(error))
       )
   }

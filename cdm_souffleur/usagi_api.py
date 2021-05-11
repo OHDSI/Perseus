@@ -15,14 +15,15 @@ usagi_api = Blueprint('usagi_api', __name__)
 @token_required
 def create_codes(current_user):
     try:
-        file_name = request.json['fileName']
-        source_code_column = request.json['sourceCodeColumn']
-        source_name_column = request.json['sourceNameColumn']
-        source_frequency_column = request.json['sourceFrequencyColumn']
-        auto_concept_id_column = request.json['autoConceptIdColumn']
-        additional_info_columns = request.json['additionalInfoColumns']
-        concept_ids_or_atc = request.json['conceptIdsOrAtc']
-        result = create_concept_mapping(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        params = request.json['params']
+        source_code_column = params['sourceCode']
+        source_name_column = params['sourceName']
+        source_frequency_column = params['sourceFrequency']
+        auto_concept_id_column = params['autoConceptId']
+        additional_info_columns = params['additionalInfo']
+        concept_ids_or_atc = params['conceptIdsOrAtc'] if 'conceptIdsOrAtc' in params else ''
+        codes = request.json['codes']
+        result = create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
