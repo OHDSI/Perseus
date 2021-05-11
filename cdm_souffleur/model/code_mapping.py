@@ -59,12 +59,12 @@ class CodeMapping:
                  matchScore = 0,
                  mappingStatus = MappingStatus.UNCHECKED,
                  equivalence = Equivalence.UNREVIEWED,
-                 targetConcept = TargetConcept(),
+                 targetConcept = MappingTarget(),
                  comment = '',
                  statusSetBy = '',
                  statusSetOn = 0,
                  assignedReviewer = ''):
-        self.sourceConcept = source_code
+        self.sourceCode = source_code
         self.matchScore = matchScore
         self.mappingStatus = mappingStatus
         self.equivalence = equivalence
