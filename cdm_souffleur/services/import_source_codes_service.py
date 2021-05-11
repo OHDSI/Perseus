@@ -13,20 +13,19 @@ import pysolr
 from cdm_souffleur import app, json
 
 
-def create_source_codes(current_user, file_name, source_code_column, source_name_column, source_frequency_column,
+def create_source_codes(current_user, codes, source_code_column, source_name_column, source_frequency_column,
                         auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
-    filepath = f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{file_name}"
-    code_file = pd.read_csv(filepath, delimiter=',').fillna('')
     source_codes = []
-    for index, row in code_file.iterrows():
+    for row in codes:
         source_codes.append(add_source_code(row, source_code_column, source_name_column, source_frequency_column,
-                                            auto_concept_id_column, concept_ids_or_atc, additional_info_columns))
+                                            auto_concept_id_column, concept_ids_or_atc, additional_info_columns, row))
     return source_codes
 
 
 def add_source_code(row, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column,
-                    concept_ids_or_atc, additional_info_columns):
+                    concept_ids_or_atc, additional_info_columns, code):
     new_code = SourceCode()
+    new_code.code = code
     if not source_code_column:
         new_code.source_code = ''
     else:
@@ -101,11 +100,11 @@ def create_concept_mapping(current_user, file_name, source_code_column, source_n
     global_mapping_list = []
     for source_code in source_codes:
         code_mapping = CodeMapping()
-        code_mapping.source_code = source_code
-        code_mapping.source_code.source_auto_assigned_concept_ids = list(code_mapping.source_code.source_auto_assigned_concept_ids)
+        code_mapping.sourceConcept = source_code
+        code_mapping.sourceConcept.source_auto_assigned_concept_ids = list(code_mapping.sourceConcept.source_auto_assigned_concept_ids)
         scored_concepts = search(current_user, source_code.source_name)
         if len(scored_concepts):
-            code_mapping.targetConcepts = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
+            code_mapping.targetConcept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
             code_mapping.matchScore = scored_concepts[0].match_score
         else:
             code_mapping.matchScore = 0
@@ -114,7 +113,7 @@ def create_concept_mapping(current_user, file_name, source_code_column, source_n
         elif len(source_code.source_auto_assigned_concept_ids) > 1 and len(scored_concepts):
             code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED
         global_mapping_list.append(code_mapping)
-    return json.dumps(global_mapping_list, indent=4, cls=CodeMappingEncoder)
+    return json.dumps(global_mapping_list, cls=CodeMappingEncoder)
 
 
 def create_target_concept(concept):

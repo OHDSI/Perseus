@@ -1,11 +1,13 @@
 import json
-
-from flask import request, jsonify, Blueprint, flash, url_for
-
+import subprocess
+from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping, search, create_core
+from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
+    full_data_import
+from cdm_souffleur.utils.constants import SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, SOLR_IMPORT_STATUS
 
 usagi_api = Blueprint('usagi_api', __name__)
 
@@ -13,14 +15,15 @@ usagi_api = Blueprint('usagi_api', __name__)
 @token_required
 def create_codes(current_user):
     try:
-        file_name = request.json['fileName']
-        source_code_column = request.json['sourceCodeColumn']
-        source_name_column = request.json['sourceNameColumn']
-        source_frequency_column = request.json['sourceFrequencyColumn']
-        auto_concept_id_column = request.json['autoConceptIdColumn']
-        additional_info_columns = request.json['additionalInfoColumns']
-        concept_ids_or_atc = request.json['conceptIdsOrAtc']
-        result = create_concept_mapping(current_user, file_name, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        params = request.json['params']
+        source_code_column = params['sourceCode']
+        source_name_column = params['sourceName']
+        source_frequency_column = params['sourceFrequency']
+        auto_concept_id_column = params['autoConceptId']
+        additional_info_columns = params['additionalInfo']
+        concept_ids_or_atc = params['conceptIdsOrAtc'] if 'conceptIdsOrAtc' in params else ''
+        codes = request.json['codes']
+        result = create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -54,3 +57,39 @@ def get_term_search_results_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)
+
+
+@usagi_api.route('/api/solr_import_status', methods=['GET'])
+def solr_import_status_call():
+    try:
+        response = run_solr_command(SOLR_IMPORT_STATUS)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return response
+
+
+@usagi_api.route('/api/solr_import_data', methods=['GET'])
+def solr_import_data_call():
+    try:
+        response = full_data_import()
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return response
+
+
+@usagi_api.route('/api/start_solr', methods=['GET'])
+def start_solr_call():
+    try:
+        p = subprocess.Popen([f"solr", "start"], stdout =subprocess.PIPE, stderr =subprocess.PIPE, shell=True)
+        output, error = p.communicate()
+        if p.returncode != 0:
+            print("failed %d %s %s" % (p.returncode, output, error))
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(output)

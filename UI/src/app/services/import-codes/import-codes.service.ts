@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Column } from '../../models/grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
 import { stateCodeMappings, stateCodes, stateColumns } from './state';
@@ -59,6 +59,8 @@ export class ImportCodesService {
     }
     return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
       .pipe(
+        map(mappings => mappings.map(mapping =>
+          new CodeMapping({ ...mapping.sourceConcept, selected: false }, mapping.targetConcept, mapping.matchScore))),
         tap(codeMappings => {
           this.sourceNameColumn = params.sourceName
           this.codeMappings = codeMappings
