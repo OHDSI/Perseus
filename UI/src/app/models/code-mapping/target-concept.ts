@@ -1,9 +1,5 @@
+import { Concept } from './concept';
+
 export interface TargetConcept {
-  conceptId: number
-  conceptName: string
-  domain: string
-  conceptClass: string
-  vocabulary: string
-  conceptCode: number
-  standardCode: string
+  concept: Concept
 }
