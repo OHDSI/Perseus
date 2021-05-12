@@ -38,8 +38,16 @@
   </div>
 
   <div class="vocabulary-search__content">
-    <div class="vocabulary-search__toolbar">
-      <div class="vocabulary-search__search-input-and-mode-wrapper">
+    <app-navigation-grid height="385px"
+                         [data]="concepts"
+                         [columns]="columns"
+                         [total]="total"
+                         [pageSize]="pageSize"
+                         [error]="disableAll"
+                         [loading]="requestInProgress"
+                         (sort)="onSort($event)"
+                         (pagination)="onPagination($event)">
+      <div toolbar class="vocabulary-search__grid-toolbar">
         <label class="vocabulary-search__input">
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -63,101 +71,16 @@
         </div>
       </div>
 
-      <div class="vocabulary-search__navigation" (click)="handleNavigation($event)">
-        <div class="show-by">
-          <label for="show-by">Show by</label>
-          <input #pageSizeInput id="show-by" type="number" max="500" [ngModel]="requestParams.pageSize">
+      <div error class="error-row">
+        <div class="error-icon-wrapper">
+          <mat-icon class="error-icon" svgIcon="error"></mat-icon>
         </div>
-
-        <div class="total">
-          <label>Total</label>
-          <span>{{total | number:'':'en'}}</span>
-        </div>
-
-        <div class="pagination">
-          <div class="arrow-wrapper arrow-left" data-arrow="left">
-            <svg data-arrow="left" width="4" height="8" viewBox="0 0 4 8" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path data-arrow="left" d="M4 0L6.3573e-08 4L4 8L4 0Z" fill="#066BBB"/>
-            </svg>
-          </div>
-
-          <span data-page="first" [ngClass]="{selected: currentPage === 1}">
-            1
-          </span>
-
-          <span *ngIf="pageCount > 4 && movableIndexes.second > 2" class="no-clickable">...</span>
-
-          <span data-page="second" *ngIf="pageCount > 1"
-                [ngClass]="{selected: currentPage === movableIndexes.second}">
-            {{movableIndexes.second}}
-          </span>
-
-          <span data-page="third" *ngIf="pageCount > 2"
-                [ngClass]="{selected: currentPage === movableIndexes.third}">
-            {{movableIndexes.third}}
-          </span>
-
-          <span *ngIf="pageCount > 4 && movableIndexes.third < pageCount - 1" class="no-clickable">...</span>
-
-          <span data-page="fourth" *ngIf="pageCount > 3"
-                [ngClass]="{selected: currentPage === pageCount}">
-            {{pageCount}}
-          </span>
-
-          <div class="arrow-wrapper arrow-right" data-arrow="right">
-            <svg data-arrow="right" width="4" height="8" viewBox="0 0 4 8" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path data-arrow="right" d="M0 8L4 4L-3.49691e-07 0L0 8Z" fill="#066BBB"/>
-            </svg>
-          </div>
+        <div class="error-text">
+          Athena’s server error occured. Please try again later
+          or use Local Vocabulary
         </div>
       </div>
-    </div>
-
-    <div class="vocabulary-search__table-wrapper">
-      <div class="vocabulary-search__table">
-        <div class="row header" (click)="onSort($event)">
-          <div *ngFor="let column of columns"
-               class="column cell"
-               [className]="column.className"
-               [ngClass]="{'sortable-asc': column.field === sort?.field && sort.order === 'asc',
-               'sortable-desc': column.field === sort?.field && sort.order === 'desc'}">
-            {{column.name}}
-            <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg"
-                 [attr.data-sortField]="column.field">
-              <path opacity="0.6" d="M0 12H6V10H0V12ZM0 0V2H18V0H0ZM0 7H12V5H0V7Z" fill="white"
-                    [attr.data-sortField]="column.field"/>
-            </svg>
-          </div>
-        </div>
-
-        <div *ngFor="let concept of concepts" class="row">
-          <div class="cell id">{{concept.id}}</div>
-          <div class="cell code">{{concept.code}}</div>
-          <div class="cell name">{{concept.name}}</div>
-          <div class="cell class">{{concept.className}}</div>
-          <div class="cell concept">{{concept.standardConcept}}</div>
-          <div class="cell validity">{{concept.invalidReason}}</div>
-          <div class="cell domain">{{concept.domain}}</div>
-          <div class="cell vocab">{{concept.vocabulary}}</div>
-        </div>
-
-        <div *ngIf="disableAll" class="row error-row">
-          <div class="error-icon-wrapper">
-            <mat-icon class="error-icon" svgIcon="error"></mat-icon>
-          </div>
-          <div class="error-text">
-            Athena’s server error occured. Please try again later
-            or use Local Vocabulary
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="requestInProgress" class="ui-blocker">
-        <mat-spinner></mat-spinner>
-      </div>
-    </div>
+    </app-navigation-grid>
   </div>
 
   <app-close-dialog-button class="vocabulary-search__close" (click)="onClose()"></app-close-dialog-button>

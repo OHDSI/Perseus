@@ -4,13 +4,15 @@ import { SelectableGridComponent } from './selectable-grid/selectable-grid.compo
 import { GridCheckboxComponent } from './selectable-grid/grid-checkbox/grid-checkbox.component';
 import { SharedModule } from '../shared/shared.module';
 import { GridColumnComponent } from './auxiliary/grid-column/grid-column.component';
+import { NavigationGridComponent } from './navigation-grid/navigation-grid.component';
 
 @NgModule({
   declarations: [
     GridComponent,
     SelectableGridComponent,
     GridCheckboxComponent,
-    GridColumnComponent
+    GridColumnComponent,
+    NavigationGridComponent
   ],
   imports: [
     SharedModule
@@ -19,7 +21,8 @@ import { GridColumnComponent } from './auxiliary/grid-column/grid-column.compone
     GridComponent,
     SelectableGridComponent,
     GridCheckboxComponent,
-    GridColumnComponent
+    GridColumnComponent,
+    NavigationGridComponent
   ]
 })
 export class GridModule { }

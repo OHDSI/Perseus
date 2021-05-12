@@ -1,0 +1,98 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  &__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 410px;
+
+    label {
+      font-size: 12px;
+      white-space: nowrap;
+      line-height: 15px;
+      color: #808080;
+      height: 15px;
+      margin-top: 2px;
+    }
+
+    .show-by, .total, .pagination {
+      margin-right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .show-by {
+      width: 105px;
+
+      label {
+        width: 45px;
+      }
+
+      input {
+        height: 24px;
+        width: 50px;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid #2C2C2C;
+        font-size: 14px;
+        line-height: 15px;
+        color: #404040;
+      }
+    }
+
+    .total {
+      height: 16px;
+
+      label {
+        width: 32px;
+      }
+    }
+
+    .pagination {
+      margin-right: 0;
+
+      .arrow-wrapper {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .arrow-left {
+        margin-right: 3px;
+      }
+
+      span.selected {
+        background-color: #066BBB;
+        color: #fff;
+      }
+
+      span {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        line-height: 14px;
+        color: #404044;
+        min-width: 20px;
+        padding: 3px;
+        height: 20px;
+        border: 1px solid rgba(6, 107, 187, .2);
+        box-sizing: border-box;
+        border-radius: 2px;
+        margin-right: 3px;
+      }
+
+      .no-clickable {
+        cursor: default;
+      }
+    }
+  }
+}
