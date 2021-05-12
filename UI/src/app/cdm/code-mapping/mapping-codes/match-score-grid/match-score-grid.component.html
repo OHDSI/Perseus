@@ -14,7 +14,7 @@
           </th>
 
           <td class="cell select-cell" cdk-cell data-cell *cdkCellDef="let row">
-            <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
+            <app-grid-checkbox [checked]="row.approved" (click)="select(row)"></app-grid-checkbox>
           </td>
         </ng-container>
 
@@ -24,8 +24,8 @@
             {{sourceColumn.name}}
           </th>
 
-          <td class="cell" cdk-cell data-cell *cdkCellDef="let sourceConcept">
-            {{sourceConcept[sourceColumn.field]}}
+          <td class="cell" cdk-cell data-cell *cdkCellDef="let codeMapping">
+            {{codeMapping.sourceCode.code[sourceColumn.field]}}
           </td>
         </ng-container>
 

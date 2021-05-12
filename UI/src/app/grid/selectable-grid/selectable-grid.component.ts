@@ -31,7 +31,7 @@ export class SelectableGridComponent<T extends Selectable> extends GridComponent
     ]
   }
 
-  select(row: {selected: boolean; [key: string]: any}) {
+  select(row: T) {
     row.selected = !row.selected
   }
 
