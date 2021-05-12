@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
-import { stateCodeMappings, stateCodes, stateColumns } from './state';
 import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
@@ -24,9 +23,6 @@ export class ImportCodesService {
   private sourceNameColumn: string
 
   constructor(private httpClient: HttpClient) {
-    this.codes = stateCodes
-    this.columns = stateColumns
-    this.codeMappings = stateCodeMappings
   }
 
   get imported(): boolean {
@@ -74,6 +70,7 @@ export class ImportCodesService {
   saveCodes(name): Observable<void> {
     const body = {
       name,
+      codes: this.codes,
       mappedCodes: this.codeMappings
         .filter(codeMapping => codeMapping.selected)
         .map(codeMapping => codeMapping.targetConcept.concept)

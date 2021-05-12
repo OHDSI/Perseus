@@ -72,7 +72,10 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   ngAfterViewInit() {
-    this.gridTop = this.sourceGridWrapper.nativeElement.getBoundingClientRect().top
+    setTimeout(() => { // Need set timeout to render page
+      const rect = this.sourceGridWrapper.nativeElement.getBoundingClientRect()
+      this.gridTop = rect.top
+    })
   }
 
   onWheel(event: WheelEvent) {
@@ -85,7 +88,8 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   onMouseover(event: MouseEvent) {
     const cell = event.target as HTMLElement
     if (cell?.dataset.hasOwnProperty('cell')) {
-      this.selectionTop = cell.getBoundingClientRect().top - this.gridTop
+      const rect = cell.getBoundingClientRect()
+      this.selectionTop = rect.top - this.gridTop
     }
   }
 

@@ -91,8 +91,6 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.initStreamsOfDisabledButtons();
 
     this.subscribeOnReportConfigReady();
-
-    this.showVocabulary()
   }
 
   ngOnDestroy() {

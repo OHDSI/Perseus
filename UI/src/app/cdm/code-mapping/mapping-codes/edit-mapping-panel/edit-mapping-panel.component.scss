@@ -1,0 +1,6 @@
+@import "mixins";
+
+.edit-mapping {
+  bottom: 0;
+  @include perseus-bottom-content-panel();
+}
