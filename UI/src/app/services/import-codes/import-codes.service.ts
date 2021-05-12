@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Column } from '../../models/grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
 import { SourceCode } from '../../models/code-mapping/source-code';
@@ -93,10 +93,6 @@ export class ImportCodesService {
     }
     return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
       .pipe(
-        map(mappings => {
-          mappings.forEach(mapping => mapping.sourceCode.code.selected = false)
-          return mappings
-        }),
         tap(codeMappings => {
           this.state.sourceNameColumn = params.sourceName
           this.state.codeMappings = codeMappings

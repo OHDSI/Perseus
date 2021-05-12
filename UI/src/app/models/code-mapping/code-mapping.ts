@@ -6,14 +6,15 @@ export class CodeMapping implements Selectable {
 
   constructor(public sourceCode: SourceCode,
               public targetConcepts: TargetConcept[],
-              public matchScore: number) {
+              public matchScore: number,
+              public approved = false) {
   }
 
   get selected() {
-    return this.sourceCode.code.selected
+    return this.approved
   }
 
   set selected(selected: boolean) {
-    this.sourceCode.code.selected = selected
+    this.approved = selected
   }
 }

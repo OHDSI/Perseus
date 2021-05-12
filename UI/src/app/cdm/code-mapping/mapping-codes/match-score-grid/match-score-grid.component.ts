@@ -4,7 +4,6 @@ import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { Column, columnToField } from '../../../../models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
-import { Code } from '../../../../models/code-mapping/code';
 import { Concept } from '../../../../models/code-mapping/concept';
 
 @Component({
@@ -47,8 +46,8 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     super();
   }
 
-  get sourceData(): Code[] {
-    return this.data.map(codeMapping => codeMapping.sourceCode.code)
+  get sourceData(): CodeMapping[] {
+    return this.data
   }
 
   get matchScoreData(): number[] {
@@ -74,6 +73,15 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
       const rect = this.sourceGridWrapper.nativeElement.getBoundingClientRect()
       this.gridTop = rect.top
     })
+  }
+
+  select(row: CodeMapping) {
+    row.approved = !row.selected
+  }
+
+  selectAll() {
+    const value = !this.checkedAll
+    this.data.forEach(row => row.approved = value)
   }
 
   onWheel(event: WheelEvent) {
