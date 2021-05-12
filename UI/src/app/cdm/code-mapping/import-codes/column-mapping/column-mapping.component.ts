@@ -64,6 +64,10 @@ export class ColumnMappingComponent implements OnInit {
       autoConceptId: new FormControl(null),
       additionalInfo: new FormControl(null),
     })
+    const formValue = this.importCodesService.mappingParams
+    if (formValue) {
+      this.form.setValue(formValue)
+    }
   }
 
   private setCheckedAll() {

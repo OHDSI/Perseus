@@ -28,6 +28,7 @@ export class SelectableGridComponent<T extends Selectable> extends GridComponent
       '__select__',
       ...this.columns.map(columnToField)
     ]
+    this.setCheckedAll()
   }
 
   select(row: {selected: boolean; [key: string]: any}) {

@@ -1,42 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
-
-export interface Vocabulary {
-  name: string
-}
-
-const vocabularies = []
+import { HttpClient } from '@angular/common/http';
+import { apiUrl } from '../../app.constants';
+import { ImportCodesState } from './import-codes.service';
 
 @Injectable()
 export class ImportVocabulariesService {
 
-  state: Vocabulary[]
+  constructor(private httpClient: HttpClient) { }
 
-  constructor() { }
-
-  get vocabularies() {
-    return this.state
+  all(): Observable<string[]> {
+    return this.httpClient.get<string[]>(`${apiUrl}/get_vocabulary_list`)
   }
 
-  all(): Observable<Vocabulary[]> {
-    return of(vocabularies)
-      .pipe(
-        delay(3000),
-        tap(result => this.state = result)
-      )
-  }
-
-  get(name: string): Observable<Vocabulary> {
-    return of(vocabularies.find(vocabulary => vocabulary.name === name))
+  get(name: string): Observable<ImportCodesState> {
+    return this.httpClient.get<ImportCodesState>(`${apiUrl}/get_vocabulary/${name}`)
   }
 
   remove(name: string): Observable<void> {
-    this.state = this.state.filter(vocabulary => vocabulary.name !== name)
-    return of(null)
-      .pipe(
-        delay(2500)
-      )
+    return this.httpClient.delete<void>(`${apiUrl}/delete_vocabulary/${name}`)
   }
 }

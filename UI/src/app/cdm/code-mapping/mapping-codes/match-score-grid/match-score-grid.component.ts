@@ -67,7 +67,6 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     this.initColumns()
 
     this.data = this.importCodesService.codeMappings
-
     this.checkedAll = this.data.every(row => row.selected)
   }
 
