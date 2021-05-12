@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
+import { stateCodeMappings, stateCodes, stateColumns } from './state';
 import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
@@ -12,17 +13,20 @@ import { Code } from '../../models/code-mapping/code';
 @Injectable()
 export class ImportCodesService {
 
-  csv: File
-
   codes: Code[]
 
   columns: Column[]
+
+  mappingParams: CodeMappingParams
 
   codeMappings: CodeMapping[]
 
   private sourceNameColumn: string
 
   constructor(private httpClient: HttpClient) {
+    this.codes = stateCodes
+    this.columns = stateColumns
+    this.codeMappings = stateCodeMappings
   }
 
   get imported(): boolean {
@@ -63,6 +67,7 @@ export class ImportCodesService {
         tap(codeMappings => {
           this.sourceNameColumn = params.sourceName
           this.codeMappings = codeMappings
+          this.mappingParams = params
         })
       )
   }
@@ -71,17 +76,17 @@ export class ImportCodesService {
     const body = {
       name,
       codes: this.codes,
+      mappingParams: this.mappingParams,
       mappedCodes: this.codeMappings
-        .filter(codeMapping => codeMapping.selected)
-        .map(codeMapping => codeMapping.targetConcept.concept)
     }
     return this.httpClient.post<void>(`${apiUrl}/save_mapped_codes`, body)
   }
 
   reset() {
-    this.csv = null
     this.codes = null
     this.columns = null
+    this.mappingParams = null
     this.codeMappings = null
+    this.sourceNameColumn = null
   }
 }

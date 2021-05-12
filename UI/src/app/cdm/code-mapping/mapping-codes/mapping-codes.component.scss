@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 
   &__header {
     display: flex;
@@ -41,5 +42,9 @@
         margin-right: 15px;
       }
     }
+  }
+
+  &__saving {
+    @include perseus-loading();
   }
 }
