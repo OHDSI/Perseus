@@ -83,7 +83,10 @@ export class ImportVocabularyComponent implements OnInit {
     this.withLoading$(this.importVocabulariesService.get(vocabulary))
       .subscribe(
         result => {
-          this.importCodesService.vocabulary = result
+          this.importCodesService.vocabulary = {
+            ...result,
+            sourceNameColumn: result.mappingParams.sourceName
+          }
           this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
         },
         error => openErrorDialog(this.dialogService, 'Failed to open Vocabulary', parseHttpError(error))
