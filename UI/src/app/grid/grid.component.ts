@@ -10,7 +10,7 @@ import { Column, Sort } from '../models/grid/grid';
 export class GridComponent<T> implements OnInit {
 
   @Input()
-  data: T[];
+  data: T[]
 
   @Input()
   columns: Column[]
@@ -21,11 +21,12 @@ export class GridComponent<T> implements OnInit {
   @Input()
   width = '100%'
 
-  sortParams: Sort;
+  @Input()
+  loading = false
 
-  loading = false;
+  sortParams: Sort
 
-  displayedColumns: string[]; // For CDK table
+  displayedColumns: string[] // For CDK table
 
   @Output()
   sort = new EventEmitter<Sort>()

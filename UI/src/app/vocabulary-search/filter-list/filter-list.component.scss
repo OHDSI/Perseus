@@ -1,4 +1,4 @@
-@import "../search-input";
+@import "mixins";
 
 .vocabulary-search__filters-list {
   padding: 10px 5px 5px 36px;
@@ -6,6 +6,7 @@
 
   .filter {
     margin: 0 0 9px 3px;
+    @include search-input();
 
     &::placeholder {
       font-size: 12px;

@@ -12,6 +12,7 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
+import { SearchInputComponent } from './search-input/search-input.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimite
     HintComponent,
     HintOverlayComponent,
     CdmCheckboxComponent,
-    SetDelimiterDialogComponent
+    SetDelimiterDialogComponent,
+    SearchInputComponent
   ],
   exports: [
     CommonModule,

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -24,32 +25,28 @@ import { Filter } from './filter-item/filter-item.component';
 import { FilterValue } from './filter-list/filter-list.component';
 import { of } from 'rxjs';
 import { VocabularySearchStateService } from '../services/vocabulary-search/vocabulary-search-state.service';
+import { Column, Sort } from '../models/grid/grid';
+import { NavigationGridComponent } from '../grid/navigation-grid/navigation-grid.component';
+import { Pagination } from '../models/grid/pagination';
 
 @Component({
   selector: 'app-vocabulary-search',
   templateUrl: './vocabulary-search.component.html',
   styleUrls: ['./vocabulary-search.component.scss']
 })
-export class VocabularySearchComponent extends BaseComponent implements OnInit, OnDestroy {
+export class VocabularySearchComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  movableIndexes = {
-    second: 2,
-    third: 3,
-  };
+  concepts: Concept[] = []
 
-  currentPage = 1;
+  pageSize = 10
 
-  pageCount = 1;
+  total = 0
 
-  concepts: Concept[] = [];
+  requestInProgress = false
 
-  total = 0;
+  disableAll = false // When Athena API return error
 
-  requestInProgress = false;
-
-  disableAll = false; // When Athena API return error
-
-  columns = [
+  columns: Column[] = [
     {field: 'id', name: 'ID', className: 'id'},
     {field: 'code', name: 'Code', className: 'code'},
     {field: 'name', name: 'Name', className: 'name'},
@@ -58,49 +55,37 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     {field: 'invalidReason', name: 'Validity', className: 'validity'},
     {field: 'domain', name: 'Domain', className: 'domain'},
     {field: 'vocabulary', name: 'Vocab', className: 'vocab'}
-  ];
-
-  sort: {
-    field: string;
-    order: string
-  };
+  ]
 
   @ViewChild('keyWordInput')
-  keyWordInput: ElementRef;
+  keyWordInput: ElementRef
 
-  @ViewChild('pageSizeInput')
-  pageSizeInput: ElementRef;
+  @ViewChild(NavigationGridComponent)
+  gridComponent: NavigationGridComponent<Concept>
 
-  filters: Filter[] = [];
+  filters: Filter[] = []
 
-  openedFilter: string;
+  openedFilter: string
 
-  oldSelectedFilters: string[] = []; // only names
-  selectedFilters: FilterValue[] = [];
+  oldSelectedFilters: string[] = [] // Only names
+  selectedFilters: FilterValue[] = []
 
-  chipsHeight = '';
+  chipsHeight = ''
 
   requestParams: VocabSearchReqParams = {
     pageSize: 10,
     pageNumber: 1,
     query: '',
     updateFilters: true
-  };
+  }
 
-  mode = VocabSearchMode.LOCAL;
+  mode = VocabSearchMode.LOCAL
 
   @Input()
   bottom = '0'
 
   @Output()
-  close = new EventEmitter<void>();
-
-  private pageNumberRecognizer = {
-    first: () => 1,
-    second: () => this.movableIndexes.second,
-    third: () => this.movableIndexes.third,
-    fourth: () => this.pageCount
-  };
+  close = new EventEmitter<void>()
 
   private filtersRecognizer = {
     domain_id: {name: 'Domain', priority: 1, color: '#761C1C'},
@@ -108,7 +93,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     concept_class_id: {name: 'Class', priority: 3, color: '#14772A'},
     vocabulary_id: {name: 'Vocab', priority: 4, color: '#E99A00'},
     invalid_reason: {name: 'Valid', priority: 5, color: '#3D00BD'}
-  };
+  }
 
   private sortFieldMap = {
     id: 'concept_id',
@@ -119,13 +104,13 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     invalidReason: 'invalid_reason',
     domain: 'domain_id',
     vocabulary: 'vocabulary_id'
-  };
+  }
 
-  private request$ = new Subject<VocabSearchReqParams>();
+  private request$ = new Subject<VocabSearchReqParams>()
 
-  private readonly chipHeight = 78;
+  private readonly chipHeight = 78
 
-  private readonly maxPageSize = 500;
+  private readonly maxPageSize = 500
 
   constructor(private searchService: VocabularySearchService,
               private stateService: VocabularySearchStateService) {
@@ -136,40 +121,20 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     this.subscribeOnRequests();
 
     const needRequest = !this.loadState();
-
     if (needRequest) {
       this.makeRequest(this.requestParams);
     }
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.loadGridParams()
+    })
+  }
+
   ngOnDestroy() {
     super.ngOnDestroy();
     this.saveState();
-  }
-
-  handleNavigation(event: MouseEvent) {
-    const dataset = (event.target as HTMLElement).dataset;
-
-    let doRequest = false;
-
-    if (dataset.arrow) {
-      doRequest = this.handleArrowNavigation(dataset.arrow);
-    } else {
-      const getPage = this.pageNumberRecognizer[dataset.page];
-      const page = getPage ? getPage() : null;
-
-      if (page && page !== this.currentPage) {
-        doRequest = this.handlePageNavigation(page);
-      }
-    }
-
-    if (doRequest) {
-      this.makeRequest({
-        ...this.requestParams,
-        pageNumber: this.currentPage,
-        updateFilters: false
-      });
-    }
   }
 
   @HostListener('document:keyup.enter')
@@ -204,30 +169,22 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     }
   }
 
-  onSort(event: MouseEvent) {
-    const field = (event.target as HTMLElement).dataset.sortField;
+  onSort(sort: Sort) {
+    this.requestParams = {
+      ...this.requestParams,
+      sort: this.sortFieldMap[sort.field],
+      order: sort.order,
+      updateFilters: false
+    };
+    this.makeRequest(this.requestParams);
+  }
 
-    if (field) {
-      if (!this.sort || this.sort.field !== field || this.sort.order === 'desc') {
-        this.sort = {
-          field,
-          order: 'asc'
-        };
-      } else {
-        this.sort = {
-          field,
-          order: 'desc'
-        };
-      }
-
-      this.requestParams = {
-        ...this.requestParams,
-        sort: this.sortFieldMap[this.sort.field],
-        order: this.sort.order,
-        updateFilters: false
-      };
-      this.makeRequest(this.requestParams);
-    }
+  onPagination(pagination: Pagination) {
+    this.makeRequest({
+      ...this.requestParams,
+      pageNumber: pagination.pageNumber,
+      updateFilters: false
+    });
   }
 
   chipBackgroundColor(filterIndex: number) {
@@ -284,41 +241,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     this.request$.next(params);
   }
 
-  private handleArrowNavigation(arrow: string): boolean {
-    if (arrow === 'left' && this.currentPage !== 1) {
-      if (this.currentPage === this.movableIndexes.second && this.movableIndexes.second !== 2) {
-        this.setMovableIndexes(this.movableIndexes.second - 1);
-      }
-      this.currentPage--;
-
-      return true;
-    } else if (arrow === 'right' && this.currentPage !== this.pageCount) {
-      if (this.currentPage === this.movableIndexes.third && this.movableIndexes.third !== this.pageCount - 1) {
-        this.setMovableIndexes(this.movableIndexes.second + 1);
-      }
-      this.currentPage++;
-
-      return true;
-    }
-
-    return false;
-  }
-
-  private handlePageNavigation(page: number) {
-    if (page !== this.currentPage) {
-      this.currentPage = page;
-      if (page === 1 && this.movableIndexes.second !== 2) {
-        this.setMovableIndexes(2);
-      } else if (page === this.pageCount && this.movableIndexes.third !== this.pageCount - 1) {
-        this.setMovableIndexes(this.pageCount - 2);
-      }
-
-      return true;
-    }
-
-    return false;
-  }
-
   private subscribeOnRequests() {
     const searchRequest = (params: VocabSearchReqParams) =>
       this.searchService.search(params, this.mode)
@@ -345,7 +267,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       )
       .subscribe(result => {
         this.concepts = result.content;
-        this.setPagesAndElementsCount(result.totalElements, result.totalPages);
+        this.gridComponent.setPagesAndElementsCount(result.totalElements, result.totalPages);
         if (updateFilters && result.facets) {
           this.updateFilters(result.facets);
         }
@@ -358,7 +280,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   private findChanges(): { query: string, pageSize: number } {
     const query = this.keyWordInput.nativeElement.value;
-    const pageSize = parseInt(this.pageSizeInput.nativeElement.value, 10);
+    const pageSize = this.gridComponent.pageSize
 
     if (this.requestParams.query !== query || this.requestParams.pageSize !== pageSize) {
       return {
@@ -428,58 +350,31 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     };
   }
 
-  private setPagesAndElementsCount(total: number, pageCount: number) {
-    if (this.total !== total || this.pageCount !== pageCount) {
-      if (this.currentPage >= pageCount) { // current page > new page count
-        this.currentPage = pageCount;
-        this.setMovableIndexes(pageCount - 2, pageCount);
-      } else if (this.currentPage === this.pageCount) { // current page = old page count
-        this.setMovableIndexes(this.currentPage - 1, pageCount);
-      }
-
-      if (this.currentPage === 0) {
-        this.currentPage = 1;
-      }
-
-      this.total = total;
-      this.pageCount = pageCount;
-    }
-  }
-
-  private setMovableIndexes(second: number, pageCount = this.pageCount) {
-    if (pageCount < 4 || second < 2) {
-      this.movableIndexes = {
-        second: 2,
-        third: 3
-      };
-    } else {
-      this.movableIndexes = {
-        second,
-        third: second + 1
-      };
-    }
-  }
-
   private loadState(): boolean {
     if (this.stateService.state) {
-      const {requestParams, mode, selectedFilters, concepts,
-        currentPage, pageCount, filters, movableIndexes, sort} = this.stateService.state;
+      const {requestParams, mode, selectedFilters, concepts, filters, pageSize} = this.stateService.state;
       this.requestParams = requestParams;
       this.mode = mode;
       this.selectedFilters = selectedFilters;
       this.concepts = concepts;
-      this.currentPage = currentPage;
-      this.pageCount = pageCount;
       this.filters = filters;
-      this.movableIndexes = movableIndexes;
-      this.sort = sort;
-
+      this.pageSize = pageSize;
       this.updateChipsHeight();
 
       return true;
     }
 
     return false;
+  }
+
+  private loadGridParams() {
+    if (this.stateService.state) {
+      const {currentPage, pageCount, movableIndexes, sort} = this.stateService.state;
+      this.gridComponent.currentPage = currentPage;
+      this.gridComponent.pageCount = pageCount;
+      this.gridComponent.movableIndexes = movableIndexes;
+      this.gridComponent.sortParams = sort;
+    }
   }
 
   private saveState() {
@@ -489,11 +384,12 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
         mode: this.mode,
         selectedFilters: this.selectedFilters,
         concepts: this.concepts,
-        currentPage: this.currentPage,
-        pageCount: this.pageCount,
+        currentPage: this.gridComponent.currentPage,
+        pageCount: this.gridComponent.pageCount,
+        pageSize: this.gridComponent.pageSize,
         filters: this.filters,
-        movableIndexes: this.movableIndexes,
-        sort: this.sort
+        movableIndexes: this.gridComponent.movableIndexes,
+        sort: this.gridComponent.sortParams
       };
     }
   }

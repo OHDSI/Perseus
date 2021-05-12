@@ -11,6 +11,7 @@ export interface VocabSearchState {
   concepts: Concept[];
   currentPage: number;
   pageCount: number;
+  pageSize: number;
   filters: Filter[];
   movableIndexes: {second: number; third: number};
   sort: { field: string; order: string };
