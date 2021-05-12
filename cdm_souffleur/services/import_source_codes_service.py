@@ -5,6 +5,7 @@ from cdm_souffleur.model import atc_to_rxnorm
 from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, ScoredConcept, MappingTarget, \
     MappingStatus, TargetConcept
 from cdm_souffleur.model.concept import Concept
+from cdm_souffleur.model.conceptVocabularyModel import Source_To_Concept_Map
 from cdm_souffleur.model.source_code import SourceCode
 from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
@@ -147,3 +148,18 @@ def search(current_user, query):
             scored_concepts.append(ScoredConcept(item['score'], concept, item['term']))
     return scored_concepts
 
+
+def save_codes(current_user, mapped_codes):
+    for item in mapped_codes:
+        mapped_code = Source_To_Concept_Map(source_concept_id=item['sourceConceptId'],
+                                            source_code=item['sourceCode'],
+                                            source_vocabulary_id=item['sourceVocabularyId'],
+                                            source_code_description=item['sourceCodeDescription'],
+                                            target_concept_id=item['targetConceptId'],
+                                            target_vocabulary_id=item['targetVocabularyId'],
+                                            valid_start_date=item['validStartDate'],
+                                            valid_end_date=item['validEndDate'],
+                                            invalid_reason=item['invalidReason'],
+                                            username=current_user)
+        mapped_code.save()
+    return True

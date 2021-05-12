@@ -4,7 +4,7 @@ from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping, search, create_core
+    create_concept_mapping, search, create_core, save_codes
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
 from cdm_souffleur.utils.constants import SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, SOLR_IMPORT_STATUS
@@ -57,6 +57,19 @@ def get_term_search_results_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)
+
+
+@usagi_api.route('/api/save_mapped_codes', methods=['POST'])
+@token_required
+def save_mapped_codes_call(current_user):
+    try:
+        mapped_codes = request.json['mappedCodes']
+        result = save_codes(current_user, mapped_codes)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return json.dumps(result)
 
 
 @usagi_api.route('/api/solr_import_status', methods=['GET'])
