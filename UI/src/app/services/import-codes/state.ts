@@ -415,67 +415,7 @@ export const stateCodeMappings: CodeMapping[] = [
         valid_start_date: '1/1/1970',
         valid_end_date: '12/31/2099',
         invalid_reason: '',
-        selected: true
-      }
-    },
-    [
-      {
-        concept: {
-          conceptId: 435569,
-          conceptName: 'Somename...',
-          domainId: 'Condition',
-          conceptClassId: 'Clinical Fin...',
-          vocabularyId: 'SNOMED',
-          conceptCode: 435569,
-          standardConcept: 'S'
-        }
-      }
-    ],
-    1
-  ),
-  new CodeMapping(
-    {
-      code: {
-        source_code: '956',
-        source_concept_id: '0',
-        source_vocabulary_id: 'UCAF',
-        source_code_description: 'Height',
-        target_concept_id: '4177340',
-        target_vocabulary_id: 'SNOMED',
-        valid_start_date: '1/1/1970',
-        valid_end_date: '12/31/2099',
-        invalid_reason: '',
-        selected: true
-      }
-    },
-    [
-      {
-        concept: {
-          conceptId: 435569,
-          conceptName: 'Somename...',
-          domainId: 'Condition',
-          conceptClassId: 'Clinical Fin...',
-          vocabularyId: 'SNOMED',
-          conceptCode: 435569,
-          standardConcept: 'S'
-        }
-      }
-    ],
-    1
-  ),
-  new CodeMapping(
-    {
-      code: {
-        source_code: '956',
-        source_concept_id: '0',
-        source_vocabulary_id: 'UCAF',
-        source_code_description: 'Height',
-        target_concept_id: '4177340',
-        target_vocabulary_id: 'SNOMED',
-        valid_start_date: '1/1/1970',
-        valid_end_date: '12/31/2099',
-        invalid_reason: '',
-        selected: true
+        selected: false
       }
     },
     [

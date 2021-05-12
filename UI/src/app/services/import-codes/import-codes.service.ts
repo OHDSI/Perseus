@@ -94,11 +94,10 @@ export class ImportCodesService {
     return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
       .pipe(
         map(mappings => {
-          mappings.forEach(mapping => mapping.selected = false)
+          mappings.forEach(mapping => mapping.sourceCode.code.selected = false)
           return mappings
         }),
         tap(codeMappings => {
-          codeMappings.forEach(codeMapping => codeMapping.selected = false)
           this.state.sourceNameColumn = params.sourceName
           this.state.codeMappings = codeMappings
           this.state.mappingParams = params
