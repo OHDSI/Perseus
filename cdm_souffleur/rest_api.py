@@ -111,8 +111,10 @@ def get_View():
     try:
         view_sql = request.get_json()
         view_result=get_view_from_db(view_sql['sql'])
+    except ProgrammingError as error:
+        raise InvalidUsage(error.__str__(), 400)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(view_result)
 
 @bp.route('/api/validate_sql', methods=['POST'])
@@ -120,8 +122,10 @@ def validate_Sql():
     try:
         sql_transformation = request.get_json()
         sql_result = run_sql_transformation(sql_transformation['sql'])
+    except ProgrammingError as error:
+        raise InvalidUsage(error.__str__(), 400)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(error.__str__(), 500)
     return jsonify(sql_result)
 
 @bp.route('/api/get_view', methods=['GET'])

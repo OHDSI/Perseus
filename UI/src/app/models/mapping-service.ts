@@ -164,17 +164,19 @@ export class MappingService {
     return mapping;
   }
 
-  createConceptConstantNode(concept: IConcept, fieldType: string) {
-    const constantObj = {
+  createConceptConstantNode(concept: IConcept, fieldType: string, lookup: any) {
+    return {
       concept_id: concept.id,
       source_field: '',
-      sql_field: concept.fields[ fieldType ].constant,
-      sql_alias: concept.fields[ fieldType ].targetFieldName,
-      target_field: concept.fields[ fieldType ].targetFieldName,
-      comments: concept.fields[ fieldType ].comments,
-      targetCloneName: concept.fields[ fieldType ].targetCloneName ? concept.fields[ fieldType ].targetCloneName : ''
+      sql_field: concept.fields[fieldType].constant,
+      sql_alias: concept.fields[fieldType].targetFieldName,
+      lookup,
+      lookupType: this.getConceptLookupType(concept.fields[ fieldType ].targetFieldName),
+      target_field: concept.fields[fieldType].targetFieldName,
+      comments: concept.fields[fieldType].comments,
+      condition: concept.fields[ fieldType ].condition,
+      targetCloneName: concept.fields[fieldType].targetCloneName ? concept.fields[fieldType].targetCloneName : ''
     };
-    return constantObj;
   }
 
   createConceptMappingNode(concept: IConcept, fieldType: string, lookup: any) {
@@ -182,7 +184,7 @@ export class MappingService {
       return;
     }
     if (concept.fields[ fieldType ].constantSelected && concept.fields[ fieldType ].constant) {
-      return this.createConceptConstantNode(concept, fieldType);
+      return this.createConceptConstantNode(concept, fieldType, lookup);
     }
     const node: MappingNode = {
       concept_id: concept.id,
