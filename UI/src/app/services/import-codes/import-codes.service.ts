@@ -94,6 +94,7 @@ export class ImportCodesService {
     return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
       .pipe(
         tap(codeMappings => {
+          codeMappings.forEach(item => item.approved = false)
           this.state.sourceNameColumn = params.sourceName
           this.state.codeMappings = codeMappings
           this.state.mappingParams = params

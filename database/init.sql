@@ -468,3 +468,16 @@ INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id
 
 ALTER TABLE vocabulary.source_to_concept_map
 ADD COLUMN username VARCHAR ( 30 );
+
+ALTER TABLE vocabulary.source_to_concept_map
+ADD COLUMN id SERIAL PRIMARY KEY;
+
+
+---table for mapped concepts
+CREATE TABLE "cdm"."mapped_concept"
+(
+    id SERIAL PRIMARY KEY,
+    name varchar(50) NOT NULL,
+    codes_and_mapped_concepts text NOT NULL,
+    username VARCHAR ( 30 ) NOT NULL
+);

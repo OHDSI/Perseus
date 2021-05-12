@@ -59,7 +59,7 @@ class CodeMapping:
                  matchScore = 0,
                  mappingStatus = MappingStatus.UNCHECKED,
                  equivalence = Equivalence.UNREVIEWED,
-                 targetConcept = MappingTarget(),
+                 targetConcepts = [],
                  comment = '',
                  statusSetBy = '',
                  statusSetOn = 0,
@@ -68,7 +68,7 @@ class CodeMapping:
         self.matchScore = matchScore
         self.mappingStatus = mappingStatus
         self.equivalence = equivalence
-        self.targetConcept = targetConcept
+        self.targetConcepts = targetConcepts
         self.comment = comment
         self.statusSetBy = statusSetBy
         self.statusSetOn = statusSetOn
