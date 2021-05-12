@@ -14,10 +14,10 @@ export class ImportVocabulariesService {
   }
 
   get(name: string): Observable<ImportCodesState> {
-    return this.httpClient.get<ImportCodesState>(`${apiUrl}/get_vocabulary/${name}`)
+    return this.httpClient.get<ImportCodesState>(`${apiUrl}/get_vocabulary?name=${name}`)
   }
 
   remove(name: string): Observable<void> {
-    return this.httpClient.delete<void>(`${apiUrl}/delete_vocabulary/${name}`)
+    return this.httpClient.delete<void>(`${apiUrl}/delete_vocabulary?name=${name}`)
   }
 }
