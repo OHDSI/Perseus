@@ -5,11 +5,11 @@ import { adaptDbType } from '../utilites/cdm-adapter';
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
   MYSQL = 'MySQL',
-  ORACLE = 'Oracle',
-  POSTGRESQL = 'PostgreSQL',
-  REDSHIFT = 'Redshift',
   SQL_SERVER = 'SQL Server',
+  POSTGRESQL = 'PostgreSQL',
+  ORACLE = 'Oracle',
   AZURE = 'Azure',
+  REDSHIFT = 'Redshift',
   MS_ACCESS = 'MS Access',
   TERADATA = 'Teradata',
   BIGQUERY = 'BigQuery',
@@ -27,14 +27,14 @@ enum FileTypes {
 
 export const whiteRabbitDatabaseTypes: string[] = [
   DbTypes.MYSQL,
-  DbTypes.ORACLE,
-  DbTypes.POSTGRESQL,
-  DbTypes.REDSHIFT,
   DbTypes.SQL_SERVER,
+  DbTypes.POSTGRESQL,
+  DbTypes.ORACLE,
+  DbTypes.REDSHIFT,
   DbTypes.AZURE,
   DbTypes.MS_ACCESS,
   DbTypes.TERADATA,
-  DbTypes.BIGQUERY,
+  DbTypes.BIGQUERY
 ];
 
 export const dbTypesRequireSchema: string[] = [
