@@ -4,29 +4,62 @@ import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
-import { stateCodeMappings, stateCodes, stateColumns } from './state';
 import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
 import { Code } from '../../models/code-mapping/code';
 
+export interface ImportCodesState {
+  codes: Code[]
+  columns: Column[]
+  mappingParams: CodeMappingParams
+  codeMappings: CodeMapping[]
+  sourceNameColumn: string
+}
+
+const initialState: ImportCodesState = {
+  codes: null,
+  columns: null,
+  mappingParams: null,
+  codeMappings: null,
+  sourceNameColumn: null
+}
+
 @Injectable()
 export class ImportCodesService {
 
-  codes: Code[]
+  private state: ImportCodesState
 
-  columns: Column[]
+  get codes(): Code[] {
+    return this.state.codes
+  }
 
-  mappingParams: CodeMappingParams
+  get columns(): Column[] {
+    return this.state.columns
+  }
 
-  codeMappings: CodeMapping[]
+  get mappingParams(): CodeMappingParams {
+    return this.state.mappingParams
+  }
 
-  private sourceNameColumn: string
+  get codeMappings(): CodeMapping[] {
+    return this.state.codeMappings
+  }
+
+  set codeMappings(codeMapping: CodeMapping[]) {
+    this.state.codeMappings = codeMapping
+  }
+
+  get sourceNameColumn(): string {
+    return this.state.sourceNameColumn
+  }
+
+  set vocabulary(vocabulary: ImportCodesState) {
+    this.state = {...vocabulary}
+  }
 
   constructor(private httpClient: HttpClient) {
-    this.codes = stateCodes
-    this.columns = stateColumns
-    this.codeMappings = stateCodeMappings
+    this.state = {...initialState}
   }
 
   get imported(): boolean {
@@ -44,8 +77,8 @@ export class ImportCodesService {
           if (codes.length === 0) {
             throw new Error('Empty csv file')
           }
-          this.codes = codes
-          this.columns = Object.keys(codes[0]).map(key => ({
+          this.state.codes = codes
+          this.state.columns = Object.keys(codes[0]).map(key => ({
             field: key,
             name: key
           }))
@@ -65,9 +98,9 @@ export class ImportCodesService {
           return mappings
         }),
         tap(codeMappings => {
-          this.sourceNameColumn = params.sourceName
-          this.codeMappings = codeMappings
-          this.mappingParams = params
+          this.state.sourceNameColumn = params.sourceName
+          this.state.codeMappings = codeMappings
+          this.state.mappingParams = params
         })
       )
   }
@@ -83,10 +116,6 @@ export class ImportCodesService {
   }
 
   reset() {
-    this.codes = null
-    this.columns = null
-    this.mappingParams = null
-    this.codeMappings = null
-    this.sourceNameColumn = null
+    this.state = {...initialState}
   }
 }
