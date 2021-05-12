@@ -5,7 +5,7 @@ import { Selectable } from '../grid/selectable';
 export class CodeMapping implements Selectable {
 
   constructor(public sourceCode: SourceCode,
-              public targetConcept: TargetConcept,
+              public targetConcepts: TargetConcept[],
               public matchScore: number) {
   }
 

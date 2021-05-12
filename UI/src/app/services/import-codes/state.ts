@@ -418,17 +418,19 @@ export const stateCodeMappings: CodeMapping[] = [
         selected: true
       }
     },
-    {
-      concept: {
-        conceptId: 435569,
-        conceptName: 'Somename...',
-        domainId: 'Condition',
-        conceptClassId: 'Clinical Fin...',
-        vocabularyId: 'SNOMED',
-        conceptCode: 435569,
-        standardConcept: 'S'
+    [
+      {
+        concept: {
+          conceptId: 435569,
+          conceptName: 'Somename...',
+          domainId: 'Condition',
+          conceptClassId: 'Clinical Fin...',
+          vocabularyId: 'SNOMED',
+          conceptCode: 435569,
+          standardConcept: 'S'
+        }
       }
-    },
+    ],
     1
   ),
   new CodeMapping(
@@ -446,17 +448,19 @@ export const stateCodeMappings: CodeMapping[] = [
         selected: true
       }
     },
-    {
-      concept: {
-        conceptId: 435569,
-        conceptName: 'Somename...',
-        domainId: 'Condition',
-        conceptClassId: 'Clinical Fin...',
-        vocabularyId: 'SNOMED',
-        conceptCode: 435569,
-        standardConcept: 'S'
+    [
+      {
+        concept: {
+          conceptId: 435569,
+          conceptName: 'Somename...',
+          domainId: 'Condition',
+          conceptClassId: 'Clinical Fin...',
+          vocabularyId: 'SNOMED',
+          conceptCode: 435569,
+          standardConcept: 'S'
+        }
       }
-    },
+    ],
     1
   ),
   new CodeMapping(
@@ -474,17 +478,19 @@ export const stateCodeMappings: CodeMapping[] = [
         selected: true
       }
     },
-    {
-      concept: {
-        conceptId: 435569,
-        conceptName: 'Somename...',
-        domainId: 'Condition',
-        conceptClassId: 'Clinical Fin...',
-        vocabularyId: 'SNOMED',
-        conceptCode: 435569,
-        standardConcept: 'S'
+    [
+      {
+        concept: {
+          conceptId: 435569,
+          conceptName: 'Somename...',
+          domainId: 'Condition',
+          conceptClassId: 'Clinical Fin...',
+          vocabularyId: 'SNOMED',
+          conceptCode: 435569,
+          standardConcept: 'S'
+        }
       }
-    },
+    ],
     1
   )
 ]

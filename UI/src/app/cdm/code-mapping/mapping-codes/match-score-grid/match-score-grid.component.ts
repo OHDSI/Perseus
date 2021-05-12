@@ -56,7 +56,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   get targetData(): Concept[] {
-    return this.data.map(codeMapping => codeMapping.targetConcept.concept)
+    return this.data.map(codeMapping => codeMapping.targetConcepts[0].concept)
   }
 
   get selectionTopInPx() {
@@ -67,7 +67,6 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     this.initColumns()
 
     this.data = this.importCodesService.codeMappings
-    this.checkedAll = this.data.every(row => row.selected)
   }
 
   ngAfterViewInit() {

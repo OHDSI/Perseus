@@ -98,6 +98,7 @@ export class ImportCodesService {
           return mappings
         }),
         tap(codeMappings => {
+          codeMappings.forEach(codeMapping => codeMapping.selected = false)
           this.state.sourceNameColumn = params.sourceName
           this.state.codeMappings = codeMappings
           this.state.mappingParams = params
