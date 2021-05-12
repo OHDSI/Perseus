@@ -8,6 +8,7 @@ import { finalize, switchMap, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '../../../../app.constants';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -75,23 +76,30 @@ export class ImportVocabularyComponent implements OnInit {
 
   onEdit(index: number) {
     const vocabulary = this.vocabularies[index]
-    this.importVocabulariesService.get(vocabulary)
-      .subscribe(result => {
-        this.importCodesService.vocabulary = result
-        this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
-      })
+    this.withLoading$(this.importVocabulariesService.get(vocabulary))
+      .subscribe(
+        result => {
+          this.importCodesService.vocabulary = result
+          this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
+        },
+        error => openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
+      )
   }
 
   onRemove(index: number) {
     const vocabulary = this.vocabularies[index]
+    this.withLoading$(this.importVocabulariesService.remove(vocabulary))
+      .subscribe(
+        () => this.vocabularies = this.vocabularies.filter(vocab => vocab !== vocabulary),
+        error => openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
+      )
+  }
+
+  private withLoading$<T>(request$: Observable<T>) {
     this.loading = true
-    this.importVocabulariesService.remove(vocabulary)
-      .subscribe(() => {
-        this.loading = false
-        this.vocabularies = this.vocabularies.filter(vocab => vocab !== vocabulary)
-      }, error => {
-        openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
-        this.loading = false
-      })
+    return request$
+      .pipe(
+        finalize(() => this.loading = false)
+      )
   }
 }
