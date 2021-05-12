@@ -1,11 +1,13 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
-import { ImportVocabulariesService, Vocabulary } from '../../../../services/import-codes/import-vocabularies.service';
+import { ImportVocabulariesService } from '../../../../services/import-codes/import-vocabularies.service';
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
 import { finalize, switchMap, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
+import { Router } from '@angular/router';
+import { codesRouter, mainPageRouter } from '../../../../app.constants';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -18,7 +20,7 @@ import { EMPTY } from 'rxjs';
 })
 export class ImportVocabularyComponent implements OnInit {
 
-  vocabularies: Vocabulary[]
+  vocabularies: string[]
 
   visibleVocabCount = 3
 
@@ -34,7 +36,8 @@ export class ImportVocabularyComponent implements OnInit {
 
   constructor(private importCodesService: ImportCodesService,
               private importVocabulariesService: ImportVocabulariesService,
-              private dialogService: MatDialog) {
+              private dialogService: MatDialog,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -71,16 +74,21 @@ export class ImportVocabularyComponent implements OnInit {
   }
 
   onEdit(index: number) {
-    // todo implementation
-    console.log(index)
+    const vocabulary = this.vocabularies[index]
+    this.importVocabulariesService.get(vocabulary)
+      .subscribe(result => {
+        this.importCodesService.vocabulary = result
+        this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
+      })
   }
 
   onRemove(index: number) {
+    const vocabulary = this.vocabularies[index]
     this.loading = true
-    this.importVocabulariesService.remove(this.vocabularies[index].name)
+    this.importVocabulariesService.remove(vocabulary)
       .subscribe(() => {
-        this.vocabularies = this.importVocabulariesService.vocabularies
         this.loading = false
+        this.vocabularies = this.vocabularies.filter(vocab => vocab !== vocabulary)
       }, error => {
         openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
         this.loading = false

@@ -20,8 +20,6 @@ export class ColumnMappingComponent implements OnInit {
 
   form: FormGroup
 
-  checkedAll: boolean
-
   loading = false
 
   constructor(public importCodesService: ImportCodesService,
@@ -35,8 +33,6 @@ export class ColumnMappingComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm()
-
-    this.setCheckedAll()
   }
 
   onBack() {
@@ -68,9 +64,5 @@ export class ColumnMappingComponent implements OnInit {
     if (formValue) {
       this.form.setValue(formValue)
     }
-  }
-
-  private setCheckedAll() {
-    this.checkedAll = this.importCodesService.codes.every(code => code.selected)
   }
 }

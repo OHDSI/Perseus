@@ -20,28 +20,23 @@ export class SelectableGridComponent<T extends Selectable> extends GridComponent
   @Input()
   sortable = false
 
-  @Input()
-  checkedAll: boolean
+  get checkedAll() {
+    return this.data.every(mapping => mapping.selected)
+  }
 
   ngOnInit(): void {
     this.displayedColumns = [
       '__select__',
       ...this.columns.map(columnToField)
     ]
-    this.setCheckedAll()
   }
 
   select(row: {selected: boolean; [key: string]: any}) {
     row.selected = !row.selected
-    this.setCheckedAll()
   }
 
   selectAll() {
-    this.checkedAll = !this.checkedAll
-    this.data.forEach(row => row.selected = this.checkedAll)
-  }
-
-  private setCheckedAll() {
-    this.checkedAll = this.data.every(row => row.selected)
+    const value = !this.checkedAll
+    this.data.forEach(row => row.selected = value)
   }
 }
