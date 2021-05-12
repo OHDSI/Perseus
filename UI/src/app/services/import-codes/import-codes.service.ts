@@ -106,7 +106,7 @@ export class ImportCodesService {
       name,
       codes: this.codes,
       mappingParams: this.mappingParams,
-      mappedCodes: this.codeMappings
+      codeMappings: this.codeMappings
     }
     return this.httpClient.post<void>(`${apiUrl}/save_mapped_codes`, body)
   }
