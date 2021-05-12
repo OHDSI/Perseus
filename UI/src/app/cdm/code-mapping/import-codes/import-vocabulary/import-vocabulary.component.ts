@@ -43,7 +43,11 @@ export class ImportVocabularyComponent implements OnInit {
 
   ngOnInit(): void {
     this.importVocabulariesService.all()
-      .subscribe(vocabularies => this.vocabularies = vocabularies)
+      .subscribe(
+        vocabularies => this.vocabularies = vocabularies,
+        error => openErrorDialog(this.dialogService, 'Failed to load vocabularies', parseHttpError(error)),
+        () => !this.vocabularies && (this.vocabularies = [])
+      )
   }
 
   onShowOther() {
@@ -82,7 +86,7 @@ export class ImportVocabularyComponent implements OnInit {
           this.importCodesService.vocabulary = result
           this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
         },
-        error => openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
+        error => openErrorDialog(this.dialogService, 'Failed to open Vocabulary', parseHttpError(error))
       )
   }
 
