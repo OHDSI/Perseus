@@ -232,7 +232,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
         } else {
           const defaultClone = this.createClonedTable(this.table, 'Default', cloneId, cloneConnectedToSourceName, cloneFromTableName);
           this.storeService.state.targetClones[ this.table.name ].push(defaultClone);
-          cloneToSet = this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName, cloneFromTableName);
+          cloneToSet = this.createClonedTable(this.table, res.value, cloneId + 1, cloneConnectedToSourceName, 'Default');
           this.storeService.state.targetClones[ this.table.name ].
             push(cloneToSet);
         }
@@ -254,7 +254,9 @@ export class PanelComponent implements OnInit, AfterViewInit {
       tableConcepts.conceptsList.forEach(it => {
         if (it.fields['concept_id'].targetCloneName === cloneFromTableName) {
           const clonedConcept = cloneDeep(it);
-          clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
+          if(cloneToTableName !== 'Default') {
+            clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
+          }
           Object.values(clonedConcept.fields).forEach(field => {
             (field as any).targetCloneName = cloneToTableName;
           });
@@ -262,7 +264,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
         }
       });
 
-      tableConcepts.conceptsList = tableConcepts.conceptsList.concat(clonedConcepts);
+      cloneToTableName !== 'Default' ? tableConcepts.conceptsList = tableConcepts.conceptsList.concat(clonedConcepts) : tableConcepts.conceptsList = clonedConcepts
     }
   }
 

@@ -1,3 +1,4 @@
+import math
 import re
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
@@ -16,10 +17,8 @@ from shutil import rmtree
 import zipfile
 import os
 from pathlib import Path
-from cdm_souffleur.model.similar_names_map import similar_names_map
+from cdm_souffleur.utils.similar_names_map import similar_names_map
 from itertools import groupby
-from peewee import PostgresqlDatabase
-from flask import current_app as app
 from cdm_souffleur.db import pg_db
 
 
@@ -43,18 +42,11 @@ def _prettify(elem):
 def add_concept_id_data(field, alias, sql, counter):
     match_str = f' as {alias},'
     value = f'{field}{match_str}'
-    if match_str in sql:
-        if counter == 1:
-            sql = sql.replace(match_str, match_str.replace(alias, f'{alias}_{counter}'))
-        counter += 1
-        sql += f"{field} as {alias}_{counter},"
+    if counter is not None and not math.isnan(counter):
+        sql += value.replace(',', f'_{int(counter) + 1},')
     else:
-        if counter == 1:
-            sql += value
-        else:
-            counter += 1
-            sql += value.replace(',', f'_{counter},')
-    return sql, counter
+        sql += value
+    return sql
 
 
 def check_lookup_tables(tables):
@@ -63,6 +55,7 @@ def check_lookup_tables(tables):
             return True
     return False
 
+
 def unique(sequence):
     seen = []
     for x in sequence:
@@ -70,7 +63,8 @@ def unique(sequence):
             seen.append(x)
     return seen
 
-def prepare_sql(mapping_items, source_table, views, tagret_tables):
+
+def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables):
     """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
@@ -102,12 +96,9 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
-    fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(by=['targetCloneName', 'concept_id'])
+    fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(
+        by=['targetCloneName', 'concept_id'])
     sql = 'SELECT '
-    concept_id_counter = 1
-    source_value_counter = 1
-    type_concept_id_counter = 1
-    source_concept_id_counter = 1
     mapped_to_person_id_field = ''
     target_clone_name = ""
     for index, row in fields.iterrows():
@@ -115,10 +106,6 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         target_field = row['sql_alias']
         if target_clone_name != row['targetCloneName']:
             target_clone_name = row['targetCloneName']
-            concept_id_counter = 1
-            source_value_counter = 1
-            type_concept_id_counter = 1
-            source_concept_id_counter = 1
         if not row['targetCloneName']:
             clone = ""
         else:
@@ -129,22 +116,22 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
             sql += f"{row['source_field']},\n"
         else:
             if is_concept_id(target_field):
-                sql, concept_id_counter = add_concept_id_data(source_field, f"{clone}{target_field}", sql, concept_id_counter)
+                sql = add_concept_id_data(source_field, f"{clone}{target_field}", sql, row['concept_id'])
             elif is_source_value(target_field):
-                sql, source_value_counter = add_concept_id_data(source_field, f"{clone}{target_field}", sql, source_value_counter)
+                sql = add_concept_id_data(source_field, f"{clone}{target_field}", sql, row['concept_id'])
             elif is_type_concept_id(target_field):
-                sql, type_concept_id_counter = add_concept_id_data(
+                sql = add_concept_id_data(
                     source_field,
                     f"{clone}{target_field}",
                     sql,
-                    type_concept_id_counter
+                    row['concept_id']
                 )
             elif is_source_concept_id(target_field):
-                sql, source_concept_id_counter = add_concept_id_data(
+                sql = add_concept_id_data(
                     source_field,
                     f"{clone}{target_field}",
                     sql,
-                    source_concept_id_counter
+                    row['concept_id']
                 )
             else:
                 sql += f"{source_field} as {clone}{target_field},"
@@ -155,31 +142,8 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
         view = views.get(source_table, None)
 
     if view:
-        single_quote = view.rsplit('\'', 1)
-        double_quote = view.rsplit('\"', 1)
-        if len(single_quote) == 1:
-            if len(double_quote) == 1:
-                after_quote = double_quote[0]
-                before_quote = ''
-            else:
-                after_quote = double_quote[1]
-                before_quote = double_quote[0]
-        else:
-            if len(double_quote) == 1:
-                after_quote = single_quote[1]
-                before_quote = single_quote[0]
-            else:
-                if single_quote[1] < double_quote[1]:
-                    after_quote = single_quote[1]
-                    before_quote = single_quote[0]
-                else:
-                    after_quote = double_quote[0]
-                    before_quote = double_quote[0]
-        after_quote_replaced = addSchemaNames('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\'', after_quote)
-        if not before_quote:
-            view = after_quote_replaced
-        else:
-            view = f'{before_quote}\'{after_quote_replaced}'
+        view = addSchemaNames(
+            'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), view)
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
@@ -189,15 +153,26 @@ def prepare_sql(mapping_items, source_table, views, tagret_tables):
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
 
+
+# method adds {sc} to table names used in join and from clauses avoiding those cases when words similar to table names areinside double/single quotes
 def addSchemaNames(sql, view_sql):
-    pg_db.connect()
     cursor = pg_db.execute_sql(sql)
     for row in cursor.fetchall():
-        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {{sc}}.{row[0]} ', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {{sc}}.{row[0]} ', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]};", f'from {{sc}}.{row[0]};', view_sql)
-    pg_db.close()
+        view_sql = re.sub(
+            f"(?i)join {row[0]} (?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))",
+            f'join {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(
+            f"(?i)from {row[0]} (?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))",
+            f'from {{sc}}.{row[0]} ', view_sql)
+        view_sql = re.sub(
+            f"(?i)join {row[0]}\)(?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))",
+            f'join {{sc}}.{row[0]})', view_sql)
+        view_sql = re.sub(
+            f"(?i)from {row[0]}\)(?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))",
+            f'from {{sc}}.{row[0]})', view_sql)
+
     return view_sql
+
 
 def has_pair(field_name, mapping):
     for item in mapping:
@@ -222,13 +197,16 @@ def add_lookup_data(folder, basepath, lookup, template):
     return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
 
 
-def create_lookup(lookup, target_field, mapping, lookup_source_to_source_included):
-
+def create_user_directory(path, current_user):
     try:
-        os.makedirs(GENERATE_CDM_LOOKUP_SQL_PATH)
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created')
+        os.makedirs(f"{path}/{current_user}")
+        print(f'Directory {path}/{current_user} created')
     except FileExistsError:
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist')
+        print(f'Directory {path}/{current_user} already exist')
+
+
+def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
+    create_user_directory(GENERATE_CDM_LOOKUP_SQL_PATH, current_user)
 
     if target_field.endswith('source_concept_id'):
         return False
@@ -236,7 +214,7 @@ def create_lookup(lookup, target_field, mapping, lookup_source_to_source_include
         pair_target_field = target_field.replace('concept_id', 'source_concept_id')
 
     if lookup.endswith('userDefined'):
-        basepath = INCOME_LOOKUPS_PATH
+        basepath = f"{INCOME_LOOKUPS_PATH}/{current_user}"
     else:
         basepath = PREDEFINED_LOOKUPS_PATH
 
@@ -252,7 +230,7 @@ def create_lookup(lookup, target_field, mapping, lookup_source_to_source_include
 
         results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
 
-    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, f'{lookup.split(".")[0]}.sql')
+    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, current_user, f'{lookup.split(".")[0]}.sql')
     with open(result_filepath, mode='w') as f:
         f.write(results_data)
     return True
@@ -260,7 +238,8 @@ def create_lookup(lookup, target_field, mapping, lookup_source_to_source_include
 
 def is_concept_id(field: str):
     field = field.lower()
-    return field.endswith('concept_id') and not (is_source_concept_id(field) or is_type_concept_id(field))
+    return field.endswith('concept_id') and not (
+                is_source_concept_id(field) or is_type_concept_id(field) or is_source_concept_id(field))
 
 
 def is_source_value(field: str):
@@ -286,7 +265,7 @@ def prepare_concepts_tag(concept_tags, concepts_tag, domain_definition_tag, conc
         concept_tag = SubElement(
             concepts_tag,
             'Concept',
-            attrib={'name': _convert_underscore_to_camel(target_field)}
+            attrib={'name': f"{concept_tag_key.capitalize()}ConceptId"}
         )
         concept_tags[concept_tag_key] = concept_tag
 
@@ -314,8 +293,13 @@ def is_mapping_contains(field, key, mapping, concept_id):
         target_field = row['target_field']
         if target_field.startswith('value_as'):
             continue
-        if target_field == field.replace('concept_id', key) and row['concept_id'] == concept_id:
-            return target_field
+        if target_field == f"{field}_{key}" and row['concept_id'] == concept_id and 'checked' not in row:
+            sql = ''
+            if 'sqlTransformation' in row:
+                sql = row['sqlTransformation']
+            result = {'source': row['source_field'], 'sql': sql}
+            row['checked'] = True
+            return result
     return None
 
 
@@ -368,7 +352,7 @@ def find_all_concept_id_fields(mapping):
     return concept_ids_fields
 
 
-def generate_bath_sql_file(mapping, source_table, views):
+def generate_bath_sql_file(current_user, mapping, source_table, views):
     view = ''
     sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM '
     if views:
@@ -388,24 +372,31 @@ def generate_bath_sql_file(mapping, source_table, views):
             sql = sql.replace('{person_id}', source_field)
         if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
-    with open(GENERATE_BATCH_SQL_PATH, mode='w') as f:
+    create_user_directory(GENERATE_BATCH_SQL_PATH, current_user)
+    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", mode='w') as f:
         f.write(sql)
 
 
-def clear():
-    delete_generated_xml()
-    delete_generated_sql()
+def clear(current_user):
+    delete_generated_xml(current_user)
+    delete_generated_sql(current_user)
+    delete_generated_archive(current_user)
 
-    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH)
+    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql')
     try:
         os.unlink(file_path)
     except Exception as err:
         print(f'Failed to delete {file_path}. Reason: {err}')
 
 
-def get_xml(json_):
+def add_counter_to_attrib_key(key, item, counter):
+    if item.attrib.get(key, None) is not None:
+        item.attrib[key] = f'{item.attrib[key]}_{counter}'
+
+
+def get_xml(current_user, json_):
     """prepare XML for CDM"""
-    clear()
+    clear(current_user)
     result = {}
     previous_target_table = ''
     previous_source_table = ''
@@ -418,7 +409,8 @@ def get_xml(json_):
         query_definition_tag = Element('QueryDefinition')
         query_tag = SubElement(query_definition_tag, 'Query')
         target_tables = mapping_items.loc[mapping_items['source_table'] == source_table].fillna('')
-        sql = prepare_sql(mapping_items, source_table, views, pd.unique(target_tables.get('target_table')))
+        sql = prepare_sql(current_user, mapping_items, source_table, views,
+                          pd.unique(target_tables.get('target_table')))
         query_tag.text = sql
 
         skip_write_file = False
@@ -450,13 +442,11 @@ def get_xml(json_):
                     condition_tag = SubElement(domain_definition_tag, 'Condition')
                     condition_tag.text = condition_text
                 fields_tags = {}
-                counter = 1
 
                 concepts_tag = None
                 concept_tags = {}
                 definitions = []
 
-                mapping_source_values = get_mapping_source_values(groupList)
                 lookups = []
                 for row in groupList:
                     lookup_name = row.get('lookup', None)
@@ -469,12 +459,17 @@ def get_xml(json_):
                             lookup_name = lookup_name['name']
                     sql_transformation = row.get('sqlTransformation', None)
                     target_field = row.get('target_field', None)
-                    concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else target_field
+                    concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else \
+                        target_field.replace('_source_value', '') if is_source_value(target_field) else \
+                            target_field.replace('_source_concept_id', '') if is_source_concept_id(target_field) else \
+                                target_field.replace('_type_concept_id', '') if is_type_concept_id(
+                                    target_field) else target_field
 
                     if lookup_name:
                         attrib_key = 'key'
                         if lookup_name not in lookups:
-                            lookup_created = create_lookup(lookup_name, target_field, groupList, lookup_source_to_source_included)
+                            lookup_created = create_lookup(current_user, lookup_name, target_field, groupList,
+                                                           lookup_source_to_source_included)
                             if lookup_created:
                                 concepts_tag = prepare_concepts_tag(
                                     concept_tags,
@@ -491,7 +486,7 @@ def get_xml(json_):
                                 lookup.text = lookup_name.split(".")[0]
                                 lookups.append(lookup_name)
                     else:
-                        attrib_key = 'conceptId'
+                        attrib_key = ''
 
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
@@ -499,7 +494,8 @@ def get_xml(json_):
                     if 'concept_id' in row:
                         concept_id = row['concept_id']
 
-                    if is_concept_id(target_field):
+                    if is_concept_id(target_field) or is_source_value(target_field) or is_source_concept_id(
+                            target_field) or is_type_concept_id(target_field):
                         concepts_tag = prepare_concepts_tag(
                             concept_tags,
                             concepts_tag,
@@ -510,43 +506,9 @@ def get_xml(json_):
 
                         fields_tag = None
                         if fields_tags.get(concept_tag_key, None) is not None:
-                            if counter == 1:
-                                for item in fields_tags[concept_tag_key]:
-                                    if item.attrib.get(attrib_key, None) is None:
-                                        continue
-                                    item.attrib[attrib_key] = f'{clone_key}{target_field}_{counter}'
 
-                                    if not mapping_source_values:
-                                        continue
-
-                                    if number_of_source_value(target_field, groupList) > 1:
-
-                                        if is_mapping_contains_source_value(target_field, groupList, concept_id):
-                                            item.attrib['sourceKey'] = f"{item.attrib[attrib_key].replace('concept_id', 'source_value')}"
-
-                                    if number_of_type_concept_id(target_field, groupList) > 1:
-
-                                        if is_mapping_contains_type_concept_id(target_field, groupList, concept_id):
-                                            item.attrib['typeId'] = f"{item.attrib[attrib_key].replace('concept_id', 'type_concept_id')}"
-
-                            counter += 1
-
-                            attrib = {
-                                attrib_key: f'{clone_key}{target_field}_{counter}',
-                            }
-
-                            if is_mapping_contains_source_value(target_field, groupList, concept_id):
-                                if number_of_source_value(target_field, groupList) > 1:
-                                    attrib['sourceKey'] = attrib[attrib_key].replace('concept_id', 'source_value')
-                                else:
-                                    attrib['sourceKey'] = re.sub(r'_\d+$', "", attrib[attrib_key].replace('concept_id', 'source_value'))
-
-                            if is_mapping_contains_type_concept_id(target_field, groupList, concept_id):
-                                if number_of_type_concept_id(target_field, groupList) > 1:
-                                    attrib['typeId'] = attrib[attrib_key].replace('concept_id', 'type_concept_id')
-                                else:
-                                    attrib['typeId'] = re.sub(r'_\d+$', "", attrib[attrib_key].replace('concept_id', 'type_concept_id'))
-
+                            attrib = add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key,
+                                                            query_tag)
                             SubElement(fields_tags[concept_tag_key], 'Field', attrib)
 
                         else:
@@ -560,29 +522,14 @@ def get_xml(json_):
 
                             fields_tag = SubElement(concept_tags[concept_tag_key], 'Fields')
 
-                            attrib = {
-                                attrib_key: f'{clone_key}{target_field}',
-                            }
-
-                            if is_mapping_contains(target_field, 'source_value', groupList, concept_id):
-                                attrib['sourceKey'] = attrib[attrib_key].replace('concept_id', 'source_value')
-
-                            if is_mapping_contains(target_field, 'type_concept_id', groupList, concept_id):
-                                attrib['typeId'] = attrib[attrib_key].replace('concept_id', 'type_concept_id')
+                            attrib = add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key,
+                                                            query_tag)
 
                             SubElement(fields_tag, 'Field', attrib)
 
                         if fields_tags.get(concept_tag_key, None) is None:
                             fields_tags[concept_tag_key] = fields_tag
                     else:
-                        if (
-                            is_type_concept_id(target_field) or
-                            is_source_value(target_field) or
-                            is_source_concept_id(target_field)
-                        ):
-                            apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag)
-                            continue
-
                         if target_field not in definitions:
                             v = SubElement(
                                 domain_definition_tag,
@@ -591,21 +538,52 @@ def get_xml(json_):
                             v.text = f'{clone_key}{sql_alias}' if sql_alias else source_field
 
                             definitions.append(target_field)
-                    apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag)
+                            apply_sql_transformation(sql_transformation, source_field, target_field, clone_key,
+                                                     query_tag)
+
                 previous_target_table = target_table
                 previous_source_table = source_table
                 if target_table == 'person':
-                    generate_bath_sql_file(groupList, source_table, views)
+                    generate_bath_sql_file(current_user, groupList, source_table, views)
 
                 if target_table.lower() in ('location', 'care_site', 'provider'):
                     skip_write_file = True
-                    write_xml(query_definition_tag, f'L_{target_table}', result)
+                    write_xml(current_user, query_definition_tag, f'L_{target_table}', result)
 
         if skip_write_file:
             continue
 
-        write_xml(query_definition_tag, source_table, result)
+        write_xml(current_user, query_definition_tag, source_table, result)
     return result
+
+
+def add_concept_field(attrib, attrib_key_name, concept_tag_key, field_type, groupList, concept_id, counter, clone_key,
+                      query_tag):
+    concept_id_source_field = is_mapping_contains(concept_tag_key, field_type, groupList,
+                                                  concept_id)
+    if concept_id_source_field is not None:
+        attrib[attrib_key_name] = f"{clone_key}{concept_tag_key}_{field_type}{counter}"
+        apply_sql_transformation(concept_id_source_field['sql'],
+                                 concept_id_source_field['source'],
+                                 f"{concept_tag_key}_{field_type}", clone_key, query_tag)
+
+
+def add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag):
+    attrib = {}
+    if concept_id is not None:
+        counter = f'_{concept_id + 1}'
+    else:
+        counter = ''
+    add_concept_field(attrib, 'conceptId', concept_tag_key, 'concept_id', groupList, concept_id,
+                      counter, clone_key, query_tag)
+    add_concept_field(attrib, 'sourceKey', concept_tag_key, 'source_value', groupList, concept_id,
+                      counter, clone_key, query_tag)
+    add_concept_field(attrib, 'sourceConceptId', concept_tag_key, 'source_concept_id', groupList,
+                      concept_id, counter, clone_key, query_tag)
+    add_concept_field(attrib, 'typeId', concept_tag_key, 'type_concept_id', groupList,
+                      concept_id, counter, clone_key, query_tag)
+    return attrib
+
 
 def apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag):
     if sql_transformation:
@@ -619,15 +597,11 @@ def apply_sql_transformation(sql_transformation, source_field, target_field, clo
             query_tag.text = query_tag.text.replace(f',\n{match_item},\n', ' ')
             query_tag.text = query_tag.text.replace(f',\n{match_item}\n', ' ')
 
-def write_xml(tag, filename, result):
-    xml = ElementTree(tag)
-    try:
-        os.mkdir(GENERATE_CDM_XML_PATH)
-        print(f'Directory {GENERATE_CDM_XML_PATH} created')
-    except FileExistsError:
-        print(f'Directory {GENERATE_CDM_XML_PATH} already exist')
 
-    xml.write(GENERATE_CDM_XML_PATH / (filename + '.xml'))
+def write_xml(current_user, tag, filename, result):
+    xml = ElementTree(tag)
+    create_user_directory(GENERATE_CDM_XML_PATH, current_user)
+    xml.write(GENERATE_CDM_XML_PATH / current_user / (filename + '.xml'))
     result.update({filename: _prettify(tag)})
 
 
@@ -693,7 +667,7 @@ def get_lookups_sql(cond: dict):
                     UNION
                     SELECT SOURCE_CODE FROM Source
                 )
- 
+
                 SELECT DISTINCT
                     S_S.SOURCE_CODE,
                     Standard.TARGET_CONCEPT_ID,
@@ -716,27 +690,30 @@ def get_lookups_sql(cond: dict):
     return result
 
 
-def add_files_to_zip(zip_file, path):
+def add_files_to_zip(zip_file, path, directory):
     for root, dirs, files in os.walk(path):
         for file in files:
-            zip_file.write(os.path.join(root, file), arcname=os.path.join(Path(root).name, file))
+            zip_file.write(os.path.join(root, file), arcname=os.path.join(directory, file))
 
 
-def zip_xml():
+def zip_xml(current_user):
     """add mapping XMLs and lookup sql's to archive"""
     try:
+        create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
+
         zip_file = zipfile.ZipFile(
-            GENERATE_CDM_XML_ARCHIVE_PATH / '.'.join(
+            GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, GENERATE_CDM_XML_PATH)
-        add_files_to_zip(zip_file, GENERATE_CDM_LOOKUP_SQL_PATH)
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "Definitions")
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "Lookups")
 
-        if os.path.isfile(GENERATE_BATCH_SQL_PATH):
-            zip_file.write(GENERATE_BATCH_SQL_PATH, arcname='Batch.sql')
+        if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
+            zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
         zip_file.close()
     except FileNotFoundError:
         raise
+
 
 def delete_generated(path):
     try:
@@ -744,15 +721,23 @@ def delete_generated(path):
     except Exception:
         print(f'Directory {path} does not exist')
 
-def delete_generated_xml():
+
+def delete_generated_xml(current_user):
     """clean mapping folder"""
-    delete_generated(GENERATE_CDM_XML_PATH)
+    delete_generated(f"{GENERATE_CDM_XML_PATH}/{current_user}")
 
-def delete_generated_sql():
+
+def delete_generated_sql(current_user):
     """clean lookup sql folder"""
-    delete_generated(GENERATE_CDM_LOOKUP_SQL_PATH)
+    delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
 
-def get_lookups_list(lookup_type):
+
+def delete_generated_archive(current_user):
+    """clean lookup sql folder"""
+    delete_generated(f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}")
+
+
+def get_lookups_list(current_user, lookup_type):
     lookups_list = []
 
     def updateList(base_path):
@@ -764,14 +749,15 @@ def get_lookups_list(lookup_type):
             )
 
     updateList(PREDEFINED_LOOKUPS_PATH)
-    updateList(INCOME_LOOKUPS_PATH)
+    updateList(f"{INCOME_LOOKUPS_PATH}/{current_user}")
 
     return lookups_list
 
-def get_lookup(name, lookup_type):
+
+def get_lookup(current_user, name, lookup_type):
     lookup = ''
     if len(name.split('.')) > 1:
-        path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
+        path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
     else:
         if 'template' in name:
             path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
@@ -782,10 +768,11 @@ def get_lookup(name, lookup_type):
             lookup = f.readlines()
     return ''.join(lookup)
 
-def add_lookup(lookup):
+
+def add_lookup(current_user, lookup):
     name = lookup['name']
     lookup_type = lookup['lookupType']
-    filepath = os.path.join(INCOME_LOOKUPS_PATH, lookup_type)
+    filepath = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type)
     filename = os.path.join(filepath, f'{name}.txt')
     if not os.path.isdir(filepath):
         os.makedirs(filepath)
@@ -793,8 +780,9 @@ def add_lookup(lookup):
     with open(filename, mode='w') as f:
         f.write(lookup['value'])
 
-def del_lookup(name, lookup_type):
-    path = os.path.join(INCOME_LOOKUPS_PATH, lookup_type, f"{name}.txt")
+
+def del_lookup(current_user, name, lookup_type):
+    path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
     if os.path.isfile(path):
         os.remove(path)
 
@@ -890,4 +878,3 @@ if __name__ == '__main__':
 # }]''')
 #     print(condition)
 #     get_lookups_sql(condition)
-
