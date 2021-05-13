@@ -62,6 +62,10 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     return `${this.selectionTop}px`
   }
 
+  get checkedAll() {
+    return this.data.every(mapping => mapping.approved)
+  }
+
   ngOnInit() {
     this.initColumns()
 
@@ -76,7 +80,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   select(row: CodeMapping) {
-    row.approved = !row.selected
+    row.approved = !row.approved
   }
 
   selectAll() {

@@ -24,7 +24,7 @@ export class MappingCodesComponent {
   }
 
   get applyDisabled() {
-    return this.importCodesService.codeMappings.every(codeMapping => !codeMapping.selected)
+    return this.importCodesService.codeMappings.every(codeMapping => !codeMapping.approved)
   }
 
   onBack() {

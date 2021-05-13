@@ -90,6 +90,7 @@ class Source_To_Concept_Map(BaseModel):
     valid_end_date = DateField()
     invalid_reason = CharField()
     username = CharField()
+    id = AutoField()
 
 
 class Vocabulary(BaseModel):

@@ -4,7 +4,8 @@ from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping, search, create_core, save_codes
+    create_concept_mapping, search, create_core, save_codes, get_vocabulary_list_for_user, \
+    load_mapped_concepts_by_vocabulary_name
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
 from cdm_souffleur.utils.constants import SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, SOLR_IMPORT_STATUS
@@ -63,13 +64,41 @@ def get_term_search_results_call(current_user):
 @token_required
 def save_mapped_codes_call(current_user):
     try:
-        mapped_codes = request.json['mappedCodes']
-        result = save_codes(current_user, mapped_codes)
+        codes = request.json['codes']
+        mapped_codes = request.json['codeMappings']
+        vocabulary_name = request.json['name']
+        mapping_params = request.json['mappingParams']
+        result = save_codes(current_user, codes, mapping_params, mapped_codes, vocabulary_name)
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return json.dumps(result)
+
+
+@usagi_api.route('/api/get_vocabulary_list', methods=['GET'])
+@token_required
+def get_vocabulary_list_call(current_user):
+    try:
+        result = get_vocabulary_list_for_user(current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(result)
+
+
+@usagi_api.route('/api/get_vocabulary', methods=['GET'])
+@token_required
+def load_mapped_concepts_call(current_user):
+    try:
+        vocabulary_name = request.args['name']
+        result = load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(result)
 
 
 @usagi_api.route('/api/solr_import_status', methods=['GET'])
