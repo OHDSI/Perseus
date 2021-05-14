@@ -163,15 +163,18 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return new MatTableDataSource(this.datasource.data.filter(item => item.name === detail.name)[ 0 ].grouppedFields);
   }
 
-  isConstant(column: any) {
+  isConstant(column: IRow) {
     const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
-    const isConceptTable = this.conceptFieldNames[ this.table.name ] ? this.conceptFieldNames[ this.table.name ].includes(column.name) : undefined
+    const isConceptTable = this.conceptFieldNames[this.table.name]?.includes(column.name)
     if (concepts && isConceptTable) {
       const conceptFieldType = getConceptFieldType(column.name);
-      return concepts.conceptsList.filter(item => item.fields[ conceptFieldType ].constantSelected &&
-        item.fields[ conceptFieldType ].constant).length
+      return concepts.conceptsList
+        .filter(item => item.fields[conceptFieldType].constantSelected && item.fields[ conceptFieldType ].constant)
+        .length
     }
-    return column.hasConstant;
+    const constId = Object.keys(this.bridgeService.constantsCache)
+      .find(key => key === this.bridgeService.getConstantId(this.selectedSourceTableId, column))
+    return column.hasConstant && constId;
   }
 
   refreshPanel(event?: any) {

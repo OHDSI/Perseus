@@ -583,25 +583,22 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.targetTabIndex = index;
     }
 
-    const wait = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (area === 'source') {
-          if (index === 0 && this.similarSourceTable) {
-            this.sourcePanelSimilar.panel.table = this.similarSourceTable;
-            this.sourcePanelSimilar.panel.refreshPanel();
-            this.targetPanel.panel.refreshPanel(true);
-          }
-        } else {
-          if (index === 0 && this.similarTargetTable) {
-            this.targetPanelSimilar.panel.table = this.similarTargetTable;
-            this.targetPanelSimilar.panel.refreshPanel();
-          }
+    setTimeout(() => {
+      if (area === 'source') {
+        if (index === 0 && this.similarSourceTable) {
+          this.sourcePanelSimilar.panel.table = this.similarSourceTable;
+          this.sourcePanelSimilar.panel.refreshPanel();
+          this.targetPanel.panel.refreshPanel(true);
         }
-        this.refreshSourcePanel(this.selectedSourceTable);
-        this.refreshTargetPanel(this.selectedTargetTable);
-        resolve();
-      }, 1000);
-    });
+      } else {
+        if (index === 0 && this.similarTargetTable) {
+          this.targetPanelSimilar.panel.table = this.similarTargetTable;
+          this.targetPanelSimilar.panel.refreshPanel();
+        }
+      }
+      this.refreshSourcePanel(this.selectedSourceTable);
+      this.refreshTargetPanel(this.selectedTargetTable);
+    }, 1000);
   }
 
   changeTargetTabIndex() {
@@ -844,16 +841,19 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.deleteArrow(connectorKey);
       });
 
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.filteredFields = res.filteredFields;
-        this.bridgeService.refreshAll();
-      }
-    });
+    this.storeService.subscribe('filteredFields')
+      .subscribe(res => {
+        if (res) {
+          this.filteredFields = res
+          this.bridgeService.refreshAll();
+        }
+      });
+
     this.activatedRoute.queryParams.subscribe(data => {
       if (Object.keys(data).length !== 0) {
-        this.targetTabIndex = 1;
-        this.sourceTabIndex = 1;
+        // If similar tab exist => open table tab
+        this.sourceTabIndex = this.similarSourceTable ? 1 : 0;
+        this.targetTabIndex = this.similarTargetTable ? 1 : 0;
         const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
         this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
         this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));

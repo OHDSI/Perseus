@@ -56,7 +56,7 @@ export class CdmFilterComponent implements OnInit {
     };
 
     if (this.payload.optionalSaveKey) {
-      const savedObject = this.storeService.state[this.payload.saveKey] || {};
+      const savedObject = {...this.storeService.state[this.payload.saveKey]} || {};
       savedObject[this.payload.optionalSaveKey] = saveObject;
       this.storeService.add(this.saveKey, savedObject);
     } else {

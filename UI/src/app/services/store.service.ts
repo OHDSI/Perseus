@@ -86,13 +86,14 @@ export class StoreService {
    * @param equal - function used for compare new value with previous
    */
   subscribe<T>(key: string, equal: (a: T, b: T) => boolean = (a, b) => a === b): Observable<T> {
-    const prevState = this.state
+    const prevState = this.state[key] as T
     return this.storeState.asObservable()
       .pipe(
+        map(state => state[key] as T),
         startWith(prevState),
         pairwise(),
-        filter(([prev, curr]) => !equal(prev[key], curr[key])),
-        map(([, curr]) => curr[key])
+        filter(([prev, curr]) => prev !== curr),
+        map(([, curr]) => curr)
       )
   }
 }
