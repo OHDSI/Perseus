@@ -163,15 +163,15 @@ export class BridgeService {
   });
 
   addConstant = new Command({
-    execute: (row: IRow) => {
-      this.constantsCache[ this.getConstantId(row) ] = row;
+    execute: ({sourceTableId, targetRow}) => {
+      this.constantsCache[this.getConstantId(sourceTableId, targetRow)] = targetRow;
     },
     canExecute: () => true
   });
 
   dropConstant = new Command({
-    execute: (row: IRow) => {
-      delete this.constantsCache[ this.getConstantId(row) ];
+    execute: ({sourceTableId, targetRow}) => {
+      delete this.constantsCache[this.getConstantId(sourceTableId, targetRow)];
     },
     canExecute: () => true
   });
@@ -329,7 +329,7 @@ export class BridgeService {
     });
   }
 
-  updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
+  updateRowsProperties(tables: any, filter: any, action: (row: IRow) => void) {
     tables.forEach(table => {
       table.rows.forEach(row => {
         if (filter(row)) {
@@ -408,7 +408,6 @@ export class BridgeService {
     table: ITable,
     arrowsCache: ArrowCache
   ) {
-
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (table.name === arrow[ table.area ].tableName) {
         this.refreshConnector(arrow);
@@ -605,11 +604,14 @@ export class BridgeService {
   }
 
   addCloneConstants(cloneTable: ITable, targetTable: ITable, sourceTableName: string) {
-    const constants = Object.values(this.constantsCache).filter(it => it.tableName === targetTable.name &&
-      it.cloneTableName === targetTable.cloneName);
+    const constants = Object
+      .values(this.constantsCache)
+      .filter(it => it.tableName === targetTable.name && it.cloneTableName === targetTable.cloneName);
+
     constants.forEach(item => {
       const row = cloneTable.rows.find(el => el.name === item.name);
-      this.constantsCache[ this.getConstantId(row) ] = row;
+      const sourceTableId = this.storeService.state.source.find(table => table.name === sourceTableName).id
+      this.constantsCache[this.getConstantId(sourceTableId, row)] = row;
     });
   }
 
@@ -723,6 +725,9 @@ export class BridgeService {
     this.reportLoading$.next(false);
   }
 
+  /**
+   * @return id - arrow id for arrowCache in bridge-service
+   */
   getConnectorId(source: IRow, target: IRow): string {
     const sourceRowId = source.id;
     const targetRowId = target.id;
@@ -732,11 +737,14 @@ export class BridgeService {
     return `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
   }
 
-  getConstantId(target: IRow): string {
+  /**
+   * @return id - constant id for constantCache in bridge-service
+   */
+  getConstantId(sourceTableId: number, target: IRow): string {
     const targetRowId = target.id;
     const targetTableId = target.tableId;
 
-    return `${targetTableId}-${targetRowId}`;
+    return `${sourceTableId}/${targetTableId}-${targetRowId}`;
   }
 
   findTable(name: string): ITable {

@@ -7,7 +7,7 @@
           drag_indicator
         </mat-icon>
         <button mat-icon-button
-                *ngIf="area === 'target' && !column.uniqueIdentifier"
+                *ngIf="showConstant(column)"
                 (click)="openConstantDialog(anchor, column)">
           <div class="constant-increment-icon"
                [ngClass]="{ active: isConstant(column) }">C</div>

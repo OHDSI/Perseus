@@ -65,6 +65,12 @@ export class PanelComponent implements OnInit, AfterViewInit {
   linkFieldsSearchKey = '';
   searchCriteria: string;
 
+  selectedSourceTableId: number // store.selectedSourceTableId
+  selectedTargetTableId: number // store.selectedTargetTableId
+
+  sourceSimilarTableId: number; // store.sourceSimilarTableId
+  targetSimilarTableId: number; // store.targetSimilarTableId
+
   constructor(
     public dialog: MatDialog,
     private bridgeService: BridgeService,
@@ -74,6 +80,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private overlayService: OverlayService
   ) {
     this.initializing = true;
+    this.subscribeOnSelectedTablesChange()
   }
 
   ngOnInit() {
@@ -226,9 +233,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
             push(cloneToSet);
         }
         this.setCloneTable(cloneToSet);
+        const sourceTableId = this.storeService.state.selectedSourceTableId;
         Object.values(this.bridgeService.constantsCache)
           .filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
-          .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(constant) ]);
+          .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(sourceTableId, constant) ]);
       }
     });
   }
@@ -243,7 +251,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
       tableConcepts.conceptsList.forEach(it => {
         if (it.fields[ 'concept_id' ].targetCloneName === cloneFromTableName) {
           const clonedConcept = cloneDeep(it);
-          if(cloneToTableName !== 'Default') {
+          if (cloneToTableName !== 'Default') {
             clonedConcept.id = tableConcepts.conceptsList.length + clonedConcepts.length;
           }
           Object.values(clonedConcept.fields).forEach(field => {
@@ -267,7 +275,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
 
-  createClonedTable(table: ITable, cloneName: string, cloneId: number, cloneConnectedToSourceName: string, cloneFromTableName: string) {
+  createClonedTable(table: ITable, cloneName: string, cloneId: number, cloneConnectedToSourceName: string, cloneFromTableName: string): ITable {
     const cloneTargetTable = cloneDeep(table) as ITable;
     cloneTargetTable.cloneName = cloneName;
     cloneTargetTable.cloneConnectedToSourceName = cloneConnectedToSourceName;
@@ -362,4 +370,17 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.changeClone.emit(table);
   }
 
+  private subscribeOnSelectedTablesChange() {
+    const {selectedSourceTableId, selectedTargetTableId, sourceSimilarTableId, targetSimilarTableId} = this.storeService.state
+    this.selectedSourceTableId = selectedSourceTableId
+    this.selectedTargetTableId = selectedTargetTableId
+    this.sourceSimilarTableId = sourceSimilarTableId
+    this.targetSimilarTableId = targetSimilarTableId
+
+    this.storeService.subscribe<number>('selectedSourceTableId')
+      .subscribe(value => this.selectedSourceTableId = value)
+
+    this.storeService.subscribe<number>('selectedTargetTableId')
+      .subscribe(value => this.selectedTargetTableId = value)
+  }
 }

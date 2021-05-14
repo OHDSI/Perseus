@@ -577,7 +577,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (area === 'source') {
       this.sourceTabIndex = index;
+      this.storeService.add('selectedSourceTableId', this.source[index].id)
     } else {
+      this.storeService.add('selectedTargetTableId', this.target[index].id)
       this.targetTabIndex = index;
     }
 
@@ -734,7 +736,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private initHasScanReport() {
-    this.hasScanReport = this.storeService.state.reportFile;
+    this.hasScanReport = !!this.storeService.state.reportFile;
   }
 
   private loadMapping() {
@@ -856,6 +858,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
         this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
       }
+
+      this.setSelectedSourceAndTargetTable();
     });
   }
 
@@ -865,5 +869,23 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mappingConfig = [];
     this.sourceTabIndex = 0;
     this.targetTabIndex = 0;
+  }
+
+  /**
+   * Set selected tables ids for show constant in Panel-table Component
+   */
+  private setSelectedSourceAndTargetTable() {
+    const selectedSourceTableId = this.source[this.sourceTabIndex].id
+    const selectedTargetTableId = this.target[this.targetTabIndex].id
+    const sourceSimilarTableId = this.similarSourceTable?.id
+    const targetSimilarTableId = this.similarTargetTable?.id
+
+    this.storeService.state = {
+      ...this.storeService.state,
+      selectedSourceTableId,
+      selectedTargetTableId,
+      sourceSimilarTableId,
+      targetSimilarTableId
+    }
   }
 }

@@ -1,4 +1,6 @@
 import { MappingNode } from '../models/mapping';
+import { IRow } from '../models/row';
+import { BridgeService } from '../services/bridge.service';
 
 export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingNode[] {
   const groupReducer = (accumulator: {[key: string]: MappingNode}, currentValue: MappingNode) => {
@@ -26,4 +28,8 @@ export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingN
     ...mappingWithGroups,
     ...mappingWithoutGroups
   ];
+}
+
+export function getSourceRowByTarget(bridgeService: BridgeService, targetTableName, targetRow: IRow) {
+  Object.keys(bridgeService.arrowsCache)
 }
