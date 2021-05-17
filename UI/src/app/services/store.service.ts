@@ -85,12 +85,12 @@ export class StoreService {
    * @param key - listenable for a change in the store
    * @param equal - function used for compare new value with previous
    */
-  subscribe<T>(key: string, equal: (a: T, b: T) => boolean = (a, b) => a === b): Observable<T> {
+  on<T>(key: string, equal: (a: T, b: T) => boolean = (a, b) => a === b): Observable<T> {
     const prevState = this.state[key] as T
     return this.storeState.asObservable()
       .pipe(
         map(state => state[key] as T),
-        startWith(prevState),
+        startWith<T, T>(prevState),
         pairwise(),
         filter(([prev, curr]) => prev !== curr),
         map(([, curr]) => curr)
