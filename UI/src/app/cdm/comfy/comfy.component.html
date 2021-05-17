@@ -43,7 +43,7 @@
 
           <app-search-by-name *ngIf="data.source?.length"
                               class="comfy-filter-by-name"
-                              placeholder="Search by Loading reportsource table"
+                              placeholder="Search by Loading report source table"
                               [criteria]="data.linkTablesSearch.source"
                               (complete)="filterByName('source', $event)"
                               (reset)="filterByNameReset('source')"></app-search-by-name>
