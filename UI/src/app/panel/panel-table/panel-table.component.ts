@@ -33,16 +33,16 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '../../shared/base/base.component';
 import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../../cdm/mapping/concept-transformation/concept-transformation.component';
-import { getConceptFieldType } from 'src/app/utilites/concept-util';
+import { getConceptFieldType, toNoConceptRows } from 'src/app/utilites/concept-util';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
-  styleUrls: [ './panel-table.component.scss' ],
+  styleUrls: ['./panel-table.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', display: 'none' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
+      state('collapsed', style({height: '0px', minHeight: '0', visibility: 'hidden', display: 'none'})),
+      state('expanded', style({height: '*', visibility: 'visible'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -163,18 +163,23 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return new MatTableDataSource(this.datasource.data.filter(item => item.name === detail.name)[ 0 ].grouppedFields);
   }
 
-  isConstant(column: IRow) {
-    const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
+  isConstant(column: IRow): boolean {
     const isConceptTable = this.conceptFieldNames[this.table.name]?.includes(column.name)
-    if (concepts && isConceptTable) {
+    if (isConceptTable) {
+      const concepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`]
+      if (!concepts) {
+        return false
+      }
       const conceptFieldType = getConceptFieldType(column.name);
       return concepts.conceptsList
-        .filter(item => item.fields[conceptFieldType].constantSelected && item.fields[ conceptFieldType ].constant)
-        .length
+        .filter(item => item.fields[conceptFieldType].constantSelected && item.fields[conceptFieldType].constant)
+        .length > 0
     }
-    const constId = Object.keys(this.bridgeService.constantsCache)
-      .find(key => key === this.bridgeService.getConstantId(this.selectedSourceTableId, column))
-    return column.hasConstant && constId;
+    const constId = this.bridgeService.getConstantId(this.selectedSourceTableId, column)
+    const allConstKeys = Object.keys(this.bridgeService.constantsCache)
+    const inArrowCache = !!allConstKeys.find(key => key === constId)
+
+    return column.hasConstant && inArrowCache;
   }
 
   refreshPanel(event?: any) {
@@ -206,7 +211,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     if (!this.validateGroupFields()) {
       return;
     }
-    const existingRowNames =  this.getAllPanelRowNames();
+    const existingRowNames = this.getAllPanelRowNames();
     this.groupDialogOpened = true;
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
@@ -317,8 +322,8 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   checkDifferentTypes(groupType?: string) {
     let typesArray = [];
     if (groupType) {
-      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
+      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes)
+        .filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
       const firstGroupRowType = this.getTypeWithoutLength(
         this.rowFocusedElements[0].id.replace(`${this.area}-`, '')
@@ -382,13 +387,17 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     const similarTableIndex = this.tables.findIndex(item => item.name === 'similar');
     if (similarTableIndex !== -1) {
       fieldsToGroup.forEach(item => {
-        const srows = this.bridgeService.findSimilarRows(this.tables.
-          filter(tbl => tbl.name !== 'similar' && tbl.name !== this.table.name), item);
+        const srows = this.bridgeService.findSimilarRows(
+          this.tables.filter(tbl => tbl.name !== 'similar' && tbl.name !== this.table.name),
+          item
+        );
 
         if (srows.length <= 1) {
           this.tables[ similarTableIndex ].rows = this.tables[ similarTableIndex ].rows.filter(r => r.name !== item);
-          this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
-            filter(([ k, v ]) => !(v.source.tableName === 'similar' && v.source.name === item)));
+          this.bridgeService.arrowsCache = Object.fromEntries(
+            Object.entries(this.bridgeService.arrowsCache)
+              .filter(([ k, v ]) => !(v.source.tableName === 'similar' && v.source.name === item))
+          );
         }
       });
     }
@@ -397,8 +406,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   addRowsToSimilarTable(rowToAdd: IRow) {
     const similarTable = this.tables.find(item => item.name === 'similar');
     if (similarTable) {
-      const srows = this.bridgeService.findSimilarRows(this.tables.
-        filter(tbl => tbl.name !== 'similar'), rowToAdd.name);
+      const srows = this.bridgeService.findSimilarRows(
+        this.tables.filter(tbl => tbl.name !== 'similar'),
+        rowToAdd.name
+      );
       if (srows.length > 1) {
         rowToAdd.tableName = 'similar';
         rowToAdd.tableId = similarTable.id;
@@ -512,9 +523,11 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
       component
     );
 
-    overlayRef.afterClosed$.subscribe(ok => {
-      targetRow.constant = data.value;
-      this.updateIncrementOrConstantFields(targetRow, 'constant');
+    overlayRef.afterClosed$.subscribe(() => {
+      if (data['event']) {
+        targetRow.constant = data.value;
+        this.updateIncrementOrConstantFields(targetRow, 'constant');
+      }
     });
   }
 
@@ -542,48 +555,45 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
       });
       return found;
     };
+
     if (type === 'increment') {
       const value = row.increment;
-      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
-      if (this.storeService.state.targetClones[ row.tableName ]) {
-        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[ row.tableName ], isSameRow,
-          (item: any) => { item.increment = value; }
+
+      if (this.storeService.state.targetClones[row.tableName]) {
+        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[row.tableName], isSameRow,
+          (item: any) => item.increment = value
         )
       } else {
         this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow,
-          (item: any) => { item.increment = value; }
+          (item: any) => item.increment = value
         );
       }
-    } else {
+    } else { // type === 'constant'
       const value = row.constant;
-      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
-        item.constant = value;
-      });
+      const tables = this.storeService.state.targetClones[row.tableName] ?
+        this.storeService.state.targetClones[row.tableName] :
+        this.tables;
 
-      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ?
-        this.storeService.state.targetClones[ row.tableName ] :
-        this.storeService.state.target;
-
-      this.bridgeService.updateRowsProperties(tablesToUpdate, isSameRow, (targetRow: IRow) => {
+      this.bridgeService.updateRowsProperties(tables, isSameRow, (targetRow: IRow) => {
         targetRow.constant = value;
-        Object.keys(this.bridgeService.arrowsCache)
-          .forEach(key => {
-            const arrow = this.bridgeService.arrowsCache[key]
-            arrow.target.tableId = this.table.id
-          });
 
-        // Add constant
-        const sourceTableId = this.storeService.state.selectedSourceTableId
-        if (row.constant) {
-          // If selected target similar => add constant for all source table
-          if (this.selectedTargetTableId === this.targetSimilarTableId) {
-            this.storeService.state.source
-              .forEach(table => this.bridgeService.addConstant.execute({sourceTableId: table.id, targetRow}));
+        const sourceTableId = this.selectedSourceTableId
+        const updateConst = (rowToUpdate: IRow) => {
+          if (rowToUpdate.constant) {
+            this.bridgeService.addConstant.execute({sourceTableId, targetRow: rowToUpdate});
           } else {
-            this.bridgeService.addConstant.execute({sourceTableId, targetRow});
+            this.bridgeService.dropConstant.execute({sourceTableId, targetRow: rowToUpdate});
           }
+        }
+
+        if (this.selectedTargetTableId === this.targetSimilarTableId) {
+          const rowToUpdate = toNoConceptRows(this.bridgeService.findSimilarRows(tables, targetRow.name))
+          rowToUpdate.forEach(r => {
+            r.constant = targetRow.constant
+            updateConst(r)
+          })
         } else {
-          this.bridgeService.dropConstant.execute({sourceTableId, targetRow});
+          updateConst(targetRow)
         }
       });
     }
@@ -606,7 +616,9 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     if (target) {
       const targetFocused = this.rowFocusedElements.find(item => item.id === target.id);
       if (!ctrlKey) {
-        if (!targetFocused) { this.unsetRowFocus(); }
+        if (!targetFocused) {
+          this.unsetRowFocus();
+        }
       } else {
         if (targetFocused) {
           targetFocused.classList.remove('row-focus');

@@ -212,7 +212,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(`target-${htmlElementId}`);
-        if (!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
+        if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
 
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {
@@ -579,8 +579,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.sourceTabIndex = index;
       this.storeService.add('selectedSourceTableId', this.source[index].id)
     } else {
-      this.storeService.add('selectedTargetTableId', this.target[index].id)
       this.targetTabIndex = index;
+      this.storeService.add('selectedTargetTableId', this.target[index].id)
     }
 
     setTimeout(() => {
@@ -849,9 +849,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         }
       });
 
+    // On open concrete table mapping
     this.activatedRoute.queryParams.subscribe(data => {
       if (Object.keys(data).length !== 0) {
         // If similar tab exist => open table tab
+        // 0 - Similar tab, 1 - Table tab
         this.sourceTabIndex = this.similarSourceTable ? 1 : 0;
         this.targetTabIndex = this.similarTargetTable ? 1 : 0;
         const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);

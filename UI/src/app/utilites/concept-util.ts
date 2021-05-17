@@ -1,4 +1,8 @@
 import { Concept } from 'src/app/cdm/mapping/concept-transformation/model/concept';
+import { IRow } from '../models/row';
+import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
+
+const conceptFieldNames = (conceptMap as any).default;
 
 export function getConceptFieldNameByType(columnType: string, connectedToConceptFields: any) {
   let names = connectedToConceptFields.filter(it => it.endsWith(columnType));
@@ -59,3 +63,7 @@ export function updateConceptsIndexes(concepts: Concept[]) {
   });
 }
 
+export function toNoConceptRows(rows: IRow[]): IRow[] {
+  return rows
+    .filter(r => !conceptFieldNames[r.tableName]?.includes(r.name))
+}

@@ -13,9 +13,9 @@ export interface State {
   target: ITable[],
   targetConfig: {
     [key: string]: {
-      name: string,
+      name: string, // Target table name
       first: string,
-      data: string[]
+      data: string[] // Mapped source tables
     }
   },
   source: ITable[],

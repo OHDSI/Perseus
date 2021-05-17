@@ -19,6 +19,7 @@ import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
 import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
+import { Mapping } from '../models/mapping';
 
 export interface IConnection {
   source: IRow;
@@ -296,7 +297,13 @@ export class BridgeService {
     return false;
   }
 
-  findSimilarRows(tables, name, area?) {
+  /**
+   * @param tables - ITable[] | {[area]: ITable[]}
+   * @param name - row name
+   * @param area - source | target
+   */
+  findSimilarRows(tables: ITable[] | {[key: string]: ITable[]},
+                  name: string, area?: string): IRow[] {
     const similarRows = [];
     const tablesToSearch = area ? tables[ area ] : tables;
     tablesToSearch.forEach(table => {
@@ -651,7 +658,7 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
-  generateMapping(sourceTableName: string = '', targetTableName: string = '') {
+  generateMapping(sourceTableName: string = '', targetTableName: string = ''): Mapping {
     const mappingService = new MappingService(
       this.arrowsCache,
       this.constantsCache,
@@ -794,7 +801,7 @@ export class BridgeService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  generateMappingWithViewsAndGroups(sourceTables: any) {
+  generateMappingWithViewsAndGroups(sourceTables: any): Mapping {
     const mappingJSON = this.generateMapping();
 
     if (!sourceTables.length) {
@@ -840,7 +847,7 @@ export class BridgeService {
     return tables;
   }
 
-  collectSimilarRows(rows, area, areaRows, similarRows) {
+  collectSimilarRows(rows, area, areaRows, similarRows): void {
     rows.forEach(row => {
       if (!row.grouppedFields || !row.grouppedFields.length) {
 
