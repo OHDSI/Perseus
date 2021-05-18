@@ -29,7 +29,7 @@
                             (fileToScanChanged)="onFileToScanChanged($event)"></app-file-settings-form>
   </ng-template>
 
-  <a (click)="resetForm()">Clear all</a>
+  <a class="source-form__clear-all" (click)="resetForm()">Clear all</a>
 
   <app-test-connection class="source-form__test-connection"
     [connectionResult]="connectionResult"

@@ -1,19 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
 import { TablesToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/tables-to-scan.component';
 import { TableToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/table-to-scan/table-to-scan.component';
 import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-data-form.component';
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { ScanDataCheckboxComponent } from './shared/scan-data-checkbox/scan-data-checkbox.component';
-import { WebsocketModule } from '../websocket/websocket.module';
-import { ConnectionErrorPopupComponent } from './shared/connection-error-popup/connection-error-popup.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ScanDataCheckboxComponent } from './auxiliary/scan-data-checkbox/scan-data-checkbox.component';
+import { ConnectionErrorPopupComponent } from './auxiliary/connection-error-popup/connection-error-popup.component';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
-import { MatIconModule } from '@angular/material/icon';
 import { DbSettingsFormComponent } from './scan-data-dialog/scan-data-form/connect-form/db-settings-form/db-settings-form.component';
 import { FileSettingsFormComponent } from './scan-data-dialog/scan-data-form/connect-form/file-settings-form/file-settings-form.component';
 import { FakeDataDialogComponent } from './fake-data-dialog/fake-data-dialog.component';
@@ -24,18 +18,19 @@ import { CdmDialogComponent } from './cdm-dialog/cdm-dialog.component';
 import { CdmFormComponent } from './cdm-dialog/cdm-form/cdm-form.component';
 import { CdmConnectFormComponent } from './cdm-dialog/cdm-form/cdm-connect-form/cdm-connect-form.component';
 import { CdmFakeDataFormComponent } from './cdm-dialog/cdm-form/cdm-fake-data-form/cdm-fake-data-form.component';
-import { TestConnectionComponent } from './shared/test-connection/test-connection.component';
+import { TestConnectionComponent } from './auxiliary/test-connection/test-connection.component';
 import { CdmDestinationFormComponent } from './cdm-dialog/cdm-form/cdm-destination-form/cdm-destination-form.component';
 import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cdm-source-form.component';
 import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/cdm-scan-data-console.component';
-import { WhiteRabbitScanDataConsoleComponent } from './shared/scan-console-wrapper/scan-data-console/white-rabbit-scan-data-console.component';
-import { DataBaseExistWarningPopupComponent } from './shared/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
+import { CdmConsoleComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console/cdm-console.component';
+import { ScanDataConsoleComponent } from './scan-data-dialog/scan-console-wrapper/scan-data-console/scan-data-console.component';
+import { DataBaseExistWarningPopupComponent } from './auxiliary/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
 import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { SharedModule } from '../shared/shared.module';
+import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
 
 @NgModule({
   declarations: [
@@ -61,29 +56,25 @@ import { SharedModule } from '../shared/shared.module';
     CdmDestinationFormComponent,
     CdmSourceFormComponent,
     CdmConsoleWrapperComponent,
-    CdmScanDataConsoleComponent,
-    WhiteRabbitScanDataConsoleComponent,
+    CdmConsoleComponent,
+    ScanDataConsoleComponent,
     DataBaseExistWarningPopupComponent,
     DqdDialogComponent,
     DqdConsoleWrapperComponent,
     DqdConsoleComponent,
-    DqdFormComponent
+    DqdFormComponent,
+    FakeConsoleComponent
   ],
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule,
-    MatProgressBarModule,
-    MatTooltipModule,
-    MatIconModule,
-    WebsocketModule,
     SharedModule
   ],
   exports: [
     ScanDataDialogComponent,
     FakeDataDialogComponent,
-    CdmDialogComponent
-  ],
+    CdmDialogComponent,
+    DqdDialogComponent
+  ]
 })
 export class ScanDataModule { }

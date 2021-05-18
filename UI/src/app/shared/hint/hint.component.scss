@@ -1,0 +1,22 @@
+@import "variables";
+
+:host {
+  height: 100%;
+}
+
+.hint {
+  position: relative;
+  width: 15px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  &__icon {
+    cursor: pointer;
+    width: 11px;
+    height: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

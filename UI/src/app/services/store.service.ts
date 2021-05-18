@@ -1,39 +1,30 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Table } from '../models/table';
-
 import { uniq } from '../infrastructure/utility';
+import { removeExtension } from '../utilites/file';
+import { Observable } from 'rxjs/internal/Observable';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { State } from '../models/state';
 
-@Injectable({
-  providedIn: 'root'
-})
+const initialState: State = {
+  target: [],
+  targetConfig: {},
+  source: [],
+  mappedSource: [],
+  linkTablesSearch: {},
+  linkFieldsSearch: {},
+  cdmVersions: [],
+  targetClones: {},
+  mappingEmpty: true,
+  recalculateSimilar: true,
+  concepts: {},
+  isMappingPage: false
+}
+
+@Injectable()
 export class StoreService {
-  private initialState = {
-    version: undefined,
-    filteredTables: undefined,
-    filteredFields: undefined,
-    target: [],
-    targetConfig: {},
-    source: [],
-    mappedSource: [],
-    report: undefined,
-    linkTablesSearch: {
-      source: undefined,
-      target: undefined,
-      sourceColumns: undefined
-    },
-    linkFieldsSearch: {},
-    cdmVersions: [],
-    targetClones: {},
-    reportFile: undefined,
-    mappingEmpty: true,
-    sourceSimilar: undefined,
-    targetSimilar: undefined,
-    recalculateSimilar: true,
-    concepts: {},
-    isMappingPage: false
-  };
-  private readonly storeState = new BehaviorSubject<any>(Object.assign({}, this.initialState));
+  private readonly storeState = new BehaviorSubject<State>({...initialState});
   readonly state$ = this.storeState.asObservable();
 
   get state() {
@@ -84,17 +75,32 @@ export class StoreService {
 
   resetAllData() {
     const cdmVersions = this.state.cdmVersions;
-    this.storeState.next(Object.assign({}, this.initialState));
-    this.add('cdmVersions', cdmVersions);
-    this.state.targetClones = {};
-    this.state.concepts = {};
+    this.storeState.next({
+      ...initialState,
+      cdmVersions
+    });
+  }
 
+  /**
+   * @param key - listenable for a change in the store
+   * @param equal - function used for compare new value with previous
+   */
+  on<T>(key: string, equal: (a: T, b: T) => boolean = (a, b) => a === b): Observable<T> {
+    const prevState = this.state[key] as T
+    return this.storeState.asObservable()
+      .pipe(
+        map(state => state[key] as T),
+        startWith<T, T>(prevState),
+        pairwise(),
+        filter(([prev, curr]) => prev !== curr),
+        map(([, curr]) => curr)
+      )
   }
 }
 
 export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
   return {
     cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
-    reportName: state.report || 'Report name'
+    reportName: state.report ? removeExtension(state.report) : 'Report name'
   };
 }

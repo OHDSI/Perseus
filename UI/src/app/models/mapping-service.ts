@@ -1,12 +1,12 @@
 import { ArrowCache, ConstantCache } from './arrow-cache';
 import { groupBy } from '../infrastructure/utility';
-import { MappingPair, MappingNode, Mapping } from './mapping';
+import { Mapping, MappingNode, MappingPair } from './mapping';
 import { IConnection } from '../services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
-import { getLookupType } from '../services/utilites/lookup-util';
-import * as conceptMap from './../components/concept-fileds-list.json'
-import { IConcept, ITableConcepts } from '../components/concept-transformation/model/concept';
+import { getLookupType } from '../utilites/lookup-util';
+import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
+import { IConcept, ITableConcepts } from '../cdm/mapping/concept-transformation/model/concept';
 import { conceptFieldsTypes } from '../app.constants';
 
 export class MappingService {
@@ -15,10 +15,12 @@ export class MappingService {
   sourceTableName: string;
   targetTableName: string;
   conceptFieldsMap = (conceptMap as any).default;
-  concepts: ITableConcepts;
+  concepts: {
+    [key: string]: ITableConcepts
+  };
   clones: any;
 
-  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string, concepts: ITableConcepts, clones: any) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string, concepts: { [key: string]: ITableConcepts }, clones: any) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
@@ -130,7 +132,7 @@ export class MappingService {
       if (!this.sourceTableName || this.sourceTableName === conceptSourceTable && this.targetTableName === conceptTargetTable) {
         let cloneExists = false;
         if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length) {
-          const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName == conceptSourceTable);
+          const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName === conceptSourceTable);
           cloneExists = !!existingClones.length;
         }
         if (this.concepts[ key ]) {
@@ -207,13 +209,13 @@ export class MappingService {
   }
 
   getConceptSqlTransformation(sqlApplied: boolean, sql: string, fieldName: string, cloneTableName: string) {
-    const target_column_name = cloneTableName ? `${cloneTableName}_${fieldName}` : fieldName;
-    return sql && sqlApplied ? `${sql} as ${target_column_name}` : '';
+    const targetColumnName = cloneTableName ? `${cloneTableName}_${fieldName}` : fieldName;
+    return sql && sqlApplied ? `${sql} as ${targetColumnName}` : '';
   }
 
   getSqlTransformation(arrow: any) {
-    const target_column_name = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
-    return arrow.sql && arrow.sql[ 'applied' ] ? `${arrow.sql[ 'name' ]} as ${target_column_name}` : '';
+    const targetColumnName = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
+    return arrow.sql && arrow.sql[ 'applied' ] ? `${arrow.sql[ 'name' ]} as ${targetColumnName}` : '';
   }
 
   applyTransforms(node: MappingNode, connector: any) {

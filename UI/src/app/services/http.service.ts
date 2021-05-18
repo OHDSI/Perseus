@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Mapping } from '../models/mapping';
+import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
+import { createNoCacheHeaders } from '../utilites/http-headers';
 
 // use for dev purposes
 // import * as schemaData from '../mockups/schema.mockup.json';
@@ -14,8 +16,9 @@ const API_URLS = {
   getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
   getSourceSchema: (path) => `${URL}/get_source_schema?path=${path}`,
   getSourceSchemaData: (name) => `${URL}/load_saved_source_schema?schema_name=${name}`,
-  getColumnInfo: (tableName, columnName) => `${URL}/get_column_info?table_name=${tableName}&column_name=${columnName}`,
+  getColumnInfo: (reportName, tableName, columnName) => `${URL}/get_column_info?report_name=${reportName}&table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
+  getZipXml: () => `${URL}/get_zip_xml`,
   getSqlPreview: (name) => `${URL}/get_generated_sql?source_table_name=${name}`,
   postLoadSchema: () => `${URL}/load_schema`,
   postSaveLoadSchema: () => `${URL}/save_and_load_schema`,
@@ -27,12 +30,9 @@ const API_URLS = {
   getView: () => `${URL}/get_view`,
   validateSql: () => `${URL}/validate_sql`,
   loadReportToServer: () => `${URL}/load_schema_to_server`
-
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HttpService {
 
   constructor(private httpClient: HttpClient) {
@@ -54,20 +54,24 @@ export class HttpService {
     return this.httpClient.get<any>(API_URLS.getSourceSchemaData(name));
   }
 
-  getColumnInfo(tableName: string, columnName: string): Observable<any> {
-    return this.httpClient.get<any>(API_URLS.getColumnInfo(tableName, columnName));
+  getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<any> {
+    return this.httpClient.get<any>(API_URLS.getColumnInfo(reportName, tableName, columnName));
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {
     return this.httpClient.post(API_URLS.getXmlPreview(), mapping);
   }
 
-  getSqlPreview(name: string): Observable<any> {
-    return this.httpClient.get(API_URLS.getSqlPreview(name));
+  getZipXml(name: string): Observable<File> {
+    const headers = createNoCacheHeaders()
+    return this.httpClient.get(API_URLS.getZipXml(), {headers, responseType: 'blob'})
+      .pipe(
+        map(blob => new File([blob], `${name}-xml.zip`))
+      )
   }
 
-  postLoadSchema(formData: FormData) {
-    return this.httpClient.post(API_URLS.postLoadSchema(), formData);
+  getSqlPreview(name: string): Observable<any> {
+    return this.httpClient.get(API_URLS.getSqlPreview(name));
   }
 
   postSaveLoadSchema(formData: FormData) {

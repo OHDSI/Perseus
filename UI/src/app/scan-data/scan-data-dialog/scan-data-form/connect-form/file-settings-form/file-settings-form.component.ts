@@ -1,10 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { fileToBase64AsObservable } from '../../../../../services/utilites/base64-util';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../../../../base/base.component';
-import { FileToScan } from '../../../../model/file-to-scan';
+import { BaseComponent } from '../../../../../shared/base/base.component';
 
 @Component({
   selector: 'app-file-settings-form',
@@ -22,7 +18,7 @@ export class FileSettingsFormComponent extends BaseComponent {
   form: FormGroup;
 
   @Output()
-  fileToScanChanged = new EventEmitter<FileToScan[]>();
+  fileToScanChanged = new EventEmitter<File[]>();
 
   @Input()
   fileInputText = '';
@@ -37,22 +33,14 @@ export class FileSettingsFormComponent extends BaseComponent {
 
   onFileInputChange(event): void {
     const files = Array.from(event.target.files) as File[];
-    const files$ = files.map(file => fileToBase64AsObservable(file));
-
-    forkJoin(files$)
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(filesToScan =>
-        this.fileToScanChanged.emit(filesToScan)
-      );
-
     if (files.length === 0) {
       this.fileInputText = '';
     } else {
-      const initial = files.shift().name;
+      const initial = files[0].name;
       this.fileInputText = files
+        .slice(1)
         .reduce((res, file) => `${res}, ${file.name}`, initial);
     }
+    this.fileToScanChanged.emit(files)
   }
 }

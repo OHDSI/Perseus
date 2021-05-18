@@ -1,5 +1,4 @@
-import { Injectable, ElementRef } from '@angular/core';
-import { Area } from '../models/area';
+import { ElementRef, Injectable } from '@angular/core';
 
 @Injectable()
 export class CommonService {

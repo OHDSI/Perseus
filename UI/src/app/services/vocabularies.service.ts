@@ -4,9 +4,7 @@ import * as domain from '../../assets/vocabularies/domainlist.json';
 import * as lookup from '../../assets/vocabularies/lookuplist.json';
 import * as concept from '../../assets/vocabularies/conceptlist.json';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class VocabulariesService {
 
   private readonly data: IVocabulary[];

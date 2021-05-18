@@ -236,3 +236,49 @@ VACUUM FULL "vocabulary"."vocabulary";
 --- permissions
 GRANT USAGE ON SCHEMA vocabulary TO cdm_builder;
 GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO cdm_builder;
+
+
+--- create cdm schema and user table
+create schema cdm;
+
+CREATE TABLE "cdm"."user"
+(
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR ( 30 ) UNIQUE NOT NULL,
+    first_name VARCHAR ( 30 ) NOT NULL,
+    last_name VARCHAR ( 30 ) NOT NULL,
+    email VARCHAR ( 50 ) UNIQUE NOT NULL,
+    password VARCHAR ( 255 ) NOT NULL,
+    active BOOLEAN NOT NULL
+);
+
+--- inserting default users to user table
+INSERT INTO "cdm"."user" ("username", "first_name", "last_name", "email", "password", "active") VALUES ('test1', 'name', 'surname', 'test_email@test.ru', '$2b$12$jgJapclm8oeV2FgCPTxXl.MCrcB61uKm82GDTbsbkJeOGIoU0oe0S', '1');
+INSERT INTO "cdm"."user" ("username",  "first_name", "last_name", "email", "password", "active") VALUES ('test2', 'name', 'surname', 'test_email2@test.ru', '$2b$12$3RwT1MKcqpk1usn.hmCklODI4XEwkuTCOzRyxD5OwjwQPqhVwZ6Qi', '1');
+
+--- create table for blacklisted tokens
+CREATE TABLE "cdm"."blacklist_token"
+(
+    id SERIAL PRIMARY KEY,
+    token VARCHAR ( 500 ) UNIQUE NOT NULL,
+    blacklisted_on TIMESTAMP NOT NULL 
+    
+);
+
+--- create table for logging reports about unauthorized requests for reset password
+CREATE TABLE "cdm"."unauthorized_reset_pwd_request"
+(
+    report_id SERIAL PRIMARY KEY,
+    username VARCHAR ( 30 ) NOT NULL,
+    report_date TIMESTAMP
+);
+
+
+--- create table for rfresh tokens
+CREATE TABLE "cdm"."refresh_token"
+(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR ( 50 ) UNIQUE NOT NULL,
+    refresh_token VARCHAR ( 255 ) NOT NULL,
+    expiration_date TIMESTAMP
+);

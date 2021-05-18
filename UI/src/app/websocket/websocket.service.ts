@@ -1,6 +1,7 @@
 import { Observable, Observer } from 'rxjs';
-import { WebsocketConfig } from './websocket.config';
-import { distinctUntilChanged, share } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, share } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { parseHttpError } from '../utilites/error';
 
 export abstract class WebsocketService {
   status$: Observable<boolean>;
@@ -11,11 +12,18 @@ export abstract class WebsocketService {
     this.initStatusStream();
   }
 
-  abstract connect(config: WebsocketConfig): Observable<boolean>;
+  handleError(error: any): string {
+    if (error instanceof HttpErrorResponse) {
+      return `Error: ${parseHttpError(error)}`
+    }
+    return `Error: ${error.reason ? error.reason : error.message}`
+  }
 
-  abstract on(destination: string): Observable<string | any>;
+  abstract connect(): Observable<boolean>;
 
-  abstract send(destination: string, data: string | any): void;
+  abstract on(): Observable<string | any>;
+
+  abstract send(data: string | any): void;
 
   abstract disconnect(): void;
 
@@ -24,7 +32,11 @@ export abstract class WebsocketService {
       observer => this.connection$ = observer
     ).pipe(
       share(),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      catchError(error => {
+        this.disconnect()
+        throw error
+      })
     );
   }
 }

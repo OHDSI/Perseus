@@ -17,7 +17,8 @@ export const serverUrl = environment.port === 80 ?
 export const apiUrl = `${serverUrl}/api`;
 
 export const whiteRabbitPrefix = '/white-rabbit-service';
-export const whiteRabbitApiUrl = `${serverUrl}/${whiteRabbitPrefix}/api`;
+export const whiteRabbitWsUrl = `${serverUrl}${whiteRabbitPrefix}`
+export const whiteRabbitApiUrl = `${serverUrl}${whiteRabbitPrefix}/api`;
 
 export const cdmBuilderLogUrl = `${serverUrl}/log`;
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`;
@@ -32,3 +33,10 @@ export const numberOfPanelsWithOneSimilar = 3;
 export const numberOfPanelsWithTwoSimilar = 4;
 
 export const conceptFieldsTypes = ['concept_id', 'source_value', 'source_concept_id', 'type_concept_id'];
+
+export const mainPageRouter = '/perseus'
+export const loginRouter = '/sign-in'
+
+export const externalUrls = [
+  'athena.ohdsi.org'
+]

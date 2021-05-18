@@ -1,0 +1,68 @@
+@import "variables";
+
+@mixin cdm-label {
+  font-size: 12px;
+  line-height: 15px;
+  color: #808080;
+}
+
+@mixin cdm-input {
+  border: 0;
+  border-bottom: 1px solid #2C2C2C;
+  padding: 5px 0;
+
+  font-size: 14px;
+  line-height: 15px;
+  color: $cdm-grey-dark;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@mixin cmd-button {
+  border: none;
+  outline: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+@mixin perseus-header {
+  font-size: 18px;
+  font-weight: 550;
+  line-height: 23px;
+  color: $cdm-grey-dark;
+}
+
+@mixin perseus-blue-button {
+  background: $cdm-blue;
+  color: #FFFFFF;
+}
+
+@mixin invalid-text-decoration {
+  &.ng-invalid.ng-touched {
+    border-bottom: 1px solid #FF4646;
+  }
+}
+
+@mixin perseus-error-message {
+  font-size: 12px;
+  line-height: 15px;
+  font-style: italic;
+  font-weight: 300;
+  color: #FF4646;
+}
+
+@mixin login-input() {
+  background: #F9F9F9;
+  @include cdm-input();
+  @include invalid-text-decoration();
+
+  &::placeholder {
+    color: rgba(64, 64, 64, 0.2);
+  }
+}

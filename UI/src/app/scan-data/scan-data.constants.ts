@@ -1,15 +1,15 @@
-import { cdmBuilderLogUrl, dbServer, serverUrl, whiteRabbitPrefix } from '../app.constants';
-import { DbSettings } from './model/db-settings';
-import { adaptDbType } from './util/cdm-adapter';
+import { dbServer } from '../app.constants';
+import { DbSettings } from '../models/scan-data/db-settings';
+import { adaptDbType } from '../utilites/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
   MYSQL = 'MySQL',
-  ORACLE = 'Oracle',
-  POSTGRESQL = 'PostgreSQL',
-  REDSHIFT = 'Redshift',
   SQL_SERVER = 'SQL Server',
+  POSTGRESQL = 'PostgreSQL',
+  ORACLE = 'Oracle',
   AZURE = 'Azure',
+  REDSHIFT = 'Redshift',
   MS_ACCESS = 'MS Access',
   TERADATA = 'Teradata',
   BIGQUERY = 'BigQuery',
@@ -27,14 +27,14 @@ enum FileTypes {
 
 export const whiteRabbitDatabaseTypes: string[] = [
   DbTypes.MYSQL,
-  DbTypes.ORACLE,
-  DbTypes.POSTGRESQL,
-  DbTypes.REDSHIFT,
   DbTypes.SQL_SERVER,
+  DbTypes.POSTGRESQL,
+  DbTypes.ORACLE,
+  DbTypes.REDSHIFT,
   DbTypes.AZURE,
   DbTypes.MS_ACCESS,
   DbTypes.TERADATA,
-  DbTypes.BIGQUERY,
+  DbTypes.BIGQUERY
 ];
 
 export const dbTypesRequireSchema: string[] = [
@@ -55,18 +55,6 @@ export const cdmBuilderDatabaseTypes: string[] = [
 
 export const fakeData = 'Fake Data';
 
-export const whiteRabbitWebsocketConfig = {
-  url: serverUrl,
-  prefix: whiteRabbitPrefix,
-  progressMessagesDestination: '/user/queue/reply',
-};
-
-export const cdmWebsocketConfig = {
-  url: cdmBuilderLogUrl,
-  prefix: '',
-  progressMessagesDestination: 'Log',
-};
-
 export const dictionaryDbSettingForCdmBuilder = {
   vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
   vocabularyServer: dbServer,
@@ -74,8 +62,7 @@ export const dictionaryDbSettingForCdmBuilder = {
   vocabularyDatabase: 'cdm_souffleur',
   vocabularySchema: 'vocabulary',
   vocabularyUser: 'cdm_builder',
-  vocabularyPassword: 'N7jscuS3ca',
-  mappingsName: 'TestMappings'
+  vocabularyPassword: 'N7jscuS3ca'
 };
 
 export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';
@@ -86,7 +73,6 @@ export const fakeDataDbSettings: DbSettings = {
   database: 'cdm_souffleur',
   user: 'postgres',
   password: '5eC_DkMr^3',
-  schema: 'public',
   port: 5431
 };
 

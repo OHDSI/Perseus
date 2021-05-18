@@ -8,16 +8,14 @@ import { Configuration } from '../models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject } from 'rxjs';
 import * as jsZip from 'jszip';
-import { MediaType } from './utilites/base64-util';
+import { MediaType } from '../utilites/base64-util';
 import { Observable } from 'rxjs/internal/Observable';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import { parseHttpError } from './utilites/error';
+import { parseHttpError } from '../utilites/error';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UploadService {
 
   // mapping json loading
@@ -50,7 +48,6 @@ export class UploadService {
 
   onScanReportChange(event: any): Observable<any> {
     const files = event.target.files;
-    const dotPosition = files[0].name.lastIndexOf('.');
     this.storeService.add('reportFile', files[0]);
     return this.uploadSchema(files)
       .pipe(
@@ -61,7 +58,7 @@ export class UploadService {
           );
           this.bridgeService.resetAllMappings();
           this.dataService.prepareTables(res, 'source');
-          this.dataService.saveReportName(files[0].name.slice(0, dotPosition), 'report');
+          this.dataService.saveReportName(files[0].name, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
         }),
         catchError(error => {
@@ -138,9 +135,9 @@ export class UploadService {
     this.bridgeService.applyConfiguration(resultConfig);
   }
 
-  loadReport(file: any): Observable<any> {
-    this.storeService.add('reportFile', file[0]);
-    return this.uploadSchema(file, true)
+  loadReport(files: File []): Observable<any> {
+    this.storeService.add('reportFile', files[0]);
+    return this.uploadSchema(files, true)
       .pipe(
         tap(() => this.snackbar.open(
           'Success file upload',

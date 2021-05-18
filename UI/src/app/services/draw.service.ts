@@ -1,10 +1,8 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { IRow } from 'src/app/models/row';
-
 import { CommonService } from 'src/app/services/common.service';
 import { Arrow } from '../models/arrow';
-import { IConnector } from '../models/interface/connector.interface';
-
+import { IConnector } from '../models/connector.interface';
 import { parseArrowKey } from './business/rules';
 
 @Injectable()
@@ -19,7 +17,7 @@ export class DrawService {
     return Object.keys(this.cache).length === 0;
   }
 
-  private renderer: Renderer2;
+  private readonly renderer: Renderer2;
 
   constructor(
     private commonService: CommonService,
