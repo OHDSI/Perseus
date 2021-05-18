@@ -59,7 +59,6 @@ table {
     align-items: center;
 
     button {
-      width: 32px;
       height: 32px;
     }
   }
@@ -223,4 +222,10 @@ tr[selected="true"] {
 
 .remove-group{
   text-align: center;
+}
+
+.circle-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
