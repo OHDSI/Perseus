@@ -46,7 +46,10 @@ export class SqlTransformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.initCodeMirror();
-    this.codeMirror.doc.replaceSelection(this.sql['name']);
+    const name = this.sql['name']
+    if (name) {
+      this.codeMirror.doc.replaceSelection(name);
+    }
   }
 
   initCodeMirror() {

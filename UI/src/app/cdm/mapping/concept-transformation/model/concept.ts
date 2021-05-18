@@ -1,6 +1,6 @@
 export interface IConcept {
   id: number;
-  fields: any;
+  fields: any; // todo set type
 }
 
 export interface IConceptOptions {

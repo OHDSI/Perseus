@@ -62,7 +62,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   ngOnInit(): void {
-
     this.targetTableName = this.payload.row.tableName;
     this.conceptFields = this.conceptFieldsMap[ this.targetTableName ];
     this.targetCloneName = this.payload.row.cloneTableName;
