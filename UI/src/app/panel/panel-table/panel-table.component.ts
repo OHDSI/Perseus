@@ -33,16 +33,16 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '../../shared/base/base.component';
 import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationComponent } from '../../cdm/mapping/concept-transformation/concept-transformation.component';
-import { getConceptFieldType } from 'src/app/utilites/concept-util';
+import { getConceptFieldType, toNoConceptRows } from 'src/app/utilites/concept-util';
 
 @Component({
   selector: 'app-panel-table',
   templateUrl: './panel-table.component.html',
-  styleUrls: [ './panel-table.component.scss' ],
+  styleUrls: ['./panel-table.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', display: 'none' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
+      state('collapsed', style({height: '0px', minHeight: '0', visibility: 'hidden', display: 'none'})),
+      state('expanded', style({height: '*', visibility: 'visible'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -63,6 +63,36 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
   @ViewChild('tableComponent', { static: true }) tableComponent: MatTable<IRow[]>;
 
+  datasource: MatTableDataSource<IRow>;
+  rowFocusedElements: any[] = [];
+  fieldTypes = (fieldTypes as any).default as Map<string, string[]>;
+  connectortype = {};
+  expandedElement: any = undefined;
+  groupDialogOpened = false;
+  conceptFieldNames = (conceptMap as any).default;
+
+  @Input()
+  private selectedSourceTableId: number // store.selectedSourceTableId
+  @Input()
+  private selectedTargetTableId: number // store.selectedTargetTableId
+
+  @Input()
+  private sourceSimilarTableId: number; // store.sourceSimilarTableId
+  @Input()
+  private targetSimilarTableId: number; // store.targetSimilarTableId
+
+  constructor(
+    private bridgeService: BridgeService,
+    private storeService: StoreService,
+    private overlayService: OverlayService,
+    private renderer: Renderer2,
+    private chg: ChangeDetectorRef,
+    private elementRef: ElementRef,
+    private matDialog: MatDialog
+  ) {
+    super();
+  }
+
   get displayedColumns() {
     return [ 'column_indicator', 'column_name', 'column_type', 'comments', 'remove_group' ];
   }
@@ -75,24 +105,23 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return this.table.rows.length;
   }
 
-  datasource: MatTableDataSource<IRow>;
-  rowFocusedElements: any[] = [];
-  fieldTypes = (fieldTypes as any).default as Map<string, string[]>;
-  connectortype = {};
-  expandedElement: any = undefined;
-  groupDialogOpened = false;
-  conceptFieldNames = (conceptMap as any).default;
+  ngOnInit(): void {
+    this.dataSourceInit(this.table.rows);
+    this.bridgeService.refreshAll();
 
-  constructor(
-    private bridgeService: BridgeService,
-    private storeService: StoreService,
-    private overlayService: OverlayService,
-    private renderer: Renderer2,
-    private chg: ChangeDetectorRef,
-    private elementRef: ElementRef,
-    private matDialog: MatDialog
-  ) {
-    super();
+    this.bridgeService.removeConnection
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(connection => {
+        if (connection) {
+          this.hideConnectorPin(connection, Area.Target);
+        }
+      });
+
+    this.storeService.state$.subscribe(res => {
+      if (res) {
+        this.filteredFields = res.filteredFields ? res.filteredFields[ this.table.name ] : res.filteredFields;
+      }
+    });
   }
 
   @HostListener('document:click', [ '$event' ])
@@ -134,34 +163,23 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return new MatTableDataSource(this.datasource.data.filter(item => item.name === detail.name)[ 0 ].grouppedFields);
   }
 
-  ngOnInit(): void {
-    this.dataSourceInit(this.table.rows);
-    this.bridgeService.refreshAll();
-
-    this.bridgeService.removeConnection
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(connection => {
-        if (connection) {
-          this.hideConnectorPin(connection, Area.Target);
-        }
-      });
-
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.filteredFields = res.filteredFields ? res.filteredFields[ this.table.name ] : res.filteredFields;
+  isConstant(column: IRow): boolean {
+    const isConceptTable = this.conceptFieldNames[this.table.name]?.includes(column.name)
+    if (isConceptTable) {
+      const concepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`]
+      if (!concepts) {
+        return false
       }
-    });
-  }
-
-  isConstant(column: any) {
-    const concepts = this.storeService.state.concepts[ `${this.table.name}|${this.oppositeTableName}` ]
-    const isConceptTable = this.conceptFieldNames[ this.table.name ] ? this.conceptFieldNames[ this.table.name ].includes(column.name) : undefined
-    if (concepts && isConceptTable) {
       const conceptFieldType = getConceptFieldType(column.name);
-      return concepts.conceptsList.filter(item => item.fields[ conceptFieldType ].constantSelected &&
-        item.fields[ conceptFieldType ].constant).length
+      return concepts.conceptsList
+        .filter(item => item.fields[conceptFieldType].constantSelected && item.fields[conceptFieldType].constant)
+        .length > 0
     }
-    return column.hasConstant;
+    const constId = this.bridgeService.getConstantId(this.selectedSourceTableId, column)
+    const allConstKeys = Object.keys(this.bridgeService.constantsCache)
+    const inArrowCache = !!allConstKeys.find(key => key === constId)
+
+    return column.hasConstant && inArrowCache;
   }
 
   refreshPanel(event?: any) {
@@ -193,7 +211,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     if (!this.validateGroupFields()) {
       return;
     }
-    const existingRowNames =  this.getAllPanelRowNames();
+    const existingRowNames = this.getAllPanelRowNames();
     this.groupDialogOpened = true;
     const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
       closeOnNavigation: false,
@@ -304,8 +322,8 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   checkDifferentTypes(groupType?: string) {
     let typesArray = [];
     if (groupType) {
-      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes).
-        filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
+      typesArray = Object.values(Object.fromEntries(Object.entries(this.fieldTypes)
+        .filter(([ k, v ]) => v.includes(groupType.toUpperCase()))));
     } else {
       const firstGroupRowType = this.getTypeWithoutLength(
         this.rowFocusedElements[0].id.replace(`${this.area}-`, '')
@@ -359,8 +377,8 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
         while (row.grouppedFields.length) {
           this.removeFromGroup(row, row.grouppedFields[ 0 ]);
         }
-        this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
-          filter(([ k, v ]) => !(v.source.tableName === row.tableName && v.source.name === row.name)));
+        this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache)
+          .filter(([ k, v ]) => !(v.source.tableName === row.tableName && v.source.name === row.name)));
       }
     });
   }
@@ -369,13 +387,17 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     const similarTableIndex = this.tables.findIndex(item => item.name === 'similar');
     if (similarTableIndex !== -1) {
       fieldsToGroup.forEach(item => {
-        const srows = this.bridgeService.findSimilarRows(this.tables.
-          filter(tbl => tbl.name !== 'similar' && tbl.name !== this.table.name), item);
+        const srows = this.bridgeService.findSimilarRows(
+          this.tables.filter(tbl => tbl.name !== 'similar' && tbl.name !== this.table.name),
+          item
+        );
 
         if (srows.length <= 1) {
           this.tables[ similarTableIndex ].rows = this.tables[ similarTableIndex ].rows.filter(r => r.name !== item);
-          this.bridgeService.arrowsCache = Object.fromEntries(Object.entries(this.bridgeService.arrowsCache).
-            filter(([ k, v ]) => !(v.source.tableName === 'similar' && v.source.name === item)));
+          this.bridgeService.arrowsCache = Object.fromEntries(
+            Object.entries(this.bridgeService.arrowsCache)
+              .filter(([ k, v ]) => !(v.source.tableName === 'similar' && v.source.name === item))
+          );
         }
       });
     }
@@ -384,8 +406,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   addRowsToSimilarTable(rowToAdd: IRow) {
     const similarTable = this.tables.find(item => item.name === 'similar');
     if (similarTable) {
-      const srows = this.bridgeService.findSimilarRows(this.tables.
-        filter(tbl => tbl.name !== 'similar'), rowToAdd.name);
+      const srows = this.bridgeService.findSimilarRows(
+        this.tables.filter(tbl => tbl.name !== 'similar'),
+        rowToAdd.name
+      );
       if (srows.length > 1) {
         rowToAdd.tableName = 'similar';
         rowToAdd.tableId = similarTable.id;
@@ -437,7 +461,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return this.bridgeService.rowHasAnyConnection(row, this.area, this.oppositeTableId);
   }
 
-
   openCommentDialog(anchor: HTMLElement, row: IRow) {
     const component = CommentPopupComponent;
 
@@ -480,10 +503,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     });
   }
 
-  openNonConceptConstantDialog(anchor: HTMLElement, row: IRow) {
-    const value = row.constant;
+  openNonConceptConstantDialog(anchor: HTMLElement, targetRow: IRow) {
+    const value = targetRow.constant;
     const mode = value ? 'view' : 'add';
-    const type = row.type;
+    const type = targetRow.type;
     const data = { value, mode, type };
     const component = AddConstantPopupComponent;
 
@@ -500,9 +523,11 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
       component
     );
 
-    overlayRef.afterClosed$.subscribe(ok => {
-      row.constant = data.value;
-      this.updateIncrementOrConstantFields(row, 'constant');
+    overlayRef.afterClosed$.subscribe(() => {
+      if (data['event']) {
+        targetRow.constant = data.value;
+        this.updateIncrementOrConstantFields(targetRow, 'constant');
+      }
     });
   }
 
@@ -530,28 +555,45 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
       });
       return found;
     };
+
     if (type === 'increment') {
       const value = row.increment;
-      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => { item.increment = value; });
-      if (this.storeService.state.targetClones[ row.tableName ]) {
-        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[ row.tableName ], isSameRow, (item: any) => { item.increment = value; })
+
+      if (this.storeService.state.targetClones[row.tableName]) {
+        this.bridgeService.updateRowsProperties(this.storeService.state.targetClones[row.tableName], isSameRow,
+          (item: any) => item.increment = value
+        )
       } else {
-        this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow, (item: any) => { item.increment = value; });
+        this.bridgeService.updateRowsProperties(this.storeService.state.target, isSameRow,
+          (item: any) => item.increment = value
+        );
       }
-    } else {
+    } else { // type === 'constant'
       const value = row.constant;
-      this.bridgeService.updateRowsProperties(this.tables, isSameRow, (item: any) => {
-        item.constant = value;
-      });
+      const tables = this.storeService.state.targetClones[row.tableName] ?
+        this.storeService.state.targetClones[row.tableName] :
+        this.tables;
 
-      const tablesToUpdate = this.storeService.state.targetClones[ row.tableName ] ? this.storeService.state.targetClones[ row.tableName ] : this.storeService.state.target;
+      this.bridgeService.updateRowsProperties(tables, isSameRow, (targetRow: IRow) => {
+        targetRow.constant = value;
 
-      this.bridgeService.updateRowsProperties(tablesToUpdate, isSameRow, (item: any) => {
-        item.constant = value;
-        if (row.constant) {
-          this.bridgeService.addConstant.execute(item);
+        const sourceTableId = this.selectedSourceTableId
+        const updateConst = (rowToUpdate: IRow) => {
+          if (rowToUpdate.constant) {
+            this.bridgeService.addConstant.execute({sourceTableId, targetRow: rowToUpdate});
+          } else {
+            this.bridgeService.dropConstant.execute({sourceTableId, targetRow: rowToUpdate});
+          }
+        }
+
+        if (this.selectedTargetTableId === this.targetSimilarTableId) {
+          const rowToUpdate = toNoConceptRows(this.bridgeService.findSimilarRows(tables, targetRow.name))
+          rowToUpdate.forEach(r => {
+            r.constant = targetRow.constant
+            updateConst(r)
+          })
         } else {
-          this.bridgeService.dropConstant.execute(item);
+          updateConst(targetRow)
         }
       });
     }
@@ -559,11 +601,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
 
   getRowId(name: string) {
     return `${this.area}-${name}`;
-  }
-
-  onTransformDialogOpen(event: any, row: IRow, element: any) {
-    event.stopPropagation();
-    this.openTransform.emit({ row, element });
   }
 
   hasComment(row: IRow) {
@@ -579,7 +616,9 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     if (target) {
       const targetFocused = this.rowFocusedElements.find(item => item.id === target.id);
       if (!ctrlKey) {
-        if (!targetFocused) { this.unsetRowFocus(); }
+        if (!targetFocused) {
+          this.unsetRowFocus();
+        }
       } else {
         if (targetFocused) {
           targetFocused.classList.remove('row-focus');
@@ -656,6 +695,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
       this.filteredFields.items.length &&
       (!this.filteredFields.items.includes(row.name.toUpperCase()) &&
         !this.filteredFields.items.includes(row.name)));
+  }
+
+  showConstant(column: IRow) {
+    return this.area === 'target' && !column.uniqueIdentifier && this.selectedSourceTableId !== this.sourceSimilarTableId
   }
 
   private _getArea() {

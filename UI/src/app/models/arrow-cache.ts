@@ -6,10 +6,16 @@ export interface Arrow {
   target: IRow;
 }
 
+/*
+ * key - `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`
+**/
 export interface ArrowCache {
   [key: string]: IConnection;
 }
 
+/*
+ * key - `${sourceTableId}/${targetTableId}-${targetRowId}`
+**/
 export interface ConstantCache {
   [key: string]: IRow;
 }

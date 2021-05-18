@@ -212,7 +212,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(`target-${htmlElementId}`);
-        if (!(this.conceptFieldNames[arrow.target.tableName] && this.conceptFieldNames[arrow.target.tableName].includes(htmlElementId))) {
+        if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
 
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {
@@ -577,29 +577,28 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (area === 'source') {
       this.sourceTabIndex = index;
+      this.storeService.add('selectedSourceTableId', this.source[index].id)
     } else {
       this.targetTabIndex = index;
+      this.storeService.add('selectedTargetTableId', this.target[index].id)
     }
 
-    const wait = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (area === 'source') {
-          if (index === 0 && this.similarSourceTable) {
-            this.sourcePanelSimilar.panel.table = this.similarSourceTable;
-            this.sourcePanelSimilar.panel.refreshPanel();
-            this.targetPanel.panel.refreshPanel(true);
-          }
-        } else {
-          if (index === 0 && this.similarTargetTable) {
-            this.targetPanelSimilar.panel.table = this.similarTargetTable;
-            this.targetPanelSimilar.panel.refreshPanel();
-          }
+    setTimeout(() => {
+      if (area === 'source') {
+        if (index === 0 && this.similarSourceTable) {
+          this.sourcePanelSimilar.panel.table = this.similarSourceTable;
+          this.sourcePanelSimilar.panel.refreshPanel();
+          this.targetPanel.panel.refreshPanel(true);
         }
-        this.refreshSourcePanel(this.selectedSourceTable);
-        this.refreshTargetPanel(this.selectedTargetTable);
-        resolve();
-      }, 1000);
-    });
+      } else {
+        if (index === 0 && this.similarTargetTable) {
+          this.targetPanelSimilar.panel.table = this.similarTargetTable;
+          this.targetPanelSimilar.panel.refreshPanel();
+        }
+      }
+      this.refreshSourcePanel(this.selectedSourceTable);
+      this.refreshTargetPanel(this.selectedTargetTable);
+    }, 1000);
   }
 
   changeTargetTabIndex() {
@@ -734,7 +733,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private initHasScanReport() {
-    this.hasScanReport = this.storeService.state.reportFile;
+    this.hasScanReport = !!this.storeService.state.reportFile;
   }
 
   private loadMapping() {
@@ -842,20 +841,27 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.deleteArrow(connectorKey);
       });
 
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.filteredFields = res.filteredFields;
-        this.bridgeService.refreshAll();
-      }
-    });
+    this.storeService.on('filteredFields')
+      .subscribe(res => {
+        if (res) {
+          this.filteredFields = res
+          this.bridgeService.refreshAll();
+        }
+      });
+
+    // On open concrete table mapping
     this.activatedRoute.queryParams.subscribe(data => {
       if (Object.keys(data).length !== 0) {
-        this.targetTabIndex = 1;
-        this.sourceTabIndex = 1;
+        // If similar tab exist => open table tab
+        // 0 - Similar tab, 1 - Table tab
+        this.sourceTabIndex = this.similarSourceTable ? 1 : 0;
+        this.targetTabIndex = this.similarTargetTable ? 1 : 0;
         const sourceIndex = this.sourceTablesWithoutSimilar.findIndex(item => item.name === data.sourceTable);
         this.selectedSourceTable = this.sourceTablesWithoutSimilar[sourceIndex];
         this.selectedTargetTable = this.getNewCurrentTable(this.getEnabledTargetTables().findIndex(item => item.name === data.targetTable));
       }
+
+      this.setSelectedSourceAndTargetTable();
     });
   }
 
@@ -865,5 +871,23 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mappingConfig = [];
     this.sourceTabIndex = 0;
     this.targetTabIndex = 0;
+  }
+
+  /**
+   * Set selected tables ids for show constant in Panel-table Component
+   */
+  private setSelectedSourceAndTargetTable() {
+    const selectedSourceTableId = this.source[this.sourceTabIndex].id
+    const selectedTargetTableId = this.target[this.targetTabIndex].id
+    const sourceSimilarTableId = this.similarSourceTable?.id
+    const targetSimilarTableId = this.similarTargetTable?.id
+
+    this.storeService.state = {
+      ...this.storeService.state,
+      selectedSourceTableId,
+      selectedTargetTableId,
+      sourceSimilarTableId,
+      targetSimilarTableId
+    }
   }
 }

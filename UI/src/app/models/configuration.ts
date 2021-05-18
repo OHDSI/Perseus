@@ -1,5 +1,5 @@
 import { ArrowCache } from './arrow-cache';
-import { Row } from './row';
+import { IRow, Row } from './row';
 import { IConnection } from '../services/bridge.service';
 import { SqlFunction } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
 import { parse, stringify } from 'flatted';
@@ -16,8 +16,8 @@ export interface ConfigurationOptions {
   filtered?: any;
   constants?: any;
   targetClones?: any;
-  sourceSimilar?: Row[];
-  targetSimilar?: Row[];
+  sourceSimilar?: IRow[];
+  targetSimilar?: IRow[];
   recalculateSimilar?: boolean;
   concepts?: any;
 }
@@ -116,8 +116,6 @@ export class Configuration {
     }
     return {};
   }
-
-
 
   name: string;
   mappingsConfiguration: string;

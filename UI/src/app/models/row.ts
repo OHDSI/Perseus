@@ -28,9 +28,9 @@ export interface RowOptions {
 
 export interface IRow {
   readonly key: string;
-  readonly hasConstant;
-  readonly hasIncrement;
-  readonly hasSqlTransformation;
+  readonly hasConstant: boolean;
+  readonly hasIncrement: boolean;
+  readonly hasSqlTransformation: string;
 
   id: number;
   tableId: number;

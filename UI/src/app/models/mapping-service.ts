@@ -15,10 +15,12 @@ export class MappingService {
   sourceTableName: string;
   targetTableName: string;
   conceptFieldsMap = (conceptMap as any).default;
-  concepts: ITableConcepts;
+  concepts: {
+    [key: string]: ITableConcepts
+  };
   clones: any;
 
-  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string, concepts: ITableConcepts, clones: any) {
+  constructor(arrowCache: ArrowCache, constants: ConstantCache, sourceTableName: string, targetTableName: string, concepts: { [key: string]: ITableConcepts }, clones: any) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }

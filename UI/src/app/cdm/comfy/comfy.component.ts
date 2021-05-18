@@ -40,6 +40,8 @@ import { BaseComponent } from '../../shared/base/base.component';
 import { VocabularyObserverService } from '../../services/vocabulary-search/vocabulary-observer.service';
 import { mainPageRouter } from '../../app.constants';
 import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
+import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
+import { State } from '../../models/state';
 
 @Component({
   selector: 'app-comfy',
@@ -98,7 +100,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   mappingLoading$: Observable<boolean>;
 
   vocabularies: IVocabulary[] = [];
-  data = {
+  data: State = {
     source: [],
     target: [],
     targetConfig: {},
@@ -122,7 +124,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChild('mappingUpload', {static: false}) mappingInput: ElementRef;
 
   drop = new Command({
-    execute: (event: any) => {
+    execute: (event: CdkDragDrop<string[], any>) => {
       const {container, previousContainer, previousIndex, currentIndex} = event;
       const data = container.data;
       const [area] = container.id.split('-');
