@@ -18,7 +18,7 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
-  styleUrls: [ './panel.component.scss' ],
+  styleUrls: [ './panel.component.scss' ]
 })
 export class PanelComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
