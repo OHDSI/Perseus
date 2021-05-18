@@ -29,7 +29,7 @@ def create_codes(current_user):
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify('import codes started')
+    return jsonify('OK')
 
 
 @usagi_api.route('/api/get_import_source_codes_results', methods=['GET'])
