@@ -27,6 +27,7 @@ class Type(str, Enum):
     MAPS_TO_VALUE = "MAPS_TO_VALUE"
     MAPS_TO_UNIT = "MAPS_TO_UNIT"
 
+
 class TargetConcept:
     def __init__(self, conceptId=0, conceptName="Unmapped", conceptClassId = '', vocabularyId = '',
                  conceptCode = '', domainId = '', validStartDate = '', validEndDate = '', invalidReason='',
@@ -46,8 +47,15 @@ class TargetConcept:
         self.childCount = childCount
 
 
+class ScoredConcept:
+    def __init__(self, match_score=0, concept=TargetConcept(), term = ''):
+        self.match_score = match_score
+        self.concept = concept
+        self.term = term
+
+
 class MappingTarget:
-    def __init__(self, concept=Concept(), mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0):
+    def __init__(self, concept=TargetConcept(), mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0):
         self.concept = concept
         self.mappingType = mappingType
         self.createdBy = createdBy
@@ -81,13 +89,6 @@ class CodeMapping:
 class CodeMappingEncoder(JSONEncoder):
     def default(self, o):
         return o.__dict__
-
-
-class ScoredConcept:
-    def __init__(self, match_score=0, concept=Concept(), term = ''):
-        self.match_score = match_score
-        self.concept = concept
-        self.term = term
 
 
 class ScoredConceptEncoder(JSONEncoder):

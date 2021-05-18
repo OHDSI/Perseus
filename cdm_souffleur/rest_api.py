@@ -1,9 +1,9 @@
+from cdm_souffleur.services.web_socket_service import socketio
 from cdm_souffleur.db import pg_db
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT, \
     UPLOAD_SOURCE_SCHEMA_FOLDER, VOCABULARY_FILTERS
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 from cdm_souffleur.services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
 from cdm_souffleur.services.source_schema import load_schema_to_server, \
@@ -18,7 +18,6 @@ from cdm_souffleur.authorization_api import authorization_api
 from cdm_souffleur.usagi_api import usagi_api
 from cdm_souffleur.model.user import *
 
-CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 
 bp = Blueprint('bp', __name__, url_prefix=app.config["CDM_SOUFFLEUR_PREFIX"])
@@ -271,6 +270,5 @@ app.register_blueprint(authorization_api)
 app.register_blueprint(usagi_api)
 if __name__ == '__main__':
     # app.run(debug=True)
-
-    app.run(port=app.config["CDM_SOUFFLEUR_PORT"])
+    socketio.run(app, port=app.config["CDM_SOUFFLEUR_PORT"])
 
