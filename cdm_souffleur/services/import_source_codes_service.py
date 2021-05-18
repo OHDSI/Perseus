@@ -1,5 +1,4 @@
 import re
-
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -10,12 +9,18 @@ from cdm_souffleur.model.concept import Concept
 from cdm_souffleur.model.conceptVocabularyModel import Source_To_Concept_Map
 from cdm_souffleur.model.mapped_concepts import mapped_concept
 from cdm_souffleur.model.source_code import SourceCode
+from cdm_souffleur.services.web_socket_service import socketio, emit_status
 from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
+from cdm_souffleur.utils.async_directive import fire_and_forget
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH
 import pysolr
 from cdm_souffleur import app, json
+import logging
 
+logging.basicConfig(level=logging.INFO)
+
+saved_import_results = {}
 
 def create_source_codes(current_user, codes, source_code_column, source_name_column, source_frequency_column,
                         auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
@@ -96,32 +101,48 @@ def create_derived_index(current_user, source_codes):
     return
 
 
+@fire_and_forget
 def create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column,
                            auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
-    source_codes = create_source_codes(current_user, codes, source_code_column, source_name_column,
-                                       source_frequency_column, auto_concept_id_column, concept_ids_or_atc,
-                                       additional_info_columns)
-    create_core(current_user)
-    create_derived_index(current_user, source_codes)
-    global_mapping_list = []
-    for source_code in source_codes:
-        code_mapping = CodeMapping()
-        code_mapping.sourceCode = source_code
-        code_mapping.sourceCode.source_auto_assigned_concept_ids = list(code_mapping.sourceCode.source_auto_assigned_concept_ids)
-        scored_concepts = search(current_user, source_code.source_name)
-        if len(scored_concepts):
-            target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
-            code_mapping.targetConcepts = [target_concept]
-            code_mapping.matchScore = scored_concepts[0].match_score
-        else:
-            code_mapping.targetConcept = None
-            code_mapping.matchScore = 0
-        if len(source_code.source_auto_assigned_concept_ids) == 1 and len(scored_concepts):
-            code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED_TO_1
-        elif len(source_code.source_auto_assigned_concept_ids) > 1 and len(scored_concepts):
-            code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED
-        global_mapping_list.append(code_mapping)
-    return json.dumps(global_mapping_list, cls=CodeMappingEncoder)
+    try:
+        source_codes = create_source_codes(current_user, codes, source_code_column, source_name_column,
+                                           source_frequency_column, auto_concept_id_column, concept_ids_or_atc,
+                                           additional_info_columns)
+        emit_status(current_user, f"import_codes_status", "Started creating index", 0)
+        create_core(current_user)
+        create_derived_index(current_user, source_codes)
+        emit_status(current_user, f"import_codes_status", "Index created", 1)
+        global_mapping_list = []
+        for source_code in source_codes:
+            code_mapping = CodeMapping()
+            code_mapping.sourceCode = source_code
+            code_mapping.sourceCode.source_auto_assigned_concept_ids = list(
+                code_mapping.sourceCode.source_auto_assigned_concept_ids)
+            emit_status(current_user, f"import_codes_status", f"searching {source_code.source_name}", 1)
+            scored_concepts = search(current_user, source_code.source_name)
+            if len(scored_concepts):
+                target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
+                code_mapping.targetConcepts = [target_concept]
+                code_mapping.matchScore = scored_concepts[0].match_score
+            else:
+                code_mapping.targetConcept = None
+                code_mapping.matchScore = 0
+            if len(source_code.source_auto_assigned_concept_ids) == 1 and len(scored_concepts):
+                code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED_TO_1
+            elif len(source_code.source_auto_assigned_concept_ids) > 1 and len(scored_concepts):
+                code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED
+            global_mapping_list.append(code_mapping)
+        saved_import_results[current_user] = global_mapping_list
+        emit_status(current_user, f"import_codes_status", "import finished", 2)
+    except Exception as error:
+        emit_status(current_user, f"import_codes_status", error.__str__(), 4)
+    return
+
+
+def get_saved_code_mapping(current_user):
+    result = json.dumps(saved_import_results[current_user], cls=CodeMappingEncoder)
+    saved_import_results.pop(current_user, None)
+    return result
 
 
 def create_target_concept(concept):

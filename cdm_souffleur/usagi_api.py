@@ -5,11 +5,11 @@ from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping, search, create_core, save_codes, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name
+    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
-from cdm_souffleur.utils.constants import SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, SOLR_IMPORT_STATUS
-
+from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS
+import asyncio
 usagi_api = Blueprint('usagi_api', __name__)
 
 @usagi_api.route('/api/import_source_codes', methods=['POST'])
@@ -24,12 +24,24 @@ def create_codes(current_user):
         additional_info_columns = params['additionalInfo']
         concept_ids_or_atc = params['conceptIdsOrAtc'] if 'conceptIdsOrAtc' in params else ''
         codes = request.json['codes']
-        result = create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return result
+    return jsonify('OK')
+
+
+@usagi_api.route('/api/get_import_source_codes_results', methods=['GET'])
+@token_required
+def get_import_source_codes_results_call(current_user):
+    try:
+        import_source_codes_results = get_saved_code_mapping(current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return import_source_codes_results
 
 
 @usagi_api.route('/api/load_codes_to_server', methods=['POST'])
