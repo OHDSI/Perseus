@@ -3,4 +3,9 @@
 .edit-mapping {
   bottom: 0;
   @include perseus-bottom-content-panel();
+
+  &__content {
+    flex: 1;
+    padding: 17px 38px 17px 39px;
+  }
 }

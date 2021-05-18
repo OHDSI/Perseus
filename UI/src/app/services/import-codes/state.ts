@@ -439,7 +439,7 @@ export const stateCodeMappings: CodeMapping[] = [
         source_code: '956',
         source_concept_id: '0',
         source_vocabulary_id: 'UCAF',
-        source_code_description: 'Height',
+        source_code_description: 'Height1',
         target_concept_id: '4177340',
         target_vocabulary_id: 'SNOMED',
         valid_start_date: '1/1/1970',
@@ -469,7 +469,7 @@ export const stateCodeMappings: CodeMapping[] = [
         source_code: '956',
         source_concept_id: '0',
         source_vocabulary_id: 'UCAF',
-        source_code_description: 'Height',
+        source_code_description: 'Height2',
         target_concept_id: '4177340',
         target_vocabulary_id: 'SNOMED',
         valid_start_date: '1/1/1970',
@@ -494,3 +494,5 @@ export const stateCodeMappings: CodeMapping[] = [
     1
   )
 ]
+
+export const sourceNameColumn = 'source_code_description'

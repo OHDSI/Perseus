@@ -18,6 +18,7 @@ import { MappingCodesGuard } from '../../guards/code-mapping/mapping-codes.guard
 import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
 import { SaveVocabularyPopupComponent } from './mapping-codes/save-vocabulary-popup/save-vocabulary-popup.component';
 import { EditMappingPanelComponent } from './mapping-codes/edit-mapping-panel/edit-mapping-panel.component';
+import { EditCodeMappingGridComponent } from './mapping-codes/edit-mapping-panel/edit-code-mapping-grid/edit-code-mapping-grid.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { EditMappingPanelComponent } from './mapping-codes/edit-mapping-panel/ed
     ColumnMappingComponent,
     MatchScoreGridComponent,
     SaveVocabularyPopupComponent,
-    EditMappingPanelComponent
+    EditMappingPanelComponent,
+    EditCodeMappingGridComponent
   ],
   imports: [
     CommonModule,

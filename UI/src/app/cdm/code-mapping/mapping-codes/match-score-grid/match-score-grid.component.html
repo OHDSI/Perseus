@@ -24,13 +24,13 @@
             {{sourceColumn.name}}
           </th>
 
-          <td class="cell" cdk-cell data-cell *cdkCellDef="let codeMapping">
+          <td class="cell" cdk-cell data-cell *cdkCellDef="let codeMapping" [class.term-cell]="isTermColumn(sourceColumn.field)">
             {{codeMapping.sourceCode.code[sourceColumn.field]}}
           </td>
         </ng-container>
 
-        <tr class="row header" cdk-header-row *cdkHeaderRowDef="sourceDisplayedColumns; sticky: true"></tr>
-        <tr class="row" cdk-row *cdkRowDef="let row; columns: sourceDisplayedColumns"></tr>
+        <tr class="row header" cdk-header-row data-grid-header *cdkHeaderRowDef="sourceDisplayedColumns; sticky: true"></tr>
+        <tr class="row" cdk-row data-grid-row *cdkRowDef="let row; columns: sourceDisplayedColumns"></tr>
       </table>
     </div>
 
@@ -86,7 +86,7 @@
     </div>
   </div>
 
-  <div class="grid-select" [style.top]="selectionTopInPx">
-    <mat-icon class="grid-select__edit-icon" svgIcon="edit"></mat-icon>
+  <div class="grid-select" [style.top]="selectionTopInPx" data-select-block>
+    <mat-icon class="grid-select__edit-icon" svgIcon="edit" (click)="onEditMapping($event)"></mat-icon>
   </div>
 </div>
