@@ -8,7 +8,6 @@ import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
 import { Code } from '../../models/code-mapping/code';
-import * as state from './state'
 import { ScoredConcept } from '../../models/code-mapping/scored-concept';
 import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
 
@@ -27,14 +26,14 @@ export class ImportCodesService {
   private state: ImportCodesState
 
   constructor(private httpClient: HttpClient) {
-    // this.state = {...initialState}
-    this.state = {
-      ...initialState,
-      codes: state.stateCodes, columns:
-      state.stateColumns,
-      codeMappings: state.stateCodeMappings,
-      sourceNameColumn: state.sourceNameColumn
-    }
+    this.state = {...initialState}
+    // this.state = {
+    //   ...initialState,
+    //   codes: state.stateCodes, columns:
+    //   state.stateColumns,
+    //   codeMappings: state.stateCodeMappings,
+    //   sourceNameColumn: state.sourceNameColumn
+    // }
   }
 
   get codes(): Code[] {
@@ -92,19 +91,24 @@ export class ImportCodesService {
       )
   }
 
-  calculateScore(params: CodeMappingParams): Observable<CodeMapping[]> {
+  calculateScore(params: CodeMappingParams): Observable<void> {
     const body = {
       params,
       codes: this.codes
     }
-    return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
+    return this.httpClient.post<void>(`${apiUrl}/import_source_codes`, body)
       .pipe(
-        tap(codeMappings => {
-          codeMappings.forEach(item => item.approved = false)
+        tap(() => {
           this.state.sourceNameColumn = params.sourceName
-          this.state.codeMappings = codeMappings
           this.state.mappingParams = params
         })
+      )
+  }
+
+  getCodesMappings(): Observable<CodeMapping[]> {
+    return this.httpClient.get<CodeMapping[]>(`${apiUrl}/get_import_source_codes_results`)
+      .pipe(
+        tap(codeMappings => this.state.codeMappings = codeMappings)
       )
   }
 
