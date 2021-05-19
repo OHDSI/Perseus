@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ScoredConcept } from '../../../../../models/code-mapping/scored-concept';
 import { NavigationGridComponent } from '../../../../../grid/navigation-grid/navigation-grid.component';
 import { Column, columnToField } from '../../../../../models/grid/grid';
@@ -11,8 +11,9 @@ import { targetColumns } from '../../match-score-grid/match-score-grid.columns';
     './edit-code-mapping-grid.component.scss',
     '../../../../../grid/grid.component.scss',
     '../../../../../grid/navigation-grid/navigation-grid.component.scss',
-    '../../../../../grid/selectable-grid/selectable-grid.component.scss'
-  ]
+    '../../../../../grid/selectable-grid/selectable-grid.component.scss',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCodeMappingGridComponent extends NavigationGridComponent<ScoredConcept> implements OnInit {
 

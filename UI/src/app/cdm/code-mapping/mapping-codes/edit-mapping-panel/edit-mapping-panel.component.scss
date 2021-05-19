@@ -8,4 +8,10 @@
     flex: 1;
     padding: 17px 38px 17px 39px;
   }
+
+  &__grid-toolbar {
+    display: flex;
+    justify-content: space-between;
+    width: 651px;
+  }
 }

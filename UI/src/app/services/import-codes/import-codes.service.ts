@@ -27,6 +27,7 @@ export class ImportCodesService {
   private state: ImportCodesState
 
   constructor(private httpClient: HttpClient) {
+    // this.state = {...initialState}
     this.state = {
       ...initialState,
       codes: state.stateCodes, columns:

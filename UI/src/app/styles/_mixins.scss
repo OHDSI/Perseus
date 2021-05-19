@@ -271,3 +271,16 @@
   justify-content: center;
   align-items: center;
 }
+
+@mixin search-mode() {
+  width: 125px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  line-height: 14px;
+
+  input {
+    cursor: pointer;
+  }
+}

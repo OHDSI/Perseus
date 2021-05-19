@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ScoredConcept } from '../../../../models/code-mapping/scored-concept';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -8,7 +8,8 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 @Component({
   selector: 'app-edit-mapping-panel',
   templateUrl: './edit-mapping-panel.component.html',
-  styleUrls: ['./edit-mapping-panel.component.scss']
+  styleUrls: ['./edit-mapping-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 

@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -60,7 +61,8 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
 
   private sourceNameColumn: string
 
-  constructor(private importCodesService: ImportCodesService) {
+  constructor(private importCodesService: ImportCodesService,
+              private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -101,6 +103,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
       this.gridHeaderHeight = gridHeader.getBoundingClientRect().height
       this.gridRowHeight = gridRow.getBoundingClientRect().height
       this.selectionTop = this.gridHeaderHeight
+      this.cdr.detectChanges()
     })
   }
 

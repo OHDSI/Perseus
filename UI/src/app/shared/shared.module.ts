@@ -26,18 +26,19 @@ import { SearchInputComponent } from './search-input/search-input.component';
     SetDelimiterDialogComponent,
     SearchInputComponent
   ],
-  exports: [
-    CommonModule,
-    CdmCustomMaterialModule,
-    NgxTrimDirectiveModule,
-    PrettyNamePipe,
-    TypeToIconPipe,
-    SearchByNameComponent,
-    CloseDialogButtonComponent,
-    HintComponent,
-    CdmCheckboxComponent,
-    CdkTableModule
-  ],
+    exports: [
+        CommonModule,
+        CdmCustomMaterialModule,
+        NgxTrimDirectiveModule,
+        PrettyNamePipe,
+        TypeToIconPipe,
+        SearchByNameComponent,
+        CloseDialogButtonComponent,
+        HintComponent,
+        CdmCheckboxComponent,
+        CdkTableModule,
+        SearchInputComponent
+    ],
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
