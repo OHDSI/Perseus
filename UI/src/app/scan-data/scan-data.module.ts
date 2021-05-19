@@ -30,6 +30,9 @@ import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-consol
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { SharedModule } from '../shared/shared.module';
 import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
+import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
+import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console-wrapper.component';
+import { CodeMappingConsoleComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console/code-mapping-console.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +64,10 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     DqdConsoleWrapperComponent,
     DqdConsoleComponent,
     DqdFormComponent,
-    FakeConsoleComponent
+    FakeConsoleComponent,
+    CodeMappingDialogComponent,
+    CodeMappingConsoleWrapperComponent,
+    CodeMappingConsoleComponent
   ],
   imports: [
     FormsModule,
@@ -72,7 +78,9 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     ScanDataDialogComponent,
     FakeDataDialogComponent,
     CdmDialogComponent,
-    DqdDialogComponent
+    DqdDialogComponent,
+    CodeMappingConsoleComponent
   ]
 })
-export class ScanDataModule { }
+export class ScanDataModule {
+}

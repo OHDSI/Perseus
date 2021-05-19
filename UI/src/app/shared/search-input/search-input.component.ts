@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Provider } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Provider, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {
@@ -18,7 +18,14 @@ export class SearchInputComponent implements ControlValueAccessor {
 
   value: string
 
+  @ViewChild('keyWordInput')
+  private keyWordInput: ElementRef
+
   onChange = (value: string) => {}
+
+  get htmlValue() {
+    return this.keyWordInput.nativeElement.value
+  }
 
   registerOnChange(fn: any): void {
     this.onChange = fn

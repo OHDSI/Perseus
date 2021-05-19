@@ -1,0 +1,11 @@
+<div class="scan-dialog">
+  <div class="scan-dialog__header">
+    <h4>Calculating scores</h4>
+    <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
+  </div>
+
+  <div class="scan-dialog__content">
+    <app-code-mapping-console-wrapper (close)="onClose()"
+                                      (completed)="onCompleted()"></app-code-mapping-console-wrapper>
+  </div>
+</div>

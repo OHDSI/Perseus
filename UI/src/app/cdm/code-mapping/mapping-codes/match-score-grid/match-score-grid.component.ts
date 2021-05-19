@@ -1,4 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { SelectableGridComponent } from '../../../../grid/selectable-grid/selectable-grid.component';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
@@ -29,6 +39,9 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
 
   targetDisplayedColumns: string[]
 
+  @Output()
+  editMapping = new EventEmitter<string>()
+
   @ViewChild('sourceGridWrapper')
   sourceGridWrapper: ElementRef
 
@@ -38,11 +51,18 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   @ViewChild('targetGridWrapper')
   targetGridWrapper: ElementRef
 
-  private selectionTop = 34; // 34 - Grid header height
+  private gridHeaderHeight: number
+
+  private gridRowHeight: number
+
+  private selectionTop = 0
 
   private gridTop: number
 
-  constructor(private importCodesService: ImportCodesService) {
+  private sourceNameColumn: string
+
+  constructor(private importCodesService: ImportCodesService,
+              private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -70,12 +90,20 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     this.initColumns()
 
     this.data = this.importCodesService.codeMappings
+    this.sourceNameColumn = this.importCodesService.sourceNameColumn
   }
 
   ngAfterViewInit() {
     setTimeout(() => { // Need set timeout to render page
-      const rect = this.sourceGridWrapper.nativeElement.getBoundingClientRect()
-      this.gridTop = rect.top
+      const gridEl = this.sourceGridWrapper.nativeElement
+      const gridHeader = gridEl.querySelector('[data-grid-header]')
+      const gridRow = gridEl.querySelector('[data-grid-row]')
+
+      this.gridTop = gridEl.getBoundingClientRect().top
+      this.gridHeaderHeight = gridHeader.getBoundingClientRect().height
+      this.gridRowHeight = gridRow.getBoundingClientRect().height
+      this.selectionTop = this.gridHeaderHeight
+      this.cdr.detectChanges()
     })
   }
 
@@ -101,6 +129,18 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
       const rect = cell.getBoundingClientRect()
       this.selectionTop = rect.top - this.gridTop
     }
+  }
+
+  onEditMapping(event: MouseEvent) {
+    const selectBlock = (event.target as HTMLElement).closest('[data-select-block]')
+    const topPosition = selectBlock.getBoundingClientRect().top - this.gridTop - this.gridHeaderHeight
+    const rowIndex = Math.round(topPosition / this.gridRowHeight)
+
+    this.editMapping.emit(this.data[rowIndex].sourceCode.code[this.sourceNameColumn])
+  }
+
+  isTermColumn(field: string) {
+    return field === this.importCodesService.sourceNameColumn
   }
 
   private initColumns() {

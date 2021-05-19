@@ -1,0 +1,15 @@
+<div class="console-wrapper">
+
+  <app-code-mapping-console (finish)="onFinish($event)" (error)="onError($event)"></app-code-mapping-console>
+
+  <div class="console-wrapper__action">
+    <ng-template *ngIf="result">
+      <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
+      <button class="console-wrapper__action-save confirm" (click)="onNext()">Next</button>
+    </ng-template>
+
+    <ng-template *ngIf="error">
+      <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
+    </ng-template>
+  </div>
+</div>

@@ -93,16 +93,7 @@ $table-height: 385px;
   }
 
   &__mode {
-    width: 125px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    line-height: 14px;
-
-    input {
-      cursor: pointer;
-    }
+    @include search-mode();
   }
 
   .error-row {

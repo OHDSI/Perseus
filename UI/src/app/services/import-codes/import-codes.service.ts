@@ -8,27 +8,33 @@ import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
 import { Code } from '../../models/code-mapping/code';
-
-export interface ImportCodesState {
-  codes: Code[]
-  columns: Column[]
-  mappingParams: CodeMappingParams
-  codeMappings: CodeMapping[]
-  sourceNameColumn: string
-}
+import { ScoredConcept } from '../../models/code-mapping/scored-concept';
+import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
 
 const initialState: ImportCodesState = {
   codes: null,
   columns: null,
   mappingParams: null,
   codeMappings: null,
-  sourceNameColumn: null
+  sourceNameColumn: null,
+  scoredConcepts: null
 }
 
 @Injectable()
 export class ImportCodesService {
 
   private state: ImportCodesState
+
+  constructor(private httpClient: HttpClient) {
+    this.state = {...initialState}
+    // this.state = {
+    //   ...initialState,
+    //   codes: state.stateCodes, columns:
+    //   state.stateColumns,
+    //   codeMappings: state.stateCodeMappings,
+    //   sourceNameColumn: state.sourceNameColumn
+    // }
+  }
 
   get codes(): Code[] {
     return this.state.codes
@@ -58,14 +64,13 @@ export class ImportCodesService {
     this.state = {...vocabulary}
   }
 
-  constructor(private httpClient: HttpClient) {
-    this.state = {...initialState}
-  }
-
   get imported(): boolean {
     return !!this.codes && !!this.columns
   }
 
+  /**
+   * Parse CSV file to json array on server
+   */
   loadCsv(csv: File, delimiter = ','): Observable<SourceCode[]> {
     const formData = new FormData()
     formData.append('file', csv)
@@ -86,20 +91,33 @@ export class ImportCodesService {
       )
   }
 
-  calculateScore(params: CodeMappingParams): Observable<CodeMapping[]> {
+  calculateScore(params: CodeMappingParams): Observable<void> {
     const body = {
       params,
       codes: this.codes
     }
-    return this.httpClient.post<CodeMapping[]>(`${apiUrl}/import_source_codes`, body)
+    return this.httpClient.post<void>(`${apiUrl}/import_source_codes`, body)
       .pipe(
-        tap(codeMappings => {
-          codeMappings.forEach(item => item.approved = false)
+        tap(() => {
           this.state.sourceNameColumn = params.sourceName
-          this.state.codeMappings = codeMappings
           this.state.mappingParams = params
         })
       )
+  }
+
+  getCodesMappings(): Observable<CodeMapping[]> {
+    return this.httpClient.get<CodeMapping[]>(`${apiUrl}/get_import_source_codes_results`)
+      .pipe(
+        tap(codeMappings => this.state.codeMappings = codeMappings)
+      )
+  }
+
+  /**
+   * Get all mappings for concrete term, sorted by match score
+   * @param term - source name column
+   */
+  getSearchResultByTerm(term: string): Observable<ScoredConcept[]> {
+    return this.httpClient.get<ScoredConcept[]>(`${apiUrl}/get_term_search_results?term=${term}`)
   }
 
   saveCodes(name): Observable<void> {

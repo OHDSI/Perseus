@@ -18,6 +18,8 @@ export class MappingCodesComponent {
 
   loading = false
 
+  term: string
+
   constructor(private importCodesService: ImportCodesService,
               private router: Router,
               private dialogService: MatDialog) {

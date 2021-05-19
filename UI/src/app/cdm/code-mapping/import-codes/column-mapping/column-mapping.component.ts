@@ -5,7 +5,10 @@ import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '../../../../app.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
-import { delay, finalize } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
+import { MatDialogConfig } from '@angular/material/dialog/dialog-config';
+import { BaseComponent } from '../../../../shared/base/base.component';
 
 @Component({
   selector: 'app-column-mapping',
@@ -16,15 +19,14 @@ import { delay, finalize } from 'rxjs/operators';
     '../styles/import-codes-wrapper.scss'
   ]
 })
-export class ColumnMappingComponent implements OnInit {
+export class ColumnMappingComponent extends BaseComponent implements OnInit {
 
   form: FormGroup
-
-  loading = false
 
   constructor(public importCodesService: ImportCodesService,
               private router: Router,
               private dialogService: MatDialog) {
+    super()
   }
 
   get applyDisabled() {
@@ -40,11 +42,19 @@ export class ColumnMappingComponent implements OnInit {
   }
 
   onApply() {
-    this.loading = true
     this.importCodesService.calculateScore(this.form.value)
       .pipe(
-        delay(2000),
-        finalize(() => this.loading = false)
+        takeUntil(this.ngUnsubscribe),
+        switchMap(
+          () => this.dialogService
+            .open<CodeMappingDialogComponent, MatDialogConfig, boolean>(
+              CodeMappingDialogComponent,
+              {panelClass: 'scan-data-dialog'}
+            )
+            .afterClosed()
+        ),
+        filter(value => value),
+        switchMap(() => this.importCodesService.getCodesMappings())
       )
       .subscribe(
         () => this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`),

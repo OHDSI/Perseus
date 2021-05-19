@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   HostListener,
   Input,
@@ -28,6 +27,7 @@ import { VocabularySearchStateService } from '../services/vocabulary-search/voca
 import { Column, Sort } from '../models/grid/grid';
 import { NavigationGridComponent } from '../grid/navigation-grid/navigation-grid.component';
 import { Pagination } from '../models/grid/pagination';
+import { SearchInputComponent } from '../shared/search-input/search-input.component';
 
 @Component({
   selector: 'app-vocabulary-search',
@@ -57,8 +57,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     {field: 'vocabulary', name: 'Vocab', className: 'vocab'}
   ]
 
-  @ViewChild('keyWordInput')
-  keyWordInput: ElementRef
+  @ViewChild(SearchInputComponent)
+  keyWordInput: SearchInputComponent
 
   @ViewChild(NavigationGridComponent)
   gridComponent: NavigationGridComponent<Concept>
@@ -279,7 +279,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   }
 
   private findChanges(): { query: string, pageSize: number } {
-    const query = this.keyWordInput.nativeElement.value;
+    const query = this.keyWordInput.htmlValue;
     const pageSize = this.gridComponent.pageSize
 
     if (this.requestParams.query !== query || this.requestParams.pageSize !== pageSize) {
