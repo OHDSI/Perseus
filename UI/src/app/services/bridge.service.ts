@@ -19,6 +19,7 @@ import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
 import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
+import { Mapping } from '../models/mapping';
 
 export interface IConnection {
   source: IRow;
@@ -163,15 +164,15 @@ export class BridgeService {
   });
 
   addConstant = new Command({
-    execute: (row: IRow) => {
-      this.constantsCache[ this.getConstantId(row) ] = row;
+    execute: ({sourceTableId, targetRow}) => {
+      this.constantsCache[this.getConstantId(sourceTableId, targetRow)] = targetRow;
     },
     canExecute: () => true
   });
 
   dropConstant = new Command({
-    execute: (row: IRow) => {
-      delete this.constantsCache[ this.getConstantId(row) ];
+    execute: ({sourceTableId, targetRow}) => {
+      delete this.constantsCache[this.getConstantId(sourceTableId, targetRow)];
     },
     canExecute: () => true
   });
@@ -296,7 +297,13 @@ export class BridgeService {
     return false;
   }
 
-  findSimilarRows(tables, name, area?) {
+  /**
+   * @param tables - ITable[] | {[area]: ITable[]}
+   * @param name - row name
+   * @param area - source | target
+   */
+  findSimilarRows(tables: ITable[] | {[key: string]: ITable[]},
+                  name: string, area?: string): IRow[] {
     const similarRows = [];
     const tablesToSearch = area ? tables[ area ] : tables;
     tablesToSearch.forEach(table => {
@@ -329,7 +336,7 @@ export class BridgeService {
     });
   }
 
-  updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
+  updateRowsProperties(tables: any, filter: any, action: (row: IRow) => void) {
     tables.forEach(table => {
       table.rows.forEach(row => {
         if (filter(row)) {
@@ -408,7 +415,6 @@ export class BridgeService {
     table: ITable,
     arrowsCache: ArrowCache
   ) {
-
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (table.name === arrow[ table.area ].tableName) {
         this.refreshConnector(arrow);
@@ -605,11 +611,14 @@ export class BridgeService {
   }
 
   addCloneConstants(cloneTable: ITable, targetTable: ITable, sourceTableName: string) {
-    const constants = Object.values(this.constantsCache).filter(it => it.tableName === targetTable.name &&
-      it.cloneTableName === targetTable.cloneName);
+    const constants = Object
+      .values(this.constantsCache)
+      .filter(it => it.tableName === targetTable.name && it.cloneTableName === targetTable.cloneName);
+
     constants.forEach(item => {
       const row = cloneTable.rows.find(el => el.name === item.name);
-      this.constantsCache[ this.getConstantId(row) ] = row;
+      const sourceTableId = this.storeService.state.source.find(table => table.name === sourceTableName).id
+      this.constantsCache[this.getConstantId(sourceTableId, row)] = row;
     });
   }
 
@@ -649,7 +658,7 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
-  generateMapping(sourceTableName: string = '', targetTableName: string = '') {
+  generateMapping(sourceTableName: string = '', targetTableName: string = ''): Mapping {
     const mappingService = new MappingService(
       this.arrowsCache,
       this.constantsCache,
@@ -723,6 +732,9 @@ export class BridgeService {
     this.reportLoading$.next(false);
   }
 
+  /**
+   * @return id - arrow id for arrowCache in bridge-service
+   */
   getConnectorId(source: IRow, target: IRow): string {
     const sourceRowId = source.id;
     const targetRowId = target.id;
@@ -732,11 +744,14 @@ export class BridgeService {
     return `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
   }
 
-  getConstantId(target: IRow): string {
+  /**
+   * @return id - constant id for constantCache in bridge-service
+   */
+  getConstantId(sourceTableId: number, target: IRow): string {
     const targetRowId = target.id;
     const targetTableId = target.tableId;
 
-    return `${targetTableId}-${targetRowId}`;
+    return `${sourceTableId}/${targetTableId}-${targetRowId}`;
   }
 
   findTable(name: string): ITable {
@@ -786,7 +801,7 @@ export class BridgeService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  generateMappingWithViewsAndGroups(sourceTables: any) {
+  generateMappingWithViewsAndGroups(sourceTables: any): Mapping {
     const mappingJSON = this.generateMapping();
 
     if (!sourceTables.length) {
@@ -832,7 +847,7 @@ export class BridgeService {
     return tables;
   }
 
-  collectSimilarRows(rows, area, areaRows, similarRows) {
+  collectSimilarRows(rows, area, areaRows, similarRows): void {
     rows.forEach(row => {
       if (!row.grouppedFields || !row.grouppedFields.length) {
 

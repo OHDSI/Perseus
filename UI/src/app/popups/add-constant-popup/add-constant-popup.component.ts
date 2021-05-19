@@ -2,6 +2,7 @@ import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { ValidationService } from 'src/app/services/validation.service';
+import { ConstEvent } from '../../models/const-event';
 
 @Component({
   selector: 'app-add-constant-popup',
@@ -37,6 +38,7 @@ export class AddConstantPopupComponent {
       return;
     }
     this.payload.value = this.value.toString();
+    this.payload.event = ConstEvent.ADD
     this.close();
   }
 
@@ -51,6 +53,7 @@ export class AddConstantPopupComponent {
   delete() {
     this.value = null;
     this.payload.value = this.value;
+    this.payload.event = ConstEvent.DROP
     this.close();
   }
 

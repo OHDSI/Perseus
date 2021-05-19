@@ -237,7 +237,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.fakeDataDisabled$ = this.storeService.state$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        map(state => !(state.reportFile as boolean))
+        map(state => !state.reportFile)
       );
 
     this.convertToCdmDisabled$ = this.storeService.state$

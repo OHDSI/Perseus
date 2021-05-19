@@ -6,7 +6,7 @@
   margin-top: 5px;
 }
 
-.flex-div{
+.flex-div {
   display: flex;
 }
 
@@ -45,4 +45,10 @@
 
 .condition{
   margin-left: 10px;
+}
+
+.panel-options {
+  display: flex;
+  align-items: center;
+  height: 40px;
 }
