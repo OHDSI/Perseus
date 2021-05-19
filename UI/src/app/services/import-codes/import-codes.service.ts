@@ -68,6 +68,11 @@ export class ImportCodesService {
     return !!this.codes && !!this.columns
   }
 
+  set mappingParams(mappingParams: CodeMappingParams) {
+    this.state.mappingParams = mappingParams
+    this.state.sourceNameColumn = mappingParams.sourceName
+  }
+
   /**
    * Parse CSV file to json array on server
    */
@@ -91,18 +96,12 @@ export class ImportCodesService {
       )
   }
 
-  calculateScore(params: CodeMappingParams): Observable<void> {
+  calculateScore(): Observable<void> {
     const body = {
-      params,
+      params: this.mappingParams,
       codes: this.codes
     }
     return this.httpClient.post<void>(`${apiUrl}/import_source_codes`, body)
-      .pipe(
-        tap(() => {
-          this.state.sourceNameColumn = params.sourceName
-          this.state.mappingParams = params
-        })
-      )
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {

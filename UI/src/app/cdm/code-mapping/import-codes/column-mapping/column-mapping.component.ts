@@ -42,17 +42,15 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
   }
 
   onApply() {
-    this.importCodesService.calculateScore(this.form.value)
+    this.importCodesService.mappingParams = this.form.value
+    this.dialogService
+      .open(
+        CodeMappingDialogComponent,
+        { panelClass: 'scan-data-dialog' }
+      )
+      .afterClosed()
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(
-          () => this.dialogService
-            .open<CodeMappingDialogComponent, MatDialogConfig, boolean>(
-              CodeMappingDialogComponent,
-              {panelClass: 'scan-data-dialog'}
-            )
-            .afterClosed()
-        ),
         filter(value => value),
         switchMap(() => this.importCodesService.getCodesMappings())
       )

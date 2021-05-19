@@ -6,13 +6,16 @@ import { Socket } from 'socket.io-client/build/socket';
 import { AuthService } from '../../services/auth/auth.service';
 import { authInjector } from '../../services/auth/auth-injector';
 import { serverUrl } from '../../app.constants';
+import { ImportCodesService } from 'src/app/services/import-codes/import-codes.service';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class CodeMappingWebsocketService extends WebsocketService {
 
   socket: Socket
 
-  constructor(@Inject(authInjector) private authService: AuthService) {
+  constructor(@Inject(authInjector) private authService: AuthService,
+                                    private importCodesService: ImportCodesService) {
     super();
   }
 
@@ -26,7 +29,9 @@ export class CodeMappingWebsocketService extends WebsocketService {
 
     this.socket.on('error', error => this.connection$.error(error))
 
-    return this.status$
+    return this.importCodesService.calculateScore().pipe(
+      switchMap(() => this.status$)
+    )
   }
 
   disconnect(): void {

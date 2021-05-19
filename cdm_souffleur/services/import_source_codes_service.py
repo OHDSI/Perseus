@@ -118,7 +118,7 @@ def create_concept_mapping(current_user, codes, source_code_column, source_name_
             code_mapping.sourceCode = source_code
             code_mapping.sourceCode.source_auto_assigned_concept_ids = list(
                 code_mapping.sourceCode.source_auto_assigned_concept_ids)
-            emit_status(current_user, f"import_codes_status", f"searching {source_code.source_name}", 1)
+            emit_status(current_user, f"import_codes_status", f"Searching {source_code.source_name}", 1)
             scored_concepts = search(current_user, source_code.source_name)
             if len(scored_concepts):
                 target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
@@ -133,7 +133,7 @@ def create_concept_mapping(current_user, codes, source_code_column, source_name_
                 code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED
             global_mapping_list.append(code_mapping)
         saved_import_results[current_user] = global_mapping_list
-        emit_status(current_user, f"import_codes_status", "import finished", 2)
+        emit_status(current_user, f"import_codes_status", "Import finished", 2)
     except Exception as error:
         emit_status(current_user, f"import_codes_status", error.__str__(), 4)
     return

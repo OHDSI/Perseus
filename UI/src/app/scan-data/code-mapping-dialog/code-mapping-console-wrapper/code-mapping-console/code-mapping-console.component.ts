@@ -34,8 +34,7 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
       .length + 1 // 1 - First step - index generation, next calculate score for code
   }
 
-  protected handleProgressMessage(message: any): void {
-    const notification = JSON.parse(message) as ProgressNotification
+  protected handleProgressMessage(notification: ProgressNotification): void {
     const status = (notification.status as ProgressNotificationStatus).code
     this.showNotificationMessage(notification)
 
@@ -57,5 +56,10 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
         break;
       }
     }
+  }
+
+  protected onConnect(): void {
+    this.scanningStarted = true;
+    this.subscribeOnProgressMessages();
   }
 }
