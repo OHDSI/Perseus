@@ -3,32 +3,28 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from cdm_souffleur import app
 import logging
 
+from cdm_souffleur.model.user import User
+
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode="threading")
 users_sids = {}
 
 
 @socketio.on('connect')
 def connect():
-    print('Client connected')
-
-
-@socketio.on('on_connected')
-def on_connected(message):
-    users_sids[message['data']] = request.sid
+    token = request.args['token']
+    current_user = User.decode_auth_token(token)
+    users_sids[current_user] = request.sid
     join_room(request.sid)
-    logging.info(f"Client {message['data']} connected")
+    logging.info(f"Client {current_user} connected")
 
 
 @socketio.on('disconnect')
 def disconnect():
-    print('Client disconnected')
-
-
-@socketio.on('on_disconnected')
-def on_disconnected(message):
-    leave_room(request.sid)
-    users_sids.pop(message['data'], None)
-    logging.info(f"Client {message['data']} disconnected")
+    sid = request.sid
+    leave_room(sid)
+    current_user = [k for k,v in users_sids.items() if v == sid][0]
+    users_sids.pop(current_user, None)
+    logging.info(f"Client {current_user} disconnected")
 
 
 def emit_status(current_user, event, message, code):
