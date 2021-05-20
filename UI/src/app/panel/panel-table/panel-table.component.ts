@@ -105,6 +105,10 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     return this.table.rows.length;
   }
 
+  get sourceNotSimilar() {
+    return this.selectedSourceTableId !== this.sourceSimilarTableId
+  }
+
   ngOnInit(): void {
     this.dataSourceInit(this.table.rows);
     this.bridgeService.refreshAll();
@@ -638,7 +642,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     this.rowFocusedElements = [];
   }
 
-  // connectortype is not reflected in the table
+  // connector type is not reflected in the table
   reflectConnectorsPin(table: ITable) {
     this.connectortype = {};
     Object.values(this.bridgeService.arrowsCache)
@@ -698,7 +702,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   }
 
   showConstant(column: IRow) {
-    return this.area === 'target' && !column.uniqueIdentifier && this.selectedSourceTableId !== this.sourceSimilarTableId
+    return this.area === 'target' && !column.uniqueIdentifier
   }
 
   private _getArea() {
