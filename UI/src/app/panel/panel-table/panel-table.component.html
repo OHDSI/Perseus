@@ -6,22 +6,24 @@
         <mat-icon *ngIf="area === 'source'" class="icon-indicator">
           drag_indicator
         </mat-icon>
-        <button mat-icon-button
-                class="circle-button"
-                *ngIf="area === 'target' && row.uniqueIdentifier else constBlock"
-                (click)="selectIncrement(anchor, row)">
-          <div class="constant-increment-icon"
-               [ngClass]="{ active: row.hasIncrement }">A</div>
-        </button>
-        <ng-template #constBlock>
+        <ng-container *ngIf="sourceNotSimilar">
           <button mat-icon-button
                   class="circle-button"
-                  *ngIf="showConstant(row)"
-                  (click)="openConstantDialog(anchor, row)">
+                  *ngIf="area === 'target' && row.uniqueIdentifier else constBlock"
+                  (click)="selectIncrement(anchor, row)">
             <div class="constant-increment-icon"
-                 [ngClass]="{ active: isConstant(row) }">C</div>
+                 [ngClass]="{ active: row.hasIncrement }">A</div>
           </button>
-        </ng-template>
+          <ng-template #constBlock>
+            <button mat-icon-button
+                    class="circle-button"
+                    *ngIf="showConstant(row)"
+                    (click)="openConstantDialog(anchor, row)">
+              <div class="constant-increment-icon"
+                   [ngClass]="{ active: isConstant(row) }">C</div>
+            </button>
+          </ng-template>
+        </ng-container>
       </div>
     </td>
   </ng-container>
