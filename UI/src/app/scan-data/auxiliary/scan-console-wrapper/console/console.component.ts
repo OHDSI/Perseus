@@ -43,7 +43,9 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit {
         }, error => {
           this.showNotificationMessage({
             message: this.websocketService.handleError(error),
-            status: null
+            status: {
+              code: ProgressNotificationStatusCode.FAILED
+            }
           });
         }
       );
