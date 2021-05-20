@@ -290,6 +290,9 @@ def number_of_source_value(field, mapping):
 
 def is_mapping_contains(field, key, mapping, concept_id, check = True):
     for row in mapping:
+        lookup_name = row.get('lookup', None)
+        if lookup_name and 'name' in lookup_name:
+                lookup_name = lookup_name['name']
         target_field = row['target_field']
         if target_field.startswith('value_as'):
             continue
@@ -299,7 +302,7 @@ def is_mapping_contains(field, key, mapping, concept_id, check = True):
                 sql = row['sqlTransformation']
             if 'sql_field' in row:
                 constant = row['sql_field']
-            result = {'row': row, 'source': row['source_field'], 'sql': sql, 'constant': constant}
+            result = {'row': row, 'source': row['source_field'], 'sql': sql, 'constant': constant, 'lookup_name': lookup_name}
             if check:
                 row['checked'] = True
             return result
@@ -509,7 +512,7 @@ def get_xml(current_user, json_):
                         fields_tag = None
                         if fields_tags.get(concept_tag_key, None) is not None:
                             if 'checked' not in row:
-                                attrib = add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag, lookup_name)
+                                attrib = add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag)
                                 SubElement(fields_tags[concept_tag_key], 'Field', attrib)
 
                         else:
@@ -523,7 +526,7 @@ def get_xml(current_user, json_):
 
                             fields_tag = SubElement(concept_tags[concept_tag_key], 'Fields')
 
-                            attrib = add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag, lookup_name)
+                            attrib = add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag)
 
                             SubElement(fields_tag, 'Field', attrib)
 
@@ -562,6 +565,8 @@ def add_concept_field(attrib, attrib_key_name, concept_tag_key, field_type, grou
     concept_id_source_field = is_mapping_contains(concept_tag_key, field_type, groupList,
                                                   concept_id)
     if concept_id_source_field is not None:
+        if field_type == 'concept_id' and concept_id_source_field['lookup_name']:
+            attrib_key_name = 'key'
         attrib[attrib_key_name] = f"{clone_key}{concept_tag_key}_{field_type}{counter}"
         apply_sql_transformation(concept_id_source_field['sql'],
                                  concept_id_source_field['source'],
@@ -570,14 +575,13 @@ def add_concept_field(attrib, attrib_key_name, concept_tag_key, field_type, grou
     else:
         return ''
 
-def add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag, lookup_name):
+def add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag):
     attrib = {}
     if concept_id is not None:
         counter = f'_{concept_id + 1}'
     else:
         counter = ''
-    concept_attrib = 'key' if lookup_name else 'conceptId'
-    concept_id_field_name = add_concept_field(attrib, concept_attrib, concept_tag_key, 'concept_id', groupList, concept_id,
+    concept_id_field_name = add_concept_field(attrib, 'conceptId', concept_tag_key, 'concept_id', groupList, concept_id,
                       counter, clone_key, query_tag)
     source_concept_id_field = is_mapping_contains(concept_tag_key, 'source_concept_id', groupList,
                                                   concept_id, False)
