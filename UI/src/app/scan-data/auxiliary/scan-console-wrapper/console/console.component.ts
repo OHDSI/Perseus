@@ -1,4 +1,4 @@
-import { ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import {
   ProgressNotification,
   ProgressNotificationStatusCode
@@ -8,7 +8,7 @@ import { BaseComponent } from '../../../../shared/base/base.component';
 import { WebsocketParams } from '../../../../models/scan-data/websocket-params';
 import { WebsocketService } from '../../../../websocket/websocket.service';
 
-export abstract class ConsoleComponent extends BaseComponent implements OnInit {
+export abstract class ConsoleComponent extends BaseComponent implements OnInit, OnDestroy {
 
   scanningStarted = false;
 
@@ -43,7 +43,9 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit {
         }, error => {
           this.showNotificationMessage({
             message: this.websocketService.handleError(error),
-            status: null
+            status: {
+              code: ProgressNotificationStatusCode.FAILED
+            }
           });
         }
       );

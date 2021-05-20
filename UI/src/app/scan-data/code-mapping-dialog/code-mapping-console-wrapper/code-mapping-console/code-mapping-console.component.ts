@@ -7,6 +7,7 @@ import {
   ProgressNotificationStatusCode
 } from '../../../../models/scan-data/progress-notification';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-code-mapping-console',
@@ -28,7 +29,23 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
   }
 
   ngOnInit() {
-    super.ngOnInit();
+    this.websocketService.connect()
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(
+        result => {
+          if (result && !this.scanningStarted) {
+            this.onConnect();
+          }
+        }, error => this.handleProgressMessage({
+          message: this.websocketService.handleError(error),
+          status: {
+            code: ProgressNotificationStatusCode.FAILED
+          }
+        })
+      )
+
     this.allStepsCount = this.importCodesService.codes
       .filter(code => code.selected)
       .length + 1 // 1 - First step - index generation, next calculate score for code

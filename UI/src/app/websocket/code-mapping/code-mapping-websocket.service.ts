@@ -7,7 +7,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { authInjector } from '../../services/auth/auth-injector';
 import { serverUrl } from '../../app.constants';
 import { ImportCodesService } from 'src/app/services/import-codes/import-codes.service';
-import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class CodeMappingWebsocketService extends WebsocketService {
@@ -15,7 +14,7 @@ export class CodeMappingWebsocketService extends WebsocketService {
   socket: Socket
 
   constructor(@Inject(authInjector) private authService: AuthService,
-                                    private importCodesService: ImportCodesService) {
+              private importCodesService: ImportCodesService) {
     super();
   }
 
@@ -23,19 +22,27 @@ export class CodeMappingWebsocketService extends WebsocketService {
     this.socket = io(serverUrl, {query: {token: this.authService.user.token}, reconnection: false})
     this.socket.connect()
 
-    this.socket.on('connect', () => this.connection$.next(true))
+    const errorHandler = error => this.connection$.error(error)
 
+    this.socket.on('connect', () => {
+      this.importCodesService.calculateScore()
+        .subscribe(
+          () => this.connection$.next(true),
+          error => this.connection$.error(error)
+        )
+    })
+    this.socket.on('error', errorHandler)
+    this.socket.on('connect_failed', errorHandler)
+    this.socket.on('connect_error', errorHandler)
     this.socket.on('disconnect', () => this.connection$.complete)
 
-    this.socket.on('error', error => this.connection$.error(error))
-
-    return this.importCodesService.calculateScore().pipe(
-      switchMap(() => this.status$)
-    )
+    return this.status$
   }
 
   disconnect(): void {
-    this.socket.disconnect()
+    if (this.socket.active) {
+      this.socket.disconnect()
+    }
   }
 
   on(): Observable<string> {
