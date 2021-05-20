@@ -20,16 +20,17 @@ export class CodeMappingWebsocketService extends WebsocketService {
 
   connect(): Observable<boolean> {
     this.socket = io(serverUrl, {query: {token: this.authService.user.token}, reconnection: false})
-
-    this.importCodesService.calculateScore()
-      .subscribe(
-        () => this.socket.connect(),
-        error => this.connection$.error(error)
-      )
+    this.socket.connect()
 
     const errorHandler = error => this.connection$.error(error)
 
-    this.socket.on('connect', () => this.connection$.next(true))
+    this.socket.on('connect', () => {
+      this.importCodesService.calculateScore()
+        .subscribe(
+          () => this.connection$.next(true),
+          error => this.connection$.error(error)
+        )
+    })
     this.socket.on('error', errorHandler)
     this.socket.on('connect_failed', errorHandler)
     this.socket.on('connect_error', errorHandler)
@@ -39,7 +40,9 @@ export class CodeMappingWebsocketService extends WebsocketService {
   }
 
   disconnect(): void {
-    this.socket.disconnect()
+    if (this.socket.active) {
+      this.socket.disconnect()
+    }
   }
 
   on(): Observable<string> {

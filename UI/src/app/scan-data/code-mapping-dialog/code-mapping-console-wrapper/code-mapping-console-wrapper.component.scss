@@ -1,1 +1,9 @@
+.console-wrapper__action {
+  button {
+    width: 80px;
 
+    &.back {
+      margin-right: 20px;
+    }
+  }
+}
