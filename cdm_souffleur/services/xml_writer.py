@@ -589,7 +589,7 @@ def add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, qu
                       counter, clone_key, query_tag)
     source_concept_id_field = is_mapping_contains(concept_tag_key, 'source_concept_id', groupList,
                                                   concept_id, False)
-    source_concept_id_field_name = get_source_concept_id_field_name(source_concept_id_field, concept_tag_key, groupList, concept_id)
+    source_concept_id_field_name = get_source_concept_id_field_name(source_concept_id_field)
     if concept_id_field_name != source_concept_id_field_name:
         add_concept_field(attrib, 'sourceConceptId', concept_tag_key, 'source_concept_id', groupList,
                           concept_id, counter, clone_key, query_tag)
