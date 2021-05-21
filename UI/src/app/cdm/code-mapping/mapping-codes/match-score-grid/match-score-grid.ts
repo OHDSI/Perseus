@@ -7,7 +7,7 @@ export function getRowIndexByDataAttribute(row: HTMLElement): number {
 }
 
 export function getSelectionHeight(mapping: CodeMapping) {
-  return (defaultRowHeight + 1) * mapping.targetConcepts.length  // 1 - border
+  return (defaultRowHeight + 2) * mapping.targetConcepts.length  // 2 - border
 }
 
 export function getSelectionTop(row: HTMLElement, gridTop: number): number {
