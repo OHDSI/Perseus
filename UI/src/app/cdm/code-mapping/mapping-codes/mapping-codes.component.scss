@@ -23,15 +23,13 @@
   }
 
   &__content {
-    height: calc(100% - 129px); // 40 - Main header, 39 - page header, 60 - page footer; (sum = 129)
+    height: calc(100% - 62px); // 39 - page header, 33 - page footer; (sum = 129)
   }
 
   &__footer {
     display: flex;
     justify-content: flex-end;
-    margin-top: 30px;
-    height: 74px;
-    padding-top: 18px;
+    height: 33px;
 
     button {
       @include cdm-button();

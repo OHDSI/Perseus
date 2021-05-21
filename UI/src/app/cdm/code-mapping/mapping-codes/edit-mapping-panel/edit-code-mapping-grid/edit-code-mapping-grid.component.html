@@ -58,6 +58,7 @@
     <table class="grid"
            cdk-table
            [dataSource]="gridData | slice : startIndex : endIndex"
+           [trackBy]="trackScoredConcept"
            [style.height]="height"
            [style.width]="width">
 

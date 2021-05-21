@@ -52,32 +52,47 @@
       background-color: rgba(0, 146, 15, .1);
     }
 
-    .row {
+    .header {
       height: 32px;
+    }
+
+    .target-row {
+      height: 34px;
+    }
+
+    .edit-cell {
+      width: 35px;
+      border-right: none;
+
+      &__edit-icon {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        z-index: 1000;
+      }
     }
 
     .cell {
       white-space: nowrap;
-      height: 32px;
     }
+  }
+
+  .grid-selection-hide {
+    width: 100%;
+    height: 35px;
+    z-index: 100;
+    position: absolute;
+    background-color: #fff;
   }
 
   .grid-select {
     position: absolute;
     width: calc(100% - 2px);
-    height: 35px;
     border: 1px solid #066BBB;
     display: flex;
     justify-content: center;
     align-items: center;
     pointer-events: none;
-    z-index: 101;
-
-    &__edit-icon {
-      pointer-events: auto;
-      width: 15px;
-      height: 15px;
-      cursor: pointer;
-    }
+    z-index: 99;
   }
 }
