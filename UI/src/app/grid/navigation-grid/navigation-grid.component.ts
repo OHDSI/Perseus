@@ -52,21 +52,7 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
   }
 
   handleNavigation(event: MouseEvent) {
-    const dataset = (event.target as HTMLElement).dataset;
-    let doNavigation = false;
-
-    if (dataset.arrow) {
-      doNavigation = this.handleArrowNavigation(dataset.arrow);
-    } else {
-      const getPage = this.pageNumberRecognizer[dataset.page];
-      const page = getPage ? getPage() : null;
-
-      if (page && page !== this.currentPage) {
-        doNavigation = this.handlePageNavigation(page);
-      }
-    }
-
-    if (doNavigation) {
+    if (this.needNavigation(event)) {
       this.pagination.emit({
         pageNumber: this.currentPage,
         pageCount: this.pageCount
@@ -92,6 +78,21 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
     }
   }
 
+  protected needNavigation(event: MouseEvent): boolean {
+    const dataset = (event.target as HTMLElement).dataset;
+
+    if (dataset.arrow) {
+      return this.handleArrowNavigation(dataset.arrow);
+    } else {
+      const getPage = this.pageNumberRecognizer[dataset.page];
+      const page = getPage ? getPage() : null;
+
+      if (page && page !== this.currentPage) {
+        return this.handlePageNavigation(page);
+      }
+    }
+  }
+
   private handleArrowNavigation(arrow: string): boolean {
     if (arrow === 'left' && this.currentPage !== 1) {
       if (this.currentPage === this.movableIndexes.second && this.movableIndexes.second !== 2) {
@@ -112,7 +113,7 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
     return false;
   }
 
-  private handlePageNavigation(page: number) {
+  private handlePageNavigation(page: number): boolean {
     if (page !== this.currentPage) {
       this.currentPage = page;
       if (page === 1 && this.movableIndexes.second !== 2) {

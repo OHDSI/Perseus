@@ -1,9 +1,9 @@
-import { TargetConcept } from './target-concept';
 import { Selectable } from '../grid/selectable';
+import { Concept } from './concept';
 
 export class ScoredConcept implements Selectable {
   term: string
   matchScore: number
-  concept: TargetConcept
+  concept: Concept
   selected: boolean
 }

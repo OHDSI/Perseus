@@ -7,7 +7,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
-import { MatDialogConfig } from '@angular/material/dialog/dialog-config';
 import { BaseComponent } from '../../../../shared/base/base.component';
 
 @Component({
@@ -44,10 +43,7 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
   onApply() {
     this.importCodesService.mappingParams = this.form.value
     this.dialogService
-      .open(
-        CodeMappingDialogComponent,
-        { panelClass: 'scan-data-dialog' }
-      )
+      .open(CodeMappingDialogComponent, { panelClass: 'scan-data-dialog', disableClose: true })
       .afterClosed()
       .pipe(
         takeUntil(this.ngUnsubscribe),

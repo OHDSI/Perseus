@@ -213,7 +213,7 @@
   font-style: normal;
   font-weight: normal;
   color: #404040;
-  z-index: 2;
+  z-index: 103; // More than edit-mapping-panel
 
   &__side-panel {
     height: 100%;

@@ -15,9 +15,7 @@ const initialState: ImportCodesState = {
   codes: null,
   columns: null,
   mappingParams: null,
-  codeMappings: null,
-  sourceNameColumn: null,
-  scoredConcepts: null
+  codeMappings: null
 }
 
 @Injectable()
@@ -26,7 +24,8 @@ export class ImportCodesService {
   private state: ImportCodesState
 
   constructor(private httpClient: HttpClient) {
-    this.state = {...initialState}
+    const stateFromStorage = JSON.parse(localStorage.getItem('code-mappings'))
+    this.state = {...initialState, ...stateFromStorage}
     // this.state = {
     //   ...initialState,
     //   codes: state.stateCodes, columns:
@@ -48,6 +47,10 @@ export class ImportCodesService {
     return this.state.mappingParams
   }
 
+  set mappingParams(mappingParams: CodeMappingParams) {
+    this.state.mappingParams = mappingParams
+  }
+
   get codeMappings(): CodeMapping[] {
     return this.state.codeMappings
   }
@@ -57,7 +60,7 @@ export class ImportCodesService {
   }
 
   get sourceNameColumn(): string {
-    return this.state.sourceNameColumn
+    return this.state.mappingParams?.sourceName
   }
 
   set vocabulary(vocabulary: ImportCodesState) {
@@ -66,11 +69,6 @@ export class ImportCodesService {
 
   get imported(): boolean {
     return !!this.codes && !!this.columns
-  }
-
-  set mappingParams(mappingParams: CodeMappingParams) {
-    this.state.mappingParams = mappingParams
-    this.state.sourceNameColumn = mappingParams.sourceName
   }
 
   /**
@@ -131,5 +129,9 @@ export class ImportCodesService {
 
   reset() {
     this.state = {...initialState}
+  }
+
+  saveToStorage() {
+    localStorage.setItem('code-mappings', JSON.stringify(this.state))
   }
 }

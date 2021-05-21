@@ -1,13 +1,20 @@
 <div class="edit-mapping">
+  <app-close-dialog-button class="edit-mapping__close"
+                           (click)="close.emit()"></app-close-dialog-button>
+
   <div class="edit-mapping__side-panel">
 
   </div>
 
   <div class="edit-mapping__content">
-    <app-edit-code-mapping-grid>
+    <app-edit-code-mapping-grid height="347px"
+                                [data]="scoredConcepts"
+                                [loading]="loading">
       <div toolbar class="edit-mapping__grid-toolbar">
 
       </div>
     </app-edit-code-mapping-grid>
+
+    <button (click)="onApply()">Apply</button>
   </div>
 </div>

@@ -40,7 +40,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   targetDisplayedColumns: string[]
 
   @Output()
-  editMapping = new EventEmitter<string>()
+  editMapping = new EventEmitter<CodeMapping>()
 
   @ViewChild('sourceGridWrapper')
   sourceGridWrapper: ElementRef
@@ -91,6 +91,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
 
     this.data = this.importCodesService.codeMappings
     this.sourceNameColumn = this.importCodesService.sourceNameColumn
+    this.importCodesService.saveToStorage()
   }
 
   ngAfterViewInit() {
@@ -136,7 +137,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     const topPosition = selectBlock.getBoundingClientRect().top - this.gridTop - this.gridHeaderHeight
     const rowIndex = Math.round(topPosition / this.gridRowHeight)
 
-    this.editMapping.emit(this.data[rowIndex].sourceCode.code[this.sourceNameColumn])
+    this.editMapping.emit(this.data[rowIndex])
   }
 
   isTermColumn(field: string) {
