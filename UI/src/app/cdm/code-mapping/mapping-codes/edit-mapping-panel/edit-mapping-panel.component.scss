@@ -6,6 +6,11 @@
   @include perseus-bottom-content-panel();
   z-index: 102; // More than match score-grid
 
+  &__side-panel {
+    &__filters {
+    }
+  }
+
   &__close {
     position: absolute;
     top: 14px;

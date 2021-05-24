@@ -1,0 +1,14 @@
+<div class="vocabulary-search__filters-item"
+     [ngClass]="{'opened': opened}"
+     (click)="onOpen()">
+  <div class="vocabulary-search__filters-item__name">
+    <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="4" cy="4" r="4" [attr.fill]="color"/>
+    </svg>
+    <span>{{name}}</span>
+  </div>
+
+  <svg class="section-arrow" width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0L4 4L8 0H0Z" fill="#404040"/>
+  </svg>
+</div>

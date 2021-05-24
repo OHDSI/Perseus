@@ -23,12 +23,7 @@ $table-height: 385px;
   }
 
   &__filters {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border-top: 1px solid rgba(6, 107, 187, .1);
-    padding-top: 20px;
-    overflow-y: auto;
+    @include search-grid-side-panel-filters();
   }
 
   &__apply {

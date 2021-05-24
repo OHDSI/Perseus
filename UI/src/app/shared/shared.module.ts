@@ -13,8 +13,10 @@ import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
 import { SearchInputComponent } from './search-input/search-input.component';
+import { FilterDropdownLabelComponent } from './filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
+import { FilterListComponent } from './filters/filter-dropdown/filter-list/filter-list.component';
 import { FilterLabelComponent } from './filters/filter-label/filter-label.component';
-import { FilterListComponent } from './filters/filter-list/filter-list.component';
+import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -27,8 +29,10 @@ import { FilterListComponent } from './filters/filter-list/filter-list.component
     CdmCheckboxComponent,
     SetDelimiterDialogComponent,
     SearchInputComponent,
+    FilterDropdownLabelComponent,
+    FilterListComponent,
     FilterLabelComponent,
-    FilterListComponent
+    FilterDropdownComponent
   ],
   exports: [
     CommonModule,
@@ -42,8 +46,10 @@ import { FilterListComponent } from './filters/filter-list/filter-list.component
     CdmCheckboxComponent,
     CdkTableModule,
     SearchInputComponent,
+    FilterDropdownLabelComponent,
+    FilterListComponent,
     FilterLabelComponent,
-    FilterListComponent
+    FilterDropdownComponent
   ],
   imports: [
     CommonModule,

@@ -30,6 +30,7 @@
     display: flex;
     justify-content: flex-end;
     height: 33px;
+    z-index: 100;
 
     button {
       @include cdm-button();

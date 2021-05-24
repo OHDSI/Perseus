@@ -15,7 +15,7 @@ import { ImportCodesService } from '../../../../services/import-codes/import-cod
 import { Column, columnToField } from '../../../../models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
 import { Concept } from '../../../../models/code-mapping/concept';
-import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionHeight, getSelectionTop } from './match-score-grid';
+import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionTopAndHeight } from './match-score-grid';
 
 @Component({
   selector: 'app-match-score-grid',
@@ -52,13 +52,12 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   @ViewChild('targetGridWrapper')
   targetGridWrapper: ElementRef
 
-  selectionTop = 0
+  // Top selection position relative grid
+  selectionTop: number = defaultRowHeight
 
-  selectionHeight = 0
+  selectionHeight = defaultRowHeight + 2 // 2 - borders
 
   editingMappingIndex = 0
-
-  private gridHeaderHeight: number
 
   private gridTop: number
 
@@ -100,14 +99,10 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   ngAfterViewInit() {
     setTimeout(() => { // Need set timeout to render page
       const grid = this.sourceGridWrapper.nativeElement as HTMLElement
-      const gridHeader = grid.querySelector('[data-grid-header]')
+      const gridWrapper = grid.closest('[data-grid-wrapper]')
 
-      this.gridHeight = grid.getBoundingClientRect().height
+      this.gridHeight = gridWrapper.getBoundingClientRect().height
       this.gridTop = grid.getBoundingClientRect().top
-      this.gridHeaderHeight = gridHeader.getBoundingClientRect().height
-
-      this.selectionTop = this.gridHeaderHeight
-      this.selectionHeight = defaultRowHeight
 
       this.cdr.detectChanges()
     })
@@ -139,37 +134,25 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
 
   onMouseover(event: MouseEvent) {
     const cell = event.target as HTMLElement
-    if (!cell) {
+    let row = cell.closest('[data-row]') as HTMLElement
+    if (!row) {
       return
     }
-
-    let row = cell.closest('[data-row]') as HTMLElement // Find row
-    let rowIndex = getRowIndexByDataAttribute(row)
-    if (row?.dataset.hasOwnProperty('targetRow')) { // If found row - target row -> find match score row
-      row = this.sourceGridWrapper.nativeElement.querySelector(`[data-source-row][data-row="${rowIndex}"]`)
-      rowIndex = getRowIndexByDataAttribute(row)
+    const rowIndex = getRowIndexByDataAttribute(row)
+    const targetRows = this.targetGridWrapper.nativeElement.querySelectorAll(`[data-target-row][data-row="${rowIndex}"]`)
+    if (row.dataset.hasOwnProperty('targetRow')) { // If found row - target row -> set first target row
+      row = targetRows[0]
     }
+    const lastTargetRow = targetRows[targetRows.length - 1]
+    const {top, height} = getSelectionTopAndHeight(row, lastTargetRow, this.gridTop, this.gridHeight)
 
-    if (row) {
-      this.editingMappingIndex = rowIndex
-      this.selectionTop = getSelectionTop(row, this.gridTop)
-      this.selectionHeight = getSelectionHeight(this.data[rowIndex])
-    }
+    this.selectionTop = top
+    this.selectionHeight = height
+    this.editingMappingIndex = rowIndex
   }
 
-  onEditMapping(event: MouseEvent) {
-    const selectBlock = (event.target as HTMLElement).closest('[data-select-block]')
-    const topPosition = selectBlock.getBoundingClientRect().top
-    const rows = this.sourceGridWrapper.nativeElement.querySelectorAll('[data-source-row]')
-    let rowIndex = 0
-    for (const row of rows) {
-      if (row.getBoundingClientRect().bottom > topPosition) {
-        break
-      }
-      rowIndex++
-    }
-
-    this.editMapping.emit(this.data[rowIndex])
+  onEditMapping() {
+    this.editMapping.emit(this.data[this.editingMappingIndex])
   }
 
   isTermColumn(field: string) {

@@ -1,4 +1,4 @@
-<div class="match-score-grid">
+<div class="match-score-grid" data-grid-wrapper>
   <div class="grid-wrapper" (mouseover)="onMouseover($event)">
     <div class="source-grid-wrapper"
          #sourceGridWrapper
@@ -100,8 +100,9 @@
   <div class="grid-selection-hide"></div>
 
   <div class="grid-select" data-select-block
-       [style.top.px]="selectionTop" [style.height.px]="selectionHeight">
+       [style.top.px]="selectionTop"
+       [style.height.px]="selectionHeight">
     <mat-icon class="edit-icon"
-              svgIcon="edit" (click)="onEditMapping($event)"></mat-icon>
+              svgIcon="edit" (click)="onEditMapping()"></mat-icon>
   </div>
 </div>

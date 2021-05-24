@@ -2,7 +2,7 @@
 
 .match-score-grid {
   position: relative;
-  height: 100%;
+  height: calc(100% - 25px); // 45 - margin bottom
 
   .grid-wrapper {
     display: flex;
@@ -53,7 +53,7 @@
     }
 
     .header {
-      height: 32px;
+      height: 34px;
     }
 
     .target-row {

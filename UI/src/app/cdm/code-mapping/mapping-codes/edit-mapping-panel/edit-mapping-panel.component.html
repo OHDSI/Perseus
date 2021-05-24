@@ -3,7 +3,16 @@
                            (click)="close.emit()"></app-close-dialog-button>
 
   <div class="edit-mapping__side-panel">
+    <h2 class="edit-mapping__side-panel__header">
+      Filters
+    </h2>
 
+    <form class="edit-mapping__side-panel__filters">
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-label name="By selected concept/ATC code"
+                                   color="#761C1C"></app-filter-label>
+      </div>
+    </form>
   </div>
 
   <div class="edit-mapping__content">
