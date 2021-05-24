@@ -16,7 +16,7 @@
     }
 
     .source-grid-wrapper {
-      width: calc(44% - 100px); // 100px - match score grid width (91px) + margin (9px)
+      width: calc(40% - 100px); // 100px - match score grid width (91px) + margin (9px)
       overflow-x: overlay;
       @include grid-scroll();
     }
@@ -33,7 +33,7 @@
     }
 
     .target-grid-wrapper {
-      width: calc(56% - 9px); // 9px - margin
+      width: calc(60% - 9px); // 9px - margin
       @include grid-scroll();
     }
 
@@ -100,7 +100,7 @@
       height: 15px;
       cursor: pointer;
       z-index: 1000;
-      margin-left: calc(44% + 21px); // 44% - source + match score grids width;
+      margin-left: calc(40% + 21px); // 44% - source + match score grids width;
       // 9 - distance between match score and target grid + 12 - __edit-cell__ padding.
     }
   }

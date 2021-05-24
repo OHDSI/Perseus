@@ -93,6 +93,7 @@ $table-height: 385px;
   }
 
   &__mode {
+    width: 125px;
     @include search-mode();
   }
 

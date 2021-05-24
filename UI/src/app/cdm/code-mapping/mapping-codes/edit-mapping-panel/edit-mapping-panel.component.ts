@@ -7,6 +7,7 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { parseHttpError } from '../../../../utilites/error';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../../models/code-mapping/concept';
+import { SearchMode } from '../../../../models/code-mapping/search-mode';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -29,6 +30,17 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   @Output()
   close = new EventEmitter<void>()
 
+  searchString: string
+  mode = SearchMode.SEARCH_TERM_AS_QUERY
+
+  private searchStrategies = {
+    [SearchMode.SEARCH_TERM_AS_QUERY]: (concept: ScoredConcept, searchString: string) =>
+      concept.term.toLowerCase().includes(searchString.toLowerCase()),
+
+    [SearchMode.QUERY]: (concept: ScoredConcept, searchString: string) =>
+      concept.concept.conceptName.toLowerCase().includes(searchString.toLowerCase())
+  }
+
   constructor(private importCodesService: ImportCodesService) {
     super()
   }
@@ -47,6 +59,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Map term with selected concepts to all concept list stream
     const allScoredConceptWithSelected$ = (term: string, selectedConcepts: Concept[]) =>
       this.importCodesService.getSearchResultByTerm(term)
         .pipe(
@@ -59,6 +72,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
     const termColumn = this.importCodesService.sourceNameColumn
 
+    // Subscribe on click edit mapping in parent component
     this.codeMapping$
       .pipe(
         takeUntil(this.ngUnsubscribe),
@@ -82,5 +96,11 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       .filter(c => c.selected)
       .map(c => c.concept)
     this.apply.emit(concepts)
+  }
+
+  onSearch(value: string) {
+    this.searchString = value
+    this.scoredConcepts = this.scoredConcepts
+      .filter(concept => this.searchStrategies[this.mode](concept, value))
   }
 }

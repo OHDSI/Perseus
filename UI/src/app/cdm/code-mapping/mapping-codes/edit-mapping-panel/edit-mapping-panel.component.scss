@@ -29,16 +29,21 @@
       color: $cdm-blue;
       box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
     }
-
-    .error-row {
-      height: 300px;
-      @include grid-error-row();
-    }
   }
 
   &__grid-toolbar {
     display: flex;
     justify-content: space-between;
-    width: 651px;
+
+    &__search-mode {
+      margin-left: 20px;
+      width: 235px;
+      @include search-mode();
+    }
+
+    &__error-row {
+      height: 300px;
+      @include grid-error-row();
+    }
   }
 }

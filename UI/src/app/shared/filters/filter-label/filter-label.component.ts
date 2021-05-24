@@ -9,11 +9,11 @@ export interface Filter {
 }
 
 @Component({
-  selector: 'app-filter-item',
-  templateUrl: './filter-item.component.html',
-  styleUrls: ['./filter-item.component.scss']
+  selector: 'app-filter-label',
+  templateUrl: './filter-label.component.html',
+  styleUrls: ['./filter-label.component.scss']
 })
-export class FilterItemComponent {
+export class FilterLabelComponent {
 
   @Input()
   name: string;

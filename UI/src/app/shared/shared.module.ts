@@ -13,6 +13,8 @@ import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
 import { SearchInputComponent } from './search-input/search-input.component';
+import { FilterLabelComponent } from './filters/filter-label/filter-label.component';
+import { FilterListComponent } from './filters/filter-list/filter-list.component';
 
 @NgModule({
   declarations: [
@@ -24,21 +26,25 @@ import { SearchInputComponent } from './search-input/search-input.component';
     HintOverlayComponent,
     CdmCheckboxComponent,
     SetDelimiterDialogComponent,
-    SearchInputComponent
+    SearchInputComponent,
+    FilterLabelComponent,
+    FilterListComponent
   ],
-    exports: [
-        CommonModule,
-        CdmCustomMaterialModule,
-        NgxTrimDirectiveModule,
-        PrettyNamePipe,
-        TypeToIconPipe,
-        SearchByNameComponent,
-        CloseDialogButtonComponent,
-        HintComponent,
-        CdmCheckboxComponent,
-        CdkTableModule,
-        SearchInputComponent
-    ],
+  exports: [
+    CommonModule,
+    CdmCustomMaterialModule,
+    NgxTrimDirectiveModule,
+    PrettyNamePipe,
+    TypeToIconPipe,
+    SearchByNameComponent,
+    CloseDialogButtonComponent,
+    HintComponent,
+    CdmCheckboxComponent,
+    CdkTableModule,
+    SearchInputComponent,
+    FilterLabelComponent,
+    FilterListComponent
+  ],
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
@@ -46,5 +52,6 @@ import { SearchInputComponent } from './search-input/search-input.component';
     CdkTableModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}
 

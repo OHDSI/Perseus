@@ -61,12 +61,13 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
       sourceCode: new FormControl(null),
       sourceName: new FormControl(null, [Validators.required]),
       sourceFrequency: new FormControl(null),
+      columnType: new FormControl(null),
       autoConceptId: new FormControl(null),
-      additionalInfo: new FormControl(null),
+      additionalInfo: new FormControl(null)
     })
     const formValue = this.importCodesService.mappingParams
     if (formValue) {
-      this.form.setValue(formValue)
+      this.form.patchValue(formValue)
     }
   }
 }

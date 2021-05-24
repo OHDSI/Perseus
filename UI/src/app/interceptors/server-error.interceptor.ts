@@ -22,10 +22,12 @@ export class ServerErrorInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const isExclusionUrl = req => this.exclusionUrls.find(url => req.url.includes(url))
+
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if ((error.status !== 0 && error.status < 500) || this.exclusionUrls.find(url => request.url.includes(url))) {
+          if ((error.status !== 0 && error.status < 500) || isExclusionUrl(request)) {
             throw error
           }
 
