@@ -73,13 +73,9 @@
              [trackBy]="trackConcepts">
 
         <ng-container cdkColumnDef="__edit__">
-          <th class="column cell edit-cell" cdk-header-cell *cdkHeaderCellDef>
-          </th>
+          <th class="column cell edit-cell" cdk-header-cell *cdkHeaderCellDef></th>
 
-          <td class="cell edit-cell" cdk-cell data-cell *cdkCellDef="let row; index as i">
-            <mat-icon class="edit-icon"
-                      svgIcon="edit" (click)="onEditMapping(i)"></mat-icon>
-          </td>
+          <td class="cell edit-cell" cdk-cell data-cell *cdkCellDef></td>
         </ng-container>
 
         <ng-container *ngFor="let targetColumn of targetColumns"
@@ -105,5 +101,7 @@
 
   <div class="grid-select" data-select-block
        [style.top.px]="selectionTop" [style.height.px]="selectionHeight">
+    <mat-icon class="edit-icon"
+              svgIcon="edit" (click)="onEditMapping($event)"></mat-icon>
   </div>
 </div>

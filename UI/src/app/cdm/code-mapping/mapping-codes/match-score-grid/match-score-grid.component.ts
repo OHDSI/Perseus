@@ -157,8 +157,19 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     }
   }
 
-  onEditMapping(index: number) {
-    this.editMapping.emit(this.data[index])
+  onEditMapping(event: MouseEvent) {
+    const selectBlock = (event.target as HTMLElement).closest('[data-select-block]')
+    const topPosition = selectBlock.getBoundingClientRect().top
+    const rows = this.sourceGridWrapper.nativeElement.querySelectorAll('[data-source-row]')
+    let rowIndex = 0
+    for (const row of rows) {
+      if (row.getBoundingClientRect().bottom > topPosition) {
+        break
+      }
+      rowIndex++
+    }
+
+    this.editMapping.emit(this.data[rowIndex])
   }
 
   isTermColumn(field: string) {
