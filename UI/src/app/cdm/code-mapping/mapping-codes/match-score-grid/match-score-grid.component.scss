@@ -61,14 +61,26 @@
     }
 
     .edit-cell {
-      width: 35px;
+      min-width: 36px;
+      border-right: none;
       border-right: none;
 
-      &__edit-icon {
+      & .edit-icon {
+        display: none;
         width: 15px;
         height: 15px;
         cursor: pointer;
         z-index: 1000;
+      }
+
+      &:hover .edit-icon {
+        display: block;
+      }
+
+      & + td,
+      & + th {
+        border-left: none;
+        padding-left: 0;
       }
     }
 
@@ -87,7 +99,7 @@
 
   .grid-select {
     position: absolute;
-    width: calc(100% - 2px);
+    width: calc(100% - 1px);
     border: 1px solid #066BBB;
     display: flex;
     justify-content: center;

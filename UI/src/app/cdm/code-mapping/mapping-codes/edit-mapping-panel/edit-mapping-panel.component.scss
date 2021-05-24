@@ -29,6 +29,11 @@
       color: $cdm-blue;
       box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
     }
+
+    .error-row {
+      height: 300px;
+      @include grid-error-row();
+    }
   }
 
   &__grid-toolbar {

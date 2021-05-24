@@ -9,7 +9,7 @@
              [trackBy]="trackCodeMappings.bind(this)"
              [style.height]="height">
 
-        <ng-container cdkColumnDef="__select__" sticky>
+        <ng-container cdkColumnDef="__select__" sticky="true">
           <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
             <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
           </th>
@@ -77,7 +77,7 @@
           </th>
 
           <td class="cell edit-cell" cdk-cell data-cell *cdkCellDef="let row; index as i">
-            <mat-icon class="edit-cell__edit-icon"
+            <mat-icon class="edit-icon"
                       svgIcon="edit" (click)="onEditMapping(i)"></mat-icon>
           </td>
         </ng-container>

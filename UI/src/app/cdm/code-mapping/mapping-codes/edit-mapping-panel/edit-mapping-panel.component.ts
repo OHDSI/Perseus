@@ -38,6 +38,14 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.codeMapping$.next(codeMapping)
   }
 
+  get applyActive() {
+    return this.scoredConcepts.length && this.scoredConcepts.find(concept => concept.selected)
+  }
+
+  get applyDisabled() {
+    return !this.applyActive
+  }
+
   ngOnInit(): void {
     const allScoredConceptWithSelected$ = (term: string, selectedConcepts: Concept[]) =>
       this.importCodesService.getSearchResultByTerm(term)

@@ -284,3 +284,28 @@
     cursor: pointer;
   }
 }
+
+@mixin grid-error-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  $error-height: 32px;
+
+  .error-icon-wrapper {
+    height: $error-height;
+  }
+
+  .error-icon {
+    height: 17px;
+    width: 22px;
+    margin-right: 6px;
+  }
+
+  .error-text {
+    width: 314px;
+    height: $error-height;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 16px;
+  }
+}

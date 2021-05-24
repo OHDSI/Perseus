@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GridComponent } from '../grid.component';
 import { Pagination } from '../../models/grid/pagination';
 
@@ -8,7 +8,8 @@ import { Pagination } from '../../models/grid/pagination';
   styleUrls: [
     '../grid.component.scss',
     './navigation-grid.component.scss'
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationGridComponent<T> extends GridComponent<T> implements OnInit {
 

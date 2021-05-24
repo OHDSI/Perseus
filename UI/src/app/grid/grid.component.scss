@@ -42,26 +42,34 @@ $row-height: 32px;
   .row {
     min-height: $row-height;
     width: auto;
+    background-color: $grid-first-row-color;
+
+    &:nth-child(2n) {
+      background-color: $grid-second-row-color;
+
+      .cell.cdk-table-sticky {
+        background-color: $grid-second-row-color;
+      }
+    }
 
     &.header {
+      background-color: $grid-header-color;
+
       .column {
         padding-right: 10px;
-        background-color: #404040;
+
+        &.cdk-table-sticky {
+          background-color: $grid-header-color;
+        }
       }
 
       .cell {
         font-weight: 500;
         font-size: 12px;
         line-height: 15px;
-        color: #fff;;
+        color: #fff;
       }
     }
-
-    &:nth-child(2n) {
-      background-color: #fff;
-    }
-
-    background-color: rgba(6, 107, 187, 0.05);
 
     .cell {
       word-wrap: break-word;
@@ -72,7 +80,11 @@ $row-height: 32px;
       font-weight: normal;
       font-size: 14px;
       line-height: 18px;
-      color: #404040;
+      color: $cdm-grey-dark;
+
+      &.cdk-table-sticky {
+        background-color: $grid-first-row-color;
+      }
 
       &.select-cell {
         padding: 7px 6px;

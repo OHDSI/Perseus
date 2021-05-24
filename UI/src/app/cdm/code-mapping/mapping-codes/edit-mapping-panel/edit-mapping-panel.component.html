@@ -9,12 +9,21 @@
   <div class="edit-mapping__content">
     <app-edit-code-mapping-grid height="347px"
                                 [data]="scoredConcepts"
-                                [loading]="loading">
+                                [loading]="loading"
+                                [error]="error">
       <div toolbar class="edit-mapping__grid-toolbar">
+      </div>
 
+      <div error class="error-row">
+        <div class="error-icon-wrapper">
+          <mat-icon class="error-icon" svgIcon="error"></mat-icon>
+        </div>
+        <div class="error-text">
+          {{error}}
+        </div>
       </div>
     </app-edit-code-mapping-grid>
 
-    <button (click)="onApply()">Apply</button>
+    <button (click)="onApply()" [disabled]="applyDisabled">Apply</button>
   </div>
 </div>
