@@ -20,12 +20,12 @@ export function getSelectionTopAndHeight(firstRow: HTMLElement,
                                          gridHeight: number): {top: number; height} {
   // Calculate selection top
   const rect1 = firstRow.getBoundingClientRect()
-  const top = Math.max(rect1.top - gridTop, 0)
+  const top = Math.max(rect1.top - gridTop, 0) // Not less than top position
 
   // Calculate selection height
   const rect2 = lastRow.getBoundingClientRect()
   const lastTargetRowBottom = rect2.bottom - gridTop
-  const height = Math.min(lastTargetRowBottom - top, gridHeight)
+  const height = Math.min(lastTargetRowBottom - top, gridHeight - top) // Not more than grid height
 
   return {top, height}
 }
