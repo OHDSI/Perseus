@@ -9,6 +9,7 @@ import { EMPTY } from 'rxjs';
 import { SaveVocabularyPopupComponent } from './save-vocabulary-popup/save-vocabulary-popup.component';
 import { CodeMapping } from '../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../models/code-mapping/concept';
+import { ScoredConceptsCacheService } from '../../../services/import-codes/scored-concepts-cache.service';
 
 @Component({
   selector: 'app-mapping-codes',
@@ -24,7 +25,8 @@ export class MappingCodesComponent {
 
   constructor(private importCodesService: ImportCodesService,
               private router: Router,
-              private dialogService: MatDialog) {
+              private dialogService: MatDialog,
+              private conceptCacheService: ScoredConceptsCacheService) {
   }
 
   get applyDisabled() {
@@ -33,6 +35,7 @@ export class MappingCodesComponent {
 
   onBack() {
     this.importCodesService.codeMappings = null
+    this.conceptCacheService.clear()
     this.router.navigateByUrl(mainPageRouter + codesRouter)
   }
 
