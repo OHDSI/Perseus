@@ -5,7 +5,7 @@ from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping, search, create_core, save_codes, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping
+    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
 from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS
@@ -24,7 +24,8 @@ def create_codes(current_user):
         additional_info_columns = params['additionalInfo']
         concept_ids_or_atc = params['conceptIdsOrAtc'] if 'conceptIdsOrAtc' in params else ''
         codes = request.json['codes']
-        create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        filters = request.json['filters']
+        create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -105,7 +106,19 @@ def get_vocabulary_list_call(current_user):
 def load_mapped_concepts_call(current_user):
     try:
         vocabulary_name = request.args['name']
-        result = load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
+        load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify('OK')
+
+
+@usagi_api.route('/api/get_vocabulary_data', methods=['GET'])
+@token_required
+def get_vocabulary_data_call(current_user):
+    try:
+        result = get_vocabulary_data(current_user)
     except InvalidUsage as error:
         raise error
     except Exception as error:
