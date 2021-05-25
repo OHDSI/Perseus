@@ -101,7 +101,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
       const grid = this.sourceGridWrapper.nativeElement as HTMLElement
       const gridWrapper = grid.closest('[data-grid-wrapper]')
 
-      this.gridHeight = gridWrapper.getBoundingClientRect().height
+      this.gridHeight = gridWrapper.getBoundingClientRect().height + 10 // 10 - scroll height
       this.gridTop = grid.getBoundingClientRect().top
 
       this.cdr.detectChanges()
