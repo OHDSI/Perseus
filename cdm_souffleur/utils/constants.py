@@ -83,3 +83,9 @@ VOCABULARY_FILTERS = {
     'standard_concept': 'standardConcept',
     'vocabulary_id': 'vocabulary',
 }
+
+SOLR_FILTERS = {
+    'vocabulary_id': 'vocabularies',
+    'concept_class_id': 'conceptClasses',
+    'domain_id': 'domains'
+}
