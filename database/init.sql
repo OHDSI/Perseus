@@ -448,6 +448,25 @@ select distinct  'C', 'S', t1.concept_name, t3.concept_id, t3.domain_id, t3.voca
     ON concept_id_2 = t3.concept_id
     where t1.standard_concept is null AND lower(t1.concept_name)!=lower(t3.concept_name);
 
+--- adding concept synonyms    
+INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept)
+select distinct  'C', 'C', t2.concept_synonym_name, t1.concept_id, t1.domain_id, t1.vocabulary_id, t1.concept_class_id, t1.standard_concept
+    from vocabulary.concept as t1
+    JOIN vocabulary.concept_synonym AS t2
+    ON t1.concept_id = t2.concept_id
+    where t1.standard_concept IN ('S', 'C') AND lower(t1.concept_name)!=lower(t2.concept_synonym_name);
+
+INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept)
+select distinct  'C', 'S', t2.concept_synonym_name, t4.concept_id, t4.domain_id, t4.vocabulary_id, t4.concept_class_id, t4.standard_concept
+    from vocabulary.concept as t1
+    JOIN vocabulary.concept_synonym AS t2
+    ON t1.concept_id = t2.concept_id
+    JOIN usagi.maps_to_relationship AS t3
+    ON t1.concept_id = t3.concept_id_1
+    JOIN vocabulary.concept as t4
+    ON t3.concept_id_2 = t4.concept_id
+    where t1.standard_concept is null AND lower(t2.concept_synonym_name)!=lower(t4.concept_name);   
+
 --- adding username column to vocabulary.source_to_concept_map table
 
 ALTER TABLE vocabulary.source_to_concept_map

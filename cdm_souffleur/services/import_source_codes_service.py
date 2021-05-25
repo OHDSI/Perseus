@@ -18,7 +18,7 @@ import pysolr
 from cdm_souffleur import app, json
 import logging
 
-CONCEPT_TERM = "C";
+CONCEPT_TERM = "C"
 
 logging.basicConfig(level=logging.INFO)
 
