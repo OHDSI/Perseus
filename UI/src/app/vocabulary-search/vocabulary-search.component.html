@@ -4,7 +4,7 @@
       Filters
     </h2>
 
-    <ng-container *ngIf="filters?.length > 0">
+    <ng-container *ngIf="filters.length > 0">
       <div class="vocabulary-search__chips" [style.height]="chipsHeight">
         <app-chip *ngFor="let filter of selectedFilters; let i = index"
                   [id]="i"
@@ -14,16 +14,13 @@
       </div>
 
       <div class="vocabulary-search__filters">
-        <div *ngFor="let filter of filters" class="vocabulary-search__filters-wrapper">
-
-          <app-filter-dropdown-label [name]="filter.name"
-                                     [color]="filter.color"
-                                     [opened]="openedFilter === filter.name"
-                                     (open)="onOpen($event)"></app-filter-dropdown-label>
-
-          <app-filter-list *ngIf="filter.name === openedFilter"
-                           [values]="filter.values"
-                           (check)="onCheckFilter($event)"></app-filter-list>
+        <div *ngFor="let filter of filters" class="vocabulary-search__filters__filter-wrapper">
+          <app-filter-dropdown [ngModel]="selectedFilters"
+                               (ngModelChange)="onCheckFilter($event)"
+                               [filter]="filter"
+                               [openedFilterName]="openedFilter">
+            <app-filter-color-point class="vocabulary-search__filters__filter-wrapper__point" [color]="filter.color"></app-filter-color-point>
+          </app-filter-dropdown>
         </div>
       </div>
 

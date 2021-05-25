@@ -1,1 +1,9 @@
-<p>filter-dropdown works!</p>
+<app-filter-dropdown-label [name]="filter.name"
+                           [opened]="openedFilterName === filter.name"
+                           (open)="onOpen($event)">
+  <ng-content></ng-content>
+</app-filter-dropdown-label>
+
+<app-filter-list *ngIf="filter.name === openedFilterName"
+                 [values]="filter.values"
+                 (check)="onCheckFilter($event)"></app-filter-list>

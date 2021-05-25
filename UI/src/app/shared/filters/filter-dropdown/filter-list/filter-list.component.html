@@ -1,9 +1,9 @@
-<div class="vocabulary-search__filters-list">
+<div class="filters-list">
   <input *ngIf="values.length > 4" class="filter" placeholder="Filter"
          [ngModel]="filter"
          (ngModelChange)="onFilter($event)">
 
-  <div *ngFor="let value of filteredValues; let i = index" class="vocabulary-search__filters-list-item">
+  <div *ngFor="let value of filteredValues; let i = index" class="filters-list__item">
     <label>
       <input (click)="onCheck(i)" type="checkbox" [disabled]="value.disabled" [checked]="value.checked">
       {{value.name}} ({{value.count}})

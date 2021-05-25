@@ -1,7 +1,6 @@
 import { VocabSearchMode, VocabSearchReqParams } from './vocabulray-search';
-import { FilterValue } from '../../shared/filters/filter-dropdown/filter-list/filter-list.component';
 import { Concept } from './concept';
-import { Filter } from '../../shared/filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
+import { Filter, FilterValue } from '../filter/filter';
 
 export interface VocabSearchState {
   requestParams: VocabSearchReqParams;

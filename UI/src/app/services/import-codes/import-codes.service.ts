@@ -109,7 +109,7 @@ export class ImportCodesService {
    * Get all mappings for concrete term, sorted by match score
    * @param term - source name column
    */
-  getSearchResultByTerm(term: string): Observable<ScoredConcept[]> {
+  getSearchResultByTerm(term: string, filters): Observable<ScoredConcept[]> {
     const fromCache = this.scoredConceptCacheService.get(term)
     if (fromCache) {
       return of(fromCache)

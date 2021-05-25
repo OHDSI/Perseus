@@ -1,4 +1,4 @@
-<div class="edit-mapping">
+<form class="edit-mapping" [formGroup]="form">
   <app-close-dialog-button class="edit-mapping__close"
                            (click)="close.emit()"></app-close-dialog-button>
 
@@ -9,8 +9,27 @@
 
     <form class="edit-mapping__side-panel__filters">
       <div class="edit-mapping__side-panel__filters__control">
-        <app-filter-label name="By selected concept/ATC code"
-                                   color="#761C1C"></app-filter-label>
+        <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                color="#761C1C"></app-filter-color-point>
+        <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                          formControlName="filterByUserSelectedConceptsAtcCode"></app-cdm-checkbox>
+        <span>By selected concepts/ATC codes</span>
+      </div>
+
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                color="#406C95"></app-filter-color-point>
+        <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                          formControlName="filterStandardConcepts"></app-cdm-checkbox>
+        <span>By standard concepts</span>
+      </div>
+
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                color="#14772A"></app-filter-color-point>
+        <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                          formControlName="includeSourceTerms"></app-cdm-checkbox>
+        <span>Include source terms</span>
       </div>
     </form>
   </div>
@@ -21,17 +40,17 @@
                                 [loading]="loading"
                                 [error]="error">
       <div toolbar class="edit-mapping__grid-toolbar">
-        <app-search-input [ngModel]="searchString" placeholder="Vocabulary Search..."
-                          (ngModelChange)="onSearch($event)"></app-search-input>
+        <app-search-input placeholder="Vocabulary Search..."
+                          formControlName="searchString"></app-search-input>
 
         <div class="edit-mapping__grid-toolbar__search-mode">
           <span>
-            <input type="radio" value="term" [(ngModel)]="mode">
+            <input type="radio" value="term" formControlName="searchMode">
             Search Term as Query
           </span>
 
           <span>
-            <input type="radio" value="query" [(ngModel)]="mode">
+            <input type="radio" value="query" formControlName="searchMode">
             Query
           </span>
         </div>
@@ -49,4 +68,4 @@
 
     <button (click)="onApply()" [disabled]="applyDisabled">Apply</button>
   </div>
-</div>
+</form>
