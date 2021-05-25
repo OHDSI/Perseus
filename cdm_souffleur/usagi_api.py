@@ -60,12 +60,14 @@ def load_codes_call(current_user):
     return jsonify(codes_file)
 
 
-@usagi_api.route('/api/get_term_search_results', methods=['GET'])
+@usagi_api.route('/api/get_term_search_results', methods=['POST'])
 @token_required
 def get_term_search_results_call(current_user):
     try:
-        term = request.args['term']
-        search_result = search(current_user, term)
+        term = request.json['term']
+        filters = request.json['filters']
+        source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
+        search_result = search(current_user, filters, term, source_auto_assigned_concept_ids)
     except InvalidUsage as error:
         raise error
     except Exception as error:
