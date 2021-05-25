@@ -1,0 +1,5 @@
+.vocabulary-search__filters-item {
+  &.opened .section-arrow {
+    transform: rotate(180deg);
+  }
+}

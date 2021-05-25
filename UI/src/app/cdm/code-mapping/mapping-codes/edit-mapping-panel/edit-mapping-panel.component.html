@@ -1,13 +1,52 @@
 <div class="edit-mapping">
-  <div class="edit-mapping__side-panel">
+  <app-close-dialog-button class="edit-mapping__close"
+                           (click)="close.emit()"></app-close-dialog-button>
 
+  <div class="edit-mapping__side-panel">
+    <h2 class="edit-mapping__side-panel__header">
+      Filters
+    </h2>
+
+    <form class="edit-mapping__side-panel__filters">
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-label name="By selected concept/ATC code"
+                                   color="#761C1C"></app-filter-label>
+      </div>
+    </form>
   </div>
 
   <div class="edit-mapping__content">
-    <app-edit-code-mapping-grid>
+    <app-edit-code-mapping-grid height="347px"
+                                [data]="scoredConcepts"
+                                [loading]="loading"
+                                [error]="error">
       <div toolbar class="edit-mapping__grid-toolbar">
+        <app-search-input [ngModel]="searchString" placeholder="Vocabulary Search..."
+                          (ngModelChange)="onSearch($event)"></app-search-input>
 
+        <div class="edit-mapping__grid-toolbar__search-mode">
+          <span>
+            <input type="radio" value="term" [(ngModel)]="mode">
+            Search Term as Query
+          </span>
+
+          <span>
+            <input type="radio" value="query" [(ngModel)]="mode">
+            Query
+          </span>
+        </div>
+      </div>
+
+      <div error class="edit-mapping__grid-toolbar__error-row">
+        <div class="error-icon-wrapper">
+          <mat-icon class="error-icon" svgIcon="error"></mat-icon>
+        </div>
+        <div class="error-text">
+          {{error}}
+        </div>
       </div>
     </app-edit-code-mapping-grid>
+
+    <button (click)="onApply()" [disabled]="applyDisabled">Apply</button>
   </div>
 </div>

@@ -15,6 +15,17 @@ export class ColumnMappingFormComponent implements OnInit {
 
   columns: Column[];
 
+  columnTypes: Column[] = [
+    {
+      field: 'autoConceptId',
+      name: 'Auto concept ID column'
+    },
+    {
+      field: 'atcColumn',
+      name: 'ATC column'
+    }
+  ]
+
   constructor(public importCodesService: ImportCodesService) { }
 
   ngOnInit(): void {

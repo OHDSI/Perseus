@@ -16,10 +16,10 @@
       <div class="vocabulary-search__filters">
         <div *ngFor="let filter of filters" class="vocabulary-search__filters-wrapper">
 
-          <app-filter-item [name]="filter.name"
-                           [color]="filter.color"
-                           [opened]="openedFilter === filter.name"
-                           (open)="onOpen($event)"></app-filter-item>
+          <app-filter-dropdown-label [name]="filter.name"
+                                     [color]="filter.color"
+                                     [opened]="openedFilter === filter.name"
+                                     (open)="onOpen($event)"></app-filter-dropdown-label>
 
           <app-filter-list *ngIf="filter.name === openedFilter"
                            [values]="filter.values"

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Provider, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, Provider, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {
@@ -17,6 +17,9 @@ const VALUE_ACCESSOR: Provider = {
 export class SearchInputComponent implements ControlValueAccessor {
 
   value: string
+
+  @Input()
+  placeholder = 'Search by Keywords'
 
   @ViewChild('keyWordInput')
   private keyWordInput: ElementRef

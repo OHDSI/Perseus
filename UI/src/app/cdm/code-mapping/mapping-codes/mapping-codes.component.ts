@@ -7,6 +7,9 @@ import { openErrorDialog, parseHttpError } from '../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { EMPTY } from 'rxjs';
 import { SaveVocabularyPopupComponent } from './save-vocabulary-popup/save-vocabulary-popup.component';
+import { CodeMapping } from '../../../models/code-mapping/code-mapping';
+import { Concept } from '../../../models/code-mapping/concept';
+import { ScoredConceptsCacheService } from '../../../services/import-codes/scored-concepts-cache.service';
 
 @Component({
   selector: 'app-mapping-codes',
@@ -18,11 +21,12 @@ export class MappingCodesComponent {
 
   loading = false
 
-  term: string
+  editingMapping: CodeMapping
 
   constructor(private importCodesService: ImportCodesService,
               private router: Router,
-              private dialogService: MatDialog) {
+              private dialogService: MatDialog,
+              private conceptCacheService: ScoredConceptsCacheService) {
   }
 
   get applyDisabled() {
@@ -31,6 +35,7 @@ export class MappingCodesComponent {
 
   onBack() {
     this.importCodesService.codeMappings = null
+    this.conceptCacheService.clear()
     this.router.navigateByUrl(mainPageRouter + codesRouter)
   }
 
@@ -51,5 +56,22 @@ export class MappingCodesComponent {
         },
         error => openErrorDialog(this.dialogService, 'Failed to save Codes', parseHttpError(error))
       )
+  }
+
+  onEditMapping(mapping: CodeMapping) {
+    this.editingMapping = mapping
+  }
+
+  onApplyEditedMapping(concepts: Concept[]) {
+    if (concepts.length === 0) {
+      this.editingMapping.targetConcepts = this.editingMapping.targetConcepts.slice(0, 1)
+    } else {
+      this.editingMapping.targetConcepts = concepts.map(concept => ({concept}))
+    }
+    this.editingMapping = null // Close panel
+  }
+
+  onCancelEditingMapping() {
+    this.editingMapping = null
   }
 }

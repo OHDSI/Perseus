@@ -5,7 +5,7 @@
   </div>
 
   <div class="mapping-codes__content">
-    <app-match-score-grid (editMapping)="term = $event"></app-match-score-grid>
+    <app-match-score-grid (editMapping)="onEditMapping($event)"></app-match-score-grid>
   </div>
 
   <div class="mapping-codes__footer">
@@ -17,5 +17,8 @@
     <mat-spinner></mat-spinner>
   </div>
 
-  <app-edit-mapping-panel *ngIf="term" [term]="term"></app-edit-mapping-panel>
+  <app-edit-mapping-panel *ngIf="editingMapping"
+                          [codeMapping]="editingMapping"
+                          (apply)="onApplyEditedMapping($event)"
+                          (close)="onCancelEditingMapping()"></app-edit-mapping-panel>
 </div>

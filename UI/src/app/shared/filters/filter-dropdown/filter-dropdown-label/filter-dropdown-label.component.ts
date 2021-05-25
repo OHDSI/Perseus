@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FilterValue } from '../filter-list/filter-list.component';
+import { FilterLabelComponent } from '../../filter-label/filter-label.component';
 
 export interface Filter {
   name: string;
@@ -9,17 +10,14 @@ export interface Filter {
 }
 
 @Component({
-  selector: 'app-filter-item',
-  templateUrl: './filter-item.component.html',
-  styleUrls: ['./filter-item.component.scss']
+  selector: 'app-filter-dropdown-label',
+  templateUrl: './filter-dropdown-label.component.html',
+  styleUrls: [
+    './filter-dropdown-label.component.scss',
+    '../../filter-label/filter-label.component.scss'
+  ]
 })
-export class FilterItemComponent {
-
-  @Input()
-  name: string;
-
-  @Input()
-  color: string;
+export class FilterDropdownLabelComponent extends FilterLabelComponent {
 
   @Input()
   opened: boolean;

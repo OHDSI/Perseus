@@ -9,25 +9,25 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {
-  VocabSearchFilters,
-  VocabSearchMode,
-  VocabSearchReqParams,
-  VocabSearchResult,
-  VocabularySearchService
-} from '../services/vocabulary-search/vocabulary-search.service';
+import { VocabularySearchService } from '../services/vocabulary-search/vocabulary-search.service';
 import { Concept } from '../models/vocabulary-search/concept';
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../shared/base/base.component';
-import { Filter } from './filter-item/filter-item.component';
-import { FilterValue } from './filter-list/filter-list.component';
+import { Filter } from '../shared/filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
+import { FilterValue } from '../shared/filters/filter-dropdown/filter-list/filter-list.component';
 import { of } from 'rxjs';
 import { VocabularySearchStateService } from '../services/vocabulary-search/vocabulary-search-state.service';
 import { Column, Sort } from '../models/grid/grid';
 import { NavigationGridComponent } from '../grid/navigation-grid/navigation-grid.component';
 import { Pagination } from '../models/grid/pagination';
 import { SearchInputComponent } from '../shared/search-input/search-input.component';
+import {
+  VocabSearchFilters,
+  VocabSearchMode,
+  VocabSearchReqParams,
+  VocabSearchResult
+} from '../models/vocabulary-search/vocabulray-search';
 
 @Component({
   selector: 'app-vocabulary-search',

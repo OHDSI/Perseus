@@ -213,7 +213,7 @@
   font-style: normal;
   font-weight: normal;
   color: #404040;
-  z-index: 2;
+  z-index: 103; // More than edit-mapping-panel
 
   &__side-panel {
     height: 100%;
@@ -273,7 +273,6 @@
 }
 
 @mixin search-mode() {
-  width: 125px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -283,4 +282,38 @@
   input {
     cursor: pointer;
   }
+}
+
+@mixin grid-error-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  $error-height: 32px;
+
+  .error-icon-wrapper {
+    height: $error-height;
+  }
+
+  .error-icon {
+    height: 17px;
+    width: 22px;
+    margin-right: 6px;
+  }
+
+  .error-text {
+    width: 314px;
+    height: $error-height;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 16px;
+  }
+}
+
+@mixin search-grid-side-panel-filters {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-top: 1px solid rgba(6, 107, 187, .1);
+  padding-top: 20px;
+  overflow-y: auto;
 }

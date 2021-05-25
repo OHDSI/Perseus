@@ -2,7 +2,7 @@
 
 .match-score-grid {
   position: relative;
-  height: 100%;
+  height: calc(100% - 25px); // 45 - margin bottom
 
   .grid-wrapper {
     display: flex;
@@ -16,7 +16,7 @@
     }
 
     .source-grid-wrapper {
-      width: calc(44% - 100px); // 100px - match score grid width (91px) + margin (9px)
+      width: calc(40% - 100px); // 100px - match score grid width (91px) + margin (9px)
       overflow-x: overlay;
       @include grid-scroll();
     }
@@ -33,7 +33,7 @@
     }
 
     .target-grid-wrapper {
-      width: calc(56% - 9px); // 9px - margin
+      width: calc(60% - 9px); // 9px - margin
       @include grid-scroll();
     }
 
@@ -52,32 +52,56 @@
       background-color: rgba(0, 146, 15, .1);
     }
 
-    .row {
-      height: 32px;
+    .header {
+      height: 34px;
+    }
+
+    .target-row {
+      height: 34px;
+    }
+
+    .edit-cell {
+      min-width: 36px;
+      border-right: none;
+      border-right: none;
+
+      & + td,
+      & + th {
+        border-left: none;
+        padding-left: 0;
+      }
     }
 
     .cell {
       white-space: nowrap;
-      height: 32px;
     }
+  }
+
+  .grid-selection-hide {
+    width: 100%;
+    height: 35px;
+    z-index: 100;
+    position: absolute;
+    background-color: #fff;
   }
 
   .grid-select {
     position: absolute;
-    width: calc(100% - 2px);
-    height: 35px;
+    width: calc(100% - 1px);
     border: 1px solid #066BBB;
     display: flex;
-    justify-content: center;
     align-items: center;
     pointer-events: none;
-    z-index: 101;
+    z-index: 99;
 
-    &__edit-icon {
+    .edit-icon {
       pointer-events: auto;
       width: 15px;
       height: 15px;
       cursor: pointer;
+      z-index: 1000;
+      margin-left: calc(40% + 21px); // 44% - source + match score grids width;
+      // 9 - distance between match score and target grid + 12 - __edit-cell__ padding.
     }
   }
 }

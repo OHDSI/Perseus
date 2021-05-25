@@ -41,3 +41,7 @@ export const codesRouter = '/codes'
 export const externalUrls = [
   'athena.ohdsi.org'
 ]
+
+export const serverErrorExclusionUrls = [
+  'get_term_search_results'
+]

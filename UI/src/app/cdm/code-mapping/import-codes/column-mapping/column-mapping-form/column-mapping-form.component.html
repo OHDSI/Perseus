@@ -27,6 +27,15 @@
   </mat-form-field>
 
   <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
+    <label>Column Type</label>
+    <mat-select formControlName="columnType">
+      <mat-option *ngFor="let column of columnTypes" [value]="column.field">
+        {{column.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
     <label>Auto concept ID column</label>
     <mat-select formControlName="autoConceptId">
       <mat-option *ngFor="let column of columns" [value]="column.field">

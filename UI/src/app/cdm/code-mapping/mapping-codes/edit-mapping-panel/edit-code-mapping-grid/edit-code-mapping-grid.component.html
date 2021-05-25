@@ -5,7 +5,7 @@
     <div class="toolbar__navigation" (click)="handleNavigation($event)">
       <div class="show-by">
         <label for="show-by">Show by</label>
-        <input id="show-by" type="number" max="500" [(ngModel)]="pageSize">
+        <input id="show-by" type="number" max="500" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
       </div>
 
       <div class="total">
@@ -57,7 +57,8 @@
   <div class="grid-wrapper" [style.height]="height">
     <table class="grid"
            cdk-table
-           [dataSource]="gridData"
+           [dataSource]="gridData | slice : startIndex : endIndex"
+           [trackBy]="trackScoredConcept"
            [style.height]="height"
            [style.width]="width">
 
@@ -71,12 +72,20 @@
         </td>
       </ng-container>
 
-      <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
+      <ng-container *ngFor="let column of termColumns" [cdkColumnDef]="column.field">
         <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
           {{column.name}}
         </th>
 
         <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
+      </ng-container>
+
+      <ng-container *ngFor="let column of conceptColumns" [cdkColumnDef]="column.field">
+        <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+          {{column.name}}
+        </th>
+
+        <td class="cell" cdk-cell *cdkCellDef="let row">{{row.concept[column.field]}}</td>
       </ng-container>
 
       <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>

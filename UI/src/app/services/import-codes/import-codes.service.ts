@@ -10,14 +10,14 @@ import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params
 import { Code } from '../../models/code-mapping/code';
 import { ScoredConcept } from '../../models/code-mapping/scored-concept';
 import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
+import { ScoredConceptsCacheService } from './scored-concepts-cache.service';
+import { of } from 'rxjs';
 
 const initialState: ImportCodesState = {
   codes: null,
   columns: null,
   mappingParams: null,
-  codeMappings: null,
-  sourceNameColumn: null,
-  scoredConcepts: null
+  codeMappings: null
 }
 
 @Injectable()
@@ -25,15 +25,10 @@ export class ImportCodesService {
 
   private state: ImportCodesState
 
-  constructor(private httpClient: HttpClient) {
-    this.state = {...initialState}
-    // this.state = {
-    //   ...initialState,
-    //   codes: state.stateCodes, columns:
-    //   state.stateColumns,
-    //   codeMappings: state.stateCodeMappings,
-    //   sourceNameColumn: state.sourceNameColumn
-    // }
+  constructor(private httpClient: HttpClient,
+              private scoredConceptCacheService: ScoredConceptsCacheService) {
+    const stateFromStorage = JSON.parse(localStorage.getItem('code-mappings'))
+    this.state = {...initialState, ...stateFromStorage}
   }
 
   get codes(): Code[] {
@@ -48,6 +43,10 @@ export class ImportCodesService {
     return this.state.mappingParams
   }
 
+  set mappingParams(mappingParams: CodeMappingParams) {
+    this.state.mappingParams = mappingParams
+  }
+
   get codeMappings(): CodeMapping[] {
     return this.state.codeMappings
   }
@@ -57,7 +56,7 @@ export class ImportCodesService {
   }
 
   get sourceNameColumn(): string {
-    return this.state.sourceNameColumn
+    return this.state.mappingParams?.sourceName
   }
 
   set vocabulary(vocabulary: ImportCodesState) {
@@ -66,11 +65,6 @@ export class ImportCodesService {
 
   get imported(): boolean {
     return !!this.codes && !!this.columns
-  }
-
-  set mappingParams(mappingParams: CodeMappingParams) {
-    this.state.mappingParams = mappingParams
-    this.state.sourceNameColumn = mappingParams.sourceName
   }
 
   /**
@@ -116,7 +110,14 @@ export class ImportCodesService {
    * @param term - source name column
    */
   getSearchResultByTerm(term: string): Observable<ScoredConcept[]> {
+    const fromCache = this.scoredConceptCacheService.get(term)
+    if (fromCache) {
+      return of(fromCache)
+    }
     return this.httpClient.get<ScoredConcept[]>(`${apiUrl}/get_term_search_results?term=${term}`)
+      .pipe(
+        tap(scoredConcepts => this.scoredConceptCacheService.add(term, scoredConcepts))
+      )
   }
 
   saveCodes(name): Observable<void> {
@@ -131,5 +132,9 @@ export class ImportCodesService {
 
   reset() {
     this.state = {...initialState}
+  }
+
+  saveToStorage() {
+    localStorage.setItem('code-mappings', JSON.stringify(this.state))
   }
 }

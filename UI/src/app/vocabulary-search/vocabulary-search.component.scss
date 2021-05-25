@@ -23,12 +23,7 @@ $table-height: 385px;
   }
 
   &__filters {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border-top: 1px solid rgba(6, 107, 187, .1);
-    padding-top: 20px;
-    overflow-y: auto;
+    @include search-grid-side-panel-filters();
   }
 
   &__apply {
@@ -93,33 +88,13 @@ $table-height: 385px;
   }
 
   &__mode {
+    width: 125px;
     @include search-mode();
   }
 
   .error-row {
     height: $table-height - $row-height - 5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    $error-height: 32px;
-
-    .error-icon-wrapper {
-      height: $error-height;
-    }
-
-    .error-icon {
-      height: 17px;
-      width: 22px;
-      margin-right: 6px;
-    }
-
-    .error-text {
-      width: 314px;
-      height: $error-height;
-      font-style: italic;
-      font-size: 14px;
-      line-height: 16px;
-    }
+    @include grid-error-row();
   }
 
   &__close {

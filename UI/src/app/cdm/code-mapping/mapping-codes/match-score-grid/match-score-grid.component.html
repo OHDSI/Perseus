@@ -1,4 +1,4 @@
-<div class="match-score-grid">
+<div class="match-score-grid" data-grid-wrapper>
   <div class="grid-wrapper" (mouseover)="onMouseover($event)">
     <div class="source-grid-wrapper"
          #sourceGridWrapper
@@ -6,9 +6,10 @@
       <table class="grid source-grid"
              cdk-table
              [dataSource]="sourceData"
+             [trackBy]="trackCodeMappings.bind(this)"
              [style.height]="height">
 
-        <ng-container cdkColumnDef="__select__" sticky>
+        <ng-container cdkColumnDef="__select__" sticky="true">
           <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
             <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
           </th>
@@ -30,7 +31,10 @@
         </ng-container>
 
         <tr class="row header" cdk-header-row data-grid-header *cdkHeaderRowDef="sourceDisplayedColumns; sticky: true"></tr>
-        <tr class="row" cdk-row data-grid-row *cdkRowDef="let row; columns: sourceDisplayedColumns"></tr>
+        <tr class="row" cdk-row data-grid-row *cdkRowDef="let row; columns: sourceDisplayedColumns; let i = index"
+            data-source-row
+            [attr.data-row]="i"
+            [style.height.px]="rowHeight(i)"></tr>
       </table>
     </div>
 
@@ -53,7 +57,9 @@
         </ng-container>
 
         <tr class="row header" cdk-header-row *cdkHeaderRowDef="matchScoreDisplayedColumns; sticky: true"></tr>
-        <tr class="row" cdk-row *cdkRowDef="let row; columns: matchScoreDisplayedColumns"></tr>
+        <tr class="row" cdk-row *cdkRowDef="let row; columns: matchScoreDisplayedColumns; let i = index"
+            [attr.data-row]="i"
+            [style.height.px]="rowHeight(i)"></tr>
       </table>
     </div>
 
@@ -63,7 +69,14 @@
       <table class="grid target-grid"
              cdk-table
              [dataSource]="targetData"
-             [style.height]="height">
+             [style.height]="height"
+             [trackBy]="trackConcepts">
+
+        <ng-container cdkColumnDef="__edit__">
+          <th class="column cell edit-cell" cdk-header-cell *cdkHeaderCellDef></th>
+
+          <td class="cell edit-cell" cdk-cell data-cell *cdkCellDef></td>
+        </ng-container>
 
         <ng-container *ngFor="let targetColumn of targetColumns"
                       [cdkColumnDef]="targetColumn.field">
@@ -77,16 +90,19 @@
         </ng-container>
 
         <tr class="row header" cdk-header-row *cdkHeaderRowDef="targetDisplayedColumns; sticky: true"></tr>
-        <tr class="row" cdk-row *cdkRowDef="let row; columns: targetDisplayedColumns"></tr>
+        <tr class="row target-row" cdk-row *cdkRowDef="let row; columns: targetDisplayedColumns"
+            data-target-row
+            [attr.data-row]="row.index"></tr>
       </table>
-    </div>
-
-    <div *ngIf="loading" class="ui-blocker">
-      <mat-spinner></mat-spinner>
     </div>
   </div>
 
-  <div class="grid-select" [style.top]="selectionTopInPx" data-select-block>
-    <mat-icon class="grid-select__edit-icon" svgIcon="edit" (click)="onEditMapping($event)"></mat-icon>
+  <div class="grid-selection-hide"></div>
+
+  <div class="grid-select" data-select-block
+       [style.top.px]="selectionTop"
+       [style.height.px]="selectionHeight">
+    <mat-icon class="edit-icon"
+              svgIcon="edit" (click)="onEditMapping()"></mat-icon>
   </div>
 </div>

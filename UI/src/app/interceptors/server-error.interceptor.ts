@@ -6,10 +6,15 @@ import { AppConnectorService } from '../services/app-connector.service';
 import { ServerErrorComponent } from '../server-error/server-error.component';
 import { ServerNotRespondingPopupComponent } from '../server-error/server-not-responding-popup/server-not-responding-popup.component';
 import { ServerErrorPopupComponent } from '../server-error/server-error-popup/server-error-popup.component';
-import { externalUrls } from '../app.constants';
+import { externalUrls, serverErrorExclusionUrls } from '../app.constants';
 
 @Injectable()
 export class ServerErrorInterceptor implements HttpInterceptor {
+
+  private readonly exclusionUrls = [
+    ...externalUrls,
+    ...serverErrorExclusionUrls
+  ]
 
   constructor(private appConnector: AppConnectorService,
               private compiler: Compiler,
@@ -17,10 +22,12 @@ export class ServerErrorInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const isExclusionUrl = req => this.exclusionUrls.find(url => req.url.includes(url))
+
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if ((error.status !== 0 && error.status < 500) || externalUrls.find(url => request.url.includes(url))) {
+          if ((error.status !== 0 && error.status < 500) || isExclusionUrl(request)) {
             throw error
           }
 

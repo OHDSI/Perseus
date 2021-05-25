@@ -13,6 +13,10 @@ import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
 import { SearchInputComponent } from './search-input/search-input.component';
+import { FilterDropdownLabelComponent } from './filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
+import { FilterListComponent } from './filters/filter-dropdown/filter-list/filter-list.component';
+import { FilterLabelComponent } from './filters/filter-label/filter-label.component';
+import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -24,21 +28,29 @@ import { SearchInputComponent } from './search-input/search-input.component';
     HintOverlayComponent,
     CdmCheckboxComponent,
     SetDelimiterDialogComponent,
-    SearchInputComponent
+    SearchInputComponent,
+    FilterDropdownLabelComponent,
+    FilterListComponent,
+    FilterLabelComponent,
+    FilterDropdownComponent
   ],
-    exports: [
-        CommonModule,
-        CdmCustomMaterialModule,
-        NgxTrimDirectiveModule,
-        PrettyNamePipe,
-        TypeToIconPipe,
-        SearchByNameComponent,
-        CloseDialogButtonComponent,
-        HintComponent,
-        CdmCheckboxComponent,
-        CdkTableModule,
-        SearchInputComponent
-    ],
+  exports: [
+    CommonModule,
+    CdmCustomMaterialModule,
+    NgxTrimDirectiveModule,
+    PrettyNamePipe,
+    TypeToIconPipe,
+    SearchByNameComponent,
+    CloseDialogButtonComponent,
+    HintComponent,
+    CdmCheckboxComponent,
+    CdkTableModule,
+    SearchInputComponent,
+    FilterDropdownLabelComponent,
+    FilterListComponent,
+    FilterLabelComponent,
+    FilterDropdownComponent
+  ],
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
@@ -46,5 +58,6 @@ import { SearchInputComponent } from './search-input/search-input.component';
     CdkTableModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}
 

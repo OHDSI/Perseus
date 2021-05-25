@@ -82,11 +82,10 @@ export class ImportVocabularyComponent implements OnInit {
     const vocabulary = this.vocabularies[index]
     this.withLoading$(this.importVocabulariesService.get(vocabulary))
       .subscribe(
-        result => {
+        state => {
           this.importCodesService.vocabulary = {
-            ...result,
-            sourceNameColumn: result.mappingParams.sourceName,
-            columns: Object.keys(result.codes[0]).map(key => ({field: key, name: key}))
+            ...state,
+            columns: Object.keys(state.codes[0]).map(key => ({field: key, name: key}))
           }
           this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
         },
