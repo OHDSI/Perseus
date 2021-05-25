@@ -304,7 +304,7 @@ def get_filters(current_user):
         }
         results = solr.search("*:*", **params)
         facets_string_values = [x for x in results.facets['facet_fields'][key]if not isinstance(x, int)]
-        facets[SOLR_FILTERS[key]] = facets_string_values
+        facets[SOLR_FILTERS[key]] = sorted(facets_string_values)
     return facets
 
 
