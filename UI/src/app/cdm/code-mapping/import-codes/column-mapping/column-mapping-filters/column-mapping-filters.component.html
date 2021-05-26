@@ -3,21 +3,42 @@
     Filters
   </div>
 
-  <form class="column-filters__form">
+  <form class="column-filters__form" [formGroup]="form">
     <div class="column-filters__form__control">
-      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="4" cy="4" r="4" fill="#761C1C"/>
-      </svg>
-      <app-cdm-checkbox [background]="checkboxBackground"></app-cdm-checkbox>
-      <label>By user selected concepts</label>
+      <app-filter-color-point class="column-filters__form__control__point"
+                              color="#761C1C"></app-filter-color-point>
+      <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                        formControlName="filterByUserSelectedConceptsAtcCode"></app-cdm-checkbox>
+      <span>By selected concepts/ATC codes</span>
     </div>
 
     <div class="column-filters__form__control">
-      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="4" cy="4" r="4" fill="#406C95"/>
-      </svg>
-      <app-cdm-checkbox [background]="checkboxBackground"></app-cdm-checkbox>
-      <label>By standard concepts</label>
+      <app-filter-color-point class="column-filters__form__control__point"
+                              color="#406C95"></app-filter-color-point>
+      <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                        formControlName="filterStandardConcepts"></app-cdm-checkbox>
+      <span>By standard concepts</span>
     </div>
+
+    <div class="column-filters__form__control">
+      <app-filter-color-point class="column-filters__form__control__point"
+                              color="#14772A"></app-filter-color-point>
+      <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                        formControlName="includeSourceTerms"></app-cdm-checkbox>
+      <span>Include source terms</span>
+    </div>
+
+    <ng-container *ngIf="dropdownFilters">
+      <div *ngFor="let filter of dropdownFilters" class="column-filters__form__control">
+        <app-filter-dropdown [filter]="filter"
+                             [openedFilterName]="openedFilterName"
+                             [formControlName]="filter.field">
+          <app-filter-color-point class="column-filters__form__control__point"
+                                  [color]="filter.color"></app-filter-color-point>
+          <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                            [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+        </app-filter-dropdown>
+      </div>
+    </ng-container>
   </form>
 </div>

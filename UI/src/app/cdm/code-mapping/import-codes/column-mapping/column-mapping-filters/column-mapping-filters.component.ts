@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { fillFilters, getFilters } from '../../../../../models/code-mapping/filters';
+import { ImportCodesService } from '../../../../../services/import-codes/import-codes.service';
 
 @Component({
   selector: 'app-column-mapping-filters',
@@ -7,10 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ColumnMappingFiltersComponent implements OnInit {
 
-  checkboxBackground = '#F9F9F9';
+  @Input()
+  form: FormGroup
 
-  constructor() { }
+  openedFilterName: string;
+
+  dropdownFilters = getFilters()
+
+  constructor(private importCodesService: ImportCodesService) { }
 
   ngOnInit(): void {
+    this.initFilters()
+  }
+
+  private initFilters() {
+    fillFilters(this.dropdownFilters, this.importCodesService)
   }
 }

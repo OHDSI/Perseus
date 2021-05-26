@@ -16,14 +16,10 @@
     &__control {
       display: flex;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
 
-      svg {
-        margin-right: 8px;
-      }
-
-      label {
-        margin-left: 2px;
+      &__checkbox {
+        margin-left: 8px;
       }
     }
   }

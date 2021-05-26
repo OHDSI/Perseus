@@ -13,13 +13,14 @@ import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
 import { ScoredConceptsCacheService } from './scored-concepts-cache.service';
 import { of } from 'rxjs';
 import { FilterValue } from '../../models/filter/filter';
-import { SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
+import { getDefaultSearchConceptFilters, SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
 
 const initialState: ImportCodesState = {
   codes: null,
   columns: null,
   mappingParams: null,
-  codeMappings: null
+  codeMappings: null,
+  filters: getDefaultSearchConceptFilters()
 }
 
 @Injectable()
@@ -69,6 +70,14 @@ export class ImportCodesService {
     return !!this.codes && !!this.columns
   }
 
+  get filters(): SearchConceptFilters {
+    return this.state.filters
+  }
+
+  set filters(filters: SearchConceptFilters) {
+    this.state.filters = filters
+  }
+
   /**
    * Parse CSV file to json array on server
    */
@@ -95,7 +104,8 @@ export class ImportCodesService {
   calculateScore(): Observable<void> {
     const body = {
       params: this.mappingParams,
-      codes: this.codes
+      codes: this.codes,
+      filters: this.filters
     }
     return this.httpClient.post<void>(`${apiUrl}/import_source_codes`, body)
   }
@@ -135,14 +145,10 @@ export class ImportCodesService {
     return this.httpClient.post<void>(`${apiUrl}/save_mapped_codes`, body)
   }
 
-  reset() {
-    this.state = {...initialState}
-  }
-
   /**
    * Concepts classes, Vocabularies, Domains filters
    */
-  filters(): Observable<{[key: string]: FilterValue[]}> {
+  fetchFilters(): Observable<{[key: string]: FilterValue[]}> {
     return this.httpClient.get<{[key: string]: string[]}>(`${apiUrl}/get_filters`)
       .pipe(
         map(res => {
@@ -155,6 +161,10 @@ export class ImportCodesService {
           return parsed
         })
       )
+  }
+
+  reset(state: ImportCodesState = null) {
+    this.state = state ? {...state} : {...initialState};
   }
 
   saveToStorage() {

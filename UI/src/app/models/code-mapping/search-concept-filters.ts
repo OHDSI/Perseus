@@ -19,7 +19,7 @@ export function filterValueToString(filterValue: FilterValue): string {
   return filterValue.name
 }
 
-export const defaultSearchConceptFilters: SearchConceptFilters = {
+const defaultSearchConceptFilters: SearchConceptFilters = {
   searchString: '',
   searchMode: SearchMode.SEARCH_TERM_AS_QUERY,
   filterByUserSelectedConceptsAtcCode: false,
@@ -31,4 +31,8 @@ export const defaultSearchConceptFilters: SearchConceptFilters = {
   conceptClasses: [],
   vocabularies: [],
   domains: []
+}
+
+export function getDefaultSearchConceptFilters() {
+  return {...defaultSearchConceptFilters}
 }

@@ -6,7 +6,7 @@ import { Socket } from 'socket.io-client/build/socket';
 import { AuthService } from '../../services/auth/auth.service';
 import { authInjector } from '../../services/auth/auth-injector';
 import { serverUrl } from '../../app.constants';
-import { ImportCodesService } from 'src/app/services/import-codes/import-codes.service';
+import { ImportCodesMediatorService } from '../../services/import-codes/import-codes-mediator.service';
 
 @Injectable()
 export class CodeMappingWebsocketService extends WebsocketService {
@@ -14,7 +14,7 @@ export class CodeMappingWebsocketService extends WebsocketService {
   socket: Socket
 
   constructor(@Inject(authInjector) private authService: AuthService,
-              private importCodesService: ImportCodesService) {
+              private importCodesMediatorService: ImportCodesMediatorService) {
     super();
   }
 
@@ -25,7 +25,7 @@ export class CodeMappingWebsocketService extends WebsocketService {
     const errorHandler = error => this.connection$.error(error)
 
     this.socket.on('connect', () => {
-      this.importCodesService.calculateScore()
+      this.importCodesMediatorService.onWebsocketConnect$
         .subscribe(
           () => this.connection$.next(true),
           error => this.connection$.error(error)
