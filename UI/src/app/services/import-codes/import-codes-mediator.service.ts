@@ -10,7 +10,7 @@ export class ImportCodesMediatorService {
   /**
    * Can be importCodesService.calculateScore or importVocabulariesService.prepareVocabulary
    */
-  request$: Observable<void>
+  private request$: Observable<void>
 
   get onWebsocketConnect$(): Observable<void> {
     return this.request$
