@@ -8,7 +8,7 @@ $filtersWidth: 394px;
   width: $filtersWidth;
   height: 100%;
   box-sizing: border-box;
-  padding: 30px 76px;
+  padding: 30px 64px;
 
   &__background {
     position: absolute;
@@ -35,9 +35,14 @@ $filtersWidth: 394px;
     height: 1px;
     background: #066BBB;
     opacity: 0.2;
+    margin-top: 10px;
 
     &.top-border {
       margin-top: 10px;
+    }
+
+    &.bottom-border {
+      margin-top: 20px;
     }
   }
 }

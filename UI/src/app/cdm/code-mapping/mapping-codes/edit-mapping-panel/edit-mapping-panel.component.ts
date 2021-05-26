@@ -7,16 +7,15 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { catchErrorAndContinue, parseHttpError } from '../../../../utilites/error';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../../models/code-mapping/concept';
-import { SearchMode } from '../../../../models/code-mapping/search-mode';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { Filter } from '../../../../models/filter/filter';
-import { dropdownFilters } from './edit-mapping-panel';
 import {
-  defaultSearchConceptFilters,
   filterValueToString,
+  getDefaultSearchConceptFilters,
   SearchConceptFilters
 } from '../../../../models/code-mapping/search-concept-filters';
+import { createFiltersForm, fillFilters, getFilters } from '../../../../models/code-mapping/filters';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -41,7 +40,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   form: FormGroup
 
-  dropdownFilters: Filter[] = dropdownFilters
+  dropdownFilters: Filter[] = getFilters()
 
   openedFilterName: string
 
@@ -107,24 +106,12 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
         this.initScoredConceptWithSelectedStream(term, selectedConcepts, sourceAutoAssignedConceptIds)
 
         // Emit form value change to fetch data from server
-        this.form.reset(defaultSearchConceptFilters)
+        this.form.reset(getDefaultSearchConceptFilters())
       })
   }
 
   private initForm() {
-    this.form = new FormGroup({
-      searchString: new FormControl(null),
-      searchMode: new FormControl(SearchMode.SEARCH_TERM_AS_QUERY),
-      filterByUserSelectedConceptsAtcCode: new FormControl(false),
-      filterStandardConcepts: new FormControl(false),
-      includeSourceTerms: new FormControl(false),
-      filterByConceptClass: new FormControl(false),
-      filterByVocabulary: new FormControl(false),
-      filterByDomain: new FormControl(false),
-      conceptClasses: new FormControl([]),
-      vocabularies: new FormControl([]),
-      domains: new FormControl([])
-    })
+    this.form = createFiltersForm()
 
     const handleError = error => this.error = parseHttpError(error)
 
@@ -158,11 +145,6 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   }
 
   private initFilters() {
-    this.importCodesService.filters()
-      .subscribe(result =>
-        Object.keys(result).forEach(key =>
-          this.dropdownFilters.find(filter => filter.field === key).values = result[key]
-        )
-      )
+    fillFilters(this.dropdownFilters, this.importCodesService)
   }
 }

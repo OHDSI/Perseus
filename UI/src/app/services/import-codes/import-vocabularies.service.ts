@@ -13,8 +13,12 @@ export class ImportVocabulariesService {
     return this.httpClient.get<string[]>(`${apiUrl}/get_vocabulary_list`)
   }
 
-  get(name: string): Observable<ImportCodesState> {
-    return this.httpClient.get<ImportCodesState>(`${apiUrl}/get_vocabulary?name=${name}`)
+  prepareVocabulary(name: string): Observable<void> {
+    return this.httpClient.get<void>(`${apiUrl}/get_vocabulary?name=${name}`)
+  }
+
+  getVocabulary(): Observable<ImportCodesState> {
+    return this.httpClient.get<ImportCodesState>(`${apiUrl}/get_vocabulary_data`)
   }
 
   remove(name: string): Observable<void> {

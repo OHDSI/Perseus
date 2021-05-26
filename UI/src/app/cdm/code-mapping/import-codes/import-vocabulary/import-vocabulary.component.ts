@@ -4,11 +4,14 @@ import { ImportVocabulariesService } from '../../../../services/import-codes/imp
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
-import { finalize, switchMap, tap } from 'rxjs/operators';
+import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '../../../../app.constants';
 import { Observable } from 'rxjs/internal/Observable';
+import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
+import { BaseComponent } from '../../../../shared/base/base.component';
+import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -19,7 +22,7 @@ import { Observable } from 'rxjs/internal/Observable';
     '../styles/import-codes-wrapper.scss'
   ]
 })
-export class ImportVocabularyComponent implements OnInit {
+export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   vocabularies: string[]
 
@@ -37,8 +40,10 @@ export class ImportVocabularyComponent implements OnInit {
 
   constructor(private importCodesService: ImportCodesService,
               private importVocabulariesService: ImportVocabulariesService,
+              private importCodesMediatorService: ImportCodesMediatorService,
               private dialogService: MatDialog,
               private router: Router) {
+    super()
   }
 
   ngOnInit(): void {
@@ -80,13 +85,19 @@ export class ImportVocabularyComponent implements OnInit {
 
   onEdit(index: number) {
     const vocabulary = this.vocabularies[index]
-    this.withLoading$(this.importVocabulariesService.get(vocabulary))
+    this.importCodesMediatorService.onWebsocketConnect$ = this.importVocabulariesService.prepareVocabulary(vocabulary)
+
+    this.dialogService
+      .open(CodeMappingDialogComponent, { panelClass: 'scan-data-dialog', disableClose: true })
+      .afterClosed()
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        filter(value => value),
+        switchMap(() => this.importVocabulariesService.getVocabulary())
+      )
       .subscribe(
         state => {
-          this.importCodesService.vocabulary = {
-            ...state,
-            columns: Object.keys(state.codes[0]).map(key => ({field: key, name: key}))
-          }
+          this.importCodesService.reset(state)
           this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
         },
         error => openErrorDialog(this.dialogService, 'Failed to open Vocabulary', parseHttpError(error))
