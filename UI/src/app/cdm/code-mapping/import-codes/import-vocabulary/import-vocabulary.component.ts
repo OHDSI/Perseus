@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
+import { columnsFromSourceCode } from '../../../../models/code-mapping/import-codes-state';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -97,7 +98,10 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
       )
       .subscribe(
         state => {
-          this.importCodesService.reset(state)
+          this.importCodesService.reset({
+            ...state,
+            columns: columnsFromSourceCode(state.codes[0])
+          })
           this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
         },
         error => openErrorDialog(this.dialogService, 'Failed to open Vocabulary', parseHttpError(error))

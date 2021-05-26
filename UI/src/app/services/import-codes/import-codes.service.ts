@@ -9,9 +9,8 @@ import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
 import { Code } from '../../models/code-mapping/code';
 import { ScoredConcept } from '../../models/code-mapping/scored-concept';
-import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
+import { columnsFromSourceCode, ImportCodesState } from '../../models/code-mapping/import-codes-state';
 import { ScoredConceptsCacheService } from './scored-concepts-cache.service';
-import { of } from 'rxjs';
 import { FilterValue } from '../../models/filter/filter';
 import { getDefaultSearchConceptFilters, SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
 
@@ -93,10 +92,7 @@ export class ImportCodesService {
             throw new Error('Empty csv file')
           }
           this.state.codes = codes
-          this.state.columns = Object.keys(codes[0]).map(key => ({
-            field: key,
-            name: key
-          }))
+          this.state.columns = columnsFromSourceCode(codes[0])
         })
       )
   }
@@ -124,15 +120,8 @@ export class ImportCodesService {
    * @param sourceAutoAssignedConceptIds - sourceConcept.sourceAutoAssignedConceptIds
    */
   getSearchResultByTerm(term: string, filters: SearchConceptFilters, sourceAutoAssignedConceptIds: number[]): Observable<ScoredConcept[]> {
-    const fromCache = this.scoredConceptCacheService.get(term)
-    if (fromCache) {
-      return of(fromCache)
-    }
     const body = {term, sourceAutoAssignedConceptIds, filters}
     return this.httpClient.post<ScoredConcept[]>(`${apiUrl}/get_term_search_results`, body)
-      .pipe(
-        tap(scoredConcepts => this.scoredConceptCacheService.add(term, scoredConcepts))
-      )
   }
 
   saveCodes(name): Observable<void> {

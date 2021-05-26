@@ -44,11 +44,14 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
           })
       )
 
-    this.onConnect();
-
-    this.allStepsCount = this.importCodesService.codes
+    // New codes or edit existed vocabulary
+    this.allStepsCount = this.importCodesService.codes ? this.importCodesService.codes
       .filter(code => code.selected)
-      .length + 1 // 1 - First step - index generation, next calculate score for code
+      .length + 1 : 3;
+    // 1 - First step - index generation, next calculate score for code
+    // 3 - Steps for edit existed vocabulary
+
+    this.onConnect();
   }
 
   protected handleProgressMessage(notification: ProgressNotification): void {
