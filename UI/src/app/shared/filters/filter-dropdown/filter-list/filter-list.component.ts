@@ -33,4 +33,8 @@ export class FilterListComponent implements OnInit {
       .includes(parsedValue)
     );
   }
+
+  toValueCount(count: number) {
+    return count.toString() ?? ''
+  }
 }

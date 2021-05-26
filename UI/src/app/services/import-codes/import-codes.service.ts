@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Column } from '../../models/grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
 import { SourceCode } from '../../models/code-mapping/source-code';
@@ -12,6 +12,8 @@ import { ScoredConcept } from '../../models/code-mapping/scored-concept';
 import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
 import { ScoredConceptsCacheService } from './scored-concepts-cache.service';
 import { of } from 'rxjs';
+import { FilterValue } from '../../models/filter/filter';
+import { SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
 
 const initialState: ImportCodesState = {
   codes: null,
@@ -108,13 +110,16 @@ export class ImportCodesService {
   /**
    * Get all mappings for concrete term, sorted by match score
    * @param term - source name column
+   * @param filters - filters for search
+   * @param sourceAutoAssignedConceptIds - sourceConcept.sourceAutoAssignedConceptIds
    */
-  getSearchResultByTerm(term: string, filters): Observable<ScoredConcept[]> {
+  getSearchResultByTerm(term: string, filters: SearchConceptFilters, sourceAutoAssignedConceptIds: number[]): Observable<ScoredConcept[]> {
     const fromCache = this.scoredConceptCacheService.get(term)
     if (fromCache) {
       return of(fromCache)
     }
-    return this.httpClient.get<ScoredConcept[]>(`${apiUrl}/get_term_search_results?term=${term}`)
+    const body = {term, sourceAutoAssignedConceptIds, filters}
+    return this.httpClient.post<ScoredConcept[]>(`${apiUrl}/get_term_search_results`, body)
       .pipe(
         tap(scoredConcepts => this.scoredConceptCacheService.add(term, scoredConcepts))
       )
@@ -132,6 +137,24 @@ export class ImportCodesService {
 
   reset() {
     this.state = {...initialState}
+  }
+
+  /**
+   * Concepts classes, Vocabularies, Domains filters
+   */
+  filters(): Observable<{[key: string]: FilterValue[]}> {
+    return this.httpClient.get<{[key: string]: string[]}>(`${apiUrl}/get_filters`)
+      .pipe(
+        map(res => {
+          const parsed: {[key: string]: FilterValue[]} = {}
+          Object.keys(res).forEach(key => parsed[key] = res[key].map(it => ({
+            name: it,
+            checked: false,
+            disabled: false
+          })))
+          return parsed
+        })
+      )
   }
 
   saveToStorage() {

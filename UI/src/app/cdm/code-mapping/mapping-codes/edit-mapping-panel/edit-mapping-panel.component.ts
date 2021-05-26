@@ -4,12 +4,19 @@ import { ImportCodesService } from '../../../../services/import-codes/import-cod
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
-import { parseHttpError } from '../../../../utilites/error';
+import { catchErrorAndContinue, parseHttpError } from '../../../../utilites/error';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../../models/code-mapping/concept';
 import { SearchMode } from '../../../../models/code-mapping/search-mode';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
+import { Filter } from '../../../../models/filter/filter';
+import { dropdownFilters } from './edit-mapping-panel';
+import {
+  defaultSearchConceptFilters,
+  filterValueToString,
+  SearchConceptFilters
+} from '../../../../models/code-mapping/search-concept-filters';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -34,6 +41,10 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   form: FormGroup
 
+  dropdownFilters: Filter[] = dropdownFilters
+
+  openedFilterName: string
+
   // Map term with selected concepts to all concept list stream
   private scoredConceptWithSelected$: (filters) => Observable<ScoredConcept[]>
 
@@ -54,12 +65,20 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     return !this.applyActive
   }
 
-  get filters() {
-    return this.form.value
+  get searchConceptFilters(): SearchConceptFilters {
+    const formValue = this.form.value
+    return {
+      ...formValue,
+      conceptClasses: formValue.conceptClasses?.map(filterValueToString) ?? [],
+      vocabularies: formValue.vocabularies?.map(filterValueToString) ?? [],
+      domains: formValue.domains?.map(filterValueToString) ?? []
+    }
   }
 
   ngOnInit(): void {
     this.initForm()
+
+    this.initFilters()
 
     this.subscribeOnEditMapping()
   }
@@ -71,8 +90,10 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.apply.emit(concepts)
   }
 
+  /**
+   * Subscribe on click edit mapping in parent component
+   */
   private subscribeOnEditMapping() {
-    // Subscribe on click edit mapping in parent component
     this.codeMapping$
       .pipe(
         takeUntil(this.ngUnsubscribe)
@@ -80,8 +101,13 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       .subscribe(codeMapping => {
         const term = codeMapping.sourceCode.code[this.importCodesService.sourceNameColumn]
         const selectedConcepts = codeMapping.targetConcepts.map(targetConcept => targetConcept.concept)
-        this.initScoredConceptWithSelectedStream(term, selectedConcepts)
-        this.form.reset()
+        const sourceAutoAssignedConceptIds = codeMapping.sourceCode.source_auto_assigned_concept_ids
+
+        // Update server fetch request params for new code-MAPPING
+        this.initScoredConceptWithSelectedStream(term, selectedConcepts, sourceAutoAssignedConceptIds)
+
+        // Emit form value change to fetch data from server
+        this.form.reset(defaultSearchConceptFilters)
       })
   }
 
@@ -100,30 +126,43 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       domains: new FormControl([])
     })
 
+    const handleError = error => this.error = parseHttpError(error)
+
     this.form.valueChanges
       .pipe(
         takeUntil(this.ngUnsubscribe),
         tap(() => this.loading = true),
-        switchMap(value => this.scoredConceptWithSelected$(value))
+        switchMap(() => catchErrorAndContinue(
+          this.scoredConceptWithSelected$(this.searchConceptFilters), handleError, []
+        ))
       )
       .subscribe(scoredConcepts => {
         this.scoredConcepts = scoredConcepts
         this.loading = false
-      }, error => {
-        this.error = parseHttpError(error)
-        this.loading = false
       })
   }
 
-  private initScoredConceptWithSelectedStream(term: string, selectedConcepts: Concept[]) {
-    this.scoredConceptWithSelected$ = (filters) =>
-      this.importCodesService.getSearchResultByTerm(term, filters)
-        .pipe(
-          map(scoredConcepts => scoredConcepts.map(scoredConcept =>
-            selectedConcepts.find(concept => concept.conceptId === scoredConcept.concept.conceptId)
-              ? {...scoredConcept, selected: true}
-              : scoredConcept
-          ))
+  private initScoredConceptWithSelectedStream(term: string,
+                                              selectedConcepts: Concept[],
+                                              sourceAutoAssignedConceptIds: number[]) {
+    const toScoredConceptWithSelection = scoredConcepts => scoredConcepts.map(
+      scoredConcept => selectedConcepts.find(concept => concept.conceptId === scoredConcept.concept.conceptId)
+        ? {...scoredConcept, selected: true}
+        : scoredConcept
+    )
+
+    this.scoredConceptWithSelected$ = (filters) => this.importCodesService.getSearchResultByTerm(term, filters, sourceAutoAssignedConceptIds)
+      .pipe(
+        map(toScoredConceptWithSelection)
+      )
+  }
+
+  private initFilters() {
+    this.importCodesService.filters()
+      .subscribe(result =>
+        Object.keys(result).forEach(key =>
+          this.dropdownFilters.find(filter => filter.field === key).values = result[key]
         )
+      )
   }
 }

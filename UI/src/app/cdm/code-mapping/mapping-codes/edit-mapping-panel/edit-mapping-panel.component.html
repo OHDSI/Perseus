@@ -7,7 +7,7 @@
       Filters
     </h2>
 
-    <form class="edit-mapping__side-panel__filters">
+    <div class="edit-mapping__side-panel__filters">
       <div class="edit-mapping__side-panel__filters__control">
         <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
                                 color="#761C1C"></app-filter-color-point>
@@ -31,7 +31,20 @@
                           formControlName="includeSourceTerms"></app-cdm-checkbox>
         <span>Include source terms</span>
       </div>
-    </form>
+
+      <ng-container *ngIf="dropdownFilters">
+        <div *ngFor="let filter of dropdownFilters" class="edit-mapping__side-panel__filters__control">
+          <app-filter-dropdown [filter]="filter"
+                               [openedFilterName]="openedFilterName"
+                               [formControlName]="filter.field">
+            <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                    [color]="filter.color"></app-filter-color-point>
+            <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                              [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+          </app-filter-dropdown>
+        </div>
+      </ng-container>
+    </div>
   </div>
 
   <div class="edit-mapping__content">
