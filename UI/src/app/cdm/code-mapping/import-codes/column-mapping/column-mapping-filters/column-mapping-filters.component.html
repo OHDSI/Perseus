@@ -30,8 +30,8 @@
 
     <ng-container *ngIf="dropdownFilters">
       <div *ngFor="let filter of dropdownFilters" class="column-filters__form__control">
-        <app-filter-dropdown [filter]="filter"
-                             [openedFilterName]="openedFilterName"
+        <app-filter-dropdown paddingLeft="64"
+                             [filter]="filter"
                              [formControlName]="filter.field">
           <app-filter-color-point class="column-filters__form__control__point"
                                   [color]="filter.color"></app-filter-color-point>

@@ -36,3 +36,15 @@ const defaultSearchConceptFilters: SearchConceptFilters = {
 export function getDefaultSearchConceptFilters() {
   return {...defaultSearchConceptFilters}
 }
+
+/**
+ * conceptClasses, vocabularies, domains - FilterValue[]
+ */
+export function mapFormFiltersToBackEndFilters(filters) {
+  return {
+    ...filters,
+    conceptClasses: filters.conceptClasses?.map(filterValueToString) ?? [],
+    vocabularies: filters.vocabularies?.map(filterValueToString) ?? [],
+    domains: filters.domains?.map(filterValueToString) ?? []
+  }
+}

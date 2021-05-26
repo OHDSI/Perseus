@@ -8,7 +8,7 @@ $filtersWidth: 394px;
   width: $filtersWidth;
   height: 100%;
   box-sizing: border-box;
-  padding: 30px 64px;
+  padding: 30px 0 5px;
 
   &__background {
     position: absolute;
@@ -24,6 +24,7 @@ $filtersWidth: 394px;
   }
 
   &__header {
+    padding: 0 64px;
     @include code-mapping-header()
   }
 
