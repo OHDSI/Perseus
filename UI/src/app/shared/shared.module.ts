@@ -15,8 +15,8 @@ import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimite
 import { SearchInputComponent } from './search-input/search-input.component';
 import { FilterDropdownLabelComponent } from './filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
 import { FilterListComponent } from './filters/filter-dropdown/filter-list/filter-list.component';
-import { FilterLabelComponent } from './filters/filter-label/filter-label.component';
 import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdown.component';
+import { FilterColorPointComponent } from './filters/filter-color-point/filter-color-point.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +31,8 @@ import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdo
     SearchInputComponent,
     FilterDropdownLabelComponent,
     FilterListComponent,
-    FilterLabelComponent,
-    FilterDropdownComponent
+    FilterDropdownComponent,
+    FilterColorPointComponent
   ],
   exports: [
     CommonModule,
@@ -46,10 +46,8 @@ import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdo
     CdmCheckboxComponent,
     CdkTableModule,
     SearchInputComponent,
-    FilterDropdownLabelComponent,
-    FilterListComponent,
-    FilterLabelComponent,
-    FilterDropdownComponent
+    FilterDropdownComponent,
+    FilterColorPointComponent
   ],
   imports: [
     CommonModule,

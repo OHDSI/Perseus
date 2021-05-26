@@ -14,8 +14,6 @@ import { Concept } from '../models/vocabulary-search/concept';
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../shared/base/base.component';
-import { Filter } from '../shared/filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
-import { FilterValue } from '../shared/filters/filter-dropdown/filter-list/filter-list.component';
 import { of } from 'rxjs';
 import { VocabularySearchStateService } from '../services/vocabulary-search/vocabulary-search-state.service';
 import { Column, Sort } from '../models/grid/grid';
@@ -28,6 +26,7 @@ import {
   VocabSearchReqParams,
   VocabSearchResult
 } from '../models/vocabulary-search/vocabulray-search';
+import { Filter, FilterValue } from '../models/filter/filter';
 
 @Component({
   selector: 'app-vocabulary-search',
@@ -79,7 +78,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     updateFilters: true
   }
 
-  mode = VocabSearchMode.LOCAL
+  mode = VocabSearchMode.ATHENA
 
   @Input()
   bottom = '0'
@@ -192,16 +191,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     return this.filtersRecognizer[field].color;
   }
 
-  onCheckFilter(filterValue: FilterValue) {
-    filterValue.checked = !filterValue.checked;
-
-    if (filterValue.checked) {
-      this.selectedFilters.push(filterValue);
-    } else {
-      const index = this.selectedFilters.indexOf(filterValue);
-      this.selectedFilters.splice(index, 1);
-    }
-
+  onCheckFilter(selectedFilters: FilterValue[]) {
+    this.selectedFilters = selectedFilters;
     this.updateChipsHeight();
   }
 

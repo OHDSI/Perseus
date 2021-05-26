@@ -4,10 +4,19 @@ import { ImportCodesService } from '../../../../services/import-codes/import-cod
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
-import { parseHttpError } from '../../../../utilites/error';
+import { catchErrorAndContinue, parseHttpError } from '../../../../utilites/error';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../../models/code-mapping/concept';
 import { SearchMode } from '../../../../models/code-mapping/search-mode';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs/internal/Observable';
+import { Filter } from '../../../../models/filter/filter';
+import { dropdownFilters } from './edit-mapping-panel';
+import {
+  defaultSearchConceptFilters,
+  filterValueToString,
+  SearchConceptFilters
+} from '../../../../models/code-mapping/search-concept-filters';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -30,16 +39,14 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   @Output()
   close = new EventEmitter<void>()
 
-  searchString: string
-  mode = SearchMode.SEARCH_TERM_AS_QUERY
+  form: FormGroup
 
-  private searchStrategies = {
-    [SearchMode.SEARCH_TERM_AS_QUERY]: (concept: ScoredConcept, searchString: string) =>
-      concept.term.toLowerCase().includes(searchString.toLowerCase()),
+  dropdownFilters: Filter[] = dropdownFilters
 
-    [SearchMode.QUERY]: (concept: ScoredConcept, searchString: string) =>
-      concept.concept.conceptName.toLowerCase().includes(searchString.toLowerCase())
-  }
+  openedFilterName: string
+
+  // Map term with selected concepts to all concept list stream
+  private scoredConceptWithSelected$: (filters) => Observable<ScoredConcept[]>
 
   constructor(private importCodesService: ImportCodesService) {
     super()
@@ -58,37 +65,22 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     return !this.applyActive
   }
 
+  get searchConceptFilters(): SearchConceptFilters {
+    const formValue = this.form.value
+    return {
+      ...formValue,
+      conceptClasses: formValue.conceptClasses?.map(filterValueToString) ?? [],
+      vocabularies: formValue.vocabularies?.map(filterValueToString) ?? [],
+      domains: formValue.domains?.map(filterValueToString) ?? []
+    }
+  }
+
   ngOnInit(): void {
-    // Map term with selected concepts to all concept list stream
-    const allScoredConceptWithSelected$ = (term: string, selectedConcepts: Concept[]) =>
-      this.importCodesService.getSearchResultByTerm(term)
-        .pipe(
-          map(scoredConcepts => scoredConcepts.map(scoredConcept =>
-            selectedConcepts.find(concept => concept.conceptId === scoredConcept.concept.conceptId)
-              ? {...scoredConcept, selected: true}
-              : scoredConcept
-          ))
-        )
+    this.initForm()
 
-    const termColumn = this.importCodesService.sourceNameColumn
+    this.initFilters()
 
-    // Subscribe on click edit mapping in parent component
-    this.codeMapping$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        tap(() => this.loading = true),
-        switchMap(codeMapping => allScoredConceptWithSelected$(
-          codeMapping.sourceCode.code[termColumn],
-          codeMapping.targetConcepts.map(targetConcept => targetConcept.concept)
-        )),
-      )
-      .subscribe(scoredConcepts => {
-        this.scoredConcepts = scoredConcepts
-        this.loading = false
-      }, error => {
-        this.error = parseHttpError(error)
-        this.loading = false
-      })
+    this.subscribeOnEditMapping()
   }
 
   onApply() {
@@ -98,9 +90,79 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.apply.emit(concepts)
   }
 
-  onSearch(value: string) {
-    this.searchString = value
-    this.scoredConcepts = this.scoredConcepts
-      .filter(concept => this.searchStrategies[this.mode](concept, value))
+  /**
+   * Subscribe on click edit mapping in parent component
+   */
+  private subscribeOnEditMapping() {
+    this.codeMapping$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(codeMapping => {
+        const term = codeMapping.sourceCode.code[this.importCodesService.sourceNameColumn]
+        const selectedConcepts = codeMapping.targetConcepts.map(targetConcept => targetConcept.concept)
+        const sourceAutoAssignedConceptIds = codeMapping.sourceCode.source_auto_assigned_concept_ids
+
+        // Update server fetch request params for new code-MAPPING
+        this.initScoredConceptWithSelectedStream(term, selectedConcepts, sourceAutoAssignedConceptIds)
+
+        // Emit form value change to fetch data from server
+        this.form.reset(defaultSearchConceptFilters)
+      })
+  }
+
+  private initForm() {
+    this.form = new FormGroup({
+      searchString: new FormControl(null),
+      searchMode: new FormControl(SearchMode.SEARCH_TERM_AS_QUERY),
+      filterByUserSelectedConceptsAtcCode: new FormControl(false),
+      filterStandardConcepts: new FormControl(false),
+      includeSourceTerms: new FormControl(false),
+      filterByConceptClass: new FormControl(false),
+      filterByVocabulary: new FormControl(false),
+      filterByDomain: new FormControl(false),
+      conceptClasses: new FormControl([]),
+      vocabularies: new FormControl([]),
+      domains: new FormControl([])
+    })
+
+    const handleError = error => this.error = parseHttpError(error)
+
+    this.form.valueChanges
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        tap(() => this.loading = true),
+        switchMap(() => catchErrorAndContinue(
+          this.scoredConceptWithSelected$(this.searchConceptFilters), handleError, []
+        ))
+      )
+      .subscribe(scoredConcepts => {
+        this.scoredConcepts = scoredConcepts
+        this.loading = false
+      })
+  }
+
+  private initScoredConceptWithSelectedStream(term: string,
+                                              selectedConcepts: Concept[],
+                                              sourceAutoAssignedConceptIds: number[]) {
+    const toScoredConceptWithSelection = scoredConcepts => scoredConcepts.map(
+      scoredConcept => selectedConcepts.find(concept => concept.conceptId === scoredConcept.concept.conceptId)
+        ? {...scoredConcept, selected: true}
+        : scoredConcept
+    )
+
+    this.scoredConceptWithSelected$ = (filters) => this.importCodesService.getSearchResultByTerm(term, filters, sourceAutoAssignedConceptIds)
+      .pipe(
+        map(toScoredConceptWithSelection)
+      )
+  }
+
+  private initFilters() {
+    this.importCodesService.filters()
+      .subscribe(result =>
+        Object.keys(result).forEach(key =>
+          this.dropdownFilters.find(filter => filter.field === key).values = result[key]
+        )
+      )
   }
 }

@@ -1,12 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-
-export interface FilterValue {
-  name: string;
-  count: number;
-  filterIndex: number;
-  checked: boolean;
-  disabled: boolean;
-}
+import { FilterValue } from '../../../../models/filter/filter';
 
 @Component({
   selector: 'app-filter-list',
@@ -39,5 +32,9 @@ export class FilterListComponent implements OnInit {
       .toLowerCase()
       .includes(parsedValue)
     );
+  }
+
+  toValueCount(count: number) {
+    return count.toString() ?? ''
   }
 }

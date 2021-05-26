@@ -1,6 +1,6 @@
 @import "../../../../styles/mixins";
 
-.vocabulary-search__filters-list {
+.filters-list {
   padding: 10px 5px 5px 36px;
   background-color: #fff;
 
@@ -13,7 +13,7 @@
     }
   }
 
-  &-item {
+  &__item {
     margin-bottom: 5px;
 
     label {
