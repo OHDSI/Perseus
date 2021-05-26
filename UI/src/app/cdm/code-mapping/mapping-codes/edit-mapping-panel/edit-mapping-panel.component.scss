@@ -8,6 +8,9 @@
 
   &__side-panel {
     &__filters {
+      overflow-y: auto;
+      height: 100%;
+
       &__control {
         display: flex;
         align-items: center;

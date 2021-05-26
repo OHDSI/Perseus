@@ -34,17 +34,17 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe(
-        result => {
-          if (result && !this.scanningStarted) {
-            this.onConnect();
-          }
-        }, error => this.handleProgressMessage({
-          message: this.websocketService.handleError(error),
-          status: {
-            code: ProgressNotificationStatusCode.FAILED
-          }
-        })
+        () => {},
+        error =>
+          this.handleProgressMessage({
+            message: this.websocketService.handleError(error),
+            status: {
+              code: ProgressNotificationStatusCode.FAILED
+            }
+          })
       )
+
+    this.onConnect();
 
     this.allStepsCount = this.importCodesService.codes
       .filter(code => code.selected)

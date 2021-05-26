@@ -35,7 +35,6 @@
       <ng-container *ngIf="dropdownFilters">
         <div *ngFor="let filter of dropdownFilters" class="edit-mapping__side-panel__filters__control">
           <app-filter-dropdown [filter]="filter"
-                               [openedFilterName]="openedFilterName"
                                [formControlName]="filter.field">
             <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
                                     [color]="filter.color"></app-filter-color-point>

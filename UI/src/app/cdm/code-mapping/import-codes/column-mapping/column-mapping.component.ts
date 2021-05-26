@@ -10,6 +10,7 @@ import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-d
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { createFiltersForm } from '../../../../models/code-mapping/filters';
 import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
+import { mapFormFiltersToBackEndFilters } from '../../../../models/code-mapping/search-concept-filters';
 
 @Component({
   selector: 'app-column-mapping',
@@ -49,7 +50,7 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
 
   onApply() {
     this.importCodesService.mappingParams = this.form.value
-    this.importCodesService.filters = this.filtersForm.value
+    this.importCodesService.filters = mapFormFiltersToBackEndFilters(this.filtersForm.value)
     this.importCodesMediatorService.onWebsocketConnect$ = this.importCodesService.calculateScore()
 
     this.dialogService

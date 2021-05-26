@@ -3,7 +3,7 @@ import {
   ProgressNotification,
   ProgressNotificationStatusCode
 } from '../../../../models/scan-data/progress-notification';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { WebsocketParams } from '../../../../models/scan-data/websocket-params';
 import { WebsocketService } from '../../../../websocket/websocket.service';
@@ -33,14 +33,12 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit, 
   ngOnInit(): void {
     this.websocketService.connect()
       .pipe(
-        takeUntil(this.ngUnsubscribe)
+        takeUntil(this.ngUnsubscribe),
+        filter(result => result && !this.scanningStarted)
       )
       .subscribe(
-        result => {
-          if (result && !this.scanningStarted) {
-            this.onConnect();
-          }
-        }, error => {
+        () => this.onConnect(),
+        error => {
           this.showNotificationMessage({
             message: this.websocketService.handleError(error),
             status: {

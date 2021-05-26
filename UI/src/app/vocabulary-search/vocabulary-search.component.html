@@ -17,8 +17,7 @@
         <div *ngFor="let filter of filters" class="vocabulary-search__filters__filter-wrapper">
           <app-filter-dropdown [ngModel]="selectedFilters"
                                (ngModelChange)="onCheckFilter($event)"
-                               [filter]="filter"
-                               [openedFilterName]="openedFilter">
+                               [filter]="filter">
             <app-filter-color-point class="vocabulary-search__filters__filter-wrapper__point" [color]="filter.color"></app-filter-color-point>
           </app-filter-dropdown>
         </div>

@@ -13,6 +13,9 @@ export class FilterListComponent implements OnInit {
   @Input()
   values: FilterValue[];
 
+  @Input()
+  paddingLeft: number
+
   filteredValues: FilterValue[];
 
   @Output()
@@ -35,6 +38,6 @@ export class FilterListComponent implements OnInit {
   }
 
   toValueCount(count: number) {
-    return count.toString() ?? ''
+    return count ? `(${count})` : ''
   }
 }

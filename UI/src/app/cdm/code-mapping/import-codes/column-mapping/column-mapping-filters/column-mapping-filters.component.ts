@@ -13,8 +13,6 @@ export class ColumnMappingFiltersComponent implements OnInit {
   @Input()
   form: FormGroup
 
-  openedFilterName: string;
-
   dropdownFilters = getFilters()
 
   constructor(private importCodesService: ImportCodesService) { }

@@ -11,8 +11,8 @@ import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { Filter } from '../../../../models/filter/filter';
 import {
-  filterValueToString,
   getDefaultSearchConceptFilters,
+  mapFormFiltersToBackEndFilters,
   SearchConceptFilters
 } from '../../../../models/code-mapping/search-concept-filters';
 import { createFiltersForm, fillFilters, getFilters } from '../../../../models/code-mapping/filters';
@@ -42,8 +42,6 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   dropdownFilters: Filter[] = getFilters()
 
-  openedFilterName: string
-
   // Map term with selected concepts to all concept list stream
   private scoredConceptWithSelected$: (filters) => Observable<ScoredConcept[]>
 
@@ -65,13 +63,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   }
 
   get searchConceptFilters(): SearchConceptFilters {
-    const formValue = this.form.value
-    return {
-      ...formValue,
-      conceptClasses: formValue.conceptClasses?.map(filterValueToString) ?? [],
-      vocabularies: formValue.vocabularies?.map(filterValueToString) ?? [],
-      domains: formValue.domains?.map(filterValueToString) ?? []
-    }
+    return mapFormFiltersToBackEndFilters(this.form.value)
   }
 
   ngOnInit(): void {

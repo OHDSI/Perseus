@@ -25,6 +25,9 @@ export class FilterDropdownComponent implements ControlValueAccessor {
   @Input()
   openedFilterName: string
 
+  @Input()
+  paddingLeft = 30
+
   private onChange = (value: FilterValue[]) => {}
 
   registerOnChange(fn: (value: FilterValue[]) => void): void {

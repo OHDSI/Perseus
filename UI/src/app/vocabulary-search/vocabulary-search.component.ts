@@ -64,8 +64,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   filters: Filter[] = []
 
-  openedFilter: string
-
   oldSelectedFilters: string[] = [] // Only names
   selectedFilters: FilterValue[] = []
 
@@ -157,14 +155,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
     if (changes || filtersChanged) {
       this.makeRequest(this.requestParams);
-    }
-  }
-
-  onOpen(filter: string) {
-    if (this.openedFilter === filter) {
-      this.openedFilter = null;
-    } else {
-      this.openedFilter = filter;
     }
   }
 

@@ -6,4 +6,5 @@
 
 <app-filter-list *ngIf="filter.name === openedFilterName"
                  [values]="filter.values"
+                 [paddingLeft]="paddingLeft"
                  (check)="onCheckFilter($event)"></app-filter-list>
