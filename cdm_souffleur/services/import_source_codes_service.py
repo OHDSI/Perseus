@@ -18,6 +18,8 @@ from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_ID
 import pysolr
 from cdm_souffleur import app, json
 import logging
+import os.path
+from os import path
 
 CONCEPT_TERM = "C"
 
@@ -293,7 +295,8 @@ def get_vocabulary_data(current_user):
 
 
 def get_filters(current_user):
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
+    core_name = current_user if path.exists(f'{SOLR_PATH}/{current_user}') else 'concepts'
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{core_name}",
                        always_commit=True)
     facets = {}
     for key in SOLR_FILTERS:
