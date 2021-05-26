@@ -5,7 +5,7 @@ from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping, search, create_core, save_codes, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data
+    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
 from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS
@@ -60,12 +60,14 @@ def load_codes_call(current_user):
     return jsonify(codes_file)
 
 
-@usagi_api.route('/api/get_term_search_results', methods=['GET'])
+@usagi_api.route('/api/get_term_search_results', methods=['POST'])
 @token_required
 def get_term_search_results_call(current_user):
     try:
-        term = request.args['term']
-        search_result = search(current_user, term)
+        term = request.json['term']
+        filters = request.json['filters']
+        source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
+        search_result = search(current_user, filters, term, source_auto_assigned_concept_ids)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -119,6 +121,18 @@ def load_mapped_concepts_call(current_user):
 def get_vocabulary_data_call(current_user):
     try:
         result = get_vocabulary_data(current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(result)
+
+
+@usagi_api.route('/api/get_filters', methods=['GET'])
+@token_required
+def get_filters_call(current_user):
+    try:
+        result = get_filters(current_user)
     except InvalidUsage as error:
         raise error
     except Exception as error:

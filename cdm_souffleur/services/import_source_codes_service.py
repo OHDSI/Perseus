@@ -13,12 +13,13 @@ from cdm_souffleur.services.web_socket_service import socketio, emit_status
 from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.async_directive import fire_and_forget
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH, \
+    SOLR_FILTERS
 import pysolr
 from cdm_souffleur import app, json
 import logging
 
-CONCEPT_TERM = "C";
+CONCEPT_TERM = "C"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -289,5 +290,21 @@ def get_vocabulary_data(current_user):
     result = fetched_vocabularies[current_user]
     fetched_vocabularies.pop(current_user, None)
     return result
+
+
+def get_filters(current_user):
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
+                       always_commit=True)
+    facets = {}
+    for key in SOLR_FILTERS:
+        params = {
+            'facet': 'on',
+            'facet.field': key,
+            'rows': '0',
+        }
+        results = solr.search("*:*", **params)
+        facets_string_values = [x for x in results.facets['facet_fields'][key]if not isinstance(x, int)]
+        facets[SOLR_FILTERS[key]] = sorted(facets_string_values)
+    return facets
 
 

@@ -155,6 +155,8 @@ def get_column_info_call(current_user):
         info = get_column_info(current_user, report_name, table_name, column_name);
     except InvalidUsage as error:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
+    except FileNotFoundError as error:
+        raise InvalidUsage('Report not found', 404)
     except Exception as e:
         raise InvalidUsage(e.__str__(), 500)
     return jsonify(info)
