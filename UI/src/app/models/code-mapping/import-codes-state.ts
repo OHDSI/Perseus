@@ -11,3 +11,10 @@ export interface ImportCodesState {
   codeMappings: CodeMapping[],
   filters: SearchConceptFilters
 }
+
+export function columnsFromSourceCode(code: Code): Column[] {
+  return Object.keys(code).map(key => ({
+    field: key,
+    name: key
+  }))
+}
