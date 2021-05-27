@@ -27,9 +27,11 @@ export class CdmConsoleComponent extends ConsoleComponent implements OnInit {
 
     switch (notification.status) {
       case ProgressNotificationStatusCode.FINISHED: {
+        this.progressValue = 100;
         this.finish.emit('Finished');
         break;
       }
+      case ProgressNotificationStatusCode.ERROR:
       case ProgressNotificationStatusCode.FAILED: {
         this.progressValue = 0;
         this.websocketService.disconnect();
