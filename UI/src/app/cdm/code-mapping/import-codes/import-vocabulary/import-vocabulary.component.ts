@@ -4,15 +4,15 @@ import { ImportVocabulariesService } from '../../../../services/import-codes/imp
 import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
-import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '../../../../app.constants';
-import { Observable } from 'rxjs/internal/Observable';
 import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
 import { columnsFromSourceCode } from '../../../../models/code-mapping/import-codes-state';
+import { withLoading$ } from '../../../../utilites/loading';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -73,9 +73,8 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
         disableClose: true
       }).afterClosed()
         .pipe(
-          tap(() => this.loading = true),
-          switchMap(delimiter => delimiter ? this.importCodesService.loadCsv(csv) : EMPTY),
-          finalize(() => this.loading = false)
+          takeUntil(this.ngUnsubscribe),
+          switchMap(delimiter => delimiter ? withLoading$(this, this.importCodesService.loadCsv(csv, delimiter)) : EMPTY),
         )
         .subscribe(
           () => this.import.emit(),
@@ -110,18 +109,10 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onRemove(index: number) {
     const vocabulary = this.vocabularies[index]
-    this.withLoading$(this.importVocabulariesService.remove(vocabulary))
+    withLoading$(this, this.importVocabulariesService.remove(vocabulary))
       .subscribe(
         () => this.vocabularies = this.vocabularies.filter(vocab => vocab !== vocabulary),
         error => openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
-      )
-  }
-
-  private withLoading$<T>(request$: Observable<T>) {
-    this.loading = true
-    return request$
-      .pipe(
-        finalize(() => this.loading = false)
       )
   }
 }
