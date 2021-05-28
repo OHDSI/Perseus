@@ -40,11 +40,14 @@ export function getDefaultSearchConceptFilters() {
 /**
  * conceptClasses, vocabularies, domains - FilterValue[]
  */
-export function mapFormFiltersToBackEndFilters(filters) {
-  return {
+
+export function mapFormFiltersToBackEndFilters(filters, searchMode: SearchMode = null): SearchConceptFilters {
+  const result = {
     ...filters,
     conceptClasses: filters.conceptClasses?.map(filterValueToString) ?? [],
     vocabularies: filters.vocabularies?.map(filterValueToString) ?? [],
     domains: filters.domains?.map(filterValueToString) ?? []
   }
+
+  return searchMode ? {...result, searchMode} : result
 }

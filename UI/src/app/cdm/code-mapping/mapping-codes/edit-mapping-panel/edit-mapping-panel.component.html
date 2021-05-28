@@ -36,10 +36,12 @@
         <div *ngFor="let filter of dropdownFilters" class="edit-mapping__side-panel__filters__control">
           <app-filter-dropdown [filter]="filter"
                                [formControlName]="filter.field">
-            <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
-                                    [color]="filter.color"></app-filter-color-point>
-            <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
-                              [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+            <div class="edit-mapping__side-panel__filters__control__label">
+              <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                      [color]="filter.color"></app-filter-color-point>
+              <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                                [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+            </div>
           </app-filter-dropdown>
         </div>
       </ng-container>

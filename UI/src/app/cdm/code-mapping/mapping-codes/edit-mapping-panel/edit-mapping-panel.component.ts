@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ScoredConcept } from '../../../../models/code-mapping/scored-concept';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
-import { catchErrorAndContinue, parseHttpError } from '../../../../utilites/error';
+import { parseHttpError, switchMapCatchErrorAndContinue } from '../../../../utilites/error';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../../models/code-mapping/concept';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -17,6 +17,7 @@ import {
 } from '../../../../models/code-mapping/search-concept-filters';
 import { createFiltersForm, fillFilters, getFilters } from '../../../../models/code-mapping/filters';
 import { SearchMode } from '../../../../models/code-mapping/search-mode';
+import { isFormChanged } from './edit-mapping-panel';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -63,13 +64,6 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   get applyDisabled() {
     return !this.applyActive
-  }
-
-  get searchConceptFilters(): SearchConceptFilters {
-    return {
-      ...mapFormFiltersToBackEndFilters(this.form.value),
-      searchMode: this.searchMode
-    }
   }
 
   get searchInputDisabled() {
@@ -131,10 +125,13 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.form.valueChanges
       .pipe(
         takeUntil(this.ngUnsubscribe),
+        map(value => mapFormFiltersToBackEndFilters(value, this.searchMode)),
+        startWith<SearchConceptFilters, SearchConceptFilters>(null),
+        pairwise(),
+        filter(([prev, curr]) => isFormChanged(prev, curr)),
+        map(([, curr]) => curr),
         tap(() => this.loading = true),
-        switchMap(() => catchErrorAndContinue(
-          this.scoredConceptWithSelected$(this.searchConceptFilters), handleError, []
-        ))
+        switchMapCatchErrorAndContinue(filters => this.scoredConceptWithSelected$(filters), handleError, [])
       )
       .subscribe(scoredConcepts => {
         this.scoredConcepts = scoredConcepts

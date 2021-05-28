@@ -16,6 +16,11 @@
         align-items: center;
         margin-bottom: 8px;
 
+        &__label {
+          display: flex;
+          align-items: center;
+        }
+
         &__point {
           margin-left: 30px;
         }

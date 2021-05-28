@@ -21,6 +21,7 @@ import { EditCodeMappingGridComponent } from './mapping-codes/edit-mapping-panel
 import { ScoredConceptsCacheService } from '../../services/import-codes/scored-concepts-cache.service';
 import { ImportCodesMediatorService } from '../../services/import-codes/import-codes-mediator.service';
 import { ImportCodesGridComponent } from './import-codes/column-mapping/import-codes-grid/import-codes-grid.component';
+import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { ImportCodesGridComponent } from './import-codes/column-mapping/import-c
     ImportVocabulariesService,
     MappingCodesGuard,
     ScoredConceptsCacheService,
-    ImportCodesMediatorService
+    ImportCodesMediatorService,
+    ImportCodesGuard,
   ]
 })
 export class CodeMappingModule { }
