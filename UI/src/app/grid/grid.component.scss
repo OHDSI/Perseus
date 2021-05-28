@@ -3,14 +3,25 @@
 
 $row-height: 32px;
 
-.grid, .row, .cell {
+.row, .cell {
+  border-collapse: collapse;
+}
+
+.row, .cell {
   border: 1px solid #E6E6E6;
+}
+
+.cell:not(:first-child) {
+  border-left: none;
+}
+
+.cell {
+  border-top: none;
 }
 
 .header, .column {
   border: 1px solid rgba(230, 230, 230, .2);
 }
-
 
 .grid-wrapper {
   position: relative;

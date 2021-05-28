@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../app.constants';
-import { SourceCode } from '../../models/code-mapping/source-code';
 import { CodeMapping } from '../../models/code-mapping/code-mapping';
 import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
 import { Code } from '../../models/code-mapping/code';
@@ -80,12 +79,12 @@ export class ImportCodesService {
   /**
    * Parse CSV file to json array on server
    */
-  loadCsv(csv: File, delimiter = ','): Observable<SourceCode[]> {
+  loadCsv(csv: File, delimiter = ','): Observable<Code[]> {
     const formData = new FormData()
     formData.append('file', csv)
     formData.append('delimiter', delimiter)
 
-    return this.httpClient.post<SourceCode[]>(`${apiUrl}/load_codes_to_server`, formData)
+    return this.httpClient.post<Code[]>(`${apiUrl}/load_codes_to_server`, formData)
       .pipe(
         tap(codes => {
           if (codes.length === 0) {

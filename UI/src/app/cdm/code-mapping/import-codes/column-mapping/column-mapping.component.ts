@@ -42,6 +42,8 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
     this.initForm()
 
     this.initFiltersForm()
+
+    this.importCodesService.saveToStorage()
   }
 
   onBack() {
