@@ -1,7 +1,6 @@
 import { Filter } from '../filter/filter';
 import { ImportCodesService } from '../../services/import-codes/import-codes.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SearchMode } from './search-mode';
 
 const dropdownFilters: Filter[] = [
   {
@@ -42,8 +41,6 @@ export function fillFilters(filters: Filter[], importCodesService: ImportCodesSe
 
 export function createFiltersForm() {
   return new FormGroup({
-    searchString: new FormControl(null),
-    searchMode: new FormControl(SearchMode.SEARCH_TERM_AS_QUERY),
     filterByUserSelectedConceptsAtcCode: new FormControl(false),
     filterStandardConcepts: new FormControl(false),
     includeSourceTerms: new FormControl(false),

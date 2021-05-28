@@ -7,7 +7,7 @@ import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { catchErrorAndContinue, parseHttpError } from '../../../../utilites/error';
 import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../../models/code-mapping/concept';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { Filter } from '../../../../models/filter/filter';
 import {
@@ -16,6 +16,7 @@ import {
   SearchConceptFilters
 } from '../../../../models/code-mapping/search-concept-filters';
 import { createFiltersForm, fillFilters, getFilters } from '../../../../models/code-mapping/filters';
+import { SearchMode } from '../../../../models/code-mapping/search-mode';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -42,6 +43,8 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   dropdownFilters: Filter[] = getFilters()
 
+  searchMode = SearchMode.SEARCH_TERM_AS_QUERY
+
   // Map term with selected concepts to all concept list stream
   private scoredConceptWithSelected$: (filters) => Observable<ScoredConcept[]>
 
@@ -63,7 +66,14 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   }
 
   get searchConceptFilters(): SearchConceptFilters {
-    return mapFormFiltersToBackEndFilters(this.form.value)
+    return {
+      ...mapFormFiltersToBackEndFilters(this.form.value),
+      searchMode: this.searchMode
+    }
+  }
+
+  get searchInputDisabled() {
+    return this.searchMode === SearchMode.SEARCH_TERM_AS_QUERY
   }
 
   ngOnInit(): void {
@@ -79,6 +89,16 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       .filter(c => c.selected)
       .map(c => c.concept)
     this.apply.emit(concepts)
+  }
+
+  onSearchModeChange(value: SearchMode) {
+    this.searchMode = value
+    const searchString = this.form.get('searchString')
+    if (this.searchInputDisabled) {
+      searchString.disable({emitEvent: false})
+    } else {
+      searchString.enable({emitEvent: false})
+    }
   }
 
   /**
@@ -104,6 +124,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   private initForm() {
     this.form = createFiltersForm()
+    this.form.addControl('searchString', new FormControl({value: null, disabled: this.searchInputDisabled}))
 
     const handleError = error => this.error = parseHttpError(error)
 

@@ -57,12 +57,18 @@
 
         <div class="edit-mapping__grid-toolbar__search-mode">
           <span>
-            <input type="radio" value="term" formControlName="searchMode">
+            <input type="radio" value="term"
+                   [ngModel]="searchMode"
+                   (ngModelChange)="onSearchModeChange($event)"
+                   [ngModelOptions]="{standalone: true}">
             Search Term as Query
           </span>
 
           <span>
-            <input type="radio" value="query" formControlName="searchMode">
+            <input type="radio" value="query"
+                   [ngModel]="searchMode"
+                   (ngModelChange)="onSearchModeChange($event)"
+                   [ngModelOptions]="{standalone: true}">
             Query
           </span>
         </div>
