@@ -12,7 +12,7 @@ import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-d
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
 import { columnsFromSourceCode } from '../../../../models/code-mapping/import-codes-state';
-import { withLoading$ } from '../../../../utilites/loading';
+import { withLoading } from '../../../../utilites/loading';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -74,7 +74,8 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
       }).afterClosed()
         .pipe(
           takeUntil(this.ngUnsubscribe),
-          switchMap(delimiter => delimiter ? withLoading$(this, this.importCodesService.loadCsv(csv, delimiter)) : EMPTY),
+          switchMap(delimiter => delimiter ? this.importCodesService.loadCsv(csv, delimiter) : EMPTY),
+          withLoading(this)
         )
         .subscribe(
           () => this.import.emit(),
@@ -109,7 +110,8 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onRemove(index: number) {
     const vocabulary = this.vocabularies[index]
-    withLoading$(this, this.importVocabulariesService.remove(vocabulary))
+    this.importVocabulariesService.remove(vocabulary)
+      .pipe(withLoading(this))
       .subscribe(
         () => this.vocabularies = this.vocabularies.filter(vocab => vocab !== vocabulary),
         error => openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))

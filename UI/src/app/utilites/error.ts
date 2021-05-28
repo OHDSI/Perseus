@@ -33,9 +33,9 @@ export function openErrorDialog(dialogService: MatDialog, title: string, message
 /**
  * Call this method in switchMap as disposable stream
  */
-export function catchErrorAndContinue<T>(stream$: Observable<T>,
-                                         errorHandler: (error) => void = () => {},
-                                         defaultValue: T = null) {
+export function catchErrorAndContinue$<T>(stream$: Observable<T>,
+                                          errorHandler: (error) => void = () => {},
+                                          defaultValue: T = null) {
   return stream$.pipe(
     catchError(error => {
       errorHandler(error)
@@ -49,7 +49,7 @@ export function switchMapCatchErrorAndContinue<S, R>(result$: (source: S) => Obs
                                                      defaultValue: R = null): (source$: Observable<S>) => Observable<R> {
   return source$ => source$.pipe(
     switchMap(source =>
-      catchErrorAndContinue<R>(result$(source), errorHandler, defaultValue)
+      catchErrorAndContinue$<R>(result$(source), errorHandler, defaultValue)
     )
   )
 }
