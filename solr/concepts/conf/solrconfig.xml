@@ -29,6 +29,20 @@
     <str name="config">db-data-config.xml</str>
   </lst>
 </requestHandler>
+
+    <!-- More Like This -->
+<requestHandler name="/mlt" class="solr.MoreLikeThisHandler">
+    <lst name="defaults">
+           <str name="mlt.fl">term</str>
+           <str name="mlt.mintf">1</str>
+           <str name="mlt.mindf">1</str>
+           <str name="mlt.minwl">1</str>
+           <str name="mlt.maxwl">9999</str>
+           <str name="mlt.maxdfpct">100</str>
+           <str name="mlt.maxntp">9999</str>
+           <str name="mlt.maxqt">25</str>
+    </lst>
+</requestHandler>
   <!-- In all configuration below, a prefix of "solr." for class names
        is an alias that causes solr to search appropriate packages,
        including org.apache.solr.(search|update|request|core|analysis)
