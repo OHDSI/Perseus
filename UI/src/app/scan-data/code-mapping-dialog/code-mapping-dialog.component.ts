@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CodeMappingConsoleWrapperComponent } from './code-mapping-console-wrapper/code-mapping-console-wrapper.component';
+import { ImportCodesMediatorService } from '../../services/import-codes/import-codes-mediator.service';
 
 @Component({
   selector: 'app-code-mapping-dialog',
@@ -17,7 +18,8 @@ export class CodeMappingDialogComponent extends AbstractScanDialog {
   @ViewChild(CodeMappingConsoleWrapperComponent)
   consoleWrapperComponent: CodeMappingConsoleWrapperComponent;
 
-  constructor(dialogRef: MatDialogRef<CodeMappingDialogComponent>) {
+  constructor(dialogRef: MatDialogRef<CodeMappingDialogComponent>,
+              public importCodesMediatorService: ImportCodesMediatorService) {
     super(dialogRef);
   }
 
