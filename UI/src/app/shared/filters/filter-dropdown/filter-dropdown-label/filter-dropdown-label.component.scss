@@ -2,20 +2,20 @@
   width: 100%;
   min-width: 200px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+  padding-right: 38px;
 
   &__name {
+    cursor: pointer;
     font-size: 14px;
     line-height: 18px;
+    width: 100%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-  }
 
-  &.opened .section-arrow {
-    transform: rotate(180deg);
+    &.opened .section-arrow {
+      transform: rotate(180deg);
+    }
   }
-
-  padding-right: 38px;
 }

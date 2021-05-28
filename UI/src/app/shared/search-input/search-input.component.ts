@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, Provider, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, Provider, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {
@@ -11,8 +11,7 @@ const VALUE_ACCESSOR: Provider = {
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
-  providers: [VALUE_ACCESSOR],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [VALUE_ACCESSOR]
 })
 export class SearchInputComponent implements ControlValueAccessor {
 
@@ -20,6 +19,8 @@ export class SearchInputComponent implements ControlValueAccessor {
 
   @Input()
   placeholder = 'Search by Keywords'
+
+  disabled = false
 
   @ViewChild('keyWordInput')
   private keyWordInput: ElementRef
@@ -39,5 +40,9 @@ export class SearchInputComponent implements ControlValueAccessor {
 
   writeValue(value: string): void {
     this.value = value
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled
   }
 }

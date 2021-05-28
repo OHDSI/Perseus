@@ -36,10 +36,12 @@
         <div *ngFor="let filter of dropdownFilters" class="edit-mapping__side-panel__filters__control">
           <app-filter-dropdown [filter]="filter"
                                [formControlName]="filter.field">
-            <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
-                                    [color]="filter.color"></app-filter-color-point>
-            <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
-                              [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+            <div class="edit-mapping__side-panel__filters__control__label">
+              <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                      [color]="filter.color"></app-filter-color-point>
+              <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                                [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+            </div>
           </app-filter-dropdown>
         </div>
       </ng-container>
@@ -57,12 +59,18 @@
 
         <div class="edit-mapping__grid-toolbar__search-mode">
           <span>
-            <input type="radio" value="term" formControlName="searchMode">
+            <input type="radio" value="term"
+                   [ngModel]="searchMode"
+                   (ngModelChange)="onSearchModeChange($event)"
+                   [ngModelOptions]="{standalone: true}">
             Search Term as Query
           </span>
 
           <span>
-            <input type="radio" value="query" formControlName="searchMode">
+            <input type="radio" value="query"
+                   [ngModel]="searchMode"
+                   (ngModelChange)="onSearchModeChange($event)"
+                   [ngModelOptions]="{standalone: true}">
             Query
           </span>
         </div>

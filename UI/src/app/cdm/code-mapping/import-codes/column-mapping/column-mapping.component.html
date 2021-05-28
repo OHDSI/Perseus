@@ -12,9 +12,8 @@
 
   <div class="column-mapping">
     <div class="column-mapping__grid-wrapper">
-      <app-selectable-grid height="100%"
-                           [data]="importCodesService.codes"
-                           [columns]="importCodesService.columns"></app-selectable-grid>
+      <app-import-codes-grid [data]="importCodesService.codes"
+                             [columns]="importCodesService.columns"></app-import-codes-grid>
     </div>
 
     <div class="column-mapping__buttons">

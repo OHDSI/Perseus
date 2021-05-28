@@ -1,4 +1,4 @@
 export interface Code {
-  selected?: boolean
+  selected: boolean
   [key: string]: any
 }
