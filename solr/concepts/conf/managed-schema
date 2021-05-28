@@ -114,7 +114,7 @@ type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, s
 
 <field name="type" type="string" indexed="true" stored="true"></field>
 <field name="term_type" type="string" indexed="true" stored="true"></field>
-<field name="term" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field> 
+<field name="term" type="text_vector" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field> 
 <field name="concept_id" type="string" indexed="true" stored="true"></field> 
 <field name="domain_id" type="string" indexed="true" stored="true"></field> 
 <field name="vocabulary_id" type="string" indexed="true" stored="true"></field> 
@@ -320,6 +320,13 @@ type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, s
         <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
+    </fieldType>
+
+    <fieldType name="text_vector" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+      <analyzer>
+        <tokenizer class="solr.NGramTokenizerFactory" minGramSize="2" maxGramSize="3"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>   
     </fieldType>
 
     

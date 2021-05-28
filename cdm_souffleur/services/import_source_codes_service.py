@@ -3,13 +3,13 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 from cdm_souffleur.model import atc_to_rxnorm
-from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, ScoredConcept, MappingTarget, \
-    MappingStatus, TargetConcept
-from cdm_souffleur.model.concept import Concept
+from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, MappingTarget, \
+    MappingStatus
 from cdm_souffleur.model.conceptVocabularyModel import Source_To_Concept_Map
 from cdm_souffleur.model.mapped_concepts import mapped_concept
 from cdm_souffleur.model.source_code import SourceCode
-from cdm_souffleur.services.web_socket_service import socketio, emit_status
+from cdm_souffleur.services.usagi_search_service import search
+from cdm_souffleur.services.web_socket_service import emit_status
 from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.async_directive import fire_and_forget
@@ -21,7 +21,6 @@ import logging
 import os.path
 from os import path
 
-CONCEPT_TERM = "C"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -151,64 +150,7 @@ def get_saved_code_mapping(current_user):
     return result
 
 
-def create_target_concept(concept):
-    return TargetConcept(concept.concept_id,
-                         concept.concept_name,
-                         concept.concept_class_id,
-                         concept.vocabulary_id,
-                         concept.concept_code,
-                         concept.domain_id,
-                         concept.valid_start_date.strftime("%Y-%m-%d"),
-                         concept.valid_end_date.strftime("%Y-%m-%d"),
-                         concept.invalid_reason,
-                         concept.standard_concept,
-                         "",
-                         concept.parent_count,
-                         concept.parent_count)
-
-
-def search(current_user, filters, query, source_auto_assigned_concept_ids):
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
-                       always_commit=True)
-    scored_concepts = []
-    if filters:
-        filter_queries = create_filter_queries(filters, source_auto_assigned_concept_ids)
-    words = '+'.join(re.split('[^a-zA-Z]', query))
-    results = solr.search(f"term:{words}", fl='concept_id, term, score', fq=filter_queries, rows=100).docs
-    for item in results:
-        if 'concept_id' in item:
-            target_concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
-            concept = create_target_concept(target_concept)
-            scored_concepts.append(ScoredConcept(item['score'], concept, item['term']))
-    return scored_concepts
-
-
-def create_filter_queries(filters, source_auto_assigned_concept_ids):
-    queries = []
-    create_or_filter_query(queries, filters['filterByConceptClass'], filters['conceptClasses'], 'concept_class_id')
-    create_or_filter_query(queries, filters['filterByVocabulary'], filters['vocabularies'], 'vocabulary_id')
-    create_or_filter_query(queries, filters['filterByDomain'], filters['domains'], 'domain_id')
-    if filters['filterStandardConcepts']:
-        queries.append('standard_concept:S')
-    if source_auto_assigned_concept_ids and len(source_auto_assigned_concept_ids):
-        create_or_filter_query(queries, filters['filterByUserSelectedConceptsAtcCode'], source_auto_assigned_concept_ids, 'concept_id')
-    if filters['includeSourceTerms']:
-        queries.append(f'term_type:{CONCEPT_TERM}')
-    return queries
-
-
-def create_or_filter_query(queries, filter_applied, values, field_name):
-    def add_field_name(item, field_name):
-        return f"{field_name}:{item}"
-    if filter_applied:
-        values_with_field_name = [add_field_name(item, field_name) for item in values]
-        query = " OR ".join(values_with_field_name)
-        if query:
-            queries.append(query)
-    return queries
-
-
-def save_codes(current_user, codes, mapping_params, mapped_codes, vocabulary_name):
+def save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
     for item in mapped_codes:
         if 'approved' in item:
             if item['approved']:
@@ -228,12 +170,12 @@ def save_codes(current_user, codes, mapping_params, mapped_codes, vocabulary_nam
                                                 username=current_user)
                     mapped_code.save()
 
-    save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, vocabulary_name)
+    save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
     return True
 
 
-def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, vocabulary_name):
-    source_and_mapped_codes_dict = {'codes': codes, 'mappingParams': mapping_params, 'codeMappings': mapped_codes}
+def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
+    source_and_mapped_codes_dict = {'codes': codes, 'mappingParams': mapping_params, 'codeMappings': mapped_codes, 'filters': filters}
     source_and_mapped_codes_string = json.dumps(source_and_mapped_codes_dict)
 
     saved_mapped_concepts = mapped_concept.select().where(

@@ -4,10 +4,11 @@ from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping, search, create_core, save_codes, get_vocabulary_list_for_user, \
+    create_concept_mapping, create_core, save_codes, get_vocabulary_list_for_user, \
     load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
+from cdm_souffleur.services.usagi_search_service import search
 from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS
 import asyncio
 usagi_api = Blueprint('usagi_api', __name__)
@@ -83,7 +84,8 @@ def save_mapped_codes_call(current_user):
         mapped_codes = request.json['codeMappings']
         vocabulary_name = request.json['name']
         mapping_params = request.json['mappingParams']
-        result = save_codes(current_user, codes, mapping_params, mapped_codes, vocabulary_name)
+        filters = request.json['filters']
+        result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
     except InvalidUsage as error:
         raise error
     except Exception as error:
