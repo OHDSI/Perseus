@@ -49,6 +49,7 @@
 
   &__list {
     margin-top: 10px;
+    height: 80%;
 
     &__item {
       margin-bottom: 10px;
@@ -76,6 +77,8 @@
     &__other {
       background: #FFFFFF;
       box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
+      overflow-y: auto;
+      height: 60%;
 
       &__item {
         padding: 4px 10px;
