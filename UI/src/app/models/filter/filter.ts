@@ -9,7 +9,6 @@ export interface Filter {
 export interface FilterValue {
   name: string;
   count?: number;
-  filterIndex?: number;
-  checked: boolean;
+  filterIndex?: number; // Parent index
   disabled: boolean;
 }

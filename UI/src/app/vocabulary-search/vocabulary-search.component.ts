@@ -187,7 +187,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   }
 
   onDeleteFilter(index: number) {
-    this.selectedFilters[index].checked = false;
     this.selectedFilters.splice(index, 1);
 
     this.updateChipsHeight();
@@ -195,9 +194,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   onClear() {
     if (this.selectedFilters.length > 0) {
-      this.selectedFilters.forEach(filter =>
-        filter.checked = false
-      );
       this.selectedFilters = [];
       this.updateChipsHeight();
 
@@ -226,7 +222,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     const searchRequest = (params: VocabSearchReqParams) =>
       this.searchService.search(params, this.mode)
         .pipe(
-          catchError(error => {
+          catchError(() => {
             if (this.mode === VocabSearchMode.ATHENA) {
               this.disableAll = true
             }
@@ -299,7 +295,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
                   name: valueKey,
                   filterIndex,
                   count: filterValue[valueKey] as number,
-                  checked: this.selectedFilters.find(value => value.name === valueKey)?.checked,
                   disabled: (filterValue[valueKey] as number) === 0
                 }
               }

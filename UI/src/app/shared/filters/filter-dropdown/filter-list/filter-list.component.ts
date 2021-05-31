@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FilterValue } from '../../../../models/filter/filter';
 
 @Component({
@@ -6,23 +6,28 @@ import { FilterValue } from '../../../../models/filter/filter';
   templateUrl: './filter-list.component.html',
   styleUrls: ['./filter-list.component.scss']
 })
-export class FilterListComponent implements OnInit {
+export class FilterListComponent {
 
-  filter = '';
+  filter: string;
 
-  @Input()
-  values: FilterValue[];
+  allValues: FilterValue[]
+
+  filteredValues: FilterValue[];
 
   @Input()
   paddingLeft: number
 
-  filteredValues: FilterValue[];
+  @Input()
+  selectedValues: FilterValue[]
 
   @Output()
   check = new EventEmitter<FilterValue>();
 
-  ngOnInit(): void {
-    this.filteredValues = this.values;
+  @Input()
+  private set values(values: FilterValue[]) {
+    this.filter = null
+    this.allValues = values
+    this.filteredValues = values
   }
 
   onCheck(index: number) {
@@ -31,7 +36,7 @@ export class FilterListComponent implements OnInit {
 
   onFilter(value: string) {
     const parsedValue = value.toLowerCase();
-    this.filteredValues = this.values.filter(filter => filter.name
+    this.filteredValues = this.allValues.filter(filter => filter.name
       .toLowerCase()
       .includes(parsedValue)
     );
@@ -39,5 +44,9 @@ export class FilterListComponent implements OnInit {
 
   toValueCount(count: number) {
     return count ? `(${count})` : ''
+  }
+
+  isChecked(value: string): boolean {
+    return !!this.selectedValues.find(filter => filter.name === value)
   }
 }

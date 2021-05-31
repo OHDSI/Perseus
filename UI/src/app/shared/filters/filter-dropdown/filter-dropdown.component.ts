@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, Provider } from '@angular/core';
+import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { Filter, FilterValue } from '../../../models/filter/filter';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -12,8 +12,7 @@ const VALUE_ACCESSOR: Provider = {
   selector: 'app-filter-dropdown',
   templateUrl: './filter-dropdown.component.html',
   styleUrls: ['./filter-dropdown.component.scss'],
-  providers: [VALUE_ACCESSOR],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [VALUE_ACCESSOR]
 })
 export class FilterDropdownComponent implements ControlValueAccessor {
 
@@ -35,10 +34,8 @@ export class FilterDropdownComponent implements ControlValueAccessor {
   }
 
   writeValue(state: FilterValue[]): void {
-    if (state !== null) {
-      this.state = state
-      this.onChange(this.state)
-    }
+    this.state = state
+    this.onChange(this.state)
   }
 
   registerOnTouched(fn: any): void {
@@ -52,14 +49,11 @@ export class FilterDropdownComponent implements ControlValueAccessor {
     }
   }
 
-  onCheckFilter(filterValue: FilterValue) {
-    filterValue.checked = !filterValue.checked;
-
-    if (filterValue.checked) {
-      this.state.push(filterValue);
+  onCheck(filterValue: FilterValue) {
+    if (this.state.find(filter => filter.name === filterValue.name)) {
+      this.state = this.state.filter(filter => filter.name !== filterValue.name)
     } else {
-      const index = this.state.indexOf(filterValue);
-      this.state.splice(index, 1);
+      this.state = [...this.state, filterValue]
     }
 
     this.onChange(this.state)

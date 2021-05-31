@@ -9,16 +9,15 @@ import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params
 import { Code } from '../../models/code-mapping/code';
 import { ScoredConcept } from '../../models/code-mapping/scored-concept';
 import { columnsFromSourceCode, ImportCodesState } from '../../models/code-mapping/import-codes-state';
-import { ScoredConceptsCacheService } from './scored-concepts-cache.service';
 import { FilterValue } from '../../models/filter/filter';
-import { getDefaultSearchConceptFilters, SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
+import { defaultSearchConceptFilters, SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
 
 const initialState: ImportCodesState = {
   codes: null,
   columns: null,
   mappingParams: null,
   codeMappings: null,
-  filters: getDefaultSearchConceptFilters()
+  filters: defaultSearchConceptFilters()
 }
 
 @Injectable()
@@ -26,8 +25,7 @@ export class ImportCodesService {
 
   private state: ImportCodesState
 
-  constructor(private httpClient: HttpClient,
-              private scoredConceptCacheService: ScoredConceptsCacheService) {
+  constructor(private httpClient: HttpClient) {
     const stateFromStorage = JSON.parse(localStorage.getItem('code-mappings'))
     this.state = {...initialState, ...stateFromStorage}
   }
