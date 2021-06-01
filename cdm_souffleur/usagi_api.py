@@ -5,7 +5,7 @@ from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
     create_concept_mapping, create_core, save_codes, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters
+    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters, delete_vocabulary
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
 from cdm_souffleur.services.usagi_search_service import search
@@ -86,6 +86,8 @@ def save_mapped_codes_call(current_user):
         mapping_params = request.json['mappingParams']
         filters = request.json['filters']
         result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+    except DataError as error:
+        raise InvalidUsage(error.__str__(), 400)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -111,6 +113,19 @@ def load_mapped_concepts_call(current_user):
     try:
         vocabulary_name = request.args['name']
         load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify('OK')
+
+
+@usagi_api.route('/api/delete_vocabulary', methods=['GET'])
+@token_required
+def delete_vocabulary_call(current_user):
+    try:
+        vocabulary_name = request.args['name']
+        delete_vocabulary(vocabulary_name, current_user)
     except InvalidUsage as error:
         raise error
     except Exception as error:
