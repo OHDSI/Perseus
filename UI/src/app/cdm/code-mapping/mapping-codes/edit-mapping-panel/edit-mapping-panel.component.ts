@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ScoredConcept } from '../../../../models/code-mapping/scored-concept';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
-import { catchError, filter, map, pairwise, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, pairwise, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
 import { parseHttpError } from '../../../../utilites/error';
@@ -160,9 +160,8 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       .pipe(
         takeUntil(this.ngUnsubscribe),
         startWith<SearchConceptFilters, SearchConceptFilters>(null),
-        pairwise(),
-        filter(([prev, curr]) => this.isFormChanged(prev, curr)),
-        map(([, curr]) => mapFormFiltersToBackEndFilters(curr, this.searchMode)),
+        distinctUntilChanged((prev, curr) => this.isFormChanged(prev, curr)),
+        map(filters => mapFormFiltersToBackEndFilters(filters, this.searchMode)),
         tap(() => this.loading = true),
         switchMap(filters => this.searchByTerm(filters)),
         map(scoredConcepts => this.toScoredConceptWithSelection(scoredConcepts))

@@ -1,6 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter, startWith, takeUntil } from 'rxjs/operators';
+import { BaseComponent } from '../../shared/base/base.component';
 
 export interface IBreadCrumb {
   label: string;
@@ -15,56 +16,42 @@ export interface IBreadCrumb {
   templateUrl: './breadcrumb.component.html',
   styleUrls: ['./breadcrumb.component.scss']
 })
-export class BreadcrumbComponent implements OnInit {
-  public breadcrumbs: IBreadCrumb[] = [];
+export class BreadcrumbComponent extends BaseComponent implements OnInit {
 
-  private readonly singleBreadcrumbLabels = ['Link Tables', 'Import codes'];
+  public breadcrumbs: IBreadCrumb[] = []
 
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-  ) {
-    this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.firstChild);
+  public currentUrl: string
+
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute) {
+    super()
   }
 
   ngOnInit() {
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd), distinctUntilChanged())
-      .subscribe(() => {
-        this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute, this.router.url, this.breadcrumbs);
+    this.router.events
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        filter(event => event instanceof NavigationEnd),
+        startWith<NavigationEnd, NavigationEnd>(null),
+        distinctUntilChanged()
+      )
+      .subscribe(event => {
+        this.currentUrl = event?.url
+        this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute, this.breadcrumbs)
       });
   }
 
-  buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrumb[] = []): IBreadCrumb[] {
-    const label = route.routeConfig?.data?.breadcrumb;
-    const path = route.routeConfig?.data ? route.routeConfig.path : null;
+  private buildBreadCrumb(route: ActivatedRoute, breadcrumbs: IBreadCrumb[] = [], url = '/perseus'): IBreadCrumb[] {
+    const label = route.routeConfig?.data?.breadcrumb
+    const path = route.routeConfig?.path
+    const nextUrl = path ? `${url}/${path}` : url
 
-    const nextUrl = path ? `${url}/${path}` : url;
-
-    const existedBreadcrumb = this.breadcrumbs?.find(item =>
-      item.label === label && item.url === nextUrl
-    );
-
-    if (existedBreadcrumb) {
-      return [existedBreadcrumb];
-    }
-
-    const breadcrumb: IBreadCrumb = {
-        label,
-        url: nextUrl,
-    };
-
-    if (this.breadcrumbs.length === 0 && label === 'Link Fields') {
-      return;
-    }
-
-    const getBreadCrumbs = () => this.singleBreadcrumbLabels.includes(label) ? [] : breadcrumbs
-
-    const newBreadcrumbs = breadcrumb.label ? [ ...getBreadCrumbs(), breadcrumb ] : [ ...breadcrumbs];
+    const newBreadcrumbs = label ? [...breadcrumbs.filter(it => it.label !== label), {label, url: nextUrl}] : [...breadcrumbs]
 
     if (route.firstChild) {
-        return this.buildBreadCrumb(route.firstChild, this.router.url, newBreadcrumbs);
+      return this.buildBreadCrumb(route.firstChild, newBreadcrumbs, nextUrl)
     }
 
-    return newBreadcrumbs;
+    return newBreadcrumbs
   }
 }
