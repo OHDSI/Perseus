@@ -6,4 +6,5 @@ export interface Concept {
   vocabularyId: string
   conceptCode: number
   standardConcept: string
+  index?: number
 }
