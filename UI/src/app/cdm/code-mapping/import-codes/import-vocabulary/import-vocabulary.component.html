@@ -24,7 +24,12 @@
 
       <ng-template #savedVocabularies>
         <div *ngFor="let vocabulary of vocabularies | slice: 0: visibleVocabCount; index as i" class="import-vocabulary__list__item">
-          {{vocabulary}}
+            <span appTextWidth
+                  #textWidth="textWidth"
+                  [matTooltipDisabled]="textWidth.tooltipDisabled"
+                  [value]="vocabulary"
+                  [matTooltip]="vocabulary">{{vocabulary}}</span>
+
           <app-import-vocabulary-buttons (edit)="onEdit(i)"
                                          (remove)="onRemove(i)"></app-import-vocabulary-buttons>
         </div>
@@ -39,7 +44,11 @@
 
         <div *ngIf="showOther" class="import-vocabulary__list__other">
           <div *ngFor="let vocabulary of vocabularies | slice: visibleVocabCount; index as i" class="import-vocabulary__list__other__item">
-            {{vocabulary}}
+            <span appTextWidth
+                  #textWidth="textWidth"
+                  [matTooltipDisabled]="textWidth.tooltipDisabled"
+                  [value]="vocabulary"
+                  [matTooltip]="vocabulary">{{vocabulary}}</span>
 
             <app-import-vocabulary-buttons (edit)="onEdit(i + visibleVocabCount)"
                                            (remove)="onRemove(i + visibleVocabCount)"></app-import-vocabulary-buttons>

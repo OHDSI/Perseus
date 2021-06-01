@@ -51,7 +51,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.importVocabulariesService.all()
       .subscribe(
-        vocabularies => this.vocabularies = vocabularies,
+        vocabularies => this.vocabularies = [...vocabularies],
         error => openErrorDialog(this.dialogService, 'Failed to load vocabularies', parseHttpError(error)),
         () => !this.vocabularies && (this.vocabularies = [])
       )
