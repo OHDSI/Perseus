@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ImportCodesService } from '../../../services/import-codes/import-codes.service';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '../../../app.constants';
-import { finalize, switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { openErrorDialog, parseHttpError } from '../../../utilites/error';
 import { MatDialog } from '@angular/material/dialog';
 import { EMPTY } from 'rxjs';
@@ -10,12 +10,12 @@ import { SaveVocabularyPopupComponent } from './save-vocabulary-popup/save-vocab
 import { CodeMapping } from '../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../models/code-mapping/concept';
 import { ScoredConceptsCacheService } from '../../../services/import-codes/scored-concepts-cache.service';
+import { withLoading } from '../../../utilites/loading';
 
 @Component({
   selector: 'app-mapping-codes',
   templateUrl: './mapping-codes.component.html',
-  styleUrls: ['./mapping-codes.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./mapping-codes.component.scss']
 })
 export class MappingCodesComponent {
 
@@ -45,9 +45,7 @@ export class MappingCodesComponent {
       disableClose: true
     }).afterClosed()
       .pipe(
-        tap(() => this.loading = true),
-        switchMap(name => name ? this.importCodesService.saveCodes(name) : EMPTY),
-        finalize(() => this.loading = false)
+        switchMap(name => name ? this.importCodesService.saveCodes(name).pipe(withLoading(this)) : EMPTY),
       )
       .subscribe(
         () => {

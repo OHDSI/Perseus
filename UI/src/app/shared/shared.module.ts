@@ -17,6 +17,7 @@ import { FilterDropdownLabelComponent } from './filters/filter-dropdown/filter-d
 import { FilterListComponent } from './filters/filter-dropdown/filter-list/filter-list.component';
 import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdown.component';
 import { FilterColorPointComponent } from './filters/filter-color-point/filter-color-point.component';
+import { TextWidthDirective } from './text-width/text-width.directive';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { FilterColorPointComponent } from './filters/filter-color-point/filter-c
     FilterDropdownLabelComponent,
     FilterListComponent,
     FilterDropdownComponent,
-    FilterColorPointComponent
+    FilterColorPointComponent,
+    TextWidthDirective
   ],
   exports: [
     CommonModule,
@@ -47,7 +49,8 @@ import { FilterColorPointComponent } from './filters/filter-color-point/filter-c
     CdkTableModule,
     SearchInputComponent,
     FilterDropdownComponent,
-    FilterColorPointComponent
+    FilterColorPointComponent,
+    TextWidthDirective
   ],
   imports: [
     CommonModule,
