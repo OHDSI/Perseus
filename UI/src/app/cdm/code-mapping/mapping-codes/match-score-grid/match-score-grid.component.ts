@@ -80,7 +80,8 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     return this.data.flatMap((codeMapping, index) =>
       codeMapping.targetConcepts.map(targetConcept => ({
         ...targetConcept.concept,
-        index
+        index,
+        term: targetConcept.term[0]
       }))
     )
   }
@@ -113,7 +114,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   trackConcepts(index: number, item: Concept): string {
-    return item.conceptId.toString()
+    return `${item.term}: ${item.conceptId}`
   }
 
   select(row: CodeMapping) {
@@ -168,8 +169,9 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   editCellBorder(concept: Concept) {
-    const length = this.data[concept.index].targetConcepts.length
-    const isLast = this.data[concept.index].targetConcepts[length - 1].concept.conceptId === concept.conceptId
+    const targetConcepts = this.data[concept.index].targetConcepts
+    const lastTargetConcept = targetConcepts[targetConcepts.length - 1]
+    const isLast = lastTargetConcept.concept.conceptId === concept.conceptId && lastTargetConcept.term[0] === concept.term
     return isLast ? '1px solid #E6E6E6' : 'none';
   }
 

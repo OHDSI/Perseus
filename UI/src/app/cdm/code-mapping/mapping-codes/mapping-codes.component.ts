@@ -64,7 +64,10 @@ export class MappingCodesComponent {
     if (concepts.length === 0) {
       this.editingMapping.targetConcepts = this.editingMapping.targetConcepts.slice(0, 1)
     } else {
-      this.editingMapping.targetConcepts = concepts.map(concept => ({concept}))
+      this.editingMapping.targetConcepts = concepts.map(concept => ({
+        concept,
+        term: [concept.term]
+      }))
     }
     this.editingMapping = null // Close panel
   }

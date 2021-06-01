@@ -65,7 +65,7 @@ export class EditCodeMappingGridComponent extends NavigationGridComponent<Scored
   }
 
   trackScoredConcept(index: number, item: ScoredConcept): string {
-    return `${item.concept.conceptId}`
+    return `${item.term[0]}: ${item.concept.conceptId}`
   }
 
   select(row: ScoredConcept) {

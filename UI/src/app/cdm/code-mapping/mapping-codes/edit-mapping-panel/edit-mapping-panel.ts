@@ -61,14 +61,17 @@ export function isFormChanged(prev: SearchConceptFilters, curr: SearchConceptFil
 
 export function toScoredConceptWithSelection(scoredConcepts: ScoredConcept[], selectedConcepts: Concept[]): ScoredConcept[] {
   return scoredConcepts.map(
-    scoredConcept => selectedConcepts.find(concept => concept.conceptId === scoredConcept.concept.conceptId)
+    scoredConcept => selectedConcepts.find(concept => concept.conceptId === scoredConcept.concept.conceptId && concept.term === scoredConcept.term[0])
       ? {...scoredConcept, selected: true}
       : {...scoredConcept, selected: false}
   )
 }
 
 export function toSearchByTermParams(term: string, codeMapping: CodeMapping): SearchByTermParams {
-  const selectedConcepts = codeMapping.targetConcepts.map(targetConcept => targetConcept.concept)
+  const selectedConcepts = codeMapping.targetConcepts.map(targetConcept => ({
+    ...targetConcept.concept,
+    term: targetConcept.term[0]
+  }))
   const sourceAutoAssignedConceptIds = codeMapping.sourceCode.source_auto_assigned_concept_ids
   return  {
     term,
