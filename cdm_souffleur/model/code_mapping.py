@@ -55,11 +55,12 @@ class ScoredConcept:
 
 
 class MappingTarget:
-    def __init__(self, concept=TargetConcept(), mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0):
+    def __init__(self, concept=TargetConcept(), mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0, term=''):
         self.concept = concept
         self.mappingType = mappingType
         self.createdBy = createdBy
         self.createdTime = createdTime
+        self.term = term
 
 
 class CodeMapping:

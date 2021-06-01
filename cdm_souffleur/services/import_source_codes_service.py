@@ -127,7 +127,7 @@ def create_concept_mapping(current_user, codes, filters, source_code_column, sou
             emit_status(current_user, f"import_codes_status", f"Searching {source_code.source_name}", 1)
             scored_concepts = search(current_user, filters, source_code.source_name, source_code.source_auto_assigned_concept_ids)
             if len(scored_concepts):
-                target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
+                target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>', term=scored_concepts[0].term)
                 code_mapping.targetConcepts = [target_concept]
                 code_mapping.matchScore = scored_concepts[0].match_score
             else:
