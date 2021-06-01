@@ -163,6 +163,16 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     return defaultRowHeight * this.data[index].targetConcepts.length
   }
 
+  targetBackgroundColor(index): string {
+    return index % 2 === 0 ?  '#fff' : '#f2f7fc'
+  }
+
+  editCellBorder(concept: Concept) {
+    const length = this.data[concept.index].targetConcepts.length
+    const isLast = this.data[concept.index].targetConcepts[length - 1].concept.conceptId === concept.conceptId
+    return isLast ? '1px solid #E6E6E6' : 'none';
+  }
+
   private initColumns() {
     this.sourceColumns = this.importCodesService.columns
     this.targetColumns = targetColumns

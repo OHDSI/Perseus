@@ -61,15 +61,9 @@
     }
 
     .edit-cell {
+      width: 36px;
       min-width: 36px;
-      border-right: none;
-      border-right: none;
-
-      & + td,
-      & + th {
-        border-left: none;
-        padding-left: 0;
-      }
+      border-top: none;
     }
 
     .cell {
@@ -93,15 +87,28 @@
     align-items: center;
     pointer-events: none;
     z-index: 99;
+    background: rgba(6, 107, 187, 0.05);
 
-    .edit-icon {
+    .edit-icon-wrapper {
       pointer-events: auto;
-      width: 15px;
-      height: 15px;
       cursor: pointer;
       z-index: 1000;
-      margin-left: calc(40% + 21px); // 44% - source + match score grids width;
-      // 9 - distance between match score and target grid + 12 - __edit-cell__ padding.
+      margin-left: calc(40% + 10px); // 40% - source + match score grids width;
+      // 9 - distance between match score and target grid + 1 - border
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 36px;
+
+      &:hover {
+        background: rgba(6, 107, 187, 0.1);
+      }
+
+      .edit-icon {
+        width: 15px;
+        height: 15px;
+      }
     }
   }
 }

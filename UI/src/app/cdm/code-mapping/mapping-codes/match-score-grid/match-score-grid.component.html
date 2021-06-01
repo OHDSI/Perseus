@@ -75,7 +75,9 @@
         <ng-container cdkColumnDef="__edit__">
           <th class="column cell edit-cell" cdk-header-cell *cdkHeaderCellDef></th>
 
-          <td class="cell edit-cell" cdk-cell data-cell *cdkCellDef></td>
+          <td class="cell edit-cell" cdk-cell data-cell *cdkCellDef="let targetConcept; let i = index"
+              [ngStyle]="{'border-bottom': editCellBorder(targetConcept)}">
+          </td>
         </ng-container>
 
         <ng-container *ngFor="let targetColumn of targetColumns"
@@ -92,6 +94,7 @@
         <tr class="row header" cdk-header-row *cdkHeaderRowDef="targetDisplayedColumns; sticky: true"></tr>
         <tr class="row target-row" cdk-row *cdkRowDef="let row; columns: targetDisplayedColumns"
             data-target-row
+            [style.backgroundColor]="targetBackgroundColor(row.index)"
             [attr.data-row]="row.index"></tr>
       </table>
     </div>
@@ -101,8 +104,10 @@
 
   <div class="grid-select" data-select-block
        [style.top.px]="selectionTop"
-       [style.height.px]="selectionHeight">
-    <mat-icon class="edit-icon"
-              svgIcon="edit" (click)="onEditMapping()"></mat-icon>
+       [style.height.px]="selectionHeight"
+       (click)="onEditMapping()">
+    <div class="edit-icon-wrapper">
+      <mat-icon class="edit-icon" svgIcon="edit"></mat-icon>
+    </div>
   </div>
 </div>

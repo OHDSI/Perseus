@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, Provider } from '@angular/core';
+import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {
@@ -11,8 +11,7 @@ const VALUE_ACCESSOR: Provider = {
   selector: 'app-cdm-checkbox',
   templateUrl: './cdm-checkbox.component.html',
   styleUrls: ['./cdm-checkbox.component.scss'],
-  providers: [VALUE_ACCESSOR],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [VALUE_ACCESSOR]
 })
 export class CdmCheckboxComponent implements ControlValueAccessor {
 
@@ -33,9 +32,9 @@ export class CdmCheckboxComponent implements ControlValueAccessor {
   }
 
   writeValue(state: boolean): void {
+    this.state = state;
+    this.onChange(state);
     if (state !== null) {
-      this.state = state;
-      this.onChange(state);
       this.onTouched();
     }
   }

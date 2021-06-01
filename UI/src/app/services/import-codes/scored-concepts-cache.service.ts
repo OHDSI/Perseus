@@ -1,20 +1,20 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ScoredConcept } from '../../models/code-mapping/scored-concept';
+import { ScoredConceptCache } from '../../models/code-mapping/scored-concept-cache';
 
 @Injectable()
 export class ScoredConceptsCacheService implements OnDestroy {
 
-  private map = new Map<string, ScoredConcept[]>()
+  private map = new Map<string, ScoredConceptCache>()
 
   ngOnDestroy(): void {
     this.clear()
   }
 
-  add(term: string, concepts: ScoredConcept[]): void {
-    this.map.set(term, concepts)
+  add(term: string, value: ScoredConceptCache): void {
+    this.map.set(term, value)
   }
 
-  get(term: string): ScoredConcept[] {
+  get(term: string): ScoredConceptCache {
     return this.map.get(term)
   }
 

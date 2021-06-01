@@ -3,38 +3,35 @@ import { FilterValue } from '../filter/filter';
 
 export interface SearchConceptFilters {
   searchString: string,
-  searchMode: SearchMode,
+  searchMode?: SearchMode,
   filterByUserSelectedConceptsAtcCode: boolean,
   filterStandardConcepts: boolean,
   includeSourceTerms: boolean,
   filterByConceptClass: boolean,
   filterByVocabulary: boolean,
   filterByDomain: boolean,
-  conceptClasses: string[],
-  vocabularies: string[],
-  domains: string[]
+  conceptClasses: string[] | FilterValue[],
+  vocabularies: string[] | FilterValue[],
+  domains: string[] | FilterValue[]
 }
 
 export function filterValueToString(filterValue: FilterValue): string {
   return filterValue.name
 }
 
-const defaultSearchConceptFilters: SearchConceptFilters = {
-  searchString: '',
-  searchMode: SearchMode.SEARCH_TERM_AS_QUERY,
-  filterByUserSelectedConceptsAtcCode: false,
-  filterStandardConcepts: false,
-  includeSourceTerms: false,
-  filterByConceptClass: false,
-  filterByVocabulary: false,
-  filterByDomain: false,
-  conceptClasses: [],
-  vocabularies: [],
-  domains: []
-}
-
-export function getDefaultSearchConceptFilters() {
-  return {...defaultSearchConceptFilters}
+export function defaultSearchConceptFilters() {
+  return {
+    searchString: '',
+    filterByUserSelectedConceptsAtcCode: false,
+    filterStandardConcepts: false,
+    includeSourceTerms: false,
+    filterByConceptClass: false,
+    filterByVocabulary: false,
+    filterByDomain: false,
+    conceptClasses: [],
+    vocabularies: [],
+    domains: []
+  }
 }
 
 /**
@@ -50,4 +47,10 @@ export function mapFormFiltersToBackEndFilters(filters, searchMode: SearchMode =
   }
 
   return searchMode ? {...result, searchMode} : result
+}
+
+export const defaultSearchMode = SearchMode.SEARCH_TERM_AS_QUERY
+
+export function defaultFiltersAnSearchMode() {
+  return {filters: defaultSearchConceptFilters(), searchMode: defaultSearchMode}
 }

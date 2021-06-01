@@ -13,6 +13,7 @@ import { BaseComponent } from '../../../../shared/base/base.component';
 import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
 import { columnsFromSourceCode } from '../../../../models/code-mapping/import-codes-state';
 import { withLoading } from '../../../../utilites/loading';
+import { ConsoleHeader } from '../../../../models/code-mapping/console-header';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -86,6 +87,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onEdit(index: number) {
     const vocabulary = this.vocabularies[index]
+    this.importCodesMediatorService.consoleHeader = ConsoleHeader.LOAD_VOCABULARY
     this.importCodesMediatorService.onWebsocketConnect$ = this.importVocabulariesService.prepareVocabulary(vocabulary)
 
     this.dialogService

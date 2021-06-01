@@ -1,11 +1,11 @@
 <div class="filters-list" [style.paddingLeft.px]="paddingLeft">
-  <input *ngIf="values.length > 4" class="filter" placeholder="Filter"
+  <input *ngIf="allValues.length > 4" class="filter" placeholder="Filter"
          [ngModel]="filter"
          (ngModelChange)="onFilter($event)">
 
   <div *ngFor="let value of filteredValues; let i = index" class="filters-list__item">
     <label>
-      <input (click)="onCheck(i)" type="checkbox" [disabled]="value.disabled" [checked]="value.checked">
+      <input (click)="onCheck(i)" type="checkbox" [disabled]="value.disabled" [checked]="isChecked(value.name)">
       {{value.name}} {{toValueCount(value.count)}}
     </label>
   </div>
