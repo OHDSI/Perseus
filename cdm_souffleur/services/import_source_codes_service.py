@@ -20,6 +20,7 @@ from cdm_souffleur import app, json
 import logging
 import os.path
 from os import path
+import datetime
 
 
 logging.basicConfig(level=logging.INFO)
@@ -151,26 +152,30 @@ def get_saved_code_mapping(current_user):
 
 
 def save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
-    for item in mapped_codes:
-        if 'approved' in item:
-            if item['approved']:
-                source_concept_id = 0
-                source_code = item['sourceCode']['source_code']
-                source_code_description = item['sourceCode']['source_name']
-                for concept in item['targetConcepts']:
-                    mapped_code = Source_To_Concept_Map(source_concept_id=source_concept_id,
-                                                source_code=source_code,
-                                                source_vocabulary_id=vocabulary_name,
-                                                source_code_description=source_code_description,
-                                                target_concept_id=concept['concept']['conceptId'],
-                                                target_vocabulary_id= "None" if concept['concept']['vocabularyId'] == "0" else concept['concept']['vocabularyId'],
-                                                valid_start_date="1970-01-01",
-                                                valid_end_date="2099-12-31",
-                                                invalid_reason="",
-                                                username=current_user)
-                    mapped_code.save()
+    try:
+        delete_vocabulary(vocabulary_name, current_user)
+        for item in mapped_codes:
+            if 'approved' in item:
+                if item['approved']:
+                    source_concept_id = 0
+                    source_code = item['sourceCode']['source_code']
+                    source_code_description = item['sourceCode']['source_name']
+                    for concept in item['targetConcepts']:
+                        mapped_code = Source_To_Concept_Map(source_concept_id=source_concept_id,
+                                                    source_code=source_code,
+                                                    source_vocabulary_id=vocabulary_name,
+                                                    source_code_description=source_code_description,
+                                                    target_concept_id=concept['concept']['conceptId'],
+                                                    target_vocabulary_id= "None" if concept['concept']['vocabularyId'] == "0" else concept['concept']['vocabularyId'],
+                                                    valid_start_date="1970-01-01",
+                                                    valid_end_date="2099-12-31",
+                                                    invalid_reason="",
+                                                    username=current_user)
+                        mapped_code.save()
 
-    save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+        save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 400)
     return True
 
 
@@ -183,18 +188,30 @@ def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_par
     if saved_mapped_concepts.exists():
         saved_mapped_concepts = saved_mapped_concepts.get()
         saved_mapped_concepts.codes_and_mapped_concepts = source_and_mapped_codes_string
+        saved_mapped_concepts.created_on = datetime.datetime.utcnow()
         saved_mapped_concepts.save()
     else:
         new_saved_mapped_concepts = mapped_concept(name=vocabulary_name,
                                                    codes_and_mapped_concepts=source_and_mapped_codes_string,
-                                                   username=current_user)
+                                                   username=current_user,
+                                                   created_on=datetime.datetime.utcnow())
         new_saved_mapped_concepts.save()
     return
 
 
+def delete_vocabulary(vocabulary_name, current_user):
+    try:
+        delete_vocabulary_query = mapped_concept.delete().where((mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
+        delete_vocabulary_query.execute()
+        delete_rows_query = Source_To_Concept_Map.delete().where((Source_To_Concept_Map.source_vocabulary_id == vocabulary_name) & (Source_To_Concept_Map.username == current_user))
+        delete_rows_query.execute()
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 400)
+
+
 def get_vocabulary_list_for_user(current_user):
     result = []
-    saved_mapped_concepts = mapped_concept.select().where(mapped_concept.username == current_user)
+    saved_mapped_concepts = mapped_concept.select().where(mapped_concept.username == current_user).order_by(mapped_concept.created_on.desc())
     if saved_mapped_concepts.exists():
         for item in saved_mapped_concepts:
             result.append(item.name)

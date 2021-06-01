@@ -482,5 +482,6 @@ CREATE TABLE "cdm"."mapped_concept"
     id SERIAL PRIMARY KEY,
     name varchar(50) NOT NULL,
     codes_and_mapped_concepts text NOT NULL,
-    username VARCHAR ( 30 ) NOT NULL
+    username VARCHAR ( 30 ) NOT NULL,
+    created_on TIMESTAMP
 );
