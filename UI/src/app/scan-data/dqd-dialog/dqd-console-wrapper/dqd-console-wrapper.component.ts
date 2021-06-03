@@ -17,20 +17,16 @@ import { finalize } from 'rxjs/operators';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
+export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent<string> {
 
   constructor(private dqdService: DqdService) {
     super();
   }
 
   @ViewChild(DqdConsoleComponent)
-  scanDataConsoleComponent: DqdConsoleComponent;
+  consoleComponent: DqdConsoleComponent;
 
   fileLoading = false;
-
-  onFinish(result: string) {
-    this.result = result;
-  }
 
   onShowResult() {
     window.open(`${dqdUrl}/?result=${this.result}`, '_blank');
@@ -39,7 +35,7 @@ export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent 
   onSaveResult() {
     this.fileLoading = true
 
-    this.dqdService.download(this.result)
+    this.dqdService.download(this.result.payload)
       .pipe(
         finalize(() => this.fileLoading = false)
       )

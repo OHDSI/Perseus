@@ -8,7 +8,7 @@ export abstract class AbstractScanDialog {
 
   private selectedIndex = 0;
 
-  abstract consoleWrapperComponent: AbstractConsoleWrapperComponent;
+  abstract consoleWrapperComponent: AbstractConsoleWrapperComponent<any>;
 
   protected constructor(protected dialogRef: MatDialogRef<AbstractScanDialog>) {
   }

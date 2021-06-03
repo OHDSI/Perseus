@@ -46,7 +46,8 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
 
   scanParamsForm: FormGroup;
 
-  searchTableName = '';
+  @Input()
+  searchTableName: string;
 
   @ViewChild(ScanParamsComponent, {read: ElementRef})
   scanParamsPopup: ElementRef;

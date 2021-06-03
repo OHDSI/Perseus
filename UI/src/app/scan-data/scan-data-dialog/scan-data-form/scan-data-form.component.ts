@@ -28,6 +28,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   fileSettings: DelimitedTextFileSettings;
 
+  searchTableName: string
+
   scanParams: ScanParams;
 
   tablesToScan: TableToScan[];
@@ -60,7 +62,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.saveState();
-    this.saveDbSettingsToCdmDbSettings();
+    this.saveCdmDbSettingsState();
   }
 
   onScanTables(): void {
@@ -87,8 +89,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   }
 
   private loadState(): void {
-    const {dataType, dbSettings, fileSettings, scanParams,
-      tablesToScan, filteredTablesToScan, filesToScan, connectionResult} = this.stateService.state;
+    const {dataType, dbSettings, fileSettings, scanParams, tablesToScan,
+      filteredTablesToScan, searchTableName, filesToScan, connectionResult} = this.stateService.state;
 
     this.dataType = dataType;
     this.dbSettings = dbSettings;
@@ -96,6 +98,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.scanParams = scanParams;
     this.tablesToScan = tablesToScan;
     this.filteredTablesToScan = filteredTablesToScan;
+    this.searchTableName = searchTableName;
     this.filesToScan = filesToScan;
     this.connectionResult = connectionResult;
   }
@@ -108,6 +111,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
       scanParams: this.tablesToScanComponent.scanParams,
       tablesToScan: this.tablesToScanComponent.tablesToScan,
       filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
+      searchTableName: this.tablesToScanComponent.searchTableName,
       filesToScan: this.connectFormComponent.filesToScan,
       connectionResult: this.connectFormComponent.connectionResult
     };
@@ -137,7 +141,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private saveDbSettingsToCdmDbSettings() {
+  private saveCdmDbSettingsState() {
     const dbType = this.connectFormComponent.dataType;
 
     if (!this.cdmStateService.isSet && cdmBuilderDatabaseTypes.includes(dbType)) {

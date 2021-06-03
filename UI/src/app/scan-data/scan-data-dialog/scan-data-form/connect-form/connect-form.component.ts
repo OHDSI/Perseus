@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { merge, of } from 'rxjs';
+import { merge } from 'rxjs';
 import { DbSettings } from '../../../../models/scan-data/db-settings';
 import { DelimitedTextFileSettings } from '../../../../models/scan-data/delimited-text-file-settings';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '../../../../models/scan-data/scan-settings';
 import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
 import { AbstractResourceForm } from '../../../auxiliary/resource-form/abstract-resource-form';
@@ -73,23 +73,20 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
               this.subscribeFormChange();
               return this.whiteRabbitService.tablesInfo(dbSettings);
             } else {
-              this.showErrorPopup(connectionResult.message);
-              return of([]);
+              throw new Error(connectionResult.message)
             }
           }),
-          tap(() => {
-            this.tryConnect = false;
-          })
+          finalize(() => this.tryConnect = false),
         )
         .subscribe(tablesToScan => {
-          this.tablesToScanChange.emit(tablesToScan);
-        }, error => {
-          this.connectionResult = {canConnect: false, message: error.message};
-          this.tablesToScanChange.emit([]);
-          this.connectionResultChange.emit(this.connectionResult);
-          this.tryConnect = false;
-          this.showErrorPopup(this.connectionResult.message);
-        });
+            this.tablesToScanChange.emit(tablesToScan);
+          }, error => {
+            this.connectionResult = {canConnect: false, message: error.message};
+            this.tablesToScanChange.emit([]);
+            this.connectionResultChange.emit(this.connectionResult);
+            this.showErrorPopup(this.connectionResult.message);
+          }
+        );
     },
 
     fileSettings: (settings: ScanSettings) => {
@@ -138,6 +135,7 @@ export class ConnectFormComponent extends AbstractResourceForm implements OnInit
     this.initDelimitedFilesSettingsForm();
 
     if (this.correctConnectionSettingsLoaded) {
+      this.connectionResult = {canConnect: true}
       this.subscribeFormChange();
     }
   }
