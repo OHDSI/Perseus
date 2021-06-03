@@ -3,24 +3,30 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 from cdm_souffleur.model import atc_to_rxnorm
-from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, ScoredConcept, MappingTarget, \
-    MappingStatus, TargetConcept
-from cdm_souffleur.model.concept import Concept
+from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, MappingTarget, \
+    MappingStatus
 from cdm_souffleur.model.conceptVocabularyModel import Source_To_Concept_Map
 from cdm_souffleur.model.mapped_concepts import mapped_concept
 from cdm_souffleur.model.source_code import SourceCode
-from cdm_souffleur.services.web_socket_service import socketio, emit_status
+from cdm_souffleur.services.usagi_search_service import search
+from cdm_souffleur.services.web_socket_service import emit_status
 from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.async_directive import fire_and_forget
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH, \
+    SOLR_FILTERS
 import pysolr
 from cdm_souffleur import app, json
 import logging
+import os.path
+from os import path
+import datetime
+
 
 logging.basicConfig(level=logging.INFO)
 
 saved_import_results = {}
+fetched_vocabularies = {}
 
 def create_source_codes(current_user, codes, source_code_column, source_name_column, source_frequency_column,
                         auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
@@ -102,7 +108,7 @@ def create_derived_index(current_user, source_codes):
 
 
 @fire_and_forget
-def create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column,
+def create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column,
                            auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
     try:
         source_codes = create_source_codes(current_user, codes, source_code_column, source_name_column,
@@ -119,7 +125,7 @@ def create_concept_mapping(current_user, codes, source_code_column, source_name_
             code_mapping.sourceCode.source_auto_assigned_concept_ids = list(
                 code_mapping.sourceCode.source_auto_assigned_concept_ids)
             emit_status(current_user, f"import_codes_status", f"Searching {source_code.source_name}", 1)
-            scored_concepts = search(current_user, source_code.source_name)
+            scored_concepts = search(current_user, filters, source_code.source_name, source_code.source_auto_assigned_concept_ids)
             if len(scored_concepts):
                 target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>')
                 code_mapping.targetConcepts = [target_concept]
@@ -145,63 +151,36 @@ def get_saved_code_mapping(current_user):
     return result
 
 
-def create_target_concept(concept):
-    return TargetConcept(concept.concept_id,
-                         concept.concept_name,
-                         concept.concept_class_id,
-                         concept.vocabulary_id,
-                         concept.concept_code,
-                         concept.domain_id,
-                         concept.valid_start_date.strftime("%Y-%m-%d"),
-                         concept.valid_end_date.strftime("%Y-%m-%d"),
-                         concept.invalid_reason,
-                         concept.standard_concept,
-                         "",
-                         concept.parent_count,
-                         concept.parent_count)
+def save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
+    try:
+        delete_vocabulary(vocabulary_name, current_user)
+        for item in mapped_codes:
+            if 'approved' in item:
+                if item['approved']:
+                    source_concept_id = 0
+                    source_code = item['sourceCode']['source_code']
+                    source_code_description = item['sourceCode']['source_name']
+                    for concept in item['targetConcepts']:
+                        mapped_code = Source_To_Concept_Map(source_concept_id=source_concept_id,
+                                                    source_code=source_code,
+                                                    source_vocabulary_id=vocabulary_name,
+                                                    source_code_description=source_code_description,
+                                                    target_concept_id=concept['concept']['conceptId'],
+                                                    target_vocabulary_id= "None" if concept['concept']['vocabularyId'] == "0" else concept['concept']['vocabularyId'],
+                                                    valid_start_date="1970-01-01",
+                                                    valid_end_date="2099-12-31",
+                                                    invalid_reason="",
+                                                    username=current_user)
+                        mapped_code.save()
 
-
-def search(current_user, query):
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
-                       always_commit=True)
-    scored_concepts = []
-    words = '+'.join(re.split('[^a-zA-Z]', query))
-    results = solr.search(f"term:{words}", **{
-        'rows': 100,
-        'fl': 'concept_id, term, score'
-    }).docs
-    for item in results:
-        if 'concept_id' in item:
-            target_concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
-            concept = create_target_concept(target_concept)
-            scored_concepts.append(ScoredConcept(item['score'], concept, item['term']))
-    return scored_concepts
-
-
-def save_codes(current_user, codes, mapping_params, mapped_codes, vocabulary_name):
-    for item in mapped_codes:
-        if item['approved']:
-            source_concept_id = 0
-            source_code = item['sourceCode']['source_code']
-            source_code_description = item['sourceCode']['source_name']
-            for concept in item['targetConcepts']:
-                mapped_code = Source_To_Concept_Map(source_concept_id=source_concept_id,
-                                            source_code=source_code,
-                                            source_vocabulary_id=vocabulary_name,
-                                            source_code_description=source_code_description,
-                                            target_concept_id=concept['concept']['conceptId'],
-                                            target_vocabulary_id= "None" if concept['concept']['vocabularyId'] == "0" else concept['concept']['vocabularyId'],
-                                            valid_start_date="1970-01-01",
-                                            valid_end_date="2099-12-31",
-                                            invalid_reason="",
-                                            username=current_user)
-                mapped_code.save()
-
-    save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, vocabulary_name)
+        save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 400)
     return True
 
-def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, vocabulary_name):
-    source_and_mapped_codes_dict = {'codes': codes, 'mappingParams': mapping_params, 'codeMappings': mapped_codes}
+
+def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
+    source_and_mapped_codes_dict = {'codes': codes, 'mappingParams': mapping_params, 'codeMappings': mapped_codes, 'filters': filters}
     source_and_mapped_codes_string = json.dumps(source_and_mapped_codes_dict)
 
     saved_mapped_concepts = mapped_concept.select().where(
@@ -209,43 +188,86 @@ def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_par
     if saved_mapped_concepts.exists():
         saved_mapped_concepts = saved_mapped_concepts.get()
         saved_mapped_concepts.codes_and_mapped_concepts = source_and_mapped_codes_string
+        saved_mapped_concepts.created_on = datetime.datetime.utcnow()
         saved_mapped_concepts.save()
     else:
         new_saved_mapped_concepts = mapped_concept(name=vocabulary_name,
                                                    codes_and_mapped_concepts=source_and_mapped_codes_string,
-                                                   username=current_user)
+                                                   username=current_user,
+                                                   created_on=datetime.datetime.utcnow())
         new_saved_mapped_concepts.save()
     return
 
 
+def delete_vocabulary(vocabulary_name, current_user):
+    try:
+        delete_vocabulary_query = mapped_concept.delete().where((mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
+        delete_vocabulary_query.execute()
+        delete_rows_query = Source_To_Concept_Map.delete().where((Source_To_Concept_Map.source_vocabulary_id == vocabulary_name) & (Source_To_Concept_Map.username == current_user))
+        delete_rows_query.execute()
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 400)
+
+
 def get_vocabulary_list_for_user(current_user):
     result = []
-    saved_mapped_concepts = mapped_concept.select().where(mapped_concept.username == current_user)
+    saved_mapped_concepts = mapped_concept.select().where(mapped_concept.username == current_user).order_by(mapped_concept.created_on.desc())
     if saved_mapped_concepts.exists():
         for item in saved_mapped_concepts:
             result.append(item.name)
     return result
 
-
+@fire_and_forget
 def load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user):
-    saved_mapped_concepts = mapped_concept.select().where(
-        (mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
-    if saved_mapped_concepts.exists():
-        codes_and_saved_mappings_string = saved_mapped_concepts.get().codes_and_mapped_concepts
-        codes_and_saved_mappings = json.loads(codes_and_saved_mappings_string)
-        codes = codes_and_saved_mappings['codes']
-        params = codes_and_saved_mappings['mappingParams']
-        source_codes = create_source_codes(current_user, codes,
-                                           params['sourceCode'],
-                                           params['sourceName'],
-                                           params['sourceFrequency'],
-                                           params['autoConceptId'],
-                                           params['conceptIdOrAtc'] if 'conceptIdOrAtc' in params else '',
-                                           params['additionalInfo'])
-        create_core(current_user)
-        create_derived_index(current_user, source_codes)
-        return codes_and_saved_mappings
-    else:
-        raise InvalidUsage('Vocabulary not found', 404)
+    try:
+        emit_status(current_user, f"import_codes_status", "Fetching saved source codes", 0)
+        saved_mapped_concepts = mapped_concept.select().where(
+            (mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
+        if saved_mapped_concepts.exists():
+            codes_and_saved_mappings_string = saved_mapped_concepts.get().codes_and_mapped_concepts
+            codes_and_saved_mappings = json.loads(codes_and_saved_mappings_string)
+            codes = codes_and_saved_mappings['codes']
+            params = codes_and_saved_mappings['mappingParams']
+            source_codes = create_source_codes(current_user, codes,
+                                               params['sourceCode'],
+                                               params['sourceName'],
+                                               params['sourceFrequency'],
+                                               params['autoConceptId'],
+                                               params['conceptIdOrAtc'] if 'conceptIdOrAtc' in params else '',
+                                               params['additionalInfo'])
+            emit_status(current_user, f"import_codes_status", "Started creating main index", 1)
+            create_core(current_user)
+            emit_status(current_user, f"import_codes_status", "Started creating derived index", 1)
+            create_derived_index(current_user, source_codes)
+            emit_status(current_user, f"import_codes_status", "Process finished", 2)
+            fetched_vocabularies[current_user] = codes_and_saved_mappings
+        else:
+            raise InvalidUsage('Vocabulary not found', 404)
+    except Exception as error:
+        emit_status(current_user, f"import_codes_status", error.__str__(), 4)
+    return
+
+
+def get_vocabulary_data(current_user):
+    result = fetched_vocabularies[current_user]
+    fetched_vocabularies.pop(current_user, None)
+    return result
+
+
+def get_filters(current_user):
+    core_name = current_user if path.exists(f'{SOLR_PATH}/{current_user}') else 'concepts'
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{core_name}",
+                       always_commit=True)
+    facets = {}
+    for key in SOLR_FILTERS:
+        params = {
+            'facet': 'on',
+            'facet.field': key,
+            'rows': '0',
+        }
+        results = solr.search("*:*", **params)
+        facets_string_values = [x for x in results.facets['facet_fields'][key]if not isinstance(x, int)]
+        facets[SOLR_FILTERS[key]] = sorted(facets_string_values)
+    return facets
 
 

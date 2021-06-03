@@ -4,10 +4,11 @@ from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping, search, create_core, save_codes, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping
+    create_concept_mapping, create_core, save_codes, get_vocabulary_list_for_user, \
+    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters, delete_vocabulary
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
+from cdm_souffleur.services.usagi_search_service import search
 from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS
 import asyncio
 usagi_api = Blueprint('usagi_api', __name__)
@@ -24,7 +25,8 @@ def create_codes(current_user):
         additional_info_columns = params['additionalInfo']
         concept_ids_or_atc = params['conceptIdsOrAtc'] if 'conceptIdsOrAtc' in params else ''
         codes = request.json['codes']
-        create_concept_mapping(current_user, codes, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        filters = request.json['filters']
+        create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -59,12 +61,14 @@ def load_codes_call(current_user):
     return jsonify(codes_file)
 
 
-@usagi_api.route('/api/get_term_search_results', methods=['GET'])
+@usagi_api.route('/api/get_term_search_results', methods=['POST'])
 @token_required
 def get_term_search_results_call(current_user):
     try:
-        term = request.args['term']
-        search_result = search(current_user, term)
+        term = request.json['term']
+        filters = request.json['filters']
+        source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
+        search_result = search(current_user, filters, term, source_auto_assigned_concept_ids)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -80,7 +84,10 @@ def save_mapped_codes_call(current_user):
         mapped_codes = request.json['codeMappings']
         vocabulary_name = request.json['name']
         mapping_params = request.json['mappingParams']
-        result = save_codes(current_user, codes, mapping_params, mapped_codes, vocabulary_name)
+        filters = request.json['filters']
+        result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+    except DataError as error:
+        raise InvalidUsage(error.__str__(), 400)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -105,7 +112,44 @@ def get_vocabulary_list_call(current_user):
 def load_mapped_concepts_call(current_user):
     try:
         vocabulary_name = request.args['name']
-        result = load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
+        load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify('OK')
+
+
+@usagi_api.route('/api/delete_vocabulary', methods=['GET'])
+@token_required
+def delete_vocabulary_call(current_user):
+    try:
+        vocabulary_name = request.args['name']
+        delete_vocabulary(vocabulary_name, current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify('OK')
+
+
+@usagi_api.route('/api/get_vocabulary_data', methods=['GET'])
+@token_required
+def get_vocabulary_data_call(current_user):
+    try:
+        result = get_vocabulary_data(current_user)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(result)
+
+
+@usagi_api.route('/api/get_filters', methods=['GET'])
+@token_required
+def get_filters_call(current_user):
+    try:
+        result = get_filters(current_user)
     except InvalidUsage as error:
         raise error
     except Exception as error:

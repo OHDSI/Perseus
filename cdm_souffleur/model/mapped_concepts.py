@@ -7,3 +7,4 @@ class mapped_concept(BaseModel):
     name = CharField()
     codes_and_mapped_concepts = TextField()
     username = CharField()
+    created_on = DateTimeField()

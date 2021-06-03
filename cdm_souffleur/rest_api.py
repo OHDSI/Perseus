@@ -80,6 +80,7 @@ def save_and_load_schema_call(current_user):
         raise InvalidUsage(error.__str__(), 500)
     return jsonify([s.to_json() for s in saved_schema])
 
+
 @bp.route(f'/api/load_schema_to_server', methods=['POST'])
 @token_required
 def load_schema_call(current_user):
@@ -91,6 +92,7 @@ def load_schema_call(current_user):
         raise InvalidUsage('Schema was not loaded', 500)
     return jsonify('OK')
 
+
 @bp.route('/api/save_source_schema_to_db', methods=['POST'])
 @token_required
 def save_source_schema_to_db_call(current_user):
@@ -100,6 +102,7 @@ def save_source_schema_to_db_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify('OK')
+
 
 @bp.route('/api/get_view', methods=['POST'])
 @token_required
@@ -112,6 +115,7 @@ def get_View(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(view_result)
+
 
 @bp.route('/api/validate_sql', methods=['POST'])
 @token_required
@@ -155,9 +159,12 @@ def get_column_info_call(current_user):
         info = get_column_info(current_user, report_name, table_name, column_name);
     except InvalidUsage as error:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
+    except FileNotFoundError as error:
+        raise InvalidUsage('Report not found', 404)
     except Exception as e:
         raise InvalidUsage(e.__str__(), 500)
     return jsonify(info)
+
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
@@ -167,6 +174,7 @@ def handle_invalid_usage(error):
     traceback.print_tb(error.__traceback__)
     return response
 
+
 @app.errorhandler(AuthorizationError)
 def handle_invalid_usage(error):
     """handle error of wrong usage on functions"""
@@ -174,6 +182,7 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     traceback.print_tb(error.__traceback__)
     return response
+
 
 @app.errorhandler(BadRequestKeyError)
 def handle_invalid_req_key(error):
@@ -229,12 +238,14 @@ def get_lookup_by_name(current_user):
     lookup = get_lookup(current_user, name, lookup_type)
     return jsonify(lookup)
 
+
 @bp.route('/api/get_lookups_list')
 @token_required
 def get_lookups(current_user):
     lookup_type = request.args['lookupType']
     lookups_list = get_lookups_list(current_user, lookup_type)
     return jsonify(lookups_list)
+
 
 @bp.route('/api/save_lookup', methods=['POST'])
 @token_required
@@ -245,6 +256,7 @@ def save_lookup(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(success=True)
+
 
 @bp.route('/api/delete_lookup', methods=['DELETE'])
 @token_required
