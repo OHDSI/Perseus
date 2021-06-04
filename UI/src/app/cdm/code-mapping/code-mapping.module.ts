@@ -6,7 +6,6 @@ import { CodeMappingRoutingModule } from './code-mapping-routing.module';
 import { ImportVocabularyComponent } from './import-codes/import-vocabulary/import-vocabulary.component';
 import { ImportVocabularyButtonsComponent } from './import-codes/import-vocabulary/import-vocabulary-buttons/import-vocabulary-buttons.component';
 import { GridModule } from '../../grid/grid.module';
-import { ImportCodesService } from '../../services/import-codes/import-codes.service';
 import { ImportVocabulariesService } from '../../services/import-codes/import-vocabularies.service';
 import { ColumnMappingFormComponent } from './import-codes/column-mapping/column-mapping-form/column-mapping-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -47,7 +46,6 @@ import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
     ReactiveFormsModule
   ],
   providers: [
-    ImportCodesService,
     ImportVocabulariesService,
     MappingCodesGuard,
     ScoredConceptsCacheService,
