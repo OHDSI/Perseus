@@ -58,7 +58,6 @@
     <table class="grid"
            cdk-table
            [dataSource]="gridData"
-           [style.height]="height"
            [style.width]="width">
 
       <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">

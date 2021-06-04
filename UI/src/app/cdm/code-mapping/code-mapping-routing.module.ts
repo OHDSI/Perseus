@@ -16,7 +16,7 @@ const routes: Routes = [
     path: 'mapping',
     canActivate: [MappingCodesGuard],
     component: MappingCodesComponent,
-    data: { breadcrumb: 'Mapping' }
+    data: { breadcrumb: 'Mapping codes' }
   }
 ];
 

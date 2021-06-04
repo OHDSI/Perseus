@@ -60,8 +60,9 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   searchMode: SearchMode
 
-  private needUpdate: boolean;
-  private skipUpdate: boolean;
+  private firstEmit = true
+  private needUpdate: boolean
+  private skipUpdate: boolean
 
   private searchByTermParams: SearchByTermParams
 
@@ -100,7 +101,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.saveToCache(this.mapping)
     const concepts = this.scoredConcepts
       .filter(c => c.selected)
-      .map(c => c.concept)
+      .map(c => ({...c.concept, term: c.term[0]}))
     this.apply.emit(concepts)
   }
 
@@ -109,10 +110,13 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.close.emit()
   }
 
-  onSearchModeChange(value: SearchMode) {
+  onSearchModeChange(value: SearchMode, resetSearchString = true) {
     this.searchMode = value
     const searchString = this.form.get('searchString')
     if (this.searchInputDisabled) {
+      if (resetSearchString) {
+        searchString.setValue(null)
+      }
       searchString.disable({emitEvent: false})
     } else {
       searchString.enable({emitEvent: false})
@@ -139,9 +143,15 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
         this.mapping = curr
 
         const fromCache = this.scoredConceptsCacheService.get(term);
+
+        if (this.firstEmit) {
+          this.firstEmit = false
+          this.subscribeOnFormChange(fromCache?.filters)
+        }
+
         if (fromCache) {
           this.setCacheValueToForm(fromCache.filters)
-          this.onSearchModeChange(fromCache.searchMode)
+          this.onSearchModeChange(fromCache.searchMode, false)
           this.scoredConcepts = fromCache.concepts
         } else {
           this.needUpdate = true
@@ -155,11 +165,13 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   private initForm() {
     this.form = createFiltersForm()
     this.form.addControl('searchString', new FormControl({value: null, disabled: this.searchInputDisabled}))
+  }
 
+  private subscribeOnFormChange(startValue: SearchConceptFilters) {
     this.form.valueChanges
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        startWith<SearchConceptFilters, SearchConceptFilters>(null),
+        startWith<SearchConceptFilters, SearchConceptFilters>(startValue),
         pairwise(),
         filter(([prev, curr]) => this.isFormChanged(prev, curr)),
         map(([, curr]) => mapFormFiltersToBackEndFilters(curr, this.searchMode)),
@@ -192,7 +204,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   private saveToCache(mapping: CodeMapping) {
     const toCache = {
       concepts: [...this.scoredConcepts],
-      filters: {searchString: '', ...this.form.value},
+      filters: this.form.value,
       searchMode: this.searchMode
     }
     const term = getTerm(mapping, this.importCodesService.sourceNameColumn)

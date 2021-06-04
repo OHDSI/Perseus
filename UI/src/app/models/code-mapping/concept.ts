@@ -7,4 +7,5 @@ export interface Concept {
   conceptCode: number
   standardConcept: string
   index?: number
+  term?: string
 }

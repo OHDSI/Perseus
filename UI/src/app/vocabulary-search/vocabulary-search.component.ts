@@ -76,7 +76,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     updateFilters: true
   }
 
-  mode = VocabSearchMode.ATHENA
+  mode = VocabSearchMode.LOCAL
 
   @Input()
   bottom = '0'
@@ -256,7 +256,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   }
 
   private findChanges(): { query: string, pageSize: number } {
-    const query = this.keyWordInput.htmlValue;
+    const query = this.keyWordInput.value;
     const pageSize = this.gridComponent.pageSize
 
     if (this.requestParams.query !== query || this.requestParams.pageSize !== pageSize) {

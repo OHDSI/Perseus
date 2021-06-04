@@ -27,10 +27,6 @@ export class SearchInputComponent implements ControlValueAccessor {
 
   onChange = (value: string) => {}
 
-  get htmlValue() {
-    return this.keyWordInput.nativeElement.value
-  }
-
   registerOnChange(fn: any): void {
     this.onChange = fn
   }
@@ -44,5 +40,10 @@ export class SearchInputComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled
+  }
+
+  onChangeValue(value: string) {
+    this.value = value
+    this.onChange(value)
   }
 }

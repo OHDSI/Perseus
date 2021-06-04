@@ -1,7 +1,7 @@
 <ol class="breadcrumb" id="breadcrumb">
   <ng-container *ngFor="let breadcrumb of breadcrumbs; let i = index">
     <li>
-      <span [routerLink]="breadcrumb.url" routerLinkActive="router-link-active">
+      <span [routerLink]="breadcrumb.url" routerLinkActive="active-link">
         {{ breadcrumb.label }}
       </span>
     </li>

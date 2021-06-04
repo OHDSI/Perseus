@@ -2,7 +2,7 @@ import { SearchMode } from './search-mode';
 import { FilterValue } from '../filter/filter';
 
 export interface SearchConceptFilters {
-  searchString: string,
+  searchString?: string,
   searchMode?: SearchMode,
   filterByUserSelectedConceptsAtcCode: boolean,
   filterStandardConcepts: boolean,
@@ -19,9 +19,9 @@ export function filterValueToString(filterValue: FilterValue): string {
   return filterValue.name
 }
 
-export function defaultSearchConceptFilters() {
+export function defaultSearchConceptFilters(): SearchConceptFilters {
   return {
-    searchString: '',
+    searchString: null,
     filterByUserSelectedConceptsAtcCode: false,
     filterStandardConcepts: false,
     includeSourceTerms: false,
@@ -37,7 +37,6 @@ export function defaultSearchConceptFilters() {
 /**
  * conceptClasses, vocabularies, domains - FilterValue[]
  */
-
 export function mapFormFiltersToBackEndFilters(filters, searchMode: SearchMode = null): SearchConceptFilters {
   const result = {
     ...filters,

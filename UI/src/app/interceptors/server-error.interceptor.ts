@@ -1,6 +1,6 @@
 import { Compiler, Injectable, Injector, Type } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppConnectorService } from '../services/app-connector.service';
 import { ServerErrorComponent } from '../server-error/server-error.component';
@@ -32,7 +32,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
           }
 
           if (this.appConnector.isOpen) {
-            throw error
+            return EMPTY
           }
 
           let Component: Type<ServerErrorComponent>
@@ -49,7 +49,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
                 payload: error.status === 500 ? ServerErrorPopupComponent : ServerNotRespondingPopupComponent
               }
             })
-          throw error
+          return EMPTY
         })
       );
   }
