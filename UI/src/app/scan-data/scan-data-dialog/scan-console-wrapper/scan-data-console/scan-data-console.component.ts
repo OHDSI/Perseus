@@ -4,7 +4,8 @@ import { finalize } from 'rxjs/operators';
 import {
   ProgressNotification,
   ProgressNotificationStatus,
-  ProgressNotificationStatusCode
+  ProgressNotificationStatusCode,
+  toFailedMessage
 } from '../../../../models/scan-data/progress-notification';
 import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data/scan-data-websocket.service';
 import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
@@ -16,7 +17,7 @@ import { parseHttpError } from '../../../../utilites/error';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [ScanDataWebsocketService]
 })
-export class ScanDataConsoleComponent extends ConsoleComponent {
+export class ScanDataConsoleComponent extends ConsoleComponent<string> {
 
   private scannedItemsCount = 0;
 
@@ -44,23 +45,18 @@ export class ScanDataConsoleComponent extends ConsoleComponent {
         break;
       }
       case ProgressNotificationStatusCode.FINISHED: {
-        this.progressValue = 100
-        this.websocketService.disconnect()
         this.whiteRabbitService.result(this.scanDataWebsocketService.userId)
           .subscribe(
-            result => this.finish.emit(result),
-            error => this.showNotificationMessage({
-              message: parseHttpError(error),
-              status: {
-                code: ProgressNotificationStatusCode.ERROR
-              }
-            })
+            result => this.onSuccess(result),
+            error => {
+              this.showNotificationMessage(toFailedMessage(parseHttpError(error)))
+              this.onFailed()
+            }
           )
         break;
       }
       case ProgressNotificationStatusCode.FAILED: {
-        this.progressValue = 0;
-        this.websocketService.disconnect();
+        this.onFailed()
         break;
       }
     }

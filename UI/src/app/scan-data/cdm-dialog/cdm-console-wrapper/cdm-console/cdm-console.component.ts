@@ -12,7 +12,7 @@ import {
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [CdmBuilderWebsocketService]
 })
-export class CdmConsoleComponent extends ConsoleComponent implements OnInit {
+export class CdmConsoleComponent extends ConsoleComponent<void> implements OnInit {
 
   constructor(private cdmWebSocketService: CdmBuilderWebsocketService) {
     super(cdmWebSocketService);
@@ -27,14 +27,11 @@ export class CdmConsoleComponent extends ConsoleComponent implements OnInit {
 
     switch (notification.status) {
       case ProgressNotificationStatusCode.FINISHED: {
-        this.progressValue = 100;
-        this.finish.emit('Finished');
+        this.onSuccess()
         break;
       }
-      case ProgressNotificationStatusCode.ERROR:
       case ProgressNotificationStatusCode.FAILED: {
-        this.progressValue = 0;
-        this.websocketService.disconnect();
+        this.onFailed()
         break;
       }
     }

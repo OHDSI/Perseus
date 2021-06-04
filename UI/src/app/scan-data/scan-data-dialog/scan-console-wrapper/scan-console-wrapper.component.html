@@ -1,12 +1,10 @@
 <div class="console-wrapper">
 
   <scan-data-console style="width: 100%" [params]="params"
-                     (finish)="onFinish($event)"></scan-data-console>
+                     (completion)="onComplete($event)"></scan-data-console>
 
-  <div class="console-wrapper__action">
-    <ng-container *ngIf="result; then scanningFinishedBlock; else scanningBlock"></ng-container>
-
-    <ng-template #scanningFinishedBlock>
+  <div class="console-wrapper__action" [ngSwitch]="result?.status">
+    <ng-template ngSwitchCase="1">
       <button class="console-wrapper__action-back cancel"
               (click)="onBack()">Back
       </button>
@@ -18,8 +16,14 @@
       </button>
     </ng-template>
 
-    <ng-template #scanningBlock>
-      <button class="console-wrapper__action-abort"
+    <ng-template ngSwitchCase="2">
+      <button class="console-wrapper__action-back cancel"
+              (click)="this.onBack()">Back
+      </button>
+    </ng-template>
+
+    <ng-template ngSwitchDefault>
+      <button class="console-wrapper__action-abort cancel"
               (click)="onAbortAndCancel()">Abort and cancel
       </button>
     </ng-template>

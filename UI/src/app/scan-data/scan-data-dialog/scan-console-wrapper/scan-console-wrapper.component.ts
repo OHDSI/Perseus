@@ -11,14 +11,16 @@ import { parseHttpError } from '../../../utilites/error';
 @Component({
   selector: 'app-scan-data-console-wrapper',
   templateUrl: './scan-console-wrapper.component.html',
-  styleUrls: ['scan-console-wrapper.component.scss', '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss', '../../styles/scan-data-buttons.scss']
+  styleUrls: [
+    'scan-console-wrapper.component.scss',
+    '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss',
+    '../../styles/scan-data-buttons.scss'
+  ]
 })
-export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
-
-  result: string // scan-report server file location
+export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent<string> {
 
   @ViewChild(ScanDataConsoleComponent)
-  scanDataConsoleComponent: ScanDataConsoleComponent;
+  consoleComponent: ScanDataConsoleComponent;
 
   @Input()
   private reportName: string;  // Without extension
@@ -29,7 +31,7 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
   }
 
   onSaveReport() {
-    this.whiteRabbitService.downloadScanReport(this.result)
+    this.whiteRabbitService.downloadScanReport(this.result.payload)
       .subscribe(
         file => saveAs(file, `${this.reportName}.xlsx`),
         error => this.showErrorMessage(parseHttpError(error))
@@ -37,7 +39,7 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
   }
 
   onUploadReport() {
-    this.whiteRabbitService.downloadScanReport(this.result)
+    this.whiteRabbitService.downloadScanReport(this.result.payload)
       .pipe(
         switchMap(blob => this.scanDataUploadService.uploadScanReport(
           blobToFile(blob, `${this.reportName}.xlsx`))
@@ -47,9 +49,5 @@ export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent
         () => this.close.emit(),
         error => this.showErrorMessage(parseHttpError(error))
       )
-  }
-
-  onFinish(userId: string) {
-    this.result = userId;
   }
 }
