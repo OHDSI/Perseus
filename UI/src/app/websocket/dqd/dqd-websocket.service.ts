@@ -3,10 +3,10 @@ import { Observable } from 'rxjs/internal/Observable';
 import { DqdService } from '../../services/data-quality-check/dqd.service';
 import { dqdWsUrl } from '../../app.constants';
 import { DbSettings } from '../../models/scan-data/db-settings';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 @Injectable()
-export class DqdWebsocketService extends WebsocketService {
+export class DqdWebsocketService extends WebsocketService implements OnDestroy {
 
   private socket: WebSocket;
 
@@ -18,6 +18,12 @@ export class DqdWebsocketService extends WebsocketService {
 
   constructor(private dqdService: DqdService) {
     super();
+  }
+
+  ngOnDestroy() {
+    if (this.socket.readyState < WebSocket.CLOSING) {
+      this.socket.close()
+    }
   }
 
   connect(): Observable<boolean> {

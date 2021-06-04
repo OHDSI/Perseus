@@ -26,9 +26,9 @@ export abstract class WhiteRabbitWebsocketService extends WebsocketService imple
     return this.wsSessionId;
   }
 
-  ngOnDestroy(): void {
-    if (this.stompClient?.active) {
-      this.disconnect();
+  ngOnDestroy() {
+    if (this.stompClient.active) {
+      this.disconnect()
     }
   }
 

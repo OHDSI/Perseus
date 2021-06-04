@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ConnectionResult } from '../../../models/scan-data/connection-result';
 import { TableToScan } from '../../../models/scan-data/table-to-scan';
 import { DbSettings, DbSettingsBuilder } from '../../../models/scan-data/db-settings';
@@ -20,7 +20,7 @@ import { CdmStateService } from '../../../services/cdm-builder/cdm-state.service
   templateUrl: './scan-data-form.component.html',
   styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss']
 })
-export class ScanDataFormComponent implements OnInit, OnDestroy {
+export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dataType: string;
 
@@ -52,6 +52,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   @ViewChild(TablesToScanComponent)
   tablesToScanComponent: TablesToScanComponent;
 
+  scanTablesDisabled = () => true
+
   constructor(private stateService: ScanDataStateService,
               private cdmStateService: CdmStateService) {
   }
@@ -60,7 +62,13 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.loadState();
   }
 
-  ngOnDestroy() {
+  ngAfterViewInit(): void {
+    setTimeout(() => this.scanTablesDisabled = () =>
+      this.tablesToScanComponent.tablesToScan.filter(t => t.selected).length === 0
+    )
+  }
+
+  ngOnDestroy(): void {
     this.saveState();
     this.saveCdmDbSettingsState();
   }

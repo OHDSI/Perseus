@@ -29,7 +29,7 @@ export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent<
   fileLoading = false;
 
   onShowResult() {
-    window.open(`${dqdUrl}/?result=${this.result}`, '_blank');
+    window.open(`${dqdUrl}/?result=${this.result.payload}`, '_blank');
   }
 
   onSaveResult() {
