@@ -267,7 +267,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
         disableClose: false,
         data: {
           title: 'Grouping error',
-          message: `You cannot add linked fields to Group. Thare are links in the following tables: ${linkedTargetTables.join(',').toUpperCase()}`
+          message: `You cannot add linked fields to Group. There are links in the following tables: ${linkedTargetTables.join(',').toUpperCase()}`
         }
       });
 
