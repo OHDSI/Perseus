@@ -2,7 +2,7 @@ import { SearchMode } from './search-mode';
 import { FilterValue } from '../filter/filter';
 
 export interface SearchConceptFilters {
-  searchString: string,
+  searchString?: string,
   searchMode?: SearchMode,
   filterByUserSelectedConceptsAtcCode: boolean,
   filterStandardConcepts: boolean,
@@ -21,7 +21,6 @@ export function filterValueToString(filterValue: FilterValue): string {
 
 export function defaultSearchConceptFilters() {
   return {
-    searchString: '',
     filterByUserSelectedConceptsAtcCode: false,
     filterStandardConcepts: false,
     includeSourceTerms: false,

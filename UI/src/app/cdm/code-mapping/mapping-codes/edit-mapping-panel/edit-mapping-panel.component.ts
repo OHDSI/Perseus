@@ -159,8 +159,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     this.form.valueChanges
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        startWith<SearchConceptFilters, SearchConceptFilters>(null),
-        distinctUntilChanged((prev, curr) => this.isFormChanged(prev, curr)),
+        distinctUntilChanged((prev, curr) => this.isFormNotChanged(prev, curr)),
         map(filters => mapFormFiltersToBackEndFilters(filters, this.searchMode)),
         tap(() => this.loading = true),
         switchMap(filters => this.searchByTerm(filters)),
@@ -191,7 +190,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   private saveToCache(mapping: CodeMapping) {
     const toCache = {
       concepts: [...this.scoredConcepts],
-      filters: {searchString: '', ...this.form.value},
+      filters: this.form.value,
       searchMode: this.searchMode
     }
     const term = getTerm(mapping, this.importCodesService.sourceNameColumn)
@@ -207,6 +206,10 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     } else {
       return isFormChanged(prev, curr)
     }
+  }
+
+  private isFormNotChanged(prev: SearchConceptFilters, curr: SearchConceptFilters): boolean {
+    return !this.isFormChanged(prev, curr)
   }
 
   private toScoredConceptWithSelection(scoredConcepts: ScoredConcept[]) {

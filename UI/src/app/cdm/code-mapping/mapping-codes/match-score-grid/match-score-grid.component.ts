@@ -15,7 +15,8 @@ import { ImportCodesService } from '../../../../services/import-codes/import-cod
 import { Column, columnToField } from '../../../../models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
 import { Concept } from '../../../../models/code-mapping/concept';
-import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionTopAndHeight } from './match-score-grid';
+import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionTopAndHeight, } from './match-score-grid';
+import { termFromTargetConcept } from '../../../../models/code-mapping/target-concept';
 
 @Component({
   selector: 'app-match-score-grid',
@@ -81,7 +82,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
       codeMapping.targetConcepts.map(targetConcept => ({
         ...targetConcept.concept,
         index,
-        term: targetConcept.term[0]
+        term: termFromTargetConcept(targetConcept)
       }))
     )
   }
@@ -171,7 +172,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   editCellBorder(concept: Concept) {
     const targetConcepts = this.data[concept.index].targetConcepts
     const lastTargetConcept = targetConcepts[targetConcepts.length - 1]
-    const isLast = lastTargetConcept.concept.conceptId === concept.conceptId && lastTargetConcept.term[0] === concept.term
+    const isLast = lastTargetConcept.concept.conceptId === concept.conceptId && termFromTargetConcept(lastTargetConcept) === concept.term
     return isLast ? '1px solid #E6E6E6' : 'none';
   }
 
