@@ -42,6 +42,7 @@ import { mainPageRouter } from '../../app.constants';
 import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
 import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
 import { State } from '../../models/state';
+import { asc } from '../../utilites/sort';
 
 @Component({
   selector: 'app-comfy',
@@ -336,8 +337,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       }
       return prev.concat(ar);
     }, []);
-    this.allSourceRows = allColumns;
-    this.uniqSourceRows = uniqBy(allColumns, 'name');
+    this.allSourceRows = allColumns.sort((r1, r2) => asc(r1.name, r2.name));
+    this.uniqSourceRows = uniqBy(this.allSourceRows, 'name');
     this.filterAtInitialization('source-column', this.data.linkTablesSearch.sourceColumns);
   }
 

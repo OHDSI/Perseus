@@ -3,6 +3,7 @@
 .mat-tab-column-info-container {
   width: 300px;
   height: 100%;
+  background-color: #fff;
 
   &:after {
     content: "";
@@ -20,14 +21,22 @@
   }
 }
 
-.column-info, .text-message-container {
-  background-color: #fff;
+.loading,
+.no-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  height: auto;
+
+  p {
+    margin: 0;
+  }
 }
 
 .column-info {
   display: flex;
   flex-direction: column;
-  height: auto;
   padding: 10px;
   font-size: 12px;
 
@@ -59,18 +68,5 @@
       text-align: left;
       padding: 2px;
     }
-  }
-}
-
-.text-message-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #fff;
-  margin: 8px;
-  height: auto;
-
-  p {
-    margin: 0;
   }
 }
