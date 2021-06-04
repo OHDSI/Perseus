@@ -30,7 +30,6 @@ export class CdmConsoleComponent extends ConsoleComponent<void> implements OnIni
         this.onSuccess()
         break;
       }
-      case ProgressNotificationStatusCode.ERROR:
       case ProgressNotificationStatusCode.FAILED: {
         this.onFailed()
         break;
