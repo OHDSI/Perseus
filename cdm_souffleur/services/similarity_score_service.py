@@ -7,7 +7,7 @@ import string
 def get_terms_vestors(results, query):
     sentences = [query] + list(map(lambda x: x['term'][0], results))
     cleaned_sentences = list(map(clean_string, sentences))
-    vectorizer = CountVectorizer()
+    vectorizer = CountVectorizer(analyzer='char_wb', ngram_range=(3,4))
     fitted_vectorizer = vectorizer.fit_transform(cleaned_sentences)
     vectors = fitted_vectorizer.toarray()
     return vectors

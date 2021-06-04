@@ -89,3 +89,5 @@ SOLR_FILTERS = {
     'concept_class_id': 'conceptClasses',
     'domain_id': 'domains'
 }
+
+QUERY_SEARCH_MODE = 'query'

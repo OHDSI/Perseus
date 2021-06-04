@@ -9,7 +9,7 @@ from cdm_souffleur.services.import_source_codes_service import create_source_cod
 from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
     full_data_import
 from cdm_souffleur.services.usagi_search_service import search
-from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS
+from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS, QUERY_SEARCH_MODE
 import asyncio
 usagi_api = Blueprint('usagi_api', __name__)
 
@@ -65,8 +65,8 @@ def load_codes_call(current_user):
 @token_required
 def get_term_search_results_call(current_user):
     try:
-        term = request.json['term']
         filters = request.json['filters']
+        term = filters['searchString'] if filters['searchMode'] == QUERY_SEARCH_MODE else request.json['term']
         source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
         search_result = search(current_user, filters, term, source_auto_assigned_concept_ids)
     except InvalidUsage as error:
