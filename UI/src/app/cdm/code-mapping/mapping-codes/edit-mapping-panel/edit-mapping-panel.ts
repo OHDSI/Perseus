@@ -29,7 +29,7 @@ const advancedFields = [
 ]
 
 export function isFormChanged(prev: SearchConceptFilters, curr: SearchConceptFilters) {
-  if (prev === null) {
+  if (!prev) {
     return true
   }
 

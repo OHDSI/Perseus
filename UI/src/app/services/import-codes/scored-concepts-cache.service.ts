@@ -11,11 +11,11 @@ export class ScoredConceptsCacheService implements OnDestroy {
   }
 
   add(term: string, value: ScoredConceptCache): void {
-    this.map.set(term, value)
+    this.map.set(term, {...value})
   }
 
   get(term: string): ScoredConceptCache {
-    return this.map.get(term)
+    return {...this.map.get(term)}
   }
 
   clear(): void {

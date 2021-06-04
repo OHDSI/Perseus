@@ -19,8 +19,9 @@ export function filterValueToString(filterValue: FilterValue): string {
   return filterValue.name
 }
 
-export function defaultSearchConceptFilters() {
+export function defaultSearchConceptFilters(): SearchConceptFilters {
   return {
+    searchString: null,
     filterByUserSelectedConceptsAtcCode: false,
     filterStandardConcepts: false,
     includeSourceTerms: false,
@@ -36,7 +37,6 @@ export function defaultSearchConceptFilters() {
 /**
  * conceptClasses, vocabularies, domains - FilterValue[]
  */
-
 export function mapFormFiltersToBackEndFilters(filters, searchMode: SearchMode = null): SearchConceptFilters {
   const result = {
     ...filters,
