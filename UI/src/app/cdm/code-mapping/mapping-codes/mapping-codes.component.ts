@@ -11,6 +11,7 @@ import { CodeMapping } from '../../../models/code-mapping/code-mapping';
 import { Concept } from '../../../models/code-mapping/concept';
 import { ScoredConceptsCacheService } from '../../../services/import-codes/scored-concepts-cache.service';
 import { withLoading } from '../../../utilites/loading';
+import { VocabularyObserverService } from '../../../services/vocabulary-search/vocabulary-observer.service';
 
 @Component({
   selector: 'app-mapping-codes',
@@ -26,7 +27,8 @@ export class MappingCodesComponent {
   constructor(private importCodesService: ImportCodesService,
               private router: Router,
               private dialogService: MatDialog,
-              private conceptCacheService: ScoredConceptsCacheService) {
+              private conceptCacheService: ScoredConceptsCacheService,
+              public vocabularyObserverService: VocabularyObserverService) {
   }
 
   get applyDisabled() {

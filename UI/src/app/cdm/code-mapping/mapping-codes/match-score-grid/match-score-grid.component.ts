@@ -95,7 +95,6 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     this.initColumns()
 
     this.data = this.importCodesService.codeMappings
-    this.importCodesService.saveToStorage()
   }
 
   ngAfterViewInit() {

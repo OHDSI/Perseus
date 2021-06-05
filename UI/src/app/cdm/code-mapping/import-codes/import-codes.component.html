@@ -4,4 +4,7 @@
   <ng-template #importBlock>
     <app-import-vocabulary></app-import-vocabulary>
   </ng-template>
+
+  <app-vocabulary-search *ngIf="vocabularyObserverService.show$ | async"
+                         (close)="vocabularyObserverService.show = false"></app-vocabulary-search>
 </div>

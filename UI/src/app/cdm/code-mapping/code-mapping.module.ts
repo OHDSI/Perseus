@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ImportCodesComponent } from './import-codes/import-codes.component';
 import { MappingCodesComponent } from './mapping-codes/mapping-codes.component';
 import { CodeMappingRoutingModule } from './code-mapping-routing.module';
@@ -8,7 +7,6 @@ import { ImportVocabularyButtonsComponent } from './import-codes/import-vocabula
 import { GridModule } from '../../grid/grid.module';
 import { ImportVocabulariesService } from '../../services/import-codes/import-vocabularies.service';
 import { ColumnMappingFormComponent } from './import-codes/column-mapping/column-mapping-form/column-mapping-form.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColumnMappingFiltersComponent } from './import-codes/column-mapping/column-mapping-filters/column-mapping-filters.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ColumnMappingComponent } from './import-codes/column-mapping/column-mapping.component';
@@ -21,6 +19,7 @@ import { ScoredConceptsCacheService } from '../../services/import-codes/scored-c
 import { ImportCodesMediatorService } from '../../services/import-codes/import-codes-mediator.service';
 import { ImportCodesGridComponent } from './import-codes/column-mapping/import-codes-grid/import-codes-grid.component';
 import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
+import { VocabularySearchModule } from '../../vocabulary-search/vocabulary-search.module';
 
 @NgModule({
   declarations: [
@@ -38,12 +37,10 @@ import { ImportCodesGuard } from '../../guards/code-mapping/import-codes.guard';
     ImportCodesGridComponent
   ],
   imports: [
-    CommonModule,
     CodeMappingRoutingModule,
     SharedModule,
     GridModule,
-    FormsModule,
-    ReactiveFormsModule
+    VocabularySearchModule
   ],
   providers: [
     ImportVocabulariesService,

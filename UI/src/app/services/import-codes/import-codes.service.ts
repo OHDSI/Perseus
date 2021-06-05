@@ -26,8 +26,7 @@ export class ImportCodesService {
   private state: ImportCodesState
 
   constructor(private httpClient: HttpClient) {
-    const stateFromStorage = JSON.parse(localStorage.getItem('code-mappings'))
-    this.state = {...initialState, ...stateFromStorage}
+    this.state = {...initialState}
   }
 
   get codes(): Code[] {
@@ -152,9 +151,5 @@ export class ImportCodesService {
 
   reset(state: ImportCodesState = null) {
     this.state = state ? {...state} : {...initialState};
-  }
-
-  saveToStorage() {
-    localStorage.setItem('code-mappings', JSON.stringify(this.state))
   }
 }

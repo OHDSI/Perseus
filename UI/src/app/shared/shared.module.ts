@@ -18,6 +18,7 @@ import { FilterListComponent } from './filters/filter-dropdown/filter-list/filte
 import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdown.component';
 import { FilterColorPointComponent } from './filters/filter-color-point/filter-color-point.component';
 import { TextWidthDirective } from './text-width/text-width.directive';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -50,13 +51,17 @@ import { TextWidthDirective } from './text-width/text-width.directive';
     SearchInputComponent,
     FilterDropdownComponent,
     FilterColorPointComponent,
-    TextWidthDirective
+    TextWidthDirective,
+    FormsModule,
+    ReactiveFormsModule
   ],
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
     NgxTrimDirectiveModule,
-    CdkTableModule
+    CdkTableModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule {
