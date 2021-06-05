@@ -47,8 +47,15 @@
       color: #404040;
     }
 
-    &-header {
+    &__header {
       margin-bottom: 10px;
+    }
+
+    &__message {
+      overflow-y: auto;
+      overflow-x: hidden;
+      word-break: break-word;
+      padding-right: 4px;
     }
   }
 

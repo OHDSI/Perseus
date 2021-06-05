@@ -124,7 +124,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   @ViewChild('mappingUpload', {static: false}) mappingInput: ElementRef;
 
   drop = new Command({
-    execute: (event: CdkDragDrop<string[], any>) => {
+    execute: (event: CdkDragDrop<string[], string[]>) => {
       const {container, previousContainer, previousIndex, currentIndex} = event;
       const data = container.data;
       const [area] = container.id.split('-');
@@ -132,6 +132,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
       if (area === previousArea) {
         if (area === Area.Target) {
+          // When user sort source or target tables
           const draggedItemId = event.item.element.nativeElement.id;
           const nodes = this.element.nativeElement.querySelectorAll('.vertical-list-item');
           const prevInd = Array.from(nodes).findIndex((it: any) => it.id === `node-${draggedItemId}`);
@@ -148,7 +149,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             moveItemInArray(this.storeService.state.source, previousIndex, currentIndex);
           }
         }
-      } else {
+      } else if (!data.includes(previousContainer.data[previousIndex])) {
+        // When user map source to target, map only new table
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         this.storeService.add('targetConfig', this.targetConfig);
         this.storeService.state.recalculateSimilar = true;
@@ -191,7 +193,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables)))
+        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables))
+      )
       .subscribe(res => {
         if (res === 'OK') {
           this.uploadService.mappingLoading = false;

@@ -11,21 +11,13 @@ import { CdmConsoleComponent } from './cdm-console/cdm-console.component';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class CdmConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
+export class CdmConsoleWrapperComponent extends AbstractConsoleWrapperComponent<void> {
 
   @Output()
   dataQualityCheck = new EventEmitter<void>();
 
   @ViewChild(CdmConsoleComponent)
-  scanDataConsoleComponent: CdmConsoleComponent;
-
-  onFinish(result: string) {
-    this.result = result;
-  }
-
-  onClose() {
-    this.close.emit();
-  }
+  consoleComponent: CdmConsoleComponent;
 
   onDataQualityCheck() {
     this.dataQualityCheck.emit();

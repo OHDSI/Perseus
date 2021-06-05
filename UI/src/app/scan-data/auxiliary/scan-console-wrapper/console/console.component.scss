@@ -27,7 +27,7 @@
       color: #808080;
     }
 
-    &-console {
+    &__console {
       width: 543px;
       height: 220px;
       overflow-y: auto;
@@ -45,6 +45,10 @@
         font-size: 14px;
         line-height: 24px;
         color: #000000;
+
+        &.error {
+          color: #FF4646;
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ConnectionResult } from '../../../models/scan-data/connection-result';
 import { TableToScan } from '../../../models/scan-data/table-to-scan';
 import { DbSettings, DbSettingsBuilder } from '../../../models/scan-data/db-settings';
@@ -20,13 +20,15 @@ import { CdmStateService } from '../../../services/cdm-builder/cdm-state.service
   templateUrl: './scan-data-form.component.html',
   styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss']
 })
-export class ScanDataFormComponent implements OnInit, OnDestroy {
+export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dataType: string;
 
   dbSettings: DbSettings;
 
   fileSettings: DelimitedTextFileSettings;
+
+  searchTableName: string
 
   scanParams: ScanParams;
 
@@ -50,6 +52,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   @ViewChild(TablesToScanComponent)
   tablesToScanComponent: TablesToScanComponent;
 
+  scanTablesDisabled = () => true
+
   constructor(private stateService: ScanDataStateService,
               private cdmStateService: CdmStateService) {
   }
@@ -58,9 +62,15 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.loadState();
   }
 
-  ngOnDestroy() {
+  ngAfterViewInit(): void {
+    setTimeout(() => this.scanTablesDisabled = () =>
+      this.tablesToScanComponent.tablesToScan.filter(t => t.selected).length === 0
+    )
+  }
+
+  ngOnDestroy(): void {
     this.saveState();
-    this.saveDbSettingsToCdmDbSettings();
+    this.saveCdmDbSettingsState();
   }
 
   onScanTables(): void {
@@ -87,8 +97,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   }
 
   private loadState(): void {
-    const {dataType, dbSettings, fileSettings, scanParams,
-      tablesToScan, filteredTablesToScan, filesToScan, connectionResult} = this.stateService.state;
+    const {dataType, dbSettings, fileSettings, scanParams, tablesToScan,
+      filteredTablesToScan, searchTableName, filesToScan, connectionResult} = this.stateService.state;
 
     this.dataType = dataType;
     this.dbSettings = dbSettings;
@@ -96,6 +106,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.scanParams = scanParams;
     this.tablesToScan = tablesToScan;
     this.filteredTablesToScan = filteredTablesToScan;
+    this.searchTableName = searchTableName;
     this.filesToScan = filesToScan;
     this.connectionResult = connectionResult;
   }
@@ -108,6 +119,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
       scanParams: this.tablesToScanComponent.scanParams,
       tablesToScan: this.tablesToScanComponent.tablesToScan,
       filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
+      searchTableName: this.tablesToScanComponent.searchTableName,
       filesToScan: this.connectFormComponent.filesToScan,
       connectionResult: this.connectFormComponent.connectionResult
     };
@@ -137,7 +149,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private saveDbSettingsToCdmDbSettings() {
+  private saveCdmDbSettingsState() {
     const dbType = this.connectFormComponent.dataType;
 
     if (!this.cdmStateService.isSet && cdmBuilderDatabaseTypes.includes(dbType)) {

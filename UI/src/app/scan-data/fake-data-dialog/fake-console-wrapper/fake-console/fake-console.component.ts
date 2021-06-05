@@ -15,7 +15,7 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [FakeDataWebsocketService]
 })
-export class FakeConsoleComponent extends ConsoleComponent {
+export class FakeConsoleComponent extends ConsoleComponent<void> {
 
   private scannedItemsCount = 0;
 
@@ -34,7 +34,6 @@ export class FakeConsoleComponent extends ConsoleComponent {
 
   protected handleProgressMessage(message: string): void {
     const notification = JSON.parse(message) as ProgressNotification;
-
     this.showNotificationMessage(notification);
 
     switch ((notification.status as ProgressNotificationStatus).code) {
@@ -44,14 +43,11 @@ export class FakeConsoleComponent extends ConsoleComponent {
         break;
       }
       case ProgressNotificationStatusCode.FINISHED: {
-        this.progressValue = 100
-        this.websocketService.disconnect()
-        this.finish.emit()
+        this.onSuccess()
         break;
       }
       case ProgressNotificationStatusCode.FAILED: {
-        this.progressValue = 0;
-        this.websocketService.disconnect();
+        this.onFailed()
         break;
       }
     }

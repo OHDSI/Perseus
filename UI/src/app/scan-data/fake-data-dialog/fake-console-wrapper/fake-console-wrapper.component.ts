@@ -7,16 +7,8 @@ import { FakeConsoleComponent } from './fake-console/fake-console.component';
   templateUrl: './fake-console-wrapper.component.html',
   styleUrls: ['fake-console-wrapper.component.scss', '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss', '../../styles/scan-data-buttons.scss']
 })
-export class FakeConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
+export class FakeConsoleWrapperComponent extends AbstractConsoleWrapperComponent<void> {
 
   @ViewChild(FakeConsoleComponent)
-  scanDataConsoleComponent: FakeConsoleComponent;
-
-  onClose() {
-    this.close.emit();
-  }
-
-  onFinish() {
-    this.result = true;
-  }
+  consoleComponent: FakeConsoleComponent;
 }
