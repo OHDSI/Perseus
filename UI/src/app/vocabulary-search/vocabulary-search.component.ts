@@ -345,11 +345,12 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   private loadGridParams() {
     if (this.stateService.state) {
-      const {currentPage, pageCount, movableIndexes, sort} = this.stateService.state;
+      const {currentPage, pageCount, movableIndexes, sort, total} = this.stateService.state;
       this.gridComponent.currentPage = currentPage;
-      this.gridComponent.pageCount = pageCount;
       this.gridComponent.movableIndexes = movableIndexes;
       this.gridComponent.sortParams = sort;
+      this.gridComponent.setPagesAndElementsCount(total, pageCount)
+      this.gridComponent.cdr.markForCheck()
     }
   }
 
@@ -365,7 +366,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
         pageSize: this.gridComponent.pageSize,
         filters: this.filters,
         movableIndexes: this.gridComponent.movableIndexes,
-        sort: this.gridComponent.sortParams
+        sort: this.gridComponent.sortParams,
+        total: this.gridComponent.total
       };
     }
   }

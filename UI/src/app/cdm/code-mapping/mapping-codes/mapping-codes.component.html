@@ -22,3 +22,6 @@
                           (apply)="onApplyEditedMapping($event)"
                           (close)="onCancelEditingMapping()"></app-edit-mapping-panel>
 </div>
+
+<app-vocabulary-search *ngIf="vocabularyObserverService.show$ | async"
+                       (close)="vocabularyObserverService.show = false"></app-vocabulary-search>
