@@ -6,11 +6,12 @@
   svg {
     margin-left: 12px;
     cursor: pointer;
+    visibility: hidden;
   }
 
   &:hover {
     svg {
-      display: block;
+      visibility: visible;
     }
   }
 

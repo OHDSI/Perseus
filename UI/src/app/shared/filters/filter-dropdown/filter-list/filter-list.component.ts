@@ -42,8 +42,8 @@ export class FilterListComponent {
     );
   }
 
-  toValueCount(count: number) {
-    return count ? `(${count})` : ''
+  toValueCount(count: number): string {
+    return count !== null && count !== undefined ? `(${count})` : ''
   }
 
   isChecked(value: string): boolean {

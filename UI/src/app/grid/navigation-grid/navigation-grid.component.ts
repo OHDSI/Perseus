@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { GridComponent } from '../grid.component';
 import { Pagination } from '../../models/grid/pagination';
 
@@ -42,6 +50,10 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
     third: () => this.movableIndexes.third,
     fourth: () => this.pageCount
   };
+
+  constructor(public cdr: ChangeDetectorRef) {
+    super();
+  }
 
   @Input()
   set data(data: T[]) {

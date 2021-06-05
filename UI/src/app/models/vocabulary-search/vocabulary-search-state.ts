@@ -13,4 +13,5 @@ export interface VocabSearchState {
   filters: Filter[];
   movableIndexes: {second: number; third: number};
   sort: { field: string; order: string };
+  total: number
 }
