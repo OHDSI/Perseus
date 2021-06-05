@@ -1,27 +1,34 @@
-import { ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
+  CdmProgressNotification,
   ProgressNotification,
-  ProgressNotificationStatusCode
+  ProgressNotificationStatus,
+  ProgressNotificationStatusCode,
+  toFailedMessage
 } from '../../../../models/scan-data/progress-notification';
 import { filter, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/base/base.component';
 import { WebsocketParams } from '../../../../models/scan-data/websocket-params';
 import { WebsocketService } from '../../../../websocket/websocket.service';
+import { ThemePalette } from '@angular/material/core';
+import { ScanResult, ScanStatus } from '../../../../models/scan-data/scan-result';
 
-export abstract class ConsoleComponent extends BaseComponent implements OnInit, OnDestroy {
+export abstract class ConsoleComponent<T> extends BaseComponent implements OnInit {
 
   scanningStarted = false;
 
-  progressNotifications: ProgressNotification[] = [];
+  notifications: ProgressNotification[] = [];
 
   // Percent
   progressValue = 0;
+
+  color: ThemePalette = 'primary'
 
   @Input()
   params: WebsocketParams;
 
   @Output()
-  finish = new EventEmitter<any>();
+  completion = new EventEmitter<ScanResult<T>>();
 
   @ViewChild('console')
   private console: ElementRef;
@@ -39,12 +46,8 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit, 
       .subscribe(
         () => this.onConnect(),
         error => {
-          this.showNotificationMessage({
-            message: this.websocketService.handleError(error),
-            status: {
-              code: ProgressNotificationStatusCode.FAILED
-            }
-          });
+          this.showNotificationMessage(toFailedMessage(this.websocketService.handleError(error)))
+          this.onFailed()
         }
       );
   }
@@ -54,8 +57,13 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit, 
   }
 
   showNotificationMessage(notification: ProgressNotification) {
-    this.progressNotifications.push(notification);
+    this.notifications.push(notification);
     this.scrollToConsoleBottom();
+  }
+
+  isErrorMessage(status: ProgressNotificationStatus) {
+    return status.code === ProgressNotificationStatusCode.FAILED ||
+      status.code === ProgressNotificationStatusCode.ERROR
   }
 
   protected onConnect(): void {
@@ -84,7 +92,7 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit, 
       );
   }
 
-  protected abstract handleProgressMessage(message: any): void;
+  protected abstract handleProgressMessage(notification: string | ProgressNotification | CdmProgressNotification): void;
 
   protected scrollToConsoleBottom() {
     const console = this.console.nativeElement;
@@ -92,5 +100,18 @@ export abstract class ConsoleComponent extends BaseComponent implements OnInit, 
     setTimeout(() =>
       console.scrollTop = console.scrollHeight - console.clientHeight
     );
+  }
+
+  protected onSuccess(payload: T) {
+    this.websocketService.disconnect()
+    this.progressValue = 100
+    this.completion.emit({status: ScanStatus.SUCCESSFULLY, payload})
+  }
+
+  protected onFailed() {
+    this.websocketService.disconnect();
+    this.color = 'warn'
+    this.progressValue = 100
+    this.completion.emit({status: ScanStatus.FAILED})
   }
 }

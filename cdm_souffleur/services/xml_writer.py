@@ -700,7 +700,6 @@ def get_lookups_sql(cond: dict):
                     UNION
                     SELECT SOURCE_CODE FROM Source
                 )
-
                 SELECT DISTINCT
                     S_S.SOURCE_CODE,
                     Standard.TARGET_CONCEPT_ID,

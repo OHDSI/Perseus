@@ -189,14 +189,22 @@ article {
 .scan-data-console__bar {
   .mat-progress-bar {
     height: 10px;
+
+    &.mat-primary {
+      .mat-progress-bar-primary.mat-progress-bar-fill::after {
+        background-color: #42980E;
+      }
+    }
+
+    &.mat-warn {
+      .mat-progress-bar-warn.mat-progress-bar-fill::after {
+        background-color: #FF4646;
+      }
+    }
   }
 
   .mat-progress-bar-buffer {
     background-color: #E5E5E5;
-  }
-
-  .mat-progress-bar-fill::after {
-    background-color: #42980E;
   }
 }
 

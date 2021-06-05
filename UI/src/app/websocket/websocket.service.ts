@@ -1,11 +1,12 @@
 import { Observable, Observer } from 'rxjs';
-import { catchError, distinctUntilChanged, share } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { parseHttpError } from '../utilites/error';
 import { OnDestroy } from '@angular/core';
 
 export abstract class WebsocketService implements OnDestroy {
-  status$: Observable<boolean>;
+
+  protected status$: Observable<boolean>;
 
   protected connection$: Observer<boolean>;
 
@@ -13,17 +14,17 @@ export abstract class WebsocketService implements OnDestroy {
     this.initStatusStream();
   }
 
+  ngOnDestroy(): void {
+    if (this.connection$ && !this.connection$.closed) {
+      this.disconnect()
+    }
+  }
+
   handleError(error: any): string {
     if (error instanceof HttpErrorResponse) {
       return `Error: ${parseHttpError(error)}`
     }
     return `Error: ${error.reason ? error.reason : error.message}`
-  }
-
-  ngOnDestroy() {
-    if (this.connection$ && !this.connection$.closed) {
-      this.disconnect()
-    }
   }
 
   abstract connect(): Observable<boolean>;
@@ -38,8 +39,6 @@ export abstract class WebsocketService implements OnDestroy {
     this.status$ = new Observable<boolean>(
       observer => this.connection$ = observer
     ).pipe(
-      share(),
-      distinctUntilChanged(),
       catchError(error => {
         this.disconnect()
         throw error

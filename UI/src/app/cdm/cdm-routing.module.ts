@@ -2,11 +2,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CdmComponent } from './cdm.component';
 import { MappingGuard } from '../guards/mapping/mapping.guard';
+import { AuthGuard } from '../guards/auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: CdmComponent,
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: '',

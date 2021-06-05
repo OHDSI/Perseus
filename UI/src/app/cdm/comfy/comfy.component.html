@@ -74,9 +74,7 @@
                    [attr.criteria]="item"
                    [values]="highlightedTables">
                 <mat-icon>drag_indicator</mat-icon>
-                <div class="table-description source caption"
-                     [matTooltip]="item"
-                     matTooltipPosition="right">
+                <div class="table-description source caption">
                   {{item}}
                 </div>
                 <div class="cdm-box-actions"
@@ -180,9 +178,7 @@
                        cdkDrag
                        (cdkDragMoved)="dragMoved($event)"
                        (dblclick)="afterOpenMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
-                    <div class="table-description target caption"
-                         [matTooltip]="tableName"
-                         matTooltipPosition="right">
+                    <div class="table-description target caption">
                       <span class="target-label">{{ tableName }}</span>
                       <span class="divider"></span>
                       <mat-icon *ngIf="i > 0"

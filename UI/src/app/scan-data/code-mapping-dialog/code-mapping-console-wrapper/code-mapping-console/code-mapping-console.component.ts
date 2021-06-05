@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { CodeMappingWebsocketService } from '../../../../websocket/code-mapping/code-mapping-websocket.service';
 import {
   ProgressNotification,
   ProgressNotificationStatus,
-  ProgressNotificationStatusCode
+  ProgressNotificationStatusCode,
+  toFailedMessage
 } from '../../../../models/scan-data/progress-notification';
 import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
 import { takeUntil } from 'rxjs/operators';
@@ -15,10 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [CodeMappingWebsocketService]
 })
-export class CodeMappingConsoleComponent extends ConsoleComponent implements OnInit {
-
-  @Output()
-  error = new EventEmitter<string>()
+export class CodeMappingConsoleComponent extends ConsoleComponent<void> implements OnInit {
 
   private completedStepsCount = 0
   private allStepsCount: number;
@@ -36,12 +34,7 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
       .subscribe(
         () => {},
         error =>
-          this.handleProgressMessage({
-            message: this.websocketService.handleError(error),
-            status: {
-              code: ProgressNotificationStatusCode.FAILED
-            }
-          })
+          this.handleProgressMessage(toFailedMessage(this.websocketService.handleError(error)))
       )
 
     // New codes or edit existed vocabulary
@@ -64,15 +57,11 @@ export class CodeMappingConsoleComponent extends ConsoleComponent implements OnI
         break;
       }
       case ProgressNotificationStatusCode.FINISHED: {
-        this.progressValue = 100;
-        this.websocketService.disconnect();
-        this.finish.emit(true)
+        this.onSuccess()
         break;
       }
       case ProgressNotificationStatusCode.FAILED: {
-        this.progressValue = 0;
-        this.websocketService.disconnect();
-        this.error.emit(notification.message)
+        this.onFailed()
         break;
       }
     }

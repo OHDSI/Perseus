@@ -16,6 +16,7 @@ export interface ScanDataState {
   scanParams: ScanParams;
   tablesToScan: TableToScan[];
   filteredTablesToScan: TableToScan[];
+  searchTableName: string
   filesToScan: File[];
   connectionResult: ConnectionResult;
 }
@@ -44,6 +45,7 @@ const initialState: ScanDataState = {
   },
   tablesToScan: [],
   filteredTablesToScan: [],
+  searchTableName: null,
   filesToScan: [],
   connectionResult: null
 };

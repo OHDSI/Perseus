@@ -75,7 +75,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       conceptService.addNewConceptTable();
     }
 
-    this.conceptsTable = this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ];
+    this.conceptsTable = cloneDeep(this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ]);
 
     if ( this.conceptsTable.lookup['name'] ) {
       const copiedLookup = cloneDeep(this.conceptsTable.lookup);
@@ -203,6 +203,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.updateLookupValue(this.lookupComponent.updatedSourceToStandard, 'source_to_standard');
       this.updateLookupValue(this.lookupComponent.updatedSourceToSource, 'source_to_source');
     }
+    this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable
     this.dialogRef.close();
   }
 

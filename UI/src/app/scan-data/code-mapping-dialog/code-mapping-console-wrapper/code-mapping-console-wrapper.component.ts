@@ -11,29 +11,15 @@ import { CodeMappingConsoleComponent } from './code-mapping-console/code-mapping
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class CodeMappingConsoleWrapperComponent extends AbstractConsoleWrapperComponent {
+export class CodeMappingConsoleWrapperComponent extends AbstractConsoleWrapperComponent<void> {
 
   @Output()
   completed = new EventEmitter<void>()
 
   @ViewChild(CodeMappingConsoleComponent)
-  scanDataConsoleComponent: CodeMappingConsoleComponent;
-
-  error: string
+  consoleComponent: CodeMappingConsoleComponent;
 
   onNext() {
     this.completed.emit()
-  }
-
-  onBack() {
-    this.close.emit();
-  }
-
-  onFinish(result: boolean) {
-    this.result = result
-  }
-
-  onError(error: string) {
-    this.error = error
   }
 }
