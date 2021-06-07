@@ -4,7 +4,7 @@
       Filters
     </h2>
 
-    <ng-container *ngIf="filters?.length > 0">
+    <ng-container *ngIf="filters.length > 0">
       <div class="vocabulary-search__chips" [style.height]="chipsHeight">
         <app-chip *ngFor="let filter of selectedFilters; let i = index"
                   [id]="i"
@@ -14,16 +14,12 @@
       </div>
 
       <div class="vocabulary-search__filters">
-        <div *ngFor="let filter of filters" class="vocabulary-search__filters-wrapper">
-
-          <app-filter-item [name]="filter.name"
-                           [color]="filter.color"
-                           [opened]="openedFilter === filter.name"
-                           (open)="onOpen($event)"></app-filter-item>
-
-          <app-filter-list *ngIf="filter.name === openedFilter"
-                           [values]="filter.values"
-                           (check)="onCheckFilter($event)"></app-filter-list>
+        <div *ngFor="let filter of filters" class="vocabulary-search__filters__filter-wrapper">
+          <app-filter-dropdown [ngModel]="selectedFilters"
+                               (ngModelChange)="onCheckFilter($event)"
+                               [filter]="filter">
+            <app-filter-color-point class="vocabulary-search__filters__filter-wrapper__point" [color]="filter.color"></app-filter-color-point>
+          </app-filter-dropdown>
         </div>
       </div>
 
@@ -38,125 +34,41 @@
   </div>
 
   <div class="vocabulary-search__content">
-    <div class="vocabulary-search__toolbar">
-      <div class="vocabulary-search__search-input-and-mode-wrapper">
-        <label class="vocabulary-search__input">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M8.97917 7.91667H8.41958L8.22125 7.72542C8.91542 6.91792 9.33333 5.86958 9.33333 4.72917C9.33333 2.18625 7.27208 0.125 4.72917 0.125C2.18625 0.125 0.125 2.18625 0.125 4.72917C0.125 7.27208 2.18625 9.33333 4.72917 9.33333C5.86958 9.33333 6.91792 8.91542 7.72542 8.22125L7.91667 8.41958V8.97917L11.4583 12.5138L12.5138 11.4583L8.97917 7.91667ZM4.72917 7.91667C2.96542 7.91667 1.54167 6.49292 1.54167 4.72917C1.54167 2.96542 2.96542 1.54167 4.72917 1.54167C6.49292 1.54167 7.91667 2.96542 7.91667 4.72917C7.91667 6.49292 6.49292 7.91667 4.72917 7.91667Z"
-              fill="#808080"/>
-          </svg>
-          <input class="vocabulary-search-input" #keyWordInput placeholder="Search by Keywords"
-                 [ngModel]="requestParams.query"/>
-        </label>
+    <app-navigation-grid height="385px"
+                         [data]="concepts"
+                         [columns]="columns"
+                         [total]="total"
+                         [pageSize]="pageSize"
+                         [error]="disableAll"
+                         [loading]="requestInProgress"
+                         (sort)="onSort($event)"
+                         (pagination)="onPagination($event)">
+      <div toolbar class="vocabulary-search__grid-toolbar">
+        <app-search-input [ngModel]="requestParams.query"></app-search-input>
 
         <div class="vocabulary-search__mode">
-        <span>
-          <input type="radio" value="local" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
-          Local
-        </span>
+          <span>
+            <input type="radio" value="local" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
+            Local
+          </span>
 
           <span>
-          <input type="radio" value="athena" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
-          Athena
-        </span>
+            <input type="radio" value="athena" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
+            Athena
+          </span>
         </div>
       </div>
 
-      <div class="vocabulary-search__navigation" (click)="handleNavigation($event)">
-        <div class="show-by">
-          <label for="show-by">Show by</label>
-          <input #pageSizeInput id="show-by" type="number" max="500" [ngModel]="requestParams.pageSize">
+      <div error class="error-row">
+        <div class="error-icon-wrapper">
+          <mat-icon class="error-icon" svgIcon="error"></mat-icon>
         </div>
-
-        <div class="total">
-          <label>Total</label>
-          <span>{{total | number:'':'en'}}</span>
-        </div>
-
-        <div class="pagination">
-          <div class="arrow-wrapper arrow-left" data-arrow="left">
-            <svg data-arrow="left" width="4" height="8" viewBox="0 0 4 8" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path data-arrow="left" d="M4 0L6.3573e-08 4L4 8L4 0Z" fill="#066BBB"/>
-            </svg>
-          </div>
-
-          <span data-page="first" [ngClass]="{selected: currentPage === 1}">
-            1
-          </span>
-
-          <span *ngIf="pageCount > 4 && movableIndexes.second > 2" class="no-clickable">...</span>
-
-          <span data-page="second" *ngIf="pageCount > 1"
-                [ngClass]="{selected: currentPage === movableIndexes.second}">
-            {{movableIndexes.second}}
-          </span>
-
-          <span data-page="third" *ngIf="pageCount > 2"
-                [ngClass]="{selected: currentPage === movableIndexes.third}">
-            {{movableIndexes.third}}
-          </span>
-
-          <span *ngIf="pageCount > 4 && movableIndexes.third < pageCount - 1" class="no-clickable">...</span>
-
-          <span data-page="fourth" *ngIf="pageCount > 3"
-                [ngClass]="{selected: currentPage === pageCount}">
-            {{pageCount}}
-          </span>
-
-          <div class="arrow-wrapper arrow-right" data-arrow="right">
-            <svg data-arrow="right" width="4" height="8" viewBox="0 0 4 8" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path data-arrow="right" d="M0 8L4 4L-3.49691e-07 0L0 8Z" fill="#066BBB"/>
-            </svg>
-          </div>
+        <div class="error-text">
+          Athena’s server error occured. Please try again later
+          or use Local Vocabulary
         </div>
       </div>
-    </div>
-
-    <div class="vocabulary-search__table-wrapper">
-      <div class="vocabulary-search__table">
-        <div class="row header" (click)="onSort($event)">
-          <div *ngFor="let column of columns" class="column cell"
-               [className]="column.className"
-               [ngClass]="{'sortable-asc': column.field === sort?.field && sort.order === 'asc',
-               'sortable-desc': column.field === sort?.field && sort.order === 'desc'}">
-            {{column.name}}
-            <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg"
-                 [attr.data-sortField]="column.field">
-              <path opacity="0.6" d="M0 12H6V10H0V12ZM0 0V2H18V0H0ZM0 7H12V5H0V7Z" fill="white"
-                    [attr.data-sortField]="column.field"/>
-            </svg>
-          </div>
-        </div>
-
-        <div *ngFor="let concept of concepts" class="row">
-          <div class="cell id">{{concept.id}}</div>
-          <div class="cell code">{{concept.code}}</div>
-          <div class="cell name">{{concept.name}}</div>
-          <div class="cell class">{{concept.className}}</div>
-          <div class="cell concept">{{concept.standardConcept}}</div>
-          <div class="cell validity">{{concept.invalidReason}}</div>
-          <div class="cell domain">{{concept.domain}}</div>
-          <div class="cell vocab">{{concept.vocabulary}}</div>
-        </div>
-
-        <div *ngIf="disableAll" class="row error-row">
-          <div class="error-icon-wrapper">
-            <mat-icon class="error-icon" svgIcon="error"></mat-icon>
-          </div>
-          <div class="error-text">
-            Athena’s server error occured. Please try again later
-            or use Local Vocabulary
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="requestInProgress" class="ui-blocker">
-        <mat-spinner></mat-spinner>
-      </div>
-    </div>
+    </app-navigation-grid>
   </div>
 
   <app-close-dialog-button class="vocabulary-search__close" (click)="onClose()"></app-close-dialog-button>

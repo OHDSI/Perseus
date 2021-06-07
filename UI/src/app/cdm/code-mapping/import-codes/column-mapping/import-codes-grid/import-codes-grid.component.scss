@@ -1,0 +1,31 @@
+:host {
+  height: 100%;
+}
+
+.grid-wrapper {
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid #E6E6E6;
+  border-collapse: collapse;
+}
+
+.grid {
+  height: max-content !important;
+}
+
+.row {
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.cell:first-child {
+  border-left: none !important;
+}
+
+.cell:last-child {
+  border-right: none !important;
+}
+
+.column, .header {
+  border-top: none !important;
+}

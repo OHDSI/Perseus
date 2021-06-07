@@ -4,7 +4,6 @@ import { TablesToScanComponent } from './scan-data-dialog/scan-data-form/tables-
 import { TableToScanComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/table-to-scan/table-to-scan.component';
 import { ScanDataFormComponent } from './scan-data-dialog/scan-data-form/scan-data-form.component';
 import { ScanParamsComponent } from './scan-data-dialog/scan-data-form/tables-to-scan/scan-params/scan-params.component';
-import { ScanDataCheckboxComponent } from './auxiliary/scan-data-checkbox/scan-data-checkbox.component';
 import { ConnectionErrorPopupComponent } from './auxiliary/connection-error-popup/connection-error-popup.component';
 import { ScanDataDialogComponent } from './scan-data-dialog/scan-data-dialog.component';
 import { ConnectFormComponent } from './scan-data-dialog/scan-data-form/connect-form/connect-form.component';
@@ -31,6 +30,9 @@ import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-consol
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { SharedModule } from '../shared/shared.module';
 import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
+import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
+import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console-wrapper.component';
+import { CodeMappingConsoleComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console/code-mapping-console.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,6 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     TableToScanComponent,
     ScanParamsComponent,
     ScanDataFormComponent,
-    ScanDataCheckboxComponent,
     ConnectionErrorPopupComponent,
     ScanDataDialogComponent,
     ConnectFormComponent,
@@ -63,7 +64,10 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     DqdConsoleWrapperComponent,
     DqdConsoleComponent,
     DqdFormComponent,
-    FakeConsoleComponent
+    FakeConsoleComponent,
+    CodeMappingDialogComponent,
+    CodeMappingConsoleWrapperComponent,
+    CodeMappingConsoleComponent
   ],
   imports: [
     FormsModule,
@@ -74,7 +78,9 @@ import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fa
     ScanDataDialogComponent,
     FakeDataDialogComponent,
     CdmDialogComponent,
-    DqdDialogComponent
+    DqdDialogComponent,
+    CodeMappingConsoleComponent
   ]
 })
-export class ScanDataModule { }
+export class ScanDataModule {
+}

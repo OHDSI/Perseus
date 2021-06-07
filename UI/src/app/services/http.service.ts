@@ -8,7 +8,7 @@ import { apiUrl } from '../app.constants';
 import { createNoCacheHeaders } from '../utilites/http-headers';
 
 // use for dev purposes
-// import * as schemaData from '../mockups/schema.mockup.json';
+// import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
 
 const URL = apiUrl;
 const API_URLS = {

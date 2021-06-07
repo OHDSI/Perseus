@@ -17,3 +17,10 @@ flask-bcrypt
 pyjwt
 cryptography
 apscheduler
+pysolr
+flask-socketio
+gevent-websocket
+eventlet
+fuzzywuzzy
+scikit-learn
+nltk

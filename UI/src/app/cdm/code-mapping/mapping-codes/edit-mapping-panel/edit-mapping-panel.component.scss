@@ -1,0 +1,75 @@
+@import "mixins";
+@import "variables";
+
+.edit-mapping {
+  bottom: 0;
+  @include perseus-bottom-content-panel();
+  z-index: 102; // More than match score-grid
+
+  &__side-panel {
+    &__filters {
+      overflow-y: auto;
+      height: 100%;
+
+      &__control {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+
+        &__label {
+          display: flex;
+          align-items: center;
+        }
+
+        &__point {
+          margin-left: 30px;
+        }
+
+        &__checkbox {
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: 14px;
+    right: 17px;
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 17px 38px 17px 39px;
+    width: 100%;
+
+    button {
+      margin-top: 17px;
+      @include cdm-button();
+      width: 80px;
+      height: 33px;
+      background: $cdm-grey-lighter;
+      color: $cdm-blue;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  &__grid-toolbar {
+    display: flex;
+    justify-content: space-between;
+
+    &__search-mode {
+      margin-left: 20px;
+      width: 235px;
+      @include search-mode();
+    }
+
+    &__error-row {
+      height: 300px;
+      @include grid-error-row();
+    }
+  }
+}

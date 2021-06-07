@@ -9,6 +9,16 @@ import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-b
 import { HintComponent } from './hint/hint.component';
 import { HintOverlayComponent } from './hint/hint-overlay/hint-overlay.component';
 import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
+import { CdmCheckboxComponent } from './cdm-checkbox/cdm-checkbox.component';
+import { CdkTableModule } from '@angular/cdk/table';
+import { SetDelimiterDialogComponent } from './set-delimiter-dialog/set-delimiter-dialog.component';
+import { SearchInputComponent } from './search-input/search-input.component';
+import { FilterDropdownLabelComponent } from './filters/filter-dropdown/filter-dropdown-label/filter-dropdown-label.component';
+import { FilterListComponent } from './filters/filter-dropdown/filter-list/filter-list.component';
+import { FilterDropdownComponent } from './filters/filter-dropdown/filter-dropdown.component';
+import { FilterColorPointComponent } from './filters/filter-color-point/filter-color-point.component';
+import { TextWidthDirective } from './text-width/text-width.directive';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,7 +27,15 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
-    HintOverlayComponent
+    HintOverlayComponent,
+    CdmCheckboxComponent,
+    SetDelimiterDialogComponent,
+    SearchInputComponent,
+    FilterDropdownLabelComponent,
+    FilterListComponent,
+    FilterDropdownComponent,
+    FilterColorPointComponent,
+    TextWidthDirective
   ],
   exports: [
     CommonModule,
@@ -27,13 +45,25 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
     TypeToIconPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
-    HintComponent
+    HintComponent,
+    CdmCheckboxComponent,
+    CdkTableModule,
+    SearchInputComponent,
+    FilterDropdownComponent,
+    FilterColorPointComponent,
+    TextWidthDirective,
+    FormsModule,
+    ReactiveFormsModule
   ],
   imports: [
     CommonModule,
     CdmCustomMaterialModule,
-    NgxTrimDirectiveModule
+    NgxTrimDirectiveModule,
+    CdkTableModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}
 

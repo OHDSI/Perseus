@@ -1,0 +1,35 @@
+@import "variables";
+@import "mixins";
+
+.set-delimiter {
+  width: 253px;
+  height: 222px;
+  @include perseus-popup();
+
+  &__form {
+    &__control {
+      @include form-control();
+
+      label {
+        @include cdm-label();
+      }
+
+      input {
+        @include cdm-input();
+      }
+    }
+
+    &__submit {
+      display: flex;
+      justify-content: center;
+
+      button {
+        @include cdm-button();
+        @include perseus-blue-button();
+        width: 120px;
+        height: 33px;
+        margin-top: 30px;
+      }
+    }
+  }
+}

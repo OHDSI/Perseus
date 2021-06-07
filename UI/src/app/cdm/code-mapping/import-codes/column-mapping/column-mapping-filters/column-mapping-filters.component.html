@@ -1,0 +1,44 @@
+<div class="column-filters">
+  <div class="column-filters__header">
+    Filters
+  </div>
+
+  <form class="column-filters__form" [formGroup]="form">
+    <div class="column-filters__form__control">
+      <app-filter-color-point class="column-filters__form__control__point"
+                              color="#761C1C"></app-filter-color-point>
+      <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                        formControlName="filterByUserSelectedConceptsAtcCode"></app-cdm-checkbox>
+      <span>By selected concepts/ATC codes</span>
+    </div>
+
+    <div class="column-filters__form__control">
+      <app-filter-color-point class="column-filters__form__control__point"
+                              color="#406C95"></app-filter-color-point>
+      <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                        formControlName="filterStandardConcepts"></app-cdm-checkbox>
+      <span>By standard concepts</span>
+    </div>
+
+    <div class="column-filters__form__control">
+      <app-filter-color-point class="column-filters__form__control__point"
+                              color="#14772A"></app-filter-color-point>
+      <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                        formControlName="includeSourceTerms"></app-cdm-checkbox>
+      <span>Include source terms</span>
+    </div>
+
+    <ng-container *ngIf="dropdownFilters">
+      <div *ngFor="let filter of dropdownFilters" class="column-filters__form__control">
+        <app-filter-dropdown paddingLeft="64"
+                             [filter]="filter"
+                             [formControlName]="filter.field">
+          <app-filter-color-point class="column-filters__form__control__point"
+                                  [color]="filter.color"></app-filter-color-point>
+          <app-cdm-checkbox class="column-filters__form__control__checkbox"
+                            [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+        </app-filter-dropdown>
+      </div>
+    </ng-container>
+  </form>
+</div>

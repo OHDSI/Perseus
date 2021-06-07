@@ -35,9 +35,15 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MappingGuard } from '../guards/mapping/mapping.guard';
+import { BreadcrumbService } from '../services/breadcrumb/breadcrumb.service';
+import { CanRedirectService } from '../services/breadcrumb/can-redirect.service';
+import { CanRedirectMappingCodesService } from '../services/breadcrumb/can-redirect-mapping-codes.service';
+import { ImportCodesService } from '../services/import-codes/import-codes.service';
 
 @NgModule({
-  declarations: [CdmComponent],
+  declarations: [
+    CdmComponent,
+  ],
   imports: [
     SharedModule,
     ToolbarModule,
@@ -72,9 +78,12 @@ import { MappingGuard } from '../guards/mapping/mapping.guard';
     DqdService,
     DqdConnectionSettingsStateService,
     MappingGuard,
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } }
+    ImportCodesService,
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
+    BreadcrumbService,
+    { provide: CanRedirectService, useClass: CanRedirectMappingCodesService, multi: true }
   ],
-  bootstrap: [CdmComponent]
+  bootstrap: [CdmComponent],
 })
 export class CdmModule {
 

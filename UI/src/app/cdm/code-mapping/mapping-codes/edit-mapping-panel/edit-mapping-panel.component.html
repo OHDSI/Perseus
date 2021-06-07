@@ -1,0 +1,91 @@
+<form class="edit-mapping" [formGroup]="form">
+  <app-close-dialog-button class="edit-mapping__close"
+                           (click)="onClose()"></app-close-dialog-button>
+
+  <div class="edit-mapping__side-panel">
+    <h2 class="edit-mapping__side-panel__header">
+      Filters
+    </h2>
+
+    <div class="edit-mapping__side-panel__filters">
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                color="#761C1C"></app-filter-color-point>
+        <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                          formControlName="filterByUserSelectedConceptsAtcCode"></app-cdm-checkbox>
+        <span>By selected concepts/ATC codes</span>
+      </div>
+
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                color="#406C95"></app-filter-color-point>
+        <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                          formControlName="filterStandardConcepts"></app-cdm-checkbox>
+        <span>By standard concepts</span>
+      </div>
+
+      <div class="edit-mapping__side-panel__filters__control">
+        <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                color="#14772A"></app-filter-color-point>
+        <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                          formControlName="includeSourceTerms"></app-cdm-checkbox>
+        <span>Include source terms</span>
+      </div>
+
+      <ng-container *ngIf="dropdownFilters">
+        <div *ngFor="let filter of dropdownFilters" class="edit-mapping__side-panel__filters__control">
+          <app-filter-dropdown [filter]="filter"
+                               [formControlName]="filter.field">
+            <div class="edit-mapping__side-panel__filters__control__label">
+              <app-filter-color-point class="edit-mapping__side-panel__filters__control__point"
+                                      [color]="filter.color"></app-filter-color-point>
+              <app-cdm-checkbox class="edit-mapping__side-panel__filters__control__checkbox"
+                                [formControlName]="filter.checkboxField"></app-cdm-checkbox>
+            </div>
+          </app-filter-dropdown>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="edit-mapping__content">
+    <app-edit-code-mapping-grid height="347px"
+                                [data]="scoredConcepts"
+                                [loading]="loading"
+                                [error]="error">
+      <div toolbar class="edit-mapping__grid-toolbar">
+        <app-search-input placeholder="Vocabulary Search..."
+                          formControlName="searchString"></app-search-input>
+
+        <div class="edit-mapping__grid-toolbar__search-mode">
+          <span>
+            <input type="radio" value="term"
+                   [ngModel]="searchMode"
+                   (ngModelChange)="onSearchModeChange($event)"
+                   [ngModelOptions]="{standalone: true}">
+            Search Term as Query
+          </span>
+
+          <span>
+            <input type="radio" value="query"
+                   [ngModel]="searchMode"
+                   (ngModelChange)="onSearchModeChange($event)"
+                   [ngModelOptions]="{standalone: true}">
+            Query
+          </span>
+        </div>
+      </div>
+
+      <div error class="edit-mapping__grid-toolbar__error-row">
+        <div class="error-icon-wrapper">
+          <mat-icon class="error-icon" svgIcon="error"></mat-icon>
+        </div>
+        <div class="error-text">
+          {{error}}
+        </div>
+      </div>
+    </app-edit-code-mapping-grid>
+
+    <button (click)="onApply()" [disabled]="applyDisabled">Apply</button>
+  </div>
+</form>

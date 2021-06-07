@@ -1,0 +1,25 @@
+.checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #8B8B8B;
+  box-sizing: border-box;
+  border-radius: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 1px;
+  cursor: pointer;
+  margin: 0 auto;
+
+  svg {
+    display: none;
+  }
+
+  &.checked {
+    background: rgba(6, 107, 187, 0.2);
+
+    svg {
+      display: block;
+    }
+  }
+}

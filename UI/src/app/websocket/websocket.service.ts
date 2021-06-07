@@ -15,7 +15,9 @@ export abstract class WebsocketService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.disconnect()
+    if (this.connection$ && !this.connection$.closed) {
+      this.disconnect()
+    }
   }
 
   handleError(error: any): string {

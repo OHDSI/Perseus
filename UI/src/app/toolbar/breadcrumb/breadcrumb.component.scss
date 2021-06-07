@@ -12,7 +12,7 @@
   }
 
   mat-icon {
-    color: $white;
+    color: #A8A8A8;
     float: left;
     font-size: 18px;
     line-height: 18px;
@@ -27,10 +27,10 @@
     outline: none;
     font-size: 16px;
     line-height: 18px;
-  }
 
-  li:last-child span {
-    color: $white;
-    cursor: default;
+    &.active-link {
+      color: $white;
+      cursor: default;
+    }
   }
 }

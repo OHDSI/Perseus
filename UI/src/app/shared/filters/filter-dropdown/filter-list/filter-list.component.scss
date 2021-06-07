@@ -1,0 +1,27 @@
+@import "../../../../styles/mixins";
+
+.filters-list {
+  padding: 10px 5px 5px 36px;
+  background-color: #fff;
+
+  .filter {
+    margin: 0 0 9px 3px;
+    @include search-input();
+
+    &::placeholder {
+      font-size: 12px;
+    }
+  }
+
+  &__item {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    height: 23px;
+
+    input {
+      cursor: pointer;
+      margin-right: 7px;
+    }
+  }
+}
