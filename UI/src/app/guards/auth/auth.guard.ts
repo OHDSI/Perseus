@@ -9,9 +9,9 @@ import {
   RouterStateSnapshot,
   UrlSegment
 } from '@angular/router';
-import { AuthService } from '../../services/auth/auth.service';
-import { authInjector } from '../../services/auth/auth-injector';
-import { loginRouter } from '../../app.constants';
+import { AuthService } from '@services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { loginRouter } from '@app/app.constants';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({

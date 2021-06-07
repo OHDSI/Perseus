@@ -8,7 +8,7 @@ import {
   Output
 } from '@angular/core';
 import { GridComponent } from '../grid.component';
-import { Pagination } from '../../models/grid/pagination';
+import { Pagination } from '@models/grid/pagination';
 
 @Component({
   selector: 'app-navigation-grid',

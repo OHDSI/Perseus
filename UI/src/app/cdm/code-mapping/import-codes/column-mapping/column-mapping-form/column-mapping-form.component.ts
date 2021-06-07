@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ImportCodesService } from '../../../../../services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
 import { FormGroup } from '@angular/forms';
-import { Column } from '../../../../../models/grid/grid';
+import { Column } from '@models/grid/grid';
 
 @Component({
   selector: 'app-column-mapping-form',

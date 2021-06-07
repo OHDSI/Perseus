@@ -8,7 +8,7 @@ import { DraggableDirective } from 'src/app/panel/directives/draggable.directive
 import { DrawService } from 'src/app/services/draw.service';
 import { AreaComponent } from 'src/app/panel/area/area.component';
 import { TargetCloneDialogComponent } from './target-clone-dialog/target-clone-dialog.component';
-import { BridgeButtonService } from '../services/bridge-button/bridge-button.service';
+import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 
 @NgModule({
   declarations: [

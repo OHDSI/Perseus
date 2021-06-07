@@ -4,15 +4,12 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
-import { Mapping } from '../models/mapping';
+import { Mapping } from '@models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
-import { ColumnInfo } from '../cdm/comfy/columns-list/column-info/column-info.component';
-import { apiUrl } from '../app.constants';
-import { removeExtension } from '../utilites/file';
-
-const URL = apiUrl;
+import { removeExtension } from '@utils/file';
+import { ColumnInfo } from '@models/column-info/column-info';
 
 @Injectable()
 export class DataService {

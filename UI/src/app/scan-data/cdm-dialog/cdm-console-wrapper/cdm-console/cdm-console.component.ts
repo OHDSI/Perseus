@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
-import { CdmBuilderWebsocketService } from '../../../../websocket/cdm-builder/cdm-builder-websocket.service';
-import {
-  CdmProgressNotification,
-  ProgressNotificationStatusCode
-} from '../../../../models/scan-data/progress-notification';
+import { CdmBuilderWebsocketService } from '@websocket/cdm-builder/cdm-builder-websocket.service';
+import { CdmProgressNotification, ProgressNotificationStatusCode } from '@models/scan-data/progress-notification';
 
 @Component({
   selector: 'app-cdm-console',

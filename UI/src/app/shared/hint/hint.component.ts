@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { hints } from './hints';
-import { OverlayDialogRef, OverlayService } from '../../services/overlay/overlay.service';
+import { OverlayDialogRef, OverlayService } from '@services/overlay/overlay.service';
 import { HintOverlayComponent } from './hint-overlay/hint-overlay.component';
 
 @Component({

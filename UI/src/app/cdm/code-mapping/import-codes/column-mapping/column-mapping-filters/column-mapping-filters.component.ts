@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { fillFilters, getFilters } from '../../../../../models/code-mapping/filters';
-import { ImportCodesService } from '../../../../../services/import-codes/import-codes.service';
+import { fillFilters, getFilters } from '@models/code-mapping/filters';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
 
 @Component({
   selector: 'app-column-mapping-filters',

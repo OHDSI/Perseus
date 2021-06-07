@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   SQL_FUNCTIONS,
   SQL_STRING_FUNCTIONS
-} from '../../../popups/rules-popup/transformation-input/model/sql-string-functions';
+} from '@popups/rules-popup/transformation-input/model/sql-string-functions';
 import * as CodeMirror from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FormGroup } from '@angular/forms';

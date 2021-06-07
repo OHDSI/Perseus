@@ -1,4 +1,4 @@
-import { Column } from '../../../../models/grid/grid';
+import { Column } from '@models/grid/grid';
 
 export const targetColumns: Column[] = [
   {

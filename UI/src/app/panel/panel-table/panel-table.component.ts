@@ -20,20 +20,20 @@ import { ITable } from 'src/app/models/table';
 import { BridgeService, IConnection } from 'src/app/services/bridge.service';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { AddConstantPopupComponent } from '../../popups/add-constant-popup/add-constant-popup.component';
+import { AddConstantPopupComponent } from '@popups/add-constant-popup/add-constant-popup.component';
 import { StoreService } from 'src/app/services/store.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
-import { OpenSaveDialogComponent } from '../../popups/open-save-dialog/open-save-dialog.component';
+import { OpenSaveDialogComponent } from '@popups/open-save-dialog/open-save-dialog.component';
 import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
-import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
+import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import * as fieldTypes from './similar-types.json';
-import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { BaseComponent } from '../../shared/base/base.component';
+import { BaseComponent } from '@shared/base/base.component';
 import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
-import { ConceptTransformationComponent } from '../../cdm/mapping/concept-transformation/concept-transformation.component';
-import { getConceptFieldType, toNoConceptRows } from 'src/app/utilites/concept-util';
+import { ConceptTransformationComponent } from '@mapping/concept-transformation/concept-transformation.component';
+import { getConceptFieldType, toNoConceptRows } from 'src/app/utils/concept-util';
 
 @Component({
   selector: 'app-panel-table',

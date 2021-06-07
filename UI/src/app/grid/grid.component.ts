@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Column, Sort } from '../models/grid/grid';
+import { Column, Sort } from '@models/grid/grid';
 
 @Component({
   selector: 'app-grid',

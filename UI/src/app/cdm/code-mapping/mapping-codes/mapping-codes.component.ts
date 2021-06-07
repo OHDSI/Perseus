@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
-import { ImportCodesService } from '../../../services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
 import { Router } from '@angular/router';
-import { codesRouter, mainPageRouter } from '../../../app.constants';
+import { codesRouter, mainPageRouter } from '@app/app.constants';
 import { switchMap } from 'rxjs/operators';
-import { openErrorDialog, parseHttpError } from '../../../utilites/error';
+import { openErrorDialog, parseHttpError } from '@utils/error';
 import { MatDialog } from '@angular/material/dialog';
 import { EMPTY } from 'rxjs';
 import { SaveVocabularyPopupComponent } from './save-vocabulary-popup/save-vocabulary-popup.component';
-import { CodeMapping } from '../../../models/code-mapping/code-mapping';
-import { Concept } from '../../../models/code-mapping/concept';
-import { ScoredConceptsCacheService } from '../../../services/import-codes/scored-concepts-cache.service';
-import { withLoading } from '../../../utilites/loading';
-import { VocabularyObserverService } from '../../../services/vocabulary-search/vocabulary-observer.service';
+import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { Concept } from '@models/code-mapping/concept';
+import { ScoredConceptsCacheService } from '@services/import-codes/scored-concepts-cache.service';
+import { withLoading } from '@utils/loading';
+import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
 
 @Component({
   selector: 'app-mapping-codes',

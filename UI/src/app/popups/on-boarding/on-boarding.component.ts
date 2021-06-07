@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 
-import { OVERLAY_DIALOG_DATA } from '../../services/overlay/overlay-dialog-data';
-import { OverlayDialogRef } from '../../services/overlay/overlay.service';
+import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
+import { OverlayDialogRef } from '@services/overlay/overlay.service';
 import { ON_BOARDING_META } from './on-boarding.meta';
 
 @Component({

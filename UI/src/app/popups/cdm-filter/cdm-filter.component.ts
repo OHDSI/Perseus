@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
 import { uniq } from 'src/app/infrastructure/utility';
-import { OVERLAY_DIALOG_DATA } from '../../services/overlay/overlay-dialog-data';
-import { OverlayDialogRef } from '../../services/overlay/overlay.service';
-import { StoreService } from '../../services/store.service';
+import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
+import { OverlayDialogRef } from '@services/overlay/overlay.service';
+import { StoreService } from '@services/store.service';
 
 @Component({
   selector: 'app-cdm-filter',

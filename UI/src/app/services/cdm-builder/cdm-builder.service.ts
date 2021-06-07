@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { CdmBuilderStatus } from '../../models/scan-data/cdm-builder-status';
-import { cdmBuilderApiUrl } from '../../app.constants';
-import { CdmSettings } from '../../models/scan-data/cdm-settings';
+import { CdmBuilderStatus } from '@models/scan-data/cdm-builder-status';
+import { cdmBuilderApiUrl } from '@app/app.constants';
+import { CdmSettings } from '@models/scan-data/cdm-settings';
 import { map, switchMap } from 'rxjs/operators';
-import { ConnectionResult } from '../../models/scan-data/connection-result';
+import { ConnectionResult } from '@models/scan-data/connection-result';
 import { DataService } from '../data.service';
 import { BridgeService } from '../bridge.service';
 import { StoreService } from '../store.service';
-import { removeExtension } from '../../utilites/file';
+import { removeExtension } from '@utils/file';
 import { authInjector } from '../auth/auth-injector';
 import { AuthService } from '../auth/auth.service';
 

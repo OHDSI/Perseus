@@ -3,15 +3,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { ITable, Table } from 'src/app/models/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 
-import { BridgeButtonData } from '../services/bridge-button/model/bridge-button-data';
-import { BridgeButtonService } from '../services/bridge-button/bridge-button.service';
+import { BridgeButtonData } from '@services/bridge-button/model/bridge-button-data';
+import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
-import { Criteria } from '../shared/search-by-name/search-by-name.component';
-import { StoreService } from '../services/store.service';
+import { Criteria } from '@shared/search-by-name/search-by-name.component';
+import { StoreService } from '@services/store.service';
 import { TargetCloneDialogComponent } from './target-clone-dialog/target-clone-dialog.component';
 import { cloneDeep } from 'src/app/infrastructure/utility';
-import { OpenSaveDialogComponent } from '../popups/open-save-dialog/open-save-dialog.component';
-import { SelectTableDropdownComponent } from '../popups/select-table-dropdown/select-table-dropdown.component';
+import { OpenSaveDialogComponent } from '@popups/open-save-dialog/open-save-dialog.component';
+import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/select-table-dropdown.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 

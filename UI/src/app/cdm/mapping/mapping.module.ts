@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { MappingComponent } from './mapping.component';
 import { MappingRoutingModule } from './mapping-routing.module';
-import { SharedModule } from '../../shared/shared.module';
-import { VocabularySearchModule } from '../../vocabulary-search/vocabulary-search.module';
-import { ScanDataModule } from '../../scan-data/scan-data.module';
-import { PanelModule } from '../../panel/panel.module';
+import { SharedModule } from '@shared/shared.module';
+import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.module';
+import { ScanDataModule } from '@scan-data/scan-data.module';
+import { PanelModule } from '@app/panel/panel.module';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 import { ConceptColumnComponent } from './concept-transformation/concept-column/concept-column.component';
 import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
@@ -16,8 +16,8 @@ import { ConditionDialogComponent } from './vocabulary-transform-configurator/co
 import { LookupComponent } from './vocabulary-transform-configurator/lookup/lookup.component';
 import { VocabularyConditionComponent } from './vocabulary-transform-configurator/vocabulary-condition/vocabulary-condition.component';
 import { VocabularyConfigComponent } from './vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
-import { SqlEditorModule } from '../../sql-editor/sql-editor.module';
-import { PopupsModule } from '../../popups/popups.module';
+import { SqlEditorModule } from '@app/sql-editor/sql-editor.module';
+import { PopupsModule } from '@popups/popups.module';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 
 @NgModule({

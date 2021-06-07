@@ -1,8 +1,8 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, startWith, takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../shared/base/base.component';
-import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
+import { BaseComponent } from '@shared/base/base.component';
+import { BreadcrumbService } from '@services/breadcrumb/breadcrumb.service';
 
 export interface IBreadCrumb {
   label: string;

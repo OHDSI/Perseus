@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ScoredConcept } from '../../../../../models/code-mapping/scored-concept';
-import { NavigationGridComponent } from '../../../../../grid/navigation-grid/navigation-grid.component';
-import { Column, columnToField } from '../../../../../models/grid/grid';
+import { ScoredConcept } from '@models/code-mapping/scored-concept';
+import { NavigationGridComponent } from '@grid/navigation-grid/navigation-grid.component';
+import { Column, columnToField } from '@models/grid/grid';
 import { targetColumns } from '../../match-score-grid/match-score-grid.columns';
-import { integerDivision } from '../../../../../utilites/math';
+import { integerDivision } from '@utils/math';
 
 @Component({
   selector: 'app-edit-code-mapping-grid',

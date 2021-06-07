@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { authInjector } from '../../services/auth/auth-injector';
-import { AuthService } from '../../services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { AuthService } from '@services/auth/auth.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 

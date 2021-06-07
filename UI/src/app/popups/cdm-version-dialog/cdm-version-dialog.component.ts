@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
-import { DataService } from '../../services/data.service';
+import { DataService } from '@services/data.service';
 import { StoreService } from 'src/app/services/store.service';
 
 @Component({

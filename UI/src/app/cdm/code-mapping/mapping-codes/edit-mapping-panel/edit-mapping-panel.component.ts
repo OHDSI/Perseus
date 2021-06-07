@@ -7,29 +7,29 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { ScoredConcept } from '../../../../models/code-mapping/scored-concept';
-import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
+import { ScoredConcept } from '@models/code-mapping/scored-concept';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
 import { catchError, filter, map, pairwise, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { BaseComponent } from '../../../../shared/base/base.component';
+import { BaseComponent } from '@shared/base/base.component';
 import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
-import { parseHttpError } from '../../../../utilites/error';
-import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
-import { Concept } from '../../../../models/code-mapping/concept';
+import { parseHttpError } from '@utils/error';
+import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { Concept } from '@models/code-mapping/concept';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Filter } from '../../../../models/filter/filter';
+import { Filter } from '@models/filter/filter';
 import {
   defaultSearchConceptFilters,
   defaultSearchMode,
   mapFormFiltersToBackEndFilters,
   SearchConceptFilters
-} from '../../../../models/code-mapping/search-concept-filters';
-import { createFiltersForm, fillFilters, getFilters } from '../../../../models/code-mapping/filters';
-import { SearchMode } from '../../../../models/code-mapping/search-mode';
+} from '@models/code-mapping/search-concept-filters';
+import { createFiltersForm, fillFilters, getFilters } from '@models/code-mapping/filters';
+import { SearchMode } from '@models/code-mapping/search-mode';
 import { isFormChanged, toScoredConceptWithSelection, toSearchByTermParams } from './edit-mapping-panel';
-import { ScoredConceptsCacheService } from '../../../../services/import-codes/scored-concepts-cache.service';
+import { ScoredConceptsCacheService } from '@services/import-codes/scored-concepts-cache.service';
 import { of } from 'rxjs';
-import { getTerm } from '../../../../utilites/code-mapping-util';
-import { SearchByTermParams } from '../../../../models/code-mapping/search-by-term-params';
+import { getTerm } from '@utils/code-mapping-util';
+import { SearchByTermParams } from '@models/code-mapping/search-by-term-params';
 
 @Component({
   selector: 'app-edit-mapping-panel',

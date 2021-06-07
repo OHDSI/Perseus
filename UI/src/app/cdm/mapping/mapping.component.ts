@@ -9,34 +9,34 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
+import { PreviewPopupComponent } from '@popups/preview-popup/preview-popup.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SetConnectionTypePopupComponent } from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
-import { CdmFilterComponent } from '../../popups/cdm-filter/cdm-filter.component';
+import { SetConnectionTypePopupComponent } from '@popups/set-connection-type-popup/set-connection-type-popup.component';
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
+import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
 import { TransformConfigComponent } from './vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
-import { addGroupMappings, addViewsToMapping } from '../../models/mapping-service';
+import { addGroupMappings, addViewsToMapping } from '@models/mapping-service';
 import {
   numberOfPanelsWithOneSimilar,
   numberOfPanelsWithoutSimilar,
   numberOfPanelsWithTwoSimilar,
   similarTableName
-} from '../../app.constants';
-import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
-import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
-import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
-import { LookupService } from '../../services/lookup.service';
-import { getLookupType } from '../../utilites/lookup-util';
+} from '@app/app.constants';
+import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/select-table-dropdown.component';
+import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
+import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
+import { LookupService } from '@services/lookup.service';
+import { getLookupType } from '@utils/lookup-util';
 import * as conceptFields from './concept-fileds-list.json';
-import { BaseComponent } from '../../shared/base/base.component';
-import { VocabularyObserverService } from '../../services/vocabulary-search/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
-import { PanelComponent } from '../../panel/panel.component';
-import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
+import { BaseComponent } from '@shared/base/base.component';
+import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
+import { PanelComponent } from '@app/panel/panel.component';
+import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 import { of } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';

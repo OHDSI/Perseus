@@ -6,10 +6,10 @@ import {
   ProgressNotificationStatus,
   ProgressNotificationStatusCode,
   toFailedMessage
-} from '../../../../models/scan-data/progress-notification';
-import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data/scan-data-websocket.service';
-import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
-import { parseHttpError } from '../../../../utilites/error';
+} from '@models/scan-data/progress-notification';
+import { ScanDataWebsocketService } from '@websocket/white-rabbit/scan-data/scan-data-websocket.service';
+import { ScanDataService } from '@services/white-rabbit/scan-data.service';
+import { parseHttpError } from '@utils/error';
 
 @Component({
   selector: 'scan-data-console',

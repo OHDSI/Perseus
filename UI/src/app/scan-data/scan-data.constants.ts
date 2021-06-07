@@ -1,6 +1,6 @@
 import { dbServer } from '../app.constants';
-import { DbSettings } from '../models/scan-data/db-settings';
-import { adaptDbType } from '../utilites/cdm-adapter';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { adaptDbType } from '@utils/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {

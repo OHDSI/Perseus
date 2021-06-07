@@ -9,14 +9,14 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { SelectableGridComponent } from '../../../../grid/selectable-grid/selectable-grid.component';
-import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
-import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
-import { Column, columnToField } from '../../../../models/grid/grid';
+import { SelectableGridComponent } from '@grid/selectable-grid/selectable-grid.component';
+import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { Column, columnToField } from '@models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
-import { Concept } from '../../../../models/code-mapping/concept';
+import { Concept } from '@models/code-mapping/concept';
 import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionTopAndHeight, } from './match-score-grid';
-import { termFromTargetConcept } from '../../../../models/code-mapping/target-concept';
+import { termFromTargetConcept } from '@models/code-mapping/target-concept';
 
 @Component({
   selector: 'app-match-score-grid',

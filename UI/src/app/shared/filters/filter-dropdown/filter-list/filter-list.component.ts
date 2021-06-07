@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FilterValue } from '../../../../models/filter/filter';
+import { FilterValue } from '@models/filter/filter';
 
 @Component({
   selector: 'app-filter-list',

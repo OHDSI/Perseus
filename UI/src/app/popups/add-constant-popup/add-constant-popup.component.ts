@@ -2,7 +2,7 @@ import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { ConstEvent } from '../../models/const-event';
+import { ConstEvent } from '@models/const-event';
 
 @Component({
   selector: 'app-add-constant-popup',

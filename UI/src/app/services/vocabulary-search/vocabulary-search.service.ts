@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { apiUrl } from '../../app.constants';
-import {
-  VocabSearchMode,
-  VocabSearchReqParams,
-  VocabSearchResult
-} from '../../models/vocabulary-search/vocabulray-search';
+import { apiUrl } from '@app/app.constants';
+import { VocabSearchMode, VocabSearchReqParams, VocabSearchResult } from '@models/vocabulary-search/vocabulray-search';
 
 @Injectable()
 export class VocabularySearchService {

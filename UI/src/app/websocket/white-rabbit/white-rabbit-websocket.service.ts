@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { WebsocketService } from '../websocket.service';
 import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import { isProd, whiteRabbitWsUrl } from '../../app.constants';
+import { isProd, whiteRabbitWsUrl } from '@app/app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
 

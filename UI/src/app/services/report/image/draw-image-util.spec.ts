@@ -1,6 +1,6 @@
 import { createMappingFieldsImage } from './draw-image-util';
 import { MappingImageStyles } from './mapping-image';
-import { Comment } from '../../../models/comment';
+import { Comment } from '@models/comment';
 import { saveAs } from 'file-saver';
 
 export const testMapping = [

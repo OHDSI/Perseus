@@ -11,8 +11,8 @@ import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
-import { BaseComponent } from '../../../shared/base/base.component';
-import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utilites/concept-util';
+import { BaseComponent } from '@shared/base/base.component';
+import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
 
 @Component({

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { authInjector } from '../services/auth/auth-injector';
-import { AuthService } from '../services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { AuthService } from '@services/auth/auth.service';
 import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
 import { externalUrls, loginRouter } from '../app.constants';
 import { Router } from '@angular/router';

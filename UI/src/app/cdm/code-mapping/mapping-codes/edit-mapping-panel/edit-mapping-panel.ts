@@ -1,10 +1,10 @@
-import { filterValueToString, SearchConceptFilters } from '../../../../models/code-mapping/search-concept-filters';
+import { filterValueToString, SearchConceptFilters } from '@models/code-mapping/search-concept-filters';
 import { isEqual } from '../../../../infrastructure/utility';
-import { Concept } from '../../../../models/code-mapping/concept';
-import { ScoredConcept } from '../../../../models/code-mapping/scored-concept';
-import { CodeMapping } from '../../../../models/code-mapping/code-mapping';
-import { SearchByTermParams } from '../../../../models/code-mapping/search-by-term-params';
-import { termFromTargetConcept } from '../../../../models/code-mapping/target-concept';
+import { Concept } from '@models/code-mapping/concept';
+import { ScoredConcept } from '@models/code-mapping/scored-concept';
+import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { SearchByTermParams } from '@models/code-mapping/search-by-term-params';
+import { termFromTargetConcept } from '@models/code-mapping/target-concept';
 
 const baseFields = [
   'searchString',

@@ -6,7 +6,7 @@ import { Command } from 'src/app/infrastructure/command';
 import { cloneDeep, uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
-import { TransformRulesData } from '../../../popups/rules-popup/model/transform-rules-data';
+import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
 import { DictionaryItem } from '../vocabulary-dropdown/model/vocabulary';
 import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import {
@@ -16,10 +16,10 @@ import {
 } from './model/transformation-config';
 import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/connector.interface';
-import { DeleteWarningComponent } from '../../../popups/delete-warning/delete-warning.component';
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
-import { ErrorPopupComponent } from '../../../popups/error-popup/error-popup.component';
+import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { Area } from 'src/app/models/area';
 import { StoreService } from 'src/app/services/store.service';
 

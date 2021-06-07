@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConnectionResult } from '../../models/scan-data/connection-result';
-import { DbSettings } from '../../models/scan-data/db-settings';
+import { ConnectionResult } from '@models/scan-data/connection-result';
+import { DbSettings } from '@models/scan-data/db-settings';
 import { HttpClient } from '@angular/common/http';
-import { whiteRabbitApiUrl } from '../../app.constants';
-import { TableToScan } from '../../models/scan-data/table-to-scan';
+import { whiteRabbitApiUrl } from '@app/app.constants';
+import { TableToScan } from '@models/scan-data/table-to-scan';
 import { map } from 'rxjs/operators';
-import { DelimitedTextFileSettings } from '../../models/scan-data/delimited-text-file-settings';
+import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
 
 @Injectable()
 export class ScanDataService {

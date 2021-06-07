@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ImportCodesService } from '../../../services/import-codes/import-codes.service';
-import { VocabularyObserverService } from '../../../services/vocabulary-search/vocabulary-observer.service';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
 
 @Component({
   selector: 'app-import-codes',

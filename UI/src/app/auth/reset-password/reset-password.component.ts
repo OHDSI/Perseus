@@ -1,13 +1,13 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AuthComponent } from '../auth.component';
-import { authInjector } from '../../services/auth/auth-injector';
-import { AuthService } from '../../services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { AuthService } from '@services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { passwordRegex } from '../auxiliary/regexes';
-import { parseHttpError } from '../../utilites/error';
+import { parseHttpError } from '@utils/error';
 import { configurePasswordFormControls } from '../auxiliary/password-form-controls';
-import { AuthStateService } from '../../services/auth/auth-state.service';
+import { AuthStateService } from '@services/auth/auth-state.service';
 import { filter } from 'rxjs/operators';
 
 @Component({

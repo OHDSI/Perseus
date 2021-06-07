@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { OVERLAY_DIALOG_DATA } from '../../../services/overlay/overlay-dialog-data';
+import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
 import { Hint } from '../hints';
-import { calculateWidthByLongestWord } from '../../../utilites/text-width';
+import { calculateWidthByLongestWord } from '@utils/text-width';
 
 @Component({
   selector: 'app-hint-overlay',

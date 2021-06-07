@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { GridComponent } from '../grid.component';
-import { Selectable } from '../../models/grid/selectable';
-import { columnToField } from '../../models/grid/grid';
+import { Selectable } from '@models/grid/selectable';
+import { columnToField } from '@models/grid/grid';
 
 @Component({
   selector: 'app-selectable-grid',

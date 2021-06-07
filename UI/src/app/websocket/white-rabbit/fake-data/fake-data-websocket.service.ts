@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WhiteRabbitWebsocketService } from '../white-rabbit-websocket.service';
-import { FakeDataParams } from '../../../models/scan-data/fake-data-params';
-import { FakeDataService } from '../../../services/white-rabbit/fake-data.service';
+import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { FakeDataService } from '@services/white-rabbit/fake-data.service';
 import { switchMap } from 'rxjs/operators';
 
 @Injectable()

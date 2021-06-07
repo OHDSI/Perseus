@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '../../models/scan-data/db-settings';
-import { TableToScan } from '../../models/scan-data/table-to-scan';
-import { ConnectionResult } from '../../models/scan-data/connection-result';
-import { ScanParams } from '../../models/scan-data/scan-params';
-import { DelimitedTextFileSettings } from '../../models/scan-data/delimited-text-file-settings';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { TableToScan } from '@models/scan-data/table-to-scan';
+import { ConnectionResult } from '@models/scan-data/connection-result';
+import { ScanParams } from '@models/scan-data/scan-params';
+import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
 
 export interface IScanDataStateService {
   state: any;

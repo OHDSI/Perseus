@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl } from '../../app.constants';
-import { ImportCodesState } from '../../models/code-mapping/import-codes-state';
+import { apiUrl } from '@app/app.constants';
+import { ImportCodesState } from '@models/code-mapping/import-codes-state';
 
 @Injectable()
 export class ImportVocabulariesService {

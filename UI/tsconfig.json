@@ -21,6 +21,22 @@
       "dom"
     ],
     "paths": {
+      "@app/*": ["src/app/*"],
+      "@cdm/*": ["src/app/cdm/*"],
+      "@comfy/*": ["src/app/cdm/comfy/*"],
+      "@mapping/*": ["src/app/cdm/mapping/*"],
+      "@code-mapping/*": ["src/app/cdm/code-mapping/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@popups/*": ["src/app/popups/*"],
+      "@grid/*": ["src/app/grid/*"],
+      "@scan-data/*": ["src/app/scan-data/*"],
+      "@websocket/*": ["src/app/websocket/*"],
+      "@vocabulary-search/*": ["src/app/vocabulary-search/*"],
+      "@services/*": ["src/app/services/*"],
+      "@models/*": ["src/app/models/*"],
+      "@utils/*": ["src/app/utils/*"],
+      "@guards/*": ["src/app/guards/*"],
+      "@interceptors/*": ["src/app/interceptors/*"],
     }
   },
   "exclude": [

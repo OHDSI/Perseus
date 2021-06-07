@@ -1,4 +1,4 @@
-import { IComment } from '../../models/comment';
+import { IComment } from '@models/comment';
 
 export function commentsForReport(comments: IComment[]): string {
   return (comments || [])

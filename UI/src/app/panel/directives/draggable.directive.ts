@@ -12,7 +12,7 @@ import {
 import { BridgeService } from 'src/app/services/bridge.service';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
-import { Area } from '../../models/area';
+import { Area } from '@models/area';
 
 @Directive({
   selector: '[appDraggable]'

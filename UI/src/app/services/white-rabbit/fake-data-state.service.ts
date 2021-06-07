@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FakeDataParams } from '../../models/scan-data/fake-data-params';
+import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { IScanDataStateService } from './scan-data-state.service';
 
 const initialState = {
