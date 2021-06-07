@@ -1,30 +1,30 @@
 <div class="mat-tab-column-info-container">
   <mat-tab-group (selectedTabChange)="onTableChanged($event.index)">
     <mat-tab *ngFor="let tableName of tableNames" [label]="tableName">
-      <ng-container [ngSwitch]="columnInfos[tableName].status">
-        <div *ngSwitchCase="0" class="text-message-container">
+      <ng-container *ngIf="columnInfos[tableName] as info" [ngSwitch]="info.status">
+        <div *ngSwitchCase="0" class="loading">
           <p>Loading...</p>
         </div>
 
         <div *ngSwitchCase="1" class="column-info">
           <div class="column-info__general">
-            <div class="column-info__general-name">
+            <div class="column-info__general__name">
               <span>Field Name:</span>
               <span>{{columnName}}</span>
             </div>
 
-            <div class="column-info__general-type">
+            <div class="column-info__general__type">
               <span>Field type:</span>
-              <span>{{columnInfos[tableName].value.type || ''}}</span>
+              <span>info.value.type || ''}}</span>
             </div>
 
-            <div class="column-info__general-unique">
+            <div class="column-info__general__unique">
               <span>Unique values:</span>
-              <span>{{columnInfos[tableName].value.uniqueValues || ''}}</span>
+              <span>{{info.value.uniqueValues || ''}}</span>
             </div>
           </div>
 
-          <div *ngIf="columnInfos[tableName].value.topValues.length > 0"
+          <div *ngIf="data.length"
                class="column-info__values grid-wrapper">
             <table class="grid"
                    cdk-table
@@ -48,7 +48,7 @@
           </div>
         </div>
 
-        <div *ngSwitchCase="2" class="text-message-container">
+        <div *ngSwitchCase="2" class="no-info">
           <p>No info</p>
         </div>
       </ng-container>
