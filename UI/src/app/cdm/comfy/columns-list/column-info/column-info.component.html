@@ -41,7 +41,7 @@
                     appTextWidth
                     maxWidth="95"
                     #textWidth="textWidth"
-                    [matTooltip]="row.value"
+                    [matTooltip]="tooltip(row.value)"
                     [matTooltipDisabled]="textWidth.tooltipDisabled"
                     *cdkCellDef="let row">
                   {{row.value}}

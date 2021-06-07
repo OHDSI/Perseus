@@ -65,6 +65,10 @@ export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnI
     }
   }
 
+  tooltip(value: string): string {
+    return value.length < 255 ? value : value.slice(0, 255)
+  }
+
   private loadFirst() {
     this.onTableChanged(0);
   }
