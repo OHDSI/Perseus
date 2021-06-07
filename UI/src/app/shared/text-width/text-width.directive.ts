@@ -22,14 +22,19 @@ export class TextWidthDirective implements AfterViewInit {
     return this.el.nativeElement.offsetWidth
   }
 
+  get innerHtml() {
+    return this.el.nativeElement.innerHTML
+  }
+
   set innerHtml(value: string) {
     this.el.nativeElement.innerHTML = value
   }
 
   ngAfterViewInit(): void {
+    const value = this.innerHtml || this.value
     let excludeCount = 3
     while (this.width > this.maxWidth) {
-      this.innerHtml = this.value.substr(0, this.value.length - excludeCount) + '...'
+      this.innerHtml = value.substr(0, value.length - excludeCount) + '...'
       excludeCount++
     }
     if (excludeCount > 3) {
