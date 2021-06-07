@@ -24,22 +24,26 @@
             </div>
           </div>
 
-          <div *ngIf="columnInfos[tableName].value.topValues.length > 0" class="column-info__values">
-            <table>
-              <thead>
-              <tr>
-                <th>Value</th>
-                <th>Frequency</th>
-                <th>Percentage</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let value of columnInfos[tableName].value.topValues">
-                <th>{{value.value || ''}}</th>
-                <th>{{value.frequency || ''}}</th>
-                <th>{{value.percentage || ''}}</th>
-              </tr>
-              </tbody>
+          <div *ngIf="columnInfos[tableName].value.topValues.length > 0"
+               class="column-info__values grid-wrapper">
+            <table class="grid"
+                   cdk-table
+                   [dataSource]="data"
+                   [style.height]="height"
+                   [style.width]="width">
+
+              <ng-container *ngFor="let col of columns" [cdkColumnDef]="col.field">
+                <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+                  {{col.name}}
+                </th>
+
+                <td class="cell" cdk-cell *cdkCellDef="let row">
+                  {{row[col.field]}}
+                </td>
+              </ng-container>
+
+              <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr class="row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
             </table>
           </div>
         </div>
