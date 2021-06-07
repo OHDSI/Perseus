@@ -19,7 +19,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Filter } from '@models/filter/filter';
 import {
   defaultSearchConceptFilters,
-  defaultSearchMode,
   mapFormFiltersToBackEndFilters,
   SearchConceptFilters
 } from '@models/code-mapping/search-concept-filters';
@@ -157,7 +156,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
           this.needUpdate = true
           const defaultFilters = defaultSearchConceptFilters()
           this.form.reset(defaultFilters, {onlySelf: true})
-          this.onSearchModeChange(defaultSearchMode)
+          this.onSearchModeChange(SearchMode.SEARCH_TERM_AS_QUERY)
         }
       })
   }
