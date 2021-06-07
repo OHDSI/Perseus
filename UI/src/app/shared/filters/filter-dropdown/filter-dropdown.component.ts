@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input, Provider } from '@angular/core';
-import { Filter, FilterValue } from '../../../models/filter/filter';
+import { Filter, FilterValue } from '@models/filter/filter';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const VALUE_ACCESSOR: Provider = {

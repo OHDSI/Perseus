@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { ReportCreator } from './report/report-creator';
 import { WordReportCreator } from './report/word-report-creator';
 import { stateToInfo, StoreService } from './store.service';
-import { MappingPair } from '../models/mapping';
+import { MappingPair } from '@models/mapping';
 import { Packer } from 'docx';
 import { BridgeService } from './bridge.service';
 import { LookupService } from './lookup.service';
 import { saveAs } from 'file-saver';
-import { ITable } from '../models/table';
+import { ITable } from '@models/table';
 import { Subject } from 'rxjs/internal/Subject';
 import { filter } from 'rxjs/operators';
 

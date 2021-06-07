@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ScoredConceptCache } from '../../models/code-mapping/scored-concept-cache';
+import { ScoredConceptCache } from '@models/code-mapping/scored-concept-cache';
 
 @Injectable()
 export class ScoredConceptsCacheService implements OnDestroy {

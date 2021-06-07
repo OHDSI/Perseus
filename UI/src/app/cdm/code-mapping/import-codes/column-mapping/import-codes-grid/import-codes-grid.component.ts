@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SelectableGridComponent } from '../../../../../grid/selectable-grid/selectable-grid.component';
-import { Code } from '../../../../../models/code-mapping/code';
+import { SelectableGridComponent } from '@grid/selectable-grid/selectable-grid.component';
+import { Code } from '@models/code-mapping/code';
 
 @Component({
   selector: 'app-import-codes-grid',

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Table } from '../models/table';
+import { Table } from '@models/table';
 import { uniq } from '../infrastructure/utility';
-import { removeExtension } from '../utilites/file';
+import { removeExtension } from '@utils/file';
 import { Observable } from 'rxjs/internal/Observable';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
-import { State } from '../models/state';
+import { State } from '@models/state';
 
 const initialState: State = {
   target: [],

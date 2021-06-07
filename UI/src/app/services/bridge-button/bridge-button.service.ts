@@ -1,14 +1,14 @@
 // Legacy
 import { Injectable } from '@angular/core';
 
-import { IConnector } from '../../models/connector.interface';
+import { IConnector } from '@models/connector.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { TransformRulesData } from '../../popups/rules-popup/model/transform-rules-data';
-import { RulesPopupComponent } from '../../popups/rules-popup/rules-popup.component';
-import { TransformConfigComponent } from '../../cdm/mapping/vocabulary-transform-configurator/transform-config.component';
+import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
+import { RulesPopupComponent } from '@popups/rules-popup/rules-popup.component';
+import { TransformConfigComponent } from '@mapping/vocabulary-transform-configurator/transform-config.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { BridgeButtonData } from './model/bridge-button-data';
-import { isConceptTable } from '../../cdm/comfy/services/concept.service';
+import { isConceptTable } from '@comfy/services/concept.service';
 import { CommonService } from 'src/app/services/common.service';
 
 @Injectable()

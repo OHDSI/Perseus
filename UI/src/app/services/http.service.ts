@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Mapping } from '../models/mapping';
+import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
-import { createNoCacheHeaders } from '../utilites/http-headers';
+import { createNoCacheHeaders } from '@utils/http-headers';
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';

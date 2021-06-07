@@ -1,10 +1,10 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConnectionResult } from '../../../models/scan-data/connection-result';
+import { ConnectionResult } from '@models/scan-data/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
 import { Input, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../../shared/base/base.component';
-import { DbSettings } from '../../../models/scan-data/db-settings';
+import { BaseComponent } from '@shared/base/base.component';
+import { DbSettings } from '@models/scan-data/db-settings';
 import { ConnectionErrorPopupComponent } from '../connection-error-popup/connection-error-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { dbTypesRequireSchema, defaultPorts } from '../../scan-data.constants';

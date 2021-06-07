@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth/auth.guard';
-import { AlreadyLoggedInGuard } from './guards/auth/already-logged-in.guard';
+import { AuthGuard } from '@guards/auth/auth.guard';
+import { AlreadyLoggedInGuard } from '@guards/auth/already-logged-in.guard';
 
 const routes: Routes = [
   {

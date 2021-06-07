@@ -9,10 +9,10 @@ import {
   Output,
   Renderer2
 } from '@angular/core';
-import { BridgeService } from 'src/app/services/bridge.service';
-import { ITable } from 'src/app/models/table';
-import { IRow } from 'src/app/models/row';
-import { Area } from '../../models/area';
+import { BridgeService } from '@services/bridge.service';
+import { ITable } from '@models/table';
+import { IRow } from '@models/row';
+import { Area } from '@models/area';
 
 @Directive({
   selector: '[appDraggable]'

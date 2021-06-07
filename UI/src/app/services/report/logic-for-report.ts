@@ -1,4 +1,4 @@
-import { MappingNode } from '../../models/mapping';
+import { MappingNode } from '@models/mapping';
 
 export function logicForReport(mappingNode: MappingNode): string {
   return logics

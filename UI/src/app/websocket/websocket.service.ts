@@ -1,7 +1,7 @@
 import { Observable, Observer } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { parseHttpError } from '../utilites/error';
+import { parseHttpError } from '@utils/error';
 import { OnDestroy } from '@angular/core';
 
 export abstract class WebsocketService implements OnDestroy {

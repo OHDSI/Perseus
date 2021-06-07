@@ -1,10 +1,10 @@
 import { OnInit } from '@angular/core';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { finalize } from 'rxjs/operators';
-import { BaseComponent } from '../shared/base/base.component';
+import { BaseComponent } from '@shared/base/base.component';
 
 export abstract class AuthComponent extends BaseComponent implements OnInit {
 

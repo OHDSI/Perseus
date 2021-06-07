@@ -5,13 +5,13 @@ import {
   ProgressNotificationStatus,
   ProgressNotificationStatusCode,
   toFailedMessage
-} from '../../../../models/scan-data/progress-notification';
+} from '@models/scan-data/progress-notification';
 import { filter, takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../../../../shared/base/base.component';
-import { WebsocketParams } from '../../../../models/scan-data/websocket-params';
-import { WebsocketService } from '../../../../websocket/websocket.service';
+import { BaseComponent } from '@shared/base/base.component';
+import { WebsocketParams } from '@models/scan-data/websocket-params';
+import { WebsocketService } from '@websocket/websocket.service';
 import { ThemePalette } from '@angular/material/core';
-import { ScanResult, ScanStatus } from '../../../../models/scan-data/scan-result';
+import { ScanResult, ScanStatus } from '@models/scan-data/scan-result';
 
 export abstract class ConsoleComponent<T> extends BaseComponent implements OnInit {
 

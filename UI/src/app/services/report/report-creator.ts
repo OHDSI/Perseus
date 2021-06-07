@@ -1,6 +1,6 @@
-import { MappingNode } from '../../models/mapping';
+import { MappingNode } from '@models/mapping';
 import { MappingForImage } from './image/mapping-image';
-import { IRow } from '../../models/row';
+import { IRow } from '@models/row';
 
 export interface ReportCreator {
 

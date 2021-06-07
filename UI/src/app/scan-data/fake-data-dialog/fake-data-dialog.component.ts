@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
-import { StoreService } from '../../services/store.service';
+import { StoreService } from '@services/store.service';
 import { fakeDataDbSettings } from '../scan-data.constants';
 import { FakeConsoleWrapperComponent } from './fake-console-wrapper/fake-console-wrapper.component';
-import { FakeDataParams } from '../../models/scan-data/fake-data-params';
+import { FakeDataParams } from '@models/scan-data/fake-data-params';
 
 @Component({
   selector: 'app-fake-data-dialog',

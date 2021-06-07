@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanLoad, Route, Router, UrlSegment } from '@angular/router';
-import { StoreService } from '../../services/store.service';
-import { mainPageRouter } from '../../app.constants';
+import { StoreService } from '@services/store.service';
+import { mainPageRouter } from '@app/app.constants';
 
 @Injectable()
 export class MappingGuard implements CanLoad {

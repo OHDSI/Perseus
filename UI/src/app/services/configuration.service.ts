@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Configuration } from '../models/configuration';
+import { Configuration } from '@models/configuration';
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';

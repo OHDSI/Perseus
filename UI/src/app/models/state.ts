@@ -1,6 +1,6 @@
 import { ITable } from './table';
 import { IRow } from './row';
-import { TableConcepts } from '../cdm/mapping/concept-transformation/model/concept';
+import { TableConcepts } from '@mapping/concept-transformation/model/concept';
 
 export interface State {
   version?: string,

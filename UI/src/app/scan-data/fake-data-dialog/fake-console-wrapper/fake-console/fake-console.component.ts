@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
-import { FakeDataWebsocketService } from '../../../../websocket/white-rabbit/fake-data/fake-data-websocket.service';
-import { FakeDataService } from '../../../../services/white-rabbit/fake-data.service';
+import { FakeDataWebsocketService } from '@websocket/white-rabbit/fake-data/fake-data-websocket.service';
+import { FakeDataService } from '@services/white-rabbit/fake-data.service';
 import {
   ProgressNotification,
   ProgressNotificationStatus,
   ProgressNotificationStatusCode
-} from '../../../../models/scan-data/progress-notification';
+} from '@models/scan-data/progress-notification';
 import { finalize } from 'rxjs/operators';
 
 @Component({

@@ -1,4 +1,4 @@
-import { WebsocketConfig } from '../../websocket/websocket.config';
+import { WebsocketConfig } from '@websocket/websocket.config';
 
 export interface WebsocketParams extends WebsocketConfig {
   payload: object;

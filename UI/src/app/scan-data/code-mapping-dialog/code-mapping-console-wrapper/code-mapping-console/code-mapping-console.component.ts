@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
-import { CodeMappingWebsocketService } from '../../../../websocket/code-mapping/code-mapping-websocket.service';
+import { CodeMappingWebsocketService } from '@websocket/code-mapping/code-mapping-websocket.service';
 import {
   ProgressNotification,
   ProgressNotificationStatus,
   ProgressNotificationStatusCode,
   toFailedMessage
-} from '../../../../models/scan-data/progress-notification';
-import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
+} from '@models/scan-data/progress-notification';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

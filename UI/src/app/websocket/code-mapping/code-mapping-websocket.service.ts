@@ -3,10 +3,10 @@ import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
-import { AuthService } from '../../services/auth/auth.service';
-import { authInjector } from '../../services/auth/auth-injector';
-import { serverUrl } from '../../app.constants';
-import { ImportCodesMediatorService } from '../../services/import-codes/import-codes-mediator.service';
+import { AuthService } from '@services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { serverUrl } from '@app/app.constants';
+import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
 
 @Injectable()
 export class CodeMappingWebsocketService extends WebsocketService {

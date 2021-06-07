@@ -1,4 +1,4 @@
-import { IRow } from 'src/app/models/row';
+import { IRow } from '@models/row';
 
 function middleHeightOfLine(line: any) {
   const {middleY} = line.attributes;
@@ -42,9 +42,8 @@ function getSVGPoint(row: IRow, canvas: any) {
   const pt = canvas.createSVGPoint();
   pt.x = x;
   pt.y = y;
-  const svgPoint = pt.matrixTransform(canvas.getScreenCTM().inverse());
 
-  return svgPoint;
+  return pt.matrixTransform(canvas.getScreenCTM().inverse());
 }
 
 export {

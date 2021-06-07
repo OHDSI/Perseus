@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { whiteRabbitDatabaseTypes } from '../../scan-data.constants';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { DbSettings } from '../../../models/scan-data/db-settings';
-import { DqdConnectionSettingsStateService } from '../../../services/data-quality-check/dqd-connection-settings-state.service';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { DqdConnectionSettingsStateService } from '@services/data-quality-check/dqd-connection-settings-state.service';
 import { AbstractResourceForm } from '../../auxiliary/resource-form/abstract-resource-form';
-import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
+import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 
 @Component({
   selector: 'app-dqd-form',

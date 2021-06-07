@@ -1,6 +1,6 @@
 import { IRow } from 'src/app/models/row';
-import { getSVGPoint } from '../utilites/draw-utilites';
-import { extractHtmlElement } from '../utilites/html-utilities';
+import { getSVGPoint } from '@utils/draw-utilites';
+import { extractHtmlElement } from '@utils/html-utilities';
 import { ConnectorType, IConnector } from './connector.interface';
 import { ElementRef, EventEmitter, Renderer2 } from '@angular/core';
 

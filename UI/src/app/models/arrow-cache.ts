@@ -1,5 +1,5 @@
 import { IRow } from './row';
-import { IConnection } from '../services/bridge.service';
+import { IConnection } from '@services/bridge.service';
 
 export interface Arrow {
   source: IRow;

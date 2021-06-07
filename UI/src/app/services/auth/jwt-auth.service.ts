@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
-import { User } from '../../models/user';
+import { User } from '@models/user';
 import { Observable } from 'rxjs/internal/Observable';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl, loginRouter } from '../../app.constants';
+import { apiUrl, loginRouter } from '@app/app.constants';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 

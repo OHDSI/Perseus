@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BridgeService } from '../services/bridge.service';
+import { BridgeService } from '@services/bridge.service';
 import { fromEvent } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../shared/base/base.component';
+import { BaseComponent } from '@shared/base/base.component';
 import { Router } from '@angular/router';
 import { mainPageRouter } from '../app.constants';
 

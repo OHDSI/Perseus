@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { ConsoleHeader } from '../../models/code-mapping/console-header';
+import { ConsoleHeader } from '@models/code-mapping/console-header';
 
 /**
  * Used for set http request in code-mapping websocket service

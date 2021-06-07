@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, Input, Renderer2, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 
-import { Area } from 'src/app/models/area';
-import { BridgeService } from 'src/app/services/bridge.service';
+import { Area } from '@models/area';
+import { BridgeService } from '@services/bridge.service';
 
 @Component({
   selector: 'app-area',

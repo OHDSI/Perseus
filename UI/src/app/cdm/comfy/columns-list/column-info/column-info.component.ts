@@ -1,25 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { OVERLAY_DIALOG_DATA } from '../../../../services/overlay/overlay-dialog-data';
-import { DataService } from '../../../../services/data.service';
+import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
+import { DataService } from '@services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-
-export interface ValueInfo {
-  value: string;
-  frequency: string;
-  percentage: string;
-}
-
-export interface ColumnInfo {
-  type?: string;
-  uniqueValues?: string;
-  topValues?: ValueInfo[];
-}
-
-enum ColumnInfoStatus {
-  LOADING,
-  READY,
-  NO_INFO
-}
+import { ColumnInfo, ColumnInfoStatus } from '@models/column-info/column-info';
 
 @Component({
   selector: 'app-field-information',

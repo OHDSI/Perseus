@@ -1,8 +1,8 @@
 import { WebsocketService } from '../websocket.service';
 import { Observable } from 'rxjs/internal/Observable';
-import { DqdService } from '../../services/data-quality-check/dqd.service';
-import { dqdWsUrl } from '../../app.constants';
-import { DbSettings } from '../../models/scan-data/db-settings';
+import { DqdService } from '@services/data-quality-check/dqd.service';
+import { dqdWsUrl } from '@app/app.constants';
+import { DbSettings } from '@models/scan-data/db-settings';
 import { Injectable, OnDestroy } from '@angular/core';
 
 @Injectable()

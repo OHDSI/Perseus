@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { AppConnectorService } from './services/app-connector.service';
+import { AppConnectorService } from '@services/app-connector.service';
 
 @Component({
   selector: 'app-root',

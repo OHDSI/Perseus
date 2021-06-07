@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { DeleteWarningComponent } from '../../../../popups/delete-warning/delete-warning.component';
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
@@ -9,7 +9,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
-import { LookupService } from '../../../../services/lookup.service';
+import { LookupService } from '@services/lookup.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',

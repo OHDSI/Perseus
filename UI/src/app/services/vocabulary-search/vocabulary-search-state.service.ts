@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { VocabSearchState } from '../../models/vocabulary-search/vocabulary-search-state';
+import { VocabSearchState } from '@models/vocabulary-search/vocabulary-search-state';
 
 @Injectable()
 export class VocabularySearchStateService {

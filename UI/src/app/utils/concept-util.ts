@@ -1,5 +1,5 @@
 import { Concept } from 'src/app/cdm/mapping/concept-transformation/model/concept';
-import { IRow } from '../models/row';
+import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
 
 const conceptFieldNames = (conceptMap as any).default;

@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { authInjector } from '../../services/auth/auth-injector';
-import { AuthService } from '../../services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
 import { AuthComponent } from '../auth.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { parseHttpError } from '../../utilites/error';
+import { parseHttpError } from '@utils/error';
 import { nameRegex, passwordRegex } from '../auxiliary/regexes';
 import { configurePasswordFormControls } from '../auxiliary/password-form-controls';
 

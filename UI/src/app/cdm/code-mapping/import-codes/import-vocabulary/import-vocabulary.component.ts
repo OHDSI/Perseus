@@ -1,19 +1,19 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
-import { ImportVocabulariesService } from '../../../../services/import-codes/import-vocabularies.service';
-import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportVocabulariesService } from '@services/import-codes/import-vocabularies.service';
+import { openErrorDialog, parseHttpError } from '@utils/error';
 import { MatDialog } from '@angular/material/dialog';
-import { SetDelimiterDialogComponent } from '../../../../shared/set-delimiter-dialog/set-delimiter-dialog.component';
+import { SetDelimiterDialogComponent } from '@shared/set-delimiter-dialog/set-delimiter-dialog.component';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
-import { codesRouter, mainPageRouter } from '../../../../app.constants';
-import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
-import { BaseComponent } from '../../../../shared/base/base.component';
-import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
-import { columnsFromSourceCode } from '../../../../models/code-mapping/import-codes-state';
-import { withLoading } from '../../../../utilites/loading';
-import { ConsoleHeader } from '../../../../models/code-mapping/console-header';
+import { codesRouter, mainPageRouter } from '@app/app.constants';
+import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-mapping-dialog.component';
+import { BaseComponent } from '@shared/base/base.component';
+import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
+import { columnsFromSourceCode } from '@models/code-mapping/import-codes-state';
+import { withLoading } from '@utils/loading';
+import { ConsoleHeader } from '@models/code-mapping/console-header';
 
 @Component({
   selector: 'app-import-vocabulary',

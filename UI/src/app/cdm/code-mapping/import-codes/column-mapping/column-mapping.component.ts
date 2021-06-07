@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ImportCodesService } from '../../../../services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/import-codes/import-codes.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { codesRouter, mainPageRouter } from '../../../../app.constants';
+import { codesRouter, mainPageRouter } from '@app/app.constants';
 import { MatDialog } from '@angular/material/dialog';
-import { openErrorDialog, parseHttpError } from '../../../../utilites/error';
+import { openErrorDialog, parseHttpError } from '@utils/error';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { CodeMappingDialogComponent } from '../../../../scan-data/code-mapping-dialog/code-mapping-dialog.component';
-import { BaseComponent } from '../../../../shared/base/base.component';
-import { createFiltersForm } from '../../../../models/code-mapping/filters';
-import { ImportCodesMediatorService } from '../../../../services/import-codes/import-codes-mediator.service';
-import { mapFormFiltersToBackEndFilters } from '../../../../models/code-mapping/search-concept-filters';
-import { ConsoleHeader } from '../../../../models/code-mapping/console-header';
+import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-mapping-dialog.component';
+import { BaseComponent } from '@shared/base/base.component';
+import { createFiltersForm } from '@models/code-mapping/filters';
+import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
+import { mapFormFiltersToBackEndFilters } from '@models/code-mapping/search-concept-filters';
+import { ConsoleHeader } from '@models/code-mapping/console-header';
 
 @Component({
   selector: 'app-column-mapping',

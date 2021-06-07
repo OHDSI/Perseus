@@ -1,8 +1,8 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { IRow } from 'src/app/models/row';
 import { CommonService } from 'src/app/services/common.service';
-import { Arrow } from '../models/arrow';
-import { IConnector } from '../models/connector.interface';
+import { Arrow } from '@models/arrow';
+import { IConnector } from '@models/connector.interface';
 import { parseArrowKey } from './business/rules';
 
 @Injectable()

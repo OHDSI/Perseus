@@ -4,16 +4,16 @@ import {
   IConceptOptions,
   ITableConceptsOptions,
   TableConcepts
-} from '../cdm/mapping/concept-transformation/model/concept';
+} from '@mapping/concept-transformation/model/concept';
 import { cloneDeep } from '../infrastructure/utility';
-import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
+import * as conceptMap from '@mapping/concept-fileds-list.json';
 import {
   createConceptFields,
   getConceptFieldType,
   updateConceptsIndexes,
   updateConceptsList
-} from 'src/app/utilites/concept-util';
-import { Arrow } from '../models/arrow';
+} from 'src/app/utils/concept-util';
+import { Arrow } from '@models/arrow';
 
 @Injectable()
 export class ConceptTransformationService {

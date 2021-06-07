@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Column } from '../../models/grid/grid';
+import { Column } from '@models/grid/grid';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl } from '../../app.constants';
-import { CodeMapping } from '../../models/code-mapping/code-mapping';
-import { CodeMappingParams } from '../../models/code-mapping/code-mapping-params';
-import { Code } from '../../models/code-mapping/code';
-import { ScoredConcept } from '../../models/code-mapping/scored-concept';
-import { columnsFromSourceCode, ImportCodesState } from '../../models/code-mapping/import-codes-state';
-import { FilterValue } from '../../models/filter/filter';
-import { defaultSearchConceptFilters, SearchConceptFilters } from '../../models/code-mapping/search-concept-filters';
+import { apiUrl } from '@app/app.constants';
+import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { CodeMappingParams } from '@models/code-mapping/code-mapping-params';
+import { Code } from '@models/code-mapping/code';
+import { ScoredConcept } from '@models/code-mapping/scored-concept';
+import { columnsFromSourceCode, ImportCodesState } from '@models/code-mapping/import-codes-state';
+import { FilterValue } from '@models/filter/filter';
+import { defaultSearchConceptFilters, SearchConceptFilters } from '@models/code-mapping/search-concept-filters';
 
 const initialState: ImportCodesState = {
   codes: null,

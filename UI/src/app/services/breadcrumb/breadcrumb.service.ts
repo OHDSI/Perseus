@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { CanRedirectService } from './can-redirect.service';
-import { IBreadCrumb } from '../../toolbar/breadcrumb/breadcrump.component';
+import { IBreadCrumb } from '@app/toolbar/breadcrumb/breadcrump.component';
 
 @Injectable()
 export class BreadcrumbService {
