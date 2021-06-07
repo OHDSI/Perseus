@@ -3,7 +3,7 @@
   <a *ngIf="selected.length"
      (click)="deselectAll()">Deselect All</a>
 </div>
-<mat-list class="source-columns-list" role="list" dense>
+<mat-list #columnList class="source-columns-list" role="list" dense>
   <cdk-virtual-scroll-viewport
     class="virtual-scroll-container"
     itemSize="60"

@@ -27,7 +27,6 @@
             <span appTextWidth
                   #textWidth="textWidth"
                   [matTooltipDisabled]="textWidth.tooltipDisabled"
-                  [value]="vocabulary"
                   [matTooltip]="vocabulary">{{vocabulary}}</span>
 
           <app-import-vocabulary-buttons (edit)="onEdit(i)"

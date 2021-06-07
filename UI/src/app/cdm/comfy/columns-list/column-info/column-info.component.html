@@ -1,4 +1,5 @@
-<div class="mat-tab-column-info-container">
+<div class="mat-tab-column-info-container"
+     [ngClass]="positionStrategyClass" [style.maxHeight.px]="maxHeight">
   <mat-tab-group (selectedTabChange)="onTableChanged($event.index)">
     <mat-tab *ngFor="let tableName of tableNames" [label]="tableName">
       <ng-container *ngIf="columnInfos[tableName] as info" [ngSwitch]="info.status">
@@ -10,35 +11,60 @@
           <div class="column-info__general">
             <div class="column-info__general__name">
               <span>Field Name:</span>
-              <span>{{columnName}}</span>
+              <span class="column-info__general__value">{{columnName}}</span>
             </div>
 
             <div class="column-info__general__type">
               <span>Field type:</span>
-              <span>info.value.type || ''}}</span>
+              <span class="column-info__general__value">{{info.value.type || ''}}</span>
             </div>
 
             <div class="column-info__general__unique">
               <span>Unique values:</span>
-              <span>{{info.value.uniqueValues || ''}}</span>
+              <span class="column-info__general__value">{{info.value.uniqueValues || ''}}</span>
             </div>
           </div>
 
-          <div *ngIf="data.length"
-               class="column-info__values grid-wrapper">
+          <div *ngIf="info.value.topValues.length" class="grid-wrapper" [style.maxHeight]="height">
             <table class="grid"
                    cdk-table
-                   [dataSource]="data"
-                   [style.height]="height"
+                   [dataSource]="info.value.topValues"
                    [style.width]="width">
 
-              <ng-container *ngFor="let col of columns" [cdkColumnDef]="col.field">
+              <ng-container cdkColumnDef="value">
                 <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
-                  {{col.name}}
+                  Value
+                </th>
+
+                <td class="cell"
+                    cdk-cell
+                    appTextWidth
+                    maxWidth="95"
+                    #textWidth="textWidth"
+                    [matTooltip]="row.value"
+                    [matTooltipDisabled]="textWidth.tooltipDisabled"
+                    *cdkCellDef="let row">
+                  {{row.value}}
+                </td>
+              </ng-container>
+
+              <ng-container cdkColumnDef="frequency">
+                <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+                  Frequency
                 </th>
 
                 <td class="cell" cdk-cell *cdkCellDef="let row">
-                  {{row[col.field]}}
+                  {{row.frequency}}
+                </td>
+              </ng-container>
+
+              <ng-container cdkColumnDef="percentage">
+                <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+                  Percentage
+                </th>
+
+                <td class="cell" cdk-cell *cdkCellDef="let row">
+                  {{row.percentage | percent:'.2':'en'}}
                 </td>
               </ng-container>
 

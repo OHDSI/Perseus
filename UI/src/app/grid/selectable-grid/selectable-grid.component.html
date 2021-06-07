@@ -1,8 +1,7 @@
-<div class="grid-wrapper">
+<div class="grid-wrapper" [style.height]="height">
   <table class="grid"
          cdk-table
          [dataSource]="data"
-         [style.height]="height"
          [style.width]="width">
 
     <ng-container cdkColumnDef="__select__">

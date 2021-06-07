@@ -16,13 +16,21 @@
       "overlayX": "end",
       "overlayY": "top"
     },
-    "column-info": {
+    "column-info-top": {
       "offsetX": 40,
       "offsetY": 0,
       "originX": "start",
       "originY": "top",
       "overlayX": "start",
       "overlayY": "top"
+    },
+    "column-info-bottom": {
+      "offsetX": 40,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "bottom",
+      "overlayX": "start",
+      "overlayY": "bottom"
     },
     "comments-source": {
       "offsetX": 40,

@@ -4,7 +4,6 @@ import { DataService } from '@services/data.service';
 import { StoreService } from 'src/app/services/store.service';
 import { ColumnInfo, ColumnInfoStatus, ValueInfo } from '@models/column-info/column-info';
 import { GridComponent } from '@grid/grid.component';
-import { Column } from '@models/grid/grid';
 
 @Component({
   selector: 'app-field-information',
@@ -18,6 +17,8 @@ export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnI
 
   columnName: string;
   tableNames: string[];
+  positionStrategyClass: string
+  maxHeight: number;
 
   columnInfos: {
     [key: string]: {
@@ -26,23 +27,15 @@ export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnI
     }
   } = {};
 
-  data: ValueInfo[];
+  displayedColumns = ['value', 'frequency', 'percentage']
 
-  columns: Column[] = [
-    {field: 'value', name: 'Value'},
-    {field: 'frequency', name: 'Frequency'},
-    {field: 'percentage', name: 'Percentage'}
-  ];
-
-  constructor(@Inject(OVERLAY_DIALOG_DATA) public payload: { columnName: string, tableNames: string[] },
+  constructor(@Inject(OVERLAY_DIALOG_DATA) public payload: { columnName: string, tableNames: string[], positionStrategy: string, maxHeight: number },
               private dataService: DataService,
               private storeService: StoreService) {
     super()
   }
 
   ngOnInit(): void {
-    super.ngOnInit()
-
     this.payload.tableNames
       .forEach(tableName => this.columnInfos[tableName] = {
         status: ColumnInfoStatus.LOADING
@@ -50,6 +43,10 @@ export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnI
 
     this.columnName = this.payload.columnName;
     this.tableNames = this.payload.tableNames;
+    this.positionStrategyClass = `${this.payload.positionStrategy}-strategy`
+    this.maxHeight = this.payload.maxHeight
+    // Grid height
+    this.height = `${this.payload.maxHeight - 195}px` // 175 - general info height, 20 - bottom padding
 
     this.loadFirst();
   }
@@ -62,7 +59,6 @@ export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnI
         .subscribe(result => {
           this.columnInfos[tableName].value = result;
           this.columnInfos[tableName].status = ColumnInfoStatus.READY;
-          this.data = result.topValues;
         }, () => {
           this.columnInfos[tableName].status = ColumnInfoStatus.NO_INFO;
         });
