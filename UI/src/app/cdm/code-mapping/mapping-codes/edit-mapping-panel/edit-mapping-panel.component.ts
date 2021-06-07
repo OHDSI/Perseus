@@ -58,7 +58,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
 
   dropdownFilters: Filter[] = getFilters()
 
-  searchMode: SearchMode
+  searchMode = SearchMode.SEARCH_TERM_AS_QUERY
 
   private firstEmit = true
   private needUpdate: boolean
