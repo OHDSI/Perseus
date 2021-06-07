@@ -23,6 +23,7 @@ import { DraggableDirective } from '@mapping/panel/directives/draggable.directiv
 import { FilterComponent } from '@mapping/panel/filter/filter.component';
 import { PanelTableComponent } from '@mapping/panel/panel-table/panel-table.component';
 import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/target-clone-dialog.component';
+import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,9 @@ import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/t
   ],
   bootstrap: [
     MappingComponent
+  ],
+  providers: [
+    BridgeButtonService
   ]
 })
 export class MappingModule { }
