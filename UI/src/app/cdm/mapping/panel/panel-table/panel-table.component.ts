@@ -13,27 +13,27 @@ import {
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
 
-import { CommentPopupComponent } from 'src/app/popups/comment-popup/comment-popup.component';
-import { Area } from 'src/app/models/area';
-import { IRow, Row, RowOptions } from 'src/app/models/row';
-import { ITable } from 'src/app/models/table';
-import { BridgeService, IConnection } from 'src/app/services/bridge.service';
-import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
-import { OverlayService } from 'src/app/services/overlay/overlay.service';
+import { CommentPopupComponent } from '@popups/comment-popup/comment-popup.component';
+import { Area } from '@models/area';
+import { IRow, Row, RowOptions } from '@models/row';
+import { ITable } from '@models/table';
+import { BridgeService, IConnection } from '@services/bridge.service';
+import { OverlayConfigOptions } from '@services/overlay/overlay-config-options.interface';
+import { OverlayService } from '@services/overlay/overlay.service';
 import { AddConstantPopupComponent } from '@popups/add-constant-popup/add-constant-popup.component';
-import { StoreService } from 'src/app/services/store.service';
+import { StoreService } from '@services/store.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { OpenSaveDialogComponent } from '@popups/open-save-dialog/open-save-dialog.component';
-import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
+import { cloneDeep, uniq } from '@app/infrastructure/utility';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import * as fieldTypes from './similar-types.json';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { BaseComponent } from '@shared/base/base.component';
-import * as conceptMap from '../../cdm/mapping/concept-fileds-list.json';
+import * as conceptMap from '../../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '@mapping/concept-transformation/concept-transformation.component';
-import { getConceptFieldType, toNoConceptRows } from 'src/app/utils/concept-util';
+import { getConceptFieldType, toNoConceptRows } from '@utils/concept-util';
 
 @Component({
   selector: 'app-panel-table',

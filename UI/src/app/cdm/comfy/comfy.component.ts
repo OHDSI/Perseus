@@ -31,7 +31,7 @@ import { StoreService } from '@services/store.service';
 import { UploadService } from '@services/upload.service';
 import { Criteria } from '@shared/search-by-name/search-by-name.component';
 import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
-import { SqlEditorComponent } from '@app/sql-editor/sql-editor.component';
+import { SqlEditorComponent } from '@app/shared/sql-editor/sql-editor.component';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../../popups/cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';

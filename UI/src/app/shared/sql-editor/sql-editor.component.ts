@@ -8,15 +8,15 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
-import { cloneDeep } from 'src/app/infrastructure/utility';
-import { Area } from '../models/area';
-import { Table } from '../models/table';
-import { CommonUtilsService } from '../services/common-utils.service';
-import { BridgeService } from 'src/app/services/bridge.service';
-import { DataService } from 'src/app/services/data.service';
-import { Row, RowOptions } from 'src/app/models/row';
-import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
-import { StoreService } from '../services/store.service';
+import { cloneDeep } from '@app/infrastructure/utility';
+import { Area } from '@models/area';
+import { Table } from '@models/table';
+import { CommonUtilsService } from '@services/common-utils.service';
+import { BridgeService } from '@services/bridge.service';
+import { DataService } from '@services/data.service';
+import { Row, RowOptions } from '@models/row';
+import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
+import { StoreService } from '@services/store.service';
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -187,16 +187,16 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     return viewSql;
   }
 
-  createColumnAliases(tableAlias: string, columns: any, totalColumns?: any){
+  createColumnAliases(tableAlias: string, columns: any, totalColumns?: any) {
     const tableName = this.aliasTableMapping[ tableAlias ];
     const table = this.storeService.state.source.find(it => it.name === tableName);
     let duplicateColumns;
     table.rows.forEach(row => {
       duplicateColumns = totalColumns ? totalColumns : columns
-      const columnName = !duplicateColumns.find(col => col.substring(col.indexOf(".") + 1) === row.name) ?
+      const columnName = !duplicateColumns.find(col => col.substring(col.indexOf('.') + 1) === row.name) ?
       `${tableAlias}.${row.name}` :
       `${tableAlias}.${row.name} AS ${row.name}_${tableName}`;
-      if(totalColumns){
+      if (totalColumns) {
         totalColumns.push(columnName)
       }
       columns.push(columnName)

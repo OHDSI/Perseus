@@ -35,7 +35,7 @@ import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
-import { PanelComponent } from '@app/panel/panel.component';
+import { PanelComponent } from './panel/panel.component';
 import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 import { of } from 'rxjs';

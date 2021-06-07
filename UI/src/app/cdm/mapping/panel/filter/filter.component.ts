@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { ITable, Table } from 'src/app/models/table';
-import { IRow } from 'src/app/models/row';
-import { BridgeService } from 'src/app/services/bridge.service';
+import { ITable, Table } from '@models/table';
+import { IRow } from '@models/row';
+import { BridgeService } from '@services/bridge.service';
 
 @Component({
   selector: 'app-filter',

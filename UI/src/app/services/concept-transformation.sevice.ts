@@ -6,7 +6,7 @@ import {
   TableConcepts
 } from '@mapping/concept-transformation/model/concept';
 import { cloneDeep } from '../infrastructure/utility';
-import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
+import * as conceptMap from '@mapping/concept-fileds-list.json';
 import {
   createConceptFields,
   getConceptFieldType,

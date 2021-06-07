@@ -4,7 +4,6 @@ import { MappingRoutingModule } from './mapping-routing.module';
 import { SharedModule } from '@shared/shared.module';
 import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.module';
 import { ScanDataModule } from '@scan-data/scan-data.module';
-import { PanelModule } from '@app/panel/panel.module';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 import { ConceptColumnComponent } from './concept-transformation/concept-column/concept-column.component';
 import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
@@ -16,9 +15,14 @@ import { ConditionDialogComponent } from './vocabulary-transform-configurator/co
 import { LookupComponent } from './vocabulary-transform-configurator/lookup/lookup.component';
 import { VocabularyConditionComponent } from './vocabulary-transform-configurator/vocabulary-condition/vocabulary-condition.component';
 import { VocabularyConfigComponent } from './vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
-import { SqlEditorModule } from '@app/sql-editor/sql-editor.module';
 import { PopupsModule } from '@popups/popups.module';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
+import { PanelComponent } from '@mapping/panel/panel.component';
+import { AreaComponent } from '@mapping/panel/area/area.component';
+import { DraggableDirective } from '@mapping/panel/directives/draggable.directive';
+import { FilterComponent } from '@mapping/panel/filter/filter.component';
+import { PanelTableComponent } from '@mapping/panel/panel-table/panel-table.component';
+import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/target-clone-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,14 +39,18 @@ import { PersonMappingWarningDialogComponent } from './person-mapping-warning-di
     VocabularyConditionComponent,
     VocabularyConfigComponent,
     PersonMappingWarningDialogComponent,
+    PanelComponent,
+    AreaComponent,
+    DraggableDirective,
+    FilterComponent,
+    PanelTableComponent,
+    TargetCloneDialogComponent
   ],
   imports: [
     SharedModule,
     MappingRoutingModule,
     VocabularySearchModule,
     ScanDataModule,
-    PanelModule,
-    SqlEditorModule,
     PopupsModule
   ],
   bootstrap: [
