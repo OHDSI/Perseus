@@ -150,8 +150,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             moveItemInArray(this.storeService.state.source, previousIndex, currentIndex);
           }
         }
-      } else if (!data.includes(previousContainer.data[previousIndex])) {
+      } else if (!data.slice(1).includes(previousContainer.data[previousIndex])) {
         // When user map source to target, map only new table
+        // First element - target table name excluded
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         this.storeService.add('targetConfig', this.targetConfig);
         this.storeService.state.recalculateSimilar = true;
