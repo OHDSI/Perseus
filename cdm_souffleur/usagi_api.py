@@ -3,14 +3,13 @@ import subprocess
 from flask import jsonify, Blueprint
 from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
-from cdm_souffleur.services.import_source_codes_service import create_source_codes, load_codes_to_server, \
-    create_concept_mapping, create_core, save_codes, get_vocabulary_list_for_user, \
+from cdm_souffleur.services.import_source_codes_service import load_codes_to_server, \
+    create_concept_mapping, save_codes, get_vocabulary_list_for_user, \
     load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters, delete_vocabulary
-from cdm_souffleur.services.solr_core_service import run_solr_command, import_status_scheduler, main_index_created, \
-    full_data_import
-from cdm_souffleur.services.usagi_search_service import search
+from cdm_souffleur.services.solr_core_service import run_solr_command
+from cdm_souffleur.services.search_service import search_usagi
 from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS, QUERY_SEARCH_MODE
-import asyncio
+
 usagi_api = Blueprint('usagi_api', __name__)
 
 @usagi_api.route('/api/import_source_codes', methods=['POST'])
@@ -68,7 +67,7 @@ def get_term_search_results_call(current_user):
         filters = request.json['filters']
         term = filters['searchString'] if filters['searchMode'] == QUERY_SEARCH_MODE else request.json['term']
         source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
-        search_result = search(current_user, filters, term, source_auto_assigned_concept_ids)
+        search_result = search_usagi(current_user, filters, term, source_auto_assigned_concept_ids)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -161,17 +160,6 @@ def get_filters_call(current_user):
 def solr_import_status_call():
     try:
         response = run_solr_command(SOLR_IMPORT_STATUS)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
-    return response
-
-
-@usagi_api.route('/api/solr_import_data', methods=['GET'])
-def solr_import_data_call():
-    try:
-        response = full_data_import()
     except InvalidUsage as error:
         raise error
     except Exception as error:

@@ -18,11 +18,13 @@ RUN mkdir /app/cdm_souffleur/solr-8.8.1/contrib/dataimporthandler/lib
 
 RUN mkdir /app/cdm_souffleur/solr-8.8.1/server/solr/concepts
 
-RUN mkdir /app/cdm_souffleur/solr-8.8.1/server/solr/concepts/conf
+RUN mkdir /app/cdm_souffleur/solr-8.8.1/server/solr/athena
 
 COPY ./solr/postgresql-42.2.19.jar /app/cdm_souffleur/solr-8.8.1/contrib/dataimporthandler/lib
 
-COPY ./solr/concepts/conf  /app/cdm_souffleur/solr-8.8.1/server/solr/concepts/conf
+COPY ./solr/concepts /app/cdm_souffleur/solr-8.8.1/server/solr/concepts
+
+COPY ./solr/athena /app/cdm_souffleur/solr-8.8.1/server/solr/athena
 
 RUN su
 

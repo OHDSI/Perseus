@@ -1,7 +1,6 @@
 from flask import request, jsonify, Blueprint
-
 from cdm_souffleur.model.user import token_required
-from cdm_souffleur.services.vocabulary_service import search_vocabulary_concepts
+from cdm_souffleur.services.search_service import search_athena
 from cdm_souffleur.utils.constants import VOCABULARY_FILTERS
 
 vocab_search_api = Blueprint('vocab_search_api', __name__)
@@ -19,5 +18,5 @@ def search_concepts(current_user):
     for key in VOCABULARY_FILTERS:
         filters[key] = request.args.get(VOCABULARY_FILTERS[key])
     update_filters = request.args.get('updateFilters')
-    search_result = search_vocabulary_concepts(pageSize, page, query, sort, order, filters, update_filters)
+    search_result = search_athena(pageSize, page, query, sort, order, filters, update_filters)
     return jsonify(search_result)
