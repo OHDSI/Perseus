@@ -19,6 +19,12 @@ import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transfo
 import { createFunctionComponentAndReturnFunc } from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
 import { DatePartTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
 import { DatePartTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
+import { NoArgsTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
+import { TrimTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/trim-transformation-function';
+import { UpperTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/upper-transformation-function';
+import { LowerTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/lower-transformation-function';
+import { DateAddTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function.component';
+import { DateAddTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function';
 
 @Component({
   selector: 'app-visual-transformation',
@@ -37,6 +43,26 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
       name: 'DATEPART',
       componentClass: DatePartTransformationFunctionComponent,
       createFunction: () => new DatePartTransformationFunction()
+    },
+    {
+      name: 'TRIM',
+      componentClass: NoArgsTransformationFunctionComponent,
+      createFunction: () => new TrimTransformationFunction()
+    },
+    {
+      name: 'UPPER',
+      componentClass: NoArgsTransformationFunctionComponent,
+      createFunction: () => new UpperTransformationFunction()
+    },
+    {
+      name: 'LOWER',
+      componentClass: NoArgsTransformationFunctionComponent,
+      createFunction: () => new LowerTransformationFunction()
+    },
+    {
+      name: 'DATEADD',
+      componentClass: DateAddTransformationFunctionComponent,
+      createFunction: () => new DateAddTransformationFunction()
     }
   ]
 
@@ -87,6 +113,8 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe(() => this.updatePreview())
+
+    this.updatePreview()
   }
 
   private updatePreview() {

@@ -4,6 +4,7 @@ import {
   DatePartModel,
   DatePartTransformationFunction
 } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
+import { dateParts } from '@models/transformation/datepart';
 
 @Component({
   selector: 'app-date-part-transformation-function',
@@ -12,14 +13,7 @@ import {
 })
 export class DatePartTransformationFunctionComponent extends TransformationFunctionComponent<DatePartModel> {
 
-  dateparts = [
-    'Year',
-    'Month',
-    'Day',
-    'Hour',
-    'Minute',
-    'Second',
-  ]
+  dateparts = dateParts
 
   constructor(@Inject('function') transformationFunction: DatePartTransformationFunction) {
     super(transformationFunction)

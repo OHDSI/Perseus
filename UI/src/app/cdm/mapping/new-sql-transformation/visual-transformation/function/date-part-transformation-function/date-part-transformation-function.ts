@@ -1,8 +1,9 @@
 import { TransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DatePart } from '@models/transformation/datepart';
 
 export interface DatePartModel {
-  part: 'Year' | 'Month' | 'Day' | 'Hour' | 'Minute' | 'Second'
+  part: DatePart
 }
 
 export class DatePartTransformationFunction extends TransformationFunction<DatePartModel> {
