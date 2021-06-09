@@ -74,7 +74,7 @@ LIST_OF_COLUMN_INFO_FIELDS = [
     "Fraction empty"
 ]
 
-N_ROWS_FIELD_NAME = 'N rows'
+N_ROWS_FIELD_NAME = 'N rows checked'
 
 VOCABULARY_FILTERS = {
     'concept_class_id': 'conceptClass',
