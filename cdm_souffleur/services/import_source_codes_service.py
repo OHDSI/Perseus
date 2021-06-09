@@ -8,7 +8,7 @@ from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, Ma
 from cdm_souffleur.model.conceptVocabularyModel import Source_To_Concept_Map
 from cdm_souffleur.model.mapped_concepts import mapped_concept
 from cdm_souffleur.model.source_code import SourceCode
-from cdm_souffleur.services.usagi_search_service import search
+from cdm_souffleur.services.search_service import search_usagi
 from cdm_souffleur.services.web_socket_service import emit_status
 from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
@@ -125,7 +125,7 @@ def create_concept_mapping(current_user, codes, filters, source_code_column, sou
             code_mapping.sourceCode.source_auto_assigned_concept_ids = list(
                 code_mapping.sourceCode.source_auto_assigned_concept_ids)
             emit_status(current_user, f"import_codes_status", f"Searching {source_code.source_name}", 1)
-            scored_concepts = search(current_user, filters, source_code.source_name, source_code.source_auto_assigned_concept_ids)
+            scored_concepts = search_usagi(current_user, filters, source_code.source_name, source_code.source_auto_assigned_concept_ids)
             if len(scored_concepts):
                 target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>', term=scored_concepts[0].term)
                 code_mapping.targetConcepts = [target_concept]

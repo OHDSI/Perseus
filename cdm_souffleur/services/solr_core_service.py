@@ -3,38 +3,57 @@ from shutil import rmtree, copytree, copyfile
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from cdm_souffleur.utils.constants import SOLR_PATH, SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, \
-    SOLR_CREATE_CORE, SOLR_RELOAD_CORE, SOLR_UNLOAD_CORE, SOLR_IMPORT_STATUS
+    SOLR_CREATE_CORE, SOLR_RELOAD_CORE, SOLR_UNLOAD_CORE, SOLR_IMPORT_STATUS, ATHENA_IMPORT_STATUS, ATHENA_CREATE_CORE, \
+    ATHENA_FULL_DATA_IMPORT
 from os import path
 from urllib.request import urlopen
 from cdm_souffleur import app
 
 
 main_index_created = False
+athena_index_created = False
 import_status_scheduler = BackgroundScheduler()
+import_status_scheduler.start()
 
-def update_main_index_status():
-    global main_index_created
-    response = run_solr_command(SOLR_IMPORT_STATUS)
-    if 'Indexing completed.' in response:
-                main_index_created = True
-                import_status_scheduler.remove_job('import_status')
-
-import_status_scheduler.add_job(func=update_main_index_status, trigger="interval", seconds=10, id="import_status")
-
-
-def full_data_import():
-    if not main_index_created:
-        run_solr_command(SOLR_CREATE_MAIN_INDEX_CORE)
-        response = run_solr_command(SOLR_FULL_DATA_IMPORT)
-        import_status_scheduler.start()
-    else:
-        response = 'Main index already created.'
-    return response
 
 def run_solr_command(command, current_user = ''):
     resource = urllib.request.urlopen(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/{command}{current_user}")
     content = resource.read().decode(resource.headers.get_content_charset())
     return content
+
+
+def check_index_created(command):
+    response = run_solr_command(command)
+    if 'Indexing completed.' in response:
+        return True
+    return False
+
+
+def update_index_status(command, index_created, job_name):
+    if check_index_created(command):
+        index_created = True
+        import_status_scheduler.remove_job(job_name)
+
+
+def update_main_index_status():
+    global main_index_created
+    update_index_status(SOLR_IMPORT_STATUS, main_index_created, 'import_status')
+
+
+def update_athena_index_status():
+    global athena_index_created
+    update_index_status(ATHENA_IMPORT_STATUS, athena_index_created, 'athena_import_status')
+
+
+def create_index(create_index_command, full_import_command, job_name, scheduler_func):
+    run_solr_command(create_index_command)
+    run_solr_command(full_import_command)
+    import_status_scheduler.add_job(func=scheduler_func, trigger="interval", seconds=10, id=job_name)
+
+
+create_index(SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, 'import_status', update_main_index_status)
+create_index(ATHENA_CREATE_CORE, ATHENA_FULL_DATA_IMPORT, 'athena_import_status', update_athena_index_status)
+
 
 
 def create_core(current_user):
@@ -46,6 +65,7 @@ def create_core(current_user):
     else:
         create_user_core(core_path, current_user)
     return True
+
 
 def create_user_core(core_path, current_user):
     os.makedirs(core_path)
