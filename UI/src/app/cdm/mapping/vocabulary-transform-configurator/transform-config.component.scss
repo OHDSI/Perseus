@@ -1,74 +1,45 @@
-@import '../../../styles/variables';
-
-h3 {
-  span {
-    margin-left: 15px;
-    font-size: 12px;
-  }
-}
+@import 'variables';
+@import 'mixins';
 
 .apply-transformation {
   width: 100%;
   height: 100%;
-
-  .mat-tab-group {
-    max-height: calc(100% - 50px);
-  }
-}
-
-.buttons {
+  padding: 42px 35px 35px;
   position: relative;
-  margin: 10px auto;
-  width: 185px;
+  background: #FBFBFB;
 
-  .button-add {
-    background-color: $blue;
-    color: $white;
-    margin-left: 10px;
-    margin-right: 10px;
+  &__close {
+    position: absolute;
+    top: 21px;
+    right: 20px;
   }
 
-  .button-cancel {
-    background-color: $cdm-grey-light;
+  &__header {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 23px;
     color: $cdm-grey-dark;
-    margin-left: 10px;
-    margin-right: 10px;
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 15px;
+      font-size: 12px;
+      line-height: 15px;
+      color: #808080;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+
+    button {
+      @include cdm-button();
+      margin-right: 15px;
+      width: 80px;
+      height: 33px;
+    }
   }
 }
-
-
-
-// .lookup-name {
-//   padding-right: 10px;
-//   padding-left: 10px;
-// }
-
-// .configuration-element {
-//   margin-right: 7px;
-// }
-
-// .vocabularies-header{
-//   display: grid;
-//   grid-template-columns: 100px 175px 75px;
-//   align-items: center;
-// }
-
-// .add-configuration {
-//   margin-left: 7px;
-// }
-
-// .mapping-component-progress {
-//   height: 100%;
-//   width: 100%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
-
-// .configuration-header {
-//   width: 400px;
-//   white-space: nowrap;
-//   text-overflow: ellipsis;
-//   overflow: hidden;
-// }
-

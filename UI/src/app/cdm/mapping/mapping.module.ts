@@ -24,6 +24,8 @@ import { FilterComponent } from '@mapping/panel/filter/filter.component';
 import { PanelTableComponent } from '@mapping/panel/panel-table/panel-table.component';
 import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/target-clone-dialog.component';
 import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
+import { NewSqlTransformationComponent } from './new-sql-transformation/new-sql-transformation.component';
+import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transformation/function/replace-transformation-function/replace-transformation-function.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { BridgeButtonService } from '@services/bridge-button/bridge-button.servi
     DraggableDirective,
     FilterComponent,
     PanelTableComponent,
-    TargetCloneDialogComponent
+    TargetCloneDialogComponent,
+    NewSqlTransformationComponent,
+    ReplaceTransformationFunctionComponent
   ],
   imports: [
     SharedModule,

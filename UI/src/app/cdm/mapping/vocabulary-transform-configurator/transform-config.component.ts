@@ -8,13 +8,11 @@ import { ITable } from 'src/app/models/table';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
 import { DictionaryItem } from '../vocabulary-dropdown/model/vocabulary';
-import { ConditionDialogComponent } from './condition-dialog/condition-dialog.component';
 import {
   TransformationCondition,
   TransformationConfig,
   TransformationConfigFactory
 } from './model/transformation-config';
-import { VocabularyConfig } from './model/vocabulary-config';
 import { IConnector } from 'src/app/models/connector.interface';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -30,7 +28,10 @@ import { StoreService } from 'src/app/services/store.service';
   encapsulation: ViewEncapsulation.None
 })
 export class TransformConfigComponent implements OnInit, OnChanges {
-  @Input() sourceFileds: string[];
+
+  tabIndex = 0
+
+  @Input() sourceFields: string[];
   @Input() vocabularies: IVocabulary[];
   @Input() selectedSourceFields: string[] = [];
   @Input() transformationConfigs: TransformationConfig[];
@@ -39,10 +40,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   get configurations(): DictionaryItem[] {
     return this.pconfigurations;
-  }
-
-  get transformationCondition(): TransformationCondition {
-    return this.ptransformationCondition;
   }
 
   private ptransformationCondition: TransformationCondition;
@@ -67,7 +64,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   selectedCondition: DictionaryItem[];
   selectedConfiguration: DictionaryItem[];
-  sourceFiledsDictionary: DictionaryItem[];
+  sourceFieldsDictionary: DictionaryItem[];
 
   selectedSourceFieldsForHeader: string;
 
@@ -80,7 +77,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
   tab: string;
 
-  activeTab = 0;
   lookupName;
   lookupType;
 
@@ -132,7 +128,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     const newSelectedSourceTablesNames = uniqBy(selectedSourceTablesNames, 'name').map(x => x.name);
 
     if (this.sourceTables) {
-      this.sourceFileds = this.sourceTables
+      this.sourceFields = this.sourceTables
         .filter(sourceTable => newSelectedSourceTablesNames.includes(sourceTable.name))
         .map(table => table.rows)
         .reduce((p, k) => p.concat.apply(p, k), [])
@@ -224,7 +220,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.init();
   }
 
-  add() {
+  onApply() {
     this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup }) : this.validateSql(this.sql['name']);
   }
 
@@ -274,7 +270,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     return `${viewSql} SELECT ${sql} FROM ${tableName}`;
   }
 
-  addDisabled() {
+  applyDisabled() {
     return this.tab === 'Lookup' &&
       (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
   }
@@ -300,14 +296,13 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.dialogRef.close();
   }
 
-
   init() {
     if (this.selectedSourceFields) {
       this.selectedSourceFieldsForHeader = this.selectedSourceFields.join(',');
     }
 
-    if (this.sourceFileds) {
-      this.sourceFiledsDictionary = this.sourceFileds.map(name => new DictionaryItem(name));
+    if (this.sourceFields) {
+      this.sourceFieldsDictionary = this.sourceFields.map(name => new DictionaryItem(name));
     }
 
     if (this.vocabularies) {
@@ -343,57 +338,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
         this.selectTransformationCondition(this.transformationConfig.conditions[ 0 ].name);
       }
-    }
-  }
-
-  onConditionSelected(event: any) {
-    if (!event) {
-      return;
-    }
-
-    const conditionName = event.name;
-    const condition = this.transformationConfig.conditions.find(c => c.name === conditionName);
-
-    if (condition) {
-      this.updateConditionsVariable();
-      this.selectTransformationCondition(conditionName);
-      this.selectedCondition = [ new DictionaryItem(conditionName) ];
-    }
-  }
-
-  openConditionsDialog() {
-    const data = {
-      sourceFields: this.sourceFileds,
-      config: this.transformationConfig,
-      result: null
-    };
-
-    const dialogRef = this.addCondition.open(ConditionDialogComponent, { data });
-
-    dialogRef.afterClosed().subscribe(_ => {
-      const { result } = data;
-      const name = `${result.field} ${result.operator} ${result.criteria}`;
-      const condition: TransformationCondition = {
-        name,
-        sourceField: result.field,
-        criteria: result.criteria,
-        operator: result.operator,
-        vocabularyConfig: new VocabularyConfig(this.vocabularies)
-      };
-
-      this.transformationConfig.conditions.push(condition);
-
-      this.updateConditionsVariable();
-      this.setLastAddedTransformatioNCondition();
-      this.selectedCondition = [ new DictionaryItem(name) ];
-    });
-  }
-
-  updateTransformationCondition(event: TransformationCondition) {
-    const index = this.transformationConfig.conditions.findIndex(condition => condition.name === event.name);
-    if (index > -1) {
-      this.transformationConfig.conditions[ index ] = event;
-      this.ptransformationCondition = this.transformationConfig.conditions[ index ];
     }
   }
 

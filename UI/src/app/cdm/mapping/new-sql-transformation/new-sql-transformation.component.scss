@@ -1,0 +1,91 @@
+@import "variables";
+@import "mixins";
+
+$border: 1px dashed rgba(6, 107, 187, 0.3);
+
+.sql-transformation {
+  margin-top: 22px;
+
+  &__mode {
+    @include radio-button();
+    width: 170px;
+    margin-bottom: 26px;
+  }
+
+  &__visual {
+    &__add-function {
+      color: $cdm-blue;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    &__functions {
+      height: 177px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+
+      .no-functions {
+        border: $border;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &__message {
+          width: 180px;
+          height: 51px;
+          margin: 50px 160px;
+          text-align: center;
+          font-style: italic;
+          font-weight: 300;
+          font-size: 14px;
+          line-height: 18px;
+          color: $cdm-grey-dark;
+        }
+      }
+
+      .transformation-function {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 55px;
+        width: 500px;
+        padding: 15px 12px;
+        border: $border;
+        border-radius: 2px;
+        margin-bottom: 4px;
+
+        &__type {
+          width: 120px;
+          @include cdm-input();
+        }
+
+        &__remove {
+          cursor: pointer;
+        }
+      }
+    }
+
+    &__preview {
+      margin-top: 25px;
+      position: relative;
+
+      &__header {
+        font-size: 12px;
+        line-height: 15px;
+        padding-bottom: 10px;
+        color: $grey;
+      }
+
+      &__sql {
+        height: 119px;
+        width: 100%;
+        border: 1px rgba(6, 107, 187, .1) solid;
+      }
+    }
+  }
+}

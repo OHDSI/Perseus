@@ -14,6 +14,8 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { parseHttpError } from '@utils/error';
+import { getMappingFromLocalStorage, saveMappingToLocalStorage } from '@utils/local';
+import { isLocal } from '@app/app.constants';
 
 @Injectable()
 export class UploadService {
@@ -28,6 +30,12 @@ export class UploadService {
     private dataService: DataService,
     private storeService: StoreService
   ) {
+    if (isLocal) {
+      const mapping = getMappingFromLocalStorage();
+      if (mapping) {
+        this.loadMapping(mapping)
+      }
+    }
   }
 
   get mappingLoading$() {
@@ -101,7 +109,7 @@ export class UploadService {
   }
 
   loadMappingAndReport(file: any, isJson: boolean): Observable<string | BlobPart> {
-    const readFile = type => new Observable<string | BlobPart>(subscriber => {
+    const readFile = (type: string) => new Observable<string | BlobPart>(subscriber => {
       file.async(type).then(
         result => {
           subscriber.next(result)
@@ -114,7 +122,12 @@ export class UploadService {
     if (isJson) {
       return readFile('string')
         .pipe(
-          tap(content => this.loadMapping(content))
+          tap(content => {
+            if (isLocal) {
+              saveMappingToLocalStorage(content as string)
+            }
+            this.loadMapping(content as string)
+          })
         )
     } else {
       return readFile('blob')
@@ -128,8 +141,8 @@ export class UploadService {
     }
   }
 
-  loadMapping(content: any) {
-    const loadedConfig = JSON.parse(content as string);
+  loadMapping(content: string) {
+    const loadedConfig = JSON.parse(content);
     const resultConfig = new Configuration();
     Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
     this.bridgeService.applyConfiguration(resultConfig);
@@ -152,5 +165,4 @@ export class UploadService {
     }
     el.nativeElement.click();
   }
-
 }

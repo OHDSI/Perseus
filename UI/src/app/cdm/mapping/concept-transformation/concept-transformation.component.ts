@@ -25,7 +25,7 @@ import { ConceptTransformationService } from 'src/app/services/concept-transform
 })
 export class ConceptTransformationComponent extends BaseComponent implements OnInit {
 
-  @ViewChild('sqlTransfomation') sqlTransformation: SqlTransformationComponent;
+  @ViewChild('sqlTransformation') sqlTransformation: SqlTransformationComponent;
   @ViewChild('lookupComponent') lookupComponent: LookupComponent;
 
   constructor(@Inject(MAT_DIALOG_DATA) public payload: any,
@@ -139,7 +139,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.renderer.addClass(this.selectedCellElement, 'concept-cell-selected');
       this.conceptsTable.conceptsList[ row.id ].fields[ this.selectedCellType ].selected = true;
       this.selectedConceptId = row.id;
-      this.sqlTransformation.setConeptSqlValue(this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql);
+      this.sqlTransformation.setConceptSqlValue(this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql);
     }
 
   }

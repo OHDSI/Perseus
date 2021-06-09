@@ -1,0 +1,13 @@
+@import "mixins";
+
+.replace {
+  width: 272px;
+  display: flex;
+  justify-content: space-between;
+
+  input {
+    @include cdm-input();
+    background: none;
+    width: 120px;
+  }
+}

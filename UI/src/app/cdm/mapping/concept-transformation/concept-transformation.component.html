@@ -103,7 +103,7 @@
                 <mat-slide-toggle [checked]="selectedCellElement ? conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].sqlApplied : false"
                                   (change)="toggleSqlTransformation($event.checked)"
                                   [disabled]="!selectedCellElement || !conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].field">Apply SQL Transformation</mat-slide-toggle>
-                <app-sql-transformation #sqlTransfomation
+                <app-sql-transformation #sqlTransformation
                 [sql]="{}"
                 [reducedSqlField]="reducedSqlArea"></app-sql-transformation>
             </div>
