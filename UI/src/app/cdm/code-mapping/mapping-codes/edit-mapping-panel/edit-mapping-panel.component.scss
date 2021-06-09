@@ -64,7 +64,7 @@
     &__search-mode {
       margin-left: 20px;
       width: 235px;
-      @include search-mode();
+      @include radio-button();
     }
 
     &__error-row {

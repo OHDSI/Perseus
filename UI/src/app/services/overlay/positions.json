@@ -41,11 +41,11 @@
       "overlayY": "bottom"
     },
     "comments-target": {
-      "offsetX": -205,
-      "offsetY": -35,
-      "originX": "start",
-      "originY": "bottom",
-      "overlayX": "start",
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "end",
       "overlayY": "bottom"
     },
     "right-bottom": {

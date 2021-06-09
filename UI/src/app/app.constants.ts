@@ -4,6 +4,7 @@ export const similarTableName = 'similar';
 
 export const isProd = environment.production;
 export const isDev = !isProd;
+export const isLocal = environment.local
 
 export const dbServer = environment.dbServer;
 

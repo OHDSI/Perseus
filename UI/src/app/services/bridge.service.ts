@@ -391,14 +391,6 @@ export class BridgeService {
     }
   }
 
-  getStyledAsDragStartElement() {
-    this.sourceRow.htmlElement.classList.add('drag-start');
-  }
-
-  getStyledAsDragEndElement() {
-    this.sourceRow.htmlElement.classList.remove('drag-start');
-  }
-
   refresh(table: ITable, delayMs?: number) {
     this.hideAllArrows();
 

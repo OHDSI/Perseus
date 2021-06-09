@@ -75,7 +75,7 @@ export class SqlTransformationComponent implements OnInit {
       this.bridgeService.changeConceptSql(this.sql['name']);
   }
 
-  setConeptSqlValue(sqlTransformation: string) {
+  setConceptSqlValue(sqlTransformation: string) {
     this.codeMirror.setValue(sqlTransformation);
   }
 
