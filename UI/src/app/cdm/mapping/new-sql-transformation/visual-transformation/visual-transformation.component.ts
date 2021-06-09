@@ -17,6 +17,8 @@ import { ReplaceTransformationFunction } from '@mapping/new-sql-transformation/v
 import { TransformationFunctionType } from '@models/transformation/transformation-function-type';
 import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
 import { createFunctionComponentAndReturnFunc } from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
+import { DatePartTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
+import { DatePartTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
 
 @Component({
   selector: 'app-visual-transformation',
@@ -30,6 +32,11 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
       name: 'REPLACE',
       componentClass: ReplaceTransformationFunctionComponent,
       createFunction: () => new ReplaceTransformationFunction(),
+    },
+    {
+      name: 'DATEPART',
+      componentClass: DatePartTransformationFunctionComponent,
+      createFunction: () => new DatePartTransformationFunction()
     }
   ]
 
@@ -59,14 +66,13 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   addFunction() {
-    this.functions.push({
-      type: null,
-    })
+    this.functions = [{type: null}, ...this.functions]
   }
 
   remove(index: number) {
     this.functions[index].subscription?.unsubscribe()
     this.functions = this.functions.filter((_, i) => i !== index)
+    this.updatePreview()
   }
 
   onFuncChange(type: TransformationFunctionType, index: number) {

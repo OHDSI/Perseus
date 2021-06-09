@@ -1,0 +1,12 @@
+@import "mixins";
+
+.date-part {
+  width: 272px;
+  display: flex;
+
+  .mat-select {
+    @include cdm-input();
+    background: none;
+    width: 120px;
+  }
+}

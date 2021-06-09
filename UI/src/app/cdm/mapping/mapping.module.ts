@@ -28,6 +28,7 @@ import { NewSqlTransformationComponent } from './new-sql-transformation/new-sql-
 import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
 import { ManualTransformationComponent } from './new-sql-transformation/manual-transformation/manual-transformation.component';
 import { VisualTransformationComponent } from './new-sql-transformation/visual-transformation/visual-transformation.component';
+import { DatePartTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { VisualTransformationComponent } from './new-sql-transformation/visual-t
     NewSqlTransformationComponent,
     ReplaceTransformationFunctionComponent,
     ManualTransformationComponent,
-    VisualTransformationComponent
+    VisualTransformationComponent,
+    DatePartTransformationFunctionComponent
   ],
   imports: [
     SharedModule,

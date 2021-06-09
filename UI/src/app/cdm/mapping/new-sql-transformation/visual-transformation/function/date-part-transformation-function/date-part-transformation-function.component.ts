@@ -1,0 +1,27 @@
+import { Component, Inject } from '@angular/core';
+import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
+import {
+  DatePartModel,
+  DatePartTransformationFunction
+} from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
+
+@Component({
+  selector: 'app-date-part-transformation-function',
+  templateUrl: './date-part-transformation-function.component.html',
+  styleUrls: ['./date-part-transformation-function.component.scss']
+})
+export class DatePartTransformationFunctionComponent extends TransformationFunctionComponent<DatePartModel> {
+
+  dateparts = [
+    'Year',
+    'Month',
+    'Day',
+    'Hour',
+    'Minute',
+    'Second',
+  ]
+
+  constructor(@Inject('function') transformationFunction: DatePartTransformationFunction) {
+    super(transformationFunction)
+  }
+}
