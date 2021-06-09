@@ -1,0 +1,41 @@
+<div class="visual-transformation">
+  <div class="visual-transformation__add-function" (click)="addFunction()">
+    Add Function
+  </div>
+
+  <div class="visual-transformation__functions">
+    <div *ngIf="functions.length === 0 else functionsBlock" class="no-functions">
+      <div class="no-functions__message">
+        Click on Add Function button
+        to start working with SQL
+        or use Manual mode
+      </div>
+    </div>
+
+    <ng-template #functionsBlock>
+      <div *ngFor="let func of functions let i = index" class="transformation-function">
+        <mat-select class="transformation-function__type"
+                    [ngModel]="func.type"
+                    (ngModelChange)="onFuncChange($event, i)">
+          <mat-option *ngFor="let type of functionTypes" [value]="type">
+            {{type.name}}
+          </mat-option>
+        </mat-select>
+
+        <ng-template #functionContainer></ng-template>
+
+        <svg class="transformation-function__remove" (click)="remove(i)" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.66671 1.27337L8.72671 0.333374L5.00004 4.06004L1.27337 0.333374L0.333374 1.27337L4.06004 5.00004L0.333374 8.72671L1.27337 9.66671L5.00004 5.94004L8.72671 9.66671L9.66671 8.72671L5.94004 5.00004L9.66671 1.27337Z" fill="#2C2C2C"/>
+        </svg>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="visual-transformation__preview">
+    <div class="visual-transformation__preview__header">
+      SQL Preview
+    </div>
+
+    <textarea #preview class="visual-transformation__preview__sql" disabled></textarea>
+  </div>
+</div>

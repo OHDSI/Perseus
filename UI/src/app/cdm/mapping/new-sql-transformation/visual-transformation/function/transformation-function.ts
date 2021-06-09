@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 export abstract class TransformationFunction<T> {
   private readonly formGroup: FormGroup
 
-  protected constructor() {
+  constructor() {
     this.formGroup = this.createForm()
   }
 
@@ -24,7 +24,7 @@ export abstract class TransformationFunction<T> {
     this.formGroup.setValue(value)
   }
 
-  abstract createForm(): FormGroup
-
   abstract sql(): (arg: string) => string
+
+  protected abstract createForm(): FormGroup
 }

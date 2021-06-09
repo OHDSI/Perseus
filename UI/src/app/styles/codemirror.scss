@@ -12,6 +12,22 @@
   }
 }
 
+.CodeMirror.cm-s-preview {
+  height: 119px;
+  box-sizing: border-box;
+  padding: 10px 5px;
+  border: 1px rgba(6, 107, 187, .1) solid;
+  background: #F9F9F9;
+  font-size: 14px;
+  line-height: 25px;
+  opacity: 0.7;
+
+  .cm-keyword {
+    color: $cdm-blue;
+    text-transform: uppercase;
+  }
+}
+
 .invalid .CodeMirror.cm-s-default {
   border-color: red !important;
 }

@@ -1,4 +1,4 @@
-import { TransformationFunction } from '@mapping/new-sql-transformation/function/transformation-function';
+import { TransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export interface ReplaceModel {
@@ -8,28 +8,22 @@ export interface ReplaceModel {
 
 export class ReplaceTransformationFunction extends TransformationFunction<ReplaceModel> {
 
-  constructor() {
-    super();
-  }
-
-  get old(): string {
+  private get old(): string {
     return this.form.get('old').value
   }
 
-  get new(): string {
+  private get new(): string {
     return this.form.get('new').value
   }
 
-  createForm(): FormGroup {
+  sql(): (arg: string) => string {
+    return arg => `REPLACE(${arg}, '${this.old}', '${this.new}')`
+  }
+
+  protected createForm(): FormGroup {
     return new FormGroup({
       old: new FormControl(null, [Validators.required]),
       new: new FormControl(null, [Validators.required])
     });
-  }
-
-  sql(): (arg: string) => string {
-    return arg => `
-      REPLACE(${arg}, '${this.old}', '${this.new}')
-    `
   }
 }

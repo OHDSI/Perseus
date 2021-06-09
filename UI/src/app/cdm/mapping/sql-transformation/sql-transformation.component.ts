@@ -4,11 +4,12 @@ import {
   SQL_STRING_FUNCTIONS
 } from '@popups/rules-popup/transformation-input/model/sql-string-functions';
 import * as CodeMirror from 'codemirror';
+import { EditorConfiguration } from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FormGroup } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
 
-const editorSettings = {
+const editorSettings: EditorConfiguration = {
   mode: 'text/x-mysql',
   lineNumbers: false,
   indentWithTabs: true,
@@ -53,8 +54,7 @@ export class SqlTransformationComponent implements OnInit {
   }
 
   initCodeMirror() {
-    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-    this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
+    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings);
     this.codeMirror.on('change', this.onChange.bind(this));
     setInterval( () => {this.codeMirror.refresh(); }, 250 );
   }
@@ -66,21 +66,12 @@ export class SqlTransformationComponent implements OnInit {
     this.sql['name'] = this.editorContent;
   }
 
-  onCancelClick() {
-    this.codeMirror.setValue('');
-  }
-
-  onChange(cm, event) {
-      this.sql['name'] = this.editorContent;
-      this.bridgeService.changeConceptSql(this.sql['name']);
+  onChange() {
+    this.sql['name'] = this.editorContent;
+    this.bridgeService.changeConceptSql(this.sql['name']);
   }
 
   setConceptSqlValue(sqlTransformation: string) {
     this.codeMirror.setValue(sqlTransformation);
   }
-
-  onCursorActivity(cm, event) {
-   // this.sqlForm.markAsTouched();
-  }
-
 }
