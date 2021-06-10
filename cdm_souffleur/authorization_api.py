@@ -122,3 +122,14 @@ def refresh_access_token():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(tokens)
+
+
+@authorization_api.route('/api/is_token_valid', methods=['GET'])
+def is_token_valid_call():
+    try:
+        is_token_valid(request)
+    except InvalidUsage as error:
+        return jsonify(False)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify(True)
