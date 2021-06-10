@@ -31,6 +31,7 @@ import { VisualTransformationComponent } from './new-sql-transformation/visual-t
 import { DatePartTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
 import { NoArgsTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
 import { DateAddTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function.component';
+import { SwitchCaseTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { DateAddTransformationFunctionComponent } from './new-sql-transformation
     VisualTransformationComponent,
     DatePartTransformationFunctionComponent,
     NoArgsTransformationFunctionComponent,
-    DateAddTransformationFunctionComponent
+    DateAddTransformationFunctionComponent,
+    SwitchCaseTransformationFunctionComponent
   ],
   imports: [
     SharedModule,

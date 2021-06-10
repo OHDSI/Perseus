@@ -1,7 +1,7 @@
 @import "variables";
 @import "mixins";
 
-$border: 1px dashed rgba(6, 107, 187, 0.3);
+$border: 1px dashed #066BBB4C;
 
 .visual-transformation {
   &__add-function {
@@ -40,23 +40,27 @@ $border: 1px dashed rgba(6, 107, 187, 0.3);
     }
 
     .transformation-function {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 55px;
       width: 500px;
-      padding: 15px 12px;
+      padding: 15px 10px;
       border: $border;
       border-radius: 2px;
       margin-bottom: 4px;
 
-      &__type {
-        width: 120px;
-        @include cdm-input();
-      }
+      &__toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 25px;
+        width: 100%;
 
-      &__remove {
-        cursor: pointer;
+        &__type {
+          width: 120px;
+          @include cdm-input();
+        }
+
+        &__remove {
+          cursor: pointer;
+        }
       }
     }
   }

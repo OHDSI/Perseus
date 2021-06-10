@@ -1,7 +1,11 @@
 @import "mixins";
 
+:host {
+  @include transformation-function();
+}
+
 .replace {
-  width: 272px;
+  @include transformation-function-toolbar();
   display: flex;
   justify-content: space-between;
 

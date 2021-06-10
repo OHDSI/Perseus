@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   SQL_FUNCTIONS,
   SQL_STRING_FUNCTIONS
 } from '@popups/rules-popup/transformation-input/model/sql-string-functions';
-import * as CodeMirror from 'codemirror';
 import { EditorConfiguration } from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FormGroup } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
+import { initCodeMirror } from '@utils/code-mirror';
 
 const editorSettings: EditorConfiguration = {
   mode: 'text/x-mysql',
@@ -26,7 +26,7 @@ const editorSettings: EditorConfiguration = {
   styleUrls: ['./sql-transformation.component.scss']
 })
 
-export class SqlTransformationComponent implements OnInit {
+export class SqlTransformationComponent implements OnInit, AfterViewInit {
 
   @ViewChild('editor', { static: true }) editor;
   @Input() sql: {};
@@ -46,17 +46,15 @@ export class SqlTransformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initCodeMirror();
+  }
+
+  ngAfterViewInit() {
+    this.codeMirror = initCodeMirror(this.editor.nativeElement, editorSettings)
+    this.codeMirror.on('change', this.onChange.bind(this));
     const name = this.sql['name']
     if (name) {
       this.codeMirror.doc.replaceSelection(name);
     }
-  }
-
-  initCodeMirror() {
-    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings);
-    this.codeMirror.on('change', this.onChange.bind(this));
-    setInterval( () => {this.codeMirror.refresh(); }, 250 );
   }
 
   drop(event: CdkDragDrop<any>) {

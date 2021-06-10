@@ -1,0 +1,32 @@
+<div class="switch-case toolbar">
+  <button class="switch-case__button" (click)="addRow()">Add Row</button>
+  <button class="switch-case__button" [disabled]="hasDefault" (click)="addDefault()">Add default</button>
+</div>
+
+<form class="switch-case grid-wrapper" [formGroup]="form">
+  <table class="grid" mat-table [dataSource]="cases" formArrayName="cases" [trackBy]="trackBy">
+
+    <ng-container matColumnDef="in">
+      <th class="column cell" mat-header-cell *matHeaderCellDef>
+        IN
+      </th>
+
+      <td class="cell" mat-cell *matCellDef="let row; let i = index" [formGroupName]="i">
+        <input (input)="onInput($event)" type="text" formControlName="in">
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="out">
+      <th class="column cell" mat-header-cell *matHeaderCellDef>
+        OUT
+      </th>
+
+      <td  class="cell" mat-cell *matCellDef="let row let i = index" [formGroupName]="i">
+        <input (input)="onInput($event)" type="text" formControlName="out">
+      </td>
+    </ng-container>
+
+    <tr class="row header" mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr class="row" mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</form>

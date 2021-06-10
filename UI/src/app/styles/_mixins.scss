@@ -316,3 +316,20 @@
   border-top: 1px solid rgba(6, 107, 187, .1);
   overflow-y: auto;
 }
+
+@mixin transformation-function {
+  position: relative;
+  width: 476px;
+}
+
+@mixin transformation-function-toolbar {
+  position: relative;
+  top: -25px;
+  left: 155px;
+  width: 272px;
+  height: 0;
+
+  * {
+    height: 25px;
+  }
+}

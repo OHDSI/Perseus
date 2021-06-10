@@ -8,4 +8,8 @@ export abstract class TransformationFunctionComponent<T = any> {
   get function() {
     return this.transformationFunction
   }
+
+  get form() {
+    return this.transformationFunction.form
+  }
 }

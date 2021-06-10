@@ -25,6 +25,8 @@ import { UpperTransformationFunction } from '@mapping/new-sql-transformation/vis
 import { LowerTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/lower-transformation-function';
 import { DateAddTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function.component';
 import { DateAddTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function';
+import { SwitchCaseTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function.component';
+import { SwitchCaseTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function';
 
 @Component({
   selector: 'app-visual-transformation',
@@ -45,6 +47,16 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
       createFunction: () => new DatePartTransformationFunction()
     },
     {
+      name: 'DATEADD',
+      componentClass: DateAddTransformationFunctionComponent,
+      createFunction: () => new DateAddTransformationFunction()
+    },
+    {
+      name: 'CASE',
+      componentClass: SwitchCaseTransformationFunctionComponent,
+      createFunction: () => new SwitchCaseTransformationFunction()
+    },
+    {
       name: 'TRIM',
       componentClass: NoArgsTransformationFunctionComponent,
       createFunction: () => new TrimTransformationFunction()
@@ -58,11 +70,6 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
       name: 'LOWER',
       componentClass: NoArgsTransformationFunctionComponent,
       createFunction: () => new LowerTransformationFunction()
-    },
-    {
-      name: 'DATEADD',
-      componentClass: DateAddTransformationFunctionComponent,
-      createFunction: () => new DateAddTransformationFunction()
     }
   ]
 
