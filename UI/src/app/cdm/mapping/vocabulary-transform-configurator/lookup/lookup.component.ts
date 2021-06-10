@@ -56,7 +56,6 @@ export class LookupComponent implements OnInit, AfterViewInit {
   updatedName = '';
   withSourceToSource = true;
   userDefined = false;
-  lookupSelected = false;
 
   constructor(
     private lookupService: LookupService,
@@ -74,7 +73,6 @@ export class LookupComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     if (this.name) {
       this.selected = this.name;
-      this.lookupSelected = true;
     }
 
     this.updateItems();
@@ -176,7 +174,6 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   selectLookup(event) {
-    this.lookupSelected = event.value ? true : false;
     this.lookup['name'] = event.value;
     this.userDefined = this.isUserDefined();
     this.initCodeMirror();
