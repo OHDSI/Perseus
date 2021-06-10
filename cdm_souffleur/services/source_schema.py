@@ -2,7 +2,8 @@ from pathlib import Path
 import pandas as pd
 from cdm_souffleur.utils import FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
 from cdm_souffleur.utils.column_types_mapping import postgres_types_mapping
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
+    LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
 import xml.etree.ElementTree as ElementTree
 import os
 from cdm_souffleur.view.Table import Table, Column
@@ -170,10 +171,12 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
         column_index = table_overview.columns.get_loc(column_name)
         info['frequency'] = table_overview.iloc[:, column_index + 1].head(10).tolist()
         percentage = []
-        if N_ROWS_FIELD_NAME in tables_pd:
+        n_rows = N_ROWS_CHECKED_FIELD_NAME if N_ROWS_CHECKED_FIELD_NAME in tables_pd else \
+            N_ROWS_FIELD_NAME if N_ROWS_FIELD_NAME in tables_pd else ''
+        if n_rows:
             for freq in info['frequency']:
                 if freq:
-                    percentage.append('{0:.10f}'.format(int(freq) / int(tables_pd[N_ROWS_FIELD_NAME][0])))
+                    percentage.append('{0:.10f}'.format(int(freq) / int(tables_pd[n_rows][0])))
             info['percentage'] = percentage
         for field in LIST_OF_COLUMN_INFO_FIELDS:
             if field in tables_pd:
