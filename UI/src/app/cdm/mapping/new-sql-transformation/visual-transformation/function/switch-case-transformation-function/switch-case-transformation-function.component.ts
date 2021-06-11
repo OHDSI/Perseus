@@ -1,12 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
 import {
-  anyValue,
   Case,
   SwitchCaseModel,
   SwitchCaseTransformationFunction
 } from '@mapping/new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-switch-case-transformation-function',
@@ -22,7 +21,7 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
 
   hasDefault = false
 
-  constructor(@Inject('function') transformationFunction: SwitchCaseTransformationFunction) {
+  constructor(@Inject('function') protected transformationFunction: SwitchCaseTransformationFunction) {
     super(transformationFunction)
   }
 
@@ -34,15 +33,12 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
     return this.form.get('cases') as FormArray
   }
 
-  trackBy(index: number, value: Case) {
-    return `${index}${value.in}${value.out}`
+  trackBy(index: number, value: Case): string {
+    return `${value.id}`
   }
 
   addRow() {
-    const row = new FormGroup({
-      in: new FormControl(null, [Validators.required]),
-      out: new FormControl(null, [Validators.required])
-    })
+    const row = this.transformationFunction.createRowControl({id: this.newId()})
 
     if (this.hasDefault) {
       const index = this.formArray.length - 1
@@ -53,15 +49,16 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
   }
 
   addDefault() {
-    const defaultRow = new FormGroup({
-      in: new FormControl({value: anyValue, disabled: true}),
-      out: new FormControl(null, [Validators.required])
-    })
+    const defaultRow = this.transformationFunction.createDefaultRowControl({id: this.newId()})
     this.formArray.push(defaultRow)
     this.hasDefault = true
   }
 
-  onInput(event: Event) {
-    setTimeout(() => (event.target as HTMLElement).focus())
+  remove(index: number) {
+    this.formArray.removeAt(index)
+  }
+
+  private newId() {
+    return this.formArray.length + 1
   }
 }

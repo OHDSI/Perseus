@@ -17,7 +17,7 @@ $border: 1px dashed #066BBB4C;
   }
 
   &__functions {
-    height: 177px;
+    height: 236px;
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
@@ -33,6 +33,7 @@ $border: 1px dashed #066BBB4C;
 
     .no-functions {
       border: $border;
+      height: 100%;
       border-radius: 2px;
       display: flex;
       align-items: center;
@@ -41,7 +42,6 @@ $border: 1px dashed #066BBB4C;
       &__message {
         width: 180px;
         height: 51px;
-        margin: 50px 160px;
         text-align: center;
         font-style: italic;
         font-weight: 300;
@@ -52,7 +52,7 @@ $border: 1px dashed #066BBB4C;
     }
 
     .transformation-function {
-      width: 500px;
+      width: 497px;
       padding: 15px 10px;
       border: $border;
       border-radius: 2px;

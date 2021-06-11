@@ -71,7 +71,6 @@ $table-height: 385px;
   &__grid-toolbar {
     display: flex;
     justify-content: space-between;
-    width: 651px;
   }
 
   &__input {
@@ -100,7 +99,8 @@ $table-height: 385px;
   }
 
   &__mode {
-    width: 135px;
+    padding-left: 15px;
+    width: 165px;
     @include radio-button();
   }
 

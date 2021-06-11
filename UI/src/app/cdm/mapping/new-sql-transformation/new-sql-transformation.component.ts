@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
-import { BaseComponent } from '@shared/base/base.component';
 import { SqlTransformMode } from '@models/transformation/sql-transform-mode';
 import { VisualTransformationComponent } from '@mapping/new-sql-transformation/visual-transformation/visual-transformation.component';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
@@ -11,7 +10,7 @@ import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-tran
   styleUrls: ['./new-sql-transformation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewSqlTransformationComponent extends BaseComponent {
+export class NewSqlTransformationComponent {
 
   @Input()
   sql: SqlForTransformation

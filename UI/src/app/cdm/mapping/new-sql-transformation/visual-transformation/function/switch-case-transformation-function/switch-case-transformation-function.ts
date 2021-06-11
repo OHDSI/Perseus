@@ -1,11 +1,13 @@
 import { TransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
 export const anyValue = 'Any value'
 
 export interface Case {
-  in: string,
-  out: string
+  id: number,
+  in?: string,
+  out?: string
+  isDefault?: boolean
 }
 
 export interface SwitchCaseModel {
@@ -13,6 +15,15 @@ export interface SwitchCaseModel {
 }
 
 export class SwitchCaseTransformationFunction extends TransformationFunction<SwitchCaseModel> {
+
+  constructor(value?: SwitchCaseModel) {
+    super()
+    if (value) {
+      value.cases
+        .map(c => c.isDefault ? this.createDefaultRowControl(c) : this.createRowControl(c))
+        .forEach(c => this.formArray.push(c))
+    }
+  }
 
   get formArray() {
     return this.form.get('cases') as FormArray
@@ -43,5 +54,23 @@ export class SwitchCaseTransformationFunction extends TransformationFunction<Swi
     const reducer = (acc: string, curr: Case) => acc + `\n\tWHEN ${curr.in} THEN ${curr.out}`
 
     return (arg: string) => `CASE(${arg})${cases.reduce(reducer, '')}${defaultBlock}\nEND`;
+  }
+
+  createRowControl(value: Case) {
+    return new FormGroup({
+      id: new FormControl(value.id, [Validators.required]),
+      in: new FormControl(value?.in, [Validators.required]),
+      out: new FormControl(value?.out, [Validators.required]),
+      isDefault: new FormControl(false, [Validators.required])
+    })
+  }
+
+  createDefaultRowControl(value: Case) {
+    return new FormGroup({
+      id: new FormControl(value.id, [Validators.required]),
+      in: new FormControl(anyValue),
+      out: new FormControl(value?.out, [Validators.required]),
+      isDefault: new FormControl(true, [Validators.required])
+    })
   }
 }

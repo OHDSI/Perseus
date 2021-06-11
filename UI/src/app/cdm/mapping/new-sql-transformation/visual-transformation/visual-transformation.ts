@@ -4,8 +4,9 @@ import { TransformationFunction } from '@mapping/new-sql-transformation/visual-t
 
 export function createFunctionComponentAndReturnFunction<T>(functionType: TransformationFunctionType,
                                                             viewContainerRef: ViewContainerRef,
-                                                            componentFactoryResolver: ComponentFactoryResolver): TransformationFunction<T> {
-  const transformationFunction = functionType.createFunction()
+                                                            componentFactoryResolver: ComponentFactoryResolver,
+                                                            value?: T): TransformationFunction<T> {
+  const transformationFunction = functionType.createFunction(value)
   const injector = Injector.create({
     providers: [{
       provide: 'function', useValue: transformationFunction

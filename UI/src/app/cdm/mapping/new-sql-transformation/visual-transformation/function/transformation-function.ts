@@ -5,7 +5,10 @@ export abstract class TransformationFunction<T> {
   private readonly formGroup: FormGroup
 
   constructor(value?: T) {
-    this.formGroup = this.createForm(value)
+    this.formGroup = this.createForm()
+    if (value) {
+      this.formGroup.setValue(value)
+    }
   }
 
   get form(): FormGroup {
@@ -24,7 +27,11 @@ export abstract class TransformationFunction<T> {
     this.formGroup.setValue(value)
   }
 
+  get value(): T {
+    return this.formGroup.value
+  }
+
   abstract sql(): (arg: string) => string
 
-  protected abstract createForm(value?: T): FormGroup
+  protected abstract createForm(): FormGroup
 }

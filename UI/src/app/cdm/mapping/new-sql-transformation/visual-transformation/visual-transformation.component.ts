@@ -125,7 +125,8 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
 
     this.functions.forEach((func, index) => {
       const container = this.containers[index]
-      this.initFunction(func, container)
+      const value = this.functionsState[index].value
+      this.initFunction(func, container, value)
     })
 
     this.updatePreview()
@@ -163,8 +164,8 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
     this.codeMirror.setValue(result.trim())
   }
 
-  private initFunction<T>(func: SqlFunctionForTransformation<T>, container: ViewContainerRef) {
-    func.value = createFunctionComponentAndReturnFunction(func.type, container, this.componentFactoryResolver)
+  private initFunction<T>(func: SqlFunctionForTransformation<T>, container: ViewContainerRef, value?: T) {
+    func.value = createFunctionComponentAndReturnFunction(func.type, container, this.componentFactoryResolver, value)
     func.subscription = func.value.change$
       .pipe(
         takeUntil(this.ngUnsubscribe)

@@ -57,4 +57,15 @@
   width: 240px;
   height: 32px;
   padding: 6px 10px;
+
+  &.last-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    svg {
+      cursor: pointer;
+      margin-left: 5px;
+    }
+  }
 }
