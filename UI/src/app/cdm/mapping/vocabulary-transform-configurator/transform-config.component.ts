@@ -55,7 +55,7 @@ export class TransformConfigComponent implements OnInit {
   ngOnInit() {
     this.lookupName = this.payload[ 'lookupName' ];
     this.lookupType = this.payload['lookupType'];
-    this.sql = this.payload[ 'sql' ] ? {...this.payload[ 'sql' ]} : {};
+    this.sql = {...this.payload[ 'sql' ]}
     this.tab = this.payload['tab'];
     this.tabIndex = this.tab === 'Lookup' ? 1 : 0
 

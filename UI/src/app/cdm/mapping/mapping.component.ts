@@ -249,7 +249,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                       this.lookupService.saveLookup(this.lookup, lookupType)
                         .subscribe(
                           () => {},
-                          error => openErrorDialog(this.matDialog, 'Failecd to save lookup', parseHttpError(error))
+                          error => openErrorDialog(this.matDialog, 'Failed to save lookup', parseHttpError(error))
                         );
                     }
                   }
