@@ -367,6 +367,10 @@
         border-bottom: 2px solid transparent;
         min-width: auto;
         color: rgba(64, 64, 64, 0.87);
+
+        &.mat-tab-disabled {
+          opacity: .6;
+        }
       }
 
       .mat-tab-label-active .mat-tab-label-content {

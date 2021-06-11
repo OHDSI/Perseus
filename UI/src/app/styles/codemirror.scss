@@ -26,6 +26,11 @@
     color: $cdm-blue;
     text-transform: uppercase;
   }
+
+  .CodeMirror-vscrollbar {
+    margin-right: 2px;
+    border-radius: 3px;
+  }
 }
 
 .invalid .CodeMirror.cm-s-default {

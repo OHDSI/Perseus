@@ -14,11 +14,14 @@
 
   <ng-container [ngSwitch]="mode">
     <ng-template ngSwitchCase="visual">
-      <app-visual-transformation #visualTransformation [functionsState]="sql.functions"></app-visual-transformation>
+      <app-visual-transformation #visualTransformation
+                                 [functionsState]="sql.functions"
+                                 [sourceFields]="sourceFields"></app-visual-transformation>
     </ng-template>
 
     <ng-template ngSwitchCase="manual">
-      <app-sql-transformation #manualTransformation [sql]="sql"></app-sql-transformation>
+      <app-sql-transformation #manualTransformation
+                              [sql]="sql"></app-sql-transformation>
     </ng-template>
   </ng-container>
 </div>

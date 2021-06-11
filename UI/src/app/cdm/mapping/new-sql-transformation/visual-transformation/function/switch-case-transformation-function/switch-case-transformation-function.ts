@@ -46,7 +46,7 @@ export class SwitchCaseTransformationFunction extends TransformationFunction<Swi
   sql(): (arg: string) => string {
     const cases = [...this.cases]
     let defaultBlock = ''
-    if (!cases[cases.length - 1].in) {
+    if (cases[cases.length - 1].isDefault) {
       const defaultCase = cases.pop()
       defaultBlock = `\n\tELSE ${defaultCase.out}`
     }

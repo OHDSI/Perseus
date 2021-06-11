@@ -1,26 +1,19 @@
-import { Component, Inject, Input, OnChanges, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Command } from 'src/app/infrastructure/command';
-import { cloneDeep, uniq, uniqBy } from 'src/app/infrastructure/utility';
+import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
-import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
 import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
-import { DictionaryItem } from '../vocabulary-dropdown/model/vocabulary';
-import {
-  TransformationCondition,
-  TransformationConfig,
-  TransformationConfigFactory
-} from './model/transformation-config';
 import { IConnector } from 'src/app/models/connector.interface';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
-import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { Area } from 'src/app/models/area';
 import { StoreService } from 'src/app/services/store.service';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
+import { addSemicolon } from '@utils/text-util';
+import { NewSqlTransformationComponent } from '@mapping/new-sql-transformation/new-sql-transformation.component';
+import { openErrorDialog, parseHttpError } from '@utils/error';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-transform-config',
@@ -28,199 +21,69 @@ import { SqlForTransformation } from '@models/transformation/sql-for-transformat
   styleUrls: [ './transform-config.component.scss' ],
   encapsulation: ViewEncapsulation.None
 })
-export class TransformConfigComponent implements OnInit, OnChanges {
+export class TransformConfigComponent implements OnInit {
 
-  tabIndex = 0
-
-  @Input() sourceFields: string[];
-  @Input() vocabularies: IVocabulary[];
-  @Input() selectedSourceFields: string[] = [];
-  @Input() transformationConfigs: TransformationConfig[];
-
-  @Input() sourceTables: ITable[]; // test
-
-  get configurations(): DictionaryItem[] {
-    return this.pconfigurations;
-  }
-
-  private ptransformationCondition: TransformationCondition;
-
-  get conditions(): DictionaryItem[] {
-    return this.pconditions;
-  }
-
-  private pconditions: DictionaryItem[];
-
-  get selectedSourceFieldsDictionary(): DictionaryItem[] {
-    return this.pselectedSourceFieldsDictionary;
-  }
-
-  private pselectedSourceFieldsDictionary: DictionaryItem[];
-
-  configurationNameControl = new FormControl();
-
-  private pconfigurations: DictionaryItem[];
-  private transformationConfig: TransformationConfig;
-  private transformationConfigFactory: TransformationConfigFactory;
-
-  selectedCondition: DictionaryItem[];
-  selectedConfiguration: DictionaryItem[];
-  sourceFieldsDictionary: DictionaryItem[];
-
-  selectedSourceFieldsForHeader: string;
-
-  busy = false;
-
-  titleInfo: string;
-  sourceField: string[];
-  targetField: string;
+  sourceTables: ITable[];
   connector: IConnector;
-
+  tabIndex = 0
+  sourceFields: string
+  titleInfo: string;
   tab: string;
-
   lookupName;
   lookupType;
-
   lookup = {};
   sql: SqlForTransformation = {};
+  lookupDisabled: boolean;
+
+  @ViewChild('sqlTransformationComponent')
+  sqlTransformationComponent: NewSqlTransformationComponent
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
     public dialogRef: MatDialogRef<TransformConfigComponent>,
     private matDialog: MatDialog,
-    private snakbar: MatSnackBar,
-    private addCondition: MatDialog,
     private storeService: StoreService,
     private bridgeService: BridgeService,
-    vocabulariesService: VocabulariesService,
     private httpService: HttpService
   ) {
-    this.lookupName = payload[ 'lookupName' ];
-    this.lookupType = payload['lookupType'];
-    this.transformationConfigs = [];
-    this.sql = payload[ 'sql' ] ? {...payload[ 'sql' ]} : {};
-    this.tab = payload['tab'];
-
-    const { arrowCache, connector } = this.payload;
-    const sourceFields = Object.values(arrowCache).
-    filter(this.bridgeService.sourceConnectedToSameTarget(arrowCache[connector.id].connector.target, true)).map(item => item.source.name);
-
-    this.sourceField = sourceFields;
-    this.targetField = connector.target.name;
-    this.connector = connector;
-    this.titleInfo = `${[ ...new Set(sourceFields) ].join(',')} - ${connector.target.name}`;
-    if (
-      arrowCache[ connector.id ] &&
-      arrowCache[ connector.id ].transformationConfigs
-    ) {
-      this.transformationConfigs = [].concat.apply(
-        this.transformationConfigs,
-        arrowCache[ connector.id ].transformationConfigs
-      );
-    }
-
-    this.sourceTables = this.storeService.state.source;
-    this.vocabularies = vocabulariesService.vocabularies;
-
-    this.selectedSourceFields = Object.values(payload.arrowCache).map(arrow => arrow.source.name);
-
-    const selectedSourceTablesNames = Object.values(payload.arrowCache).map(arrow => ({ name: arrow.source.tableName }));
-
-    const newSelectedSourceTablesNames = uniqBy(selectedSourceTablesNames, 'name').map(x => x.name);
-
-    if (this.sourceTables) {
-      this.sourceFields = this.sourceTables
-        .filter(sourceTable => newSelectedSourceTablesNames.includes(sourceTable.name))
-        .map(table => table.rows)
-        .reduce((p, k) => p.concat.apply(p, k), [])
-        .map(t => t.name);
-    }
   }
 
-  create = new Command({
-    execute: () => {
-      const configName = this.configurationNameControl.value;
-      this.transformationConfig = this.transformationConfigFactory.createNew(
-        configName,
-        this.selectedSourceFields
-      );
-
-      this.transformationConfigs.push(this.transformationConfig);
-
-      console.log(
-        'Created configuration',
-        this.transformationConfig.conditions[ 0 ].vocabularyConfig.conceptConfig
-      );
-
-      this.snakbar.open(
-        `Configuration "${this.configurationNameControl.value}" has been created`,
-        ' DISMISS ',
-        { duration: 3000 }
-      );
-
-      this.configurationNameControl.reset();
-
-      this.updateConfigurations();
-
-      this.selectedConfiguration = [ new DictionaryItem(this.transformationConfig.name) ];
-
-      // Select default condition of the new configuration
-      this.selectTransformationCondition(this.transformationConfig.conditions[ 0 ].name);
-    },
-    canExecute: () => this.configurationNameControl.valid
-  });
-
-  apply = new Command({
-    execute: () => {
-      const configCopy: TransformationConfig = cloneDeep(this.transformationConfig);
-
-      // TODO Update existed
-      const idx = this.transformationConfigs.findIndex(config => config.name === configCopy.name);
-      if (idx > -1) {
-        this.transformationConfigs[ idx ] = configCopy;
-      }
-
-      const { arrowCache, connector } = this.payload;
-      if (arrowCache[ connector.id ]) {
-        arrowCache[ connector.id ].transformationConfigs = this.transformationConfigs;
-      }
-
-      this.updateConfigurations();
-
-      this.snakbar.open(
-        `Configuration "${this.transformationConfig.name}" has been saved`,
-        ' DISMISS ',
-        { duration: 3000 }
-      );
-    },
-    canExecute: () => true
-  });
-
-  delete = new Command({
-    execute: () => { },
-    canExecute: () => true
-  });
-
-  close = new Command({
-    execute: () => {
-      this.dialogRef.close();
-    },
-    canExecute: () => true
-  });
+  get resultSql() {
+    return this.sqlTransformationComponent.sqlForTransformation
+  }
 
   ngOnInit() {
-    this.init();
-  }
+    this.lookupName = this.payload[ 'lookupName' ];
+    this.lookupType = this.payload['lookupType'];
+    this.sql = this.payload[ 'sql' ] ? {...this.payload[ 'sql' ]} : {};
+    this.tab = this.payload['tab'];
+    this.tabIndex = this.tab === 'Lookup' ? 1 : 0
 
-  ngOnChanges() {
-    this.init();
+    const { arrowCache, connector } = this.payload;
+    const target = arrowCache[connector.id].connector.target
+    const sourceFields = Object.values(arrowCache)
+      .filter(this.bridgeService.sourceConnectedToSameTarget(target, true))
+      .map(item => item.source.name);
+    this.connector = connector;
+    this.sourceTables = this.storeService.state.source;
+    this.sourceFields = [...new Set(sourceFields)].join(',')
+    this.titleInfo = `${sourceFields} - ${connector.target.name}`;
+    this.lookupDisabled = !target.name.endsWith('concept_id');
   }
 
   onApply() {
-    this.tab === 'Lookup' ? this.dialogRef.close({ lookup: this.lookup }) : this.validateSql(this.sql['name']);
+    if (this.tab === 'Lookup') {
+      this.dialogRef.close({lookup: this.lookup});
+    } else {
+      const sql = this.resultSql
+      this.validateSql(sql.name)
+        .subscribe(() => this.dialogRef.close({sql}),
+          error => openErrorDialog(this.matDialog, 'Sql error', parseHttpError(error))
+        )
+    }
   }
 
-  validateSql(sql: string) {
+  validateSql(sql: string): Observable<void> {
     const sqlTransformation = [];
     if (this.connector.source.tableName === 'similar') {
       const similarLinks = this.bridgeService.findSimilarLinks(this.connector, Area.Source, Area.Target);
@@ -232,39 +95,11 @@ export class TransformConfigComponent implements OnInit, OnChanges {
           }
         }
       );
-      uniq(tables).forEach(it => sqlTransformation.push(this.addSemicolon(it)));
+      uniq(tables).forEach(it => sqlTransformation.push(addSemicolon(it)));
     } else {
-      sqlTransformation.push(this.addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
+      sqlTransformation.push(addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
     }
-    this.httpService.validateSql({ sql: sqlTransformation })
-      .subscribe(() => {
-        this.dialogRef.close({ sql: this.sql });
-      },
-      error => {
-        const dialog = this.matDialog.open(ErrorPopupComponent, {
-          closeOnNavigation: false,
-          disableClose: false,
-          data: {
-            title: 'Sql error',
-            message: error.error.message
-          }
-        });
-      });
-  }
-
-  private addSemicolon(str: string) {
-    return str.slice(-1) === ';' ? str : `${str};`
-  }
-
-  private getViewSql(sql: string, tableName: string) {
-    let viewSql = this.sourceTables
-      .find(item => item.name === tableName).sql
-      .replace(/^(\r\n)|(\n)/gi, ' ')
-      .replace(/\s\s+/g, ' ');
-    if (viewSql) {
-      viewSql = `WITH ${tableName} AS (${viewSql}) `;
-    }
-    return `${viewSql} SELECT ${sql} FROM ${tableName}`;
+    return this.httpService.validateSql({ sql: sqlTransformation })
   }
 
   applyDisabled() {
@@ -293,76 +128,14 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     this.dialogRef.close();
   }
 
-  init() {
-    if (this.selectedSourceFields) {
-      this.selectedSourceFieldsForHeader = this.selectedSourceFields.join(',');
+  private getViewSql(sql: string, tableName: string) {
+    let viewSql = this.sourceTables
+      .find(item => item.name === tableName).sql
+      .replace(/^(\r\n)|(\n)/gi, ' ')
+      .replace(/\s\s+/g, ' ');
+    if (viewSql) {
+      viewSql = `WITH ${tableName} AS (${viewSql}) `;
     }
-
-    if (this.sourceFields) {
-      this.sourceFieldsDictionary = this.sourceFields.map(name => new DictionaryItem(name));
-    }
-
-    if (this.vocabularies) {
-      if (!this.transformationConfigFactory) {
-        this.transformationConfigFactory = new TransformationConfigFactory(this.vocabularies);
-        this.transformationConfig = this.transformationConfigFactory.createNew(
-          'default',
-          this.selectedSourceFields
-        );
-      }
-
-      this.updateConfigurations();
-      this.updateSelectedSourceFields();
-      this.updateConditionsVariable();
-      this.setLastAddedTransformatioNCondition();
-      this.selectTransformationCondition(this.transformationConfig.conditions[ 0 ].name);
-
-      setTimeout(() => {
-        if (this.selectedSourceFields) {
-          this.pselectedSourceFieldsDictionary = this.selectedSourceFields.map(sourceFieldName => new DictionaryItem(sourceFieldName));
-        }
-      });
-    }
+    return `${viewSql} SELECT ${sql} FROM ${tableName}`;
   }
-
-  onConfigurationSelected(vocabulary: IVocabulary) {
-    if (!this.configurationNameControl.valid && !vocabulary) {
-      return;
-    } else if (vocabulary) {
-      const index = this.transformationConfigs.findIndex(l => l.name === vocabulary.name);
-      if (index > -1) {
-        this.transformationConfig = this.transformationConfigs[ index ];
-
-        this.selectTransformationCondition(this.transformationConfig.conditions[ 0 ].name);
-      }
-    }
-  }
-
-  private updateConfigurations() {
-    const hash = new Set<string>();
-    this.transformationConfigs.forEach(e => hash.add(e.name));
-    this.pconfigurations = Array.from(hash.values()).map(e => new DictionaryItem(e));
-  }
-
-  private updateConditionsVariable() {
-    this.pconditions = this.transformationConfig.conditions.map(c => new DictionaryItem(c.name));
-  }
-
-  private updateSelectedSourceFields() {
-    this.pselectedSourceFieldsDictionary = this.transformationConfig.selectedSourceFields.map(c => new DictionaryItem(c));
-  }
-
-  private setLastAddedTransformatioNCondition() {
-    this.ptransformationCondition = this.transformationConfig.conditions[ this.transformationConfig.conditions.length - 1 ];
-  }
-
-  private selectTransformationCondition(name: string) {
-    const index = this.transformationConfig.conditions.findIndex(condition => condition.name === name);
-    if (index > -1) {
-      this.ptransformationCondition = this.transformationConfig.conditions[ index ];
-      this.selectedCondition = [ new DictionaryItem(this.ptransformationCondition.name) ];
-      this.updateConditionsVariable();
-    }
-  }
-
 }

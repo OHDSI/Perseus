@@ -23,7 +23,10 @@ export class NewSqlTransformationComponent {
 
   mode: SqlTransformMode = 'visual'
 
-  get newSql(): SqlForTransformation {
+  @Input()
+  sourceFields: string
+
+  get sqlForTransformation(): SqlForTransformation {
     return this.mode === 'visual' ? {
       name: this.visualTransformationComponent.sql,
       functions: this.visualTransformationComponent.state

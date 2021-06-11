@@ -20,20 +20,11 @@ import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { EditorFromTextArea } from 'codemirror';
 import { initCodeMirror } from '@utils/code-mirror';
-import { ReplaceTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function';
 import { TransformationFunctionType } from '@models/transformation/transformation-function-type';
-import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
-import { createFunctionComponentAndReturnFunction } from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
-import { DatePartTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
-import { DatePartTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
-import { NoArgsTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
-import { TrimTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/trim-transformation-function';
-import { UpperTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/upper-transformation-function';
-import { LowerTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/lower-transformation-function';
-import { DateAddTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function.component';
-import { DateAddTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function';
-import { SwitchCaseTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function.component';
-import { SwitchCaseTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function';
+import {
+  createFunctionComponentAndReturnFunction,
+  functionTypes
+} from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
 
 @Component({
   selector: 'app-visual-transformation',
@@ -42,43 +33,7 @@ import { SwitchCaseTransformationFunction } from '@mapping/new-sql-transformatio
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisualTransformationComponent extends BaseComponent implements OnInit, AfterViewInit {
-  functionTypes: TransformationFunctionType[] = [
-    {
-      name: 'REPLACE',
-      componentClass: ReplaceTransformationFunctionComponent,
-      createFunction: () => new ReplaceTransformationFunction(),
-    },
-    {
-      name: 'DATEPART',
-      componentClass: DatePartTransformationFunctionComponent,
-      createFunction: () => new DatePartTransformationFunction()
-    },
-    {
-      name: 'DATEADD',
-      componentClass: DateAddTransformationFunctionComponent,
-      createFunction: () => new DateAddTransformationFunction()
-    },
-    {
-      name: 'CASE',
-      componentClass: SwitchCaseTransformationFunctionComponent,
-      createFunction: () => new SwitchCaseTransformationFunction()
-    },
-    {
-      name: 'TRIM',
-      componentClass: NoArgsTransformationFunctionComponent,
-      createFunction: () => new TrimTransformationFunction()
-    },
-    {
-      name: 'UPPER',
-      componentClass: NoArgsTransformationFunctionComponent,
-      createFunction: () => new UpperTransformationFunction()
-    },
-    {
-      name: 'LOWER',
-      componentClass: NoArgsTransformationFunctionComponent,
-      createFunction: () => new LowerTransformationFunction()
-    }
-  ]
+  functionTypes: TransformationFunctionType[] = functionTypes
 
   functions: SqlFunctionForTransformation[]
 
@@ -89,6 +44,9 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
 
   @ViewChild('preview')
   preview: ElementRef<HTMLTextAreaElement>
+
+  @Input()
+  sourceFields: string
 
   @ViewChildren('functionContainer', {read: ViewContainerRef})
   private functionsContainers: ViewContainerRef[];
@@ -159,7 +117,7 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
     const result = functions.length === 0 ? '' : functions
       .slice()
       .reverse()
-      .reduce((acc, {value: func}) => func.sql()(acc), 'value')
+      .reduce((acc, {value: func}) => func.sql()(acc), this.sourceFields)
 
     this.codeMirror.setValue(result.trim())
   }

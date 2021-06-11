@@ -8,17 +8,18 @@
   <div class="apply-transformation__content">
     <mat-tab-group [(selectedIndex)]="tabIndex">
       <mat-tab label="SQL FUNCTION">
-        <app-new-sql-transformation [sql]="sql"></app-new-sql-transformation>
+        <app-new-sql-transformation #sqlTransformationComponent
+                                    [sql]="sql"
+                                    [sourceFields]="sourceFields"></app-new-sql-transformation>
       </mat-tab>
 
-      <mat-tab label="LOOKUP">
+      <mat-tab label="LOOKUP" [disabled]="lookupDisabled">
         <app-lookup [lookupType]="lookupType"
                     [lookup]="lookup"
                     [name]="lookupName"
                     notConceptTableField="true"></app-lookup>
       </mat-tab>
     </mat-tab-group>
-
   </div>
 
   <div class="apply-transformation__footer">
