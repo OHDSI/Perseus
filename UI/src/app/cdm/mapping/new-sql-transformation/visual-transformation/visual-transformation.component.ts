@@ -4,11 +4,18 @@ import {
   Component,
   ComponentFactoryResolver,
   ElementRef,
+  Input,
+  OnInit,
   ViewChild,
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import { SqlFunctionForTransformation } from '@models/transformation/sql-function-for-transformation';
+import {
+  fromState,
+  SqlFunctionForTransformation,
+  SqlFunctionForTransformationState,
+  toState
+} from '@models/transformation/sql-function-for-transformation';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { EditorFromTextArea } from 'codemirror';
@@ -16,7 +23,7 @@ import { initCodeMirror } from '@utils/code-mirror';
 import { ReplaceTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function';
 import { TransformationFunctionType } from '@models/transformation/transformation-function-type';
 import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
-import { createFunctionComponentAndReturnFunc } from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
+import { createFunctionComponentAndReturnFunction } from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
 import { DatePartTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
 import { DatePartTransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
 import { NoArgsTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
@@ -34,7 +41,7 @@ import { SwitchCaseTransformationFunction } from '@mapping/new-sql-transformatio
   styleUrls: ['./visual-transformation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VisualTransformationComponent extends BaseComponent implements AfterViewInit {
+export class VisualTransformationComponent extends BaseComponent implements OnInit, AfterViewInit {
   functionTypes: TransformationFunctionType[] = [
     {
       name: 'REPLACE',
@@ -73,9 +80,12 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
     }
   ]
 
-  functions: SqlFunctionForTransformation[] = []
+  functions: SqlFunctionForTransformation[]
 
   codeMirror: EditorFromTextArea
+
+  @Input()
+  functionsState: SqlFunctionForTransformationState[]
 
   @ViewChild('preview')
   preview: ElementRef<HTMLTextAreaElement>
@@ -87,6 +97,22 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
     super()
   }
 
+  get sql(): string {
+    return this.codeMirror.getValue()
+  }
+
+  get state(): SqlFunctionForTransformationState[] {
+    return this.functions.map(toState)
+  }
+
+  get containers() {
+    return Array.from(this.functionsContainers)
+  }
+
+  ngOnInit(): void {
+    this.functions = this.functionsState?.map(fromState) ?? []
+  }
+
   ngAfterViewInit(): void {
     this.codeMirror = initCodeMirror(this.preview.nativeElement, {
       mode: 'text/x-mysql',
@@ -96,6 +122,13 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
       theme: 'preview',
       lineWrapping: true
     })
+
+    this.functions.forEach((func, index) => {
+      const container = this.containers[index]
+      this.initFunction(func, container)
+    })
+
+    this.updatePreview()
   }
 
   addFunction() {
@@ -109,17 +142,13 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   onFuncChange(type: TransformationFunctionType, index: number) {
-    const container = Array.from(this.functionsContainers)[index]
+    const container = this.containers[index]
     const func = this.functions[index]
 
     func.subscription?.unsubscribe()
     func.type = type
-    func.value = createFunctionComponentAndReturnFunc(type, container, this.componentFactoryResolver)
-    func.subscription = func.value.change$
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(() => this.updatePreview())
+
+    this.initFunction(func, container)
 
     this.updatePreview()
   }
@@ -133,4 +162,14 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
 
     this.codeMirror.setValue(result.trim())
   }
+
+  private initFunction<T>(func: SqlFunctionForTransformation<T>, container: ViewContainerRef) {
+    func.value = createFunctionComponentAndReturnFunction(func.type, container, this.componentFactoryResolver)
+    func.subscription = func.value.change$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => this.updatePreview())
+  }
 }
+

@@ -214,7 +214,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(`target-${htmlElementId}`);
         if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
-
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {
             const {connectionType} = configOptions;
@@ -223,10 +222,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
               const lookupType = getLookupType(arrow);
               const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
                 closeOnNavigation: false,
-                disableClose: false,
+                disableClose: true,
                 panelClass: 'perseus-dialog',
-                maxHeight: '100%',
-                width: '570px;',
                 data: {
                   arrowCache: this.bridgeService.arrowsCache,
                   connector: arrow.connector,

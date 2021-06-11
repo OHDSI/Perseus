@@ -276,11 +276,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
-  line-height: 14px;
 
-  input {
+  label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    line-height: 14px;
     cursor: pointer;
+
+    input {
+      margin: 0 8px 2px 0;
+    }
   }
 }
 
@@ -331,5 +337,56 @@
 
   * {
     height: 25px;
+  }
+}
+
+@mixin perseus-mat-tab {
+  .mat-tab-group {
+    .mat-expansion-panel-header-title span {
+      color: $cdm-grey-dark;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .mat-ink-bar {
+      background-color: transparent !important;
+      height: 3px;
+    }
+
+    .mat-tab-header {
+      border-bottom: none;
+
+      .mat-elevation-z4 {
+        box-shadow: none;
+      }
+
+      .mat-tab-label {
+        opacity: 1;
+        float: left;
+        height: 40px;
+        border-bottom: 2px solid transparent;
+        min-width: auto;
+        color: rgba(64, 64, 64, 0.87);
+      }
+
+      .mat-tab-label-active .mat-tab-label-content {
+        color: $blue;
+        border-bottom: 2px solid $blue;
+
+        .mat-icon {
+          text-decoration: none;
+        }
+      }
+
+      .mat-tab-label-content {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    }
+
+    .drop-down-label{
+      display: flex;
+      align-items: center;
+    }
   }
 }

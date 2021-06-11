@@ -4,5 +4,5 @@ import { TransformationFunctionComponent } from '@mapping/new-sql-transformation
 export interface TransformationFunctionType<C extends TransformationFunctionComponent = any, F = any> {
   name: string,
   componentClass: new(f: TransformationFunction<F>) => C,
-  createFunction: () => TransformationFunction<F>
+  createFunction: (value?: F) => TransformationFunction<F>
 }

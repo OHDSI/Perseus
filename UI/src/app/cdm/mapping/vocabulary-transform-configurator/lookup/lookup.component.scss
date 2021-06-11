@@ -1,4 +1,9 @@
-@import "../../../../styles/variables";
+@import "variables";
+
+.lookup {
+  width: 500px;
+  margin-bottom: 30px;
+}
 
 .mat-option .mat-icon {
   font-size: 14px;

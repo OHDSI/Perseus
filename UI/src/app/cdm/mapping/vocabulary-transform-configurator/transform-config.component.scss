@@ -2,11 +2,14 @@
 @import 'mixins';
 
 .apply-transformation {
-  width: 100%;
-  height: 100%;
+  width: 575px;
+  min-height: 640px;
+  max-height: 756px;
   padding: 42px 35px 35px;
   position: relative;
   background: #FBFBFB;
+  display: flex;
+  flex-direction: column;
 
   &__close {
     position: absolute;
@@ -30,10 +33,24 @@
     }
   }
 
+  &__content {
+    @include perseus-mat-tab();
+
+    .mat-tab-header {
+      margin: 10px 0 9px -8px;
+    }
+
+    .mat-tab-label {
+      padding: 0 8px 0 8px;
+      margin-right: 14px;
+    }
+  }
+
   &__footer {
     display: flex;
     justify-content: center;
-    margin-top: 30px;
+    align-items: flex-end;
+    flex: 1;
 
     button {
       @include cdm-button();

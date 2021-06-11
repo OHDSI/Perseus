@@ -2,9 +2,9 @@ import { TransformationFunctionType } from '@models/transformation/transformatio
 import { ComponentFactoryResolver, Injector, ViewContainerRef } from '@angular/core';
 import { TransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function';
 
-export function createFunctionComponentAndReturnFunc<T>(functionType: TransformationFunctionType,
-                                                        viewContainerRef: ViewContainerRef,
-                                                        componentFactoryResolver: ComponentFactoryResolver): TransformationFunction<T> {
+export function createFunctionComponentAndReturnFunction<T>(functionType: TransformationFunctionType,
+                                                            viewContainerRef: ViewContainerRef,
+                                                            componentFactoryResolver: ComponentFactoryResolver): TransformationFunction<T> {
   const transformationFunction = functionType.createFunction()
   const injector = Injector.create({
     providers: [{

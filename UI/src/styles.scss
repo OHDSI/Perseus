@@ -258,7 +258,10 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
 }
 
 // mat-tab
-.area-source, .area-target, .mat-tab-column-info-container, .concept-container {
+.area-source,
+.area-target,
+.mat-tab-column-info-container,
+.concept-container {
   .mat-tab-group {
     .mat-expansion-panel-header-title span {
       color: $cdm-grey-dark;

@@ -26,7 +26,6 @@ import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/t
 import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 import { NewSqlTransformationComponent } from './new-sql-transformation/new-sql-transformation.component';
 import { ReplaceTransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
-import { ManualTransformationComponent } from './new-sql-transformation/manual-transformation/manual-transformation.component';
 import { VisualTransformationComponent } from './new-sql-transformation/visual-transformation/visual-transformation.component';
 import { DatePartTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
 import { NoArgsTransformationFunctionComponent } from './new-sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
@@ -56,7 +55,6 @@ import { SwitchCaseTransformationFunctionComponent } from './new-sql-transformat
     TargetCloneDialogComponent,
     NewSqlTransformationComponent,
     ReplaceTransformationFunctionComponent,
-    ManualTransformationComponent,
     VisualTransformationComponent,
     DatePartTransformationFunctionComponent,
     NoArgsTransformationFunctionComponent,

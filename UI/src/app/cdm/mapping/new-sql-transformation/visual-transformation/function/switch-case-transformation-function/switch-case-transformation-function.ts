@@ -1,6 +1,8 @@
 import { TransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function';
 import { FormArray, FormGroup } from '@angular/forms';
 
+export const anyValue = 'Any value'
+
 export interface Case {
   in: string,
   out: string
@@ -31,8 +33,15 @@ export class SwitchCaseTransformationFunction extends TransformationFunction<Swi
   }
 
   sql(): (arg: string) => string {
+    const cases = [...this.cases]
+    let defaultBlock = ''
+    if (!cases[cases.length - 1].in) {
+      const defaultCase = cases.pop()
+      defaultBlock = `\n\tELSE ${defaultCase.out}`
+    }
+
     const reducer = (acc: string, curr: Case) => acc + `\n\tWHEN ${curr.in} THEN ${curr.out}`
 
-    return (arg: string) => `CASE(${arg})${this.cases.reduce(reducer, '')}\nEND`;
+    return (arg: string) => `CASE(${arg})${cases.reduce(reducer, '')}${defaultBlock}\nEND`;
   }
 }

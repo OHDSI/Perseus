@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import {
   SQL_FUNCTIONS,
   SQL_STRING_FUNCTIONS
 } from '@popups/rules-popup/transformation-input/model/sql-string-functions';
 import { EditorConfiguration } from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { FormGroup } from '@angular/forms';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { initCodeMirror } from '@utils/code-mirror';
+import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 
 const editorSettings: EditorConfiguration = {
   mode: 'text/x-mysql',
@@ -26,16 +26,16 @@ const editorSettings: EditorConfiguration = {
   styleUrls: ['./sql-transformation.component.scss']
 })
 
-export class SqlTransformationComponent implements OnInit, AfterViewInit {
+export class SqlTransformationComponent implements AfterViewInit {
 
   @ViewChild('editor', { static: true }) editor;
-  @Input() sql: {};
-  @Input() reducedSqlField;
+
+  @Input() sql: SqlForTransformation;
+  @Input() reducedSqlField: boolean
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;
-  codeMirror;
-  sqlForm = new FormGroup({});
+  codeMirror
 
   constructor(
     private bridgeService: BridgeService
@@ -45,13 +45,10 @@ export class SqlTransformationComponent implements OnInit, AfterViewInit {
     return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
-  ngOnInit(): void {
-  }
-
   ngAfterViewInit() {
     this.codeMirror = initCodeMirror(this.editor.nativeElement, editorSettings)
     this.codeMirror.on('change', this.onChange.bind(this));
-    const name = this.sql['name']
+    const name = this.sql.name
     if (name) {
       this.codeMirror.doc.replaceSelection(name);
     }

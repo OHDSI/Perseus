@@ -7,3 +7,23 @@ export interface SqlFunctionForTransformation<T = any> {
   value?: TransformationFunction<T>
   subscription?: Subscription
 }
+
+export interface SqlFunctionForTransformationState<T = any> {
+  type: TransformationFunctionType,
+  value: T
+}
+
+export function toState<T>({type, value: func}: SqlFunctionForTransformation<T>): SqlFunctionForTransformationState<T> {
+  return {
+    type,
+    value: func.value
+  }
+}
+
+export function fromState<T>({type}: SqlFunctionForTransformationState<T>): SqlFunctionForTransformation<T> {
+  return {
+    type
+  }
+}
+
+

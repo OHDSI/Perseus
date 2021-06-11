@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
 import {
+  anyValue,
   Case,
   SwitchCaseModel,
   SwitchCaseTransformationFunction
@@ -34,7 +35,7 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
   }
 
   trackBy(index: number, value: Case) {
-    return index
+    return `${index}${value.in}${value.out}`
   }
 
   addRow() {
@@ -53,7 +54,7 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
 
   addDefault() {
     const defaultRow = new FormGroup({
-      in: new FormControl({value: 'Any Value', disabled: true}, [Validators.required]),
+      in: new FormControl({value: anyValue, disabled: true}),
       out: new FormControl(null, [Validators.required])
     })
     this.formArray.push(defaultRow)

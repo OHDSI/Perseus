@@ -4,8 +4,11 @@
 $border: 1px dashed #066BBB4C;
 
 .visual-transformation {
+  margin-bottom: 30px;
+
   &__add-function {
     color: $cdm-blue;
+    width: 82px;
     font-weight: 500;
     font-size: 13px;
     line-height: 15px;
@@ -18,6 +21,15 @@ $border: 1px dashed #066BBB4C;
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-left: 3px solid #F9F9F9;
+      border-radius: 3px;
+    }
 
     .no-functions {
       border: $border;

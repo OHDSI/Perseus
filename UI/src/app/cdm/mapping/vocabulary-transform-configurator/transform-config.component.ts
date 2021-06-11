@@ -20,6 +20,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { Area } from 'src/app/models/area';
 import { StoreService } from 'src/app/services/store.service';
+import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 
 @Component({
   selector: 'app-transform-config',
@@ -81,7 +82,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
   lookupType;
 
   lookup = {};
-  sql = {};
+  sql: SqlForTransformation = {};
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
@@ -184,11 +185,6 @@ export class TransformConfigComponent implements OnInit, OnChanges {
         arrowCache[ connector.id ].transformationConfigs = this.transformationConfigs;
       }
 
-      console.log(
-        'Saved configuration',
-        configCopy.conditions[ 0 ].vocabularyConfig.conceptConfig
-      );
-
       this.updateConfigurations();
 
       this.snakbar.open(
@@ -240,7 +236,8 @@ export class TransformConfigComponent implements OnInit, OnChanges {
     } else {
       sqlTransformation.push(this.addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
     }
-    this.httpService.validateSql({ sql: sqlTransformation }).subscribe(() => {
+    this.httpService.validateSql({ sql: sqlTransformation })
+      .subscribe(() => {
         this.dialogRef.close({ sql: this.sql });
       },
       error => {
@@ -322,7 +319,7 @@ export class TransformConfigComponent implements OnInit, OnChanges {
 
       setTimeout(() => {
         if (this.selectedSourceFields) {
-          this.pselectedSourceFieldsDictionary = this.selectedSourceFields.map(sorceFieldName => new DictionaryItem(sorceFieldName));
+          this.pselectedSourceFieldsDictionary = this.selectedSourceFields.map(sourceFieldName => new DictionaryItem(sourceFieldName));
         }
       });
     }

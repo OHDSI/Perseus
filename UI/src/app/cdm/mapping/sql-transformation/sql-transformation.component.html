@@ -1,11 +1,11 @@
-<div [formGroup]="sqlForm">
-  <section cdkDropList
+<div>
+  <section class="sql-statement" cdkDropList
            #editorArea="cdkDropList"
-           (cdkDropListDropped)="drop($event)"
-           [ngClass]="{'condition-text': reducedSqlField}">
+           (cdkDropListDropped)="drop($event)">
     <label>SQL Statement</label>
     <textarea #editor></textarea>
   </section>
+
   <section>
     <label>Quick functions</label>
     <mat-chip-list #tables="cdkDropList"

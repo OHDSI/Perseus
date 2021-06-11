@@ -154,4 +154,5 @@ export const SQL_STRING_FUNCTIONS = [
   'ROUND',
   'RTRIM',
   'SUBSTRING',
-  'UPPER'];
+  'UPPER'
+];
