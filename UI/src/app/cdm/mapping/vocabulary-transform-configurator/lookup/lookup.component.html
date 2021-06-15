@@ -4,7 +4,7 @@
       <div class="stage-number">1</div>
       <span class="stage-title">Select Lookup</span>
     </div>
-    <div class="stage-body" [class.invalid-with-border]="lookup['value'] === ''">
+    <div class="stage-body" [class.invalid-with-border]="lookup['value'] === '' && lookup['name']">
       <mat-form-field class="select-lookup" appearance="fill">
         <mat-label>Select Lookup</mat-label>
         <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected">
@@ -35,7 +35,7 @@
 
       <div class="flex-div">
       <div class="preview-title">SQL Preview</div>
-      <div class="invalid-label" *ngIf="lookup['value'] === ''"> &mdash; Please type SQL here</div>
+      <div class="invalid-label" *ngIf="lookup['value'] === '' && lookup['name']"> &mdash; Please type SQL here</div>
       </div>
       <mat-expansion-panel [class.hidden]="!selected" class="select-preview">
         <mat-expansion-panel-header>

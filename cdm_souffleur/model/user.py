@@ -1,4 +1,4 @@
-from jwt import ExpiredSignatureError, InvalidTokenError
+from jwt import ExpiredSignatureError, InvalidTokenError, InvalidSignatureError, DecodeError, PyJWTError
 from peewee import *
 from cdm_souffleur import app
 import jwt
@@ -43,24 +43,29 @@ class User(BaseModel):
            raise InvalidTokenError
         return payload['sub']
 
+
 def token_required(f):
    @wraps(f)
    def decorator(*args, **kwargs):
 
-      token = None
-
-      if 'Authorization' in request.headers:
-         token = request.headers['Authorization']
-
-      if not token:
-         raise InvalidUsage('A valid token is missing', 401)
-
-      try:
-         current_user = User.decode_auth_token(token)
-      except ExpiredSignatureError as error:
-         raise InvalidUsage('Token expired. Please log in again', 401)
-      except Exception as error:
-         raise InvalidUsage('Token is invalid', 401)
+      current_user = is_token_valid(request)
 
       return f(current_user, *args, **kwargs)
    return decorator
+
+def is_token_valid(request):
+    token = None
+
+    if 'Authorization' in request.headers:
+        token = request.headers['Authorization']
+
+    if not token:
+        raise InvalidUsage('A valid token is missing', 401)
+
+    try:
+        current_user = User.decode_auth_token(token)
+    except ExpiredSignatureError as error:
+        raise InvalidUsage('Token expired. Please log in again', 401)
+    except PyJWTError as error:
+        raise InvalidUsage('Token is invalid', 401)
+    return current_user

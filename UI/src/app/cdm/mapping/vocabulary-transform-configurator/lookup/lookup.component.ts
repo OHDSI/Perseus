@@ -83,7 +83,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   updateItems() {
-    this.lookupService.getLookupsList(this.lookupType).subscribe(data => this.items = data);
+    this.lookupService.getLookupsList(this.lookupType).subscribe(data => this.items = [''].concat(data));
   }
 
   initCodeMirror() {

@@ -4,8 +4,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import string
 
-def get_terms_vestors(results, query):
-    sentences = [query] + list(map(lambda x: x['term'][0], results))
+def get_terms_vectors(results, query, field_name):
+    sentences = [query] + list(map(lambda x: x[field_name][0], results))
     cleaned_sentences = list(map(clean_string, sentences))
     vectorizer = CountVectorizer(analyzer='char_wb', ngram_range=(3,4))
     fitted_vectorizer = vectorizer.fit_transform(cleaned_sentences)

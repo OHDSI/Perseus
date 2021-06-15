@@ -2,7 +2,8 @@ from pathlib import Path
 import pandas as pd
 from cdm_souffleur.utils import FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
 from cdm_souffleur.utils.column_types_mapping import postgres_types_mapping
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
+    LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
 import xml.etree.ElementTree as ElementTree
 import os
 from cdm_souffleur.view.Table import Table, Column
@@ -16,6 +17,8 @@ from cdm_souffleur.db import pg_db
 import re
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+
+opened_reports = {}
 
 with open('configuration/default.json', 'r') as configuration_file:
     configuration = json.load(configuration_file)
@@ -31,7 +34,7 @@ def get_source_schema(current_user, schemaname):
     filepath = Path(schemaname)
 
     schema = []
-    book = _open_book(filepath)
+    book = _open_book(current_user, filepath)
     overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
     # always take the first sheet of the excel file
 
@@ -139,8 +142,12 @@ def run_sql_transformation(current_user, sql_transformation):
         pg_db.execute_sql(val).description
     return True
 
-def _open_book(filepath=None):
-    book = xlrd.open_workbook(Path(filepath))
+def _open_book(current_user, filepath=None):
+    if current_user not in opened_reports or opened_reports[current_user]['path'] != filepath:
+        book = xlrd.open_workbook(Path(filepath))
+        opened_reports[current_user] = {'path': filepath, 'book': book}
+    else:
+        book = opened_reports[current_user]['book']
     return book
 
 
@@ -149,10 +156,11 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
     report_name = secure_filename(report_name)
     path_to_schema = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{report_name}"
     try:
-        table_overview = pd.read_excel(path_to_schema, table_name, dtype=str,
+        book = _open_book(current_user, Path(path_to_schema))
+        table_overview = pd.read_excel(book, table_name, dtype=str,
                                        na_filter=False,
                                        engine='xlrd')
-        overview = pd.read_excel(path_to_schema, dtype=str, na_filter=False, engine='xlrd')
+        overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
         sql = f"select * from overview where `table`=='{table_name}' and `field`=='{column_name}'"
         tables_pd = sqldf(sql)._series
     except xlrd.biffh.XLRDError as e:
@@ -163,10 +171,12 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
         column_index = table_overview.columns.get_loc(column_name)
         info['frequency'] = table_overview.iloc[:, column_index + 1].head(10).tolist()
         percentage = []
-        if N_ROWS_FIELD_NAME in tables_pd:
+        n_rows = N_ROWS_CHECKED_FIELD_NAME if N_ROWS_CHECKED_FIELD_NAME in tables_pd else \
+            N_ROWS_FIELD_NAME if N_ROWS_FIELD_NAME in tables_pd else ''
+        if n_rows:
             for freq in info['frequency']:
                 if freq:
-                    percentage.append('{0:.10f}'.format(int(freq) / int(tables_pd[N_ROWS_FIELD_NAME][0])))
+                    percentage.append('{0:.10f}'.format(int(freq) / int(tables_pd[n_rows][0])))
             info['percentage'] = percentage
         for field in LIST_OF_COLUMN_INFO_FIELDS:
             if field in tables_pd:
@@ -216,8 +226,10 @@ def load_schema_to_server(file, current_user):
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} created")
         except FileExistsError:
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} already exist")
-        file.save(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{filename}")
+        path = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{filename}"
+        file.save(path)
         file.close()
+        _open_book(current_user, Path(path))
     return
 
 
