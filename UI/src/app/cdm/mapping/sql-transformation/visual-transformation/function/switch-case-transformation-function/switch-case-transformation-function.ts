@@ -1,4 +1,4 @@
-import { TransformationFunction } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function';
+import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
 export const anyValue = 'Any value'

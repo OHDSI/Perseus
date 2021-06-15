@@ -8,9 +8,9 @@
   <div class="apply-transformation__content">
     <mat-tab-group [(selectedIndex)]="tabIndex">
       <mat-tab label="SQL FUNCTION">
-        <app-new-sql-transformation #sqlTransformationComponent
-                                    [sql]="sql"
-                                    [sourceFields]="sourceFields"></app-new-sql-transformation>
+        <app-sql-transformation #sqlTransformationComponent
+                                [sql]="sql"
+                                [sourceFields]="sourceFields"></app-sql-transformation>
       </mat-tab>
 
       <mat-tab label="LOOKUP" [disabled]="lookupDisabled">

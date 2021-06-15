@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
+import { TransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/transformation-function.component';
 import {
   DatePartModel,
   DatePartTransformationFunction
-} from '@mapping/new-sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
+} from '@mapping/sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function';
 import { dateParts } from '@models/transformation/datepart';
 
 @Component({

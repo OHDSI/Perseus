@@ -1,25 +1,28 @@
-<div>
-  <section class="sql-statement" cdkDropList
-           #editorArea="cdkDropList"
-           (cdkDropListDropped)="drop($event)">
-    <label>SQL Statement</label>
-    <textarea #editor></textarea>
-  </section>
+<div class="sql-transformation">
+  <div class="sql-transformation__mode">
+    <label>
+      <input type="radio" value="visual" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
+      Visual
+    </label>
 
-  <section>
-    <label>Quick functions</label>
-    <mat-chip-list #tables="cdkDropList"
-                   cdkDropList
-                   cdkDropListSortingDisabled
-                   [cdkDropListData]="chips"
-                   [cdkDropListConnectedTo]="[editorArea]"
-                   class="table-name">
-      <mat-chip class="table-box"
-                cdkDrag
-                *ngFor="let chip of chips">
-        {{chip}}
-      </mat-chip>
-    </mat-chip-list>
-  </section>
+    <label>
+      <input type="radio" value="manual" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
+      Manual
+    </label>
+    <app-hint class="sql-transformation__mode__hint" key="sqlTransformation"></app-hint>
+  </div>
+
+  <ng-container [ngSwitch]="mode">
+    <ng-template ngSwitchCase="visual">
+      <app-visual-transformation #visualTransformation
+                                 [functionsState]="sql.functions"
+                                 [functionsHeight]="functionsHeight"
+                                 [sourceFields]="sourceFields"></app-visual-transformation>
+    </ng-template>
+
+    <ng-template ngSwitchCase="manual">
+      <app-manual-transformation #manualTransformation
+                                 [sql]="sql"></app-manual-transformation>
+    </ng-template>
+  </ng-container>
 </div>
-

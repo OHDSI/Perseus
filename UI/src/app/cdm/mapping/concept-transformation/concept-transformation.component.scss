@@ -24,7 +24,6 @@ table {
   padding: 0;
   direction: ltr;
   border-collapse: unset;
-  overflow-y: scroll;
   max-height: 130px;
 
   th {
@@ -132,9 +131,10 @@ input {
 
 .table-container {
   max-height: 150px;
-  overflow: auto;
+  overflow: overlay;
   width: 100%;
   border-radius: 0.3em;
+  @include grid-scroll();
 }
 
 .mat-slide-toggle {

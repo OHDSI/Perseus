@@ -1,71 +1,56 @@
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
-import {
-  SQL_FUNCTIONS,
-  SQL_STRING_FUNCTIONS
-} from '@popups/rules-popup/transformation-input/model/sql-string-functions';
-import { EditorConfiguration } from 'codemirror';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { BridgeService } from 'src/app/services/bridge.service';
-import { initCodeMirror } from '@utils/code-mirror';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { SqlTransformMode } from '@models/transformation/sql-transform-mode';
+import { VisualTransformationComponent } from '@mapping/sql-transformation/visual-transformation/visual-transformation.component';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
-
-const editorSettings: EditorConfiguration = {
-  mode: 'text/x-mysql',
-  lineNumbers: false,
-  indentWithTabs: true,
-  smartIndent: true,
-  matchBrackets: true,
-  autofocus: true,
-  lineWrapping: true,
-  extraKeys: { 'Ctrl-Space': 'autocomplete' },
-};
+import { ManualTransformationComponent } from '@mapping/sql-transformation/manual-transformation/manual-transformation.component';
 
 @Component({
   selector: 'app-sql-transformation',
   templateUrl: './sql-transformation.component.html',
-  styleUrls: ['./sql-transformation.component.scss']
+  styleUrls: ['./sql-transformation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+export class SqlTransformationComponent implements OnInit {
 
-export class SqlTransformationComponent implements AfterViewInit {
+  @Input()
+  sql: SqlForTransformation
 
-  @ViewChild('editor', { static: true }) editor;
+  @ViewChild('visualTransformation')
+  visualTransformationComponent: VisualTransformationComponent
 
-  @Input() sql: SqlForTransformation;
+  @ViewChild('manualTransformation')
+  manualTransformation: ManualTransformationComponent
 
-  chips = SQL_STRING_FUNCTIONS;
-  sqlFunctions = SQL_FUNCTIONS;
-  codeMirror
+  mode: SqlTransformMode
 
-  constructor(
-    private bridgeService: BridgeService
-  ) { }
+  @Input()
+  sourceFields: string
 
-  get editorContent() {
-    return this.codeMirror ? this.codeMirror.getValue() : '';
+  @Input()
+  functionsHeight = 236
+
+  get sqlForTransformation(): SqlForTransformation {
+    return this.mode === 'visual' ? {
+      name: this.visualTransformationComponent.sql,
+      functions: this.visualTransformationComponent.state,
+      mode: this.mode
+    } : {
+      name: this.manualTransformation.sql.name,
+      mode: this.mode
+    };
   }
 
-  ngAfterViewInit() {
-    this.codeMirror = initCodeMirror(this.editor.nativeElement, editorSettings)
-    this.codeMirror.on('change', this.onChange.bind(this));
-    const name = this.sql.name
-    if (name) {
-      this.codeMirror.doc.replaceSelection(name);
+  ngOnInit() {
+    this.mode = this.sql?.mode ?? 'visual'
+  }
+
+  onModeChange(mode: SqlTransformMode) {
+    if (mode === 'manual') {
+      this.sql = {
+        name: this.visualTransformationComponent.sql
+      }
     }
-  }
 
-  drop(event: CdkDragDrop<any>) {
-    const text = event.item.element.nativeElement.textContent.trim();
-    const selectedFunction = this.sqlFunctions.filter(func => func.name === text );
-    this.codeMirror.doc.replaceSelection(selectedFunction[0].getTemplate());
-    this.sql['name'] = this.editorContent;
-  }
-
-  onChange() {
-    this.sql['name'] = this.editorContent;
-    this.bridgeService.changeConceptSql(this.sql['name']);
-  }
-
-  setConceptSqlValue(sqlTransformation: string) {
-    this.codeMirror.setValue(sqlTransformation);
+    this.mode = mode
   }
 }

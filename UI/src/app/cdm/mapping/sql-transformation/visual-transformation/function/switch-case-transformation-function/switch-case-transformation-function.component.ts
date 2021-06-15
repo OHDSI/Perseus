@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
+import { TransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/transformation-function.component';
 import {
   Case,
   SwitchCaseModel,
   SwitchCaseTransformationFunction
-} from '@mapping/new-sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function';
+} from '@mapping/sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function';
 import { FormArray } from '@angular/forms';
 
 @Component({

@@ -1,50 +1,18 @@
 @import "variables";
+@import "mixins";
 
-:host {
-  display: block;
-}
+.sql-transformation {
+  &__mode {
+    position: relative;
+    @include radio-button();
+    width: 150px;
+    margin-bottom: 26px;
+    padding-top: 5px;
 
-label {
-  font-size: 12px;
-  line-height: 15px;
-  color: $grey;
-  margin-bottom: 3px;
-}
-
-section {
-  &.sql-statement {
-    margin-bottom: 20px;
-  }
-
-  &:nth-of-type(2) {
-    margin-bottom: 30px;
+    &__hint {
+      position: absolute;
+      top: 0;
+      right: -19px;
+    }
   }
 }
-
-.table-box {
-  text-transform: uppercase;
-  .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-.table-name {
-  width: 495px;
-  height: 120px;
-  display: block;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  .cdk-drop-list-dragging {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-.extended-chips-panel{
-  width: 580px;
-}
-
-.mat-chip {
-  cursor: pointer;
-}
-

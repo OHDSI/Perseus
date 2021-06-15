@@ -6,7 +6,7 @@ import { StoreService } from 'src/app/services/store.service';
 import { Concept, IConceptOptions, ITableConcepts } from './model/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SqlTransformationComponent } from '../sql-transformation/sql-transformation.component';
+import { ManualTransformationComponent } from '../sql-transformation/manual-transformation/manual-transformation.component';
 import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
@@ -25,7 +25,7 @@ import { ConceptTransformationService } from 'src/app/services/concept-transform
 })
 export class ConceptTransformationComponent extends BaseComponent implements OnInit {
 
-  @ViewChild('sqlTransformation') sqlTransformation: SqlTransformationComponent;
+  @ViewChild('sqlTransformation') sqlTransformation: ManualTransformationComponent;
   @ViewChild('lookupComponent') lookupComponent: LookupComponent;
 
   constructor(@Inject(MAT_DIALOG_DATA) public payload: any,

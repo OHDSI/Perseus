@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
+import { TransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/transformation-function.component';
 import {
   ReplaceModel,
   ReplaceTransformationFunction
-} from '@mapping/new-sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function';
+} from '@mapping/sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function';
 
 @Component({
   selector: 'app-replace-transformation-function',

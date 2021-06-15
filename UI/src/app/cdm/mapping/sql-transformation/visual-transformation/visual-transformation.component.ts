@@ -24,7 +24,7 @@ import { TransformationFunctionType } from '@models/transformation/transformatio
 import {
   createFunctionComponentAndReturnFunction,
   functionTypes
-} from '@mapping/new-sql-transformation/visual-transformation/visual-transformation';
+} from '@mapping/sql-transformation/visual-transformation/visual-transformation';
 
 @Component({
   selector: 'app-visual-transformation',

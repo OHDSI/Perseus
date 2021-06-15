@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { dateParts } from '@models/transformation/datepart';
-import { TransformationFunctionComponent } from '@mapping/new-sql-transformation/visual-transformation/function/transformation-function.component';
+import { TransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/transformation-function.component';
 import {
   DateAddModel,
   DateAddTransformationFunction
-} from '@mapping/new-sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function';
+} from '@mapping/sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function';
 
 @Component({
   selector: 'app-date-add-transformation-function',

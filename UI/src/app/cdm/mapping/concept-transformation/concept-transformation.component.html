@@ -100,9 +100,9 @@
                 <mat-slide-toggle [checked]="selectedCellElement ? conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].sqlApplied : false"
                                   (change)="toggleSqlTransformation($event.checked)"
                                   [disabled]="!selectedCellElement || !conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].field">Apply SQL Transformation</mat-slide-toggle>
-                <app-new-sql-transformation #sqlTransformation
-                                            functionsHeight="153"
-                                            [sql]="{}"></app-new-sql-transformation>
+                <app-sql-transformation #sqlTransformation
+                                        functionsHeight="153"
+                                        [sql]="{}"></app-sql-transformation>
             </div>
         </mat-tab>
         <mat-tab [label]="'Lookup'">
