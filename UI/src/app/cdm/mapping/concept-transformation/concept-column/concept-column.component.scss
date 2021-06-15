@@ -1,8 +1,12 @@
-.error-icon{
-    color: red;
-    font-size: 17px;
-    height: 17px;
-    width: 17px;
-    padding-left: 7px;
-    cursor: pointer;
+.error-icon {
+  color: red;
+  font-size: 17px;
+  height: 17px;
+  width: 17px;
+  padding-left: 7px;
+  cursor: pointer;
+}
+
+.text-label {
+  width: calc(100% - 25px);
 }

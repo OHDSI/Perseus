@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, Input, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
   selector: '[appTextWidth]',
@@ -13,13 +13,17 @@ export class TextWidthDirective implements AfterViewInit {
   tooltipDisabled = true
 
   @Input()
-  maxWidth = 80
+  maxWidth: number
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  constructor(private el: ElementRef) {
   }
 
   get width() {
     return this.el.nativeElement.offsetWidth
+  }
+
+  get parent() {
+    return this.el.nativeElement.parentElement
   }
 
   get innerHtml() {
@@ -31,6 +35,10 @@ export class TextWidthDirective implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (!this.maxWidth) {
+      this.maxWidth = this.parent.offsetWidth
+    }
+
     const value = this.innerHtml || this.value
     let excludeCount = 3
     while (this.width > this.maxWidth) {

@@ -3,7 +3,7 @@
     Add Function
   </div>
 
-  <div class="visual-transformation__functions">
+  <div class="visual-transformation__functions" [style.height.px]="functionsHeight">
     <div *ngIf="functions.length === 0 else functionsBlock" class="no-functions">
       <div class="no-functions__message">
         Click on Add Function button

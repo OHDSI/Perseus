@@ -48,6 +48,9 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
   @Input()
   sourceFields: string
 
+  @Input()
+  functionsHeight = 236
+
   @ViewChildren('functionContainer', {read: ViewContainerRef})
   private functionsContainers: ViewContainerRef[];
 

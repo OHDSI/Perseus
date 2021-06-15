@@ -1,9 +1,6 @@
 <div class="concept-container">
     <h3>Concept Configuration</h3>
-    <mat-icon class="close"
-          mat-dialog-close
-          (click)="close()">close
-  </mat-icon>
+    <app-close-dialog-button class="close" (click)="close()"></app-close-dialog-button>
     <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
         <mat-tab [label]="'Fields'">
             <a class="add-concept-link"
@@ -103,9 +100,9 @@
                 <mat-slide-toggle [checked]="selectedCellElement ? conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].sqlApplied : false"
                                   (change)="toggleSqlTransformation($event.checked)"
                                   [disabled]="!selectedCellElement || !conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].field">Apply SQL Transformation</mat-slide-toggle>
-                <app-sql-transformation #sqlTransformation
-                [sql]="{}"
-                [reducedSqlField]="reducedSqlArea"></app-sql-transformation>
+                <app-new-sql-transformation #sqlTransformation
+                                            functionsHeight="153"
+                                            [sql]="{}"></app-new-sql-transformation>
             </div>
         </mat-tab>
         <mat-tab [label]="'Lookup'">
@@ -130,6 +127,6 @@
           (click)="add()"
           class="button-add">Apply
         </button>
-      </div>
+    </div>
 </div>
 

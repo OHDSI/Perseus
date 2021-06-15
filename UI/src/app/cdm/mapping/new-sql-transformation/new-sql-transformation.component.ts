@@ -26,6 +26,9 @@ export class NewSqlTransformationComponent implements OnInit {
   @Input()
   sourceFields: string
 
+  @Input()
+  functionsHeight = 236
+
   get sqlForTransformation(): SqlForTransformation {
     return this.mode === 'visual' ? {
       name: this.visualTransformationComponent.sql,

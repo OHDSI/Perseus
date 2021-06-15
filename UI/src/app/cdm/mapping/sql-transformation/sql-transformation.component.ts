@@ -31,7 +31,6 @@ export class SqlTransformationComponent implements AfterViewInit {
   @ViewChild('editor', { static: true }) editor;
 
   @Input() sql: SqlForTransformation;
-  @Input() reducedSqlField: boolean
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;

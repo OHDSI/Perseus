@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
@@ -18,8 +18,7 @@ import { Observable } from 'rxjs/internal/Observable';
 @Component({
   selector: 'app-transform-config',
   templateUrl: './transform-config.component.html',
-  styleUrls: [ './transform-config.component.scss' ],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: [ './transform-config.component.scss' ]
 })
 export class TransformConfigComponent implements OnInit {
 
@@ -53,9 +52,12 @@ export class TransformConfigComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.lookupName = this.payload[ 'lookupName' ];
+    this.lookupName = this.payload['lookupName'];
     this.lookupType = this.payload['lookupType'];
-    this.sql = {...this.payload[ 'sql' ]}
+    if (this.lookupName) { // Set loockup value
+      this.lookup['value'] = this.lookupName
+    }
+    this.sql = {...this.payload['sql']}
     this.tab = this.payload['tab'];
     this.tabIndex = this.tab === 'Lookup' ? 1 : 0
 

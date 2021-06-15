@@ -13,8 +13,7 @@
                    cdkDropListSortingDisabled
                    [cdkDropListData]="chips"
                    [cdkDropListConnectedTo]="[editorArea]"
-                   class="table-name"
-                   [ngClass]="{'extended-chips-panel': reducedSqlField}">
+                   class="table-name">
       <mat-chip class="table-box"
                 cdkDrag
                 *ngFor="let chip of chips">

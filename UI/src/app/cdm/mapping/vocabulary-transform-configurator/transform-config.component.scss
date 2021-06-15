@@ -33,19 +33,6 @@
     }
   }
 
-  &__content {
-    @include perseus-mat-tab();
-
-    .mat-tab-header {
-      margin: 10px 0 9px -8px;
-    }
-
-    .mat-tab-label {
-      padding: 0 8px 0 8px;
-      margin-right: 14px;
-    }
-  }
-
   &__footer {
     display: flex;
     justify-content: center;
