@@ -19,7 +19,7 @@ export class SqlTransformationComponent implements OnInit {
   visualTransformationComponent: VisualTransformationComponent
 
   @ViewChild('manualTransformation')
-  manualTransformation: ManualTransformationComponent
+  manualTransformationComponent: ManualTransformationComponent
 
   mode: SqlTransformMode
 
@@ -35,9 +35,13 @@ export class SqlTransformationComponent implements OnInit {
       functions: this.visualTransformationComponent.state,
       mode: this.mode
     } : {
-      name: this.manualTransformation.sql.name,
+      name: this.manualTransformationComponent.sql.name,
       mode: this.mode
     };
+  }
+
+  get sqlComponent(): VisualTransformationComponent | ManualTransformationComponent {
+    return this.mode === 'visual' ? this.visualTransformationComponent : this.manualTransformationComponent
   }
 
   ngOnInit() {
@@ -52,5 +56,9 @@ export class SqlTransformationComponent implements OnInit {
     }
 
     this.mode = mode
+  }
+
+  setConceptSqlValue(sqlTransformation: string) {
+    this.sqlComponent.codeMirror.setValue(sqlTransformation);
   }
 }

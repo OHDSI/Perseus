@@ -6,7 +6,6 @@ import { StoreService } from 'src/app/services/store.service';
 import { Concept, IConceptOptions, ITableConcepts } from './model/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { ManualTransformationComponent } from '../sql-transformation/manual-transformation/manual-transformation.component';
 import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
@@ -14,6 +13,7 @@ import { LookupService } from 'src/app/services/lookup.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
+import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
 
 @Component({
   selector: 'app-concept-transformation',
@@ -25,7 +25,7 @@ import { ConceptTransformationService } from 'src/app/services/concept-transform
 })
 export class ConceptTransformationComponent extends BaseComponent implements OnInit {
 
-  @ViewChild('sqlTransformation') sqlTransformation: ManualTransformationComponent;
+  @ViewChild('sqlTransformation') sqlTransformation: SqlTransformationComponent;
   @ViewChild('lookupComponent') lookupComponent: LookupComponent;
 
   constructor(@Inject(MAT_DIALOG_DATA) public payload: any,
