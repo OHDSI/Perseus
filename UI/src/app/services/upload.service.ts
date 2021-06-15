@@ -14,8 +14,6 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { parseHttpError } from '@utils/error';
-import { getMappingFromLocalStorage, saveMappingToLocalStorage } from '@utils/local';
-import { isLocal } from '@app/app.constants';
 
 @Injectable()
 export class UploadService {
@@ -30,12 +28,6 @@ export class UploadService {
     private dataService: DataService,
     private storeService: StoreService
   ) {
-    if (isLocal) {
-      const mapping = getMappingFromLocalStorage();
-      if (mapping) {
-        this.loadMapping(mapping)
-      }
-    }
   }
 
   get mappingLoading$() {
@@ -122,12 +114,7 @@ export class UploadService {
     if (isJson) {
       return readFile('string')
         .pipe(
-          tap(content => {
-            if (isLocal) {
-              saveMappingToLocalStorage(content as string)
-            }
-            this.loadMapping(content as string)
-          })
+          tap(content => this.loadMapping(content as string))
         )
     } else {
       return readFile('blob')
