@@ -3,7 +3,7 @@ import { IRow } from 'src/app/models/row';
 import { CommonService } from 'src/app/services/common.service';
 import { Arrow } from '@models/arrow';
 import { IConnector } from '@models/connector.interface';
-import { parseArrowKey } from './business/rules';
+import { parseArrowKey } from '@utils/arrow';
 
 @Injectable()
 export class DrawService {

@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Concept,
-  IConceptOptions,
-  ITableConceptsOptions,
-  TableConcepts
-} from '@mapping/concept-transformation/model/concept';
+import { Concept, IConceptOptions, ITableConceptsOptions, TableConcepts } from '@models/concept-transformation/concept';
 import { cloneDeep } from '../infrastructure/utility';
 import * as conceptMap from '@mapping/concept-fileds-list.json';
 import {
