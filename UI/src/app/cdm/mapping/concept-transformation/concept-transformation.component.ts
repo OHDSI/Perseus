@@ -14,6 +14,7 @@ import { BaseComponent } from '@shared/base/base.component';
 import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
 import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
+import { SqlForTransformation } from '@app/models/transformation/sql-for-transformation';
 
 @Component({
   selector: 'app-concept-transformation',
@@ -57,8 +58,31 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   targetCondition: string;
   row: any;
 
+  sql: SqlForTransformation = {}
+  sourceFields = ''
+
   get displayedColumns() {
     return [ 'source_value', 'concept_id', 'source_concept_id', 'type_concept_id', 'remove_concept' ];
+  }
+
+  get sqlForTransformation() {
+    return this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlForTransformation;
+  }
+
+  set sqlForTransformation(sqlObject: SqlForTransformation) {
+    this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlForTransformation = sqlObject;
+  }
+
+  set conceptSql(sqlString: string) {
+    this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql = sqlString
+  }
+
+  set cellSelected(selected: boolean){
+    this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].selected = selected;
+  }
+
+  get conceptField(){
+    return this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].field;
   }
 
   ngOnInit(): void {
@@ -130,16 +154,19 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     if (this.selectedCellElement !== newselectedCellElement) {
       if (this.selectedCellElement) {
         this.renderer.removeClass(this.selectedCellElement, 'concept-cell-selected');
-        this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].selected = false;
+        this.cellSelected = false;
+        this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
+        this.sqlForTransformation = cloneDeep(this.sqlTransformation.sqlForTransformation);
       }
       this.selectedCellElement = newselectedCellElement;
       this.selectedCellType = this.selectedCellElement.classList.contains('concept_id') ? 'concept_id' :
         this.selectedCellElement.classList.contains('source_value') ? 'source_value' :
           this.selectedCellElement.classList.contains('source_concept_id') ? 'source_concept_id' : 'type_concept_id';
       this.renderer.addClass(this.selectedCellElement, 'concept-cell-selected');
-      this.conceptsTable.conceptsList[ row.id ].fields[ this.selectedCellType ].selected = true;
       this.selectedConceptId = row.id;
-      this.sqlTransformation.setConceptSqlValue(this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql);
+      this.cellSelected = true;
+      this.sql = this.sqlForTransformation || {};
+      this.sourceFields = this.conceptField;
     }
 
   }
@@ -186,6 +213,10 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   add() {
+
+    this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
+    this.sqlForTransformation = cloneDeep(this.sqlTransformation.sqlForTransformation);
+    
     this.removeSelection();
 
     this.conceptsTable.conceptsList = updateConceptsList(this.conceptsTable.conceptsList);
