@@ -27,6 +27,10 @@ export class FakeAuthService implements AuthService {
     return !!this.user?.token;
   }
 
+  get isUserLoggedIn$(): Observable<boolean> {
+    return of(this.isUserLoggedIn);
+  }
+
   login(email: string, password: string, ): Observable<User> {
     return this.saveUser(
       of({email, token: this.token(), refresh_token: this.token()}).pipe(delay(this.delay))
