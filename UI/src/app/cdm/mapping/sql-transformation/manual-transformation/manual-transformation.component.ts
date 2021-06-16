@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import {
   SQL_FUNCTIONS,
   SQL_STRING_FUNCTIONS
@@ -33,7 +33,8 @@ export class ManualTransformationComponent extends BaseComponent implements Afte
 
   sql$ = new ReplaySubject<SqlForTransformation>(1)
 
-  @ViewChild('editor', { static: true }) editor;
+  @ViewChild('editor')
+  editor: ElementRef<HTMLTextAreaElement>
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;

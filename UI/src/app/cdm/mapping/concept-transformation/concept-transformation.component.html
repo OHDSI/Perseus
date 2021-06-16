@@ -96,14 +96,17 @@
                     </tr>
                 </table>
             </div>
-            <div class="sql-container">
+            <div class="sql-container" [class.disabled]="noSelected">
                 <mat-slide-toggle [checked]="selectedCellElement ? conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].sqlApplied : false"
                                   (change)="toggleSqlTransformation($event.checked)"
                                   [disabled]="!selectedCellElement || !conceptsTable.conceptsList[selectedConceptId].fields[selectedCellType].field">Apply SQL Transformation</mat-slide-toggle>
                 <app-sql-transformation #sqlTransformation
                                         functionsHeight="153"
                                         [sql]="sql"
-                                        [sourceFields] = "sourceFields"></app-sql-transformation>
+                                        [sourceFields] = "sourceFields">
+                </app-sql-transformation>
+
+              <div class="sql-container__blocker" *ngIf="noSelected"></div>
             </div>
         </mat-tab>
         <mat-tab [label]="'Lookup'">

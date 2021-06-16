@@ -137,6 +137,22 @@ input {
   @include grid-scroll();
 }
 
+.sql-container {
+  position: relative;
+
+  &.disabled {
+    opacity: .4;
+  }
+
+  &__blocker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
 .mat-slide-toggle {
   margin-top: 14px;
   margin-bottom: 10px;
@@ -147,7 +163,9 @@ input {
   justify-content: center;
 
   button {
+    @include cdm-button();
     width: 80px;
+    height: 33px;
   }
 
   .button-cancel {

@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StoreService } from 'src/app/services/store.service';
-import { Concept, IConceptOptions, ITableConcepts } from './model/concept';
+import { Concept, IConcept, IConceptOptions, ITableConcepts } from './model/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { takeUntil } from 'rxjs/operators';
@@ -40,8 +40,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     super();
   }
 
-  data;
-  dataSource;
+  dataSource: MatTableDataSource<IConcept>;
   concepts = [ new Concept(), new Concept() ];
 
   conceptsTable: ITableConcepts;
@@ -56,7 +55,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   lookupType = 'source_to_standard';
   targetCloneName: string;
   targetCondition: string;
-  row: any;
+  row: IConcept;
 
   sql: SqlForTransformation = {}
   sourceFields = ''
@@ -85,6 +84,10 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
   get conceptField() {
     return this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].field;
+  }
+
+  get noSelected(): boolean {
+    return !this.selectedCellElement
   }
 
   ngOnInit(): void {
@@ -147,7 +150,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     });
   }
 
-  onCellClick(cell: any, row: any) {
+  onCellClick(cell, row: IConcept) {
     while (cell.localName !== 'td') {
       cell = cell.parentElement;
     }
@@ -156,7 +159,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       if (this.selectedCellElement) {
         this.renderer.removeClass(this.selectedCellElement, 'concept-cell-selected');
         this.cellSelected = false;
-        this.saveConceptSqlransformation();
+        this.saveConceptSqlTransformation();
       }
       this.selectedCellElement = newselectedCellElement;
       this.selectedCellType = this.selectedCellElement.classList.contains('concept_id') ? 'concept_id' :
@@ -211,7 +214,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
   }
 
-  saveConceptSqlransformation(){
+  saveConceptSqlTransformation() {
     if (this.selectedCellType) {
       this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
       this.sqlForTransformation = this.sqlTransformation.sqlForTransformation;
@@ -219,7 +222,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   add() {
-    this.saveConceptSqlransformation();
+    this.saveConceptSqlTransformation();
 
     this.removeSelection();
 
