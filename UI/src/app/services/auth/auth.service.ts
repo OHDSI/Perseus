@@ -7,6 +7,8 @@ export interface AuthService {
 
   isUserLoggedIn: boolean
 
+  isUserLoggedIn$: Observable<boolean>
+
   login(email: string, password: string): Observable<User>
 
   logout(): Observable<void>
