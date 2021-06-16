@@ -4,7 +4,6 @@ import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
 import { IConnector } from 'src/app/models/connector.interface';
-import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Area } from 'src/app/models/area';
@@ -54,7 +53,7 @@ export class TransformConfigComponent implements OnInit {
   ngOnInit() {
     this.lookupName = this.payload['lookupName'];
     this.lookupType = this.payload['lookupType'];
-    if (this.lookupName) { // Set loockup value
+    if (this.lookupName) { // Set lookup value
       this.lookup['value'] = this.lookupName
     }
     this.sql = {...this.payload['sql']}
@@ -102,28 +101,6 @@ export class TransformConfigComponent implements OnInit {
       sqlTransformation.push(addSemicolon(this.getViewSql(sql, this.connector.source.tableName)));
     }
     return this.httpService.validateSql({ sql: sqlTransformation })
-  }
-
-  applyDisabled() {
-    return this.tab === 'Lookup' &&
-      (Object.keys(this.lookup).length === 0 || this.lookup['name'] === '.userDefined' || this.lookup['value'] === '');
-  }
-
-  closeDialog() {
-    const dialog = this.matDialog.open(DeleteWarningComponent, {
-      closeOnNavigation: false,
-      disableClose: false,
-      panelClass: 'warning-dialog',
-      data: {
-        title: 'changes',
-        message: 'Unsaved changes will be deleted',
-      }
-    });
-    dialog.afterClosed().subscribe(res => {
-      if (res) {
-        this.dialogRef.close();
-      }
-    });
   }
 
   cancel() {

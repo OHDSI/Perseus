@@ -1,11 +1,11 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ComponentFactoryResolver,
   ElementRef,
   Input,
-  OnInit,
   ViewChild,
   ViewChildren,
   ViewContainerRef
@@ -25,6 +25,8 @@ import {
   createFunctionComponentAndReturnFunction,
   functionTypes
 } from '@mapping/sql-transformation/visual-transformation/visual-transformation';
+import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 
 @Component({
   selector: 'app-visual-transformation',
@@ -32,15 +34,15 @@ import {
   styleUrls: ['./visual-transformation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VisualTransformationComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class VisualTransformationComponent extends BaseComponent implements AfterViewInit {
+
+  state$ = new ReplaySubject<SqlFunctionForTransformationState[]>(1)
+
   functionTypes: TransformationFunctionType[] = functionTypes
 
-  functions: SqlFunctionForTransformation[]
+  functions: SqlFunctionForTransformation[] = []
 
   codeMirror: EditorFromTextArea
-
-  @Input()
-  functionsState: SqlFunctionForTransformationState[]
 
   @ViewChild('preview')
   preview: ElementRef<HTMLTextAreaElement>
@@ -54,24 +56,26 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
   @ViewChildren('functionContainer', {read: ViewContainerRef})
   private functionsContainers: ViewContainerRef[];
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {
+  constructor(private componentFactoryResolver: ComponentFactoryResolver,
+              private cdr: ChangeDetectorRef) {
     super()
   }
 
-  get sql(): string {
-    return this.codeMirror.getValue()
+  get sql(): SqlForTransformation {
+    return {
+      name: this.codeMirror.getValue(),
+      functions: this.functions.map(toState),
+      mode: 'visual'
+    }
   }
 
-  get state(): SqlFunctionForTransformationState[] {
-    return this.functions.map(toState)
+  @Input()
+  set sql(value: SqlForTransformation) {
+    this.state$.next(value.functions ?? [])
   }
 
   get containers() {
     return Array.from(this.functionsContainers)
-  }
-
-  ngOnInit(): void {
-    this.functions = this.functionsState?.map(fromState) ?? []
   }
 
   ngAfterViewInit(): void {
@@ -84,13 +88,21 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
       lineWrapping: true
     })
 
-    this.functions.forEach((func, index) => {
-      const container = this.containers[index]
-      const value = this.functionsState[index].value
-      this.initFunction(func, container, value)
-    })
+    this.state$.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(state => {
+        this.functions.forEach(func => func.subscription?.unsubscribe())
+        this.functions = state.map(fromState)
+        this.cdr.detectChanges()
+        setTimeout(() => this.updateFunctions(state.map(s => s.value))) // For render template
+      })
+  }
 
-    this.updatePreview()
+  trackFuncType(index: number, item: TransformationFunctionType): string {
+    return item.name
+  }
+
+  compareFuncTypes(t1: TransformationFunctionType, t2: TransformationFunctionType) {
+    return t1.name === t2.name
   }
 
   addFunction() {
@@ -132,6 +144,17 @@ export class VisualTransformationComponent extends BaseComponent implements OnIn
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe(() => this.updatePreview())
+  }
+
+  private updateFunctions<T>(values: T[]) {
+    this.functions.forEach((func, index) => {
+      const container = this.containers[index]
+      const value = values[index]
+      this.initFunction(func, container, value)
+    })
+
+    this.cdr.detectChanges()
+    this.updatePreview()
   }
 }
 

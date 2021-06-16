@@ -1,28 +1,28 @@
 <div class="sql-transformation">
   <div class="sql-transformation__mode">
     <label>
-      <input type="radio" value="visual" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
+      <input type="radio" value="visual" [ngModel]="mode$ | async" (ngModelChange)="onModeChange($event)">
       Visual
     </label>
 
     <label>
-      <input type="radio" value="manual" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
+      <input type="radio" value="manual" [ngModel]="mode$ | async" (ngModelChange)="onModeChange($event)">
       Manual
     </label>
     <app-hint class="sql-transformation__mode__hint" key="sqlTransformation"></app-hint>
   </div>
 
-  <ng-container [ngSwitch]="mode">
+  <ng-container [ngSwitch]="mode$ | async">
     <ng-template ngSwitchCase="visual">
       <app-visual-transformation #visualTransformation
-                                 [functionsState]="sql.functions"
+                                 [sql]="sql$ | async"
                                  [functionsHeight]="functionsHeight"
                                  [sourceFields]="sourceFields"></app-visual-transformation>
     </ng-template>
 
     <ng-template ngSwitchCase="manual">
       <app-manual-transformation #manualTransformation
-                                 [sql]="sql"></app-manual-transformation>
+                                 [sql]="sql$ | async"></app-manual-transformation>
     </ng-template>
   </ng-container>
 </div>
