@@ -8,6 +8,9 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { BridgeService } from '@services/bridge.service';
 import { initCodeMirror } from '@utils/code-mirror';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
+import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+import { takeUntil } from 'rxjs/operators';
+import { BaseComponent } from '@shared/base/base.component';
 
 const editorSettings: EditorConfiguration = {
   mode: 'text/x-mysql',
@@ -26,20 +29,32 @@ const editorSettings: EditorConfiguration = {
   styleUrls: ['./manual-transformation.component.scss']
 })
 
-export class ManualTransformationComponent implements AfterViewInit {
+export class ManualTransformationComponent extends BaseComponent implements AfterViewInit {
+
+  sql$ = new ReplaySubject<SqlForTransformation>(1)
 
   @ViewChild('editor', { static: true }) editor;
-
-  @Input() sql: SqlForTransformation;
 
   chips = SQL_STRING_FUNCTIONS;
   sqlFunctions = SQL_FUNCTIONS;
 
   codeMirror: EditorFromTextArea
 
-  constructor(
-    private bridgeService: BridgeService
-  ) { }
+  constructor(private bridgeService: BridgeService) {
+    super()
+  }
+
+  get sql(): SqlForTransformation {
+    return {
+      name: this.codeMirror.getValue(),
+      mode: 'manual'
+    }
+  }
+
+  @Input()
+  set sql(value: SqlForTransformation) {
+    this.sql$.next(value)
+  }
 
   get editorContent() {
     return this.codeMirror ? this.codeMirror.getValue() : '';
@@ -48,21 +63,18 @@ export class ManualTransformationComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.codeMirror = initCodeMirror(this.editor.nativeElement, editorSettings)
     this.codeMirror.on('change', this.onChange.bind(this));
-    const name = this.sql.name
-    if (name) {
-      this.codeMirror.getDoc().replaceSelection(name);
-    }
+
+    this.sql$.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(sql => sql.name && this.codeMirror.setValue(sql.name))
   }
 
   drop(event: CdkDragDrop<any>) {
     const text = event.item.element.nativeElement.textContent.trim();
-    const selectedFunction = this.sqlFunctions.filter(func => func.name === text );
+    const selectedFunction = this.sqlFunctions.filter(func => func.name === text);
     this.codeMirror.getDoc().replaceSelection(selectedFunction[0].getTemplate());
-    this.sql['name'] = this.editorContent;
   }
 
   onChange() {
-    this.sql['name'] = this.editorContent;
-    this.bridgeService.changeConceptSql(this.sql['name']);
+    this.bridgeService.changeConceptSql(this.editorContent);
   }
 }

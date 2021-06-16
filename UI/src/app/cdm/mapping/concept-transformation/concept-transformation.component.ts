@@ -65,8 +65,10 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     return [ 'source_value', 'concept_id', 'source_concept_id', 'type_concept_id', 'remove_concept' ];
   }
 
-  get sqlForTransformation() {
-    return this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlForTransformation;
+  get sqlForTransformation(): SqlForTransformation {
+    return {
+      ...this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sqlForTransformation
+    }
   }
 
   set sqlForTransformation(sqlObject: SqlForTransformation) {
@@ -77,11 +79,11 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql = sqlString
   }
 
-  set cellSelected(selected: boolean){
+  set cellSelected(selected: boolean) {
     this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].selected = selected;
   }
 
-  get conceptField(){
+  get conceptField() {
     return this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].field;
   }
 
@@ -146,7 +148,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   onCellClick(cell: any, row: any) {
-
     while (cell.localName !== 'td') {
       cell = cell.parentElement;
     }
@@ -156,7 +157,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
         this.renderer.removeClass(this.selectedCellElement, 'concept-cell-selected');
         this.cellSelected = false;
         this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
-        this.sqlForTransformation = cloneDeep(this.sqlTransformation.sqlForTransformation);
+        this.sqlForTransformation = this.sqlTransformation.sqlForTransformation;
       }
       this.selectedCellElement = newselectedCellElement;
       this.selectedCellType = this.selectedCellElement.classList.contains('concept_id') ? 'concept_id' :
@@ -165,10 +166,9 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.renderer.addClass(this.selectedCellElement, 'concept-cell-selected');
       this.selectedConceptId = row.id;
       this.cellSelected = true;
-      this.sql = this.sqlForTransformation || {};
+      this.sql = this.sqlForTransformation;
       this.sourceFields = this.conceptField;
     }
-
   }
 
   getLookup() {
@@ -213,10 +213,9 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   add() {
-
     this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
-    this.sqlForTransformation = cloneDeep(this.sqlTransformation.sqlForTransformation);
-    
+    this.sqlForTransformation = this.sqlTransformation.sqlForTransformation;
+
     this.removeSelection();
 
     this.conceptsTable.conceptsList = updateConceptsList(this.conceptsTable.conceptsList);

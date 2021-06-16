@@ -17,8 +17,9 @@
         <div class="transformation-function__toolbar">
           <mat-select class="transformation-function__toolbar__type"
                       [ngModel]="func.type"
+                      [compareWith]="compareFuncTypes"
                       (ngModelChange)="onFuncChange($event, i)">
-            <mat-option *ngFor="let type of functionTypes" [value]="type">
+            <mat-option *ngFor="let type of functionTypes; trackBy: trackFuncType" [value]="type">
               {{type.name}}
             </mat-option>
           </mat-select>
