@@ -156,8 +156,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       if (this.selectedCellElement) {
         this.renderer.removeClass(this.selectedCellElement, 'concept-cell-selected');
         this.cellSelected = false;
-        this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
-        this.sqlForTransformation = this.sqlTransformation.sqlForTransformation;
+        this.saveConceptSqlransformation();
       }
       this.selectedCellElement = newselectedCellElement;
       this.selectedCellType = this.selectedCellElement.classList.contains('concept_id') ? 'concept_id' :
@@ -212,9 +211,15 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
   }
 
+  saveConceptSqlransformation(){
+    if (this.selectedCellType) {
+      this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
+      this.sqlForTransformation = this.sqlTransformation.sqlForTransformation;
+    }
+  }
+
   add() {
-    this.conceptSql = this.sqlTransformation.sqlForTransformation.name;
-    this.sqlForTransformation = this.sqlTransformation.sqlForTransformation;
+    this.saveConceptSqlransformation();
 
     this.removeSelection();
 
