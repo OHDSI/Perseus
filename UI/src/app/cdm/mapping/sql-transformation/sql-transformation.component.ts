@@ -1,86 +1,63 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import {
-  SQL_FUNCTIONS,
-  SQL_STRING_FUNCTIONS
-} from '@popups/rules-popup/transformation-input/model/sql-string-functions';
-import * as CodeMirror from 'codemirror';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { FormGroup } from '@angular/forms';
-import { BridgeService } from 'src/app/services/bridge.service';
-
-const editorSettings = {
-  mode: 'text/x-mysql',
-  lineNumbers: false,
-  indentWithTabs: true,
-  smartIndent: true,
-  matchBrackets: true,
-  autofocus: true,
-  lineWrapping: true,
-  extraKeys: { 'Ctrl-Space': 'autocomplete' },
-};
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { SqlTransformMode } from '@models/transformation/sql-transform-mode';
+import { VisualTransformationComponent } from '@mapping/sql-transformation/visual-transformation/visual-transformation.component';
+import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
+import { ManualTransformationComponent } from '@mapping/sql-transformation/manual-transformation/manual-transformation.component';
+import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-sql-transformation',
   templateUrl: './sql-transformation.component.html',
-  styleUrls: ['./sql-transformation.component.scss']
+  styleUrls: ['./sql-transformation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class SqlTransformationComponent implements OnInit {
 
-  @ViewChild('editor', { static: true }) editor;
-  @Input() sql: {};
-  @Input() reducedSqlField;
+  sql$ = new ReplaySubject<SqlForTransformation>(1)
 
-  chips = SQL_STRING_FUNCTIONS;
-  sqlFunctions = SQL_FUNCTIONS;
-  codeMirror;
-  sqlForm = new FormGroup({});
+  mode$: Observable<SqlTransformMode>
 
-  constructor(
-    private bridgeService: BridgeService
-  ) { }
+  mode: SqlTransformMode
 
-  get editorContent() {
-    return this.codeMirror ? this.codeMirror.getValue() : '';
+  @ViewChild('visualTransformation')
+  visualTransformationComponent: VisualTransformationComponent
+
+  @ViewChild('manualTransformation')
+  manualTransformationComponent: ManualTransformationComponent
+
+  @Input()
+  sourceFields: string
+
+  @Input()
+  functionsHeight = 236
+
+  get sqlForTransformation(): SqlForTransformation {
+    return this.sqlComponent.sql
   }
 
-  ngOnInit(): void {
-    this.initCodeMirror();
-    const name = this.sql['name']
-    if (name) {
-      this.codeMirror.doc.replaceSelection(name);
+  get sqlComponent(): VisualTransformationComponent | ManualTransformationComponent {
+    return this.mode === 'visual' ? this.visualTransformationComponent : this.manualTransformationComponent
+  }
+
+  @Input()
+  set sql(value: SqlForTransformation) {
+    this.sql$.next(value)
+  }
+
+  ngOnInit() {
+    this.mode$ = this.sql$.pipe(
+      map(sql => sql.mode ?? 'visual'),
+      tap(mode => this.mode = mode)
+    )
+  }
+
+  onModeChange(mode: SqlTransformMode) {
+    if (mode === 'manual') {
+      this.sql = {...this.visualTransformationComponent.sql, mode}
+    } else {
+      this.sql = {mode}
     }
   }
-
-  initCodeMirror() {
-    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
-    this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
-    this.codeMirror.on('change', this.onChange.bind(this));
-    setInterval( () => {this.codeMirror.refresh(); }, 250 );
-  }
-
-  drop(event: CdkDragDrop<any>) {
-    const text = event.item.element.nativeElement.textContent.trim();
-    const selectedFunction = this.sqlFunctions.filter(func => func.name === text );
-    this.codeMirror.doc.replaceSelection(selectedFunction[0].getTemplate());
-    this.sql['name'] = this.editorContent;
-  }
-
-  onCancelClick() {
-    this.codeMirror.setValue('');
-  }
-
-  onChange(cm, event) {
-      this.sql['name'] = this.editorContent;
-      this.bridgeService.changeConceptSql(this.sql['name']);
-  }
-
-  setConeptSqlValue(sqlTransformation: string) {
-    this.codeMirror.setValue(sqlTransformation);
-  }
-
-  onCursorActivity(cm, event) {
-   // this.sqlForm.markAsTouched();
-  }
-
 }

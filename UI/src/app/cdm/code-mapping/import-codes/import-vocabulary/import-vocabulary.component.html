@@ -25,6 +25,7 @@
       <ng-template #savedVocabularies>
         <div *ngFor="let vocabulary of vocabularies | slice: 0: visibleVocabCount; index as i" class="import-vocabulary__list__item">
             <span appTextWidth
+                  maxWidth="80"
                   #textWidth="textWidth"
                   [matTooltipDisabled]="textWidth.tooltipDisabled"
                   [matTooltip]="vocabulary">{{vocabulary}}</span>

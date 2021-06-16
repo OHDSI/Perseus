@@ -1,4 +1,21 @@
-@import "../../../styles/variables";
+@import 'variables';
+@import 'mixins';
+
+.concept-container {
+  padding: 30px 35px 30px;
+  position: relative;
+  background: #f9f9f9;
+
+  .close {
+    position: absolute;
+    top: 21px;
+    right: 20px;
+  }
+
+  h3 {
+    margin: 0;
+  }
+}
 
 table {
   width: 100%;
@@ -7,7 +24,6 @@ table {
   padding: 0;
   direction: ltr;
   border-collapse: unset;
-  overflow-y: scroll;
   max-height: 130px;
 
   th {
@@ -63,9 +79,7 @@ table {
   border-right: 1px solid #4bb0ff !important;
   border-top: 1px solid #4bb0ff !important;
   border-bottom: 1px solid #4bb0ff !important;
-
 }
-
 
 input {
   outline: none;
@@ -110,7 +124,6 @@ input {
   width: 105px;
 }
 
-
 .mat-column-remove_concept {
   width: 5px;
   padding-right: 0 !important;
@@ -118,12 +131,44 @@ input {
 
 .table-container {
   max-height: 150px;
-  overflow: auto;
+  overflow: overlay;
   width: 100%;
   border-radius: 0.3em;
+  @include grid-scroll();
+}
+
+.sql-container {
+  position: relative;
+
+  &.disabled {
+    opacity: .4;
+  }
+
+  &__blocker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }
 
 .mat-slide-toggle {
-  margin-top: 20px;
-  margin-bottom: 7px;
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+
+  button {
+    @include cdm-button();
+    width: 80px;
+    height: 33px;
+  }
+
+  .button-cancel {
+    margin-right: 15px;
+  }
 }

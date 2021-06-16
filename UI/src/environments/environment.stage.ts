@@ -12,6 +12,7 @@ const CONCEPT_TABLES = [
 
 export const environment = {
   production: true,
+  local: false,
   server: window['env']['server'] || '10.110.1.7',
   dbServer: window['env']['dbServer'] || '10.110.1.7',
   port: 80,

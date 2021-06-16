@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
@@ -26,8 +26,7 @@ const editorSettings = {
 @Component({
   selector: 'app-lookup',
   templateUrl: './lookup.component.html',
-  styleUrls: ['./lookup.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./lookup.component.scss']
 })
 export class LookupComponent implements OnInit, AfterViewInit {
   @Input() lookup;
@@ -46,8 +45,6 @@ export class LookupComponent implements OnInit, AfterViewInit {
   codeMirror2;
 
   editMode = false;
-
-  lookupName = '';
 
   originText = '';
 
@@ -108,8 +105,6 @@ export class LookupComponent implements OnInit, AfterViewInit {
     }
     if (this.codeMirror2) {
       if (!this.editMode || this.sourceToSourceNotEdited || this.sourceToStandardNotEdited || newLookupSelected) {
-
-
         if (this.lookupType === 'source_to_standard' && this.sourceToStandardNotEdited ||
           this.lookupType === 'source_to_source' && this.sourceToSourceNotEdited) {
           value = this.lookup['originName'] ? this.lookup['originName'] : this.lookup['name'];

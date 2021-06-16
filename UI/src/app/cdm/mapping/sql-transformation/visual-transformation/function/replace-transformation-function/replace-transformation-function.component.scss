@@ -1,0 +1,17 @@
+@import "mixins";
+
+:host {
+  @include transformation-function();
+}
+
+.replace {
+  @include transformation-function-toolbar();
+  display: flex;
+  justify-content: space-between;
+
+  input {
+    @include cdm-input();
+    background: none;
+    width: 120px;
+  }
+}

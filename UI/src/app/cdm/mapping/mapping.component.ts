@@ -41,6 +41,7 @@ import { ConceptTransformationComponent } from './concept-transformation/concept
 import { of } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
+import { openErrorDialog, parseHttpError } from '@utils/error';
 
 @Component({
   selector: 'app-mapping',
@@ -152,10 +153,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
       if (offsetX < markerWidth) {
         event.stopPropagation();
-        this.startMarkerClick(offsetY, currentTarget);
+        this.startMarkerClick(offsetY, currentTarget); // Delete arrow
       } else if (offsetX > currentTarget.clientWidth - markerWidth) {
         event.stopPropagation();
-        this.endMarkerClick(offsetY, currentTarget);
+        this.endMarkerClick(offsetY, currentTarget); // Open Transformation dialog
       }
     });
   }
@@ -189,8 +190,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  endMarkerClick(offset: number, currentTarget: any) {
-    for (const child of currentTarget.children) {
+  endMarkerClick(offset: number, currentTarget: HTMLElement) {
+    for (const child of Array.from(currentTarget.children)) {
       if (child.localName !== 'path') {
         continue;
       }
@@ -213,26 +214,23 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         const htmlElementId = arrow.target.name;
         const htmlElement = document.getElementById(`target-${htmlElementId}`);
         if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
-
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {
             const {connectionType} = configOptions;
             if (connectionType) {
-              const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
+              const selectedTab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
               const lookupType = getLookupType(arrow);
               const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
                 closeOnNavigation: false,
-                disableClose: false,
-                panelClass: 'sql-editor-dialog-padding-15',
-                maxHeight: '100%',
-                width: '570px;',
+                disableClose: true,
+                panelClass: 'perseus-dialog',
                 data: {
                   arrowCache: this.bridgeService.arrowsCache,
                   connector: arrow.connector,
                   lookupName: arrow.lookup ? arrow.lookup['name'] : '',
                   lookupType,
                   sql: arrow.sql,
-                  tab: selectedtab
+                  tab: selectedTab
                 }
               });
 
@@ -248,9 +246,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                     }
 
                     if (lookup['originName'] && lookup['name'] && lookup['originName'] !== lookup['name']) {
-                      this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                        console.log(res);
-                      });
+                      this.lookupService.saveLookup(this.lookup, lookupType)
+                        .subscribe(
+                          () => {},
+                          error => openErrorDialog(this.matDialog, 'Failed to save lookup', parseHttpError(error))
+                        );
                     }
                   }
                   if (sql) {
@@ -268,7 +268,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
             closeOnNavigation: false,
             disableClose: true,
-            panelClass: 'sql-editor-dialog-padding-15-width-650',
+            panelClass: 'perseus-dialog',
             maxHeight: '100%',
             data: {
               arrowCache: this.bridgeService.arrowsCache,

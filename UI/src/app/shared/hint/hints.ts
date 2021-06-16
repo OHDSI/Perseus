@@ -41,5 +41,10 @@ export const hints: {[key: string]: Hint} = {
     link: 'https://github.com/SoftwareCountry/Perseus/wiki/Link-native-fields-to-CDM-fields#clone',
     width: '182px',
     position: 'top'
+  },
+  sqlTransformation: {
+    text: 'Made changes will be shown if you switch from Visual mode to Manual, but not at the opposite.',
+    link: 'https://github.com/SoftwareCountry/Perseus/wiki/Link-native-fields-to-CDM-fields#sql-functions',
+    width: '230px'
   }
 }

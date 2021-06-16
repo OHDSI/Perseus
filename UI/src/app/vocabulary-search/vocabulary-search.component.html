@@ -47,15 +47,15 @@
         <app-search-input [ngModel]="requestParams.query"></app-search-input>
 
         <div class="vocabulary-search__mode">
-          <span>
+          <label>
             <input type="radio" value="local" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
-            Local
-          </span>
+            Perseus
+          </label>
 
-          <span>
+          <label>
             <input type="radio" value="athena" [ngModel]="mode" (ngModelChange)="onModeChange($event)">
             Athena
-          </span>
+          </label>
         </div>
       </div>
 

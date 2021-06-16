@@ -6,7 +6,7 @@ import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.mod
 import { ScanDataModule } from '@scan-data/scan-data.module';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 import { ConceptColumnComponent } from './concept-transformation/concept-column/concept-column.component';
-import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
+import { ManualTransformationComponent } from './sql-transformation/manual-transformation/manual-transformation.component';
 import { VocabularyDropdownComponent } from './vocabulary-dropdown/vocabulary-dropdown.component';
 import { TransformConfigComponent } from './vocabulary-transform-configurator/transform-config.component';
 import { ConceptConfigComponent } from './vocabulary-transform-configurator/concept-config/concept-config.component';
@@ -24,13 +24,20 @@ import { FilterComponent } from '@mapping/panel/filter/filter.component';
 import { PanelTableComponent } from '@mapping/panel/panel-table/panel-table.component';
 import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/target-clone-dialog.component';
 import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
+import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
+import { ReplaceTransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
+import { VisualTransformationComponent } from './sql-transformation/visual-transformation/visual-transformation.component';
+import { DatePartTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
+import { NoArgsTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
+import { DateAddTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function.component';
+import { SwitchCaseTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function.component';
 
 @NgModule({
   declarations: [
     MappingComponent,
     ConceptTransformationComponent,
     ConceptColumnComponent,
-    SqlTransformationComponent,
+    ManualTransformationComponent,
     VocabularyDropdownComponent,
     TransformConfigComponent,
     ConceptConfigComponent,
@@ -45,7 +52,14 @@ import { BridgeButtonService } from '@services/bridge-button/bridge-button.servi
     DraggableDirective,
     FilterComponent,
     PanelTableComponent,
-    TargetCloneDialogComponent
+    TargetCloneDialogComponent,
+    SqlTransformationComponent,
+    ReplaceTransformationFunctionComponent,
+    VisualTransformationComponent,
+    DatePartTransformationFunctionComponent,
+    NoArgsTransformationFunctionComponent,
+    DateAddTransformationFunctionComponent,
+    SwitchCaseTransformationFunctionComponent
   ],
   imports: [
     SharedModule,

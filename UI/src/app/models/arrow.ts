@@ -152,7 +152,10 @@ export class Arrow implements IConnector {
     this.toggle(false);
   }
 
-  toggle(state) {
+  /**
+   * @param state - select or deselect
+   */
+  toggle(state: boolean) {
     this.refreshPathHtmlElement();
 
     const isTypeT = this.svgPath.attributes[markerEndAttributeIndex].value.endsWith('-T)');

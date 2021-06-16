@@ -1,0 +1,7 @@
+<form class="date-part" [formGroup]="form">
+  <mat-select formControlName="part">
+    <mat-option *ngFor="let part of dateparts" [value]="part">
+      {{part}}
+    </mat-option>
+  </mat-select>
+</form>

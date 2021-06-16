@@ -130,7 +130,7 @@ path {
     stroke-width: 5;
   }
 
-  &.selected {
+  &.arrow.selected {
     stroke: $blue;
   }
 }
@@ -211,9 +211,7 @@ article {
 .scan-data-dialog, .perseus-dialog {
   .mat-dialog-container {
     padding: 0;
-  }
-
-  .mat-dialog-container {
+    border-radius: 2px;
     overflow: hidden;
   }
 }
@@ -260,7 +258,11 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
 }
 
 // mat-tab
-.area-source, .area-target, .mat-tab-column-info-container, .concept-container {
+.area-source,
+.area-target,
+.mat-tab-column-info-container,
+.apply-transformation__content,
+.concept-container {
   .mat-tab-group {
     .mat-expansion-panel-header-title span {
       color: $cdm-grey-dark;
@@ -284,10 +286,13 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
         opacity: 1;
         float: left;
         height: 40px;
-        padding: 0 15px 2px;
         border-bottom: 2px solid transparent;
         min-width: auto;
         color: rgba(64, 64, 64, 0.87);
+
+        &.mat-tab-disabled {
+          opacity: .6;
+        }
       }
 
       .mat-tab-label-active .mat-tab-label-content {
@@ -305,10 +310,38 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
       }
     }
 
-    .drop-down-label{
+    .drop-down-label {
       display: flex;
       align-items: center;
     }
+  }
+}
+
+.area-source,
+.area-target,
+.mat-tab-column-info-container {
+  .mat-tab-label {
+    padding: 0 15px 2px;
+  }
+}
+
+.apply-transformation__content,
+.concept-container{
+  .mat-tab-label {
+    padding: 0 8px 0 8px;
+    margin-right: 14px;
+  }
+}
+
+.apply-transformation__content {
+  .mat-tab-header {
+    margin: 10px 0 9px -8px;
+  }
+}
+
+.concept-container {
+  .mat-tab-header {
+    margin: 10px 0 0 -8px;
   }
 }
 
@@ -385,4 +418,22 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
   border: 2px solid #ffffff;
   border-top-color: #000000;
   animation: spinner .8s linear infinite;
+}
+
+// Mat dropdown
+.select-lookup {
+
+  &.mat-form-field {
+    margin-left: 0!important;
+  }
+
+  .mat-select-arrow {
+    color: $black;
+  }
+
+  .mat-form-field-flex {
+    background: none;
+    padding: 0!important;
+    height: 32px;
+  }
 }

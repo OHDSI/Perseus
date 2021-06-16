@@ -1,0 +1,9 @@
+<form class="date-add" [formGroup]="form">
+  <mat-select formControlName="datePart">
+    <mat-option *ngFor="let part of dateparts" [value]="part">
+      {{part}}
+    </mat-option>
+  </mat-select>
+
+  <input type="number" formControlName="number">
+</form>
