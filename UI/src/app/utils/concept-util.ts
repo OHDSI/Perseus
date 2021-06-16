@@ -1,6 +1,8 @@
-import { Concept } from 'src/app/cdm/mapping/concept-transformation/model/concept';
+import { Concept } from '@models/concept-transformation/concept';
 import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
+import { environment } from '../../environments/environment';
+import { IConnector } from '@models/connector.interface';
 
 const conceptFieldNames = (conceptMap as any).default;
 
@@ -67,3 +69,18 @@ export function toNoConceptRows(rows: IRow[]): IRow[] {
   return rows
     .filter(r => !conceptFieldNames[r.tableName]?.includes(r.name))
 }
+
+const CONCEPT_COLUMNS = [
+  'CONCEPT_ID',
+  'SOURCE_CONCEPT_ID',
+  'TYPE_CONCEPT_ID',
+  'SOURCE_VALUE'
+];
+
+export const isConceptTable = (tableName: string): boolean => {
+  return environment.conceptTables.findIndex(name => tableName === name) > -1;
+};
+
+export const isConcept = (connector: IConnector): boolean => {
+  return CONCEPT_COLUMNS.findIndex(name => connector.target.name.indexOf(name) > -1) > -1;
+};

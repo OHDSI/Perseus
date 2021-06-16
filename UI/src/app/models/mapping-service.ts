@@ -6,7 +6,7 @@ import { IRow } from './row';
 import { ITable } from './table';
 import { getLookupType } from '@utils/lookup-util';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
-import { IConcept, ITableConcepts } from '@mapping/concept-transformation/model/concept';
+import { IConcept, ITableConcepts } from '@models/concept-transformation/concept';
 import { conceptFieldsTypes } from '../app.constants';
 
 export class MappingService {

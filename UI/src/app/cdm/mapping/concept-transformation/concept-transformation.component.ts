@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StoreService } from 'src/app/services/store.service';
-import { Concept, IConcept, IConceptOptions, ITableConcepts } from './model/concept';
+import { Concept, IConcept, IConceptOptions, ITableConcepts } from '@models/concept-transformation/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { takeUntil } from 'rxjs/operators';

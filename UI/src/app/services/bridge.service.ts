@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
 import { SqlFunction } from '@popups/rules-popup/transformation-input/model/sql-string-functions';
-import { TransformationConfig } from '@mapping/vocabulary-transform-configurator/model/transformation-config';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '@models/arrow-cache';
@@ -26,7 +25,6 @@ export interface IConnection {
   target: IRow;
   connector: IConnector;
   transforms?: SqlFunction[];
-  transformationConfigs?: TransformationConfig[];
   lookup?: {};
   type?: string;
   sql?: {};
