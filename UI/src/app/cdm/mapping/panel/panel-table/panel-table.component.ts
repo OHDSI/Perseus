@@ -497,7 +497,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
       closeOnNavigation: false,
       disableClose: true,
-      panelClass: 'sql-editor-dialog-padding-15-width-650',
+      panelClass: 'perseus-dialog',
       maxHeight: '100%',
       data: {
         arrowCache: this.bridgeService.arrowsCache,
