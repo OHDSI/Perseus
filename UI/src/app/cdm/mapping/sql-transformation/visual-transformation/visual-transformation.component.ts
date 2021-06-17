@@ -102,7 +102,7 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   compareFuncTypes(t1: TransformationFunctionType, t2: TransformationFunctionType) {
-    return t1.name === t2.name
+    return t1.name === t2?.name
   }
 
   addFunction() {
