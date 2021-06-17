@@ -67,13 +67,13 @@ export class CommonUtilsService {
         header: 'Save Mapping',
         label: 'Name',
         okButton: 'Save',
-        type: 'input'
+        type: 'input',
+        save$: (payload: string) => this.configService.saveConfiguration(payload)
       }
     });
     matDialog.afterClosed().subscribe(res => {
-      if (res.action) {
-        const message = this.configService.saveConfiguration(res.value);
-        this.openSnackbarMessage(message);
+      if (res?.action) {
+        this.openSnackbarMessage(res.value);
         if (deleteSourceAndTargetAfterSave) {
           this.resetMappingsAndReturnToComfy(true);
         }
