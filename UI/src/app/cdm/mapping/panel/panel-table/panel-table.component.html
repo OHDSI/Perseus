@@ -51,19 +51,6 @@
     <td mat-cell *matCellDef="let row">{{ row.type | prettyName }}</td>
   </ng-container>
 
-  <ng-container matColumnDef="values">
-    <th mat-header-cell *matHeaderCellDef>Top 10 values</th>
-    <td mat-cell *matCellDef="let row">
-      <div #anchor class="anchor">
-        <button mat-icon-button>
-          <mat-icon class="icon-values">
-            sort
-          </mat-icon>
-        </button>
-      </div>
-    </td>
-  </ng-container>
-
   <ng-container matColumnDef="remove_group">
     <th mat-header-cell
         *matHeaderCellDef

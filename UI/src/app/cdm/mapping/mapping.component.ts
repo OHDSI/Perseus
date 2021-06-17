@@ -124,11 +124,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   ngOnInit() {
-    if (this.storeService.state.target.length === 0) {
-      this.router.navigateByUrl(`/comfy`);
-      return;
-    }
-
     this.loadMapping();
 
     this.init()
@@ -205,14 +200,14 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
-          positionStrategyFor: 'values',
+          positionStrategyFor: 'transformation-type',
           payload: {
             arrow
           }
         };
 
         const htmlElementId = arrow.target.name;
-        const htmlElement = document.getElementById(`target-${htmlElementId}`);
+        const htmlElement = this.targetPanel.nativeElement.querySelector(`#target-${htmlElementId}`)
         if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {

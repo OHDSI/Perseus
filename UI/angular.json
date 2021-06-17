@@ -136,6 +136,9 @@
             },
             "development": {
               "browserTarget": "UI:build:development"
+            },
+            "local": {
+              "browserTarget": "UI:build:local"
             }
           }
         },
