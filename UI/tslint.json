@@ -74,6 +74,7 @@
     "no-string-literal": false,
     "curly": false,
     "ban-types": true,
-    "semicolon": false
+    "semicolon": false,
+    "variable-name": false
   }
 }
