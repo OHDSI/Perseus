@@ -254,6 +254,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   ngOnDestroy() {
+    super.ngOnDestroy()
     this.subs.unsubscribe();
   }
 

@@ -12,7 +12,6 @@ import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService
 import { ITable, Table } from '@models/table';
 import { StoreService } from './store.service';
 import { Area } from '@models/area';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
 import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
@@ -88,12 +87,16 @@ export class BridgeService {
     return this.newrowindex;
   }
 
+  get applyConfiguration$() {
+    return this._applyConfiguration$.asObservable()
+  }
+
   constructor(
     private drawService: DrawService,
     private storeService: StoreService
   ) { }
 
-  applyConfiguration$ = new Subject<Configuration>();
+  private _applyConfiguration$ = new Subject<Configuration>();
   resetAllMappings$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
   reportLoading$ = new Subject<boolean>();
@@ -371,7 +374,7 @@ export class BridgeService {
       concepts: configuration.tableConcepts
     };
 
-    this.applyConfiguration$.next(configuration);
+    this._applyConfiguration$.next(configuration);
   }
 
   adjustArrowsPositions() {
@@ -754,15 +757,6 @@ export class BridgeService {
       return state.source[ index2 ];
     }
 
-    return null;
-  }
-
-  storeReorderedRows(tableName: string, area: string) {
-    const index = this.storeService.state[ area ].findIndex(t => t.name === tableName);
-    if (index > -1) {
-      moveItemInArray(this.storeService.state[ area ][ index ].rows, this.draggedRowIndex, this.newrowindex);
-      return;
-    }
     return null;
   }
 
