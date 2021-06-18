@@ -33,20 +33,20 @@
       "overlayY": "bottom"
     },
     "comments-source": {
-      "offsetX": 40,
-      "offsetY": 32,
-      "originX": "start",
-      "originY": "bottom",
-      "overlayX": "start",
-      "overlayY": "bottom"
-    },
-    "comments-target": {
       "offsetX": 0,
       "offsetY": 0,
       "originX": "end",
       "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
+    },
+    "comments-target": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
       "overlayX": "end",
-      "overlayY": "bottom"
+      "overlayY": "top"
     },
     "right-bottom": {
       "offsetX": 0,
@@ -121,6 +121,14 @@
       "overlayY": "top"
     },
     "hint-top": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "transformation-type": {
       "offsetX": 0,
       "offsetY": 0,
       "originX": "start",

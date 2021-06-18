@@ -339,3 +339,19 @@
     height: 25px;
   }
 }
+
+@mixin hint() {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+}
+
+@mixin overlay-border-arrow {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 5px;
+  border-style: solid;
+}

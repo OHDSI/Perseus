@@ -1,6 +1,14 @@
-@import "../../styles/variables";
+@import "variables";
+@import "mixins";
+
+:host {
+  position: relative;
+}
 
 .dialog {
+  position: relative;
+  left: 12px;
+  bottom: 1px;
   width: auto;
   height: auto;
   background-color: $cdm-grey-lighter;
@@ -11,17 +19,12 @@
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
 
   &:after {
-    content: "";
-    position: absolute;
-    left: 1px;
-    top: 14px;
-    width: 0;
-    height: 0;
-    border: 5px solid $black;
-    border-color: transparent transparent $cdm-grey-lighter $cdm-grey-lighter;
-    transform-origin: 0 0;
+    @include overlay-border-arrow();
+    right: 5px;
+    bottom: -4px;
+    border-color: transparent #f9f9f9 #f9f9f9 transparent;
     transform: rotate(45deg);
-    box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 1px rgba(0, 0, 0, 0.25);
   }
 
   .type-div {

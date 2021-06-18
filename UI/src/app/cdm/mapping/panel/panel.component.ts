@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ITable, Table } from '@models/table';
 import { BridgeService } from '@services/bridge.service';
@@ -59,6 +59,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
     }
   }
 
+  get nativeElement(): HTMLElement {
+    return this.elementRef.nativeElement
+  }
+
   initializing: boolean;
   filtered;
   linkFieldsSearch = {};
@@ -77,7 +81,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
     private matDialog: MatDialog,
-    private overlayService: OverlayService
+    private overlayService: OverlayService,
+    private elementRef: ElementRef<HTMLElement>
   ) {
     this.initializing = true;
     this.subscribeOnSelectedTablesChange()

@@ -6,7 +6,7 @@ import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
 
 @Component({
-  selector: 'app-dialog',
+  selector: 'app-comment-popup',
   templateUrl: './comment-popup.component.html',
   styleUrls: ['./comment-popup.component.scss'],
   providers: [CommentService]
