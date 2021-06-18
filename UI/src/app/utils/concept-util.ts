@@ -3,6 +3,7 @@ import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
 import { environment } from '../../environments/environment';
 import { IConnector } from '@models/connector.interface';
+import { conceptFieldsTypes } from '@app/app.constants';
 
 const conceptFieldNames = (conceptMap as any).default;
 
@@ -84,3 +85,11 @@ export const isConceptTable = (tableName: string): boolean => {
 export const isConcept = (connector: IConnector): boolean => {
   return CONCEPT_COLUMNS.findIndex(name => connector.target.name.indexOf(name) > -1) > -1;
 };
+
+export function getConceptFieldsDictionary(conceptFields: any) {
+  const conceptFieldsDictionary = {};
+  conceptFieldsTypes.forEach(it => {
+    conceptFieldsDictionary[ it ] = getConceptFieldNameByType(it, conceptFields);
+  })
+  return conceptFieldsDictionary;
+}

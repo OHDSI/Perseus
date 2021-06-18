@@ -2,8 +2,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import { MatDialog } from '@angular/material/dialog';
 import { ITable, Table } from '@models/table';
 import { BridgeService } from '@services/bridge.service';
-
-import { BridgeButtonData } from '@services/bridge-button/model/bridge-button-data';
 import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '@shared/search-by-name/search-by-name.component';
@@ -14,6 +12,7 @@ import { OpenSaveDialogComponent } from '@popups/open-save-dialog/open-save-dial
 import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/select-table-dropdown.component';
 import { OverlayConfigOptions } from '@services/overlay/overlay-config-options.interface';
 import { OverlayService } from '@services/overlay/overlay.service';
+import { getConstantId } from '@utils/constant';
 
 @Component({
   selector: 'app-panel',
@@ -135,24 +134,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onOpenTransfromDialog(event: any) {
-    const { row, element } = event;
-
-    const connections = this.bridgeService.findCorrespondingConnections(
-      this.table,
-      row
-    );
-    if (connections.length > 0) {
-      const payload: BridgeButtonData = {
-        connector: connections[ 0 ].connector,
-        arrowCache: this.bridgeService.arrowsCache
-      };
-
-      this.bridgeButtonService.init(payload, element);
-      this.bridgeButtonService.openRulesDialog();
-    }
-  }
-
   filterByName(byName: Criteria): void {
     const filterByName = name => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
@@ -241,7 +222,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
         const sourceTableId = this.storeService.state.selectedSourceTableId;
         Object.values(this.bridgeService.constantsCache)
           .filter(it => it.tableName === this.table.name && it.cloneTableName === undefined)
-          .forEach(constant => delete this.bridgeService.constantsCache[ this.bridgeService.getConstantId(sourceTableId, constant) ]);
+          .forEach(constant => delete this.bridgeService.constantsCache[ getConstantId(sourceTableId, constant) ]);
       }
     });
   }
