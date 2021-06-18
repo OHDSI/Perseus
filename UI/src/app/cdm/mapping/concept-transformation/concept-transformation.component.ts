@@ -6,7 +6,6 @@ import { StoreService } from 'src/app/services/store.service';
 import { Concept, IConcept, IConceptOptions, ITableConcepts } from '@models/concept-transformation/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
 import { LookupService } from 'src/app/services/lookup.service';
@@ -120,12 +119,6 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
     this.dataSource = new MatTableDataSource(this.conceptsTable.conceptsList
       .filter(it => it.fields[ 'concept_id' ].targetCloneName === this.targetCloneName));
-
-    this.bridgeService.conceptSqlTransfomed$.
-      pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(res => {
-        this.conceptsTable.conceptsList[ this.selectedConceptId ].fields[ this.selectedCellType ].sql = res;
-      });
   }
 
   collectConnectedFields() {

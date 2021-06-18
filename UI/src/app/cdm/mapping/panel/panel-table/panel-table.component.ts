@@ -2,11 +2,9 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
   HostListener,
   Input,
   OnInit,
-  Output,
   Renderer2,
   ViewChild
 } from '@angular/core';
@@ -34,6 +32,7 @@ import { BaseComponent } from '@shared/base/base.component';
 import * as conceptMap from '../../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '@mapping/concept-transformation/concept-transformation.component';
 import { getConceptFieldType, toNoConceptRows } from '@utils/concept-util';
+import { getConstantId } from '@utils/constant';
 
 @Component({
   selector: 'app-panel-table',
@@ -57,8 +56,6 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   @Input() filteredFields: any;
   @Input() mappingConfig: any;
   @Input() createGroupElementId: string;
-
-  @Output() openTransform = new EventEmitter<any>();
 
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
   @ViewChild('tableComponent', { static: true }) tableComponent: MatTable<IRow[]>;
@@ -113,7 +110,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     this.dataSourceInit(this.table.rows);
     this.bridgeService.refreshAll();
 
-    this.bridgeService.removeConnection
+    this.bridgeService.removeConnection$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(connection => {
         if (connection) {
@@ -179,7 +176,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
         .filter(item => item.fields[conceptFieldType].constantSelected && item.fields[conceptFieldType].constant)
         .length > 0
     }
-    const constId = this.bridgeService.getConstantId(this.selectedSourceTableId, column)
+    const constId = getConstantId(this.selectedSourceTableId, column)
     const allConstKeys = Object.keys(this.bridgeService.constantsCache)
     const inArrowCache = !!allConstKeys.find(key => key === constId)
 
