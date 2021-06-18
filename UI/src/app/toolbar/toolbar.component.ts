@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BridgeService } from '@services/bridge.service';
 import { CommonUtilsService } from '@services/common-utils.service';
 import { stateToInfo, StoreService } from '@services/store.service';
@@ -21,8 +21,7 @@ import { codesRouter, mainPageRouter } from '../app.constants';
 import { LogoutComponent } from '@popups/logout/logout.component';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { HelpPopupComponent } from '@popups/help-popup/help-popup.component';
-import { authInjector } from '@services/auth/auth-injector';
-import { AuthService } from '@services/auth/auth.service';
+import { AuthFacadeService } from '@services/state/auth-facade.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -57,7 +56,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     private dataService: DataService,
     private vocabularyObserverService: VocabularyObserverService,
     private reportGenerationService: ReportGenerationService,
-    @Inject(authInjector) private authService: AuthService
+    private authFacadeService: AuthFacadeService
   ) {
     super();
   }
@@ -67,8 +66,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   get userInitials(): string {
-    const {firstName = '?', lastName = '?'} = this.authService.user
-    return `${firstName[0]}${lastName[0]}`
+    return this.authFacadeService.userInitials
   }
 
   ngOnInit() {

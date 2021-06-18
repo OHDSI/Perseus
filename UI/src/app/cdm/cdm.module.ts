@@ -39,6 +39,8 @@ import { BreadcrumbService } from '@services/breadcrumb/breadcrumb.service';
 import { CanRedirectService } from '@services/breadcrumb/can-redirect.service';
 import { CanRedirectMappingCodesService } from '@services/breadcrumb/can-redirect-mapping-codes.service';
 import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ResetStateService } from '@services/state/reset-state.service';
+import { AuthFacadeService } from '@services/state/auth-facade.service';
 
 @NgModule({
   declarations: [
@@ -81,7 +83,9 @@ import { ImportCodesService } from '@services/import-codes/import-codes.service'
     ImportCodesService,
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
     BreadcrumbService,
-    { provide: CanRedirectService, useClass: CanRedirectMappingCodesService, multi: true }
+    { provide: CanRedirectService, useClass: CanRedirectMappingCodesService, multi: true },
+    ResetStateService,
+    AuthFacadeService
   ],
   bootstrap: [CdmComponent],
 })

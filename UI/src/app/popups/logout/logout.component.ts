@@ -1,8 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import { authInjector } from '@services/auth/auth-injector';
-import { AuthService } from '@services/auth/auth.service';
+import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
+import { AuthFacadeService } from '@services/state/auth-facade.service';
 
 @Component({
   selector: 'app-logout',
@@ -14,7 +13,7 @@ export class LogoutComponent {
   loading = false
 
   constructor(private dialogRef: MatDialogRef<LogoutComponent>,
-              @Inject(authInjector) private authService: AuthService) { }
+              private authService: AuthFacadeService) { }
 
   logout() {
     this.loading = true

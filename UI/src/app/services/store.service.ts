@@ -6,6 +6,7 @@ import { removeExtension } from '@utils/file';
 import { Observable } from 'rxjs/internal/Observable';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
+import { StateService } from '@services/state/state.service';
 
 const initialState: State = {
   target: [],
@@ -23,7 +24,7 @@ const initialState: State = {
 }
 
 @Injectable()
-export class StoreService {
+export class StoreService implements StateService {
   private readonly storeState = new BehaviorSubject<State>({...initialState});
   readonly state$ = this.storeState.asObservable();
 
@@ -95,6 +96,10 @@ export class StoreService {
         filter(([prev, curr]) => prev !== curr),
         map(([, curr]) => curr)
       )
+  }
+
+  reset() {
+    this.storeState.next({...initialState});
   }
 }
 

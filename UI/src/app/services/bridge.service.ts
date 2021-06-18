@@ -21,6 +21,7 @@ import { Mapping } from '@models/mapping';
 import { canLink, removeDeletedLinksFromFields } from '@utils/bridge';
 import { getConstantId } from '@utils/constant';
 import { getConnectorId } from '@utils/connector';
+import { StateService } from '@services/state/state.service';
 
 export interface IConnection {
   source: IRow;
@@ -33,7 +34,7 @@ export interface IConnection {
 }
 
 @Injectable()
-export class BridgeService {
+export class BridgeService implements StateService {
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
@@ -738,6 +739,12 @@ export class BridgeService {
     }
 
     return tables;
+  }
+
+  reset() {
+    this.deleteAllArrows();
+    this.deleteAllConstants();
+    this.tables = {}
   }
 
   private collectSimilarRows(rows, area, areaRows, similarRows): void {
