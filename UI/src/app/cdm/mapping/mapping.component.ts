@@ -89,12 +89,24 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return 'no hint';
   }
 
-  get currentTargetTable() {
-    return this.targetTabIndex === 0 && this.similarTargetTable ? this.similarTargetTable : this.selectedTargetTable;
+  get isSourceSimilar() {
+    return this.similarSourceTable && this.sourceTabIndex === 0
+  }
+
+  get isTargetSimilar() {
+    return this.similarTargetTable && this.targetTabIndex === 0
   }
 
   get currentSourceTable() {
-    return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
+    return this.isSourceSimilar ? this.similarSourceTable : this.selectedSourceTable;
+  }
+
+  get currentTargetTable() {
+    return this.isTargetSimilar ? this.similarTargetTable : this.selectedTargetTable;
+  }
+
+  get targetPanelComponet(): PanelComponent {
+    return this.isTargetSimilar ? this.targetPanelSimilar : this.targetPanel
   }
 
   @ViewChild('arrowsarea', {read: ElementRef, static: true}) svgCanvas: ElementRef;
@@ -207,7 +219,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         };
 
         const htmlElementId = arrow.target.name;
-        const htmlElement = this.targetPanel.nativeElement.querySelector(`#target-${htmlElementId}`)
+        const htmlElement = this.targetPanelComponet.nativeElement.querySelector(`#target-${htmlElementId}`)
         if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {

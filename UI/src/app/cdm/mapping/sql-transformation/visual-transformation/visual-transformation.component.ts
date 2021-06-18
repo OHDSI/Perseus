@@ -64,7 +64,7 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   get sql(): SqlForTransformation {
     return {
       name: this.codeMirror.getValue(),
-      functions: this.functions.map(toState),
+      functions: this.functions.filter(f => f.value?.valid).map(toState),
       mode: 'visual'
     }
   }
