@@ -15,6 +15,8 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class SqlTransformationComponent implements OnInit {
 
+  sqlForTransform: SqlForTransformation
+
   sql$ = new ReplaySubject<SqlForTransformation>(1)
 
   mode$: Observable<SqlTransformMode>
@@ -33,6 +35,8 @@ export class SqlTransformationComponent implements OnInit {
   @Input()
   functionsHeight = 236
 
+  private modeChanged: boolean
+
   get sqlForTransformation(): SqlForTransformation {
     return this.sqlComponent.sql
   }
@@ -41,8 +45,13 @@ export class SqlTransformationComponent implements OnInit {
     return this.mode === 'visual' ? this.visualTransformationComponent : this.manualTransformationComponent
   }
 
+  get dirty() {
+    return this.modeChanged || this.visualTransformationComponent?.dirty || this.manualTransformationComponent?.dirty
+  }
+
   @Input()
   set sql(value: SqlForTransformation) {
+    this.sqlForTransform = value
     this.sql$.next(value)
   }
 
@@ -54,6 +63,7 @@ export class SqlTransformationComponent implements OnInit {
   }
 
   onModeChange(mode: SqlTransformMode) {
+    this.modeChanged = true
     if (mode === 'manual') {
       this.sql = {...this.visualTransformationComponent.sql, mode}
     } else {

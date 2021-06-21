@@ -40,6 +40,8 @@ export class ManualTransformationComponent extends BaseComponent implements Afte
 
   codeMirror: EditorFromTextArea
 
+  dirty = false
+
   get sql(): SqlForTransformation {
     return {
       name: this.codeMirror.getValue(),
@@ -57,6 +59,12 @@ export class ManualTransformationComponent extends BaseComponent implements Afte
 
     this.sql$.pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(sql => sql.name && this.codeMirror.setValue(sql.name))
+
+    const onChange = (() => {
+      this.dirty = true
+      this.codeMirror.off('change', onChange)
+    })
+    this.codeMirror.on('change', onChange)
   }
 
   drop(event: CdkDragDrop<any>) {
