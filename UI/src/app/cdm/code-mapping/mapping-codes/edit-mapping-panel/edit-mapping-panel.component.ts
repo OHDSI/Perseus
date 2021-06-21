@@ -26,9 +26,10 @@ import { createFiltersForm, fillFilters, getFilters } from '@models/code-mapping
 import { SearchMode } from '@models/code-mapping/search-mode';
 import { isFormChanged, toScoredConceptWithSelection, toSearchByTermParams } from './edit-mapping-panel';
 import { ScoredConceptsCacheService } from '@services/import-codes/scored-concepts-cache.service';
-import { of } from 'rxjs';
+import { Observer, of, Subscription } from 'rxjs';
 import { getTerm } from '@utils/code-mapping-util';
 import { SearchByTermParams } from '@models/code-mapping/search-by-term-params';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-edit-mapping-panel',
@@ -64,6 +65,10 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   private skipUpdate: boolean
 
   private searchByTermParams: SearchByTermParams
+
+  private loaded: boolean // True when data loaded from server and can saved to cache
+
+  private request: {subscriber: Observer<ScoredConcept[]>, subscription: Subscription}
 
   constructor(private importCodesService: ImportCodesService,
               private scoredConceptsCacheService: ScoredConceptsCacheService,
@@ -137,6 +142,9 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
           this.saveToCache(prev)
         }
 
+        this.cancelCurrentRequest()
+        this.loaded = false // Cannot save to cache until data will be loaded
+
         const term = getTerm(curr, this.importCodesService.sourceNameColumn)
         this.searchByTermParams = toSearchByTermParams(term, curr)
         this.mapping = curr
@@ -152,6 +160,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
           this.setCacheValueToForm(fromCache.filters)
           this.onSearchModeChange(fromCache.searchMode, false)
           this.scoredConcepts = fromCache.concepts
+          this.loading = false
         } else {
           this.needUpdate = true
           const defaultFilters = defaultSearchConceptFilters()
@@ -181,19 +190,28 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       .subscribe(scoredConcepts => {
         this.scoredConcepts = scoredConcepts
         this.loading = false
+        this.loaded = true
         this.cdr.detectChanges()
       })
   }
 
-  private searchByTerm(filters) {
+  private searchByTerm(filters): Observable<ScoredConcept[]> {
     const {term, sourceAutoAssignedConceptIds} = this.searchByTermParams
-    return this.importCodesService.getSearchResultByTerm(term, filters, sourceAutoAssignedConceptIds)
-      .pipe(
-        catchError(error => {
-          this.error = parseHttpError(error)
-          return of([])
-        })
-      )
+    return new Observable<ScoredConcept[]>(subscriber => {
+      const subscription = this.importCodesService.getSearchResultByTerm(term, filters, sourceAutoAssignedConceptIds)
+        .pipe(
+          catchError(error => {
+            this.error = parseHttpError(error)
+            return of([])
+          })
+        )
+        .subscribe(
+          res => subscriber.next(res),
+          err => subscriber.error(err),
+          () => subscriber.complete()
+        )
+      this.request = {subscriber, subscription}
+    })
   }
 
   private initFilters() {
@@ -201,13 +219,15 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   }
 
   private saveToCache(mapping: CodeMapping) {
-    const toCache = {
-      concepts: [...this.scoredConcepts],
-      filters: this.form.value,
-      searchMode: this.searchMode
+    if (this.loaded) { // Save to cache if actual data was loaded
+      const toCache = {
+        concepts: [...this.scoredConcepts],
+        filters: this.form.value,
+        searchMode: this.searchMode
+      }
+      const term = getTerm(mapping, this.importCodesService.sourceNameColumn)
+      this.scoredConceptsCacheService.add(term, toCache)
     }
-    const term = getTerm(mapping, this.importCodesService.sourceNameColumn)
-    this.scoredConceptsCacheService.add(term, toCache)
   }
 
   private isFormChanged(prev: SearchConceptFilters, curr: SearchConceptFilters): boolean {
@@ -231,5 +251,15 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
     Object.keys(this.form.controls)
       .forEach(key => this.form.get(key).setValue(fromCache[key], {emitEvent: false, onlySelf: true}))
     this.skipUpdate = false
+  }
+
+  private cancelCurrentRequest() {
+    if (this.request) {
+      const {subscriber, subscription} = this.request
+      if (!subscriber.closed) {
+        subscription.unsubscribe()
+        subscriber.complete()
+      }
+    }
   }
 }
