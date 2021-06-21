@@ -11,6 +11,7 @@ import { ScoredConcept } from '@models/code-mapping/scored-concept';
 import { columnsFromSourceCode, ImportCodesState } from '@models/code-mapping/import-codes-state';
 import { FilterValue } from '@models/filter/filter';
 import { defaultSearchConceptFilters, SearchConceptFilters } from '@models/code-mapping/search-concept-filters';
+import { StateService } from '@services/state/state.service';
 
 const initialState: ImportCodesState = {
   codes: null,
@@ -21,7 +22,7 @@ const initialState: ImportCodesState = {
 }
 
 @Injectable()
-export class ImportCodesService {
+export class ImportCodesService implements StateService {
 
   private state: ImportCodesState
 
@@ -149,7 +150,7 @@ export class ImportCodesService {
       )
   }
 
-  reset(state: ImportCodesState = null) {
+  reset(state?: ImportCodesState) {
     this.state = state ? {...state} : {...initialState};
   }
 }

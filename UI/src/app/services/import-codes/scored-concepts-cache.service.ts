@@ -1,8 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ScoredConceptCache } from '@models/code-mapping/scored-concept-cache';
+import { StateService } from '@services/state/state.service';
 
 @Injectable()
-export class ScoredConceptsCacheService implements OnDestroy {
+export class ScoredConceptsCacheService implements OnDestroy, StateService {
 
   private map = new Map<string, ScoredConceptCache>()
 
@@ -20,5 +21,9 @@ export class ScoredConceptsCacheService implements OnDestroy {
 
   clear(): void {
     this.map.clear()
+  }
+
+  reset() {
+    this.clear()
   }
 }

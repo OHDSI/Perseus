@@ -3,10 +3,10 @@ import { IRow } from 'src/app/models/row';
 import { CommonService } from 'src/app/services/common.service';
 import { Arrow } from '@models/arrow';
 import { IConnector } from '@models/connector.interface';
-import { parseArrowKey } from '@utils/arrow';
+import { StateService } from '@services/state/state.service';
 
 @Injectable()
-export class DrawService {
+export class DrawService implements StateService {
   get list(): { [key: string]: IConnector } {
     return Object.assign({}, this.cache);
   }
@@ -59,24 +59,7 @@ export class DrawService {
     }
   }
 
-  deleteConnectorsBoundToTable({id, area}) {
-    Object.keys(this.cache).forEach(key => {
-      const {sourceTableId, targetTableId} = parseArrowKey(key);
-
-      switch (area) {
-        case 'source': {
-          if (id === +sourceTableId) {
-            this.deleteConnector(key);
-          }
-          break;
-        }
-        case 'target': {
-          if (id === +targetTableId) {
-            this.deleteConnector(key);
-          }
-          break;
-        }
-      }
-    });
+  reset() {
+    this.deleteAllConnectors()
   }
 }
