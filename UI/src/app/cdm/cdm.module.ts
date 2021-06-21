@@ -41,6 +41,7 @@ import { CanRedirectMappingCodesService } from '@services/breadcrumb/can-redirec
 import { ImportCodesService } from '@services/import-codes/import-codes.service';
 import { ResetStateService } from '@services/state/reset-state.service';
 import { AuthFacadeService } from '@services/state/auth-facade.service';
+import { ScoredConceptsCacheService } from '@services/import-codes/scored-concepts-cache.service';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { AuthFacadeService } from '@services/state/auth-facade.service';
     DqdConnectionSettingsStateService,
     MappingGuard,
     ImportCodesService,
+    ScoredConceptsCacheService,
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
     BreadcrumbService,
     { provide: CanRedirectService, useClass: CanRedirectMappingCodesService, multi: true },
