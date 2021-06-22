@@ -12,6 +12,7 @@ import { Concept } from '@models/code-mapping/concept';
 import { ScoredConceptsCacheService } from '@services/import-codes/scored-concepts-cache.service';
 import { withLoading } from '@utils/loading';
 import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { WarningPopupComponent } from '@popups/warning-popup/warning-popup.component';
 
 @Component({
   selector: 'app-mapping-codes',
@@ -36,9 +37,21 @@ export class MappingCodesComponent {
   }
 
   onBack() {
-    this.importCodesService.codeMappings = null
-    this.conceptCacheService.clear()
-    this.router.navigateByUrl(mainPageRouter + codesRouter)
+    this.dialogService.open(WarningPopupComponent, {
+      data: {
+        header: 'Reset mapped codes',
+        message: 'Mapped codes will be lost'
+      },
+      disableClose: true,
+      panelClass: 'perseus-dialog',
+    }).afterClosed()
+      .subscribe(res => {
+        if (res) {
+          this.importCodesService.codeMappings = null
+          this.conceptCacheService.clear()
+          this.router.navigateByUrl(mainPageRouter + codesRouter)
+        }
+      })
   }
 
   onSave() {

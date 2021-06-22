@@ -1,0 +1,37 @@
+@import "variables";
+@import "mixins";
+
+.warning-popup {
+  width: 253px;
+  height: 225px;
+  @include perseus-popup();
+
+  &__header {
+    margin-bottom: 24px;
+  }
+
+  &__content {
+    &__message {
+      font-size: 14px;
+      line-height: 18px;
+      color: #404040;
+    }
+
+    &__actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+
+      button {
+        @include cdm-button();
+        width: 120px;
+        height: 33px;
+        margin-top: 30px;
+
+        &:first-child {
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+}
