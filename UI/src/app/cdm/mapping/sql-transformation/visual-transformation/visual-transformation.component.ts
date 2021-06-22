@@ -53,6 +53,8 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   @Input()
   functionsHeight = 236
 
+  dirty = false
+
   @ViewChildren('functionContainer', {read: ViewContainerRef})
   private functionsContainers: ViewContainerRef[];
 
@@ -106,6 +108,7 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   addFunction() {
+    this.dirty = true
     this.functions = [{type: null}, ...this.functions]
   }
 

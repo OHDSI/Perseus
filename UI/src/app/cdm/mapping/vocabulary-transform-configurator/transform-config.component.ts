@@ -13,6 +13,8 @@ import { addSemicolon } from '@utils/text-util';
 import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { Observable } from 'rxjs/internal/Observable';
+import { LookupComponent } from '@mapping/vocabulary-transform-configurator/lookup/lookup.component';
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 
 @Component({
   selector: 'app-transform-config',
@@ -36,6 +38,9 @@ export class TransformConfigComponent implements OnInit {
   @ViewChild('sqlTransformationComponent')
   sqlTransformationComponent: SqlTransformationComponent
 
+  @ViewChild('lookupComponent')
+  lookupComponent: LookupComponent
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
     public dialogRef: MatDialogRef<TransformConfigComponent>,
@@ -48,6 +53,10 @@ export class TransformConfigComponent implements OnInit {
 
   get resultSql() {
     return this.sqlTransformationComponent.sqlForTransformation
+  }
+
+  get dirty() {
+    return this.sqlTransformationComponent.dirty || (!this.lookupDisabled && this.lookupComponent.dirty)
   }
 
   ngOnInit() {
@@ -104,7 +113,22 @@ export class TransformConfigComponent implements OnInit {
   }
 
   cancel() {
-    this.dialogRef.close();
+    if (this.dirty) {
+      const dialogParams = {
+        closeOnNavigation: false,
+        disableClose: false,
+        panelClass: 'warning-dialog',
+        data: {
+          title: 'changes',
+          message: 'Unsaved changes will be deleted',
+        }
+      }
+      this.matDialog.open(DeleteWarningComponent, dialogParams)
+        .afterClosed()
+        .subscribe(res => res && this.dialogRef.close())
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   private getViewSql(sql: string, tableName: string) {
