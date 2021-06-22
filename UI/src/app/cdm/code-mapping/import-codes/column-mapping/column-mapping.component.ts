@@ -54,6 +54,7 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
     this.importCodesService.filters = mapFormFiltersToBackEndFilters(this.filtersForm.value)
     this.importCodesMediatorService.consoleHeader = ConsoleHeader.CALCULATE_SCORE
     this.importCodesMediatorService.onWebsocketConnect$ = this.importCodesService.calculateScore()
+    this.importCodesMediatorService.onAbort$ = this.importCodesService.cancelCalculateScoresByCsvCodes()
 
     this.dialogService
       .open(CodeMappingDialogComponent, { panelClass: 'scan-data-dialog', disableClose: true })

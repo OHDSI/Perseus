@@ -89,6 +89,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
     const vocabulary = this.vocabularies[index]
     this.importCodesMediatorService.consoleHeader = ConsoleHeader.LOAD_VOCABULARY
     this.importCodesMediatorService.onWebsocketConnect$ = this.importVocabulariesService.prepareVocabulary(vocabulary)
+    this.importCodesMediatorService.onAbort$ = this.importCodesService.cancelCalculateScoresBySavedMapping()
 
     this.dialogService
       .open(CodeMappingDialogComponent, { panelClass: 'scan-data-dialog', disableClose: true })
