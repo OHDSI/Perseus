@@ -1,0 +1,16 @@
+<div class="warning-popup">
+  <app-close-dialog-button class="warning-popup__close-icon" (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <h4 class="warning-popup__header">{{data.header}}</h4>
+
+  <div class="warning-popup__content">
+    <div class="warning-popup__content__message">
+      {{data.message}}
+    </div>
+
+    <div class="warning-popup__content__actions">
+      <button class="cancel" (click)="dialogRef.close(false)">Cancel</button>
+      <button class="apply" (click)="dialogRef.close(true)">Confirm</button>
+    </div>
+  </div>
+</div>
