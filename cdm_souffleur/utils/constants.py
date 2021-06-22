@@ -38,6 +38,8 @@ SOLR_RELOAD_CORE = "solr/admin/cores?action=RELOAD&core="
 SOLR_UNLOAD_CORE = "solr/admin/cores?action=UNLOAD&core="
 SOLR_IMPORT_STATUS = "solr/concepts/dataimport?command=status&indent=on&wt=json"
 ATHENA_IMPORT_STATUS = "solr/athena/dataimport?command=status&indent=on&wt=json"
+USAGI_CORE_NAME = 'concepts'
+ATHENA_CORE_NAME = 'athena'
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
      17: 'blob',

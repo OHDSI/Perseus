@@ -1,4 +1,3 @@
-import re
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -10,9 +9,8 @@ from cdm_souffleur.model.mapped_concepts import mapped_concept
 from cdm_souffleur.model.source_code import SourceCode
 from cdm_souffleur.services.search_service import search_usagi
 from cdm_souffleur.services.web_socket_service import emit_status
-from cdm_souffleur.services.solr_core_service import create_core
 from cdm_souffleur.utils import InvalidUsage
-from cdm_souffleur.utils.async_directive import fire_and_forget
+from cdm_souffleur.utils.async_directive import fire_and_forget_concept_mapping, fire_and_forget_load_vocabulary
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH, \
     SOLR_FILTERS
 import pysolr
@@ -107,17 +105,13 @@ def create_derived_index(current_user, source_codes):
     return
 
 
-@fire_and_forget
+@fire_and_forget_concept_mapping
 def create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column,
                            auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
     try:
         source_codes = create_source_codes(current_user, codes, source_code_column, source_name_column,
                                            source_frequency_column, auto_concept_id_column, concept_ids_or_atc,
                                            additional_info_columns)
-        emit_status(current_user, f"import_codes_status", "Started creating index", 0)
-        create_core(current_user)
-        create_derived_index(current_user, source_codes)
-        emit_status(current_user, f"import_codes_status", "Index created", 1)
         global_mapping_list = []
         for source_code in source_codes:
             code_mapping = CodeMapping()
@@ -217,7 +211,7 @@ def get_vocabulary_list_for_user(current_user):
             result.append(item.name)
     return result
 
-@fire_and_forget
+@fire_and_forget_load_vocabulary
 def load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user):
     try:
         emit_status(current_user, f"import_codes_status", "Fetching saved source codes", 0)
@@ -226,19 +220,6 @@ def load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user):
         if saved_mapped_concepts.exists():
             codes_and_saved_mappings_string = saved_mapped_concepts.get().codes_and_mapped_concepts
             codes_and_saved_mappings = json.loads(codes_and_saved_mappings_string)
-            codes = codes_and_saved_mappings['codes']
-            params = codes_and_saved_mappings['mappingParams']
-            source_codes = create_source_codes(current_user, codes,
-                                               params['sourceCode'],
-                                               params['sourceName'],
-                                               params['sourceFrequency'],
-                                               params['autoConceptId'],
-                                               params['conceptIdOrAtc'] if 'conceptIdOrAtc' in params else '',
-                                               params['additionalInfo'])
-            emit_status(current_user, f"import_codes_status", "Started creating main index", 1)
-            create_core(current_user)
-            emit_status(current_user, f"import_codes_status", "Started creating derived index", 1)
-            create_derived_index(current_user, source_codes)
             emit_status(current_user, f"import_codes_status", "Process finished", 2)
             fetched_vocabularies[current_user] = codes_and_saved_mappings
         else:

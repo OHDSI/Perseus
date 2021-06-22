@@ -1,7 +1,7 @@
 import math
 import re
 
-from cdm_souffleur.utils.constants import VOCABULARY_FILTERS
+from cdm_souffleur.utils.constants import VOCABULARY_FILTERS, USAGI_CORE_NAME, ATHENA_CORE_NAME
 
 from cdm_souffleur.model.code_mapping import ScoredConcept, TargetConcept
 import pysolr
@@ -13,7 +13,7 @@ CONCEPT_TERM = "C"
 
 
 def search_usagi(current_user, filters, query, source_auto_assigned_concept_ids):
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{current_user}",
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{USAGI_CORE_NAME}",
                        always_commit=True)
     scored_concepts = []
     if filters:
@@ -84,7 +84,7 @@ def create_or_string(queries, values, field_name):
 
 def search_athena(pageSize, page, query, sort, order, filters, update_filters):
     result_concepts = []
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/athena",
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{ATHENA_CORE_NAME}",
                        always_commit=True)
     filter_queries = create_athena_filter_queries(filters)
     final_query = f"concept_name:{'+'.join(re.split('[^a-zA-Z]', query))}" if query else '*:*'
