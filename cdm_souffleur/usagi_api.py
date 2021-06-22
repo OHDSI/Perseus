@@ -5,9 +5,11 @@ from cdm_souffleur.model.code_mapping import ScoredConceptEncoder
 from cdm_souffleur.services.authorization_service import *
 from cdm_souffleur.services.import_source_codes_service import load_codes_to_server, \
     create_concept_mapping, save_codes, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters, delete_vocabulary
+    load_mapped_concepts_by_vocabulary_name, get_saved_code_mapping, get_vocabulary_data, get_filters, \
+    delete_vocabulary
 from cdm_souffleur.services.solr_core_service import run_solr_command
 from cdm_souffleur.services.search_service import search_usagi
+from cdm_souffleur.utils.async_directive import cancel_concept_mapping_task, cancel_load_vocabulary_task
 from cdm_souffleur.utils.constants import SOLR_IMPORT_STATUS, QUERY_SEARCH_MODE
 
 usagi_api = Blueprint('usagi_api', __name__)
@@ -154,6 +156,26 @@ def get_filters_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(result)
+
+
+@usagi_api.route('/api/cancel_concept_mapping_task', methods=['GET'])
+@token_required
+def cancel_concept_mapping_task_call(current_user):
+    try:
+        cancel_concept_mapping_task(current_user)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify('OK')
+
+
+@usagi_api.route('/api/cancel_load_vocabulary_task', methods=['GET'])
+@token_required
+def cancel_load_vocabulary_task_call(current_user):
+    try:
+        cancel_load_vocabulary_task(current_user)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify('OK')
 
 
 @usagi_api.route('/api/solr_import_status', methods=['GET'])
