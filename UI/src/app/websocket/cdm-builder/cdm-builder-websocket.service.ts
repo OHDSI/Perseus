@@ -34,8 +34,8 @@ export class CdmBuilderWebsocketService extends WebsocketService implements OnDe
   }
 
   ngOnDestroy() {
-    if (this.hubConnection.state !== HubConnectionState.Disconnected) {
-      this.hubConnection.stop()
+    if (this.hubConnection?.state !== HubConnectionState.Disconnected) {
+      this.hubConnection?.stop()
     }
   }
 
