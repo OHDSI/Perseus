@@ -2,6 +2,8 @@ import urllib
 from shutil import rmtree, copytree, copyfile
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
+
+from cdm_souffleur.db import pg_db
 from cdm_souffleur.utils.constants import SOLR_PATH, SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, \
     SOLR_CREATE_CORE, SOLR_RELOAD_CORE, SOLR_UNLOAD_CORE, SOLR_IMPORT_STATUS, ATHENA_IMPORT_STATUS, ATHENA_CREATE_CORE, \
     ATHENA_FULL_DATA_IMPORT
@@ -51,9 +53,14 @@ def create_index(create_index_command, full_import_command, job_name, scheduler_
     import_status_scheduler.add_job(func=scheduler_func, trigger="interval", seconds=10, id=job_name)
 
 
-create_index(SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, 'import_status', update_main_index_status)
-create_index(ATHENA_CREATE_CORE, ATHENA_FULL_DATA_IMPORT, 'athena_import_status', update_athena_index_status)
+def index_tables_created():
+    if pg_db.table_exists('mapped_concept', 'cdm'):
+        import_status_scheduler.remove_job('db_created')
+        create_index(SOLR_CREATE_MAIN_INDEX_CORE, SOLR_FULL_DATA_IMPORT, 'import_status', update_main_index_status)
+        create_index(ATHENA_CREATE_CORE, ATHENA_FULL_DATA_IMPORT, 'athena_import_status', update_athena_index_status)
 
+
+import_status_scheduler.add_job(func=index_tables_created, trigger="interval", seconds=60, id='db_created')
 
 
 def create_core(current_user):
