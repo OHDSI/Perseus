@@ -13,14 +13,16 @@ export class ImportCodesMediatorService {
   /**
    * Can be importCodesService.calculateScore or importVocabulariesService.prepareVocabulary
    */
-  private request$: Observable<void>
+  private connectRequest$: Observable<void>
+
+  private abortRequest$: Observable<void>
 
   get onWebsocketConnect$(): Observable<void> {
-    return this.request$
+    return this.connectRequest$
   }
 
   set onWebsocketConnect$(request$: Observable<void>) {
-    this.request$ = request$
+    this.connectRequest$ = request$
   }
 
   get consoleHeader(): ConsoleHeader {
@@ -29,5 +31,13 @@ export class ImportCodesMediatorService {
 
   set consoleHeader(value: ConsoleHeader) {
     this.scanConsoleHeader = value
+  }
+
+  get onAbort$(): Observable<void> {
+    return this.abortRequest$
+  }
+
+  set onAbort$(value: Observable<void>) {
+    this.abortRequest$ = value
   }
 }

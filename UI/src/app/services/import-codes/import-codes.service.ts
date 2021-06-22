@@ -153,4 +153,12 @@ export class ImportCodesService implements StateService {
   reset(state?: ImportCodesState) {
     this.state = state ? {...state} : {...initialState};
   }
+
+  cancelCalculateScoresByCsvCodes(): Observable<void> {
+    return this.httpClient.get<void>(`${apiUrl}/cancel_concept_mapping_task`)
+  }
+
+  cancelCalculateScoresBySavedMapping(): Observable<void> {
+    return this.httpClient.get<void>(`${apiUrl}/cancel_load_vocabulary_task`)
+  }
 }

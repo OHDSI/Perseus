@@ -8,7 +8,8 @@ import {
   toFailedMessage
 } from '@models/scan-data/progress-notification';
 import { ImportCodesService } from '@services/import-codes/import-codes.service';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
 
 @Component({
   selector: 'app-code-mapping-console',
@@ -22,7 +23,8 @@ export class CodeMappingConsoleComponent extends ConsoleComponent<void> implemen
   private allStepsCount: number;
 
   constructor(codeMappingWebsocketService: CodeMappingWebsocketService,
-              private importCodesService: ImportCodesService) {
+              private importCodesService: ImportCodesService,
+              private importCodesMediatorService: ImportCodesMediatorService) {
     super(codeMappingWebsocketService)
   }
 
@@ -45,6 +47,14 @@ export class CodeMappingConsoleComponent extends ConsoleComponent<void> implemen
     // 3 - Steps for edit existed vocabulary
 
     this.onConnect();
+  }
+
+  abortAndCancel() {
+    this.importCodesMediatorService.onAbort$
+      .pipe(
+        finalize(() => this.websocketService.disconnect())
+      )
+      .subscribe()
   }
 
   protected handleProgressMessage(notification: ProgressNotification): void {
