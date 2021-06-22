@@ -103,6 +103,7 @@ export class JwtAuthService implements AuthService {
   private isTokenValid(): Observable<boolean> {
     return this.httpClient.get<boolean>(`${apiUrl}/is_token_valid`)
       .pipe(
+        catchError(() => of(false)),
         tap(value => !value && this.resetCurrentUser())
       )
   }

@@ -14,11 +14,14 @@ import { authInjector } from '@services/auth/auth-injector';
 import { loginRouter } from '@app/app.constants';
 import { Observable } from 'rxjs/internal/Observable';
 import { tap } from 'rxjs/operators';
+import { withLoading } from '@utils/loading';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
+
+  loading = false
 
   constructor(private router: Router,
               @Inject(authInjector) private authService: AuthService) {
@@ -39,6 +42,7 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
   private canLoadOrActivate(): Observable<boolean> {
     return this.authService.isUserLoggedIn$
       .pipe(
+        withLoading(this),
         tap(value => !value && this.router.navigate([loginRouter]))
       )
   }

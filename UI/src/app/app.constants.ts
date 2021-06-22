@@ -45,5 +45,6 @@ export const externalUrls = [
 
 export const serverErrorExclusionUrls = [
   'get_term_search_results',
-  'save_mapped_codes'
+  'save_mapped_codes',
+  'is_token_valid'
 ]
