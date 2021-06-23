@@ -838,8 +838,25 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables))
       )
       .subscribe(() => {
-        this.reset()
+        this.sourceRows = [];
+        this.targetRows = [];
+        this.mappingConfig = [];
+        const prevSourceWithoutSimilar = !this.similarSourceTable
+        const prevTargetWithoutSimilar = !this.similarTargetTable
         this.loadMapping()
+        // Mat tub bug when added new tab to the beginning
+        if (prevSourceWithoutSimilar && !!this.similarSourceTable) {
+          this.sourceTabIndex = 1
+          setTimeout(() => this.sourceTabIndex = 0)
+        } else {
+          this.sourceTabIndex = 0;
+        }
+        if (prevTargetWithoutSimilar && !!this.similarTargetTable) {
+          this.targetTabIndex = 1
+          setTimeout(() => this.targetTabIndex = 0)
+        } else {
+          this.targetTabIndex = 0;
+        }
         this.onTabIndexChanged(this.sourceTabIndex, 'source') // Update source rows UI
         this.onTabIndexChanged(this.targetTabIndex, 'target') // Update target rows UI
       })
@@ -874,14 +891,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
       this.setSelectedSourceAndTargetTable();
     });
-  }
-
-  private reset() {
-    this.sourceRows = [];
-    this.targetRows = [];
-    this.mappingConfig = [];
-    this.sourceTabIndex = 0;
-    this.targetTabIndex = 0;
   }
 
   /**
