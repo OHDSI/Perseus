@@ -8,6 +8,7 @@ wget -O vocabulary.zip $VOC_URL
 if zipinfo vocabulary.zip > /dev/null; then
 	unzip 'vocabulary.zip' -d vocabulary
 	rm vocabulary.zip
-else 
-	raise error "Vocabulary link expired"
+else
+	echo "Vocabulary link expired"
+	exit 1
 fi
