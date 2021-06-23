@@ -6,6 +6,7 @@ import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
 import { createNoCacheHeaders } from '@utils/http-headers';
+import { Configuration, ConfigurationOptions } from '@models/configuration';
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -29,7 +30,9 @@ const API_URLS = {
   saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`,
   getView: () => `${URL}/get_view`,
   validateSql: () => `${URL}/validate_sql`,
-  loadReportToServer: () => `${URL}/load_schema_to_server`
+  loadReportToServer: () => `${URL}/load_schema_to_server`,
+  getConfigurationByMappingFile: () => `${URL}/configuration_by_mapping_file`,
+  getMappingFileByConfiguration: () => `${URL}/mapping_file_by_configuration`
 };
 
 @Injectable()
@@ -108,5 +111,13 @@ export class HttpService {
 
   loadReportToServer(file: any) {
     return this.httpClient.post(API_URLS.loadReportToServer(), file);
+  }
+
+  configurationByMappingFile(file: File): Observable<Configuration> {
+    return this.httpClient.post<Configuration>(API_URLS.getConfigurationByMappingFile(), file)
+  }
+
+  configurationByMappingOptions(options: ConfigurationOptions): Observable<Blob> {
+    return this.httpClient.post<Blob>(API_URLS.getMappingFileByConfiguration(), options)
   }
 }
