@@ -1,3 +1,5 @@
 <ng-container #ref>
   <router-outlet></router-outlet>
 </ng-container>
+
+<div class="spinner" *ngIf="authGuard.loading"></div>

@@ -56,12 +56,9 @@ export class CdmBuilderService {
   }
 
   convert(settings: CdmSettings): Observable<boolean> {
-    return this.httpClient.post(cdmBuilderApiUrl, settings, {headers: {'Content-Type': 'application/json'}})
+    return this.httpClient.post(cdmBuilderApiUrl, settings, {headers: {'Content-Type': 'application/json'}, observe: 'response'})
       .pipe(
-        map(response => {
-          console.log(response);
-          return true;
-        })
+        map(response => response.status === 200)
       );
   }
 
