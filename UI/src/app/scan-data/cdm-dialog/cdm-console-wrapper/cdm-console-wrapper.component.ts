@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.component';
+import { AbstractConsoleWrapperDirective } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.directive';
 import { CdmConsoleComponent } from './cdm-console/cdm-console.component';
 
 @Component({
@@ -11,7 +11,7 @@ import { CdmConsoleComponent } from './cdm-console/cdm-console.component';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class CdmConsoleWrapperComponent extends AbstractConsoleWrapperComponent<void> {
+export class CdmConsoleWrapperComponent extends AbstractConsoleWrapperDirective<void> {
 
   @Output()
   dataQualityCheck = new EventEmitter<void>();

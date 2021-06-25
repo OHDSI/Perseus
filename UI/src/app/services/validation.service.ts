@@ -1,3 +1,6 @@
+import { Injectable } from '@angular/core';
+
+@Injectable()
 export class ValidationService {
 
     types: [ 'CLOB', 'INTEGER', 'STRING', 'NVARCHAR', 'VARCHAR', 'DATE', 'DATETIME' ]

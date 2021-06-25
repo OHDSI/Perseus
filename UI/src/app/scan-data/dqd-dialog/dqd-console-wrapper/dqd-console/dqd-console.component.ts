@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
+import { ConsoleDirective } from '../../../auxiliary/scan-console-wrapper/console/console.directive';
 import { DqdWebsocketService } from '@websocket/dqd/dqd-websocket.service';
 import { ProgressNotificationStatusCode, toFailedMessage } from '@models/scan-data/progress-notification';
 import { DqdService } from '@services/data-quality-check/dqd.service';
@@ -11,7 +11,7 @@ import { parseHttpError } from '@utils/error';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [DqdWebsocketService]
 })
-export class DqdConsoleComponent extends ConsoleComponent<string> {
+export class DqdConsoleComponent extends ConsoleDirective<string> {
 
   private readonly checkCount = 22;
 

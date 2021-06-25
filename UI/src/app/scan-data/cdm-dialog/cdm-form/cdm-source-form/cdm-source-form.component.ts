@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractResourceForm } from '../../../auxiliary/resource-form/abstract-resource-form';
+import { AbstractResourceFormDirective } from '../../../auxiliary/resource-form/abstract-resource-form.directive';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm, createFakeDataForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } from '../../../scan-data.constants';
@@ -23,7 +23,7 @@ import { finalize } from 'rxjs/operators';
     '../../../styles/scan-data-normalize.scss'
   ]
 })
-export class CdmSourceFormComponent extends AbstractResourceForm implements OnInit {
+export class CdmSourceFormComponent extends AbstractResourceFormDirective implements OnInit {
 
   @Input()
   fakeDataParams: FakeDataParams;

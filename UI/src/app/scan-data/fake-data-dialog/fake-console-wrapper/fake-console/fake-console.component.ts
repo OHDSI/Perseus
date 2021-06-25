@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
+import { ConsoleDirective } from '../../../auxiliary/scan-console-wrapper/console/console.directive';
 import { FakeDataWebsocketService } from '@websocket/white-rabbit/fake-data/fake-data-websocket.service';
 import { FakeDataService } from '@services/white-rabbit/fake-data.service';
 import {
@@ -15,7 +15,7 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [FakeDataWebsocketService]
 })
-export class FakeConsoleComponent extends ConsoleComponent<void> {
+export class FakeConsoleComponent extends ConsoleDirective<void> {
 
   private scannedItemsCount = 0;
 

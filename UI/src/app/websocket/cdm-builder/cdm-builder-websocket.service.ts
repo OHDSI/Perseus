@@ -1,4 +1,4 @@
-import { WebsocketService } from '../websocket.service';
+import { WebsocketDirective } from '../websocket.directive';
 import { Observable } from 'rxjs/internal/Observable';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import * as SignalR from '@microsoft/signalr';
@@ -12,7 +12,7 @@ import { authInjector } from '@services/auth/auth-injector';
 import { AuthService } from '@services/auth/auth.service';
 
 @Injectable()
-export class CdmBuilderWebsocketService extends WebsocketService implements OnDestroy {
+export class CdmBuilderWebsocketService extends WebsocketDirective implements OnDestroy {
 
   constructor(private cdmBuilderService: CdmBuilderService,
               @Inject(authInjector) private authService: AuthService) {

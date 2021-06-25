@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { WhiteRabbitWebsocketService } from '../white-rabbit-websocket.service';
+import { WhiteRabbitWebsocketDirective } from '../white-rabbit-websocket.directive';
 import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { FakeDataService } from '@services/white-rabbit/fake-data.service';
 import { switchMap } from 'rxjs/operators';
 
 @Injectable()
-export class FakeDataWebsocketService extends WhiteRabbitWebsocketService {
+export class FakeDataWebsocketService extends WhiteRabbitWebsocketDirective {
 
   endPoint = 'fake-data'
 

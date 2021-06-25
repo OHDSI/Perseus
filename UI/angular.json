@@ -55,8 +55,7 @@
             },
             "scripts": [
               "node_modules/hammerjs/hammer.js"
-            ],
-            "es5BrowserSupport": true
+            ]
           },
           "configurations": {
             "production": {

@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { AuthComponent } from '../auth.component';
+import { AuthDirective } from '../auth.directive';
 import { authInjector } from '@services/auth/auth-injector';
 import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { parseHttpError } from '@utils/error';
     '../auth.component.scss'
   ]
 })
-export class RecoverPasswordComponent extends AuthComponent {
+export class RecoverPasswordComponent extends AuthDirective {
 
   restored = false
 

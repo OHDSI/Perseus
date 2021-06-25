@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DbSettings } from '@models/scan-data/db-settings';
-import { WhiteRabbitWebsocketService } from '../white-rabbit-websocket.service';
+import { WhiteRabbitWebsocketDirective } from '../white-rabbit-websocket.directive';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
 
 @Injectable()
-export class ScanDataWebsocketService extends WhiteRabbitWebsocketService {
+export class ScanDataWebsocketService extends WhiteRabbitWebsocketDirective {
 
   endPoint = 'scan-data'
 

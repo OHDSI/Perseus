@@ -1,4 +1,4 @@
-import { WebsocketService } from '../websocket.service';
+import { WebsocketDirective } from '../websocket.directive';
 import { Observable } from 'rxjs/internal/Observable';
 import { DqdService } from '@services/data-quality-check/dqd.service';
 import { dqdWsUrl } from '@app/app.constants';
@@ -6,7 +6,7 @@ import { DbSettings } from '@models/scan-data/db-settings';
 import { Injectable, OnDestroy } from '@angular/core';
 
 @Injectable()
-export class DqdWebsocketService extends WebsocketService implements OnDestroy {
+export class DqdWebsocketService extends WebsocketDirective implements OnDestroy {
 
   private socket: WebSocket;
 

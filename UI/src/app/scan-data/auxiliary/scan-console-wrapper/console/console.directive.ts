@@ -1,4 +1,4 @@
-import { ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   CdmProgressNotification,
   ProgressNotification,
@@ -9,11 +9,12 @@ import {
 import { filter, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
-import { WebsocketService } from '@websocket/websocket.service';
+import { WebsocketDirective } from '@websocket/websocket.directive';
 import { ThemePalette } from '@angular/material/core';
 import { ScanResult, ScanStatus } from '@models/scan-data/scan-result';
 
-export abstract class ConsoleComponent<T> extends BaseComponent implements OnInit {
+@Directive()
+export abstract class ConsoleDirective<T> extends BaseComponent implements OnInit {
 
   scanningStarted = false;
 
@@ -33,7 +34,7 @@ export abstract class ConsoleComponent<T> extends BaseComponent implements OnIni
   @ViewChild('console')
   private console: ElementRef;
 
-  protected constructor(protected websocketService: WebsocketService) {
+  protected constructor(protected websocketService: WebsocketDirective) {
     super();
   }
 

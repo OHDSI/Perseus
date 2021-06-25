@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
+import { ConsoleDirective } from '../../../auxiliary/scan-console-wrapper/console/console.directive';
 import { finalize } from 'rxjs/operators';
 import {
   ProgressNotification,
@@ -17,7 +17,7 @@ import { parseHttpError } from '@utils/error';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [ScanDataWebsocketService]
 })
-export class ScanDataConsoleComponent extends ConsoleComponent<string> {
+export class ScanDataConsoleComponent extends ConsoleDirective<string> {
 
   private scannedItemsCount = 0;
 

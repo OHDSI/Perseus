@@ -6,7 +6,7 @@ import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '@models/scan-data/scan-settings';
 import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
-import { AbstractResourceForm } from '../../../auxiliary/resource-form/abstract-resource-form';
+import { AbstractResourceFormDirective } from '../../../auxiliary/resource-form/abstract-resource-form.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { TableToScan } from '@models/scan-data/table-to-scan';
@@ -25,7 +25,7 @@ import { createDbConnectionForm } from '@utils/form';
     '../../../styles/scan-data-connect-form.scss'
   ]
 })
-export class ConnectFormComponent extends AbstractResourceForm implements OnInit {
+export class ConnectFormComponent extends AbstractResourceFormDirective implements OnInit {
 
   // dbSettingsForm
   form: FormGroup;

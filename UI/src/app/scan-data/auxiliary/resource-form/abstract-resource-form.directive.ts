@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectionResult } from '@models/scan-data/connection-result';
 import { Subject } from 'rxjs/internal/Subject';
-import { Input, OnInit } from '@angular/core';
+import { Directive, Input, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { DbSettings } from '@models/scan-data/db-settings';
@@ -10,7 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { dbTypesRequireSchema, defaultPorts } from '../../scan-data.constants';
 import { merge } from 'rxjs';
 
-export abstract class AbstractResourceForm extends BaseComponent implements OnInit {
+@Directive()
+export abstract class AbstractResourceFormDirective extends BaseComponent implements OnInit {
 
   tryConnect = false;
 
