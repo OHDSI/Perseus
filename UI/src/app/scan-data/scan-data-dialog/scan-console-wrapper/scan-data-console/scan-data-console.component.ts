@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ConsoleDirective } from '../../../auxiliary/scan-console-wrapper/console/console.directive';
+import { Component, Input } from '@angular/core';
+import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { finalize } from 'rxjs/operators';
 import {
   ProgressNotification,
@@ -10,6 +10,7 @@ import {
 import { ScanDataWebsocketService } from '@websocket/white-rabbit/scan-data/scan-data-websocket.service';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { parseHttpError } from '@utils/error';
+import { WebsocketParams } from '@models/scan-data/websocket-params';
 
 @Component({
   selector: 'scan-data-console',
@@ -17,7 +18,10 @@ import { parseHttpError } from '@utils/error';
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [ScanDataWebsocketService]
 })
-export class ScanDataConsoleComponent extends ConsoleDirective<string> {
+export class ScanDataConsoleComponent extends ConsoleComponent<string> {
+
+  @Input()
+  params: WebsocketParams;
 
   private scannedItemsCount = 0;
 

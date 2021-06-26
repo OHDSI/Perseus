@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperDirective } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.directive';
+import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { ScanDataUploadService } from '@services/white-rabbit/scan-data-upload.service';
 import { saveAs } from 'file-saver';
 import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.component';
@@ -17,7 +17,7 @@ import { parseHttpError } from '@utils/error';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperDirective<string> {
+export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent<string> {
 
   @ViewChild(ScanDataConsoleComponent)
   consoleComponent: ScanDataConsoleComponent;

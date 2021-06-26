@@ -1,5 +1,5 @@
 import { User } from '@models/user';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 export interface AuthService {
 

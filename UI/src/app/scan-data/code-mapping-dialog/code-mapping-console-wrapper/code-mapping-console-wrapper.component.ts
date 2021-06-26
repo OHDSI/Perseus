@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperDirective } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.directive';
+import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { CodeMappingConsoleComponent } from './code-mapping-console/code-mapping-console.component';
 
 @Component({
@@ -11,7 +11,7 @@ import { CodeMappingConsoleComponent } from './code-mapping-console/code-mapping
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class CodeMappingConsoleWrapperComponent extends AbstractConsoleWrapperDirective<void> {
+export class CodeMappingConsoleWrapperComponent extends AbstractConsoleWrapperComponent<void> {
 
   @Output()
   completed = new EventEmitter<void>()

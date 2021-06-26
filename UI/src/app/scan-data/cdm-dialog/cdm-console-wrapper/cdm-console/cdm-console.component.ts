@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConsoleDirective } from '../../../auxiliary/scan-console-wrapper/console/console.directive';
+import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { CdmBuilderWebsocketService } from '@websocket/cdm-builder/cdm-builder-websocket.service';
 import { CdmProgressNotification, ProgressNotificationStatusCode } from '@models/scan-data/progress-notification';
 
@@ -9,7 +9,7 @@ import { CdmProgressNotification, ProgressNotificationStatusCode } from '@models
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [CdmBuilderWebsocketService]
 })
-export class CdmConsoleComponent extends ConsoleDirective<void> implements OnInit {
+export class CdmConsoleComponent extends ConsoleComponent<void> implements OnInit {
 
   constructor(private cdmWebSocketService: CdmBuilderWebsocketService) {
     super(cdmWebSocketService);

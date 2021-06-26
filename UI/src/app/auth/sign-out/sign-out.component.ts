@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { authInjector } from '@services/auth/auth-injector';
 import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
-import { AuthDirective } from '../auth.directive';
+import { AuthComponent } from '../auth.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { parseHttpError } from '@utils/error';
 import { nameRegex, passwordRegex } from '../auxiliary/regexes';
@@ -16,7 +16,7 @@ import { configurePasswordFormControls } from '../auxiliary/password-form-contro
     '../auth.component.scss'
   ]
 })
-export class SignOutComponent extends AuthDirective {
+export class SignOutComponent extends AuthComponent {
 
   private accountCreated = false;
 

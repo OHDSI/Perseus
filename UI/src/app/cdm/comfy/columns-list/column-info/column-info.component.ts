@@ -2,8 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
 import { DataService } from '@services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-import { ColumnInfo, ColumnInfoStatus, ValueInfo } from '@models/column-info/column-info';
-import { GridComponent } from '@grid/grid.component';
+import { ColumnInfo, ColumnInfoStatus } from '@models/column-info/column-info';
 
 @Component({
   selector: 'app-field-information',
@@ -13,7 +12,7 @@ import { GridComponent } from '@grid/grid.component';
     '../../../../grid/grid.component.scss'
   ]
 })
-export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnInit {
+export class ColumnInfoComponent implements OnInit {
 
   columnName: string;
   tableNames: string[];
@@ -29,10 +28,11 @@ export class ColumnInfoComponent extends GridComponent<ValueInfo> implements OnI
 
   displayedColumns = ['value', 'frequency', 'percentage']
 
+  height: string
+
   constructor(@Inject(OVERLAY_DIALOG_DATA) public payload: { columnName: string, tableNames: string[], positionStrategy: string, maxHeight: number },
               private dataService: DataService,
               private storeService: StoreService) {
-    super()
   }
 
   ngOnInit(): void {

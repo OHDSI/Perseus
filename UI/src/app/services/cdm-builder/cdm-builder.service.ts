@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { CdmBuilderStatus } from '@models/scan-data/cdm-builder-status';
 import { cdmBuilderApiUrl } from '@app/app.constants';
 import { CdmSettings } from '@models/scan-data/cdm-settings';

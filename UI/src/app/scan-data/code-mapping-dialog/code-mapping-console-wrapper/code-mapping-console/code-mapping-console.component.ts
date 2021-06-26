@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConsoleDirective } from '../../../auxiliary/scan-console-wrapper/console/console.directive';
+import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { CodeMappingWebsocketService } from '@websocket/code-mapping/code-mapping-websocket.service';
 import {
   ProgressNotification,
@@ -17,7 +17,7 @@ import { ImportCodesMediatorService } from '@services/import-codes/import-codes-
   styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [CodeMappingWebsocketService]
 })
-export class CodeMappingConsoleComponent extends ConsoleDirective<void> implements OnInit {
+export class CodeMappingConsoleComponent extends ConsoleComponent<void> implements OnInit {
 
   private completedStepsCount = 0
   private allStepsCount: number;

@@ -2,10 +2,10 @@ import { Observable, Observer } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { parseHttpError } from '@utils/error';
-import { Directive, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
-@Directive()
-export abstract class WebsocketDirective implements OnDestroy {
+@Injectable()
+export abstract class WebsocketService implements OnDestroy {
 
   protected status$: Observable<boolean>;
 

@@ -25,7 +25,7 @@ import {
   createFunctionComponentAndReturnFunction,
   functionTypes
 } from '@mapping/sql-transformation/visual-transformation/visual-transformation';
-import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 
 @Component({

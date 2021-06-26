@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Column } from '@models/grid/grid';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '@app/app.constants';

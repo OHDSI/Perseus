@@ -1,5 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 export abstract class TransformationFunction<T> {
   private readonly formGroup: FormGroup

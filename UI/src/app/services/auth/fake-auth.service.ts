@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { User } from '@models/user';
 import { AuthService, localStorageUserField } from './auth.service';
-import { Observable } from 'rxjs/internal/Observable';
 import { catchError, delay, tap } from 'rxjs/operators';
 
 @Injectable({

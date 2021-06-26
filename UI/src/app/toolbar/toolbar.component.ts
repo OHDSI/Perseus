@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
 import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';
 import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '@scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';

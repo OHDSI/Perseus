@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { WebsocketDirective } from '../websocket.directive';
-import { Observable } from 'rxjs/internal/Observable';
+import { WebsocketService } from '../websocketService';
+import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
 import { AuthService } from '@services/auth/auth.service';
@@ -9,7 +9,7 @@ import { serverUrl } from '@app/app.constants';
 import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
 
 @Injectable()
-export class CodeMappingWebsocketService extends WebsocketDirective {
+export class CodeMappingWebsocketService extends WebsocketService {
 
   socket: Socket
 

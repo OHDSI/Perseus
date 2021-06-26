@@ -1,6 +1,6 @@
 import { MatDialogRef } from '@angular/material/dialog';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
-import { AbstractConsoleWrapperDirective } from './auxiliary/scan-console-wrapper/abstract-console-wrapper.directive';
+import { AbstractConsoleWrapperComponent } from './auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 
 export abstract class AbstractScanDialog {
 
@@ -8,7 +8,7 @@ export abstract class AbstractScanDialog {
 
   private selectedIndex = 0;
 
-  abstract consoleWrapperComponent: AbstractConsoleWrapperDirective<any>;
+  abstract consoleWrapperComponent: AbstractConsoleWrapperComponent<any>;
 
   protected constructor(protected dialogRef: MatDialogRef<AbstractScanDialog>) {
   }

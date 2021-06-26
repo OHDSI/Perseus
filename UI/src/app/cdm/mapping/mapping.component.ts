@@ -38,8 +38,7 @@ import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@ser
 import { PanelComponent } from './panel/panel.component';
 import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, of } from 'rxjs';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
 

@@ -55,6 +55,13 @@
             },
             "scripts": [
               "node_modules/hammerjs/hammer.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "docx",
+              "sockjs-client",
+              "socket.io-client",
+              "codemirror",
+              "file-saver"
             ]
           },
           "configurations": {

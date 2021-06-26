@@ -1,11 +1,13 @@
-import { Directive, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ConsoleDirective } from './console/console.directive';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ConsoleComponent } from './console/console.component';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { ProgressNotificationStatusCode } from '@models/scan-data/progress-notification';
 import { ScanResult, ScanStatus } from '@models/scan-data/scan-result';
 
-@Directive()
-export abstract class AbstractConsoleWrapperDirective<T> {
+@Component({
+  template: ''
+})
+export abstract class AbstractConsoleWrapperComponent<T> {
 
   result: ScanResult<T> = {
     status: ScanStatus.IN_PROGRESS
@@ -20,8 +22,8 @@ export abstract class AbstractConsoleWrapperDirective<T> {
   @Output()
   close = new EventEmitter<void>();
 
-  @ViewChild(ConsoleDirective)
-  abstract consoleComponent: ConsoleDirective<T>;
+  @ViewChild(ConsoleComponent)
+  abstract consoleComponent: ConsoleComponent<T>;
 
   onComplete(result: ScanResult<T>) {
     this.result = result

@@ -1,5 +1,5 @@
-import { WebsocketDirective } from '../websocket.directive';
-import { Observable } from 'rxjs/internal/Observable';
+import { WebsocketService } from '../websocketService';
+import { forkJoin, Observable } from 'rxjs';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import * as SignalR from '@microsoft/signalr';
 import { HubConnectionState } from '@microsoft/signalr';
@@ -7,12 +7,11 @@ import { cdmBuilderLogUrl, isProd } from '@app/app.constants';
 import { switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { Inject, Injectable, OnDestroy } from '@angular/core';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { authInjector } from '@services/auth/auth-injector';
 import { AuthService } from '@services/auth/auth.service';
 
 @Injectable()
-export class CdmBuilderWebsocketService extends WebsocketDirective implements OnDestroy {
+export class CdmBuilderWebsocketService extends WebsocketService implements OnDestroy {
 
   constructor(private cdmBuilderService: CdmBuilderService,
               @Inject(authInjector) private authService: AuthService) {

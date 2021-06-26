@@ -1,5 +1,5 @@
 import { AbstractControl, Validators } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { confirmPasswordValidator } from './confirm-password-validator';
 import { takeUntil } from 'rxjs/operators';
 

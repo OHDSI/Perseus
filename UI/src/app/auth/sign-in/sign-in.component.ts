@@ -5,7 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { parseHttpError } from '@utils/error';
 import { mainPageRouter } from '@app/app.constants';
-import { AuthDirective } from '../auth.directive';
+import { AuthComponent } from '../auth.component';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,7 +15,7 @@ import { AuthDirective } from '../auth.directive';
     '../auth.component.scss'
   ]
 })
-export class SignInComponent extends AuthDirective {
+export class SignInComponent extends AuthComponent {
 
   constructor(@Inject(authInjector) authService: AuthService,
               router: Router) {

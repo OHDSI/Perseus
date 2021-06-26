@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '@app/app.constants';
 import { ImportCodesState } from '@models/code-mapping/import-codes-state';

@@ -1,14 +1,14 @@
-import { Directive, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { WebsocketDirective } from '../websocket.directive';
+import { WebsocketService } from '../websocketService';
 import { IFrame, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import { isProd, whiteRabbitWsUrl } from '@app/app.constants';
 import { Client } from '@stomp/stompjs/esm6/client';
 import { fromPromise } from 'rxjs/internal-compatibility';
 
-@Directive()
-export abstract class WhiteRabbitWebsocketDirective extends WebsocketDirective implements OnDestroy {
+@Injectable()
+export abstract class WhiteRabbitWebsocketService extends WebsocketService implements OnDestroy {
 
   protected abstract endPoint: string
 

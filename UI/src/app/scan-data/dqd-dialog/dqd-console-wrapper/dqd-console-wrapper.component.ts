@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperDirective } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.directive';
+import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
 import { dqdUrl } from '@app/app.constants';
 import { DqdService } from '@services/data-quality-check/dqd.service';
@@ -17,7 +17,7 @@ import { finalize } from 'rxjs/operators';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperDirective<string> {
+export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent<string> {
 
   constructor(private dqdService: DqdService) {
     super();
