@@ -27,7 +27,7 @@ export class ConfigurationService {
 
     const options: ConfigurationOptions = {
       name: configurationName,
-      mappingsConfiguration: this.bridgeService.arrowsCache,
+      mappingsConfiguration: this.bridgeService.getArrowCacheForMapping(),
       tablesConfiguration: this.storeService.state.targetConfig,
       source: this.storeService.state.source,
       target: this.storeService.state.target,
