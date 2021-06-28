@@ -1,9 +1,9 @@
 ### STAGE 1: Build ###
-FROM node:14.5.0 AS build-step
+FROM node:14.15.0 AS build-step
 WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@~12.1.0
 COPY . .
 RUN ng build --prod
 
