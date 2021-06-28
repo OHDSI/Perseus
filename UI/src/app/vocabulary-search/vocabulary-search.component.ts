@@ -11,10 +11,9 @@ import {
 } from '@angular/core';
 import { VocabularySearchService } from '@services/vocabulary-search/vocabulary-search.service';
 import { Concept } from '@models/vocabulary-search/concept';
-import { Subject } from 'rxjs/internal/Subject';
+import { of, Subject } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
-import { of } from 'rxjs';
 import { VocabularySearchStateService } from '@services/vocabulary-search/vocabulary-search-state.service';
 import { Column, Sort } from '@models/grid/grid';
 import { NavigationGridComponent } from '@grid/navigation-grid/navigation-grid.component';

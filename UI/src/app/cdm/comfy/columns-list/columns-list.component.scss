@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import '../../../../../node_modules/@angular/material/theming';
 @import "../../../styles/variables";
 
@@ -47,8 +48,8 @@
   cursor: pointer;
   background-color: $cdm-grey-lighter;
   border: 1px solid $cdm-grey-lighter;
-  @include mat-elevation-transition;
-  @include mat-elevation(1, $cdm-grey, 0.8);
+  @include mat.elevation-transition;
+  @include mat.elevation(1, $cdm-grey, 0.8);
 }
 
 mat-list-item.mat-list-item {
@@ -66,7 +67,7 @@ mat-list-item.mat-list-item {
 }
 
 [highlighted="true"] {
-  @include mat-elevation-transition;
+  @include mat.elevation-transition;
   background-color: $cdm-blue-lightest;
   border-color: $cdm-blue;
   border-radius: 2px;

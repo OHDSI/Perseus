@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '@models/user';
-import { Observable } from 'rxjs/internal/Observable';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl, loginRouter } from '@app/app.constants';
 import { catchError, tap } from 'rxjs/operators';
@@ -103,6 +102,7 @@ export class JwtAuthService implements AuthService {
   private isTokenValid(): Observable<boolean> {
     return this.httpClient.get<boolean>(`${apiUrl}/is_token_valid`)
       .pipe(
+        catchError(() => of(false)),
         tap(value => !value && this.resetCurrentUser())
       )
   }

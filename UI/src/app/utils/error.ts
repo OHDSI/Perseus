@@ -1,8 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, of } from 'rxjs';
 
 export function parseHttpError(error) {
   if (typeof error === 'string') {

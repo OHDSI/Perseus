@@ -263,6 +263,9 @@ export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
 export function addGroupMappings(mapping: Mapping, source: ITable) {
   if (source.name !== 'similar') {
     const mappingIndex = mapping.mapping_items.findIndex(item => item.source_table === source.name);
+    if (mappingIndex === -1) {
+      return
+    }
     let mappingItems = mapping.mapping_items[ mappingIndex ].mapping;
     const indexesToRemove = [];
 

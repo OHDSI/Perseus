@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 export function withLoading$<R, C extends {loading: boolean}>(request$: Observable<R>, component: C) {

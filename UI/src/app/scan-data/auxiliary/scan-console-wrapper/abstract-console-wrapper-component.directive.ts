@@ -1,9 +1,12 @@
-import { EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ConsoleComponent } from './console/console.component';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { ProgressNotificationStatusCode } from '@models/scan-data/progress-notification';
 import { ScanResult, ScanStatus } from '@models/scan-data/scan-result';
 
+@Component({
+  template: ''
+})
 export abstract class AbstractConsoleWrapperComponent<T> {
 
   result: ScanResult<T> = {

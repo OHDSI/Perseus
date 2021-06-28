@@ -7,7 +7,7 @@ import { EditorConfiguration, EditorFromTextArea } from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { initCodeMirror } from '@utils/code-mirror';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
-import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 

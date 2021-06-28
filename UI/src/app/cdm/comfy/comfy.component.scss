@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "../../../../node_modules/@angular/material/theming";
 @import "../../styles/variables";
 
@@ -25,8 +26,8 @@ a {
   margin-bottom: 8px;
   margin-right: 0;
   margin-left: auto;
-  @include mat-elevation-transition;
-  @include mat-elevation(1, $cdm-grey, 0.8);
+  @include mat.elevation-transition;
+  @include mat.elevation(1, $cdm-grey, 0.8);
 }
 
 .vertical-box {
@@ -40,13 +41,13 @@ a {
   font-size: 14px;
   border: 1px solid transparent;
   border-radius: 2px;
-  @include mat-elevation-transition;
-  @include mat-elevation(1, $cdm-grey, 0.8);
+  @include mat.elevation-transition;
+  @include mat.elevation(1, $cdm-grey, 0.8);
 
   &:first-of-type {
     background-color: $cdm-blue-light;
     position: relative;
-    @include mat-elevation(2, $cdm-grey, 0.8);
+    @include mat.elevation(2, $cdm-grey, 0.8);
   }
 }
 
@@ -192,8 +193,8 @@ div[concept="true"] {
   font-size: 14px;
   border-radius: 2px;
   border: 2px solid transparent;
-  @include mat-elevation-transition;
-  @include mat-elevation(1, $cdm-grey, 0.8);
+  @include mat.elevation-transition;
+  @include mat.elevation(1, $cdm-grey, 0.8);
 
   &.source-focus {
     border: 2px dashed rgba(6, 107, 187, 0.6);

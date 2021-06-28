@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { WebsocketService } from '../websocket.service';
-import { Observable } from 'rxjs/internal/Observable';
+import { WebsocketService } from '../websocketService';
+import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
 import { AuthService } from '@services/auth/auth.service';

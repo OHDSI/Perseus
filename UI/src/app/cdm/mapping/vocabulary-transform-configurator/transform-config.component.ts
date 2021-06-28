@@ -12,7 +12,7 @@ import { SqlForTransformation } from '@models/transformation/sql-for-transformat
 import { addSemicolon } from '@utils/text-util';
 import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { LookupComponent } from '@mapping/vocabulary-transform-configurator/lookup/lookup.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 

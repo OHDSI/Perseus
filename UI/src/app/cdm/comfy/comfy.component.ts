@@ -15,7 +15,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { merge, Subscription } from 'rxjs';
+import { merge, Observable, Subscription } from 'rxjs';
 import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
 import { uniq, uniqBy } from 'src/app/infrastructure/utility';
@@ -35,7 +35,6 @@ import { SqlEditorComponent } from '@app/shared/sql-editor/sql-editor.component'
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../../popups/cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';
-import { Observable } from 'rxjs/internal/Observable';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
 import { mainPageRouter } from '@app/app.constants';

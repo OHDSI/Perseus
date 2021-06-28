@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.component';
+import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
 import { dqdUrl } from '@app/app.constants';
 import { DqdService } from '@services/data-quality-check/dqd.service';

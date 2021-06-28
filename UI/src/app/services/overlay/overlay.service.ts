@@ -10,7 +10,7 @@ import { Injectable, Injector } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
-import * as positionsData from './positions.json';
+import positionsData from './positions.json';
 
 export class OverlayDialogRef {
 

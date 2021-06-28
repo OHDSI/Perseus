@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { authInjector } from '@services/auth/auth-injector';
 import { AuthService } from '@services/auth/auth.service';
 import { ResetStateService } from '@services/state/reset-state.service';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()

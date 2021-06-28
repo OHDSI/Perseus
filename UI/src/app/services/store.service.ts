@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Table } from '@models/table';
 import { uniq } from '../infrastructure/utility';
 import { removeExtension } from '@utils/file';
-import { Observable } from 'rxjs/internal/Observable';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
 import { StateService } from '@services/state/state.service';
