@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import '~@angular/material/_theming';
 @import './variables.scss';
 
@@ -109,8 +110,8 @@
 
 .filter-popup, .field-info-popup {
   background: white;
-  @include mat-elevation-transition;
-  @include mat-elevation(4);
+  @include mat.elevation-transition;
+  @include mat.elevation(4);
 }
 
 .on-boarding-backdrop {
