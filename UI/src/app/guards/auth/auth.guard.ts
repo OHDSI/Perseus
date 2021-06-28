@@ -12,7 +12,7 @@ import {
 import { AuthService } from '@services/auth/auth.service';
 import { authInjector } from '@services/auth/auth-injector';
 import { loginRouter } from '@app/app.constants';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { withLoading } from '@utils/loading';
 

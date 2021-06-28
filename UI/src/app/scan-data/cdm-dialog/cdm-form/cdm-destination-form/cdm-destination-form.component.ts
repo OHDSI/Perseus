@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractResourceForm } from '../../../auxiliary/resource-form/abstract-resource-form';
+import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/abstract-resource-form.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder } from '../../../scan-data.constants';
@@ -22,7 +22,7 @@ import { finalize } from 'rxjs/operators';
     '../../../styles/scan-data-normalize.scss'
   ]
 })
-export class CdmDestinationFormComponent extends AbstractResourceForm implements OnInit {
+export class CdmDestinationFormComponent extends AbstractResourceFormComponent implements OnInit {
 
   dataTypes = cdmBuilderDatabaseTypes;
 

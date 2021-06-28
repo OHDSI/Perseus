@@ -1,16 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Column, Sort } from '@models/grid/grid';
 
 @Component({
-  selector: 'app-grid',
-  template: '',
-  styleUrls: ['./grid.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  template: ''
 })
-export class GridComponent<T> implements OnInit {
+export abstract class GridComponent<T> implements OnInit {
 
   @Input()
-  data: T[]
+  abstract data: T[]
 
   @Input()
   columns: Column[]

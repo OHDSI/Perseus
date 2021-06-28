@@ -8,7 +8,7 @@ import { BridgeService } from './bridge.service';
 import { LookupService } from './lookup.service';
 import { saveAs } from 'file-saver';
 import { ITable } from '@models/table';
-import { Subject } from 'rxjs/internal/Subject';
+import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 export enum ReportType {

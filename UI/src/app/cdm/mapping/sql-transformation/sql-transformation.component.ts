@@ -3,9 +3,8 @@ import { SqlTransformMode } from '@models/transformation/sql-transform-mode';
 import { VisualTransformationComponent } from '@mapping/sql-transformation/visual-transformation/visual-transformation.component';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 import { ManualTransformationComponent } from '@mapping/sql-transformation/manual-transformation/manual-transformation.component';
-import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+import { Observable, ReplaySubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-sql-transformation',

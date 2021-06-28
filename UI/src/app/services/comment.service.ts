@@ -1,6 +1,8 @@
 import { Comment, IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class CommentService {
 
     constructor() {}

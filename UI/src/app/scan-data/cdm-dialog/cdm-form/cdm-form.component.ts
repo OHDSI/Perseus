@@ -11,10 +11,9 @@ import { CdmSettings } from '@models/scan-data/cdm-settings';
 import { dictionaryDbSettingForCdmBuilder } from '../../scan-data.constants';
 import { StoreService } from '@services/store.service';
 import { adaptCdmVersions } from '@utils/cdm-adapter';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, of } from 'rxjs';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DataBaseExistWarningPopupComponent } from '../../auxiliary/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 
