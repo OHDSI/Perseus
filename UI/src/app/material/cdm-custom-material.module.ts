@@ -35,7 +35,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   imports: [
@@ -74,8 +73,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ReactiveFormsModule,
     OverlayModule,
     DragDropModule,
-    ScrollingModule,
-    NgxMatSelectSearchModule
+    ScrollingModule
   ],
   exports: [
     MatMenuModule,
@@ -111,8 +109,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ReactiveFormsModule,
     OverlayModule,
     DragDropModule,
-    ScrollingModule,
-    NgxMatSelectSearchModule
+    ScrollingModule
   ]
 })
 export class CdmCustomMaterialModule {

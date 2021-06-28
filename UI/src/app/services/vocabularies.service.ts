@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import * as domain from '../../assets/vocabularies/domainlist.json';
-import * as lookup from '../../assets/vocabularies/lookuplist.json';
-import * as concept from '../../assets/vocabularies/conceptlist.json';
+import domain from '../../assets/vocabularies/domainlist.json';
+import lookup from '../../assets/vocabularies/lookuplist.json';
+import concept from '../../assets/vocabularies/conceptlist.json';
 
 @Injectable()
 export class VocabulariesService {

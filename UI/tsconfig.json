@@ -36,7 +36,8 @@
       "@utils/*": ["src/app/utils/*"],
       "@guards/*": ["src/app/guards/*"],
       "@interceptors/*": ["src/app/interceptors/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "node_modules"
