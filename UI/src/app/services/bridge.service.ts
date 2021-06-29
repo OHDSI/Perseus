@@ -595,7 +595,9 @@ export class BridgeService implements StateService {
 
   setArrowType(id: string, type: string) {
     const arrow = this.arrowsCache[ id ];
-    arrow.connector.setEndMarkerType(type);
+    if (arrow.connector.setEndMarkerType) {
+      arrow.connector.setEndMarkerType(type);
+    }
     arrow.type = type === 'None' ? '' : type;
   }
 
