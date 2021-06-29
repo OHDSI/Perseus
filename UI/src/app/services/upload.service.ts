@@ -13,7 +13,7 @@ import { MediaType } from '@utils/base64-util';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { parseHttpError } from '@utils/error';
-import { jZipObjectToFile } from '@utils/jzip-util';
+import { jZipObjectToFile, readJsZipFile } from '@utils/jzip-util';
 
 @Injectable()
 export class UploadService {
@@ -102,10 +102,14 @@ export class UploadService {
 
   loadMappingAndReport(zipObject: JSZipObject, isJson: boolean): Observable<any> {
     if (isJson) {
-      return jZipObjectToFile(zipObject, 'blob', MediaType.JSON)
+      return readJsZipFile(zipObject, 'string')
         .pipe(
-          switchMap(file => this.httpService.configurationByMappingFile(file)),
-          tap(configuration => this.loadMapping(configuration))
+          tap(content => {
+            const loadedConfig = JSON.parse(content);
+            const resultConfig = new Configuration();
+            Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
+            this.loadMapping(resultConfig)
+          })
         )
     } else {
       return jZipObjectToFile(zipObject, 'blob', MediaType.XLSX)

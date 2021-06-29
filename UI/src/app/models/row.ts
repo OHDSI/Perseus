@@ -59,6 +59,30 @@ export interface IRow {
   setType(type: ConnectorType): void;
 }
 
+export interface IRowState {
+  id: number;
+  tableId: number;
+  tableName: string;
+  name: string;
+  type: string;
+  area: string;
+  values: any[];
+  comments: IComment[];
+  visible?: boolean;
+  constant: string;
+  increment: boolean;
+  selected: boolean;
+  connectorTypes: ConnectorType[];
+  uniqueIdentifier: boolean;
+  sqlTransformation: string;
+  sqlTransformationActive: boolean;
+  isNullable: boolean;
+  grouppedFields: IRowState[];
+  cloneTableName: string;
+  cloneConnectedToSourceName: string;
+  condition: string
+}
+
 export class Row implements IRow {
   id: number;
   tableId: number;

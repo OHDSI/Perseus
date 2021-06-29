@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ConfigurationOptions } from '@models/configuration';
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import { Observable, of } from 'rxjs';
 import { HttpService } from '@services/http.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { mappingStateToConfiguration } from '@utils/configuration';
 
 @Injectable()
 export class ConfigurationService {
@@ -24,26 +24,16 @@ export class ConfigurationService {
       return of(`Configuration name has not been entered`);
     }
 
-    const options: ConfigurationOptions = {
-      name: configurationName,
-      mappingsConfiguration: this.bridgeService.getArrowCacheForMapping(),
-      tablesConfiguration: this.storeService.state.targetConfig,
-      source: this.storeService.state.source,
-      target: this.storeService.state.target,
-      report: this.storeService.state.report,
-      version: this.storeService.state.version,
-      filtered: this.storeService.state.filtered,
-      constants: this.bridgeService.constantsCache,
-      targetClones: this.storeService.state.targetClones,
-      sourceSimilar: this.storeService.state.sourceSimilar,
-      targetSimilar: this.storeService.state.targetSimilar,
-      recalculateSimilar: this.storeService.state.recalculateSimilar,
-      concepts: this.storeService.state.concepts
-    }
+    const state = {...this.storeService.state}
+    const arrowCache = {...this.bridgeService.arrowsCache}
+    const constantsCache = {...this.bridgeService.constantsCache}
 
-    return this.httpService.configurationByMappingOptions(options)
+    const configuration = mappingStateToConfiguration(configurationName, state, arrowCache, constantsCache)
+    const jsonConfiguration = JSON.stringify(configuration);
+    const blobConfiguration = new Blob([ jsonConfiguration ], { type: 'application/json' });
+
+    return fromPromise(this.saveOnLocalDisk(blobConfiguration, configurationName))
       .pipe(
-        switchMap(blob => fromPromise(this.saveOnLocalDisk(blob, configurationName))),
         map(zip => {
           const zipName = `${configurationName}.etl`
           saveAs(zip, zipName);

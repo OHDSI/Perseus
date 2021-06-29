@@ -1,5 +1,5 @@
 import { IRow } from './row';
-import { IConnection } from '@services/bridge.service';
+import { IConnection, IConnectionState } from '@models/connector.interface';
 
 export interface Arrow {
   source: IRow;
@@ -11,6 +11,10 @@ export interface Arrow {
 **/
 export interface ArrowCache {
   [key: string]: IConnection;
+}
+
+export interface ArrowCacheState {
+  [key: string]: IConnectionState;
 }
 
 /*
