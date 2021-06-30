@@ -770,23 +770,4 @@ export class BridgeService implements StateService {
       );
     });
   }
-
-  getArrowCacheForMapping() {
-    const arrows = {}
-    Object.keys(this.arrowsCache).forEach(key => {
-      arrows[ key ] = {
-        connector: {
-          id: key,
-          selected: this.arrowsCache[ key ].connector.selected,
-          source: this.arrowsCache[ key ].connector.source,
-          target: this.arrowsCache[ key ].connector.target
-        },
-        source: this.arrowsCache[ key ].source,
-        target: this.arrowsCache[ key ].target,
-        transforms: this.arrowsCache[ key ].transforms,
-        type: this.arrowsCache[ key ].type
-      }
-    })
-    return arrows;
-  }
 }
