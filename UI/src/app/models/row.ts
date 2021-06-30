@@ -60,7 +60,7 @@ export interface IRow {
 }
 
 /*
- * Flyweight weight cope of IRow
+ * Flyweight copy of IRow
 **/
 export interface IRowState {
   id: number;

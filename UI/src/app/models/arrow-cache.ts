@@ -14,7 +14,7 @@ export interface ArrowCache {
 }
 
 /*
- * Flyweight weight cope of arrow cache object
+ * Flyweight copy of arrow cache object
 **/
 export interface ArrowCacheState {
   [key: string]: IConnectionState;

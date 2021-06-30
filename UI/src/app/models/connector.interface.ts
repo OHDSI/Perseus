@@ -23,7 +23,7 @@ export interface IConnector {
 }
 
 /*
- * Flyweight weight cope of IConnector
+ * Flyweight copy of IConnector
 **/
 export interface IConnectorState {
   id: string;
@@ -46,7 +46,7 @@ export interface IConnection {
 }
 
 /*
- * Flyweight weight cope of IConnection
+ * Flyweight copy of IConnection
 **/
 export interface IConnectionState {
   source: IRowState;
