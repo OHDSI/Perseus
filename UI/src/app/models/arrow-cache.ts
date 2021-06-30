@@ -13,6 +13,9 @@ export interface ArrowCache {
   [key: string]: IConnection;
 }
 
+/*
+ * Flyweight weight cope of arrow cache object
+**/
 export interface ArrowCacheState {
   [key: string]: IConnectionState;
 }
@@ -21,9 +24,5 @@ export interface ArrowCacheState {
  * key - `${sourceTableId}/${targetTableId}-${targetRowId}`
 **/
 export interface ConstantCache {
-  [key: string]: IRow;
-}
-
-export interface CorrespondingRows {
   [key: string]: IRow;
 }

@@ -22,6 +22,9 @@ export interface IConnector {
   setEndMarkerType(type: string): void;
 }
 
+/*
+ * Flyweight weight cope of IConnector
+**/
 export interface IConnectorState {
   id: string;
   source: IRowState;
@@ -42,6 +45,9 @@ export interface IConnection {
   sql?: {};
 }
 
+/*
+ * Flyweight weight cope of IConnection
+**/
 export interface IConnectionState {
   source: IRowState;
   target: IRowState;

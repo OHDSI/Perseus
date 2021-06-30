@@ -59,6 +59,9 @@ export interface IRow {
   setType(type: ConnectorType): void;
 }
 
+/*
+ * Flyweight weight cope of IRow
+**/
 export interface IRowState {
   id: number;
   tableId: number;

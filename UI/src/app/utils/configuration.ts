@@ -4,6 +4,9 @@ import { Configuration, ConfigurationOptions } from '@models/configuration';
 import { IConnector, IConnectorState } from '@models/connector.interface';
 import { IRow, IRowState } from '@models/row';
 
+/**
+ * @return Configuration - Flyweight mapping object to save to a file
+ */
 export function mappingStateToConfiguration(configurationName: string,
                                             state: State,
                                             arrowCache: ArrowCache,
