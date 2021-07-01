@@ -1,7 +1,6 @@
 import { WordReportCreator } from './word-report-creator';
 import { Packer } from 'docx';
 import { testMapping } from './image/draw-image-util.spec';
-import { saveAs } from 'file-saver';
 
 describe('WordReportCreator', () => {
   it('should generate word report', () => {
@@ -15,7 +14,7 @@ describe('WordReportCreator', () => {
       .generateReport();
 
     Packer.toBlob(report).then(blob => {
-      saveAs(blob, 'test-report.docx');
+      // saveAs(blob, 'test-report.docx');
     });
   });
 });

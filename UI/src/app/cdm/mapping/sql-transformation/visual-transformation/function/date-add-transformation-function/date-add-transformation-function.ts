@@ -18,7 +18,7 @@ export class DateAddTransformationFunction extends TransformationFunction<DateAd
   }
 
   sql(): (arg: string) => string {
-    return arg => `DATEADD(${this.datePart}, ${this.number}, ${arg})`
+    return arg => `${arg} + (${this.number} * interval '1 ${this.datePart}')`
   }
 
   protected createForm(): FormGroup {

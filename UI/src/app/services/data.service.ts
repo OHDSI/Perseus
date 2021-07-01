@@ -10,6 +10,7 @@ import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { removeExtension } from '@utils/file';
 import { ColumnInfo } from '@models/column-info/column-info';
+import { State } from '@models/state';
 
 @Injectable()
 export class DataService {
@@ -168,7 +169,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data, key: string) {
+  prepareTables(data, key: keyof State) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

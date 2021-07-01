@@ -2,6 +2,8 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { getGlobalEnv } from './environment.util';
+
 const CONCEPT_TABLES = [
   'CONCEPT',
   'COMMON',
@@ -14,11 +16,13 @@ const CONCEPT_TABLES = [
   'SPECIMEN'
 ];
 
+const globalEnv = getGlobalEnv()
+
 export const environment = {
   production: false,
   local: false,
-  server: window['env']['server'] || '10.110.1.7',
-  dbServer: window['env']['dbServer'] || '10.110.1.7',
+  server: globalEnv?.server || '10.110.1.7',
+  dbServer: globalEnv?.dbServer || '10.110.1.7',
   port: 8080,
   conceptTables: CONCEPT_TABLES
 };
