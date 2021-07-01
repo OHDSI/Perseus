@@ -8,10 +8,12 @@ import { Configuration } from '@models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import * as jsZip from 'jszip';
+import { JSZipObject } from 'jszip';
 import { MediaType } from '@utils/base64-util';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { parseHttpError } from '@utils/error';
+import { jZipObjectToFile, readJsZipFile } from '@utils/jzip-util';
 
 @Injectable()
 export class UploadService {
@@ -98,42 +100,30 @@ export class UploadService {
       )
   }
 
-  loadMappingAndReport(file: any, isJson: boolean): Observable<string | BlobPart> {
-    const readFile = (type: string) => new Observable<string | BlobPart>(subscriber => {
-      file.async(type).then(
-        result => {
-          subscriber.next(result)
-          subscriber.complete()
-        },
-        error => subscriber.error(error)
-      )
-    })
-
+  loadMappingAndReport(zipObject: JSZipObject, isJson: boolean): Observable<any> {
     if (isJson) {
-      return readFile('string')
+      return readJsZipFile(zipObject, 'string')
         .pipe(
-          tap(content => this.loadMapping(content as string))
+          tap(content => {
+            const loadedConfig = JSON.parse(content);
+            const resultConfig = new Configuration();
+            Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
+            this.loadMapping(resultConfig)
+          })
         )
     } else {
-      return readFile('blob')
+      return jZipObjectToFile(zipObject, 'blob', MediaType.XLSX)
         .pipe(
-          switchMap(content => {
-            const blob = new Blob([content], {type: MediaType.XLSX});
-            const reportFile = new File([blob], file.name, {type: MediaType.XLSX});
-            return this.loadReport([reportFile]);
-          })
+          switchMap(file => this.loadReport([file]))
         )
     }
   }
 
-  loadMapping(content: string) {
-    const loadedConfig = JSON.parse(content);
-    const resultConfig = new Configuration();
-    Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
-    this.bridgeService.applyConfiguration(resultConfig);
+  loadMapping(configuration: Configuration) {
+    this.bridgeService.applyConfiguration(configuration);
   }
 
-  loadReport(files: File []): Observable<any> {
+  loadReport(files: File[]): Observable<any> {
     this.storeService.add('reportFile', files[0]);
     return this.uploadSchema(files, true)
       .pipe(

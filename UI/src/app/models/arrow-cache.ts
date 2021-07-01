@@ -1,5 +1,5 @@
 import { IRow } from './row';
-import { IConnection } from '@services/bridge.service';
+import { IConnection, IConnectionState } from '@models/connector.interface';
 
 export interface Arrow {
   source: IRow;
@@ -14,12 +14,15 @@ export interface ArrowCache {
 }
 
 /*
+ * Flyweight copy of arrow cache object
+**/
+export interface ArrowCacheState {
+  [key: string]: IConnectionState;
+}
+
+/*
  * key - `${sourceTableId}/${targetTableId}-${targetRowId}`
 **/
 export interface ConstantCache {
-  [key: string]: IRow;
-}
-
-export interface CorrespondingRows {
   [key: string]: IRow;
 }

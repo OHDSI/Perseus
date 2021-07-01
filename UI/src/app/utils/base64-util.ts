@@ -16,7 +16,8 @@ export function base64ToFileAsObservable(base64: string, fileName: string): Obse
 }
 
 export enum MediaType {
-  XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  JSON = 'application/json'
 }
 
 export function getBase64Header(mediaType: string): string {

@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Configuration } from '@models/configuration';
 import { BridgeService } from './bridge.service';
 import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import { Observable, of } from 'rxjs';
+import { HttpService } from '@services/http.service';
+import { map } from 'rxjs/operators';
+import { fromPromise } from 'rxjs/internal-compatibility';
+import { mappingStateToConfiguration } from '@utils/configuration';
 
 @Injectable()
 export class ConfigurationService {
 
   constructor(
     private bridgeService: BridgeService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private httpService: HttpService
   ) {
   }
 
@@ -20,42 +24,28 @@ export class ConfigurationService {
       return of(`Configuration name has not been entered`);
     }
 
-    return new Observable(subscriber => {
-      const newConfiguration = new Configuration({
-        name: configurationName,
-        mappingsConfiguration: this.bridgeService.arrowsCache,
-        tablesConfiguration: this.storeService.state.targetConfig,
-        source: this.storeService.state.source,
-        target: this.storeService.state.target,
-        report: this.storeService.state.report,
-        version: this.storeService.state.version,
-        filtered: this.storeService.state.filtered,
-        constants: this.bridgeService.constantsCache,
-        targetClones: this.storeService.state.targetClones,
-        sourceSimilar: this.storeService.state.sourceSimilar,
-        targetSimilar: this.storeService.state.targetSimilar,
-        recalculateSimilar: this.storeService.state.recalculateSimilar,
-        concepts: this.storeService.state.concepts
-      });
+    const state = {...this.storeService.state}
+    const arrowCache = {...this.bridgeService.arrowsCache}
+    const constantsCache = {...this.bridgeService.constantsCache}
 
-      this.saveOnLocalDisk(newConfiguration)
-        .then(content => {
+    const configuration = mappingStateToConfiguration(configurationName, state, arrowCache, constantsCache)
+    const jsonConfiguration = JSON.stringify(configuration);
+    const blobConfiguration = new Blob([ jsonConfiguration ], { type: 'application/json' });
+
+    return fromPromise(this.saveOnLocalDisk(blobConfiguration, configurationName))
+      .pipe(
+        map(zip => {
           const zipName = `${configurationName}.etl`
-          saveAs(content, zipName);
-          subscriber.next(`Configuration ${configurationName} has been saved`)
-          subscriber.complete()
+          saveAs(zip, zipName);
+          return `Configuration ${configurationName} has been saved`
         })
-        .catch(error => subscriber.error(error))
-        .finally(() => subscriber.complete())
-    })
+      )
   }
 
-  saveOnLocalDisk(newConfiguration: Configuration): Promise<Blob> {
-    const config = JSON.stringify(newConfiguration);
-    const blobMapping = new Blob([ config ], { type: 'application/json' });
+  saveOnLocalDisk(blobMapping: Blob, configurationName: string): Promise<Blob> {
     return this.createZip(
       [ blobMapping, this.storeService.state.reportFile ],
-      [ `${newConfiguration.name}.json`, this.storeService.state.report ]
+      [ `${configurationName}.json`, this.storeService.state.report ]
     )
   }
 
