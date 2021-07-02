@@ -1,4 +1,4 @@
-import { Concept } from '@models/concept-transformation/concept';
+import { Concept, IConceptField, IConceptFields } from '@models/concept-transformation/concept';
 import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
 import { environment } from '../../environments/environment';
@@ -16,8 +16,8 @@ export function getConceptFieldNameByType(columnType: string, connectedToConcept
 }
 
 
-export function createConceptField(fields, fieldName: string, targetFieldName: string, clone?: string, condition?: string) {
-  fields[fieldName] = {
+export function createConceptField(targetFieldName: string, clone?: string, condition?: string) {
+  const conceptOptions: IConceptField = {
     field: '',
     targetFieldName,
     targetCloneName: clone,
@@ -29,14 +29,16 @@ export function createConceptField(fields, fieldName: string, targetFieldName: s
     condition,
     alreadySelected: false
   };
+  return conceptOptions;
 }
 
 export function createConceptFields(conceptFields: any, clone?: string, condition?: string) {
-  const fields = {};
-  createConceptField(fields, 'concept_id', getConceptFieldNameByType('concept_id', conceptFields), clone, condition);
-  createConceptField(fields, 'source_value', getConceptFieldNameByType('source_value', conceptFields), clone, condition);
-  createConceptField(fields, 'source_concept_id', getConceptFieldNameByType('source_concept_id', conceptFields), clone, condition);
-  createConceptField(fields, 'type_concept_id', getConceptFieldNameByType('type_concept_id', conceptFields), clone, condition);
+  const fields: IConceptFields = {
+    concept_id: createConceptField(getConceptFieldNameByType('concept_id', conceptFields), clone, condition),
+    source_value: createConceptField(getConceptFieldNameByType('source_value', conceptFields), clone, condition),
+    source_concept_id: createConceptField(getConceptFieldNameByType('source_concept_id', conceptFields), clone, condition),
+    type_concept_id: createConceptField(getConceptFieldNameByType('type_concept_id', conceptFields), clone, condition)
+  };
   return fields;
 }
 
