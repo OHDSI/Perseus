@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
-import { SqlFunction } from '@popups/rules-popup/transformation-input/model/sql-string-functions';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '@models/arrow-cache';
 import { Configuration } from '@models/configuration';
-import { IConnector } from '@models/connector.interface';
+import { IConnection, IConnector } from '@models/connector.interface';
 import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@models/mapping-service';
 import { ITable, Table } from '@models/table';
 import { StoreService } from './store.service';
@@ -22,16 +21,6 @@ import { canLink, removeDeletedLinksFromFields } from '@utils/bridge';
 import { getConstantId } from '@utils/constant';
 import { getConnectorId } from '@utils/connector';
 import { StateService } from '@services/state/state.service';
-
-export interface IConnection {
-  source: IRow;
-  target: IRow;
-  connector: IConnector;
-  transforms?: SqlFunction[];
-  lookup?: {};
-  type?: string;
-  sql?: {};
-}
 
 @Injectable()
 export class BridgeService implements StateService {
@@ -595,7 +584,9 @@ export class BridgeService implements StateService {
 
   setArrowType(id: string, type: string) {
     const arrow = this.arrowsCache[ id ];
-    arrow.connector.setEndMarkerType(type);
+    if (arrow.connector.setEndMarkerType) {
+      arrow.connector.setEndMarkerType(type);
+    }
     arrow.type = type === 'None' ? '' : type;
   }
 

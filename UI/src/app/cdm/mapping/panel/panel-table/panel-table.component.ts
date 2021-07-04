@@ -15,7 +15,7 @@ import { CommentPopupComponent } from '@popups/comment-popup/comment-popup.compo
 import { Area } from '@models/area';
 import { IRow, Row, RowOptions } from '@models/row';
 import { ITable } from '@models/table';
-import { BridgeService, IConnection } from '@services/bridge.service';
+import { BridgeService } from '@services/bridge.service';
 import { OverlayConfigOptions } from '@services/overlay/overlay-config-options.interface';
 import { OverlayService } from '@services/overlay/overlay.service';
 import { AddConstantPopupComponent } from '@popups/add-constant-popup/add-constant-popup.component';
@@ -33,6 +33,7 @@ import * as conceptMap from '../../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '@mapping/concept-transformation/concept-transformation.component';
 import { getConceptFieldType, toNoConceptRows } from '@utils/concept-util';
 import { getConstantId } from '@utils/constant';
+import { IConnection } from '@models/connector.interface';
 
 @Component({
   selector: 'app-panel-table',

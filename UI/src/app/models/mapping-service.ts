@@ -1,13 +1,13 @@
 import { ArrowCache, ConstantCache } from './arrow-cache';
 import { groupBy } from '../infrastructure/utility';
 import { Mapping, MappingNode, MappingPair } from './mapping';
-import { IConnection } from '@services/bridge.service';
 import { IRow } from './row';
 import { ITable } from './table';
 import { getLookupType } from '@utils/lookup-util';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
 import { IConcept, ITableConcepts } from '@models/concept-transformation/concept';
 import { conceptFieldsTypes } from '../app.constants';
+import { IConnection } from '@models/connector.interface';
 
 export class MappingService {
   connections: Array<IConnection>;

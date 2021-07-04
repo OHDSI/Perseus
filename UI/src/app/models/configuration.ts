@@ -1,14 +1,14 @@
-import { ArrowCache } from './arrow-cache';
+import { ArrowCacheState } from './arrow-cache';
 import { IRow, Row } from './row';
-import { IConnection } from '@services/bridge.service';
 import { SqlFunction } from '@popups/rules-popup/transformation-input/model/sql-string-functions';
 import { parse, stringify } from 'flatted';
 import { Table } from './table';
+import { IConnection } from '@models/connector.interface';
 
 export interface ConfigurationOptions {
   name?: string;
   tablesConfiguration?: any;
-  mappingsConfiguration?: ArrowCache;
+  mappingsConfiguration?: ArrowCacheState;
   source?: Table[];
   target?: Table[];
   report?: any;
