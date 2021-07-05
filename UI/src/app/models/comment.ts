@@ -10,7 +10,7 @@ export interface IComment {
   newValue(value: string): void;
 }
 
-export class Comment {
+export class Comment implements IComment {
   id: number;
   date: Date;
   hasBeenEdited: boolean;

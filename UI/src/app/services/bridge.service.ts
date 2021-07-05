@@ -4,9 +4,9 @@ import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq } from '../infrastructure/utility';
-import { Arrow, ArrowCache, ConstantCache } from '@models/arrow-cache';
+import { IArrowCache } from '@models/arrow-cache';
 import { Configuration } from '@models/configuration';
-import { IConnection, IConnector } from '@models/connector.interface';
+import { IConnector } from '@models/connector';
 import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@models/mapping-service';
 import { ITable, Table } from '@models/table';
 import { StoreService } from './store.service';
@@ -21,6 +21,8 @@ import { canLink, removeDeletedLinksFromFields } from '@utils/bridge';
 import { getConstantId } from '@utils/constant';
 import { getConnectorId } from '@utils/connector';
 import { StateService } from '@services/state/state.service';
+import { IConnection } from '@models/connection';
+import { IConstantCache } from '@models/constant-cache';
 
 @Injectable()
 export class BridgeService implements StateService {
@@ -99,8 +101,8 @@ export class BridgeService implements StateService {
   private draggedrowy = null;
   private draggedrowclass = null;
 
-  arrowsCache: ArrowCache = {};
-  constantsCache: ConstantCache = {};
+  arrowsCache: IArrowCache = {};
+  constantsCache: IConstantCache = {};
 
   similarNamesMap = (similarNamesMap as any).default;
   similarTableName = similarTableName;
@@ -307,8 +309,8 @@ export class BridgeService implements StateService {
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();
 
-    this.constantsCache = Object.assign(configuration.constantsCache);
-    this.arrowsCache = Object.assign(configuration.arrows);
+    this.constantsCache = configuration.constants
+    this.arrowsCache = configuration.mappingsConfiguration
 
     Object.keys(this.arrowsCache)
       .forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
@@ -363,9 +365,9 @@ export class BridgeService implements StateService {
 
   private _refresh(
     table: ITable,
-    arrowsCache: ArrowCache
+    arrowsCache: IArrowCache
   ) {
-    Object.values(arrowsCache).forEach((arrow: Arrow) => {
+    Object.values(arrowsCache).forEach(arrow => {
       if (table.name === arrow[ table.area ].tableName) {
         this.refreshConnector(arrow);
       }
@@ -376,7 +378,7 @@ export class BridgeService implements StateService {
     this.hideAllArrows();
 
     setTimeout(() => {
-      Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+      Object.values(this.arrowsCache).forEach(arrow => {
         this.refreshConnector(arrow);
       });
     }, 300);

@@ -35,7 +35,8 @@
       "@models/*": ["src/app/models/*"],
       "@utils/*": ["src/app/utils/*"],
       "@guards/*": ["src/app/guards/*"],
-      "@interceptors/*": ["src/app/interceptors/*"]
+      "@interceptors/*": ["src/app/interceptors/*"],
+      "@test/*": ["src/app/test/*"]
     },
     "allowSyntheticDefaultImports": true
   },

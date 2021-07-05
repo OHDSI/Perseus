@@ -1,6 +1,7 @@
 import { ITable } from './table';
 import { IRow } from './row';
-import { TableConcepts } from '@models/concept-transformation/concept';
+import { IConcepts } from '@models/concepts';
+import { IClones } from '@models/clones';
 
 export interface State {
   version?: string,
@@ -11,13 +12,7 @@ export interface State {
   },
   filteredFields?: any[],
   target: ITable[],
-  targetConfig: {
-    [key: string]: {
-      name: string, // Target table name
-      first: string,
-      data: string[] // Mapped source tables
-    }
-  },
+  targetConfig: TargetConfig,
   source: ITable[],
   mappedSource?: ITable[],
   report?: string // Full report name with extension,
@@ -30,21 +25,25 @@ export interface State {
     [key: string]: string
   },
   cdmVersions?: string[],
-  targetClones?: {
-    [key: string]: ITable[]
-  },
+  targetClones?: IClones,
   reportFile?: File,
   mappingEmpty?: boolean,
   sourceSimilar?: IRow[],
   targetSimilar?: IRow[],
   recalculateSimilar?: boolean,
-  concepts?: {
-    [key: string]: TableConcepts
-  },
+  concepts?: IConcepts,
   isMappingPage?: boolean,
   filtered?: string
   selectedSourceTableId?: number // Selected source table ID on mapping page
   selectedTargetTableId?: number // Selected target table ID on mapping page
   sourceSimilarTableId?: number // Source similar table id
   targetSimilarTableId?: number // Target similar table id
+}
+
+export interface TargetConfig {
+  [key: string]: {
+    name: string, // Target table name
+    first: string,
+    data: string[] // Mapped source tables
+  }
 }

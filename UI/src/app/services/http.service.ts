@@ -6,7 +6,7 @@ import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
 import { createNoCacheHeaders } from '@utils/http-headers';
-import { Configuration, ConfigurationOptions } from '@models/configuration';
+import { Configuration, IConfiguration } from '@models/configuration';
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -117,7 +117,7 @@ export class HttpService {
     return this.httpClient.post<Configuration>(API_URLS.getConfigurationByMappingFile(), file)
   }
 
-  configurationByMappingOptions(options: ConfigurationOptions): Observable<Blob> {
+  configurationByMappingOptions(options: IConfiguration): Observable<Blob> {
     return this.httpClient.post<Blob>(API_URLS.getMappingFileByConfiguration(), options)
   }
 }

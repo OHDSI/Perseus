@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
-import { IConnector } from 'src/app/models/connector.interface';
+import { IConnector } from '@models/connector';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Area } from 'src/app/models/area';

@@ -4,18 +4,16 @@ import { StoreService } from './store.service';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import { Observable, of } from 'rxjs';
-import { HttpService } from '@services/http.service';
 import { map } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { mappingStateToConfiguration } from '@utils/configuration';
+import { mappingStateToPlain } from '@utils/configuration';
 
 @Injectable()
 export class ConfigurationService {
 
   constructor(
     private bridgeService: BridgeService,
-    private storeService: StoreService,
-    private httpService: HttpService
+    private storeService: StoreService
   ) {
   }
 
@@ -28,8 +26,8 @@ export class ConfigurationService {
     const arrowCache = {...this.bridgeService.arrowsCache}
     const constantsCache = {...this.bridgeService.constantsCache}
 
-    const configuration = mappingStateToConfiguration(configurationName, state, arrowCache, constantsCache)
-    const jsonConfiguration = JSON.stringify(configuration);
+    const configurationPlain = mappingStateToPlain(configurationName, state, arrowCache, constantsCache)
+    const jsonConfiguration = JSON.stringify(configurationPlain);
     const blobConfiguration = new Blob([ jsonConfiguration ], { type: 'application/json' });
 
     return fromPromise(this.saveOnLocalDisk(blobConfiguration, configurationName))

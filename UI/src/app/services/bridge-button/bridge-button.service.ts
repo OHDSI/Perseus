@@ -1,7 +1,7 @@
 // Legacy
 import { Injectable } from '@angular/core';
 
-import { IConnector } from '@models/connector.interface';
+import { IConnector } from '@models/connector';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
 import { RulesPopupComponent } from '@popups/rules-popup/rules-popup.component';

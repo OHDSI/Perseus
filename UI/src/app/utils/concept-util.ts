@@ -2,7 +2,7 @@ import { Concept, IConceptField, IConceptFields } from '@models/concept-transfor
 import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
 import { environment } from '../../environments/environment';
-import { IConnector } from '@models/connector.interface';
+import { IConnector } from '@models/connector';
 import { conceptFieldsTypes } from '@app/app.constants';
 
 const conceptFieldNames = (conceptMap as any).default;

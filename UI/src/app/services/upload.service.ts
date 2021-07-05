@@ -14,6 +14,7 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { parseHttpError } from '@utils/error';
 import { jZipObjectToFile, readJsZipFile } from '@utils/jzip-util';
+import { plainToConfiguration } from '@utils/configuration';
 
 @Injectable()
 export class UploadService {
@@ -105,10 +106,9 @@ export class UploadService {
       return readJsZipFile(zipObject, 'string')
         .pipe(
           tap(content => {
-            const loadedConfig = JSON.parse(content);
-            const resultConfig = new Configuration();
-            Object.keys(loadedConfig).forEach(key => resultConfig[key] = loadedConfig[key]);
-            this.loadMapping(resultConfig)
+            const configurationPlain = JSON.parse(content)
+            const configuration = plainToConfiguration(configurationPlain)
+            this.loadMapping(configuration)
           })
         )
     } else {

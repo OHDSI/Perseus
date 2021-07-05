@@ -1,6 +1,8 @@
 import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
 import { Subscription } from 'rxjs';
 import { TransformationFunctionType } from '@models/transformation/transformation-function-type';
+import { FunctionType } from '@models/transformation/function-type';
+import { functionTypes } from '@mapping/sql-transformation/visual-transformation/visual-transformation';
 
 export interface SqlFunctionForTransformation<T = any> {
   type: TransformationFunctionType
@@ -9,21 +11,24 @@ export interface SqlFunctionForTransformation<T = any> {
 }
 
 export interface SqlFunctionForTransformationState<T = any> {
-  type: TransformationFunctionType,
+  type: FunctionType,
   value: T
 }
 
 export function toState<T>({type, value: func}: SqlFunctionForTransformation<T>): SqlFunctionForTransformationState<T> {
   return {
-    type,
+    type: type.name,
     value: func.value
   }
 }
 
 export function fromState<T>({type}: SqlFunctionForTransformationState<T>): SqlFunctionForTransformation<T> {
   return {
-    type
+    type: typeToTransformationType(type)
   }
 }
 
+function typeToTransformationType(type: FunctionType): TransformationFunctionType {
+  return functionTypes.find(funcType => funcType.name === type)
+}
 

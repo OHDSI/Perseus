@@ -1,5 +1,6 @@
 import { IRow, Row } from 'src/app/models/row';
 import { Area } from './area';
+import { Type } from 'class-transformer';
 
 export interface ITable {
   id: number;
@@ -26,11 +27,14 @@ export interface ITableOptions {
   cloneConnectedToSourceName?: string;
 }
 
-export class Table {
+export class Table implements ITable {
   id: number;
   area: Area;
   name: string;
+
+  @Type(() => Row)
   rows: IRow[];
+
   visible = true;
   sql: string;
   cloneName: string;

@@ -33,7 +33,7 @@ import * as conceptMap from '../../concept-fileds-list.json';
 import { ConceptTransformationComponent } from '@mapping/concept-transformation/concept-transformation.component';
 import { getConceptFieldType, toNoConceptRows } from '@utils/concept-util';
 import { getConstantId } from '@utils/constant';
-import { IConnection } from '@models/connector.interface';
+import { IConnection } from '@models/connection';
 
 @Component({
   selector: 'app-panel-table',
