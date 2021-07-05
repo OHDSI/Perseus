@@ -146,7 +146,7 @@ def _open_book(filepath=None):
 
 def get_column_info(current_user, report_name, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
-    report_name = secure_filename(report_name)
+    report_name = secure_filename(_allowed_file(report_name))
     path_to_schema = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{report_name}"
     try:
         table_overview = pd.read_excel(path_to_schema, table_name, dtype=str,
