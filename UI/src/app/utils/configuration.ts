@@ -36,6 +36,7 @@ export function mappingStateToPlain(configurationName: string,
 
 export function plainToConfiguration(plain: Record<string, Configuration>): Configuration {
   const configuration = plainToClass(Configuration, plain)
+  // Type decorator doesn't work with index fields
   const mapProperties = {
     mappingsConfiguration: Connection,
     constants: Row,

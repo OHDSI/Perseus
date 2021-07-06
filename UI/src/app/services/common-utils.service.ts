@@ -15,6 +15,7 @@ import { DataService } from './data.service';
 import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
+import { mainPageRouter } from '@app/app.constants';
 
 @Injectable()
 export class CommonUtilsService {
@@ -95,19 +96,8 @@ export class CommonUtilsService {
     });
 
     matDialog.afterClosed().subscribe(res => {
-      switch (res) {
-        case '':
-        case 'Cancel':
-          return;
-        case 'Don\'t save':
-          this.loadReportAndReturnToComfy();
-          return;
-        case 'Save':
-          this.saveMappingDialog(deleteSourceAndTarget, loadReport);
-          break;
-        default: {
-          this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
-        }
+      if (res === 'Delete') {
+        this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
       }
     });
   }
@@ -116,12 +106,12 @@ export class CommonUtilsService {
     this.bridgeService.resetAllMappings();
     if (deleteSourceAndTarget) {
       this.storeService.resetAllData();
-      this.router.navigateByUrl(`/comfy`);
+      this.router.navigateByUrl(`${mainPageRouter}/comfy`);
     }
   }
 
   loadReportAndReturnToComfy() {
-    this.router.navigateByUrl(`/comfy`);
+    this.router.navigateByUrl(`${mainPageRouter}/comfy`);
     this.refreshCDM();
     this.loadReport.next(true);
   }
@@ -141,7 +131,7 @@ export class CommonUtilsService {
       header: 'Delete mappings',
       okButton: 'Cancel',
       deleteButton: 'Delete',
-      deleteSourceAndTarget: false,
+      deleteSourceAndTarget: true,
     };
     this.openResetWarningDialog(settings);
   }

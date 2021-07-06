@@ -26,7 +26,7 @@ export interface IConfiguration {
 
 export class Configuration implements IConfiguration {
   name?: string;
-  tablesConfiguration?: any;
+  tablesConfiguration?: TargetConfig;
 
   @Type(() => ArrowCache)
   mappingsConfiguration?: IArrowCache;

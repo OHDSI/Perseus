@@ -15,7 +15,7 @@ export interface IConnection {
   sql?: SqlForTransformation;
 }
 
-export class Connection {
+export class Connection implements IConnection {
 
   @Type(() => Row)
   source: IRow;
