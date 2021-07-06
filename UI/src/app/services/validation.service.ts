@@ -8,26 +8,29 @@ export class ValidationService {
     constructor() { }
 
     validateInput(rowType: string, value: string): string {
+        if (value === '' || value === null) {
+          return null
+        }
         const type = rowType.match('([^(]+)')[ 0 ];
         const maxLenght = Number(rowType.substring(rowType.indexOf('(') + 1, rowType.indexOf(')')));
         let result = '';
         switch (type) {
-            case 'INTEGER':
+            case 'integer':
                 if (!value.match('^[-]?[0-9]*$')) {
                     result = 'Value must contain only digits';
                 }
                 break;
-            case 'FLOAT':
+            case 'float':
                 if (!value.match('^[-]?[0-9]*\.?[0-9]*$')) {
                     result = 'Value must contain only digits and dot';
                 }
                 break;
-            case 'DATE':
+            case 'date':
                 if (!value.match('^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$')) {
                     result = 'Format must be YYYY-MM-DD';
                 }
                 break;
-            case 'DATETIME':
+            case 'datetime':
                 if (!value.match('^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])\\s([0-1]\\d|[2][0-3])\:[0-5]\\d\:[0-5]\\d$')) {
                     result = 'Format must be YYYY-MM-DD HH:MM:SS';
                 }

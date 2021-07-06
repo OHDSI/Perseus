@@ -14,10 +14,15 @@
 
   <ng-container [ngSwitch]="mode$ | async">
     <ng-template ngSwitchCase="visual">
-      <app-visual-transformation #visualTransformation
+      <app-visual-transformation *ngIf="simplifiedFieldType else loadingFieldTypeBlock"
+                                 #visualTransformation
                                  [sql]="sql$ | async"
                                  [functionsHeight]="functionsHeight"
+                                 [fieldType]="simplifiedFieldType"
                                  [sourceFields]="sourceFields"></app-visual-transformation>
+      <ng-template #loadingFieldTypeBlock>
+        <div class="spinner" style="height: 300px"></div>
+      </ng-template>
     </ng-template>
 
     <ng-template ngSwitchCase="manual">

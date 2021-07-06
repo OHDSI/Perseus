@@ -23,7 +23,19 @@
           "skipTests": true
         },
         "@schematics/angular:service": {
+          "path": "src/app/services",
           "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "path": "src/app/guards",
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "path": "src/app/interceptors",
+          "skipTests": true
+        },
+        "@schematics/angular:interface": {
+          "path": "src/app/model"
         }
       },
       "architect": {

@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { SqlTransformMode } from '@models/transformation/sql-transform-mode';
 import { VisualTransformationComponent } from '@mapping/sql-transformation/visual-transformation/visual-transformation.component';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 import { ManualTransformationComponent } from '@mapping/sql-transformation/manual-transformation/manual-transformation.component';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { FieldTypeService } from '@services/field-type.service';
+import { FieldType } from '@utils/field-type';
 
 @Component({
   selector: 'app-sql-transformation',
@@ -34,7 +36,16 @@ export class SqlTransformationComponent implements OnInit {
   @Input()
   functionsHeight = 236
 
+  @Input()
+  fieldType: string
+
+  simplifiedFieldType: FieldType
+
   private modeChanged: boolean
+
+  constructor(private fieldTypeService: FieldTypeService,
+              private cdr: ChangeDetectorRef) {
+  }
 
   get sqlForTransformation(): SqlForTransformation {
     return this.sqlComponent.sql
@@ -55,6 +66,7 @@ export class SqlTransformationComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initFieldType()
     this.mode$ = this.sql$.pipe(
       map(sql => sql.mode ?? 'visual'),
       tap(mode => this.mode = mode)
@@ -68,5 +80,14 @@ export class SqlTransformationComponent implements OnInit {
     } else {
       this.sql = {mode}
     }
+  }
+
+  private initFieldType() {
+    this.fieldTypeService.getSimplifiedType(this.fieldType)
+      .subscribe(
+        result => this.simplifiedFieldType = result,
+        () => this.simplifiedFieldType = 'string',
+        () => this.cdr.detectChanges()
+      )
   }
 }

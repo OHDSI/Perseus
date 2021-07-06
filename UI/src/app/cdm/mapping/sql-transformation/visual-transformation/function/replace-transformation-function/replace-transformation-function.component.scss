@@ -9,9 +9,23 @@
   display: flex;
   justify-content: space-between;
 
-  input {
-    @include cdm-input();
-    background: none;
-    width: 120px;
+  label {
+    position: relative;
+
+    input {
+      @include cdm-input();
+      @include invalid-text-decoration();
+      background: none;
+      width: 120px;
+    }
+
+    span {
+      position: absolute;
+      top: 22px;
+      left: -5px;
+      right: -30px;
+      color: #FF4646;
+      font-size: 9px;
+    }
   }
 }

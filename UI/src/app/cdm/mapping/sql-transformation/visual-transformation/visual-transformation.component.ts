@@ -28,6 +28,7 @@ import {
 } from '@mapping/sql-transformation/visual-transformation/visual-transformation';
 import { ReplaySubject } from 'rxjs';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
+import { FieldType } from '@utils/field-type';
 
 @Component({
   selector: 'app-visual-transformation',
@@ -53,6 +54,9 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
 
   @Input()
   functionsHeight = 236
+
+  @Input()
+  fieldType: FieldType
 
   dirty = false
 
@@ -143,7 +147,7 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   private initFunction<T>(func: SqlFunctionForTransformation<T>, container: ViewContainerRef, value?: T) {
-    func.value = createFunctionComponentAndReturnFunction(func.type, container, this.componentFactoryResolver, value)
+    func.value = createFunctionComponentAndReturnFunction(func.type, container, this.componentFactoryResolver, value, this.fieldType)
     func.subscription = func.value.change$
       .pipe(
         takeUntil(this.ngUnsubscribe)

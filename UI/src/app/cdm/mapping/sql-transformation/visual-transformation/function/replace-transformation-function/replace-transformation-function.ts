@@ -1,12 +1,24 @@
-import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FieldType } from '@utils/field-type';
+import { ValidationService } from '@services/validation.service';
+import { TypedTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/typed-transformation-function';
 
 export interface ReplaceModel {
-  old: string
-  new: string
+  old: string | number
+  new: string | number
 }
 
-export class ReplaceTransformationFunction extends TransformationFunction<ReplaceModel> {
+export class ReplaceTransformationFunction extends TypedTransformationFunction<ReplaceModel> {
+
+  protected validationService: ValidationService
+
+  constructor(value?: ReplaceModel, type?: FieldType) {
+    super(value, type);
+  }
+
+  get fieldType(): FieldType {
+    return this.type || 'string'
+  }
 
   private get old(): string {
     return this.form.get('old').value
@@ -17,13 +29,15 @@ export class ReplaceTransformationFunction extends TransformationFunction<Replac
   }
 
   sql(): (arg: string) => string {
-    return arg => `REPLACE(${arg}, '${this.old}', '${this.new}')`
+    const shaper = this.getValueShaper()
+    return arg => `REPLACE(${arg}, ${shaper(this.old)}, ${shaper(this.new)})`
   }
 
   protected createForm(): FormGroup {
+    this.validationService = new ValidationService()
     return new FormGroup({
-      old: new FormControl(null, [Validators.required]),
-      new: new FormControl(null, [Validators.required])
+      old: new FormControl(null, [Validators.required, this.fieldTypeValidator]),
+      new: new FormControl(null, [Validators.required, this.fieldTypeValidator])
     });
   }
 }

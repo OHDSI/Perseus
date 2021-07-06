@@ -12,7 +12,11 @@ import {
 })
 export class ReplaceTransformationFunctionComponent extends TransformationFunctionComponent<ReplaceModel> {
 
-  constructor(@Inject('function') transformationFunction: ReplaceTransformationFunction) {
+  constructor(@Inject('function') protected transformationFunction: ReplaceTransformationFunction) {
     super(transformationFunction);
+  }
+
+  get fieldType() {
+    return this.transformationFunction.fieldType
   }
 }

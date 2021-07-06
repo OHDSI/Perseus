@@ -15,12 +15,14 @@ import { UpperTransformationFunction } from '@mapping/sql-transformation/visual-
 import { LowerTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/no-args-transformation-function/function/lower-transformation-function';
 import { SqlFunctionForTransformationState } from '@models/transformation/sql-function-for-transformation';
 import { FunctionType } from '@models/transformation/function-type';
+import { FieldType } from '@utils/field-type';
 
 export function createFunctionComponentAndReturnFunction<T>(functionType: TransformationFunctionType,
                                                             viewContainerRef: ViewContainerRef,
                                                             componentFactoryResolver: ComponentFactoryResolver,
-                                                            value?: T): TransformationFunction<T> {
-  const transformationFunction = functionType.createFunction(value)
+                                                            value?: T,
+                                                            fieldType?: FieldType): TransformationFunction<T> {
+  const transformationFunction = functionType.createFunction(value, fieldType)
   const injector = Injector.create({
     providers: [{
       provide: 'function', useValue: transformationFunction
@@ -40,7 +42,7 @@ export const functionTypes: TransformationFunctionType[] = [
   {
     name: FunctionType.REPLACE,
     componentClass: ReplaceTransformationFunctionComponent,
-    createFunction: (value?) => new ReplaceTransformationFunction(value),
+    createFunction: (value?, type?) => new ReplaceTransformationFunction(value, type),
   },
   {
     name: FunctionType.DATEPART,
@@ -55,7 +57,7 @@ export const functionTypes: TransformationFunctionType[] = [
   {
     name: FunctionType.CASE,
     componentClass: SwitchCaseTransformationFunctionComponent,
-    createFunction: (value?) => new SwitchCaseTransformationFunction(value)
+    createFunction: (value?, type?) => new SwitchCaseTransformationFunction(value, type)
   },
   {
     name: FunctionType.TRIM,

@@ -33,6 +33,10 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
     return this.form.get('cases') as FormArray
   }
 
+  get fieldType() {
+    return this.transformationFunction.fieldType
+  }
+
   trackBy(index: number, value: Case): string {
     return `${value.id}`
   }
