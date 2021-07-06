@@ -10,6 +10,7 @@
       <mat-tab label="SQL FUNCTION">
         <app-sql-transformation #sqlTransformationComponent
                                 [sql]="sql"
+                                [fieldType]="sourceType"
                                 [sourceFields]="sourceFields"></app-sql-transformation>
       </mat-tab>
 

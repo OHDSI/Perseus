@@ -38,11 +38,28 @@ describe('SwitchCaseTransformationFunction', () => {
           out: 3
         }
       ]
-    }, 'digit')
+    }, 'integer')
 
     const actual = transformationFunction.sql()('id')
     expect(actual).toBe(
       `CASE(id)\n\tWHEN 1 THEN 2\n\tWHEN 2 THEN 3\nEND`
+    )
+  })
+
+  it('should get sql for switch case function with date arguments', () => {
+    const transformationFunction = new SwitchCaseTransformationFunction({
+      cases: [
+        {
+          id: 1,
+          in: '2021-06-06',
+          out: '2021-06-07'
+        }
+      ]
+    }, 'date')
+
+    const actual = transformationFunction.sql()('id')
+    expect(actual).toBe(
+      `CASE(id)\n\tWHEN 2021-06-06 THEN 2021-06-07\nEND`
     )
   })
 })

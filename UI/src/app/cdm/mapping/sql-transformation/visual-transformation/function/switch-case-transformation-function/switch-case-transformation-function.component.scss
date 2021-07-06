@@ -18,18 +18,55 @@
 
     .grid {
       height: 100%;
-    }
 
-    input {
-      @include cdm-input();
-      background: none;
-      width: 100%;
-      height: 100%;
-      border-bottom: none;
-      padding: 0;
+      .row {
+        height: 32px;
+      }
 
-      &:disabled {
-        color: rgba(64, 64, 64, 0.4);
+      .cell {
+        width: 240px;
+        height: 32px;
+        padding: 6px 10px!important;
+
+        &.last-cell {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          svg {
+            cursor: pointer;
+            margin-left: 5px;
+          }
+        }
+
+        &.error {
+          border-bottom: 1px solid #FF4646;
+        }
+
+        input {
+          @include cdm-input();
+          background: none;
+          width: 100%;
+          height: 100%;
+          border-bottom: none;
+          padding: 0;
+
+          &:disabled {
+            color: rgba(64, 64, 64, 0.4);
+          }
+        }
+
+        label {
+          position: relative;
+
+          span {
+            position: absolute;
+            top: 11px;
+            left: 0;
+            color: #FF4646;
+            font-size: 9px;
+          }
+        }
       }
     }
   }
@@ -45,27 +82,6 @@
 
     &.disabled {
       color: rgba(6, 107, 187, 0.4);
-    }
-  }
-}
-
-.row {
-  height: 32px;
-}
-
-.cell {
-  width: 240px;
-  height: 32px;
-  padding: 6px 10px!important;
-
-  &.last-cell {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    svg {
-      cursor: pointer;
-      margin-left: 5px;
     }
   }
 }

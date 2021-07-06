@@ -11,8 +11,19 @@
         IN
       </th>
 
-      <td class="cell" mat-cell *matCellDef="let row; let i = index" [formGroupName]="i">
-        <input type="text" formControlName="in">
+      <td class="cell" mat-cell
+          *matCellDef="let row; let i = index"
+          [formGroupName]="i"
+          [class.error]="formArray.at(i).get('in').dirty && formArray.at(i).get('in').invalid">
+        <label>
+          <input type="text" formControlName="in">
+
+          <ng-container *ngIf="formArray.at(i).get('in') as control">
+            <span *ngIf="control.dirty && control.errors && control.errors[fieldType]">
+              {{control.errors[fieldType]}}
+            </span>
+          </ng-container>
+        </label>
       </td>
     </ng-container>
 
@@ -21,8 +32,20 @@
         OUT
       </th>
 
-      <td  class="cell last-cell" mat-cell *matCellDef="let row let i = index" [formGroupName]="i">
-        <input type="text" formControlName="out">
+      <td class="cell last-cell" mat-cell
+          *matCellDef="let row let i = index"
+          [formGroupName]="i"
+          [class.error]="formArray.at(i).get('out').dirty && formArray.at(i).get('out').invalid">
+        <label>
+          <input type="text" formControlName="out">
+
+          <ng-container *ngIf="formArray.at(i).get('out') as control">
+            <span *ngIf="control.dirty && control.errors && control.errors[fieldType]">
+              {{control.errors[fieldType]}}
+            </span>
+          </ng-container>
+        </label>
+
         <svg class="transformation-function__toolbar__remove"
              (click)="remove(i)"
              width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1,5 +1,7 @@
-import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FieldType } from '@utils/field-type';
+import { ValidationService } from '@services/validation.service';
+import { TypedTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/typed-transformation-function';
 
 export const anyValue = 'Any value'
 
@@ -14,23 +16,17 @@ export interface SwitchCaseModel {
   cases: Case[]
 }
 
-export type FieldType = 'digit' | 'string' | 'date'
+export class SwitchCaseTransformationFunction extends TypedTransformationFunction<SwitchCaseModel> {
 
-export class SwitchCaseTransformationFunction extends TransformationFunction<SwitchCaseModel> {
+  protected validationService: ValidationService
 
-  private type: FieldType = 'string'
-
-  set fieldType(type: FieldType) {
-    this.type = type
-  }
-
-  constructor(value?: SwitchCaseModel, fieldType: FieldType = 'string') {
-    super()
-    const parsed = value ? value : {cases: [{id: 1}]}
-    parsed.cases
+  constructor(value?: SwitchCaseModel, fieldType?: FieldType) {
+    super(null, fieldType)
+    this.validationService = new ValidationService()
+    const parsedValue = value ? value : {cases: [{id: 1}]}
+    parsedValue.cases
       .map(c => c.isDefault ? this.createDefaultRowControl(c) : this.createRowControl(c))
       .forEach(c => this.formArray.push(c))
-    this.fieldType = fieldType
   }
 
   get formArray() {
@@ -67,8 +63,8 @@ export class SwitchCaseTransformationFunction extends TransformationFunction<Swi
   createRowControl(value: Case) {
     return new FormGroup({
       id: new FormControl(value.id, [Validators.required]),
-      in: new FormControl(value.in, [Validators.required]),
-      out: new FormControl(value.out, [Validators.required]),
+      in: new FormControl(value.in, [Validators.required, this.fieldTypeValidator]),
+      out: new FormControl(value.out, [Validators.required, this.fieldTypeValidator]),
       isDefault: new FormControl(false, [Validators.required])
     })
   }
@@ -77,21 +73,8 @@ export class SwitchCaseTransformationFunction extends TransformationFunction<Swi
     return new FormGroup({
       id: new FormControl(value.id, [Validators.required]),
       in: new FormControl({value: anyValue, disabled: true}),
-      out: new FormControl(value.out, [Validators.required]),
+      out: new FormControl(value.out, [Validators.required, this.fieldTypeValidator]),
       isDefault: new FormControl(true, [Validators.required])
     })
-  }
-
-  private getValueShaper(): (value: string | number) => string {
-    switch (this.type) {
-      case 'string':
-        return (value: string) => `'${value}'`
-      case 'digit':
-        return (value: number) => `${value}`
-      case 'date':
-        return (value: string) => value
-      default:
-        throw new Error('Unsupported switch case data type')
-    }
   }
 }

@@ -1,10 +1,11 @@
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { FieldType } from '@utils/field-type';
 
 export abstract class TransformationFunction<T> {
-  private readonly formGroup: FormGroup
+  protected readonly formGroup: FormGroup
 
-  constructor(value?: T) {
+  constructor(value?: T, protected readonly type?: FieldType) {
     this.formGroup = this.createForm()
     if (value) {
       this.formGroup.setValue(value)

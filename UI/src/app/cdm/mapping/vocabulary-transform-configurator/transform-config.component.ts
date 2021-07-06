@@ -41,6 +41,8 @@ export class TransformConfigComponent implements OnInit {
   @ViewChild('lookupComponent')
   lookupComponent: LookupComponent
 
+  sourceType: string
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
     public dialogRef: MatDialogRef<TransformConfigComponent>,
@@ -73,12 +75,15 @@ export class TransformConfigComponent implements OnInit {
     const target = arrowCache[connector.id].connector.target
     const sourceFields = Object.values(arrowCache)
       .filter(this.bridgeService.sourceConnectedToSameTarget(target, true))
-      .map(item => item.source.name);
+      .map(({source}) => ({name: source.name, type: source.type}));
     this.connector = connector;
     this.sourceTables = this.storeService.state.source;
-    this.sourceFields = [...new Set(sourceFields)].join(',')
-    this.titleInfo = `${sourceFields} - ${connector.target.name}`;
+    this.sourceFields = [...new Set(sourceFields.map(field => field.name))].join(',')
+    this.titleInfo = `${this.sourceFields} - ${connector.target.name}`;
     this.lookupDisabled = !target.name.endsWith('concept_id');
+    if (sourceFields.length) {
+      this.sourceType = sourceFields[0].type
+    }
   }
 
   onApply() {
