@@ -23,6 +23,7 @@ const routes: Routes = [
       {
         path: `mapping`,
         canLoad: [MappingGuard],
+        canActivate: [MappingGuard],
         loadChildren: () => import('./mapping/mapping.module')
           .then(module => module.MappingModule)
       },
