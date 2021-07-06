@@ -35,6 +35,11 @@ export class ValidationService {
                     result = 'Format must be YYYY-MM-DD HH:MM:SS';
                 }
                 break;
+            case 'time':
+                if (!value.match('^([0-1]\\d|[2][0-3])\:[0-5]\\d\:[0-5]\\d$')) {
+                  result = 'Format must be HH:MM:SS';
+                }
+                break;
             default:
                 if (maxLenght && value.length > maxLenght) {
                     result = 'Max length exceeded';
