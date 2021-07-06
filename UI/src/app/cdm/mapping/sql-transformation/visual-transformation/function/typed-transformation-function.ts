@@ -24,7 +24,7 @@ export abstract class TypedTransformationFunction<T> extends TransformationFunct
       case 'datetime':
       case 'time':
         return (value: string) => value
-      default: // Other types handle as char
+      default: // Other types handle as string
         return (value: string) => `'${value}'`
     }
   }
