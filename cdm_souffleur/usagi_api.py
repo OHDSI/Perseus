@@ -24,7 +24,7 @@ def create_codes(current_user):
         source_frequency_column = params['sourceFrequency']
         auto_concept_id_column = params['autoConceptId']
         additional_info_columns = params['additionalInfo']
-        concept_ids_or_atc = params['conceptIdsOrAtc'] if 'conceptIdsOrAtc' in params else ''
+        concept_ids_or_atc = params['columnType']
         codes = request.json['codes']
         filters = request.json['filters']
         create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)

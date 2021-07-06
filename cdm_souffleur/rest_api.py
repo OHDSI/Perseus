@@ -7,7 +7,8 @@ from flask import Flask, request, jsonify, send_from_directory
 from cdm_souffleur.services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
 from cdm_souffleur.services.source_schema import load_schema_to_server, \
-    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, get_column_info
+    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, \
+    get_column_info, get_field_type
 from cdm_souffleur.services.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import AuthorizationError
 import traceback
@@ -275,6 +276,14 @@ def delete_lookup(current_user):
 @token_required
 def get_schema_name(current_user):
     return jsonify(current_user)
+
+
+@bp.route('/api/get_field_type', methods=['GET'])
+@token_required
+def get_field_type_call(current_user):
+    type = request.args['type']
+    result_type = get_field_type(type)
+    return jsonify(result_type)
 
 app.register_blueprint(bp)
 app.register_blueprint(vocab_search_api)
