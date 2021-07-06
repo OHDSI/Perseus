@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from cdm_souffleur.utils import FORMAT_SQL_FOR_SPARK_PARAMS, GENERATE_CDM_XML_PATH
-from cdm_souffleur.utils.column_types_mapping import postgres_types_mapping
+from cdm_souffleur.utils.column_types_mapping import postgres_types_mapping, postgres_types
 from cdm_souffleur.utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
     LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
 import xml.etree.ElementTree as ElementTree
@@ -106,6 +106,19 @@ def convert_column_type(type):
         return postgres_types_mapping[type.upper()]
     else:
         return type.upper()
+
+
+def remove_parentheses(type):
+    return re.sub(r'\([^)]*\)', '', type)
+
+
+def get_field_type(type):
+    converted_type = remove_parentheses(convert_column_type(type.upper())).lower()
+    for key in postgres_types:
+        if converted_type in postgres_types[key]:
+            return key
+    return 'unknown type'
+
 
 def get_view_from_db(current_user, view_sql):
     view_sql = addSchemaNames(current_user, view_sql)

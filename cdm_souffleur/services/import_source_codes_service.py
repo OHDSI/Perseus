@@ -1,7 +1,7 @@
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
-from cdm_souffleur.model import atc_to_rxnorm
+from cdm_souffleur.model.atc_to_rxnorm import *
 from cdm_souffleur.model.code_mapping import CodeMapping, CodeMappingEncoder, MappingTarget, \
     MappingStatus
 from cdm_souffleur.model.conceptVocabularyModel import Source_To_Concept_Map
@@ -52,9 +52,10 @@ def add_source_code(row, source_code_column, source_name_column, source_frequenc
         new_code.source_frequency = -1
     if auto_concept_id_column:
         if concept_ids_or_atc == CONCEPT_IDS:
-            for concept_id in row[auto_concept_id_column].split(';'):
+            new_code.source_auto_assigned_concept_ids = set()
+            for concept_id in str(row[auto_concept_id_column]).split(';'):
                 if concept_id != "":
-                    new_code.source_auto_assigned_concept_ids = new_code.source_auto_assigned_concept_ids.add(
+                    new_code.source_auto_assigned_concept_ids.add(
                         int(concept_id))
         else:
             concept_id_2_query = atc_to_rxnorm.select().where(atc_to_rxnorm.concept_code == row[auto_concept_id_column])

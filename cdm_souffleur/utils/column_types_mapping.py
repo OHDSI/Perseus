@@ -36,3 +36,33 @@ postgres_types_mapping = {
      'SMALLMONEY': 'MONEY',
      'IMAGE': 'BYTEA'
 }
+
+postgres_types = {
+     'integer': ['bigint', 'int8', 'bigserial', 'serial8', 'integer', 'int', 'int4', 'smallint', 'int2', 'smallserial', 'serial2', 'serial', 'serial4'],
+     'bit': ['bit', 'bit varying', 'varbit'],
+     'boolean': ['boolean', 'bool'],
+     'box': ['box'],
+     'byte': ['bytea'],
+     'char': ['character', 'char', 'character varying', 'varchar', 'text'],
+     'network': ['cidr', 'inet'],
+     'circle': ['circle'],
+     'date': ['date'],
+     'float': ['double precision', 'float8', 'numeric', 'decimal', 'real', 'float4'],
+     'timespan': ['interval'],
+     'text_json': ['json'],
+     'binary_json': ['jsonb'],
+     'line': ['line', 'lseg'],
+     'macaddr': ['macaddr'],
+     'money': ['money'],
+     'path': ['path'],
+     'log_seq': ['pg_lsn'],
+     'point': ['point'],
+     'polygon': ['polygon'],
+     'time': ['time', 'time without time zone', 'time with time zone', 'timetz'],
+     'datetime': ['timestamp', 'timestamp without time zone', 'timestamp with time zone', 'timestamptz'],
+     'tsquery': ['tsquery'],
+     'tsvector': ['tsvector'],
+     'txid_snapshot': ['txid_snapshot'],
+     'uuid': ['uuid'],
+     'xml': ['xml']
+}
