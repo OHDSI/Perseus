@@ -1,19 +1,22 @@
-import { ArrowCache, ArrowCacheState, ConstantCache } from '@models/arrow-cache';
+import { IArrowCache } from '@models/arrow-cache';
 import { State } from '@models/state';
-import { Configuration, ConfigurationOptions } from '@models/configuration';
-import { IConnector, IConnectorState } from '@models/connector.interface';
-import { IRow, IRowState } from '@models/row';
+import { Configuration, IConfiguration } from '@models/configuration';
+import { IConstantCache } from '@models/constant-cache';
+import { classToPlain, plainToClass } from 'class-transformer';
+import { Connection } from '@models/connection';
+import { Row } from '@models/row';
+import { Table } from '@models/table';
 
 /**
  * @return Configuration - Flyweight mapping object to save to a file
  */
-export function mappingStateToConfiguration(configurationName: string,
-                                            state: State,
-                                            arrowCache: ArrowCache,
-                                            constantsCache: ConstantCache): Configuration {
-  const options: ConfigurationOptions = {
+export function mappingStateToPlain(configurationName: string,
+                                    state: State,
+                                    arrowCache: IArrowCache,
+                                    constantsCache: IConstantCache): Record<string, Configuration> {
+  const options: IConfiguration = {
     name: configurationName,
-    mappingsConfiguration: arrowCacheToState(arrowCache),
+    mappingsConfiguration: arrowCache,
     tablesConfiguration: state.targetConfig,
     source: state.source,
     target: state.target,
@@ -27,41 +30,24 @@ export function mappingStateToConfiguration(configurationName: string,
     recalculateSimilar: state.recalculateSimilar,
     concepts: state.concepts
   }
-
-  return new Configuration(options)
+  const configuration = new Configuration(options)
+  return classToPlain<Configuration>(configuration)
 }
 
-function arrowCacheToState(arrowCache: ArrowCache): ArrowCacheState {
-  const result = {}
-  Object.keys(arrowCache).forEach(key => {
-    const {source, target, connector, transforms, lookup, type, sql} = arrowCache[key]
-    result[key] = {
-      source: rowToState(source),
-      target: rowToState(target),
-      connector: connectorToState(connector),
-      transforms,
-      lookup,
-      type,
-      sql
-    }
-  })
-  return result
-}
-
-function rowToState(row: IRow): IRowState {
-  const copy = {...row}
-  delete copy.htmlElement
-
-  return copy as IRowState
-}
-
-function connectorToState(connector: IConnector): IConnectorState {
-  const {id, source, target, selected, type} = connector
-  return {
-    id,
-    source: rowToState(source),
-    target: rowToState(target),
-    selected,
-    type
+export function plainToConfiguration(plain: Record<string, Configuration>): Configuration {
+  const configuration = plainToClass(Configuration, plain)
+  // Type decorator doesn't work with index fields
+  const mapProperties = {
+    mappingsConfiguration: Connection,
+    constants: Row,
+    targetClones: Table
   }
+  for (const property of Object.keys(mapProperties)) {
+    Object.keys(configuration[property]).forEach(key => {
+      const ref = mapProperties[property]
+      configuration[property][key] = plainToClass(ref, configuration[property][key])
+    })
+  }
+
+  return configuration
 }

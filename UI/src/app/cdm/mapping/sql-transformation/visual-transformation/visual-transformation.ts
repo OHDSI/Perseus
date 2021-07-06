@@ -14,6 +14,7 @@ import { TrimTransformationFunction } from '@mapping/sql-transformation/visual-t
 import { UpperTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/no-args-transformation-function/function/upper-transformation-function';
 import { LowerTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/no-args-transformation-function/function/lower-transformation-function';
 import { SqlFunctionForTransformationState } from '@models/transformation/sql-function-for-transformation';
+import { FunctionType } from '@models/transformation/function-type';
 
 export function createFunctionComponentAndReturnFunction<T>(functionType: TransformationFunctionType,
                                                             viewContainerRef: ViewContainerRef,
@@ -37,37 +38,37 @@ export function createFunctionComponentAndReturnFunction<T>(functionType: Transf
 
 export const functionTypes: TransformationFunctionType[] = [
   {
-    name: 'REPLACE',
+    name: FunctionType.REPLACE,
     componentClass: ReplaceTransformationFunctionComponent,
     createFunction: (value?) => new ReplaceTransformationFunction(value),
   },
   {
-    name: 'DATEPART',
+    name: FunctionType.DATEPART,
     componentClass: DatePartTransformationFunctionComponent,
     createFunction: (value?) => new DatePartTransformationFunction(value)
   },
   {
-    name: 'DATEADD',
+    name: FunctionType.DATEADD,
     componentClass: DateAddTransformationFunctionComponent,
     createFunction: (value?) => new DateAddTransformationFunction(value)
   },
   {
-    name: 'CASE',
+    name: FunctionType.CASE,
     componentClass: SwitchCaseTransformationFunctionComponent,
     createFunction: (value?) => new SwitchCaseTransformationFunction(value)
   },
   {
-    name: 'TRIM',
+    name: FunctionType.TRIM,
     componentClass: NoArgsTransformationFunctionComponent,
     createFunction: (value?) => new TrimTransformationFunction(value)
   },
   {
-    name: 'UPPER',
+    name: FunctionType.UPPER,
     componentClass: NoArgsTransformationFunctionComponent,
     createFunction: (value?) => new UpperTransformationFunction(value)
   },
   {
-    name: 'LOWER',
+    name: FunctionType.LOWER,
     componentClass: NoArgsTransformationFunctionComponent,
     createFunction: (value?) => new LowerTransformationFunction(value)
   }

@@ -1,6 +1,7 @@
-import { IComment } from 'src/app/models/comment';
+import { Comment, IComment } from 'src/app/models/comment';
 import { Area } from './area';
-import { ConnectorType } from './connector.interface';
+import { ConnectorType } from './connector';
+import { Exclude, Type } from 'class-transformer';
 
 export interface RowOptions {
   id?: number;
@@ -41,7 +42,6 @@ export interface IRow {
   values: any[];
   comments: IComment[];
   visible?: boolean;
-  htmlElement: any;
   constant: string;
   increment: boolean;
   selected: boolean;
@@ -55,35 +55,16 @@ export interface IRow {
   cloneConnectedToSourceName: string;
   condition: string;
 
+  view: IRowView;
+
+  htmlElement: any // Getter
+
   removeConnections(): void;
   setType(type: ConnectorType): void;
 }
 
-/*
- * Flyweight copy of IRow
-**/
-export interface IRowState {
-  id: number;
-  tableId: number;
-  tableName: string;
-  name: string;
-  type: string;
-  area: string;
-  values: any[];
-  comments: IComment[];
-  visible?: boolean;
-  constant: string;
-  increment: boolean;
-  selected: boolean;
-  connectorTypes: ConnectorType[];
-  uniqueIdentifier: boolean;
-  sqlTransformation: string;
-  sqlTransformationActive: boolean;
-  isNullable: boolean;
-  grouppedFields: IRowState[];
-  cloneTableName: string;
-  cloneConnectedToSourceName: string;
-  condition: string
+export interface IRowView {
+  htmlElement?: any;
 }
 
 export class Row implements IRow {
@@ -93,23 +74,29 @@ export class Row implements IRow {
   name: string;
   type: string;
   area: string;
-  comments: IComment[];
   constant: string;
   increment: boolean;
   values: any[];
   visible = true;
   connections = [];
-  htmlElement: any = null;
   selected: boolean;
   connectorTypes: ConnectorType[];
   uniqueIdentifier: boolean;
   sqlTransformation: string;
   sqlTransformationActive: boolean;
   isNullable: boolean;
-  grouppedFields: IRow[];
   cloneTableName: string;
   cloneConnectedToSourceName: string;
   condition: string;
+
+  @Type(() => Row)
+  grouppedFields: IRow[];
+
+  @Type(() => Comment)
+  comments: IComment[];
+
+  @Exclude()
+  view: IRowView = {};
 
   get hasConstant(): boolean {
     return !!this.constant;
@@ -129,6 +116,14 @@ export class Row implements IRow {
 
   get key(): string {
     return `${this.tableName}-${this.name}`;
+  }
+
+  get htmlElement() {
+    return this.view.htmlElement
+  }
+
+  set htmlElement(value) {
+    this.view.htmlElement = value
   }
 
   constructor(options: RowOptions = {}) {

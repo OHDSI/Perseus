@@ -321,8 +321,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
         if (tbl instanceof Table) {
           const table = tbl as Table;
           this.removeCloneConcepts(table);
-          this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ].filter(item => item.id !== table.id);
-          const arrowsToDelete = Object.values(this.bridgeService.arrowsCache).filter(item => item.target.tableId === table.id);
+          this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ]
+            .filter(item => item.id !== table.id);
+          const arrowsToDelete = Object.values(this.bridgeService.arrowsCache)
+            .filter(item => item.target.tableId === table.id);
           arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
           if (!this.storeService.state.targetClones[ table.name ].length) {
             delete this.storeService.state.targetClones[ table.name ];

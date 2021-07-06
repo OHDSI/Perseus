@@ -30,6 +30,8 @@
   &__message {
     min-width: 200px;
     margin-bottom: 34px;
+    max-height: 600px;
+    overflow-y: auto;
   }
 
   &__buttons {

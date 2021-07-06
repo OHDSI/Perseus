@@ -1,56 +1,115 @@
 import { IRow } from 'src/app/models/row';
 import { getSVGPoint } from '@utils/draw-utilites';
-import { extractHtmlElement } from '@utils/html-utilities';
-import { ConnectorType, IConnector } from './connector.interface';
+import { ConnectorType, IConnectionView, IConnector } from './connector';
 import { ElementRef, EventEmitter, Renderer2 } from '@angular/core';
+import { Exclude } from 'class-transformer';
+import { checkAndChangeHtmlElement, generateSvgPath } from '@utils/arrow';
 
 // TODO Hide properties with WeakMap
 
 const markerEndAttributeIndex = 9;
 
 export class Arrow implements IConnector {
-  clicked: EventEmitter<IConnector>;
-
-  get svgPath(): SVGLineElement {
-    return this.path;
-  }
-
-  canvas: any;
-  button: Element;
   selected = false;
 
-  sourceSVGPoint: any;
-  targetSVGPoint: any;
-
-  path: any;
-  title: any;
-  titleText: any;
-  type: ConnectorType;
-
-  private removeClickListener: any;
+  @Exclude()
+  view: IConnectionView;
 
   constructor(
     canvasRef: ElementRef,
     public id: string,
     public source: IRow,
     public target: IRow,
-    type: ConnectorType,
-    private renderer: Renderer2
+    public type: ConnectorType,
+    renderer: Renderer2
   ) {
-    this.canvas = canvasRef ? canvasRef.nativeElement : null;
-    this.clicked = new EventEmitter<IConnector>();
-    this.type = type;
+    this.view = {
+      canvas: canvasRef ? canvasRef.nativeElement : null,
+      clicked: new EventEmitter<IConnector>(),
+      renderer
+    }
+  }
+
+  get renderer() {
+    return this.view.renderer
+  }
+
+  get sourceSVGPoint() {
+    return this.view.sourceSVGPoint
+  }
+
+  set sourceSVGPoint(value) {
+    this.view.sourceSVGPoint = value
+  }
+
+  get targetSVGPoint() {
+    return this.view.targetSVGPoint
+  }
+
+  set targetSVGPoint(value) {
+    this.view.targetSVGPoint = value
+  }
+
+  get canvas() {
+    return this.view.canvas
+  }
+
+  get path() {
+    return this.view.path
+  }
+
+  set path(value) {
+    this.view.path = value
+  }
+
+  get svgPath(): SVGLineElement {
+    return this.path
+  }
+
+  get removeClickListener() {
+    return this.view.removeClickListener
+  }
+
+  set removeClickListener(value) {
+    this.view.removeClickListener = value
+  }
+
+  get title() {
+    return this.view.title
+  }
+
+  set title(value) {
+    this.view.title = value
+  }
+
+  get titleText() {
+    return this.view.titleText
+  }
+
+  set titleText(value) {
+    this.view.titleText = value
+  }
+
+  get button() {
+    return this.view.button
+  }
+
+  set button(value) {
+    this.view.button = value
+  }
+
+  get clicked() {
+    return this.view.clicked
   }
 
   draw(): void {
-
     let source;
     let target;
 
-    source = this.checkAndChangeHtmlElement(this.source);
-    target = this.checkAndChangeHtmlElement(this.target);
+    source = checkAndChangeHtmlElement(this.source);
+    target = checkAndChangeHtmlElement(this.target);
 
-      // TODO Check htmlElement for existance
+    // TODO Check htmlElement for existance
     this.sourceSVGPoint = getSVGPoint(source, this.canvas);
     this.targetSVGPoint = getSVGPoint(target, this.canvas);
 
@@ -70,7 +129,7 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(
       this.path,
       'd',
-      this.generateSvgPath([x1, y1], [x2, y2])
+      generateSvgPath([x1, y1], [x2, y2])
     );
 
     this.renderer.setAttribute(this.path, 'fill', 'none');
@@ -114,7 +173,7 @@ export class Arrow implements IConnector {
     this.renderer.setAttribute(
       this.path,
       'd',
-      this.generateSvgPath([x1, y1], [x2, y2])
+      generateSvgPath([x1, y1], [x2, y2])
     );
 
     this.renderer.setAttribute(this.path, 'startXY', `${x1},${y1}`);
@@ -207,36 +266,8 @@ export class Arrow implements IConnector {
     }
   }
 
-  private generateSvgPath(pointStart: number[], pointEnd: number[]): string {
-    const x1 = pointStart[0];
-    const y1 = pointStart[1];
-    const x2 = pointEnd[0];
-    const y2 = pointEnd[1];
-
-    // M173,475 C326,467 137,69 265,33
-    return `M${x1},${y1} C${x1 + 200},${y1} ${x2 - 200},${y2} ${x2},${y2}`;
-  }
-
   private refreshPathHtmlElement() {
     const id = this.path.attributes.id.nodeValue;
     this.path = document.getElementById(id);
-  }
-
-  private checkAndChangeHtmlElement(row: IRow): IRow {
-    const foundElements = document.getElementsByClassName(
-      `item-${row.area}-${row.tableName}-${row.cloneTableName ? row.cloneTableName : ''}-${row.cloneConnectedToSourceName ? row.cloneConnectedToSourceName : ''}-${row.name}`
-    );
-    const foundElement = extractHtmlElement(foundElements, null);
-
-    if (foundElement) {
-      row.htmlElement = foundElement;
-    } else {
-      const tableElements = document.getElementsByClassName(
-        `panel-header-${row.tableName}`
-      );
-      row.htmlElement = extractHtmlElement(tableElements, row.htmlElement);
-    }
-
-    return row;
   }
 }
