@@ -13,6 +13,7 @@ import { NoArgsTransformationFunctionComponent } from '@mapping/sql-transformati
 import { TrimTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/no-args-transformation-function/function/trim-transformation-function';
 import { UpperTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/no-args-transformation-function/function/upper-transformation-function';
 import { LowerTransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/no-args-transformation-function/function/lower-transformation-function';
+import { SqlFunctionForTransformationState } from '@models/transformation/sql-function-for-transformation';
 
 export function createFunctionComponentAndReturnFunction<T>(functionType: TransformationFunctionType,
                                                             viewContainerRef: ViewContainerRef,
@@ -69,5 +70,12 @@ export const functionTypes: TransformationFunctionType[] = [
     name: 'LOWER',
     componentClass: NoArgsTransformationFunctionComponent,
     createFunction: (value?) => new LowerTransformationFunction(value)
+  }
+]
+
+export const defaultFunctions: SqlFunctionForTransformationState[] = [
+  {
+    type: null,
+    value: null
   }
 ]

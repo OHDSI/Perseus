@@ -13,7 +13,7 @@ export class DatePartTransformationFunction extends TransformationFunction<DateP
   }
 
   sql(): (arg: string) => string {
-    return (arg: string) => `DATEPART(${arg}, ${this.part})`;
+    return (arg: string) => `date_part('${this.part}', ${arg})`;
   }
 
   protected createForm(): FormGroup {

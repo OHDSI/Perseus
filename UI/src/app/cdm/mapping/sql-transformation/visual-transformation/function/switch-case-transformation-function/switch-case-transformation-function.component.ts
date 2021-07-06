@@ -55,7 +55,11 @@ export class SwitchCaseTransformationFunctionComponent extends TransformationFun
   }
 
   remove(index: number) {
+    const isDefault = this.formArray.at(index).value?.isDefault
     this.formArray.removeAt(index)
+    if (isDefault) {
+      this.hasDefault = false
+    }
   }
 
   private newId() {

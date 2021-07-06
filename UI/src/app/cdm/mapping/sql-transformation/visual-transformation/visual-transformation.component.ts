@@ -23,6 +23,7 @@ import { initCodeMirror } from '@utils/code-mirror';
 import { TransformationFunctionType } from '@models/transformation/transformation-function-type';
 import {
   createFunctionComponentAndReturnFunction,
+  defaultFunctions,
   functionTypes
 } from '@mapping/sql-transformation/visual-transformation/visual-transformation';
 import { ReplaySubject } from 'rxjs';
@@ -72,8 +73,9 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   @Input()
-  set sql(value: SqlForTransformation) {
-    this.state$.next(value.functions ?? [])
+  set sql({functions}: SqlForTransformation) {
+    const parsed = functions && functions !== [] ? functions : defaultFunctions
+    this.state$.next(parsed)
   }
 
   get containers() {
@@ -150,11 +152,13 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
   }
 
   private updateFunctions<T>(values: T[]) {
-    this.functions.forEach((func, index) => {
-      const container = this.containers[index]
-      const value = values[index]
-      this.initFunction(func, container, value)
-    })
+    this.functions
+      .filter(({type}) => type)
+      .forEach((func, index) => {
+        const container = this.containers[index]
+        const value = values[index]
+        this.initFunction(func, container, value)
+      })
 
     this.cdr.detectChanges()
     this.updatePreview()

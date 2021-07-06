@@ -31,7 +31,13 @@ export abstract class TransformationFunction<T> {
     return this.formGroup.value
   }
 
+  /**
+   * @return function with one argument which this sql func applied that return sql expression
+   */
   abstract sql(): (arg: string) => string
 
+  /**
+   * @return form for sql function arguments
+   */
   protected abstract createForm(): FormGroup
 }

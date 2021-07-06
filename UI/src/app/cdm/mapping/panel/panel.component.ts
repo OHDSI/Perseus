@@ -363,10 +363,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.sourceSimilarTableId = sourceSimilarTableId
     this.targetSimilarTableId = targetSimilarTableId
 
-    this.storeService.on<number>('selectedSourceTableId')
+    this.storeService.on('selectedSourceTableId')
       .subscribe(value => this.selectedSourceTableId = value)
 
-    this.storeService.on<number>('selectedTargetTableId')
+    this.storeService.on('selectedTargetTableId')
       .subscribe(value => this.selectedTargetTableId = value)
   }
 }
