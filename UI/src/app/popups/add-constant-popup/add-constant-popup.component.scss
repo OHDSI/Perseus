@@ -1,5 +1,9 @@
 @import '../../styles/variables';
 
+:host {
+  position: relative;
+}
+
 .dialog {
   width: 272px;
   height: 164px;
@@ -8,6 +12,9 @@
   align-items: flex-start;
   padding: 22px 0 22px 0;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  position: relative;
+  bottom: 168px;
+  left: 67px;
 
   h4 {
     color: $grey;
