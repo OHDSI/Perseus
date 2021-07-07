@@ -11,4 +11,5 @@ export interface FilterValue {
   count?: number;
   filterIndex?: number; // Parent index
   disabled: boolean;
+  checked?: boolean
 }

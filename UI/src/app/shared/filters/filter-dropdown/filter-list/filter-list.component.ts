@@ -31,7 +31,9 @@ export class FilterListComponent {
   }
 
   onCheck(index: number) {
-    this.check.emit(this.filteredValues[index]);
+    let value = this.filteredValues[index]
+    value = this.selectedValues.find(v => v.name === value.name) || value
+    this.check.emit({...value, checked: !value.checked});
   }
 
   onFilter(value: string) {

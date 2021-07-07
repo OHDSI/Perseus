@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { fillFilters, getFilters } from '@models/code-mapping/filters';
+import { getFilters } from '@models/code-mapping/filters';
 import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { Filter } from '@models/filter/filter';
 
 @Component({
   selector: 'app-column-mapping-filters',
@@ -13,7 +14,7 @@ export class ColumnMappingFiltersComponent implements OnInit {
   @Input()
   form: FormGroup
 
-  dropdownFilters = getFilters()
+  dropdownFilters: Filter[]
 
   constructor(private importCodesService: ImportCodesService) { }
 
@@ -22,6 +23,12 @@ export class ColumnMappingFiltersComponent implements OnInit {
   }
 
   private initFilters() {
-    fillFilters(this.dropdownFilters, this.importCodesService)
+    this.importCodesService.fetchFilters()
+      .subscribe(result => {
+        this.dropdownFilters = getFilters()
+        Object.keys(result).forEach(key =>
+          this.dropdownFilters.find(filter => filter.field === key).values = result[key]
+        )
+      })
   }
 }

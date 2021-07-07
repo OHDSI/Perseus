@@ -10,7 +10,10 @@ import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-
 import { BaseComponent } from '@shared/base/base.component';
 import { createFiltersForm } from '@models/code-mapping/filters';
 import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
-import { mapFormFiltersToBackEndFilters } from '@models/code-mapping/search-concept-filters';
+import {
+  mapBackEndFilterToFormFilters,
+  mapFormFiltersToBackEndFilters
+} from '@models/code-mapping/search-concept-filters';
 import { ConsoleHeader } from '@models/code-mapping/console-header';
 
 @Component({
@@ -87,7 +90,7 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
 
   private initFiltersForm() {
     this.filtersForm = createFiltersForm()
-    const formValue = this.importCodesService.filters
+    const formValue = mapBackEndFilterToFormFilters(this.importCodesService.filters)
     if (formValue) {
       this.filtersForm.patchValue(formValue)
     }

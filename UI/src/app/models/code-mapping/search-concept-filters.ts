@@ -48,6 +48,15 @@ export function mapFormFiltersToBackEndFilters(filters, searchMode: SearchMode =
   return searchMode ? {...result, searchMode} : result
 }
 
+export function mapBackEndFilterToFormFilters(filters) {
+  return {
+    ...filters,
+    conceptClasses: filters.conceptClasses.map(name => ({name, checked: true, disabled: false})),
+    vocabularies: filters.vocabularies.map(name => ({name, checked: true, disabled: false})),
+    domains: filters.domains.map(name => ({name, checked: true, disabled: false}))
+  }
+}
+
 export const defaultSearchMode = SearchMode.SEARCH_TERM_AS_QUERY
 
 export function defaultFiltersAnSearchMode() {
