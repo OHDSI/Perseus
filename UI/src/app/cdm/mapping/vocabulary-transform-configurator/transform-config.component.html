@@ -1,0 +1,28 @@
+<div class="apply-transformation">
+  <h3>Apply {{tab}} Transformation <span>{{ titleInfo }}</span></h3>
+  <mat-icon class="close"
+          mat-dialog-close>close
+  </mat-icon>
+      <app-sql-transformation [sql]="sql"
+                              *ngIf="tab === 'SQL Function'"></app-sql-transformation>
+      <app-lookup *ngIf="tab === 'Lookup'"
+                  [lookupType]="lookupType"
+                  [lookup]="lookup"
+                  [name]="lookupName"
+                  [notConceptTableField]="'true'"></app-lookup>
+  <div class="buttons">
+    <button
+      mat-button
+      (click)="closeDialog()"
+      class="button-cancel">Cancel
+    </button>
+    <button
+      mat-button
+      mat-flat-button
+      color="accent"
+      (click)="add()"
+      [disabled]="addDisabled()"
+      class="button-add">Apply
+    </button>
+  </div>
+</div>

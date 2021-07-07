@@ -1,24 +1,25 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
-import { ComfyComponent } from './components/comfy/comfy.component';
-import { MappingComponent } from './components/mapping/mapping.component';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth/auth.guard';
+import { AlreadyLoggedInGuard } from './guards/auth/already-logged-in.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: `/comfy`,
-    pathMatch: 'full'
+    canActivate: [AlreadyLoggedInGuard],
+    loadChildren: () => import('./auth/auth.module')
+      .then(module => module.AuthModule)
   },
   {
-    path: `comfy`,
-    component: ComfyComponent,
-    data: { breadcrumb: 'Link Tables' },
+    path: 'perseus',
+    canLoad: [AuthGuard],
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./cdm/cdm.module')
+      .then(module => module.CdmModule),
   },
   {
-    path: `mapping`,
-    component: MappingComponent,
-    data: { breadcrumb: 'Link Fields' }
+    path: '**',
+    redirectTo: 'perseus'
   }
 ];
 

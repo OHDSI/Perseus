@@ -1,9 +1,12 @@
 import { Observable, Observer } from 'rxjs';
-import { WebsocketConfig } from './websocket.config';
-import { distinctUntilChanged, share } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { parseHttpError } from '../utilites/error';
+import { OnDestroy } from '@angular/core';
 
-export abstract class WebsocketService {
-  status$: Observable<boolean>;
+export abstract class WebsocketService implements OnDestroy {
+
+  protected status$: Observable<boolean>;
 
   protected connection$: Observer<boolean>;
 
@@ -11,11 +14,22 @@ export abstract class WebsocketService {
     this.initStatusStream();
   }
 
-  abstract connect(config: WebsocketConfig): Observable<boolean>;
+  ngOnDestroy(): void {
+    this.disconnect()
+  }
 
-  abstract on(destination: string): Observable<string | any>;
+  handleError(error: any): string {
+    if (error instanceof HttpErrorResponse) {
+      return `Error: ${parseHttpError(error)}`
+    }
+    return `Error: ${error.reason ? error.reason : error.message}`
+  }
 
-  abstract send(destination: string, data: string | any): void;
+  abstract connect(): Observable<boolean>;
+
+  abstract on(): Observable<string | any>;
+
+  abstract send(data: string | any): void;
 
   abstract disconnect(): void;
 
@@ -23,8 +37,10 @@ export abstract class WebsocketService {
     this.status$ = new Observable<boolean>(
       observer => this.connection$ = observer
     ).pipe(
-      share(),
-      distinctUntilChanged()
+      catchError(error => {
+        this.disconnect()
+        throw error
+      })
     );
   }
 }

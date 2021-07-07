@@ -12,22 +12,25 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es5",
-    "resolveJsonModule":true,
+    "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "paths": {
+    }
   },
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules"
+  ],
   "linterOptions": {
-      "exclude": [
-          "node_modules/**",
-          "node_modules/rxjs/**",
-          "node_modules/@angular/**"
-      ]
+    "exclude": [
+      "node_modules/**",
+      "node_modules/rxjs/**",
+      "node_modules/@angular/**"
+    ]
   }
-
 }

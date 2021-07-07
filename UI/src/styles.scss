@@ -17,9 +17,15 @@ html, body {
 
 body {
   margin: 0;
+  min-width: 1440px;
 }
 
 app-root {
+  width: 100%;
+  height: 100%;
+}
+
+app-cdm {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -70,7 +76,6 @@ a {
 app-dialog {
   width: 240px;
 }
-
 
 .drag-over {
   background-color: $light-blue;
@@ -140,12 +145,6 @@ article {
   }
 }
 
-
-app-toolbar.comfy > mat-toolbar.app-toolbar {
-  width: 1440px !important;
-  padding-right: 55px;
-}
-
 .mat-pseudo-checkbox.mat-pseudo-checkbox-checked {
   color: #066BBB !important;
   background: rgba(6, 107, 187, 0.2) !important;
@@ -187,18 +186,26 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
 .scan-data-console__bar {
   .mat-progress-bar {
     height: 10px;
+
+    &.mat-primary {
+      .mat-progress-bar-primary.mat-progress-bar-fill::after {
+        background-color: #42980E;
+      }
+    }
+
+    &.mat-warn {
+      .mat-progress-bar-warn.mat-progress-bar-fill::after {
+        background-color: #FF4646;
+      }
+    }
   }
 
   .mat-progress-bar-buffer {
     background-color: #E5E5E5;
   }
-
-  .mat-progress-bar-fill::after {
-    background-color: #42980E;
-  }
 }
 
-.scan-data-dialog {
+.scan-data-dialog, .perseus-dialog {
   .mat-dialog-container {
     padding: 0;
   }
@@ -210,7 +217,7 @@ app-toolbar.comfy > mat-toolbar.app-toolbar {
 
 .panel-filter{
   .mat-form-field-wrapper {
-    padding-bottom: 15px !important;
+    padding-bottom: 0 !important;
   }
 }
 
@@ -274,13 +281,19 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
         opacity: 1;
         float: left;
         height: 40px;
-        padding: 0 15px;
+        padding: 0 15px 2px;
+        border-bottom: 2px solid transparent;
         min-width: auto;
-        color: $blue;
+        color: rgba(64, 64, 64, 0.87);
       }
 
       .mat-tab-label-active .mat-tab-label-content {
-        color: rgba(64, 64, 64, 0.87);
+        color: $blue;
+        border-bottom: 2px solid $blue;
+
+        .mat-icon {
+          text-decoration: none;
+        }
       }
 
       .mat-tab-label-content {

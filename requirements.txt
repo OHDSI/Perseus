@@ -8,8 +8,12 @@ spark==0.2.1
 xlrd==1.2.0
 pathlib
 sqlalchemy
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 py-postgresql==1.2.1
 peewee
 psycopg2
 numpy
+flask-bcrypt
+pyjwt
+cryptography
+apscheduler

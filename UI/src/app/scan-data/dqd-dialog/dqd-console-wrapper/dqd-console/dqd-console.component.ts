@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
-import { AbstractScanDataConsoleComponent } from '../../../shared/scan-console-wrapper/scan-data-console/abstract-scan-data-console.component';
+import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { DqdWebsocketService } from '../../../../websocket/dqd/dqd-websocket.service';
-import { ProgressNotification, ProgressNotificationStatusCode } from '../../../model/progress-notification';
-import { DqdService } from '../../../../services/dqd.service';
+import { ProgressNotificationStatusCode, toFailedMessage } from '../../../../models/scan-data/progress-notification';
+import { DqdService } from '../../../../services/data-quality-check/dqd.service';
+import { parseHttpError } from '../../../../utilites/error';
 
 @Component({
   selector: 'app-dqd-console',
-  templateUrl: '../../../shared/scan-console-wrapper/scan-data-console/scan-data-console.component.html',
-  styleUrls: ['../../../shared/scan-console-wrapper/scan-data-console/scan-data-console.component.scss'],
+  templateUrl: '../../../auxiliary/scan-console-wrapper/console/console.component.html',
+  styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
   providers: [DqdWebsocketService]
 })
-export class DqdConsoleComponent extends AbstractScanDataConsoleComponent {
+export class DqdConsoleComponent extends ConsoleComponent<string> {
 
   private readonly checkCount = 22;
 
@@ -20,41 +21,40 @@ export class DqdConsoleComponent extends AbstractScanDataConsoleComponent {
     super(dqdWebsocketService);
   }
 
-  protected handleProgressMessage(message: any): void {
-    const notification = JSON.parse(message) as ProgressNotification;
-    const status = parseInt(notification.status as string, 10);
+  protected handleProgressMessage(message: string): void {
+    const notification = JSON.parse(message);
+    const code = parseInt(notification.status, 10);
+    this.showNotificationMessage({
+      ...notification, status: {code}
+    });
 
-    this.showNotificationMessage(notification);
-    this.scrollToConsoleBottom();
-
-    switch (status) {
+    switch (code) {
       case ProgressNotificationStatusCode.IN_PROGRESS: {
         this.progressValue = ++this.checkedCount / this.checkCount * 100;
         break;
       }
       case ProgressNotificationStatusCode.FINISHED: {
-        this.progressValue = 100;
-        this.getResult();
+        this.dqdService.getResult(this.dqdWebsocketService.userId)
+          .subscribe(
+            ({successfully, payload}) => {
+              if (successfully) {
+                this.onSuccess(payload)
+              } else {
+                this.showNotificationMessage(toFailedMessage('Failed to generate data quality report'))
+                this.onFailed()
+              }
+            },
+            error => {
+              this.showNotificationMessage(toFailedMessage(parseHttpError(error)))
+              this.onFailed()
+            }
+          );
         break;
       }
       case ProgressNotificationStatusCode.FAILED: {
-        this.progressValue = 0;
-        this.websocketService.disconnect();
+        this.onFailed()
         break;
       }
     }
-  }
-
-  private getResult(): void {
-    this.dqdService.getResult(this.dqdWebsocketService.userId)
-      .subscribe(result => {
-        if (result.successfully) {
-          this.finish.emit(result.payload);
-        } else {
-          this.showNotificationMessage({
-            message: result.payload
-          });
-        }
-      });
   }
 }

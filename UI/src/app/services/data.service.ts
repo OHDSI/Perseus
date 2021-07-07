@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
@@ -8,14 +8,13 @@ import { Mapping } from '../models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
-import { ColumnInfo } from '../components/field-information/column-info.component';
+import { ColumnInfo } from '../cdm/comfy/columns-list/column-info/column-info.component';
 import { apiUrl } from '../app.constants';
+import { removeExtension } from '../utilites/file';
 
 const URL = apiUrl;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DataService {
   batch = [];
 
@@ -81,34 +80,11 @@ export class DataService {
   }
 
   getZippedXml(mapping: Mapping): Observable<any> {
-    return this.getXmlPreview(mapping).pipe(
-      switchMap(() => {
-        const headers = new Headers();
-        headers.set('Content-type', 'application/json; charset=UTF-8');
-        headers.set('Cache-Control',  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0');
-        headers.set('Pragma', 'no-cache');
-        headers.set('Expires', '0');
-
-        const init = {
-          method: 'GET',
-          headers
-        };
-
-        const url = `${URL}/get_zip_xml`;
-        const request = new Request(url, init);
-
-        return from(
-          new Promise((resolve) => {
-            fetch(request)
-              .then(responce => responce.blob())
-              .then(blob => {
-                const file = new File([blob], 'mapping-xml.zip');
-                resolve(file);
-              });
-          })
-        );
-      })
-    );
+    const reportName = removeExtension(this.storeService.state.report) ?? 'mapping'
+    return this.getXmlPreview(mapping)
+      .pipe(
+        switchMap(() => this.httpService.getZipXml(reportName))
+      )
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {
@@ -146,8 +122,8 @@ export class DataService {
     );
   }
 
-  getColumnInfo(tableName: string, columnName: string): Observable<ColumnInfo> {
-    return this.httpService.getColumnInfo(tableName, columnName)
+  getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<ColumnInfo> {
+    return this.httpService.getColumnInfo(reportName, tableName, columnName)
       .pipe(
         map(info => {
           if (info.top_10[info.top_10.length - 1] === 'List truncated...') {
@@ -162,7 +138,7 @@ export class DataService {
               .map((percentage, index) => ({
                 value: info.top_10[index],
                 frequency: info.frequency[index],
-                percentage: (percentage * 100).toFixed(2)
+                percentage: (percentage * 100).toFixed(5)
               }))
           };
         })

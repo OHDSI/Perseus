@@ -1,26 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
-import { SqlFunction } from '../components/popups/rules-popup/transformation-input/model/sql-string-functions';
-import { TransformationConfig } from '../components/vocabulary-transform-configurator/model/transformation-config';
+import { SqlFunction } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
+import { TransformationConfig } from '../cdm/mapping/vocabulary-transform-configurator/model/transformation-config';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
 import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
 import { Configuration } from '../models/configuration';
-import { IConnector } from '../models/interface/connector.interface';
-import { addClonesToMapping, MappingService } from '../models/mapping-service';
+import { IConnector } from '../models/connector.interface';
+import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '../models/mapping-service';
 import { ITable, Table } from '../models/table';
 import { StoreService } from './store.service';
 import { Area } from '../models/area';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import * as similarNamesMap from '../components/mapping/similar-names-map.json';
-import { addGroupMappings, addViewsToMapping } from '../models/mapping-service';
+import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
 import { conceptFieldsTypes, similarTableName } from '../app.constants';
-import * as conceptFields from '../../app/components/concept-fileds-list.json';
+import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
-import { getConceptFieldNameByType } from 'src/app/services/utilites/concept-util';
+import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
+import { Mapping } from '../models/mapping';
 
 export interface IConnection {
   source: IRow;
@@ -121,7 +120,7 @@ export class BridgeService {
 
   tables = {};
 
-  conceptFieldNames = (conceptFields as any).default;
+  conceptFieldNames = (conceptFieldsFromJson as any).default;
 
   connect = new Command({
     execute: (mappingConfig) => {
@@ -165,15 +164,15 @@ export class BridgeService {
   });
 
   addConstant = new Command({
-    execute: (row: IRow) => {
-      this.constantsCache[ this.getConstantId(row) ] = row;
+    execute: ({sourceTableId, targetRow}) => {
+      this.constantsCache[this.getConstantId(sourceTableId, targetRow)] = targetRow;
     },
     canExecute: () => true
   });
 
   dropConstant = new Command({
-    execute: (row: IRow) => {
-      delete this.constantsCache[ this.getConstantId(row) ];
+    execute: ({sourceTableId, targetRow}) => {
+      delete this.constantsCache[this.getConstantId(sourceTableId, targetRow)];
     },
     canExecute: () => true
   });
@@ -276,11 +275,10 @@ export class BridgeService {
     });
     sourceTablesNames = uniq(sourceTablesNames);
 
-    const tables = {
+    return {
       source: source.filter(table => sourceTablesNames.includes(table.name)),
       target: target.filter(table => targetTablesNames.includes(table.name))
     };
-    return tables;
   }
 
   drawSimilar(config, sourceRow, targetRow) {
@@ -299,7 +297,13 @@ export class BridgeService {
     return false;
   }
 
-  findSimilarRows(tables, name, area?) {
+  /**
+   * @param tables - ITable[] | {[area]: ITable[]}
+   * @param name - row name
+   * @param area - source | target
+   */
+  findSimilarRows(tables: ITable[] | {[key: string]: ITable[]},
+                  name: string, area?: string): IRow[] {
     const similarRows = [];
     const tablesToSearch = area ? tables[ area ] : tables;
     tablesToSearch.forEach(table => {
@@ -332,7 +336,7 @@ export class BridgeService {
     });
   }
 
-  updateRowsProperties(tables: any, filter: any, action: (row: any) => void) {
+  updateRowsProperties(tables: any, filter: any, action: (row: IRow) => void) {
     tables.forEach(table => {
       table.rows.forEach(row => {
         if (filter(row)) {
@@ -411,7 +415,6 @@ export class BridgeService {
     table: ITable,
     arrowsCache: ArrowCache
   ) {
-
     Object.values(arrowsCache).forEach((arrow: Arrow) => {
       if (table.name === arrow[ table.area ].tableName) {
         this.refreshConnector(arrow);
@@ -480,7 +483,7 @@ export class BridgeService {
   deleteConceptFields(connection) {
     if (connection) {
       if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
-        const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
+        const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName,
           this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
         conceptService.deleteFieldsFromConcepts();
         this.updateConceptArrowTypes(connection.target.tableName, connection.source.tableName, connection.target.cloneTableName, )
@@ -493,8 +496,9 @@ export class BridgeService {
       .filter(item => item.fields[ 'concept_id' ].targetCloneName === cloneName);
 
     const arrows = Object.values(this.arrowsCache).filter(item => item.source.tableName === sourceTable &&
-      item.target.tableName === targetTable && item.target.cloneTableName === cloneName && 
-      this.conceptFieldNames[targetTable].includes(item.target.name));
+      item.target.tableName === targetTable && item.target.cloneTableName === cloneName &&
+      this.conceptFieldNames[targetTable].includes(item.target.name)
+    );
 
     if (!concepts.length) {
       arrows.forEach(item => this.setArrowType(item.connector.id, 'None'));
@@ -557,7 +561,7 @@ export class BridgeService {
 
   updateConcepts(connection: any) {
     if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
-      const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName, 
+      const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName,
         this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
       conceptService.addFieldToConcepts();
       this.setArrowType(connection.connector.id, 'concept');
@@ -607,11 +611,14 @@ export class BridgeService {
   }
 
   addCloneConstants(cloneTable: ITable, targetTable: ITable, sourceTableName: string) {
-    const constants = Object.values(this.constantsCache).filter(it => it.tableName === targetTable.name &&
-      it.cloneTableName === targetTable.cloneName);
+    const constants = Object
+      .values(this.constantsCache)
+      .filter(it => it.tableName === targetTable.name && it.cloneTableName === targetTable.cloneName);
+
     constants.forEach(item => {
       const row = cloneTable.rows.find(el => el.name === item.name);
-      this.constantsCache[ this.getConstantId(row) ] = row;
+      const sourceTableId = this.storeService.state.source.find(table => table.name === sourceTableName).id
+      this.constantsCache[this.getConstantId(sourceTableId, row)] = row;
     });
   }
 
@@ -637,7 +644,9 @@ export class BridgeService {
 
   setArrowType(id: string, type: string) {
     const arrow = this.arrowsCache[ id ];
-    arrow.connector.setEndMarkerType(type);
+    if (arrow.connector.setEndMarkerType) {
+      arrow.connector.setEndMarkerType(type);
+    }
     arrow.type = type === 'None' ? '' : type;
   }
 
@@ -651,7 +660,7 @@ export class BridgeService {
     this.deleteAll.next();
   }
 
-  generateMapping(sourceTableName: string = '', targetTableName: string = '') {
+  generateMapping(sourceTableName: string = '', targetTableName: string = ''): Mapping {
     const mappingService = new MappingService(
       this.arrowsCache,
       this.constantsCache,
@@ -725,6 +734,9 @@ export class BridgeService {
     this.reportLoading$.next(false);
   }
 
+  /**
+   * @return id - arrow id for arrowCache in bridge-service
+   */
   getConnectorId(source: IRow, target: IRow): string {
     const sourceRowId = source.id;
     const targetRowId = target.id;
@@ -734,11 +746,14 @@ export class BridgeService {
     return `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
   }
 
-  getConstantId(target: IRow): string {
+  /**
+   * @return id - constant id for constantCache in bridge-service
+   */
+  getConstantId(sourceTableId: number, target: IRow): string {
     const targetRowId = target.id;
     const targetTableId = target.tableId;
 
-    return `${targetTableId}-${targetRowId}`;
+    return `${sourceTableId}/${targetTableId}-${targetRowId}`;
   }
 
   findTable(name: string): ITable {
@@ -788,7 +803,7 @@ export class BridgeService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  generateMappingWithViewsAndGroups(sourceTables: any) {
+  generateMappingWithViewsAndGroups(sourceTables: any): Mapping {
     const mappingJSON = this.generateMapping();
 
     if (!sourceTables.length) {
@@ -834,7 +849,7 @@ export class BridgeService {
     return tables;
   }
 
-  collectSimilarRows(rows, area, areaRows, similarRows) {
+  collectSimilarRows(rows, area, areaRows, similarRows): void {
     rows.forEach(row => {
       if (!row.grouppedFields || !row.grouppedFields.length) {
 

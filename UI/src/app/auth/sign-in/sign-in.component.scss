@@ -1,0 +1,9 @@
+@import "mixins";
+@import "variables";
+
+.sign-in {
+  &__form {
+    width: 354px;
+    height: 338px;
+  }
+}

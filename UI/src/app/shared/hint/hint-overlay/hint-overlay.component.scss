@@ -1,0 +1,41 @@
+@import "variables";
+
+@mixin hint() {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+}
+
+.hint-overlay {
+  position: relative;
+  top: -10px;
+  padding: 8px;
+  background-color: $cdm-grey-dark;
+  color: #fff;
+  font-size: 12px;
+  line-height: 12px;
+  box-sizing: border-box;
+
+  &.right {
+    left: 7px;
+  }
+
+  &.top {
+    left: 15px;
+  }
+
+  &.right::before {
+    @include hint();
+    left: -10px;
+    top: 10px;
+    border-color: transparent $cdm-grey-dark transparent transparent;
+  }
+
+  &.top::after {
+    @include hint();
+    right: 5px;
+    bottom: -10px;
+    border-color: $cdm-grey-dark transparent transparent transparent;
+  }
+}

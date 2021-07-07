@@ -1,0 +1,88 @@
+.connection-error {
+  width: 502px;
+  height: 358px;
+
+  background: #F9F9F9;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 41px 35px 42px 35px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 22px;
+
+    &-left {
+      display: flex;
+      justify-content: left;
+
+      svg {
+        margin-right: 10px;
+      }
+
+      p {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 23px;
+        color: #404040;
+      }
+    }
+
+    &-close {
+      position: relative;
+      bottom: 15px;
+      left: 7px;
+    }
+  }
+
+  &__content {
+    font-weight: normal;
+    display:  flex;
+    flex-direction: column;
+    height: 175px;
+
+    p {
+      font-size: 14px;
+      line-height: 150%;
+      color: #404040;
+    }
+
+    &__header {
+      margin-bottom: 10px;
+    }
+
+    &__message {
+      overflow-y: auto;
+      overflow-x: hidden;
+      word-break: break-word;
+      padding-right: 4px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 29px;
+
+    button {
+      width: 80px;
+      height: 33px;
+      background: #E5E5E5;
+      border: 0;
+
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+      text-align: center;
+      color: #404040;
+
+      &:focus {
+        outline: none;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

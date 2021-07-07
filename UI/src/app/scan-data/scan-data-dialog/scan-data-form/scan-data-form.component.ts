@@ -1,30 +1,26 @@
-import {
-  Component,
-  EventEmitter, OnDestroy,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
-import { ConnectionResult } from '../../model/connection-result';
-import { TableToScan } from '../../model/table-to-scan';
-import { DbSettings, DbSettingsBuilder } from '../../model/db-settings';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ConnectionResult } from '../../../models/scan-data/connection-result';
+import { TableToScan } from '../../../models/scan-data/table-to-scan';
+import { DbSettings, DbSettingsBuilder } from '../../../models/scan-data/db-settings';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
-import { ScanParams } from '../../model/scan-params';
-import { ScanDataStateService } from '../../../services/scan-data-state.service';
+import { ScanParams } from '../../../models/scan-data/scan-params';
+import { ScanDataStateService } from '../../../services/white-rabbit/scan-data-state.service';
 import { ConnectFormComponent } from './connect-form/connect-form.component';
-import { DelimitedTextFileSettings, DelimitedTextFileSettingsBuilder } from '../../model/delimited-text-file-settings';
-import { ScanSettings } from '../../model/scan-settings';
-import { FileToScan } from '../../model/file-to-scan';
-import { WebsocketParams } from '../../model/websocket-params';
-import { cdmBuilderDatabaseTypes, whiteRabbitWebsocketConfig } from '../../scan-data.constants';
-import { CdmStateService } from '../../../services/cdm-state.service';
+import {
+  DelimitedTextFileSettings,
+  DelimitedTextFileSettingsBuilder
+} from '../../../models/scan-data/delimited-text-file-settings';
+import { ScanSettings } from '../../../models/scan-data/scan-settings';
+import { WebsocketParams } from '../../../models/scan-data/websocket-params';
+import { cdmBuilderDatabaseTypes } from '../../scan-data.constants';
+import { CdmStateService } from '../../../services/cdm-builder/cdm-state.service';
 
 @Component({
   selector: 'app-scan-data-form',
   templateUrl: './scan-data-form.component.html',
   styleUrls: ['./scan-data-form.component.scss', '../../styles/scan-data-buttons.scss']
 })
-export class ScanDataFormComponent implements OnInit, OnDestroy {
+export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dataType: string;
 
@@ -32,13 +28,15 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   fileSettings: DelimitedTextFileSettings;
 
+  searchTableName: string
+
   scanParams: ScanParams;
 
   tablesToScan: TableToScan[];
 
   filteredTablesToScan: TableToScan[];
 
-  filesToScan: FileToScan[];
+  filesToScan: File[];
 
   connectionResult: ConnectionResult;
 
@@ -54,6 +52,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   @ViewChild(TablesToScanComponent)
   tablesToScanComponent: TablesToScanComponent;
 
+  scanTablesDisabled = () => true
+
   constructor(private stateService: ScanDataStateService,
               private cdmStateService: CdmStateService) {
   }
@@ -62,9 +62,15 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.loadState();
   }
 
-  ngOnDestroy() {
+  ngAfterViewInit(): void {
+    setTimeout(() => this.scanTablesDisabled = () =>
+      this.tablesToScanComponent.tablesToScan.filter(t => t.selected).length === 0
+    )
+  }
+
+  ngOnDestroy(): void {
     this.saveState();
-    this.saveDbSettingsToCdmDbSettings();
+    this.saveCdmDbSettingsState();
   }
 
   onScanTables(): void {
@@ -91,8 +97,8 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
   }
 
   private loadState(): void {
-    const {dataType, dbSettings, fileSettings, scanParams,
-      tablesToScan, filteredTablesToScan, filesToScan, connectionResult} = this.stateService.state;
+    const {dataType, dbSettings, fileSettings, scanParams, tablesToScan,
+      filteredTablesToScan, searchTableName, filesToScan, connectionResult} = this.stateService.state;
 
     this.dataType = dataType;
     this.dbSettings = dbSettings;
@@ -100,6 +106,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
     this.scanParams = scanParams;
     this.tablesToScan = tablesToScan;
     this.filteredTablesToScan = filteredTablesToScan;
+    this.searchTableName = searchTableName;
     this.filesToScan = filesToScan;
     this.connectionResult = connectionResult;
   }
@@ -112,6 +119,7 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
       scanParams: this.tablesToScanComponent.scanParams,
       tablesToScan: this.tablesToScanComponent.tablesToScan,
       filteredTablesToScan: this.tablesToScanComponent.filteredTablesToScan,
+      searchTableName: this.tablesToScanComponent.searchTableName,
       filesToScan: this.connectFormComponent.filesToScan,
       connectionResult: this.connectFormComponent.connectionResult
     };
@@ -119,39 +127,29 @@ export class ScanDataFormComponent implements OnInit, OnDestroy {
 
   private createWebSocketParams(): WebsocketParams {
     let payload: ScanSettings;
-    let destination: string;
 
-    if (this.connectFormComponent.isDbSettings) {
-      payload = new DbSettingsBuilder()
-        .setDbType(this.connectFormComponent.dataType)
-        .setDbSettings(this.connectFormComponent.form.value)
-        .setScanParams(this.tablesToScanComponent.scanParams)
-        .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
-        .build();
-
-      destination = '/scan-report/db';
-    } else {
-      payload = new DelimitedTextFileSettingsBuilder()
-        .setFileType(this.connectFormComponent.dataType)
-        .setFileSettings(this.connectFormComponent.fileSettingsForm.value)
-        .setScanParams(this.tablesToScanComponent.scanParams)
-        .setTableToScan(this.tablesToScanComponent.filteredTablesToScan)
-        .setFilesToScan(this.connectFormComponent.filesToScan)
-        .build();
-
-      destination = '/scan-report/file';
-    }
+    payload = this.connectFormComponent.isDbSettings ?
+      new DbSettingsBuilder()
+      .setDbType(this.connectFormComponent.dataType)
+      .setDbSettings(this.connectFormComponent.form.value)
+      .setScanParams(this.tablesToScanComponent.scanParams)
+      .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
+      .build() :
+      new DelimitedTextFileSettingsBuilder()
+      .setFileType(this.connectFormComponent.dataType)
+      .setFileSettings(this.connectFormComponent.fileSettingsForm.value)
+      .setScanParams(this.tablesToScanComponent.scanParams)
+      .setTableToScan(this.tablesToScanComponent.filteredTablesToScan)
+      .setFilesToScan(this.connectFormComponent.filesToScan)
+      .build();
 
     return {
-      ...whiteRabbitWebsocketConfig,
       payload,
-      endPoint: destination,
       itemsToScanCount: payload.itemsToScanCount,
-      resultDestination: '/user/queue/scan-report'
     };
   }
 
-  private saveDbSettingsToCdmDbSettings() {
+  private saveCdmDbSettingsState() {
     const dbType = this.connectFormComponent.dataType;
 
     if (!this.cdmStateService.isSet && cdmBuilderDatabaseTypes.includes(dbType)) {

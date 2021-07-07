@@ -1,6 +1,6 @@
 import { IComment } from 'src/app/models/comment';
 import { Area } from './area';
-import { ConnectorType } from './interface/connector.interface';
+import { ConnectorType } from './connector.interface';
 
 export interface RowOptions {
   id?: number;
@@ -28,9 +28,9 @@ export interface RowOptions {
 
 export interface IRow {
   readonly key: string;
-  readonly hasConstant;
-  readonly hasIncrement;
-  readonly hasSqlTransformation;
+  readonly hasConstant: boolean;
+  readonly hasIncrement: boolean;
+  readonly hasSqlTransformation: string;
 
   id: number;
   tableId: number;
@@ -85,7 +85,7 @@ export class Row implements IRow {
   condition: string;
 
   get hasConstant(): boolean {
-    return this.constant ? true : false;
+    return !!this.constant;
   }
 
   get hasIncrement(): boolean {

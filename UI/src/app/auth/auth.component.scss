@@ -1,0 +1,104 @@
+@import "mixins";
+@import "variables";
+
+.sign-in,
+.sign-out,
+.recover-password,
+.reset-password,
+.already-registered,
+.link-expired {
+  &__form, &__result {
+    box-sizing: border-box;
+    background: #F9F9F9;
+    border-radius: 2px;
+    padding: 38px;
+
+    &__header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    &__control {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+
+      label {
+        @include cdm-label;
+        font-weight: 400;
+        display: flex;
+      }
+
+      input {
+        @include login-input()
+      }
+    }
+
+    &__password-wrapper {
+      position: relative;
+
+      &__error {
+        position: absolute;
+        bottom: -24px;
+      }
+    }
+
+    &__submit {
+      margin-top: 35px;
+      display: flex;
+      justify-content: center;
+
+      button {
+        width: 278px;
+        height: 33px;
+
+        @include cmd-button();
+        @include perseus-blue-button();
+
+        &:disabled {
+          opacity: .3;
+          cursor: default;
+        }
+      }
+    }
+
+    &__redirect {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: $cdm-blue;
+      font-size: 12px;
+      line-height: 15px;
+
+      * {
+        margin-right: 4px;
+      }
+
+      a {
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      &__text {
+        color: $cdm-grey-dark;
+      }
+    }
+
+    &__message {
+      color: $cdm-grey-dark;
+      font-size: 14px;
+      line-height: 15px;
+      font-style: normal;
+      font-weight: normal;
+      width: 100%;
+      margin: 0;
+
+      span {
+        white-space: nowrap;
+      }
+    }
+  }
+}

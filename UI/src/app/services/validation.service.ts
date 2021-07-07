@@ -1,9 +1,3 @@
-import { Injectable } from '@angular/core';
-
-
-@Injectable({
-    providedIn: 'root'
-})
 export class ValidationService {
 
     types: [ 'CLOB', 'INTEGER', 'STRING', 'NVARCHAR', 'VARCHAR', 'DATE', 'DATETIME' ]
@@ -47,6 +41,4 @@ export class ValidationService {
 
         return result;
     }
-
-
 }

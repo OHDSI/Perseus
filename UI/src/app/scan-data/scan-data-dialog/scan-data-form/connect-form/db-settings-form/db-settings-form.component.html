@@ -1,31 +1,31 @@
 <form [formGroup]="form" style="height: 100%;">
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('server').disabled}">
     <label for="server">Server location</label>
-    <input id="server" type="text" formControlName="server">
+    <input id="server" type="text" formControlName="server" trim="blur">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('port').disabled}">
     <label for="port">Port</label>
-    <input id="port" type="text" formControlName="port">
+    <input id="port" type="number" formControlName="port">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('user').disabled}">
     <label for="username">User name</label>
-    <input id="username" type="text" formControlName="user">
+    <input id="username" type="text" formControlName="user" trim="blur">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('password').disabled}">
     <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password">
+    <input id="password" type="password" formControlName="password" autocomplete="on">
   </div>
 
   <div class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('database').disabled}">
     <label for="dbName">Database Name</label>
-    <input id="dbName" type="text" formControlName="database">
+    <input id="dbName" type="text" formControlName="database" trim="blur">
   </div>
 
   <div *ngIf="requireSchema" class="scan-data-connect-form-control scan-data-form-control" [ngClass]="{'disabled': form.get('schema').disabled}">
     <label for="schema">Schema Name</label>
-    <input id="schema" type="text" formControlName="schema">
+    <input id="schema" type="text" formControlName="schema" trim="blur">
   </div>
 </form>

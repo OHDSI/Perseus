@@ -1,7 +1,5 @@
 from cdm_souffleur.model.conceptVocabularyModel import *
 import math
-import numpy as np
-from itertools import groupby
 from cdm_souffleur.utils.constants import VOCABULARY_FILTERS
 
 

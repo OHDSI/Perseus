@@ -1,18 +1,20 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
-  Component, ElementRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { TableToScan } from '../../../model/table-to-scan';
+import { TableToScan } from '../../../../models/scan-data/table-to-scan';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ConnectionResult } from '../../../model/connection-result';
+import { ConnectionResult } from '../../../../models/scan-data/connection-result';
 import { takeUntil } from 'rxjs/operators';
-import { ScanParams } from '../../../model/scan-params';
-import { BaseComponent } from '../../../../base/base.component';
+import { ScanParams } from '../../../../models/scan-data/scan-params';
+import { BaseComponent } from '../../../../shared/base/base.component';
 import { ScanParamsComponent } from './scan-params/scan-params.component';
 
 @Component({
@@ -44,7 +46,8 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
 
   scanParamsForm: FormGroup;
 
-  searchTableName = '';
+  @Input()
+  searchTableName: string;
 
   @ViewChild(ScanParamsComponent, {read: ElementRef})
   scanParamsPopup: ElementRef;
@@ -52,7 +55,7 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   @ViewChild('scanParamsButton')
   scanParamsButton: ElementRef;
 
-  private clickOutsideScanParamsListener: () => void;
+  private clickOutsideScanParamsUnsub: () => void;
 
   constructor(private formBuilder: FormBuilder,
               private renderer: Renderer2,
@@ -66,8 +69,8 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.clickOutsideScanParamsListener) {
-      this.clickOutsideScanParamsListener();
+    if (this.clickOutsideScanParamsUnsub) {
+      this.clickOutsideScanParamsUnsub();
     }
   }
 
@@ -103,24 +106,21 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
 
   onShowScanParams() {
     if (this.showScanParamsPopup) {
-      this.clickOutsideScanParamsListener();
-      this.clickOutsideScanParamsListener = null;
+      this.unsubOnClickOutsideScanParams();
       this.showScanParamsPopup = false;
     } else {
       this.showScanParamsPopup = true;
-      this.clickOutsideScanParamsListener = this.renderer
-        .listen('document', 'click', event => {
-          const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
-          const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
-          const dropdown = document.querySelector('.mat-select-panel');
+      this.clickOutsideScanParamsUnsub = this.renderer.listen('document', 'click', event => {
+        const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
+        const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
+        const dropdown = document.querySelector('.mat-select-panel');
 
-          if (notClickedInside && notClickedScanParamsButton && dropdown === null) {
-            this.showScanParamsPopup = false;
-            this.clickOutsideScanParamsListener();
-            this.clickOutsideScanParamsListener = null;
-            this.cdr.detectChanges();
-          }
-        });
+        if (notClickedInside && notClickedScanParamsButton && dropdown === null) {
+          this.showScanParamsPopup = false;
+          this.unsubOnClickOutsideScanParams();
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
@@ -169,5 +169,10 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
     this.tablesToScan = this.tablesToScan
       .map(table => table.tableName === newValue.tableName ? newValue : table);
     return newValue;
+  }
+
+  private unsubOnClickOutsideScanParams() {
+    this.clickOutsideScanParamsUnsub();
+    this.clickOutsideScanParamsUnsub = null;
   }
 }

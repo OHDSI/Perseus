@@ -103,6 +103,22 @@
       "originY": "top",
       "overlayX": "end",
       "overlayY": "top"
+    },
+    "hint-right": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
+      "overlayX": "start",
+      "overlayY": "top"
+    },
+    "hint-top": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "bottom"
     }
   }
 }
