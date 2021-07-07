@@ -13,8 +13,10 @@ export interface ImportCodesState {
 }
 
 export function columnsFromSourceCode(code: Code): Column[] {
-  return Object.keys(code).map(key => ({
-    field: key,
-    name: key
-  }))
+  return Object.keys(code)
+    .filter(key => key !== 'selected')
+    .map(key => ({
+      field: key,
+      name: key
+    }))
 }
