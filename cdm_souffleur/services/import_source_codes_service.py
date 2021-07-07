@@ -86,7 +86,7 @@ def load_codes_to_server(file, delimiter, current_user):
 
 def csv_to_json(filepath, delimiter):
     json_file = []
-    data = pd.read_csv(filepath, delimiter=delimiter).fillna('')
+    data = pd.read_csv(filepath, delimiter=delimiter, error_bad_lines=False).fillna('')
     for row in data.iterrows():
         json_row = {}
         for col in data.columns:
@@ -117,8 +117,8 @@ def create_concept_mapping(current_user, codes, filters, source_code_column, sou
         for source_code in source_codes:
             code_mapping = CodeMapping()
             code_mapping.sourceCode = source_code
-            code_mapping.sourceCode.source_auto_assigned_concept_ids = list(
-                code_mapping.sourceCode.source_auto_assigned_concept_ids)
+            code_mapping.sourceCode.source_auto_assigned_concept_ids = \
+                list(code_mapping.sourceCode.source_auto_assigned_concept_ids) if code_mapping.sourceCode.source_auto_assigned_concept_ids else []
             emit_status(current_user, f"import_codes_status", f"Searching {source_code.source_name}", 1)
             scored_concepts = search_usagi(current_user, filters, source_code.source_name, source_code.source_auto_assigned_concept_ids)
             if len(scored_concepts):
