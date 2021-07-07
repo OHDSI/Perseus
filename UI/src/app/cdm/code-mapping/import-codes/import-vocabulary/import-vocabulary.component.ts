@@ -4,7 +4,7 @@ import { ImportVocabulariesService } from '@services/import-codes/import-vocabul
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '@shared/set-delimiter-dialog/set-delimiter-dialog.component';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '@app/app.constants';
@@ -75,12 +75,24 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
       }).afterClosed()
         .pipe(
           takeUntil(this.ngUnsubscribe),
-          switchMap(delimiter => delimiter ? this.importCodesService.loadCsv(csv, delimiter) : EMPTY),
-          withLoading(this)
+          tap(() => this.loading = true),
+          switchMap(delimiter => {
+            if (delimiter) {
+              return this.importCodesService.loadCsv(csv, delimiter)
+            } else {
+              this.csvInput.nativeElement.value = null
+              return EMPTY
+            }
+          }),
+          catchError(error => {
+            openErrorDialog(this.dialogService, 'Failed to load CSV', parseHttpError(error))
+            this.csvInput.nativeElement.value = null
+            return EMPTY
+          }),
+          finalize(() => this.loading = false)
         )
         .subscribe(
-          () => this.import.emit(),
-          error => openErrorDialog(this.dialogService, 'Failed to load CSV', parseHttpError(error))
+          () => this.import.emit()
         )
     }
   }

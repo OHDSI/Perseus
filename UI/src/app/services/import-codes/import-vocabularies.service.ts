@@ -22,6 +22,6 @@ export class ImportVocabulariesService {
   }
 
   remove(name: string): Observable<void> {
-    return this.httpClient.delete<void>(`${apiUrl}/delete_vocabulary?name=${name}`)
+    return this.httpClient.get<void>(`${apiUrl}/delete_vocabulary?name=${name}`)
   }
 }
