@@ -2,7 +2,7 @@
 
 .help {
   width: 354px;
-  height: 231px;
+  height: 255px;
   background: #F9F9F9;
   border-radius: 2px;
   display: flex;
@@ -11,6 +11,13 @@
   padding: 38px;
   box-sizing: border-box;
   position: relative;
+
+  &__version {
+    font-size: 12px;
+    color: $cdm-grey;
+    margin-top: 12px;
+    display: block;
+  }
 
   &__close {
     position: absolute;
