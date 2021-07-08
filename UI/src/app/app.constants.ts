@@ -1,6 +1,6 @@
 import { environment } from '../environments/environment';
 
-export const appVersion = '0.2'
+export const appVersion = '0.3'
 
 export const similarTableName = 'similar';
 
