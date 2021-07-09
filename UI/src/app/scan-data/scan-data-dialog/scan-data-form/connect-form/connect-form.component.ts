@@ -5,13 +5,19 @@ import { DbSettings } from '@models/scan-data/db-settings';
 import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '@models/scan-data/scan-settings';
-import { delimitedFiles, whiteRabbitDatabaseTypes } from '../../../scan-data.constants';
+import {
+  delimitedFiles,
+  fullySupportedDatabases,
+  supportedWithLimitationsDatabases
+} from '../../../scan-data.constants';
 import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/abstract-resource-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { TableToScan } from '@models/scan-data/table-to-scan';
 import { ConnectionResult } from '@models/scan-data/connection-result';
 import { createDbConnectionForm } from '@utils/form';
+import { DataTypeGroup } from '@models/data-type-group';
+import { hasLimits } from '@utils/scan-data-util';
 
 @Component({
   selector: 'app-connect-form',
@@ -49,9 +55,17 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   @Output()
   connectionResultChange = new EventEmitter<ConnectionResult>();
 
-  dataTypes = [
-    ...delimitedFiles,
-    ...whiteRabbitDatabaseTypes
+  fileTypes = delimitedFiles;
+
+  dataTypesGroups: DataTypeGroup[] = [
+    {
+      name: 'Fully Supported',
+      value: fullySupportedDatabases
+    },
+    {
+      name: 'Supported with limitations',
+      value: supportedWithLimitationsDatabases
+    }
   ];
 
   private filesChange$ = new Subject<File[]>();
@@ -165,6 +179,10 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   createForm(disabled: boolean): FormGroup {
     return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
+  }
+
+  hasLimits(type: string): string | null {
+    return hasLimits(type)
   }
 
   private initDelimitedFilesSettingsForm(): void {

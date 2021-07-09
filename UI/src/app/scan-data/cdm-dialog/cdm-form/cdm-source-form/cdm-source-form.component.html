@@ -15,6 +15,7 @@
     <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
       <mat-option *ngFor="let type of dataTypes" [value]="type" [disabled]="isDbTypeDisable(type)" >
         {{type}}
+        <span *ngIf="hasLimits(type) as limit" style="color: rgba(64, 64, 64, 0.7);">({{limit}})</span>
       </mat-option>
     </mat-select>
   </mat-form-field>

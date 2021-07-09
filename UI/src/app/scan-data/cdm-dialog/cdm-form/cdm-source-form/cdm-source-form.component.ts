@@ -9,6 +9,7 @@ import { adaptDbSettingsForSource } from '@utils/cdm-adapter';
 import { CdmSettings } from '@models/scan-data/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
+import { hasLimits } from '@utils/scan-data-util';
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -113,6 +114,10 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
 
   createForm(disabled: boolean): FormGroup {
     return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
+  }
+
+  hasLimits(type: string): string | null {
+    return hasLimits(type)
   }
 
   private initFakeDataForm() {
