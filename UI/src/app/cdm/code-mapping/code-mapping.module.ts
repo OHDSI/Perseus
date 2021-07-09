@@ -19,6 +19,7 @@ import { ImportCodesMediatorService } from '@services/import-codes/import-codes-
 import { ImportCodesGridComponent } from './import-codes/column-mapping/import-codes-grid/import-codes-grid.component';
 import { ImportCodesGuard } from '@guards/code-mapping/import-codes.guard';
 import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.module';
+import { RemoveVocabularyConfirmComponent } from './import-codes/import-vocabulary/remove-vocabulary-confirm/remove-vocabulary-confirm.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.mod
     SaveVocabularyPopupComponent,
     EditMappingPanelComponent,
     EditCodeMappingGridComponent,
-    ImportCodesGridComponent
+    ImportCodesGridComponent,
+    RemoveVocabularyConfirmComponent
   ],
   imports: [
     CodeMappingRoutingModule,

@@ -14,6 +14,7 @@ import { ImportCodesMediatorService } from '@services/import-codes/import-codes-
 import { columnsFromSourceCode } from '@models/code-mapping/import-codes-state';
 import { withLoading } from '@utils/loading';
 import { ConsoleHeader } from '@models/code-mapping/console-header';
+import { RemoveVocabularyConfirmComponent } from '@code-mapping/import-codes/import-vocabulary/remove-vocabulary-confirm/remove-vocabulary-confirm.component';
 
 @Component({
   selector: 'app-import-vocabulary',
@@ -125,8 +126,17 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onRemove(index: number) {
     const vocabulary = this.vocabularies[index]
-    this.importVocabulariesService.remove(vocabulary)
-      .pipe(withLoading(this))
+    this.dialogService.open(RemoveVocabularyConfirmComponent, {
+      panelClass: 'perseus-dialog',
+      disableClose: true,
+      data: vocabulary
+    }).afterClosed()
+      .pipe(
+        switchMap(result => result
+          ? this.importVocabulariesService.remove(vocabulary).pipe(withLoading(this))
+          : EMPTY
+        )
+      )
       .subscribe(
         () => this.vocabularies = this.vocabularies.filter(vocab => vocab !== vocabulary),
         error => openErrorDialog(this.dialogService, 'Failed to remove Vocabulary', parseHttpError(error))
