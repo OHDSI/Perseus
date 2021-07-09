@@ -1,4 +1,5 @@
 import { MappingNode } from '@models/mapping';
+import { TargetConfig } from '@models/state';
 
 export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingNode[] {
   const groupReducer = (accumulator: {[key: string]: MappingNode}, currentValue: MappingNode) => {
@@ -26,4 +27,8 @@ export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingN
     ...mappingWithGroups,
     ...mappingWithoutGroups
   ];
+}
+
+export function canOpenMappingPage(targetTableNames: string[], targetConfig: TargetConfig): boolean {
+  return !!targetTableNames.find(it => targetConfig[it]?.data?.length > 1)
 }

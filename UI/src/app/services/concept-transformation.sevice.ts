@@ -121,7 +121,11 @@ export class ConceptTransformationService {
     deleteFieldsFromConcepts() {
         const connectedFields = this.collectConnectedGroupedFields();
         const fieldType = getConceptFieldType(this.arrow.target.name);
-        const conceptsList = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList;
+        const conceptsList = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ]?.conceptsList;
+
+        if (!conceptsList) {
+          return
+        }
 
         connectedFields.forEach(item => {
             conceptsList.forEach(conc => {

@@ -26,15 +26,21 @@ type StoreTablesKey = { [K in keyof State]: State[K] extends ITable[] ? K : neve
 
 @Injectable()
 export class StoreService implements StateService {
+
   private readonly storeState = new BehaviorSubject<State>({...initialState});
+
   readonly state$ = this.storeState.asObservable();
 
-  get state() {
+  get state(): State {
     return this.storeState.getValue();
   }
 
   set state(val) {
     this.storeState.next(val);
+  }
+
+  get copyState() {
+    return {...this.storeState.getValue()}
   }
 
   add<K extends keyof State>(key: K, value: State[K]) {

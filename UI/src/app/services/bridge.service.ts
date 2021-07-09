@@ -432,7 +432,7 @@ export class BridgeService implements StateService {
 
   deleteConceptFields(connection) {
     if (connection) {
-      if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
+      if (this.conceptFieldNames[ connection.target.tableName ]?.includes(connection.target.name)) {
         const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName,
           this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
         conceptService.deleteFieldsFromConcepts();
@@ -442,8 +442,12 @@ export class BridgeService implements StateService {
   }
 
   updateConceptArrowTypes(targetTable: string, sourceTable: string, cloneName: string) {
-    const concepts = this.storeService.state.concepts[ `${targetTable}|${sourceTable}` ].conceptsList
+    const concepts = this.storeService.state.concepts[ `${targetTable}|${sourceTable}` ]?.conceptsList
       .filter(item => item.fields[ 'concept_id' ].targetCloneName === cloneName);
+
+    if (!concepts) {
+      return false
+    }
 
     const arrows = Object.values(this.arrowsCache).filter(item => item.source.tableName === sourceTable &&
       item.target.tableName === targetTable && item.target.cloneTableName === cloneName &&
@@ -692,7 +696,7 @@ export class BridgeService implements StateService {
     const mappingJSON = this.generateMapping();
 
     if (!sourceTables.length) {
-      const { source, target } = this.storeService.getMappedTables();
+      const { source } = this.storeService.getMappedTables();
       sourceTables = source;
     }
 

@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { StoreService } from '@services/store.service';
 import { mainPageRouter } from '@app/app.constants';
+import { canOpenMappingPage } from '@utils/mapping-util';
 
 @Injectable()
 export class MappingGuard implements CanLoad, CanActivate {
@@ -27,7 +28,9 @@ export class MappingGuard implements CanLoad, CanActivate {
   }
 
   private canLoadOrActivate(): boolean {
-    if (this.storeService.state.target?.length > 0) {
+    const {target, targetConfig} = this.storeService.state
+    const targetTableNames = target.map(table => table.name)
+    if (canOpenMappingPage(targetTableNames, targetConfig)) {
       return true
     }
 

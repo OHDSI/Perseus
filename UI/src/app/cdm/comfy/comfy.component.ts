@@ -42,6 +42,7 @@ import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
 import { State } from '@models/state';
 import { asc } from '@utils/sort';
+import { canOpenMappingPage } from '@utils/mapping-util';
 
 @Component({
   selector: 'app-comfy',
@@ -542,9 +543,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.targetConfig[it]
-      && this.targetConfig[it].data
-      && this.targetConfig[it].data.length > 1);
+    return canOpenMappingPage(this.targetTableNames, this.targetConfig)
   }
 
   openSqlDialog(data) {
