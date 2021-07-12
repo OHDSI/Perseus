@@ -78,7 +78,7 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
 
   @Input()
   set sql({functions}: SqlForTransformation) {
-    const parsed = functions && functions !== [] ? functions : defaultFunctions
+    const parsed = functions && functions.length > 0 ? functions : defaultFunctions
     this.state$.next(parsed)
   }
 
