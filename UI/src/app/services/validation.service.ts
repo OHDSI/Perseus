@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ValidationService {
 
-    types: [ 'CLOB', 'INTEGER', 'STRING', 'NVARCHAR', 'VARCHAR', 'DATE', 'DATETIME' ]
-
     constructor() { }
 
     validateInput(rowType: string, value: string): string {
@@ -16,26 +14,31 @@ export class ValidationService {
         let result = '';
         switch (type) {
             case 'integer':
+            case 'INTEGER':
                 if (!value.match('^[-]?[0-9]*$')) {
                     result = 'Value must contain only digits';
                 }
                 break;
             case 'float':
+            case 'FLOAT':
                 if (!value.match('^[-]?[0-9]*\.?[0-9]*$')) {
                     result = 'Value must contain only digits and dot';
                 }
                 break;
             case 'date':
+            case 'DATE':
                 if (!value.match('^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$')) {
                     result = 'Format must be YYYY-MM-DD';
                 }
                 break;
             case 'datetime':
+            case 'DATETIME':
                 if (!value.match('^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])\\s([0-1]\\d|[2][0-3])\:[0-5]\\d\:[0-5]\\d$')) {
                     result = 'Format must be YYYY-MM-DD HH:MM:SS';
                 }
                 break;
             case 'time':
+            case 'TIME':
                 if (!value.match('^([0-1]\\d|[2][0-3])\:[0-5]\\d\:[0-5]\\d$')) {
                   result = 'Format must be HH:MM:SS';
                 }

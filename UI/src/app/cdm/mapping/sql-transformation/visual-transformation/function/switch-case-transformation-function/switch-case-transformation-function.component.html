@@ -14,7 +14,7 @@
       <td class="cell" mat-cell
           *matCellDef="let row; let i = index"
           [formGroupName]="i"
-          [class.error]="formArray.at(i).get('in').dirty && formArray.at(i).get('in').invalid">
+          [class.error]="formArray.at(i).get('in').touched && formArray.at(i).get('in').invalid">
         <label>
           <input type="text" formControlName="in">
 
@@ -35,7 +35,7 @@
       <td class="cell last-cell" mat-cell
           *matCellDef="let row let i = index"
           [formGroupName]="i"
-          [class.error]="formArray.at(i).get('out').dirty && formArray.at(i).get('out').invalid">
+          [class.error]="formArray.at(i).get('out').touched && formArray.at(i).get('out').invalid">
         <label>
           <input type="text" formControlName="out">
 

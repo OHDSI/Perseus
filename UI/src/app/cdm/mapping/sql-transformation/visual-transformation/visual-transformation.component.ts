@@ -86,6 +86,12 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
     return Array.from(this.functionsContainers)
   }
 
+  get valid(): boolean {
+    return this.functions
+      .filter(({type, value: func}) => type && (func.touched || func.dirty))
+      .every(func => func.value.valid)
+  }
+
   ngAfterViewInit(): void {
     this.codeMirror = initCodeMirror(this.preview.nativeElement, {
       mode: 'text/x-mysql',

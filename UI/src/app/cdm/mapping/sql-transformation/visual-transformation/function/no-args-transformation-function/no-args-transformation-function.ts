@@ -7,6 +7,14 @@ export abstract class NoArgsTransformationFunction extends TransformationFunctio
     return true;
   }
 
+  get touched(): boolean {
+    return false
+  }
+
+  get dirty(): boolean {
+    return false
+  }
+
   protected createForm(): FormGroup {
     return new FormGroup({});
   }

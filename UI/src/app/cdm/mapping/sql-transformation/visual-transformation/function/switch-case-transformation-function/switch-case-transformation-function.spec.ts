@@ -59,7 +59,7 @@ describe('SwitchCaseTransformationFunction', () => {
 
     const actual = transformationFunction.sql()('id')
     expect(actual).toBe(
-      `CASE(id)\n\tWHEN 2021-06-06 THEN 2021-06-07\nEND`
+      `CASE(id)\n\tWHEN '2021-06-06' THEN '2021-06-07'\nEND`
     )
   })
 })

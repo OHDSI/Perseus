@@ -59,6 +59,10 @@ export class SqlTransformationComponent implements OnInit {
     return this.modeChanged || this.visualTransformationComponent?.dirty || this.manualTransformationComponent?.dirty
   }
 
+  get valid() {
+    return this.mode === 'manual' || !this.visualTransformationComponent || this.visualTransformationComponent.valid
+  }
+
   @Input()
   set sql(value: SqlForTransformation) {
     this.sqlForTransform = value
