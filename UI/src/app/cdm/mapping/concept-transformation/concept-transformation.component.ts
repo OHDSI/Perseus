@@ -86,7 +86,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   get noSelected(): boolean {
-    return !this.selectedCellElement
+    return !this.selectedCellElement ||
+      !this.conceptsTable.conceptsList[this.selectedConceptId].fields[this.selectedCellType].sqlApplied
   }
 
   ngOnInit(): void {
