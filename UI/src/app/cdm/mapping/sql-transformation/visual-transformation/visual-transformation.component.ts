@@ -88,7 +88,7 @@ export class VisualTransformationComponent extends BaseComponent implements Afte
 
   get valid(): boolean {
     return this.functions
-      .filter(({type, value: func}) => type && (func.touched || func.dirty))
+      .filter(({type, value: func}) => type && func && (func.touched || func.dirty))
       .every(func => func.value.valid)
   }
 
