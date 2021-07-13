@@ -61,6 +61,10 @@ export class TransformConfigComponent implements OnInit {
     return this.sqlTransformationComponent.dirty || (!this.lookupDisabled && this.lookupComponent.dirty)
   }
 
+  get applyDisabled() {
+    return this.tabIndex === 0 && !!this.sqlTransformationComponent && !this.sqlTransformationComponent.valid
+  }
+
   ngOnInit() {
     this.lookupName = this.payload['lookupName'];
     this.lookupType = this.payload['lookupType'];
