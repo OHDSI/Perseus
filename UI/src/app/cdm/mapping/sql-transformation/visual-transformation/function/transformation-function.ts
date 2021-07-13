@@ -32,6 +32,14 @@ export abstract class TransformationFunction<T> {
     return this.formGroup.value
   }
 
+  get touched(): boolean {
+    return this.formGroup.touched
+  }
+
+  get dirty(): boolean {
+    return this.formGroup.dirty
+  }
+
   /**
    * @return function with one argument which this sql func applied that return sql expression
    */
