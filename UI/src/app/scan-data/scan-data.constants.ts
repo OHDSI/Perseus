@@ -115,5 +115,5 @@ export const supportedWithLimitationsDatabases: string[] = [
 ]
 
 export const dbTypeWithLimits = {
-  [DbTypes.MYSQL]: 'source view for V.8 and lower'
+  [DbTypes.MYSQL]: 'CTE not supported prior to v8'
 }
