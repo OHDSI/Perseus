@@ -16,6 +16,14 @@ export class ScanDataStateService implements IScanDataStateService, StateService
     this.scanDataState = state;
   }
 
+  get dataType(): string {
+    return this.state.dataType
+  }
+
+  set dataType(value: string) {
+    this.state.dataType = value
+  }
+
   constructor() {
     this.scanDataState = {...initialState}
   }

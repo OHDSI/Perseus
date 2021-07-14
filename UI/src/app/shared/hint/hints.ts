@@ -1,8 +1,9 @@
 export interface Hint {
   text: string
-  link: string,
+  link?: string,
   width?: string
   position?: string;
+  email?: boolean;
 }
 
 export const hints: {[key: string]: Hint} = {
@@ -46,5 +47,17 @@ export const hints: {[key: string]: Hint} = {
     text: 'Made changes will be shown if you switch from Visual mode to Manual, but not at the opposite.',
     link: 'https://github.com/SoftwareCountry/Perseus/wiki/Link-native-fields-to-CDM-fields#sql-functions',
     width: '230px'
+  },
+  mySqlScanDataLimit: {
+    text: 'View creation is currently supported only by MySQL version higher than 8.\n' +
+      'If you have any questions, please, contact ',
+    width: '215px',
+    email: true
+  },
+  mySqlCdmLimit: {
+    text: 'Source database on Mysql lower than version 8 may cause error during conversion.\n' +
+      'If you have any questions, please, contact ',
+    width: '221px',
+    email: true
   }
 }

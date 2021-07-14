@@ -13,9 +13,16 @@
   <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
     <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
-      <mat-option *ngFor="let type of dataTypes" [value]="type">
+      <mat-option *ngFor="let type of fileTypes" [value]="type">
         {{type}}
       </mat-option>
+
+      <mat-optgroup *ngFor="let group of dataTypesGroups" [label]="group.name">
+        <mat-option *ngFor="let type of group.value" [value]="type">
+          {{type}}
+          <span *ngIf="hasLimits(type) as limit" style="color: rgba(64, 64, 64, 0.7);">({{limit}})</span>
+        </mat-option>
+      </mat-optgroup>
     </mat-select>
   </mat-form-field>
 

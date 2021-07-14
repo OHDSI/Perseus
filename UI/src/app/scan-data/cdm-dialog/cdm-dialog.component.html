@@ -1,6 +1,9 @@
 <div class="scan-dialog">
   <div class="scan-dialog__header">
-    <h4>{{header()}}</h4>
+    <h4>
+      {{header()}}
+      <app-warning-hint *ngIf="showMySqlWarning" key="mySqlCdmLimit"></app-warning-hint>
+    </h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
   </div>
 

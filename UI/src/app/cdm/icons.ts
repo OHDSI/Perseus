@@ -26,5 +26,6 @@ export const ICON_NAMES = [
   'logo_white',
   'three_dot_menu',
   'error',
-  'hint'
+  'hint',
+  'warning'
 ];

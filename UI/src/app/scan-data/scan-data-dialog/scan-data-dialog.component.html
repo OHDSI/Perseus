@@ -2,7 +2,10 @@
   <div class="scan-dialog__header">
     <h4>
       Scan Data
-      <app-hint key="scanData"></app-hint>
+      <app-warning-hint *ngIf="showMySqlHint else defaultHintBlock" key="mySqlScanDataLimit"></app-warning-hint>
+      <ng-template #defaultHintBlock>
+        <app-hint key="scanData"></app-hint>
+      </ng-template>
     </h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onCloseByDagger()"></app-close-dialog-button>
   </div>

@@ -36,7 +36,8 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
 
   protected dataTypeChange$ = new Subject<string>();
 
-  protected constructor(protected formBuilder: FormBuilder, protected matDialog: MatDialog) {
+  protected constructor(protected formBuilder: FormBuilder,
+                        protected matDialog: MatDialog) {
     super();
   }
 

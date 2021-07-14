@@ -98,3 +98,22 @@ export const defaultPorts = {
   [DbTypes.REDSHIFT]: 5439,
   [DbTypes.NETEZZA]: 5480
 };
+
+export const fullySupportedDatabases: string[] = [
+  DbTypes.POSTGRESQL,
+  DbTypes.SQL_SERVER,
+  DbTypes.MYSQL
+]
+
+export const supportedWithLimitationsDatabases: string[] = [
+  DbTypes.ORACLE,
+  DbTypes.REDSHIFT,
+  DbTypes.AZURE,
+  DbTypes.MS_ACCESS,
+  DbTypes.TERADATA,
+  DbTypes.BIGQUERY
+]
+
+export const dbTypeWithLimits = {
+  [DbTypes.MYSQL]: 'source view for V.8 and lower'
+}

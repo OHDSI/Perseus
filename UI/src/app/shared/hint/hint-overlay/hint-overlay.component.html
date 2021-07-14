@@ -2,5 +2,12 @@
      [ngClass]="position"
      [style.width]="width">
   {{hint.text}}
-  <a class="hint-overlay__link" target="_blank" [href]="hint.link">See More</a>
+
+  <a *ngIf="hint.link" class="hint-overlay__link" target="_blank" [href]="hint.link">See More</a>
+
+  <ng-container *ngIf="hint.email">
+    <a class="hint-overlay__link" target="_blank"
+       href="mailto:perseus.support@arcadia.spb.ru?subject=Support MySQL server lower than 8 version">support</a>
+    .
+  </ng-container>
 </div>
