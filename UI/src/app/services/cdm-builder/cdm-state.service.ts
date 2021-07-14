@@ -46,6 +46,14 @@ export class CdmStateService implements IScanDataStateService, StateService {
     return this.isInit;
   }
 
+  get sourceDataType() {
+    return this.cdmState.sourceDbSettings.dbType
+  }
+
+  set sourceDataType(value: string) {
+    this.cdmState.sourceDbSettings.dbType = value
+  }
+
   constructor() {
     this.cdmState = {...initialState};
   }

@@ -3,6 +3,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { ScanConsoleWrapperComponent } from './scan-console-wrapper/scan-console-wrapper.component';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
+import { DbTypes } from '@scan-data/scan-data.constants';
+import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 
 @Component({
   selector: 'app-scan-data-dialog',
@@ -16,8 +18,17 @@ export class ScanDataDialogComponent extends AbstractScanDialog {
 
   dbName: string;
 
-  constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>) {
+  constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>,
+              private scanDataStateService: ScanDataStateService) {
     super(dialogRef);
+  }
+
+  get dataType() {
+    return this.scanDataStateService.dataType
+  }
+
+  get showMySqlHint(): boolean {
+    return this.dataType === DbTypes.MYSQL
   }
 
   onScanTables(payload: {dbName: string, params: WebsocketParams}): void {

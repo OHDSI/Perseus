@@ -20,6 +20,7 @@ import { FilterColorPointComponent } from './filters/filter-color-point/filter-c
 import { TextWidthDirective } from './text-width/text-width.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SqlEditorComponent } from '@shared/sql-editor/sql-editor.component';
+import { WarningHintComponent } from '@shared/hint/warning-hint/warning-hint.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { SqlEditorComponent } from '@shared/sql-editor/sql-editor.component';
     FilterDropdownComponent,
     FilterColorPointComponent,
     TextWidthDirective,
-    SqlEditorComponent
+    SqlEditorComponent,
+    WarningHintComponent
   ],
   exports: [
     CommonModule,
@@ -56,7 +58,8 @@ import { SqlEditorComponent } from '@shared/sql-editor/sql-editor.component';
     TextWidthDirective,
     FormsModule,
     ReactiveFormsModule,
-    SqlEditorComponent
+    SqlEditorComponent,
+    WarningHintComponent
   ],
   imports: [
     CommonModule,

@@ -10,6 +10,7 @@ import { CdmSettings } from '@models/scan-data/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { hasLimits } from '@utils/scan-data-util';
+import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -39,7 +40,10 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     ...cdmBuilderDatabaseTypes
   ];
 
-  constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
+  constructor(formBuilder: FormBuilder,
+              matDialog: MatDialog,
+              private cdmBuilderService: CdmBuilderService,
+              private cdmStateService: CdmStateService) {
     super(formBuilder, matDialog);
   }
 
@@ -118,6 +122,11 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
 
   hasLimits(type: string): string | null {
     return hasLimits(type)
+  }
+
+  onDataTypeChange(value: string) {
+    super.onDataTypeChange(value);
+    this.cdmStateService.sourceDataType = value;
   }
 
   private initFakeDataForm() {

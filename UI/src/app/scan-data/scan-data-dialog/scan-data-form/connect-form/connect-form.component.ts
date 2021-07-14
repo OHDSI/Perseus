@@ -18,6 +18,7 @@ import { ConnectionResult } from '@models/scan-data/connection-result';
 import { createDbConnectionForm } from '@utils/form';
 import { DataTypeGroup } from '@models/data-type-group';
 import { hasLimits } from '@utils/scan-data-util';
+import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 
 @Component({
   selector: 'app-connect-form',
@@ -117,7 +118,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
-              private whiteRabbitService: ScanDataService) {
+              private whiteRabbitService: ScanDataService,
+              private scanDataStateService: ScanDataStateService) {
     super(formBuilder, matDialog);
   }
 
@@ -183,6 +185,11 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   hasLimits(type: string): string | null {
     return hasLimits(type)
+  }
+
+  onDataTypeChange(value: string) {
+    super.onDataTypeChange(value);
+    this.scanDataStateService.dataType = value
   }
 
   private initDelimitedFilesSettingsForm(): void {
