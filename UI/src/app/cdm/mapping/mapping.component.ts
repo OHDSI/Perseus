@@ -19,7 +19,7 @@ import { TransformConfigComponent } from './vocabulary-transform-configurator/tr
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
-import { addGroupMappings, addViewsToMapping } from '@models/mapping-service';
+import { addGroupMappings, addViewsToMapping } from '@services/mapping-service';
 import {
   numberOfPanelsWithOneSimilar,
   numberOfPanelsWithoutSimilar,

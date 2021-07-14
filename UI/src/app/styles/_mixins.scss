@@ -355,3 +355,14 @@
   border-width: 5px;
   border-style: solid;
 }
+
+@mixin perseus-text-area {
+  border: 1px solid $cdm-grey-light;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 15px;
+  color: $cdm-grey-dark;
+  resize: none;
+  outline: none;
+  border-radius: 2px;
+}

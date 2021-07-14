@@ -7,7 +7,7 @@ import { cloneDeep, uniq } from '../infrastructure/utility';
 import { IArrowCache } from '@models/arrow-cache';
 import { Configuration } from '@models/configuration';
 import { IConnector } from '@models/connector';
-import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@models/mapping-service';
+import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@services/mapping-service';
 import { ITable, Table } from '@models/table';
 import { StoreService } from './store.service';
 import { Area } from '@models/area';

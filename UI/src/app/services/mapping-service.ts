@@ -1,10 +1,10 @@
-import { IArrowCache } from './arrow-cache';
+import { IArrowCache } from '@models/arrow-cache';
 import { groupBy } from '../infrastructure/utility';
-import { Mapping, MappingNode, MappingPair } from './mapping';
-import { IRow } from './row';
-import { ITable } from './table';
+import { Mapping, MappingNode, MappingPair } from '@models/mapping';
+import { IRow } from '@models/row';
+import { ITable } from '@models/table';
 import { getLookupType } from '@utils/lookup-util';
-import * as conceptMap from '../cdm/mapping/concept-fileds-list.json'
+import * as conceptMap from '@mapping/concept-fileds-list.json'
 import { IConcept, ITableConcepts } from '@models/concept-transformation/concept';
 import { conceptFieldsTypes } from '../app.constants';
 import { IConnection } from '@models/connection';
