@@ -62,7 +62,7 @@ export class MappingService {
           lookup: arrow.lookup && arrow.lookup[ 'applied' ] ? arrow.lookup[ 'name' ] : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
-          comments: arrow.source.comments,
+          comments: arrow.target.comments,
           condition: arrow.target.condition,
           targetCloneName: arrow.target.cloneTableName,
         };
