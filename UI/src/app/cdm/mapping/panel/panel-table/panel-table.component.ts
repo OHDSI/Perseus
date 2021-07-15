@@ -464,20 +464,12 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   }
 
   openCommentDialog(anchor: HTMLElement, row: IRow) {
-    const component = CommentPopupComponent;
-
-    const dialogOptions: OverlayConfigOptions = {
-      hasBackdrop: true,
-      backdropClass: 'custom-backdrop',
-      positionStrategyFor: `comments-${this._getArea()}`,
-      payload: row
-    };
-
-    const overlayRef = this.overlayService.open(
-      dialogOptions,
-      anchor,
-      component
-    );
+    this.matDialog.open(CommentPopupComponent, {
+      closeOnNavigation: true,
+      disableClose: true,
+      data: row,
+      panelClass: 'perseus-dialog'
+    })
   }
 
   openConstantDialog(anchor: HTMLElement, row: IRow) {

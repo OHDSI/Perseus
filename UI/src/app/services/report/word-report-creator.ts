@@ -115,8 +115,8 @@ export class WordReportCreator implements ReportCreator {
     marginBottom: 4,
     textMarginTop: 14,
     fieldsMarginTop: 26,
-    headerFont: '600 16px Akzidenz-Grotesk Pro',
-    fieldFont: '500 16px Akzidenz-Grotesk Pro'
+    headerFont: '600 16px Times New Roman',
+    fieldFont: '500 16px Times New Roman'
   };
 
   generateReport(): any {

@@ -19,7 +19,5 @@ export class CommentService {
 
     editComment(comment: IComment, value: string) {
         comment.newValue(value);
-        comment.setAsEdited();
-        comment.updateDate();
     }
 }

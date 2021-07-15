@@ -11,7 +11,7 @@ export interface RowOptions {
   type?: string;
   area?: Area;
   values?: any[];
-  comments?: IComment[];
+  comments?: IComment[]; // Array with one element
   visible?: boolean;
   htmlElement?: any;
   constant?: string;

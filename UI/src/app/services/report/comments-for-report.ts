@@ -1,8 +1,8 @@
 import { IComment } from '@models/comment';
 
 export function commentsForReport(comments: IComment[]): string {
-  return (comments || [])
-    .filter(comment => comment.active)
-    .map(comment => comment.text)
-    .join('\n');
+  if (!comments || comments.length === 0) {
+    return ''
+  }
+  return comments[0].text
 }
