@@ -286,14 +286,15 @@ export class BridgeService implements StateService {
   }
 
   findSimilarLinks(connection, area1, area2) {
-    return Object.keys(this.arrowsCache).map(key => {
+    return Object.keys(this.arrowsCache).reduce((links, key) => {
       const arrow = this.arrowsCache[ key ];
       if (
         this.checkSimilar(arrow[ area1 ].name, connection[ area1 ].name) &&
         this.checkSimilar(arrow[ area2 ].name, connection[ area2 ].name)) {
-        return key;
+        links.push(key);
       }
-    });
+      return links;
+    }, []);
   }
 
   updateRowsProperties(tables: any, filter: any, action: (row: IRow) => void) {
@@ -673,8 +674,7 @@ export class BridgeService implements StateService {
     if (arrow.connector.target.tableName.toUpperCase() === 'SIMILAR') {
       let similarLinks = [];
       connectedToSameTraget.forEach(item => {
-        similarLinks = similarLinks.concat(this.findSimilarLinks(item.connector, Area.Source, Area.Target)).
-          filter(e => e !== undefined);
+        similarLinks = similarLinks.concat(this.findSimilarLinks(item.connector, Area.Source, Area.Target))
       });
       connectedToSameTraget = [];
       similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[ item ]));
