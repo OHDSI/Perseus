@@ -18,7 +18,8 @@ const initialState: ImportCodesState = {
   columns: null,
   mappingParams: null,
   codeMappings: null,
-  filters: defaultSearchConceptFilters()
+  filters: defaultSearchConceptFilters(),
+  isExisted: false
 }
 
 @Injectable()
@@ -72,6 +73,14 @@ export class ImportCodesService implements StateService {
 
   set filters(filters: SearchConceptFilters) {
     this.state.filters = filters
+  }
+
+  get isExisted() {
+    return this.state.isExisted
+  }
+
+  get vocabularyName() {
+    return this.state.vocabularyName
   }
 
   /**

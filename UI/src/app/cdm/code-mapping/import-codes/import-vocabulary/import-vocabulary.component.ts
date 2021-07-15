@@ -99,9 +99,9 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
   }
 
   onEdit(index: number) {
-    const vocabulary = this.vocabularies[index]
+    const vocabularyName = this.vocabularies[index]
     this.importCodesMediatorService.consoleHeader = ConsoleHeader.LOAD_VOCABULARY
-    this.importCodesMediatorService.onWebsocketConnect$ = this.importVocabulariesService.prepareVocabulary(vocabulary)
+    this.importCodesMediatorService.onWebsocketConnect$ = this.importVocabulariesService.prepareVocabulary(vocabularyName)
     this.importCodesMediatorService.onAbort$ = this.importCodesService.cancelCalculateScoresBySavedMapping()
 
     this.dialogService
@@ -116,7 +116,9 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
         state => {
           this.importCodesService.reset({
             ...state,
-            columns: columnsFromSourceCode(state.codes[0])
+            columns: columnsFromSourceCode(state.codes[0]),
+            isExisted: true,
+            vocabularyName
           })
           this.router.navigateByUrl(`${mainPageRouter + codesRouter}/mapping`)
         },

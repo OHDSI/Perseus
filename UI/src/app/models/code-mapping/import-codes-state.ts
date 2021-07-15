@@ -9,7 +9,9 @@ export interface ImportCodesState {
   columns: Column[]
   mappingParams: CodeMappingParams
   codeMappings: CodeMapping[],
-  filters: SearchConceptFilters
+  filters: SearchConceptFilters,
+  isExisted: boolean,
+  vocabularyName?: string
 }
 
 export function columnsFromSourceCode(code: Code): Column[] {
