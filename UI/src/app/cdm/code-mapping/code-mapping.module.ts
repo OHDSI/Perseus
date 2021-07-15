@@ -20,6 +20,7 @@ import { ImportCodesGridComponent } from './import-codes/column-mapping/import-c
 import { ImportCodesGuard } from '@guards/code-mapping/import-codes.guard';
 import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.module';
 import { RemoveVocabularyConfirmComponent } from './import-codes/import-vocabulary/remove-vocabulary-confirm/remove-vocabulary-confirm.component';
+import { ConfirmOverwriteVocabComponent } from './mapping-codes/save-vocabulary-popup/confirm-overwrite-vocab/confirm-overwrite-vocab.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { RemoveVocabularyConfirmComponent } from './import-codes/import-vocabula
     EditMappingPanelComponent,
     EditCodeMappingGridComponent,
     ImportCodesGridComponent,
-    RemoveVocabularyConfirmComponent
+    RemoveVocabularyConfirmComponent,
+    ConfirmOverwriteVocabComponent
   ],
   imports: [
     CodeMappingRoutingModule,

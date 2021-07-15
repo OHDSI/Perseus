@@ -1,0 +1,13 @@
+<div class="confirm-overwrite-dialog">
+  <app-close-dialog-button class="confirm-overwrite-dialog__close-icon" (click)="dialogRef.close()">
+  </app-close-dialog-button>
+
+  <p>Vocabulary with this name already exist</p>
+
+  <p>Do you want to overwrite?</p>
+
+  <div class="confirm-overwrite-dialog__actions">
+    <button class="cancel" (click)="this.dialogRef.close(false)">No</button>
+    <button class="apply" (click)="this.dialogRef.close(true)">Yes</button>
+  </div>
+</div>
