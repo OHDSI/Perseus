@@ -39,5 +39,17 @@
       "specimen_concept_id",
       "specimen_source_value",
       "specimen_type_concept_id"
+   ],
+   "visit_occurrence": [
+      "visit_concept_id",
+      "visit_source_value",
+      "visit_source_concept_id",
+      "visit_type_concept_id"
+   ],
+  "visit_detail": [
+      "visit_concept_id",
+      "visit_source_value",
+      "visit_source_concept_id",
+      "visit_type_concept_id"
    ]
 }
