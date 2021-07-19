@@ -11,7 +11,7 @@ from cdm_souffleur.services.search_service import search_usagi
 from cdm_souffleur.services.web_socket_service import emit_status
 from cdm_souffleur.utils import InvalidUsage
 from cdm_souffleur.utils.async_directive import fire_and_forget_concept_mapping, fire_and_forget_load_vocabulary
-from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, SOLR_PATH, \
+from cdm_souffleur.utils.constants import UPLOAD_SOURCE_CODES_FOLDER, CONCEPT_IDS, SOURCE_CODE_TYPE_STRING, USAGI_CORE_NAME, \
     SOLR_FILTERS
 import pysolr
 from cdm_souffleur import app, json
@@ -90,7 +90,7 @@ def csv_to_json(filepath, delimiter):
     for row in data.iterrows():
         json_row = {}
         for col in data.columns:
-            json_row[col] = row[1][col]
+            json_row[col] = str(row[1][col])
         json_file.append(json_row)
     return json_file
 
@@ -237,8 +237,7 @@ def get_vocabulary_data(current_user):
 
 
 def get_filters(current_user):
-    core_name = current_user if path.exists(f'{SOLR_PATH}/{current_user}') else 'concepts'
-    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{core_name}",
+    solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{USAGI_CORE_NAME}",
                        always_commit=True)
     facets = {}
     for key in SOLR_FILTERS:

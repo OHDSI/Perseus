@@ -10,6 +10,7 @@ from cdm_souffleur.model.concept import Concept
 from cdm_souffleur.services.similarity_score_service import get_terms_vectors, cosine_sim_vectors
 
 CONCEPT_TERM = "C"
+CONCEPT_TYPE_STRING	= "C"
 
 
 def search_usagi(current_user, filters, query, source_auto_assigned_concept_ids):
@@ -63,6 +64,8 @@ def create_usagi_filter_queries(filters, source_auto_assigned_concept_ids):
         create_or_filter_query_usagi(queries, filters['filterByUserSelectedConceptsAtcCode'], source_auto_assigned_concept_ids, 'concept_id')
     if filters['includeSourceTerms']:
         queries.append(f'term_type:{CONCEPT_TERM}')
+    queries.append(f'type:{CONCEPT_TYPE_STRING}')
+
     return queries
 
 
