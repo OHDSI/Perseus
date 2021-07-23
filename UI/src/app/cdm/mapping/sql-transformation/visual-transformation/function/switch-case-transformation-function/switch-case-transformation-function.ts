@@ -63,8 +63,8 @@ export class SwitchCaseTransformationFunction extends TypedTransformationFunctio
   createRowControl(value: Case) {
     return new FormGroup({
       id: new FormControl(value.id, [Validators.required]),
-      in: new FormControl(value.in, [Validators.required, this.fieldTypeValidator]),
-      out: new FormControl(value.out, [Validators.required, this.fieldTypeValidator]),
+      in: new FormControl(value.in ?? this.getDefaultValue(), [Validators.required, this.fieldTypeValidator]),
+      out: new FormControl(value.out ?? this.getDefaultValue(), [Validators.required, this.fieldTypeValidator]),
       isDefault: new FormControl(false, [Validators.required])
     })
   }
@@ -73,7 +73,7 @@ export class SwitchCaseTransformationFunction extends TypedTransformationFunctio
     return new FormGroup({
       id: new FormControl(value.id, [Validators.required]),
       in: new FormControl({value: anyValue, disabled: true}),
-      out: new FormControl(value.out, [Validators.required, this.fieldTypeValidator]),
+      out: new FormControl(value.out ?? this.getDefaultValue(), [Validators.required, this.fieldTypeValidator]),
       isDefault: new FormControl(true, [Validators.required])
     })
   }

@@ -324,7 +324,7 @@ type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, s
 
     <fieldType name="text_vector" class="solr.TextField" positionIncrementGap="100" multiValued="true">
       <analyzer>
-        <tokenizer class="solr.NGramTokenizerFactory" minGramSize="2" maxGramSize="3"/>
+        <tokenizer class="solr.NGramTokenizerFactory" minGramSize="1" maxGramSize="3"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>   
     </fieldType>

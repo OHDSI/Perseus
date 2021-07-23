@@ -36,8 +36,8 @@ export class ReplaceTransformationFunction extends TypedTransformationFunction<R
   protected createForm(): FormGroup {
     this.validationService = new ValidationService()
     return new FormGroup({
-      old: new FormControl(null, [Validators.required, this.fieldTypeValidator]),
-      new: new FormControl(null, [Validators.required, this.fieldTypeValidator])
+      old: new FormControl(this.getDefaultValue(), [Validators.required, this.fieldTypeValidator]),
+      new: new FormControl(this.getDefaultValue(), [Validators.required, this.fieldTypeValidator])
     });
   }
 }

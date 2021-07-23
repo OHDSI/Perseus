@@ -1,6 +1,6 @@
 import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DatePart } from '@models/transformation/datepart';
+import { DatePart, dateParts } from '@models/transformation/datepart';
 
 export interface DatePartModel {
   part: DatePart
@@ -16,9 +16,13 @@ export class DatePartTransformationFunction extends TransformationFunction<DateP
     return (arg: string) => `date_part('${this.part}', ${arg})`;
   }
 
+  private get defaultPart(){
+    return dateParts[0];
+  }
+
   protected createForm(): FormGroup {
     return new FormGroup({
-      part: new FormControl(null, [Validators.required])
+      part: new FormControl(this.defaultPart, [Validators.required])
     });
   }
 }

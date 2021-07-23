@@ -28,4 +28,22 @@ export abstract class TypedTransformationFunction<T> extends TransformationFunct
         return (value: string) => `'${value}'`
     }
   }
+
+  protected getDefaultValue(): any {
+    switch (this.type) {
+      case 'string':
+        return 'default'
+      case 'integer':
+      case 'float':
+        return 0
+      case 'date':
+        return '2021-01-01'
+      case 'datetime':
+        return '2021-01-01 00:00:00'
+      case 'time':
+        return '00:00:00'
+      default:
+        return 'default'
+    }
+  }
 }
