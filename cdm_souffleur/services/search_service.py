@@ -19,7 +19,7 @@ def search_usagi(current_user, filters, query, source_auto_assigned_concept_ids)
     scored_concepts = []
     if filters:
         filter_queries = create_usagi_filter_queries(filters, source_auto_assigned_concept_ids)
-    words = '+'.join(re.split('[^a-zA-Z]', query))
+    words = '+'.join(re.split('[^a-zA-Z0-9]', query))
     results = solr.search(f"term:{words}", fl='concept_id, term, score', fq=filter_queries, rows=100).docs
     results = remove_duplicates(results)
     vectors = get_terms_vectors(results, query, 'term')

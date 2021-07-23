@@ -1,7 +1,7 @@
 import { ValidationService } from '@services/validation.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-export type FieldType = 'integer' | 'string' | 'boolean' | 'date' | 'datetime' | 'time'
+export type FieldType = 'integer' | 'string' | 'boolean' | 'date' | 'datetime' | 'time' | 'float'
 
 export function fieldTypeValidator(service: ValidationService,
                                    type: string): (control: AbstractControl) => ValidationErrors | null {

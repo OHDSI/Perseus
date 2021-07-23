@@ -1,6 +1,7 @@
 import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DatePart } from '@models/transformation/datepart';
+import { DatePart, dateParts } from '@models/transformation/datepart';
+import { DatePartTransformationFunction } from '../date-part-transformation-function/date-part-transformation-function';
 
 export interface DateAddModel {
   datePart: DatePart,
@@ -17,14 +18,18 @@ export class DateAddTransformationFunction extends TransformationFunction<DateAd
     return this.form.get('number').value
   }
 
+  private get defaultDatePart() {
+    return dateParts[0];
+  }
+
   sql(): (arg: string) => string {
     return arg => `${arg} + (${this.number} * interval '1 ${this.datePart}')`
   }
 
   protected createForm(): FormGroup {
     return new FormGroup({
-      datePart: new FormControl(null, [Validators.required]),
-      number: new FormControl(null, [Validators.required])
+      datePart: new FormControl(this.defaultDatePart, [Validators.required]),
+      number: new FormControl(0, [Validators.required])
     });
   }
 }
