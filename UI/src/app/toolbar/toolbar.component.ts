@@ -1,28 +1,27 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BridgeService } from '../services/bridge.service';
-import { CommonUtilsService } from '../services/common-utils.service';
-import { stateToInfo, StoreService } from '../services/store.service';
-import { UploadService } from '../services/upload.service';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { BridgeService } from '@services/bridge.service';
+import { CommonUtilsService } from '@services/common-utils.service';
+import { stateToInfo, StoreService } from '@services/store.service';
+import { UploadService } from '@services/upload.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { Area } from 'src/app/models/area';
-import { ScanDataDialogComponent } from '../scan-data/scan-data-dialog/scan-data-dialog.component';
-import { FakeDataDialogComponent } from '../scan-data/fake-data-dialog/fake-data-dialog.component';
-import { Observable } from 'rxjs/internal/Observable';
-import { CdmDialogComponent } from '../scan-data/cdm-dialog/cdm-dialog.component';
-import { DqdDialogComponent } from '../scan-data/dqd-dialog/dqd-dialog.component';
-import { BaseComponent } from '../shared/base/base.component';
-import { VocabularyObserverService } from '../services/vocabulary-search/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../services/report-generation.service';
-import { mainPageRouter } from '../app.constants';
-import { LogoutComponent } from '../popups/logout/logout.component';
-import { ErrorPopupComponent } from '../popups/error-popup/error-popup.component';
-import { HelpPopupComponent } from '../popups/help-popup/help-popup.component';
-import { authInjector } from '../services/auth/auth-injector';
-import { AuthService } from '../services/auth/auth.service';
+import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';
+import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
+import { Observable } from 'rxjs';
+import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
+import { DqdDialogComponent } from '@scan-data/dqd-dialog/dqd-dialog.component';
+import { BaseComponent } from '@shared/base/base.component';
+import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
+import { codesRouter, mainPageRouter } from '../app.constants';
+import { LogoutComponent } from '@popups/logout/logout.component';
+import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
+import { HelpPopupComponent } from '@popups/help-popup/help-popup.component';
+import { AuthFacadeService } from '@services/state/auth-facade.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -57,7 +56,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     private dataService: DataService,
     private vocabularyObserverService: VocabularyObserverService,
     private reportGenerationService: ReportGenerationService,
-    @Inject(authInjector) private authService: AuthService
+    private authFacadeService: AuthFacadeService
   ) {
     super();
   }
@@ -67,8 +66,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   get userInitials(): string {
-    const {firstName = '?', lastName = '?'} = this.authService.user
-    return `${firstName[0]}${lastName[0]}`
+    return this.authFacadeService.userInitials
   }
 
   ngOnInit() {
@@ -227,6 +225,10 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       height: '220',
       panelClass: 'perseus-dialog'
     });
+  }
+
+  codeMapping() {
+    this.router.navigateByUrl(mainPageRouter + codesRouter)
   }
 
   private initStreamsOfDisabledButtons() {

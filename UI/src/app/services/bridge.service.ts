@@ -2,38 +2,30 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
-import { SqlFunction } from '../popups/rules-popup/transformation-input/model/sql-string-functions';
-import { TransformationConfig } from '../cdm/mapping/vocabulary-transform-configurator/model/transformation-config';
 import { Command } from '../infrastructure/command';
-import { cloneDeep, uniq, uniqBy } from '../infrastructure/utility';
-import { Arrow, ArrowCache, ConstantCache } from '../models/arrow-cache';
-import { Configuration } from '../models/configuration';
-import { IConnector } from '../models/connector.interface';
-import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '../models/mapping-service';
-import { ITable, Table } from '../models/table';
+import { cloneDeep, uniq } from '../infrastructure/utility';
+import { IArrowCache } from '@models/arrow-cache';
+import { Configuration } from '@models/configuration';
+import { IConnector } from '@models/connector';
+import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@services/mapping-service';
+import { ITable, Table } from '@models/table';
 import { StoreService } from './store.service';
-import { Area } from '../models/area';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { Area } from '@models/area';
 import * as similarNamesMap from '../cdm/mapping/similar-names-map.json';
-import { conceptFieldsTypes, similarTableName } from '../app.constants';
+import { similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
-import { getConceptFieldNameByType } from 'src/app/utilites/concept-util';
-import { Mapping } from '../models/mapping';
-
-export interface IConnection {
-  source: IRow;
-  target: IRow;
-  connector: IConnector;
-  transforms?: SqlFunction[];
-  transformationConfigs?: TransformationConfig[];
-  lookup?: {};
-  type?: string;
-  sql?: {};
-}
+import { getConceptFieldsDictionary } from 'src/app/utils/concept-util';
+import { Mapping } from '@models/mapping';
+import { canLink, removeDeletedLinksFromFields } from '@utils/bridge';
+import { getConstantId } from '@utils/constant';
+import { getConnectorId } from '@utils/connector';
+import { StateService } from '@services/state/state.service';
+import { IConnection } from '@models/connection';
+import { IConstantCache } from '@models/constant-cache';
 
 @Injectable()
-export class BridgeService {
+export class BridgeService implements StateService {
   set sourceRow(row: IRow) {
     this.sourcerow = row;
   }
@@ -99,7 +91,8 @@ export class BridgeService {
   resetAllMappings$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
   reportLoading$ = new Subject<boolean>();
-  conceptSqlTransfomed$ = new Subject<string>();
+  removeConnection$ = new Subject<IConnection>();
+
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
@@ -108,12 +101,8 @@ export class BridgeService {
   private draggedrowy = null;
   private draggedrowclass = null;
 
-  arrowsCache: ArrowCache = {};
-  constantsCache: ConstantCache = {};
-  connection = new Subject<IConnection>();
-  removeConnection = new Subject<IConnection>();
-
-  deleteAll = new Subject();
+  arrowsCache: IArrowCache = {};
+  constantsCache: IConstantCache = {};
 
   similarNamesMap = (similarNamesMap as any).default;
   similarTableName = similarTableName;
@@ -157,7 +146,7 @@ export class BridgeService {
       }
     },
     canExecute: () => {
-      const connectorId = this.getConnectorId(this.sourceRow, this.targetRow);
+      const connectorId = getConnectorId(this.sourceRow, this.targetRow);
 
       return !this.arrowsCache[ connectorId ];
     }
@@ -165,14 +154,14 @@ export class BridgeService {
 
   addConstant = new Command({
     execute: ({sourceTableId, targetRow}) => {
-      this.constantsCache[this.getConstantId(sourceTableId, targetRow)] = targetRow;
+      this.constantsCache[getConstantId(sourceTableId, targetRow)] = targetRow;
     },
     canExecute: () => true
   });
 
   dropConstant = new Command({
     execute: ({sourceTableId, targetRow}) => {
-      delete this.constantsCache[this.getConstantId(sourceTableId, targetRow)];
+      delete this.constantsCache[getConstantId(sourceTableId, targetRow)];
     },
     canExecute: () => true
   });
@@ -208,7 +197,7 @@ export class BridgeService {
       defaultClonesConnectedToNames = defaultClonesConnectedTo.map(it => it.cloneConnectedToSourceName);
     }
     const conceptFields = this.conceptFieldNames[ row.tableName ];
-    const conceptFieldsDictionary = this.getConceptFieldsDictionary(conceptFields);
+    const conceptFieldsDictionary = getConceptFieldsDictionary(conceptFields);
 
     tablesWithSimilarLinks.forEach(item => {
       const conceptsCopy = cloneDeep(this.storeService.state.concepts[ `${row.tableName}|similar` ]);
@@ -216,12 +205,12 @@ export class BridgeService {
         .filter(it => it.source.tableName === item && it.target.tableName === row.tableName && conceptFields.includes(it.target.name));
 
       if (!defaultClonesConnectedToNames.includes(item)) {
-        this.removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
+        removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
         this.storeService.state.concepts[ `${row.tableName}|${item}` ] = conceptsCopy;
         this.updateConceptArrowTypes(row.tableName, item, row.cloneTableName);
       } else {
         linksToConceptFields = linksToConceptFields.filter(it => it.target.cloneTableName === 'Default');
-        this.removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
+        removeDeletedLinksFromFields(conceptsCopy, linksToConceptFields, conceptFieldsDictionary);
         const concepts = this.storeService.state.concepts[ `${row.tableName}|${item}` ];
         concepts.conceptsList = concepts.conceptsList.filter(it => it.fields[ 'concept_id' ].targetCloneName !== 'Default');
 
@@ -239,26 +228,6 @@ export class BridgeService {
         this.updateConceptArrowTypes(row.tableName, item, 'Default');
       }
     })
-  }
-
-  removeDeletedLinksFromFields(conceptsCopy: any, linksToConceptFields: any, conceptFieldsDictionary: any) {
-    conceptsCopy.conceptsList.forEach(conc => {
-      Object.keys(conc.fields).forEach(type => {
-        const sourceField = conc.fields[ type ].field;
-        const linkExists = linksToConceptFields.filter(it => it.target.name === conceptFieldsDictionary[ type ] && it.source.name === sourceField);
-        if (sourceField && !linkExists.length) {
-          conc.fields[ type ].field = '';
-        }
-      })
-    })
-  }
-
-  getConceptFieldsDictionary(conceptFields: any) {
-    const conceptFieldsDictionary = {};
-    conceptFieldsTypes.forEach(it => {
-      conceptFieldsDictionary[ it ] = getConceptFieldNameByType(it, conceptFields);
-    })
-    return conceptFieldsDictionary;
   }
 
   getTables() {
@@ -282,19 +251,10 @@ export class BridgeService {
   }
 
   drawSimilar(config, sourceRow, targetRow) {
-    if (!this.canLink(config, sourceRow.tableName, targetRow.tableName)) {
+    if (!canLink(config, sourceRow.tableName, targetRow.tableName)) {
       return;
     }
     this.drawArrow(sourceRow, targetRow);
-  }
-
-  canLink(config, sourceTableName, targetTableName) {
-    for (const item of config) {
-      if (item.includes(sourceTableName) && item.includes(targetTableName)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -326,14 +286,12 @@ export class BridgeService {
   }
 
   findSimilarLinks(connection, area1, area2) {
-    return Object.keys(this.arrowsCache).map(key => {
-      const arrow = this.arrowsCache[ key ];
-      if (
-        this.checkSimilar(arrow[ area1 ].name, connection[ area1 ].name) &&
-        this.checkSimilar(arrow[ area2 ].name, connection[ area2 ].name)) {
-        return key;
-      }
-    });
+    return Object.keys(this.arrowsCache)
+      .filter(key => {
+        const arrow = this.arrowsCache[key];
+        return this.checkSimilar(arrow[area1].name, connection[area1].name) &&
+          this.checkSimilar(arrow[area2].name, connection[area2].name);
+      });
   }
 
   updateRowsProperties(tables: any, filter: any, action: (row: IRow) => void) {
@@ -349,8 +307,8 @@ export class BridgeService {
   applyConfiguration(configuration: Configuration) {
     this.deleteAllArrows();
 
-    this.constantsCache = Object.assign(configuration.constantsCache);
-    this.arrowsCache = Object.assign(configuration.arrows);
+    this.constantsCache = configuration.constants
+    this.arrowsCache = configuration.mappingsConfiguration
 
     Object.keys(this.arrowsCache)
       .forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
@@ -391,14 +349,6 @@ export class BridgeService {
     }
   }
 
-  getStyledAsDragStartElement() {
-    this.sourceRow.htmlElement.classList.add('drag-start');
-  }
-
-  getStyledAsDragEndElement() {
-    this.sourceRow.htmlElement.classList.remove('drag-start');
-  }
-
   refresh(table: ITable, delayMs?: number) {
     this.hideAllArrows();
 
@@ -413,9 +363,9 @@ export class BridgeService {
 
   private _refresh(
     table: ITable,
-    arrowsCache: ArrowCache
+    arrowsCache: IArrowCache
   ) {
-    Object.values(arrowsCache).forEach((arrow: Arrow) => {
+    Object.values(arrowsCache).forEach(arrow => {
       if (table.name === arrow[ table.area ].tableName) {
         this.refreshConnector(arrow);
       }
@@ -426,7 +376,7 @@ export class BridgeService {
     this.hideAllArrows();
 
     setTimeout(() => {
-      Object.values(this.arrowsCache).forEach((arrow: Arrow) => {
+      Object.values(this.arrowsCache).forEach(arrow => {
         this.refreshConnector(arrow);
       });
     }, 300);
@@ -434,15 +384,13 @@ export class BridgeService {
 
   refreshConnector(arrow) {
     const connector = this.drawService.drawLine(
-      this.getConnectorId(arrow.source, arrow.target),
+      getConnectorId(arrow.source, arrow.target),
       arrow.source,
       arrow.target,
       arrow.type
     );
 
     this.arrowsCache[ connector.id ].connector = connector;
-
-    this.connection.next(this.arrowsCache[ connector.id ]);
   }
 
   deleteArrow(key: string, force = false) {
@@ -477,12 +425,12 @@ export class BridgeService {
     }
     this.deleteConceptFields(connection)
 
-    this.removeConnection.next(connection);
+    this.removeConnection$.next(connection);
   }
 
   deleteConceptFields(connection) {
     if (connection) {
-      if (this.conceptFieldNames[ connection.target.tableName ] && this.conceptFieldNames[ connection.target.tableName ].includes(connection.target.name)) {
+      if (this.conceptFieldNames[ connection.target.tableName ]?.includes(connection.target.name)) {
         const conceptService = new ConceptTransformationService(connection.target.tableName, connection.source.tableName,
           this.storeService.state.concepts, connection, connection.target.cloneTableName, connection.target.condition, this.arrowsCache);
         conceptService.deleteFieldsFromConcepts();
@@ -492,8 +440,12 @@ export class BridgeService {
   }
 
   updateConceptArrowTypes(targetTable: string, sourceTable: string, cloneName: string) {
-    const concepts = this.storeService.state.concepts[ `${targetTable}|${sourceTable}` ].conceptsList
+    const concepts = this.storeService.state.concepts[ `${targetTable}|${sourceTable}` ]?.conceptsList
       .filter(item => item.fields[ 'concept_id' ].targetCloneName === cloneName);
+
+    if (!concepts) {
+      return false
+    }
 
     const arrows = Object.values(this.arrowsCache).filter(item => item.source.tableName === sourceTable &&
       item.target.tableName === targetTable && item.target.cloneTableName === cloneName &&
@@ -531,7 +483,7 @@ export class BridgeService {
   }
 
   drawArrow(sourceRow, targetRow, type = '', cloneTable?) {
-    const entityId = this.getConnectorId(sourceRow, targetRow);
+    const entityId = getConnectorId(sourceRow, targetRow);
 
     const connector = this.drawService.drawLine(
       entityId,
@@ -553,8 +505,6 @@ export class BridgeService {
     if (!cloneTable) {
       this.updateConcepts(connection);
     }
-
-    this.connection.next(connection);
 
     return connection;
   }
@@ -618,7 +568,7 @@ export class BridgeService {
     constants.forEach(item => {
       const row = cloneTable.rows.find(el => el.name === item.name);
       const sourceTableId = this.storeService.state.source.find(table => table.name === sourceTableName).id
-      this.constantsCache[this.getConstantId(sourceTableId, row)] = row;
+      this.constantsCache[getConstantId(sourceTableId, row)] = row;
     });
   }
 
@@ -626,16 +576,10 @@ export class BridgeService {
     this.drawService.deleteAllConnectors();
   }
 
-  hideTableArrows(table: ITable): void {
-    this.drawService.deleteConnectorsBoundToTable(table);
-  }
-
   deleteAllArrows() {
     Object.values(this.arrowsCache).forEach(arrow => {
       this.deleteArrow(arrow.connector.id, true);
     });
-
-    this.deleteAll.next();
   }
 
   deleteAllConstants() {
@@ -656,8 +600,6 @@ export class BridgeService {
       .forEach(arrow => {
         this.deleteArrow(arrow.connector.id);
       });
-
-    this.deleteAll.next();
   }
 
   generateMapping(sourceTableName: string = '', targetTableName: string = ''): Mapping {
@@ -704,21 +646,6 @@ export class BridgeService {
     );
   }
 
-  findCorrespondingTables(table: ITable): string[] {
-    const source = table.area === 'source' ? 'target' : 'source';
-    const rows = Object.values(this.arrowsCache)
-      .filter(connection => connection[ table.area ].tableName === table.name)
-      .map(arrow => arrow[ source ]);
-
-    return uniqBy(rows, 'tableName').map(row => row.tableName);
-  }
-
-  findCorrespondingConnections(table: ITable, row: IRow): IConnection[] {
-    return Object.values(this.arrowsCache).filter(connection => {
-      return connection[ table.area ].tableName === table.name && connection[ table.area ].id === row.id;
-    });
-  }
-
   resetAllMappings() {
     this.deleteAllArrows();
     this.deleteAllConstants();
@@ -735,57 +662,16 @@ export class BridgeService {
   }
 
   /**
-   * @return id - arrow id for arrowCache in bridge-service
+   * Apply or cancel sql or lookup transformation
+   * @param arrow - connection between source and target row
    */
-  getConnectorId(source: IRow, target: IRow): string {
-    const sourceRowId = source.id;
-    const targetRowId = target.id;
-    const sourceTableId = source.tableId;
-    const targetTableId = target.tableId;
-
-    return `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`;
-  }
-
-  /**
-   * @return id - constant id for constantCache in bridge-service
-   */
-  getConstantId(sourceTableId: number, target: IRow): string {
-    const targetRowId = target.id;
-    const targetTableId = target.tableId;
-
-    return `${sourceTableId}/${targetTableId}-${targetRowId}`;
-  }
-
-  findTable(name: string): ITable {
-    const state = this.storeService.state;
-    const index1 = state.target.findIndex(t => t.name === name);
-    const index2 = state.source.findIndex(t => t.name === name);
-    if (index1 > -1) {
-      return state.target[ index1 ];
-    } else if (index2 > -1) {
-      return state.source[ index2 ];
-    }
-
-    return null;
-  }
-
-  storeReorderedRows(tableName: string, area: string) {
-    const index = this.storeService.state[ area ].findIndex(t => t.name === tableName);
-    if (index > -1) {
-      moveItemInArray(this.storeService.state[ area ][ index ].rows, this.draggedRowIndex, this.newrowindex);
-      return;
-    }
-    return null;
-  }
-
   updateConnectedRows(arrow: IConnection) {
     let connectedToSameTraget = Object.values(this.arrowsCache).
       filter(this.sourceConnectedToSameTarget(arrow.connector.target, false));
     if (arrow.connector.target.tableName.toUpperCase() === 'SIMILAR') {
       let similarLinks = [];
       connectedToSameTraget.forEach(item => {
-        similarLinks = similarLinks.concat(this.findSimilarLinks(item.connector, Area.Source, Area.Target)).
-          filter(e => e !== undefined);
+        similarLinks = similarLinks.concat(this.findSimilarLinks(item.connector, Area.Source, Area.Target))
       });
       connectedToSameTraget = [];
       similarLinks.forEach(item => connectedToSameTraget = connectedToSameTraget.concat(this.arrowsCache[ item ]));
@@ -807,7 +693,7 @@ export class BridgeService {
     const mappingJSON = this.generateMapping();
 
     if (!sourceTables.length) {
-      const { source, target } = this.storeService.getMappedTables();
+      const { source } = this.storeService.getMappedTables();
       sourceTables = source;
     }
 
@@ -849,7 +735,13 @@ export class BridgeService {
     return tables;
   }
 
-  collectSimilarRows(rows, area, areaRows, similarRows): void {
+  reset() {
+    this.deleteAllArrows();
+    this.deleteAllConstants();
+    this.tables = {}
+  }
+
+  private collectSimilarRows(rows, area, areaRows, similarRows): void {
     rows.forEach(row => {
       if (!row.grouppedFields || !row.grouppedFields.length) {
 
@@ -874,7 +766,7 @@ export class BridgeService {
     });
   }
 
-  checkIncludesRows(rows, row) {
+  private checkIncludesRows(rows, row) {
     return !!rows.find(r => {
       return (
         r.name === row.name ||
@@ -882,9 +774,5 @@ export class BridgeService {
         (this.similarNamesMap[ r.name ] || this.similarNamesMap[ row.name ])
       );
     });
-  }
-
-  changeConceptSql(sql: string) {
-    this.conceptSqlTransfomed$.next(sql);
   }
 }

@@ -1,0 +1,54 @@
+@import '../../../styles/variables';
+
+.mapping-filter-by-name {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.flex-div {
+  display: flex;
+}
+
+.min-height-25{
+  min-height: 25px;
+}
+
+.flex-div-align-center {
+  @extend .flex-div;
+  align-items: center;
+  color: #066BBB;
+  font-size: 15px;
+  font-weight: bold;
+  .mat-icon{
+    cursor: pointer;
+  }
+}
+
+.add-condition-or-clone {
+  margin-left: auto;
+  display: flex;
+}
+
+.create-group-disabled{
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.info-icon{
+  color: #066BBB;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 3px;
+}
+
+.condition{
+  margin-left: 10px;
+}
+
+.panel-options {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}

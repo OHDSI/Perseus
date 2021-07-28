@@ -1,11 +1,5 @@
 @import "variables";
-
-@mixin hint() {
-  content: "";
-  position: absolute;
-  border-width: 5px;
-  border-style: solid;
-}
+@import "mixins";
 
 .hint-overlay {
   position: relative;

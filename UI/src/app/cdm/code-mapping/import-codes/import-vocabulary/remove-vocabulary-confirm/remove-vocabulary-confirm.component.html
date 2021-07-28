@@ -1,0 +1,13 @@
+<div class="remove-vocabulary-confirm">
+  <app-close-dialog-button class="remove-vocabulary-confirm__close-icon"
+                           (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <h4 class="remove-vocabulary-confirm__header">
+    Do you really want to delete <span>{{name}}</span> ?
+  </h4>
+
+  <div class="remove-vocabulary-confirm__confirm">
+    <button class="cancel" (click)="dialogRef.close(false)">No</button>
+    <button class="apply" (click)="dialogRef.close(true)">Yes</button>
+  </div>
+</div>

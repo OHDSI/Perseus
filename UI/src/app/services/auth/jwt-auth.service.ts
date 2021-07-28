@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
-import { User } from '../../models/user';
-import { Observable } from 'rxjs/internal/Observable';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { User } from '@models/user';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl, loginRouter } from '../../app.constants';
+import { apiUrl, loginRouter } from '@app/app.constants';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -14,6 +13,8 @@ import { Router } from '@angular/router';
 export class JwtAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>;
+
+  private tokenValid: boolean
 
   constructor(private httpClient: HttpClient, private router: Router) {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
@@ -28,6 +29,21 @@ export class JwtAuthService implements AuthService {
     return !!this.user?.token;
   }
 
+  get isUserLoggedIn$(): Observable<boolean> {
+    if (!this.user?.token) {
+      return of(false)
+    }
+
+    if (this.tokenValid) {
+      return of(true)
+    }
+
+    return this.isTokenValid()
+      .pipe(
+        tap(value => this.tokenValid = value)
+      )
+  }
+
   login(email: string, password: string): Observable<User> {
     return this.saveUser(
       this.httpClient.post<User>(`${apiUrl}/login`, {email, password})
@@ -38,8 +54,7 @@ export class JwtAuthService implements AuthService {
     return this.httpClient.get<void>(`${apiUrl}/logout`)
       .pipe(
         tap(() => {
-          localStorage.removeItem(localStorageUserField)
-          this.currentUser$.next(null)
+          this.resetCurrentUser()
           this.router.navigateByUrl(loginRouter)
         })
       )
@@ -82,5 +97,19 @@ export class JwtAuthService implements AuthService {
           }
         })
       )
+  }
+
+  private isTokenValid(): Observable<boolean> {
+    return this.httpClient.get<boolean>(`${apiUrl}/is_token_valid`)
+      .pipe(
+        catchError(() => of(false)),
+        tap(value => !value && this.resetCurrentUser())
+      )
+  }
+
+  private resetCurrentUser() {
+    localStorage.removeItem(localStorageUserField)
+    this.currentUser$.next(null)
+    this.tokenValid = false
   }
 }

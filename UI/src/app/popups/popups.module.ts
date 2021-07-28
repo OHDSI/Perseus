@@ -15,12 +15,13 @@ import { TransformationInputComponent } from './rules-popup/transformation-input
 import { SelectConceptFieldComponent } from './select-concept-field/select-concept-field.component';
 import { SelectTableDropdownComponent } from './select-table-dropdown/select-table-dropdown.component';
 import { SetConnectionTypePopupComponent } from './set-connection-type-popup/set-connection-type-popup.component';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { TransformationTypeComponent } from './transformation-type/transformation-type.component';
 import { SqlFunctionsInjector } from './rules-popup/model/sql-functions-injector';
 import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-string-functions';
 import { LogoutComponent } from './logout/logout.component';
 import { HelpPopupComponent } from './help-popup/help-popup.component';
+import { WarningPopupComponent } from './warning-popup/warning-popup.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { HelpPopupComponent } from './help-popup/help-popup.component';
     SetConnectionTypePopupComponent,
     TransformationTypeComponent,
     LogoutComponent,
-    HelpPopupComponent
+    HelpPopupComponent,
+    WarningPopupComponent
   ],
   imports: [
     SharedModule

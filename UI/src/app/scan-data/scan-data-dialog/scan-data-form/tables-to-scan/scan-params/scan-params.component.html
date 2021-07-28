@@ -1,12 +1,12 @@
 <form class="scan-params" [formGroup]="scanParamsForm">
   <div class="scan-params__check">
     <div class="scan-params__check-control scan-data-form-control">
-      <app-scan-data-checkbox formControlName="scanValues"></app-scan-data-checkbox>
+      <app-cdm-checkbox formControlName="scanValues"></app-cdm-checkbox>
       <p matTooltip="Include a frequency count of field values in the scan report">Scan Field Values</p>
     </div>
 
     <div class="scan-params__check-control scan-data-form-control">
-      <app-scan-data-checkbox formControlName="calculateNumericStats"></app-scan-data-checkbox>
+      <app-cdm-checkbox formControlName="calculateNumericStats"></app-cdm-checkbox>
       <p matTooltip="Include average, standard deviation and quartiles of numeric fields">Numeric Stats</p>
     </div>
   </div>

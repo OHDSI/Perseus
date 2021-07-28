@@ -1,0 +1,30 @@
+.sortable-column {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  svg {
+    margin-left: 12px;
+    cursor: pointer;
+    visibility: hidden;
+  }
+
+  &:hover {
+    svg {
+      visibility: visible;
+    }
+  }
+
+  &.sortable-asc,
+  &.sortable-desc {
+    svg {
+      display: block;
+    }
+  }
+
+  &.sortable-asc {
+    svg {
+      transform: rotate(270deg);
+    }
+  }
+}

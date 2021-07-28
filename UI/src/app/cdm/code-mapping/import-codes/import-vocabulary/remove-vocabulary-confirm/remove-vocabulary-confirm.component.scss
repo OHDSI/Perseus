@@ -1,0 +1,29 @@
+@import "mixins";
+
+.remove-vocabulary-confirm {
+  @include perseus-popup();
+  width: 283px;
+  min-height: 208px;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    span {
+      word-break: break-word;
+      font-style: italic;
+    }
+  }
+
+  &__confirm {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex: 1;
+
+    button {
+      @include cdm-button();
+      width: 80px;
+      height: 30px;
+    }
+  }
+}

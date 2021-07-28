@@ -1,0 +1,11 @@
+<app-filter-dropdown-label [name]="filter.name"
+                           [opened]="openedFilterName === filter.name"
+                           (open)="onOpen($event)">
+  <ng-content></ng-content>
+</app-filter-dropdown-label>
+
+<app-filter-list *ngIf="filter.name === openedFilterName"
+                 [values]="filter.values"
+                 [selectedValues]="state"
+                 [paddingLeft]="paddingLeft"
+                 (check)="onCheck($event)"></app-filter-list>

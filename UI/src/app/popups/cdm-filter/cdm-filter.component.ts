@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatListOption } from '@angular/material/list';
 import { uniq } from 'src/app/infrastructure/utility';
-import { OVERLAY_DIALOG_DATA } from '../../services/overlay/overlay-dialog-data';
-import { OverlayDialogRef } from '../../services/overlay/overlay.service';
-import { StoreService } from '../../services/store.service';
+import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
+import { OverlayDialogRef } from '@services/overlay/overlay.service';
+import { StoreService } from '@services/store.service';
+import { State } from '@models/state';
 
 @Component({
   selector: 'app-cdm-filter',
@@ -12,7 +13,7 @@ import { StoreService } from '../../services/store.service';
 })
 export class CdmFilterComponent implements OnInit {
   title: string;
-  saveKey: string;
+  saveKey: keyof State;
   targetTypes: string[] = [];
   options;
   uniqueTypes;

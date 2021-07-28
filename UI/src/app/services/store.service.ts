@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Table } from '../models/table';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ITable, Table } from '@models/table';
 import { uniq } from '../infrastructure/utility';
-import { removeExtension } from '../utilites/file';
-import { Observable } from 'rxjs/internal/Observable';
+import { removeExtension } from '@utils/file';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
-import { State } from '../models/state';
+import { State } from '@models/state';
+import { StateService } from '@services/state/state.service';
 
 const initialState: State = {
   target: [],
@@ -22,12 +22,16 @@ const initialState: State = {
   isMappingPage: false
 }
 
+type StoreTablesKey = { [K in keyof State]: State[K] extends ITable[] ? K : never }[keyof State]
+
 @Injectable()
-export class StoreService {
+export class StoreService implements StateService {
+
   private readonly storeState = new BehaviorSubject<State>({...initialState});
+
   readonly state$ = this.storeState.asObservable();
 
-  get state() {
+  get state(): State {
     return this.storeState.getValue();
   }
 
@@ -35,19 +39,23 @@ export class StoreService {
     this.storeState.next(val);
   }
 
-  add(key, value) {
+  get copyState() {
+    return {...this.storeState.getValue()}
+  }
+
+  add<K extends keyof State>(key: K, value: State[K]) {
     this.state = { ...this.state, [ key ]: value };
   }
 
-  removeTable(storeKey, table) {
-    const tables = this.state[ storeKey ];
+  removeTable<T>(storeKey: StoreTablesKey, table: ITable) {
+    const tables = this.state[storeKey];
     if (tables && tables.length) {
       const updatedTables = tables.filter(it => it !== table);
       this.state = { ...this.state, [ storeKey ]: updatedTables };
     }
   }
 
-  updateTable(storeKey, table, updates) {
+  updateTable(storeKey: StoreTablesKey, table: ITable, updates: ITable) {
     const tables = this.state[ storeKey ];
     if (tables && tables.length && table) {
       const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...it, ...updates }) : new Table(it));
@@ -85,16 +93,20 @@ export class StoreService {
    * @param key - listenable for a change in the store
    * @param equal - function used for compare new value with previous
    */
-  on<T>(key: string, equal: (a: T, b: T) => boolean = (a, b) => a === b): Observable<T> {
-    const prevState = this.state[key] as T
+  on<K extends keyof State>(key: K, equal: (a: State[K], b: State[K]) => boolean = (a, b) => a === b): Observable<State[K]> {
+    const prevState = this.state[key]
     return this.storeState.asObservable()
       .pipe(
-        map(state => state[key] as T),
-        startWith<T, T>(prevState),
+        map(state => state[key]),
+        startWith<State[K], State[K]>(prevState),
         pairwise(),
         filter(([prev, curr]) => prev !== curr),
         map(([, curr]) => curr)
       )
+  }
+
+  reset() {
+    this.storeState.next({...initialState});
   }
 }
 

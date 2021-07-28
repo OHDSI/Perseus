@@ -16,7 +16,7 @@
       "overlayX": "end",
       "overlayY": "top"
     },
-    "column-info": {
+    "column-info-top": {
       "offsetX": 40,
       "offsetY": 0,
       "originX": "start",
@@ -24,21 +24,29 @@
       "overlayX": "start",
       "overlayY": "top"
     },
-    "comments-source": {
+    "column-info-bottom": {
       "offsetX": 40,
-      "offsetY": 32,
+      "offsetY": 0,
       "originX": "start",
       "originY": "bottom",
       "overlayX": "start",
       "overlayY": "bottom"
     },
-    "comments-target": {
-      "offsetX": -205,
-      "offsetY": -35,
-      "originX": "start",
-      "originY": "bottom",
+    "comments-source": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "end",
+      "originY": "top",
       "overlayX": "start",
-      "overlayY": "bottom"
+      "overlayY": "top"
+    },
+    "comments-target": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "top"
     },
     "right-bottom": {
       "offsetX": 0,
@@ -113,6 +121,14 @@
       "overlayY": "top"
     },
     "hint-top": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "originX": "start",
+      "originY": "top",
+      "overlayX": "end",
+      "overlayY": "bottom"
+    },
+    "transformation-type": {
       "offsetX": 0,
       "offsetY": 0,
       "originX": "start",

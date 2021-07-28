@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { appVersion } from '../../app.constants';
+import { appVersion } from '@app/app.constants';
 
 @Component({
   selector: 'app-help-popup',

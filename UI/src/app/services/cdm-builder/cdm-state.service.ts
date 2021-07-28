@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '../../models/scan-data/db-settings';
-import { IScanDataStateService } from '../white-rabbit/scan-data-state.service';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { IScanDataStateService } from '@models/scan-data/state';
+import { StateService } from '@services/state/state.service';
 
 export interface CdmState {
   sourceDbSettings: DbSettings;
@@ -27,7 +28,7 @@ const initialState = {
 };
 
 @Injectable()
-export class CdmStateService implements IScanDataStateService {
+export class CdmStateService implements IScanDataStateService, StateService {
 
   private isInit = false;
   private cdmState: CdmState;
@@ -45,7 +46,19 @@ export class CdmStateService implements IScanDataStateService {
     return this.isInit;
   }
 
+  get sourceDataType() {
+    return this.cdmState.sourceDbSettings.dbType
+  }
+
+  set sourceDataType(value: string) {
+    this.cdmState.sourceDbSettings.dbType = value
+  }
+
   constructor() {
-    this.cdmState = Object.assign({}, initialState) as CdmState;
+    this.cdmState = {...initialState};
+  }
+
+  reset() {
+    this.cdmState = {...initialState};
   }
 }

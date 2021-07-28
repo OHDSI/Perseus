@@ -1,0 +1,21 @@
+<form class="replace" [formGroup]="form">
+  <label>
+    <input type="text" formControlName="old">
+
+    <ng-container *ngIf="form.get('old') as control">
+      <span *ngIf="control.dirty && control.errors && control.errors[fieldType]">
+        {{control.errors[fieldType]}}
+      </span>
+    </ng-container>
+  </label>
+
+  <label>
+    <input type="text" formControlName="new">
+
+    <ng-container *ngIf="form.get('new') as control">
+      <span *ngIf="control.dirty && control.errors && control.errors[fieldType]">
+        {{control.errors[fieldType]}}
+      </span>
+    </ng-container>
+  </label>
+</form>

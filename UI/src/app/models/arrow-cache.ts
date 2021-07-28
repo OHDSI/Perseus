@@ -1,25 +1,15 @@
-import { IRow } from './row';
-import { IConnection } from '../services/bridge.service';
-
-export interface Arrow {
-  source: IRow;
-  target: IRow;
-}
+import { Connection, IConnection } from '@models/connection';
+import { Type } from 'class-transformer';
 
 /*
  * key - `${sourceTableId}-${sourceRowId}/${targetTableId}-${targetRowId}`
 **/
-export interface ArrowCache {
+export interface IArrowCache {
   [key: string]: IConnection;
 }
 
-/*
- * key - `${sourceTableId}/${targetTableId}-${targetRowId}`
-**/
-export interface ConstantCache {
-  [key: string]: IRow;
-}
-
-export interface CorrespondingRows {
-  [key: string]: IRow;
+export class ArrowCache implements IArrowCache {
+  // @ts-ignore
+  @Type(() => Connection)
+  [key: string]: IConnection;
 }

@@ -99,6 +99,10 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
     fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(
         by=['targetCloneName', 'concept_id'])
     sql = 'SELECT '
+    concept_id_counter = 1
+    source_value_counter = 1
+    type_concept_id_counter = 1
+    source_concept_id_counter = 1
     mapped_to_person_id_field = ''
     target_clone_name = ""
     for index, row in fields.iterrows():
@@ -106,6 +110,10 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         target_field = row['sql_alias']
         if target_clone_name != row['targetCloneName']:
             target_clone_name = row['targetCloneName']
+            concept_id_counter = 1
+            source_value_counter = 1
+            type_concept_id_counter = 1
+            source_concept_id_counter = 1
         if not row['targetCloneName']:
             clone = ""
         else:

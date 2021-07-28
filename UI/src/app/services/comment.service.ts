@@ -1,6 +1,8 @@
 import { Comment, IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class CommentService {
 
     constructor() {}
@@ -17,7 +19,5 @@ export class CommentService {
 
     editComment(comment: IComment, value: string) {
         comment.newValue(value);
-        comment.setAsEdited();
-        comment.updateDate();
     }
 }

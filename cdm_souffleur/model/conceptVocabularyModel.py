@@ -80,7 +80,7 @@ class Relationship(BaseModel):
 
 
 class Source_To_Concept_Map(BaseModel):
-    source_concept_id = IntegerField(primary_key=True)
+    source_concept_id = IntegerField()
     source_code = CharField()
     source_vocabulary_id = CharField()
     source_code_description = CharField()
@@ -89,6 +89,8 @@ class Source_To_Concept_Map(BaseModel):
     valid_start_date = DateField()
     valid_end_date = DateField()
     invalid_reason = CharField()
+    username = CharField()
+    id = AutoField()
 
 
 class Vocabulary(BaseModel):

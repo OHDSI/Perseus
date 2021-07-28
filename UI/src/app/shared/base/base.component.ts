@@ -1,6 +1,9 @@
-import { OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
+@Component({
+  template: ''
+})
 export abstract class BaseComponent implements OnDestroy {
 
   private destroy$: ReplaySubject<void> = new ReplaySubject<void>(1);

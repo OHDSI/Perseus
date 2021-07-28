@@ -1,6 +1,6 @@
 import { dbServer } from '../app.constants';
-import { DbSettings } from '../models/scan-data/db-settings';
-import { adaptDbType } from '../utilites/cdm-adapter';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { adaptDbType } from '@utils/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
@@ -98,3 +98,22 @@ export const defaultPorts = {
   [DbTypes.REDSHIFT]: 5439,
   [DbTypes.NETEZZA]: 5480
 };
+
+export const fullySupportedDatabases: string[] = [
+  DbTypes.POSTGRESQL,
+  DbTypes.SQL_SERVER,
+  DbTypes.MYSQL
+]
+
+export const supportedWithLimitationsDatabases: string[] = [
+  DbTypes.ORACLE,
+  DbTypes.REDSHIFT,
+  DbTypes.AZURE,
+  DbTypes.MS_ACCESS,
+  DbTypes.TERADATA,
+  DbTypes.BIGQUERY
+]
+
+export const dbTypeWithLimits = {
+  [DbTypes.MYSQL]: 'CTE not supported prior to v8'
+}

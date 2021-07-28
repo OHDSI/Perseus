@@ -1,28 +1,30 @@
 <div class="apply-transformation">
-  <h3>Apply {{tab}} Transformation <span>{{ titleInfo }}</span></h3>
-  <mat-icon class="close"
-          mat-dialog-close>close
-  </mat-icon>
-      <app-sql-transformation [sql]="sql"
-                              *ngIf="tab === 'SQL Function'"></app-sql-transformation>
-      <app-lookup *ngIf="tab === 'Lookup'"
-                  [lookupType]="lookupType"
-                  [lookup]="lookup"
-                  [name]="lookupName"
-                  [notConceptTableField]="'true'"></app-lookup>
-  <div class="buttons">
-    <button
-      mat-button
-      (click)="closeDialog()"
-      class="button-cancel">Cancel
-    </button>
-    <button
-      mat-button
-      mat-flat-button
-      color="accent"
-      (click)="add()"
-      [disabled]="addDisabled()"
-      class="button-add">Apply
-    </button>
+  <app-close-dialog-button class="apply-transformation__close" (click)="dialogRef.close()"></app-close-dialog-button>
+
+  <div class="apply-transformation__header">
+    Apply Transformation <span>{{ titleInfo }}</span>
+  </div>
+
+  <div class="apply-transformation__content">
+    <mat-tab-group [(selectedIndex)]="tabIndex">
+      <mat-tab label="SQL FUNCTION">
+        <app-sql-transformation #sqlTransformationComponent
+                                [sql]="sql"
+                                [fieldType]="sourceType"
+                                [sourceFields]="sourceFields"></app-sql-transformation>
+      </mat-tab>
+
+      <mat-tab label="LOOKUP" [disabled]="lookupDisabled">
+        <app-lookup #lookupComponent [lookupType]="lookupType"
+                    [lookup]="lookup"
+                    [name]="lookupName"
+                    notConceptTableField="true"></app-lookup>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div class="apply-transformation__footer">
+    <button (click)="cancel()" class="cancel">Cancel</button>
+    <button (click)="onApply()" [disabled]="applyDisabled" class="apply">Apply</button>
   </div>
 </div>

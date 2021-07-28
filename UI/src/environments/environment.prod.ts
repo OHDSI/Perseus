@@ -1,3 +1,5 @@
+import { getGlobalEnv } from './environment.util';
+
 const CONCEPT_TABLES = [
   'CONCEPT',
   'COMMON',
@@ -10,10 +12,13 @@ const CONCEPT_TABLES = [
   'SPECIMEN'
 ];
 
+const globalEnv = getGlobalEnv()
+
 export const environment = {
   production: true,
-  server: window['env']['server'] || '185.134.75.47',
-  dbServer: window['env']['dbServer'] || '192.168.20.47',
+  local: false,
+  server: globalEnv?.server || '185.134.75.47',
+  dbServer: globalEnv?.dbServer || '192.168.20.47',
   port: 80,
   conceptTables: CONCEPT_TABLES
 };

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
-import { DbSettings } from '../../models/scan-data/db-settings';
-import { dqdApiUrl } from '../../app.constants';
+import { Observable } from 'rxjs';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { dqdApiUrl } from '@app/app.constants';
 
 @Injectable()
 export class DqdService {

@@ -1,0 +1,36 @@
+<div class="grid-wrapper" [style.height]="height">
+  <table class="grid"
+         cdk-table
+         [dataSource]="data"
+         [style.width]="width">
+
+    <ng-container cdkColumnDef="__select__">
+      <th class="column cell select-cell" cdk-header-cell *cdkHeaderCellDef>
+        <app-grid-checkbox [checked]="checkedAll" (click)="selectAll()"></app-grid-checkbox>
+      </th>
+
+      <td class="cell select-cell" cdk-cell *cdkCellDef="let row">
+        <app-grid-checkbox [checked]="row.selected" (click)="select(row)"></app-grid-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
+      <th class="column cell"
+          cdk-header-cell *cdkHeaderCellDef
+          perseus-grid-column
+          [column]="column"
+          [sortable]="sortable"
+          [sortParams]="sortParams"
+          (sort)="onSort($event)">
+      </th>
+      <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
+    </ng-container>
+
+    <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr class="row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <div *ngIf="loading" class="ui-blocker">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

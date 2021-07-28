@@ -2,13 +2,14 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmSettings } from '../../models/scan-data/cdm-settings';
-import { fakeDataDbSettings } from '../scan-data.constants';
-import { FakeDataParams } from '../../models/scan-data/fake-data-params';
-import { WebsocketParams } from '../../models/scan-data/websocket-params';
-import { StoreService } from '../../services/store.service';
-import { DbSettings } from '../../models/scan-data/db-settings';
-import { adaptDestinationCdmSettings } from '../../utilites/cdm-adapter';
+import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { DbTypes, fakeDataDbSettings } from '../scan-data.constants';
+import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { WebsocketParams } from '@models/scan-data/websocket-params';
+import { StoreService } from '@services/store.service';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { adaptDestinationCdmSettings } from '@utils/cdm-adapter';
+import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 
 @Component({
   selector: 'app-cdm-dialog',
@@ -26,8 +27,18 @@ export class CdmDialogComponent extends AbstractScanDialog {
 
   private cdmSettings: CdmSettings;
 
-  constructor(dialogRef: MatDialogRef<CdmDialogComponent>, private storeService: StoreService) {
+  constructor(dialogRef: MatDialogRef<CdmDialogComponent>,
+              private storeService: StoreService,
+              private cdmStateService: CdmStateService) {
     super(dialogRef);
+  }
+
+  get dataType() {
+    return this.cdmStateService.sourceDataType
+  }
+
+  get showMySqlWarning() {
+    return this.dataType === DbTypes.MYSQL
   }
 
   onConvert(cdmSettings: CdmSettings): void {

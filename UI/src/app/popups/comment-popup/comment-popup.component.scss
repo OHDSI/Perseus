@@ -1,206 +1,46 @@
-@import '../../styles/variables';
+@import 'variables';
+@import 'mixins';
 
-.dialog {
-    width: 244px;
+.comment-popup {
+  @include perseus-popup();
+  width: 483px;
+  height: 444px;
+  padding: 26px;
+
+  &__header {
+    margin-bottom: 24px;
+  }
+
+  &__content {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    padding: 10px;
 
-
-    .input {
-        border-radius: 2px;
-        border: 0.75px solid $light-grey;
-        height: 25px;
-        background-color: $cdm-grey-lighter;
+    label {
+      @include cdm-label();
+      margin-bottom: 3px;
     }
 
-    .input-add {
-        @extend .input;
-        padding: 3px;
-        width: 224px;
+    textarea {
+      @include perseus-text-area();
+      width: 100%;
     }
 
-    .input-edit {
-        @extend .input;
-        width: 208px;
-    }
+    &__actions {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
 
-    .button-add {
-        position: relative;
-        bottom: -6px;
-        right: -6px;
-        font-size: 13px;
-        min-width: 0;
-        line-height: 23px;
-        padding: 0 6px;
-
-        &:active {
-            color: $blue;
-        }
-    }
-
-    .mat-list {
-        width: 100%;
-        padding-top: 0;
-
-        .list-item-edit {
-            .mat-list-item-content {
-                height: 81px;
-            }
-        }
-    }
-
-    .mat-list-item {
-        height: 100%;
-        background-color: #EEEEEE;
-        margin-bottom: 5px;
-        min-height: 75px;
-        cursor: pointer;
-
-        .mat-list-item-content {
-            padding: 0 10px;
-        }
-    }
-
-    .active {
-        background-color: $light-blue;
-    }
-}
-
-.dialog-source {
-    @extend .dialog;
-
-    &:after {
-        content: "";
-        position: absolute;
-        bottom: 47px;
-        left: 1px;
-        width: 0;
-        height: 0;
-        box-sizing: border-box;
-        border: 5px solid $black;
-        border-color: transparent transparent $cdm-grey-lighter $cdm-grey-lighter;
-        transform-origin: 0 0;
-        transform: rotate(45deg);
-        box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1);
-    }
-}
-
-.dialog-target {
-    @extend .dialog;
-
-    &:after {
-        content: "";
-        position: absolute;
-        bottom: -2px;
-        right: 10px;
-        width: 0;
-        height: 0;
-        box-sizing: border-box;
-        border: 5px solid $black;
-        border-color: transparent white white transparent;
-        transform-origin: 0 0;
-        transform: rotate(45deg);
-        box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.15);
-    }
-}
-
-.comment {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .date {
-        font-size: 12px;
-    }
-
-    mat-icon {
-        font-size: 13px;
-    }
-}
-
-.read {
-    @extend .comment;
-
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: $grey;
+      button {
         height: 30px;
-    }
+        width: 80px;
+        @include cdm-button();
+        margin-right: 20px;
 
-    main {
-        width: 100%;
-        word-break: break-word;
-
-        p {
-            font-size: 13px;
+        &.delete {
+          background: #E5E5E5;
+          color: #FF4646;
         }
+      }
     }
-
-    button {
-        width: 20px;
-        height: 20px;
-        &:active {
-            color: $blue;
-        }
-    }
-}
-
-.edit {
-    @extend .comment;
-
-    header {
-        width: 108%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: $grey;
-        margin: 4px 0;
-        height: 25px;
-
-
-        button {
-            width: 20px;
-            height: 20px;
-            line-height: 20px;
-            &:active {
-                color: $blue;
-            }
-        }
-    }
-
-    main {
-        input {
-            background-color: white;
-        }
-    }
-
-    footer {
-        position: relative;
-        width: 108%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .buttons {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            position: relative;
-        }
-    }
-
-    button {
-        width: 20px;
-        height: 30px;
-        line-height: 30px;
-        &:active {
-            color: $blue;
-        }
-    }
+  }
 }

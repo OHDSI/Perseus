@@ -1,0 +1,25 @@
+@import "variables";
+@import "mixins";
+
+.confirm-overwrite-dialog {
+  @include perseus-popup();
+
+  p {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 21px;
+    text-align: center;
+  }
+
+  &__actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-around;
+
+    button {
+      @include cdm-button();
+      width: 80px;
+      height: 30px;
+    }
+  }
+}

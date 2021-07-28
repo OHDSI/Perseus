@@ -1,0 +1,25 @@
+<div class="import-codes-wrapper">
+  <div class="column-mapping-panel">
+    <div class="column-mapping-panel__background"></div>
+    <div class="column-mapping-panel__header">Column mapping</div>
+
+    <app-column-mapping-form [form]="form"></app-column-mapping-form>
+
+    <div class="column-mapping-panel__border top-border"></div>
+
+    <app-column-mapping-filters [form]="filtersForm"></app-column-mapping-filters>
+  </div>
+
+  <div class="column-mapping">
+    <div class="column-mapping__grid-wrapper">
+      <app-import-codes-grid [data]="importCodesService.codes"
+                             [columns]="importCodesService.columns"></app-import-codes-grid>
+    </div>
+
+    <div class="column-mapping__buttons">
+      <button class="back" (click)="onBack()">Back</button>
+
+      <button class="apply" [disabled]="applyDisabled" (click)="onApply()">Apply</button>
+    </div>
+  </div>
+</div>

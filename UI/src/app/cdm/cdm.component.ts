@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BridgeService } from '../services/bridge.service';
+import { BridgeService } from '@services/bridge.service';
 import { fromEvent } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '../shared/base/base.component';
+import { BaseComponent } from '@shared/base/base.component';
 import { Router } from '@angular/router';
 import { mainPageRouter } from '../app.constants';
 
@@ -13,7 +13,7 @@ import { mainPageRouter } from '../app.constants';
 })
 export class CdmComponent extends BaseComponent implements OnInit {
 
-  currentUrl = 'comfy';
+  currentUrl: string;
 
   constructor(private bridgeService: BridgeService,
               private router: Router) {
@@ -38,9 +38,11 @@ export class CdmComponent extends BaseComponent implements OnInit {
   }
 
   private subscribeOnUrlChange() {
+    const parseUrl = url => url.replace(`${mainPageRouter}/`, '')
+    this.currentUrl = parseUrl(this.router.url)
     this.router.events
       .subscribe(() =>
-        this.currentUrl = this.router.url.replace(`${mainPageRouter}/`, '')
+        this.currentUrl = parseUrl(this.router.url)
       )
   }
 }

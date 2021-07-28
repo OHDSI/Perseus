@@ -1,123 +1,19 @@
-<mat-card
-  [ngClass]="{
-    'dialog-source': overSourceArea,
-    'dialog-target': !overSourceArea
-  }"
->
-  <mat-list>
-    <ng-container *ngFor="let comment of row.comments">
-      <ng-template
-        [ngTemplateOutlet]="loadTemplate(comment)"
-        [ngTemplateOutletContext]="{ $implicit: comment }"
-      >
-      </ng-template>
-    </ng-container>
-  </mat-list>
-  <input
-    [(ngModel)]="value"
-    (click)="invalidateSelection()"
-    [disabled]="isDisabled()"
-    placeholder="Input value"
-    class="input-add"
-    (keyup.enter)="add()"
-  />
-  <button
-    mat-button
-    (click)="add()"
-    [disabled]="isDisabled()"
-    disableRipple="true"
-    class="button-add"
-  >
-    Add
-  </button>
-</mat-card>
+<div class="comment-popup">
+  <div class="comment-popup__header">
+    {{isEdit ? 'Edit comment' : 'Add comment'}}
+    <app-close-dialog-button class="comment-popup__close-icon" (click)="dialogRef.close()"></app-close-dialog-button>
+  </div>
 
-<ng-template #readOnlyTemplate let-comment>
-  <mat-list-item
-    (click)="onCommentClick(comment)"
-    [ngClass]="{ active: comment.active }"
-  >
-    <section class="read">
-      <header>
-        <span class="date">
-          {{ comment.date | date: 'MMM d' }}
-          <span *ngIf="comment.hasBeenEdited">(edited)</span>
-        </span>
-        <div>
-          <ng-container *ngIf="comment.active">
-            <button
-              mat-icon-button
-              disableRipple="true"
-              (click)="edit(comment)"
-            >
-              <mat-icon>
-                edit
-              </mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              disableRipple="true"
-              (click)="delete(comment)"
-            >
-              <mat-icon>
-                delete
-              </mat-icon>
-            </button>
-          </ng-container>
-        </div>
-      </header>
-      <main>
-        <p>
-          {{ comment.text }}
-        </p>
-      </main>
-    </section>
-  </mat-list-item>
-</ng-template>
+  <div class="comment-popup__content">
+    <label for="comment">Text</label>
+    <textarea #comment id="comment" rows="15" [ngModel]="value"></textarea>
 
-<ng-template #editTemplate let-comment>
-  <mat-list-item>
-    <section class="edit">
-      <header>
-        <span class="date">
-          {{ comment.date | date: 'MMM d' }}
-        </span>
-        <div class="buttons">
-          <button
-            mat-icon-button
-            disableRipple="true"
-            (click)="delete(comment)"
-          >
-            <mat-icon>
-              delete
-            </mat-icon>
-          </button>
-        </div>
-      </header>
-      <main>
-        <input
-          type="text"
-          placeholder="Edit comment"
-          [value]="comment.text"
-          #input
-          class="input-edit"
-          (keyup.enter)="applyChanges(comment, input.value)"
-        />
-      </main>
-      <footer>
-        <div class="buttons">
-          <button mat-icon-button disableRipple="true">
-            <mat-icon (click)="discardChanges()">
-              close
-            </mat-icon>
-          </button>
-          <button mat-icon-button disableRipple="true">
-            <mat-icon (click)="applyChanges(comment, input.value)">
-              check
-            </mat-icon>
-          </button>
-        </div>
-      </footer>
-    </section>
-  </mat-list-item>
-</ng-template>
+    <div class="comment-popup__content__actions">
+      <button class="cancel" (click)="dialogRef.close()">Cancel</button>
+
+      <button *ngIf="isEdit" class="delete" (click)="onDelete()">Delete</button>
+
+      <button class="apply" [disabled]="!comment.value" (click)="onSave(comment.value)">Save</button>
+    </div>
+  </div>
+</div>

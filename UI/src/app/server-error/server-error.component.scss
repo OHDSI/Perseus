@@ -50,7 +50,7 @@
   }
 
   button {
-    @include cmd-button();
+    @include cdm-button();
     width: 80px;
     height: 33px;
   }

@@ -10,7 +10,7 @@ import { Injectable, Injector } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
-import * as positionsData from './positions.json';
+import positionsData from './positions.json';
 
 export class OverlayDialogRef {
 
@@ -74,7 +74,7 @@ export class OverlayService {
   }
 
   getOverlayPosition(anchor, strategyFor): FlexibleConnectedPositionStrategy {
-    let positions = [this.strategies['right-bottom'], this.strategies['left-top']];
+    let positions
     if (strategyFor && this.strategies[strategyFor]) {
       const {offsetX, offsetY, originX, originY, overlayX, overlayY} = this.strategies[strategyFor];
       positions = [
@@ -91,6 +91,8 @@ export class OverlayService {
           offsetY
         )
       ];
+    } else {
+      positions = [this.strategies['right-bottom'], this.strategies['left-top']];
     }
 
     return this.overlay

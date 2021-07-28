@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { createFakeDataForm } from '../../../utilites/form';
+import { createFakeDataForm } from '@utils/form';
 import { uniformSamplingTooltipText } from '../../scan-data.constants';
 
 @Component({

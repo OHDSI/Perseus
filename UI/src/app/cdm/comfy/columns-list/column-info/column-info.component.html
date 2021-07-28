@@ -1,50 +1,80 @@
-<div class="mat-tab-column-info-container">
+<div class="mat-tab-column-info-container"
+     [ngClass]="positionStrategyClass" [style.maxHeight.px]="maxHeight">
   <mat-tab-group (selectedTabChange)="onTableChanged($event.index)">
     <mat-tab *ngFor="let tableName of tableNames" [label]="tableName">
-      <ng-container [ngSwitch]="columnInfos[tableName].status">
-        <div *ngSwitchCase="0" class="text-message-container">
+      <ng-container *ngIf="columnInfos[tableName] as info" [ngSwitch]="info.status">
+        <div *ngSwitchCase="0" class="loading">
           <p>Loading...</p>
         </div>
 
         <div *ngSwitchCase="1" class="column-info">
           <div class="column-info__general">
-            <div class="column-info__general-name">
+            <div class="column-info__general__name">
               <span>Field Name:</span>
-              <span>{{columnName}}</span>
+              <span class="column-info__general__value">{{columnName}}</span>
             </div>
 
-            <div class="column-info__general-type">
+            <div class="column-info__general__type">
               <span>Field type:</span>
-              <span>{{columnInfos[tableName].value.type || ''}}</span>
+              <span class="column-info__general__value">{{info.value.type || ''}}</span>
             </div>
 
-            <div class="column-info__general-unique">
+            <div class="column-info__general__unique">
               <span>Unique values:</span>
-              <span>{{columnInfos[tableName].value.uniqueValues || ''}}</span>
+              <span class="column-info__general__value">{{info.value.uniqueValues || ''}}</span>
             </div>
           </div>
 
-          <div *ngIf="columnInfos[tableName].value.topValues.length > 0" class="column-info__values">
-            <table>
-              <thead>
-              <tr>
-                <th>Value</th>
-                <th>Frequency</th>
-                <th>Percentage</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let value of columnInfos[tableName].value.topValues">
-                <th>{{value.value || ''}}</th>
-                <th>{{value.frequency || ''}}</th>
-                <th>{{value.percentage || ''}}</th>
-              </tr>
-              </tbody>
+          <div *ngIf="info.value.topValues.length" class="grid-wrapper" [style.maxHeight]="height">
+            <table class="grid"
+                   cdk-table
+                   [dataSource]="info.value.topValues"
+                   [style.width]="width">
+
+              <ng-container cdkColumnDef="value">
+                <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+                  Value
+                </th>
+
+                <td class="cell"
+                    cdk-cell
+                    appTextWidth
+                    maxWidth="95"
+                    #textWidth="textWidth"
+                    [matTooltip]="tooltip(row.value)"
+                    [matTooltipDisabled]="textWidth.tooltipDisabled"
+                    *cdkCellDef="let row">
+                  {{row.value}}
+                </td>
+              </ng-container>
+
+              <ng-container cdkColumnDef="frequency">
+                <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+                  Frequency
+                </th>
+
+                <td class="cell" cdk-cell *cdkCellDef="let row">
+                  {{row.frequency}}
+                </td>
+              </ng-container>
+
+              <ng-container cdkColumnDef="percentage">
+                <th class="column cell" cdk-header-cell *cdkHeaderCellDef>
+                  Percentage
+                </th>
+
+                <td class="cell" cdk-cell *cdkCellDef="let row">
+                  {{row.percentage | percent:'.2':'en'}}
+                </td>
+              </ng-container>
+
+              <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr class="row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
             </table>
           </div>
         </div>
 
-        <div *ngSwitchCase="2" class="text-message-container">
+        <div *ngSwitchCase="2" class="no-info">
           <p>No info</p>
         </div>
       </ng-container>

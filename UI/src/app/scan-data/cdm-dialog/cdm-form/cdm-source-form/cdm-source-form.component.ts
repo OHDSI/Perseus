@@ -1,14 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractResourceForm } from '../../../auxiliary/resource-form/abstract-resource-form';
+import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/abstract-resource-form.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { createDbConnectionForm, createFakeDataForm } from '../../../../utilites/form';
+import { createDbConnectionForm, createFakeDataForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } from '../../../scan-data.constants';
-import { FakeDataParams } from '../../../../models/scan-data/fake-data-params';
-import { CdmBuilderService } from '../../../../services/cdm-builder/cdm-builder.service';
-import { adaptDbSettingsForSource } from '../../../../utilites/cdm-adapter';
-import { CdmSettings } from '../../../../models/scan-data/cdm-settings';
+import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
+import { adaptDbSettingsForSource } from '@utils/cdm-adapter';
+import { CdmSettings } from '@models/scan-data/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
+import { hasLimits } from '@utils/scan-data-util';
+import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -23,7 +25,7 @@ import { finalize } from 'rxjs/operators';
     '../../../styles/scan-data-normalize.scss'
   ]
 })
-export class CdmSourceFormComponent extends AbstractResourceForm implements OnInit {
+export class CdmSourceFormComponent extends AbstractResourceFormComponent implements OnInit {
 
   @Input()
   fakeDataParams: FakeDataParams;
@@ -38,7 +40,10 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
     ...cdmBuilderDatabaseTypes
   ];
 
-  constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
+  constructor(formBuilder: FormBuilder,
+              matDialog: MatDialog,
+              private cdmBuilderService: CdmBuilderService,
+              private cdmStateService: CdmStateService) {
     super(formBuilder, matDialog);
   }
 
@@ -113,6 +118,15 @@ export class CdmSourceFormComponent extends AbstractResourceForm implements OnIn
 
   createForm(disabled: boolean): FormGroup {
     return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
+  }
+
+  hasLimits(type: string): string | null {
+    return hasLimits(type)
+  }
+
+  onDataTypeChange(value: string) {
+    super.onDataTypeChange(value);
+    this.cdmStateService.sourceDataType = value;
   }
 
   private initFakeDataForm() {

@@ -1,7 +1,7 @@
-import { MappingNode } from '../../../models/mapping';
+import { MappingNode } from '@models/mapping';
 import { MappingForImage, MappingImage, MappingImageStyles } from './mapping-image';
 import { CanvasWrapper } from './canvas-wrapper';
-import { similarTableName } from '../../../app.constants';
+import { similarTableName } from '@app/app.constants';
 
 const imageType = 'png';
 

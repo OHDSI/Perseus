@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
@@ -9,38 +9,38 @@ import { BridgeService } from 'src/app/services/bridge.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DataService } from 'src/app/services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-import { PreviewPopupComponent } from '../../popups/preview-popup/preview-popup.component';
+import { PreviewPopupComponent } from '@popups/preview-popup/preview-popup.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SetConnectionTypePopupComponent } from '../../popups/set-connection-type-popup/set-connection-type-popup.component';
-import { DeleteWarningComponent } from '../../popups/delete-warning/delete-warning.component';
-import { CdmFilterComponent } from '../../popups/cdm-filter/cdm-filter.component';
+import { SetConnectionTypePopupComponent } from '@popups/set-connection-type-popup/set-connection-type-popup.component';
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
+import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
 import { TransformConfigComponent } from './vocabulary-transform-configurator/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
-import { addGroupMappings, addViewsToMapping } from '../../models/mapping-service';
+import { addGroupMappings, addViewsToMapping } from '@services/mapping-service';
 import {
   numberOfPanelsWithOneSimilar,
   numberOfPanelsWithoutSimilar,
   numberOfPanelsWithTwoSimilar,
   similarTableName
-} from '../../app.constants';
-import { SelectTableDropdownComponent } from '../../popups/select-table-dropdown/select-table-dropdown.component';
-import { FakeDataDialogComponent } from '../../scan-data/fake-data-dialog/fake-data-dialog.component';
-import { CdmDialogComponent } from '../../scan-data/cdm-dialog/cdm-dialog.component';
-import { LookupService } from '../../services/lookup.service';
-import { getLookupType } from '../../utilites/lookup-util';
+} from '@app/app.constants';
+import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/select-table-dropdown.component';
+import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
+import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
+import { LookupService } from '@services/lookup.service';
+import { getLookupType } from '@utils/lookup-util';
 import * as conceptFields from './concept-fileds-list.json';
-import { BaseComponent } from '../../shared/base/base.component';
-import { VocabularyObserverService } from '../../services/vocabulary-search/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '../../services/report-generation.service';
-import { PanelComponent } from '../../panel/panel.component';
-import { RulesPopupService } from '../../popups/rules-popup/services/rules-popup.service';
+import { BaseComponent } from '@shared/base/base.component';
+import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
+import { PanelComponent } from './panel/panel.component';
+import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable, of } from 'rxjs';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
+import { openErrorDialog, parseHttpError } from '@utils/error';
 
 @Component({
   selector: 'app-mapping',
@@ -88,12 +88,24 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return 'no hint';
   }
 
-  get currentTargetTable() {
-    return this.targetTabIndex === 0 && this.similarTargetTable ? this.similarTargetTable : this.selectedTargetTable;
+  get isSourceSimilar() {
+    return this.similarSourceTable && this.sourceTabIndex === 0
+  }
+
+  get isTargetSimilar() {
+    return this.similarTargetTable && this.targetTabIndex === 0
   }
 
   get currentSourceTable() {
-    return this.sourceTabIndex === 0 && this.similarSourceTable ? this.similarSourceTable : this.selectedSourceTable;
+    return this.isSourceSimilar ? this.similarSourceTable : this.selectedSourceTable;
+  }
+
+  get currentTargetTable() {
+    return this.isTargetSimilar ? this.similarTargetTable : this.selectedTargetTable;
+  }
+
+  get targetPanelComponet(): PanelComponent {
+    return this.isTargetSimilar ? this.targetPanelSimilar : this.targetPanel
   }
 
   @ViewChild('arrowsarea', {read: ElementRef, static: true}) svgCanvas: ElementRef;
@@ -123,11 +135,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   ngOnInit() {
-    if (this.storeService.state.target.length === 0) {
-      this.router.navigateByUrl(`/comfy`);
-      return;
-    }
-
     this.loadMapping();
 
     this.init()
@@ -152,15 +159,17 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
       if (offsetX < markerWidth) {
         event.stopPropagation();
-        this.startMarkerClick(offsetY, currentTarget);
+        this.startMarkerClick(offsetY, currentTarget); // Delete arrow
       } else if (offsetX > currentTarget.clientWidth - markerWidth) {
         event.stopPropagation();
-        this.endMarkerClick(offsetY, currentTarget);
+        this.endMarkerClick(offsetY, currentTarget); // Open Transformation dialog
       }
     });
   }
 
   ngOnDestroy() {
+    super.ngOnDestroy();
+
     this.clickArrowSubscriptions.forEach(subscription => {
       subscription.unsubscribe();
     });
@@ -168,8 +177,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.saveMappingStatus();
 
     this.storeService.add('isMappingPage', false)
-
-    super.ngOnDestroy();
   }
 
   startMarkerClick(offset: number, currentTarget: any) {
@@ -189,8 +196,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  endMarkerClick(offset: number, currentTarget: any) {
-    for (const child of currentTarget.children) {
+  endMarkerClick(offset: number, currentTarget: HTMLElement) {
+    for (const child of Array.from(currentTarget.children)) {
       if (child.localName !== 'path') {
         continue;
       }
@@ -204,35 +211,32 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         const dialogOptions: OverlayConfigOptions = {
           hasBackdrop: true,
           backdropClass: 'custom-backdrop',
-          positionStrategyFor: 'values',
+          positionStrategyFor: 'transformation-type',
           payload: {
             arrow
           }
         };
 
         const htmlElementId = arrow.target.name;
-        const htmlElement = document.getElementById(`target-${htmlElementId}`);
+        const htmlElement = this.targetPanelComponet.nativeElement.querySelector(`#target-${htmlElementId}`)
         if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
-
           const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
           dialogRef.afterClosed$.subscribe((configOptions: any) => {
             const {connectionType} = configOptions;
             if (connectionType) {
-              const selectedtab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
+              const selectedTab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
               const lookupType = getLookupType(arrow);
               const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
                 closeOnNavigation: false,
-                disableClose: false,
-                panelClass: 'sql-editor-dialog-padding-15',
-                maxHeight: '100%',
-                width: '570px;',
+                disableClose: true,
+                panelClass: 'perseus-dialog',
                 data: {
                   arrowCache: this.bridgeService.arrowsCache,
                   connector: arrow.connector,
                   lookupName: arrow.lookup ? arrow.lookup['name'] : '',
                   lookupType,
                   sql: arrow.sql,
-                  tab: selectedtab
+                  tab: selectedTab
                 }
               });
 
@@ -248,9 +252,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
                     }
 
                     if (lookup['originName'] && lookup['name'] && lookup['originName'] !== lookup['name']) {
-                      this.lookupService.saveLookup(this.lookup, lookupType).subscribe(res => {
-                        console.log(res);
-                      });
+                      this.lookupService.saveLookup(this.lookup, lookupType)
+                        .subscribe(
+                          () => {},
+                          error => openErrorDialog(this.matDialog, 'Failed to save lookup', parseHttpError(error))
+                        );
                     }
                   }
                   if (sql) {
@@ -268,7 +274,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
             closeOnNavigation: false,
             disableClose: true,
-            panelClass: 'sql-editor-dialog-padding-15-width-650',
+            panelClass: 'perseus-dialog',
             maxHeight: '100%',
             data: {
               arrowCache: this.bridgeService.arrowsCache,
@@ -826,9 +832,30 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
    */
   private subscribeOnUpdateMapping() {
     this.bridgeService.applyConfiguration$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables))
+      )
       .subscribe(() => {
-        this.reset()
+        this.sourceRows = [];
+        this.targetRows = [];
+        this.mappingConfig = [];
+        const prevSourceWithoutSimilar = !this.similarSourceTable
+        const prevTargetWithoutSimilar = !this.similarTargetTable
         this.loadMapping()
+        // Mat tub bug when added new tab to the beginning
+        if (prevSourceWithoutSimilar && !!this.similarSourceTable) {
+          this.sourceTabIndex = 1
+          setTimeout(() => this.sourceTabIndex = 0)
+        } else {
+          this.sourceTabIndex = 0;
+        }
+        if (prevTargetWithoutSimilar && !!this.similarTargetTable) {
+          this.targetTabIndex = 1
+          setTimeout(() => this.targetTabIndex = 0)
+        } else {
+          this.targetTabIndex = 0;
+        }
         this.onTabIndexChanged(this.sourceTabIndex, 'source') // Update source rows UI
         this.onTabIndexChanged(this.targetTabIndex, 'target') // Update target rows UI
       })
@@ -863,14 +890,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
       this.setSelectedSourceAndTargetTable();
     });
-  }
-
-  private reset() {
-    this.sourceRows = [];
-    this.targetRows = [];
-    this.mappingConfig = [];
-    this.sourceTabIndex = 0;
-    this.targetTabIndex = 0;
   }
 
   /**

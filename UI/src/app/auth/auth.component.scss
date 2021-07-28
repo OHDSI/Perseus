@@ -54,7 +54,7 @@
         width: 278px;
         height: 33px;
 
-        @include cmd-button();
+        @include cdm-button();
         @include perseus-blue-button();
 
         &:disabled {

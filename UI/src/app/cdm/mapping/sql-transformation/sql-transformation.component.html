@@ -1,26 +1,33 @@
-<div [formGroup]="sqlForm">
-  <section cdkDropList
-           #editorArea="cdkDropList"
-           (cdkDropListDropped)="drop($event)"
-           [ngClass]="{'condition-text': reducedSqlField}">
-    <label>SQL Statement</label>
-    <textarea #editor></textarea>
-  </section>
-  <section>
-    <label>Quick functions</label>
-    <mat-chip-list #tables="cdkDropList"
-                   cdkDropList
-                   cdkDropListSortingDisabled
-                   [cdkDropListData]="chips"
-                   [cdkDropListConnectedTo]="[editorArea]"
-                   class="table-name"
-                   [ngClass]="{'extended-chips-panel': reducedSqlField}">
-      <mat-chip class="table-box"
-                cdkDrag
-                *ngFor="let chip of chips">
-        {{chip}}
-      </mat-chip>
-    </mat-chip-list>
-  </section>
-</div>
+<div class="sql-transformation">
+  <div class="sql-transformation__mode">
+    <label>
+      <input type="radio" value="visual" [ngModel]="mode$ | async" (ngModelChange)="onModeChange($event)">
+      Visual
+    </label>
 
+    <label>
+      <input type="radio" value="manual" [ngModel]="mode$ | async" (ngModelChange)="onModeChange($event)">
+      Manual
+    </label>
+    <app-hint class="sql-transformation__mode__hint" key="sqlTransformation"></app-hint>
+  </div>
+
+  <ng-container [ngSwitch]="mode$ | async">
+    <ng-template ngSwitchCase="visual">
+      <app-visual-transformation *ngIf="simplifiedFieldType else loadingFieldTypeBlock"
+                                 #visualTransformation
+                                 [sql]="sql$ | async"
+                                 [functionsHeight]="functionsHeight"
+                                 [fieldType]="simplifiedFieldType"
+                                 [sourceFields]="sourceFields"></app-visual-transformation>
+      <ng-template #loadingFieldTypeBlock>
+        <div class="spinner" style="height: 300px"></div>
+      </ng-template>
+    </ng-template>
+
+    <ng-template ngSwitchCase="manual">
+      <app-manual-transformation #manualTransformation
+                                 [sql]="sql$ | async"></app-manual-transformation>
+    </ng-template>
+  </ng-container>
+</div>

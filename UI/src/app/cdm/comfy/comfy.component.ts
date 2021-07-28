@@ -15,33 +15,34 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { merge, Subscription } from 'rxjs';
+import { merge, Observable, Subscription } from 'rxjs';
 import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
 import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { IVocabulary, VocabulariesService } from 'src/app/services/vocabularies.service';
-import { Area } from '../../models/area';
-import { CommonUtilsService } from '../../services/common-utils.service';
-import { CommonService } from '../../services/common.service';
-import { OverlayConfigOptions } from '../../services/overlay/overlay-config-options.interface';
-import { OverlayService } from '../../services/overlay/overlay.service';
-import { StoreService } from '../../services/store.service';
-import { UploadService } from '../../services/upload.service';
-import { Criteria } from '../../shared/search-by-name/search-by-name.component';
-import { CdmFilterComponent } from '../../popups/cdm-filter/cdm-filter.component';
-import { SqlEditorComponent } from '../../sql-editor/sql-editor.component';
+import { Area } from '@models/area';
+import { CommonUtilsService } from '@services/common-utils.service';
+import { CommonService } from '@services/common.service';
+import { OverlayConfigOptions } from '@services/overlay/overlay-config-options.interface';
+import { OverlayService } from '@services/overlay/overlay.service';
+import { StoreService } from '@services/store.service';
+import { UploadService } from '@services/upload.service';
+import { Criteria } from '@shared/search-by-name/search-by-name.component';
+import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
+import { SqlEditorComponent } from '@app/shared/sql-editor/sql-editor.component';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../../popups/cdm-filter/CdmByTypes.json';
-import { ScanDataDialogComponent } from '../../scan-data/scan-data-dialog/scan-data-dialog.component';
-import { Observable } from 'rxjs/internal/Observable';
-import { BaseComponent } from '../../shared/base/base.component';
-import { VocabularyObserverService } from '../../services/vocabulary-search/vocabulary-observer.service';
-import { mainPageRouter } from '../../app.constants';
-import { ErrorPopupComponent } from '../../popups/error-popup/error-popup.component';
+import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';
+import { BaseComponent } from '@shared/base/base.component';
+import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { mainPageRouter } from '@app/app.constants';
+import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
-import { State } from '../../models/state';
+import { State } from '@models/state';
+import { asc } from '@utils/sort';
+import { canOpenMappingPage } from '@utils/mapping-util';
 
 @Component({
   selector: 'app-comfy',
@@ -149,8 +150,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             moveItemInArray(this.storeService.state.source, previousIndex, currentIndex);
           }
         }
-      } else if (!data.includes(previousContainer.data[previousIndex])) {
+      } else if (!data.slice(1).includes(previousContainer.data[previousIndex])) {
         // When user map source to target, map only new table
+        // First element - target table name excluded
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
         this.storeService.add('targetConfig', this.targetConfig);
         this.storeService.state.recalculateSimilar = true;
@@ -252,6 +254,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   ngOnDestroy() {
+    super.ngOnDestroy()
     this.subs.unsubscribe();
   }
 
@@ -336,8 +339,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       }
       return prev.concat(ar);
     }, []);
-    this.allSourceRows = allColumns;
-    this.uniqSourceRows = uniqBy(allColumns, 'name');
+    this.allSourceRows = allColumns.sort((r1, r2) => asc(r1.name, r2.name));
+    this.uniqSourceRows = uniqBy(this.allSourceRows, 'name');
     this.filterAtInitialization('source-column', this.data.linkTablesSearch.sourceColumns);
   }
 
@@ -540,9 +543,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   checkExistingMappings(): boolean {
-    return !!this.targetTableNames.find(it => this.targetConfig[it]
-      && this.targetConfig[it].data
-      && this.targetConfig[it].data.length > 1);
+    return canOpenMappingPage(this.targetTableNames, this.targetConfig)
   }
 
   openSqlDialog(data) {

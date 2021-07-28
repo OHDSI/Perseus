@@ -1,0 +1,49 @@
+@import "variables";
+@import "mixins";
+
+:host {
+  width: 100%;
+  height: calc(100% - 40px); // 40px - header height
+}
+
+.mapping-codes {
+  padding: 23px 70px 23px 81px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+
+    h3 {
+      @include perseus-header();
+    }
+  }
+
+  &__content {
+    height: calc(100% - 72px); // 39 - page header, 33 - page footer
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    height: 33px;
+    z-index: 100;
+
+    button {
+      @include cdm-button();
+      width: 80px;
+      height: 33px;
+
+      &.cancel {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  &__saving {
+    @include perseus-loading();
+  }
+}

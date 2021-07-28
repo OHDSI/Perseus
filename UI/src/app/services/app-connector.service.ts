@@ -32,7 +32,7 @@ export class AppConnectorService {
     this.componentRef = dynamicComponent
   }
 
-  get isOpen() {
+  get isOpen(): boolean {
     return !!this.componentRef
   }
 }

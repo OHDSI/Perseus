@@ -1,40 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
-import { Concept } from '../../models/vocabulary-search/concept';
-import { apiUrl } from '../../app.constants';
-
-export interface VocabSearchReqParams {
-  pageSize: number;
-  pageNumber: number;
-  query?: string;
-  sort?: string;
-  order?: string;
-  domain?: string[];
-  standardConcept?: string[];
-  conceptClass?: string[];
-  vocabulary?: string[];
-  invalidReason?: string[];
-  updateFilters?: boolean;
-}
-
-export interface VocabSearchFilters {
-  [key: string]: {
-    [key: string]: number
-  };
-}
-
-export interface VocabSearchResult {
-  content: Concept[];
-  facets?: VocabSearchFilters;
-  totalElements: number;
-  totalPages: number;
-}
-
-export enum VocabSearchMode {
-  LOCAL = 'local',
-  ATHENA = 'athena'
-}
+import { Observable } from 'rxjs';
+import { apiUrl } from '@app/app.constants';
+import { VocabSearchMode, VocabSearchReqParams, VocabSearchResult } from '@models/vocabulary-search/vocabulray-search';
 
 @Injectable()
 export class VocabularySearchService {

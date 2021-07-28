@@ -21,9 +21,11 @@ export const ICON_NAMES = [
   'quality_check',
   'vocabulary',
   'logout',
+  'code_mapping',
   'logo_grey',
   'logo_white',
   'three_dot_menu',
   'error',
-  'hint'
+  'hint',
+  'warning'
 ];

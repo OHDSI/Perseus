@@ -5,8 +5,8 @@
                                  [data]="payload.arrow.sql"
                                  (selectedType)="openSqlFunctionDialog()"
                                  (toggleCheckbox)="toggleSqlCheckbox()">
-
         </app-transformation-type>
+
         <app-transformation-type [typeName]="lookupLabel"
                                  [data]="payload.arrow.lookup"
                                  [isDisabled]="isDisabledLookup"

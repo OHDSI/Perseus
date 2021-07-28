@@ -1,98 +1,48 @@
-import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { CommentService } from 'src/app/services/comment.service';
-import { IComment } from 'src/app/models/comment';
 import { IRow } from 'src/app/models/row';
-import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
-import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-dialog',
+  selector: 'app-comment-popup',
   templateUrl: './comment-popup.component.html',
   styleUrls: ['./comment-popup.component.scss'],
   providers: [CommentService]
 })
 export class CommentPopupComponent {
-  @ViewChild('readOnlyTemplate', { static: true }) readOnlyTemplate: TemplateRef<any>;
-  @ViewChild('editTemplate', { static: true }) editTemplate: TemplateRef<any>;
 
-  value: string;
-  editedComment: IComment;
   row: IRow;
 
+  value: string
+
   constructor(
-    private dialogRef: OverlayDialogRef,
+    public dialogRef: MatDialogRef<CommentPopupComponent>,
     private commentService: CommentService,
-    @Inject(OVERLAY_DIALOG_DATA) public payload: IRow
+    @Inject(MAT_DIALOG_DATA) private payload: IRow
   ) {
     this.row = this.payload;
+    this.value = this.isEdit ? this.comment.text : ''
   }
 
-  loadTemplate(comment: IComment): TemplateRef<any> {
-    if (this.editedComment && this.editedComment.id === comment.id) {
-      return this.editTemplate;
+  get isEdit() {
+    return this.row.comments?.length > 0
+  }
+
+  get comment() {
+    return this.row.comments[0]
+  }
+
+  onSave(value: string) {
+    if (this.isEdit) {
+      this.commentService.editComment(this.comment, value)
+    } else {
+      this.commentService.addComment(this.row, value)
     }
-
-    return this.readOnlyTemplate;
+    this.dialogRef.close()
   }
 
-  get overSourceArea() {
-    return this.row.area === 'source';
-  }
-
-  onCommentClick(comment: IComment) {
-    this.invalidateSelection();
-    comment.active = true;
-  }
-
-  invalidateSelection(e?: Event) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    this.row.comments.map((c: IComment) => c.active = false);
-  }
-
-  edit(comment: IComment) {
-    this.editedComment = comment;
-  }
-
-  add() {
-    this.invalidateSelection();
-    if (!this.value) {
-      return;
-    }
-
-    this.commentService.addComment(this.row, this.value);
-    this.reset();
-  }
-
-  delete(comment: IComment) {
-    this.commentService.deleteComment(this.row, comment);
-    this.editedComment = null;
-  }
-
-  applyChanges(comment: IComment, value: string) {
-    this.commentService.editComment(comment, value);
-    this.invalidateSelection();
-    this.editedComment = null;
-  }
-
-  discardChanges() {
-    this.invalidateSelection();
-    this.editedComment = null;
-  }
-
-  reset() {
-    this.value = '';
-  }
-
-  close() {
-    this.invalidateSelection();
-    this.dialogRef.close();
-  }
-
-  isDisabled() {
-    return !!this.editedComment;
+  onDelete() {
+    this.commentService.deleteComment(this.row, this.comment)
+    this.dialogRef.close()
   }
 }

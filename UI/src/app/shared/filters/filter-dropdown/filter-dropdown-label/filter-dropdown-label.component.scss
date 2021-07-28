@@ -1,0 +1,21 @@
+.filter-dropdown-label {
+  width: 100%;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  padding-right: 38px;
+
+  &__name {
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 18px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &.opened .section-arrow {
+      transform: rotate(180deg);
+    }
+  }
+}

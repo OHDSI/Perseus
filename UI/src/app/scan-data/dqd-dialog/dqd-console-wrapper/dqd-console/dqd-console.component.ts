@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
-import { DqdWebsocketService } from '../../../../websocket/dqd/dqd-websocket.service';
-import { ProgressNotificationStatusCode, toFailedMessage } from '../../../../models/scan-data/progress-notification';
-import { DqdService } from '../../../../services/data-quality-check/dqd.service';
-import { parseHttpError } from '../../../../utilites/error';
+import { DqdWebsocketService } from '@websocket/dqd/dqd-websocket.service';
+import { ProgressNotificationStatusCode, toFailedMessage } from '@models/scan-data/progress-notification';
+import { DqdService } from '@services/data-quality-check/dqd.service';
+import { parseHttpError } from '@utils/error';
 
 @Component({
   selector: 'app-dqd-console',

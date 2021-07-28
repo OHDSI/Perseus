@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DqdConsoleWrapperComponent } from './dqd-console-wrapper/dqd-console-wrapper.component';
-import { DbSettings } from '../../models/scan-data/db-settings';
+import { DbSettings } from '@models/scan-data/db-settings';
 
 @Component({
   selector: 'app-dqd-dialog',

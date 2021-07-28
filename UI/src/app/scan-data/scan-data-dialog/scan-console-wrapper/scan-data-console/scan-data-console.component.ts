@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
 import { finalize } from 'rxjs/operators';
 import {
@@ -6,10 +6,11 @@ import {
   ProgressNotificationStatus,
   ProgressNotificationStatusCode,
   toFailedMessage
-} from '../../../../models/scan-data/progress-notification';
-import { ScanDataWebsocketService } from '../../../../websocket/white-rabbit/scan-data/scan-data-websocket.service';
-import { ScanDataService } from '../../../../services/white-rabbit/scan-data.service';
-import { parseHttpError } from '../../../../utilites/error';
+} from '@models/scan-data/progress-notification';
+import { ScanDataWebsocketService } from '@websocket/white-rabbit/scan-data/scan-data-websocket.service';
+import { ScanDataService } from '@services/white-rabbit/scan-data.service';
+import { parseHttpError } from '@utils/error';
+import { WebsocketParams } from '@models/scan-data/websocket-params';
 
 @Component({
   selector: 'scan-data-console',
@@ -18,6 +19,9 @@ import { parseHttpError } from '../../../../utilites/error';
   providers: [ScanDataWebsocketService]
 })
 export class ScanDataConsoleComponent extends ConsoleComponent<string> {
+
+  @Input()
+  params: WebsocketParams;
 
   private scannedItemsCount = 0;
 

@@ -1,52 +1,64 @@
 import { NgModule } from '@angular/core';
 import { MappingComponent } from './mapping.component';
 import { MappingRoutingModule } from './mapping-routing.module';
-import { SharedModule } from '../../shared/shared.module';
-import { VocabularySearchModule } from '../../vocabulary-search/vocabulary-search.module';
-import { ScanDataModule } from '../../scan-data/scan-data.module';
-import { PanelModule } from '../../panel/panel.module';
+import { SharedModule } from '@shared/shared.module';
+import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.module';
+import { ScanDataModule } from '@scan-data/scan-data.module';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
 import { ConceptColumnComponent } from './concept-transformation/concept-column/concept-column.component';
-import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
-import { VocabularyDropdownComponent } from './vocabulary-dropdown/vocabulary-dropdown.component';
+import { ManualTransformationComponent } from './sql-transformation/manual-transformation/manual-transformation.component';
 import { TransformConfigComponent } from './vocabulary-transform-configurator/transform-config.component';
-import { ConceptConfigComponent } from './vocabulary-transform-configurator/concept-config/concept-config.component';
-import { VocabularyBlockComponent } from './vocabulary-transform-configurator/concept-config/vocabulary-block/vocabulary-block.component';
-import { ConditionDialogComponent } from './vocabulary-transform-configurator/condition-dialog/condition-dialog.component';
 import { LookupComponent } from './vocabulary-transform-configurator/lookup/lookup.component';
-import { VocabularyConditionComponent } from './vocabulary-transform-configurator/vocabulary-condition/vocabulary-condition.component';
-import { VocabularyConfigComponent } from './vocabulary-transform-configurator/vocabulary-config/vocabulary-config.component';
-import { SqlEditorModule } from '../../sql-editor/sql-editor.module';
-import { PopupsModule } from '../../popups/popups.module';
+import { PopupsModule } from '@popups/popups.module';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
+import { PanelComponent } from '@mapping/panel/panel.component';
+import { AreaComponent } from '@mapping/panel/area/area.component';
+import { DraggableDirective } from '@mapping/panel/directives/draggable.directive';
+import { PanelTableComponent } from '@mapping/panel/panel-table/panel-table.component';
+import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/target-clone-dialog.component';
+import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
+import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
+import { ReplaceTransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
+import { VisualTransformationComponent } from './sql-transformation/visual-transformation/visual-transformation.component';
+import { DatePartTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/date-part-transformation-function/date-part-transformation-function.component';
+import { NoArgsTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/no-args-transformation-function/no-args-transformation-function.component';
+import { DateAddTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/date-add-transformation-function/date-add-transformation-function.component';
+import { SwitchCaseTransformationFunctionComponent } from './sql-transformation/visual-transformation/function/switch-case-transformation-function/switch-case-transformation-function.component';
 
 @NgModule({
   declarations: [
     MappingComponent,
     ConceptTransformationComponent,
     ConceptColumnComponent,
-    SqlTransformationComponent,
-    VocabularyDropdownComponent,
+    ManualTransformationComponent,
     TransformConfigComponent,
-    ConceptConfigComponent,
-    VocabularyBlockComponent,
-    ConditionDialogComponent,
     LookupComponent,
-    VocabularyConditionComponent,
-    VocabularyConfigComponent,
     PersonMappingWarningDialogComponent,
+    PanelComponent,
+    AreaComponent,
+    DraggableDirective,
+    PanelTableComponent,
+    TargetCloneDialogComponent,
+    SqlTransformationComponent,
+    ReplaceTransformationFunctionComponent,
+    VisualTransformationComponent,
+    DatePartTransformationFunctionComponent,
+    NoArgsTransformationFunctionComponent,
+    DateAddTransformationFunctionComponent,
+    SwitchCaseTransformationFunctionComponent
   ],
   imports: [
     SharedModule,
     MappingRoutingModule,
     VocabularySearchModule,
     ScanDataModule,
-    PanelModule,
-    SqlEditorModule,
     PopupsModule
   ],
   bootstrap: [
     MappingComponent
+  ],
+  providers: [
+    BridgeButtonService
   ]
 })
 export class MappingModule { }

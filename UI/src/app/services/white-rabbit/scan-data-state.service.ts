@@ -1,57 +1,10 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '../../models/scan-data/db-settings';
-import { TableToScan } from '../../models/scan-data/table-to-scan';
-import { ConnectionResult } from '../../models/scan-data/connection-result';
-import { ScanParams } from '../../models/scan-data/scan-params';
-import { DelimitedTextFileSettings } from '../../models/scan-data/delimited-text-file-settings';
-
-export interface IScanDataStateService {
-  state: any;
-}
-
-export interface ScanDataState {
-  dataType: string;
-  dbSettings: DbSettings;
-  fileSettings: DelimitedTextFileSettings;
-  scanParams: ScanParams;
-  tablesToScan: TableToScan[];
-  filteredTablesToScan: TableToScan[];
-  searchTableName: string
-  filesToScan: File[];
-  connectionResult: ConnectionResult;
-}
-
-const initialState: ScanDataState = {
-  dataType: null,
-  dbSettings: {
-    server: null,
-    user: null,
-    password: null,
-    database: null,
-    schema: null,
-    port: null
-  },
-  fileSettings: {
-    fileType: null,
-    delimiter: ','
-  },
-  scanParams: {
-    sampleSize: 100e3,
-    scanValues: true,
-    minCellCount: 5,
-    maxValues: 1e3,
-    calculateNumericStats: false,
-    numericStatsSamplerSize: 100e3
-  },
-  tablesToScan: [],
-  filteredTablesToScan: [],
-  searchTableName: null,
-  filesToScan: [],
-  connectionResult: null
-};
+import { IScanDataStateService } from '@models/scan-data/state';
+import { initialState, ScanDataState } from '@models/scan-data/scan-data-state';
+import { StateService } from '@services/state/state.service';
 
 @Injectable()
-export class ScanDataStateService implements IScanDataStateService {
+export class ScanDataStateService implements IScanDataStateService, StateService {
 
   private scanDataState: ScanDataState;
 
@@ -63,7 +16,19 @@ export class ScanDataStateService implements IScanDataStateService {
     this.scanDataState = state;
   }
 
+  get dataType(): string {
+    return this.state.dataType
+  }
+
+  set dataType(value: string) {
+    this.state.dataType = value
+  }
+
   constructor() {
-    this.scanDataState = Object.assign({}, initialState) as ScanDataState;
+    this.scanDataState = {...initialState}
+  }
+
+  reset() {
+    this.scanDataState = {...initialState}
   }
 }

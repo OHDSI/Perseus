@@ -1,0 +1,87 @@
+<div class="content">
+  <div class="toolbar">
+    <ng-content select="[toolbar]"></ng-content>
+
+    <div class="toolbar__navigation" (click)="handleNavigation($event)">
+      <div class="show-by">
+        <label for="show-by">Show by</label>
+        <input id="show-by" type="number" max="500" [(ngModel)]="pageSize">
+      </div>
+
+      <div class="total">
+        <label>Total</label>
+        <span>{{total | number:'':'en'}}</span>
+      </div>
+
+      <div class="pagination">
+        <div class="arrow-wrapper arrow-left" data-arrow="left">
+          <svg data-arrow="left" width="4" height="8" viewBox="0 0 4 8" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path data-arrow="left" d="M4 0L6.3573e-08 4L4 8L4 0Z" fill="#066BBB"/>
+          </svg>
+        </div>
+
+        <span data-page="first" [ngClass]="{selected: currentPage === 1}">
+          1
+        </span>
+
+        <span *ngIf="pageCount > 4 && movableIndexes.second > 2" class="no-clickable">...</span>
+
+        <span data-page="second" *ngIf="pageCount > 1"
+              [ngClass]="{selected: currentPage === movableIndexes.second}">
+            {{movableIndexes.second}}
+        </span>
+
+        <span data-page="third" *ngIf="pageCount > 2"
+              [ngClass]="{selected: currentPage === movableIndexes.third}">
+            {{movableIndexes.third}}
+        </span>
+
+        <span *ngIf="pageCount > 4 && movableIndexes.third < pageCount - 1" class="no-clickable">...</span>
+
+        <span data-page="fourth" *ngIf="pageCount > 3"
+              [ngClass]="{selected: currentPage === pageCount}">
+            {{pageCount}}
+        </span>
+
+        <div class="arrow-wrapper arrow-right" data-arrow="right">
+          <svg data-arrow="right" width="4" height="8" viewBox="0 0 4 8" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path data-arrow="right" d="M0 8L4 4L-3.49691e-07 0L0 8Z" fill="#066BBB"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-wrapper" [style.height]="height">
+    <table class="grid"
+           cdk-table
+           [dataSource]="gridData"
+           [style.width]="width">
+
+      <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.field">
+        <th class="column cell"
+            cdk-header-cell *cdkHeaderCellDef
+            perseus-grid-column
+            sortable="true"
+            [column]="column"
+            [sortParams]="sortParams"
+            (sort)="onSort($event)">
+        </th>
+        <td class="cell" cdk-cell *cdkCellDef="let row">{{row[column.field]}}</td>
+      </ng-container>
+
+      <tr class="row header" cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr class="row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div *ngIf="error" class="error">
+      <ng-content select="[error]"></ng-content>
+    </div>
+
+    <div *ngIf="loading" class="ui-blocker">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+</div>

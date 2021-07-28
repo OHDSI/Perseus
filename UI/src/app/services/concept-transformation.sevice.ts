@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
-import {
-  Concept,
-  IConceptOptions,
-  ITableConceptsOptions,
-  TableConcepts
-} from '../cdm/mapping/concept-transformation/model/concept';
+import { Concept, IConceptOptions, ITableConceptsOptions, TableConcepts } from '@models/concept-transformation/concept';
 import { cloneDeep } from '../infrastructure/utility';
-import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
+import * as conceptMap from '@mapping/concept-fileds-list.json';
 import {
   createConceptFields,
   getConceptFieldType,
   updateConceptsIndexes,
   updateConceptsList
-} from 'src/app/utilites/concept-util';
-import { Arrow } from '../models/arrow';
+} from 'src/app/utils/concept-util';
+import { Arrow } from '@models/arrow';
 
 @Injectable()
 export class ConceptTransformationService {
@@ -126,7 +121,11 @@ export class ConceptTransformationService {
     deleteFieldsFromConcepts() {
         const connectedFields = this.collectConnectedGroupedFields();
         const fieldType = getConceptFieldType(this.arrow.target.name);
-        const conceptsList = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList;
+        const conceptsList = this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ]?.conceptsList;
+
+        if (!conceptsList) {
+          return
+        }
 
         connectedFields.forEach(item => {
             conceptsList.forEach(conc => {

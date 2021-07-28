@@ -1,0 +1,30 @@
+@import "mixins";
+
+.search-input {
+  position: relative;
+
+  svg {
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+  }
+
+  input {
+    width: 500px;
+    height: 30px;
+    padding-left: 33px;
+    @include search-input();
+
+    &::placeholder {
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+}

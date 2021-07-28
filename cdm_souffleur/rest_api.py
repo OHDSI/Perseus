@@ -1,13 +1,14 @@
+from cdm_souffleur.services.web_socket_service import socketio
 from cdm_souffleur.db import pg_db
 from cdm_souffleur.utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT, \
     UPLOAD_SOURCE_SCHEMA_FOLDER, VOCABULARY_FILTERS
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 from cdm_souffleur.services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
 from cdm_souffleur.services.source_schema import load_schema_to_server, \
-    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, get_column_info
+    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, \
+    get_column_info, get_field_type
 from cdm_souffleur.services.cdm_schema import get_exist_version, get_schema
 from cdm_souffleur.utils.exceptions import AuthorizationError
 import traceback
@@ -15,9 +16,9 @@ from werkzeug.exceptions import BadRequestKeyError
 from flask import Blueprint
 from cdm_souffleur.vocab_search_api import vocab_search_api
 from cdm_souffleur.authorization_api import authorization_api
+from cdm_souffleur.usagi_api import usagi_api
 from cdm_souffleur.model.user import *
 
-CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
 
 bp = Blueprint('bp', __name__, url_prefix=app.config["CDM_SOUFFLEUR_PREFIX"])
@@ -80,6 +81,7 @@ def save_and_load_schema_call(current_user):
         raise InvalidUsage(error.__str__(), 500)
     return jsonify([s.to_json() for s in saved_schema])
 
+
 @bp.route(f'/api/load_schema_to_server', methods=['POST'])
 @token_required
 def load_schema_call(current_user):
@@ -91,6 +93,7 @@ def load_schema_call(current_user):
         raise InvalidUsage('Schema was not loaded', 500)
     return jsonify('OK')
 
+
 @bp.route('/api/save_source_schema_to_db', methods=['POST'])
 @token_required
 def save_source_schema_to_db_call(current_user):
@@ -100,6 +103,7 @@ def save_source_schema_to_db_call(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify('OK')
+
 
 @bp.route('/api/get_view', methods=['POST'])
 @token_required
@@ -112,6 +116,7 @@ def get_View(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(view_result)
+
 
 @bp.route('/api/validate_sql', methods=['POST'])
 @token_required
@@ -161,6 +166,7 @@ def get_column_info_call(current_user):
         raise InvalidUsage(e.__str__(), 500)
     return jsonify(info)
 
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     """handle error of wrong usage on functions"""
@@ -169,6 +175,7 @@ def handle_invalid_usage(error):
     traceback.print_tb(error.__traceback__)
     return response
 
+
 @app.errorhandler(AuthorizationError)
 def handle_invalid_usage(error):
     """handle error of wrong usage on functions"""
@@ -176,6 +183,7 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     traceback.print_tb(error.__traceback__)
     return response
+
 
 @app.errorhandler(BadRequestKeyError)
 def handle_invalid_req_key(error):
@@ -231,12 +239,14 @@ def get_lookup_by_name(current_user):
     lookup = get_lookup(current_user, name, lookup_type)
     return jsonify(lookup)
 
+
 @bp.route('/api/get_lookups_list')
 @token_required
 def get_lookups(current_user):
     lookup_type = request.args['lookupType']
     lookups_list = get_lookups_list(current_user, lookup_type)
     return jsonify(lookups_list)
+
 
 @bp.route('/api/save_lookup', methods=['POST'])
 @token_required
@@ -247,6 +257,7 @@ def save_lookup(current_user):
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(success=True)
+
 
 @bp.route('/api/delete_lookup', methods=['DELETE'])
 @token_required
@@ -266,11 +277,19 @@ def delete_lookup(current_user):
 def get_schema_name(current_user):
     return jsonify(current_user)
 
+
+@bp.route('/api/get_field_type', methods=['GET'])
+@token_required
+def get_field_type_call(current_user):
+    type = request.args['type']
+    result_type = get_field_type(type)
+    return jsonify(result_type)
+
 app.register_blueprint(bp)
 app.register_blueprint(vocab_search_api)
 app.register_blueprint(authorization_api)
+app.register_blueprint(usagi_api)
 if __name__ == '__main__':
     # app.run(debug=True)
-
-    app.run(port=app.config["CDM_SOUFFLEUR_PORT"])
+    socketio.run(app, port=app.config["CDM_SOUFFLEUR_PORT"])
 

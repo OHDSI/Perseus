@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ConnectionResult } from '../../../models/scan-data/connection-result';
+import { ConnectionResult } from '@models/scan-data/connection-result';
 
 @Component({
   selector: 'app-test-connection',

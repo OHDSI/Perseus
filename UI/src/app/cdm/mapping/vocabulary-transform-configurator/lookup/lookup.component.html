@@ -4,8 +4,7 @@
       <div class="stage-number">1</div>
       <span class="stage-title">Select Lookup</span>
     </div>
-    <div class="stage-body"
-    [class.invalid-with-border]="lookup['value'] === ''">
+    <div class="stage-body" [class.invalid-with-border]="lookup['value'] === '' && lookup['name']">
       <mat-form-field class="select-lookup" appearance="fill">
         <mat-label>Select Lookup</mat-label>
         <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected">
@@ -21,6 +20,8 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <div class="lookup-type-params">
         <mat-radio-button *ngIf="!notConceptTableField" [checked]="lookupType==='source_to_standard'"
                           (change)="lookupTypeChanged($event.value)"
                           [value]="lookupType">Source to Standard</mat-radio-button>
@@ -30,9 +31,11 @@
         <mat-checkbox *ngIf="!notConceptTableField" [checked]="lookup['sourceToSourceIncluded']"
                       [disabled]="!withSourceToSource"
                       (change)="includeSourceToStandardChanged($event)">Include Source to Source</mat-checkbox>
+      </div>
+
       <div class="flex-div">
       <div class="preview-title">SQL Preview</div>
-      <div class="invalid-label" *ngIf="lookup['value'] === ''"> &mdash; Please type SQL here</div>
+      <div class="invalid-label" *ngIf="lookup['value'] === '' && lookup['name']"> &mdash; Please type SQL here</div>
       </div>
       <mat-expansion-panel [class.hidden]="!selected" class="select-preview">
         <mat-expansion-panel-header>
@@ -43,7 +46,7 @@
       <textarea #editor class="ened"></textarea>
     </div>
   </div>
-  <div class="stage" *ngIf="editMode">
+  <div class="stage stage-2" *ngIf="editMode">
     <div class="stage-header">
       <div class="stage-number">2</div>
       <span class="stage-title">Set name for modified lookup</span>

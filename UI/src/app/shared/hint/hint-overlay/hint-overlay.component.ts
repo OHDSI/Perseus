@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { OVERLAY_DIALOG_DATA } from '../../../services/overlay/overlay-dialog-data';
+import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
 import { Hint } from '../hints';
-import { calculateWidth } from '../../../utilites/text-width';
+import { calculateWidthByLongestWord } from '@utils/text-width';
 
 @Component({
   selector: 'app-hint-overlay',
@@ -17,7 +17,7 @@ export class HintOverlayComponent implements OnInit {
   constructor(@Inject(OVERLAY_DIALOG_DATA) public hint: Hint) { }
 
   ngOnInit(): void {
-    this.width = this.hint.width ?? calculateWidth(this.hint.text)
+    this.width = this.hint.width ?? calculateWidthByLongestWord(this.hint.text)
     this.position = this.hint.position ?? 'right'
   }
 }

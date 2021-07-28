@@ -4,15 +4,13 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
-import { Mapping } from '../models/mapping';
+import { Mapping } from '@models/mapping';
 import { HttpService } from './http.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
-import { ColumnInfo } from '../cdm/comfy/columns-list/column-info/column-info.component';
-import { apiUrl } from '../app.constants';
-import { removeExtension } from '../utilites/file';
-
-const URL = apiUrl;
+import { removeExtension } from '@utils/file';
+import { ColumnInfo } from '@models/column-info/column-info';
+import { State } from '@models/state';
 
 @Injectable()
 export class DataService {
@@ -138,7 +136,7 @@ export class DataService {
               .map((percentage, index) => ({
                 value: info.top_10[index],
                 frequency: info.frequency[index],
-                percentage: (percentage * 100).toFixed(5)
+                percentage
               }))
           };
         })
@@ -171,7 +169,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data, key: string) {
+  prepareTables(data, key: keyof State) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

@@ -23,14 +23,25 @@
           "skipTests": true
         },
         "@schematics/angular:service": {
+          "path": "src/app/services",
           "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "path": "src/app/guards",
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "path": "src/app/interceptors",
+          "skipTests": true
+        },
+        "@schematics/angular:interface": {
+          "path": "src/app/model"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -53,10 +64,19 @@
                 "src/app/styles"
               ]
             },
-            "scripts": [
-              "node_modules/hammerjs/hammer.js"
+            "allowedCommonJsDependencies": [
+              "docx",
+              "sockjs-client",
+              "socket.io-client",
+              "codemirror",
+              "file-saver"
             ],
-            "es5BrowserSupport": true
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -69,9 +89,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -97,9 +115,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -114,8 +130,17 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -128,6 +153,9 @@
             },
             "development": {
               "browserTarget": "UI:build:development"
+            },
+            "local": {
+              "browserTarget": "UI:build:local"
             }
           }
         },

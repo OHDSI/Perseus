@@ -1,8 +1,8 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CdmComponent } from './cdm.component';
-import { MappingGuard } from '../guards/mapping/mapping.guard';
-import { AuthGuard } from '../guards/auth/auth.guard';
+import { MappingGuard } from '@guards/mapping/mapping.guard';
+import { AuthGuard } from '@guards/auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -23,8 +23,14 @@ const routes: Routes = [
       {
         path: `mapping`,
         canLoad: [MappingGuard],
+        canActivate: [MappingGuard],
         loadChildren: () => import('./mapping/mapping.module')
           .then(module => module.MappingModule)
+      },
+      {
+        path: 'codes',
+        loadChildren: () => import('./code-mapping/code-mapping.module')
+          .then(module => module.CodeMappingModule)
       },
       {
         path: '**',

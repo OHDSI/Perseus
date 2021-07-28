@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { whiteRabbitDatabaseTypes } from '../../scan-data.constants';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { DbSettings } from '../../../models/scan-data/db-settings';
-import { DqdConnectionSettingsStateService } from '../../../services/data-quality-check/dqd-connection-settings-state.service';
-import { AbstractResourceForm } from '../../auxiliary/resource-form/abstract-resource-form';
-import { ScanDataService } from '../../../services/white-rabbit/scan-data.service';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { DqdConnectionSettingsStateService } from '@services/data-quality-check/dqd-connection-settings-state.service';
+import { AbstractResourceFormComponent } from '../../auxiliary/resource-form/abstract-resource-form.component';
+import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 
 @Component({
   selector: 'app-dqd-form',
@@ -19,7 +19,7 @@ import { ScanDataService } from '../../../services/white-rabbit/scan-data.servic
     '../../styles/scan-data-form.scss',
   ]
 })
-export class DqdFormComponent extends AbstractResourceForm implements OnInit, OnDestroy {
+export class DqdFormComponent extends AbstractResourceFormComponent implements OnInit, OnDestroy {
 
   formControlNames = ['server', 'port', 'user', 'password', 'database', 'schema'];
 

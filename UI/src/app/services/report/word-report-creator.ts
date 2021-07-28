@@ -11,14 +11,14 @@ import {
   TextRun,
   WidthType
 } from 'docx';
-import { MappingNode } from '../../models/mapping';
+import { MappingNode } from '@models/mapping';
 import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
 import { MappingForImage, MappingImage, MappingImageStyles } from './image/mapping-image';
 import { logicForReport } from './logic-for-report';
-import { IRow } from '../../models/row';
+import { IRow } from '@models/row';
 import { commentsForReport } from './comments-for-report';
 import { doubleQuote, singleQuote, sqlKeyWords } from './sql-keywords';
-import { parseMappingNodesByGroups } from '../../utilites/mapping-util';
+import { parseMappingNodesByGroups } from '@utils/mapping-util';
 
 const paragraph = {
   spacing: {
@@ -115,8 +115,8 @@ export class WordReportCreator implements ReportCreator {
     marginBottom: 4,
     textMarginTop: 14,
     fieldsMarginTop: 26,
-    headerFont: '600 16px Akzidenz-Grotesk Pro',
-    fieldFont: '500 16px Akzidenz-Grotesk Pro'
+    headerFont: '600 16px Times New Roman',
+    fieldFont: '500 16px Times New Roman'
   };
 
   generateReport(): any {

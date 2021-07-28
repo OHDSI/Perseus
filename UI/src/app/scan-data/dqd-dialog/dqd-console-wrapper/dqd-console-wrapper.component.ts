@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper.component';
+import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
-import { dqdUrl } from '../../../app.constants';
-import { DqdService } from '../../../services/data-quality-check/dqd.service';
+import { dqdUrl } from '@app/app.constants';
+import { DqdService } from '@services/data-quality-check/dqd.service';
 import * as fileSaver from 'file-saver';
-import { DbSettings } from '../../../models/scan-data/db-settings';
-import { parseHttpError } from '../../../utilites/error';
+import { DbSettings } from '@models/scan-data/db-settings';
+import { parseHttpError } from '@utils/error';
 import { finalize } from 'rxjs/operators';
 
 @Component({

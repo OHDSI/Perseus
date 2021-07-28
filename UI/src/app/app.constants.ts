@@ -1,11 +1,12 @@
 import { environment } from '../environments/environment';
 
-export const appVersion = '0.2'
+export const appVersion = '0.3'
 
 export const similarTableName = 'similar';
 
 export const isProd = environment.production;
 export const isDev = !isProd;
+export const isLocal = environment.local
 
 export const dbServer = environment.dbServer;
 
@@ -38,7 +39,14 @@ export const conceptFieldsTypes = ['concept_id', 'source_value', 'source_concept
 
 export const mainPageRouter = '/perseus'
 export const loginRouter = '/sign-in'
+export const codesRouter = '/codes'
 
 export const externalUrls = [
   'athena.ohdsi.org'
+]
+
+export const serverErrorExclusionUrls = [
+  'get_term_search_results',
+  'save_mapped_codes',
+  'is_token_valid'
 ]

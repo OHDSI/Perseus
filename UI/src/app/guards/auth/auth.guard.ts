@@ -9,15 +9,19 @@ import {
   RouterStateSnapshot,
   UrlSegment
 } from '@angular/router';
-import { AuthService } from '../../services/auth/auth.service';
-import { authInjector } from '../../services/auth/auth-injector';
-import { loginRouter } from '../../app.constants';
-import { Observable } from 'rxjs/internal/Observable';
+import { AuthService } from '@services/auth/auth.service';
+import { authInjector } from '@services/auth/auth-injector';
+import { loginRouter } from '@app/app.constants';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { withLoading } from '@utils/loading';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
+
+  loading = false
 
   constructor(private router: Router,
               @Inject(authInjector) private authService: AuthService) {
@@ -27,21 +31,20 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
     return this.canLoadOrActivate()
   }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.canLoadOrActivate()
   }
 
-  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.canLoadOrActivate()
   }
 
-  private canLoadOrActivate(): boolean {
-    if (this.authService.isUserLoggedIn) {
-      return true
-    }
-
-    this.router.navigate([loginRouter])
-    return false
+  private canLoadOrActivate(): Observable<boolean> {
+    return this.authService.isUserLoggedIn$
+      .pipe(
+        withLoading(this),
+        tap(value => !value && this.router.navigate([loginRouter]))
+      )
   }
 }
 

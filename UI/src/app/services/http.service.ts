@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Mapping } from '../models/mapping';
+import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
 import { apiUrl } from '../app.constants';
-import { createNoCacheHeaders } from '../utilites/http-headers';
+import { createNoCacheHeaders } from '@utils/http-headers';
+import { Configuration, IConfiguration } from '@models/configuration';
 
 // use for dev purposes
-// import * as schemaData from '../mockups/schema.mockup.json';
+// import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
 
 const URL = apiUrl;
 const API_URLS = {
@@ -29,7 +30,9 @@ const API_URLS = {
   saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`,
   getView: () => `${URL}/get_view`,
   validateSql: () => `${URL}/validate_sql`,
-  loadReportToServer: () => `${URL}/load_schema_to_server`
+  loadReportToServer: () => `${URL}/load_schema_to_server`,
+  getConfigurationByMappingFile: () => `${URL}/configuration_by_mapping_file`,
+  getMappingFileByConfiguration: () => `${URL}/mapping_file_by_configuration`
 };
 
 @Injectable()
@@ -108,5 +111,13 @@ export class HttpService {
 
   loadReportToServer(file: any) {
     return this.httpClient.post(API_URLS.loadReportToServer(), file);
+  }
+
+  configurationByMappingFile(file: File): Observable<Configuration> {
+    return this.httpClient.post<Configuration>(API_URLS.getConfigurationByMappingFile(), file)
+  }
+
+  configurationByMappingOptions(options: IConfiguration): Observable<Blob> {
+    return this.httpClient.post<Blob>(API_URLS.getMappingFileByConfiguration(), options)
   }
 }
