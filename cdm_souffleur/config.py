@@ -72,3 +72,5 @@ class ProdConfig:
     SMTP_PWD = 'PT4TYxou@?cH8J'
     SERVER_HOST = '185.134.75.47'
     EMAIL_ENCODE_KEY = 'DiTdwHZMCnfj4CzSV12RzC64H3SRp-iY-0euf2grz7s='
+    SOLR_HOST = 'localhost'
+    SOLR_PORT = '8983'
