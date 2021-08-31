@@ -232,8 +232,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
 
     if (this.lookupComponent.updatedSourceToStandard || this.lookupComponent.updatedSourceToSource) {
 
-      this.updateLookupValue(this.lookupComponent.lookup['source_to_standard'], 'source_to_standard');
-      this.updateLookupValue(this.lookupComponent.lookup['source_to_source'], 'source_to_source');
+      this.updateLookupValue(this.lookupComponent.updatedSourceToStandard, 'source_to_standard');
+      this.updateLookupValue(this.lookupComponent.updatedSourceToSource, 'source_to_source');
     }
     this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable
     this.dialogRef.close();
