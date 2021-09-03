@@ -56,8 +56,7 @@ class StagingConfig:
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
 
-
-class StagingConfig:
+class ProdConfig:
     CDM_SOUFFLEUR_PREFIX = ''
     CDM_SOUFFLEUR_PORT = 5000
     DB_NAME = 'cdm_souffleur'
@@ -71,6 +70,7 @@ class StagingConfig:
     SMTP_EMAIL = 'perseus_test@arcadialab.ru'
     SMTP_USER = 'perseus_test'
     SMTP_PWD = 'PT4TYxou@?cH8J'
-    SERVER_HOST = '10.110.1.7'
+    SERVER_HOST = '185.134.75.47'
     EMAIL_ENCODE_KEY = 'DiTdwHZMCnfj4CzSV12RzC64H3SRp-iY-0euf2grz7s='
-
+    SOLR_HOST = 'localhost'
+    SOLR_PORT = '8983'
