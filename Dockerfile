@@ -40,5 +40,5 @@ RUN mkdir /app/cdm_souffleur/model/generate
 
 RUN mkdir /app/cdm_souffleur/model/generate/Definitions
 
-CMD solr start -force ; python /app/cdm_souffleur/rest_api.py
+CMD solr start -force -p 8984 ; python /app/cdm_souffleur/rest_api.py
 

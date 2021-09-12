@@ -34,7 +34,7 @@ class DevelopmentConfig:
     SERVER_HOST = '10.110.1.7:8080'
     EMAIL_ENCODE_KEY = 'DiTdwHZMCnfj4CzSV12RzC64H3SRp-iY-0euf2grz7s='
     SOLR_HOST = 'localhost'
-    SOLR_PORT = '8983'
+    SOLR_PORT = '8984'
 
 
 class StagingConfig:
