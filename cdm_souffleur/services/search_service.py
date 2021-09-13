@@ -90,7 +90,7 @@ def search_athena(pageSize, page, query, sort, order, filters, update_filters):
     solr = pysolr.Solr(f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{ATHENA_CORE_NAME}",
                        always_commit=True)
     filter_queries = create_athena_filter_queries(filters)
-    final_query = f"concept_name:{'+'.join(re.split('[^a-zA-Z]', query))}" if query else '*:*'
+    final_query = f"concept_name:{'+'.join(re.split(' ', query))} OR concept_code:{'+'.join(re.split(' ', query))} OR concept_id:{'+'.join(re.split(' ', query))}" if query else '*:*'
     start_record = (int(page) - 1)*int(pageSize)
     facet_fields = VOCABULARY_FILTERS.keys()
     params = {
