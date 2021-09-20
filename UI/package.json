@@ -38,7 +38,7 @@
     "ngx-mat-select-search": "^3.0.1",
     "ngx-trim-directive": "^1.1.0",
     "pako": "^1.0.10",
-    "prismjs": "^1.23.0",
+    "prismjs": "^1.25.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.6.0",
     "socket.io-client": "^4.1.2",
