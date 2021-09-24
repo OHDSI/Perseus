@@ -108,7 +108,7 @@ SMTP_PWD=`<SMPT password>`
 
 * Run back-end container using the following command:
 
-    docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
+    `docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend`
 
 
 License
