@@ -98,7 +98,7 @@ https://github.com/SoftwareCountry/DataQualityDashboard
 * We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues) 
 
 ### Configuring SMTP server settings
-* Create file named back-envs.txt in root directory(CDMSouffleur folder) with the following content:
+* Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
     
 SMTP_SERVER=`<your SMTP server host address>`\
 SMTP_PORT=`<your SMTP port>`\
