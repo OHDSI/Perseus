@@ -10,11 +10,11 @@ from cdm_souffleur.utils.constants import SMTP_PORT_STL
 
 def send_email(receiver_email, first_name, type, request_parameter = ''):
     message = create_message(receiver_email, first_name, type, request_parameter)
-
     context = ssl.create_default_context()
+    port = int(os.getenv("SMTP_PORT"))
     try:
-        server = smtplib.SMTP(os.getenv("SMTP_SERVER"), os.getenv("SMTP_PORT"))
-        if os.getenv("SMTP_PORT") == SMTP_PORT_STL:
+        server = smtplib.SMTP(os.getenv("SMTP_SERVER"), port)
+        if port == SMTP_PORT_STL:
             start_tls(server, context)
         server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PWD"))
         server.sendmail(os.getenv("SMTP_EMAIL"), receiver_email, message.as_string())
