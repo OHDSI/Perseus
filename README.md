@@ -100,10 +100,10 @@ https://github.com/SoftwareCountry/DataQualityDashboard
 ### Configuring SMTP server settings
 * Create file named back-envs.txt in root directory(CDMSouffleur folder) with the following content:
     
-SMTP_SERVER=`<your SMTP server host address>`
-SMTP_PORT=`<your SMTP port>`
-SMTP_EMAIL=`<email from which registration links will be sent to users>`
-SMTP_USER=`<SMTP login>`
+SMTP_SERVER=`<your SMTP server host address>`\
+SMTP_PORT=`<your SMTP port>`\
+SMTP_EMAIL=`<email from which registration links will be sent to users>`\
+SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`
 
 * Run back-end container using the following command:
