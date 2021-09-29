@@ -1,3 +1,4 @@
+import os
 from cdm_souffleur import app
 import smtplib
 import ssl
@@ -8,17 +9,16 @@ from cdm_souffleur.utils.constants import SMTP_PORT_STL
 
 
 def send_email(receiver_email, first_name, type, request_parameter = ''):
-    print(app.config['SMTP_SERVER'])
-    print(app.config['SMTP_PORT'])
     message = create_message(receiver_email, first_name, type, request_parameter)
 
     context = ssl.create_default_context()
+    port = int(os.getenv("SMTP_PORT"))
     try:
-        server = smtplib.SMTP(app.config['SMTP_SERVER'], app.config['SMTP_PORT'])
-        if app.config['SMTP_PORT'] == SMTP_PORT_STL:
+        server = smtplib.SMTP(os.getenv("SMTP_SERVER"), port)
+        if port == SMTP_PORT_STL:
             start_tls(server, context)
-        server.login(app.config['SMTP_USER'], app.config['SMTP_PWD'])
-        server.sendmail(app.config['SMTP_EMAIL'], receiver_email, message.as_string())
+        server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PWD"))
+        server.sendmail(os.getenv("SMTP_EMAIL"), receiver_email, message.as_string())
     except Exception as e:
         raise e
     finally:
@@ -33,7 +33,7 @@ def start_tls(server, context):
 
 def create_message(receiver_email, first_name, type, request_parameter):
     message = MIMEMultipart("alternative")
-    message["From"] = app.config['SMTP_EMAIL']
+    message["From"] = os.getenv("SMTP_EMAIL")
     message["To"] = receiver_email
 
     if type == 'registration':
