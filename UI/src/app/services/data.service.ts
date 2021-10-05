@@ -11,6 +11,7 @@ import { BridgeService } from './bridge.service';
 import { removeExtension } from '@utils/file';
 import { ColumnInfo } from '@models/column-info/column-info';
 import { State } from '@models/state';
+import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
 
 @Injectable()
 export class DataService {
@@ -100,9 +101,10 @@ export class DataService {
   getTargetData(version) {
     return this.httpService.getTargetData(version).pipe(
       map(data => {
-        const tables = this.prepareTables(data, 'target');
+        const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.name));
+        const tables = this.prepareTables(filteredData, 'target');
         this.storeService.add('version', version);
-        this.prepareTargetConfig(data);
+        this.prepareTargetConfig(filteredData);
         return tables;
       })
     );
@@ -152,18 +154,15 @@ export class DataService {
   }
 
   prepareTargetConfig(data) {
-    const COLUMNS_TO_EXCLUDE_FROM_TARGET = ['CONCEPT', 'COMMON'];
-    const targetConfig = {};
 
+    const targetConfig = {};
     data.map(table => {
       const tableName = table.table_name;
-      if (COLUMNS_TO_EXCLUDE_FROM_TARGET.findIndex(name => name === tableName) < 0) {
-        targetConfig[tableName] = {
-          name: `target-${tableName}`,
-          first: tableName,
-          data: [tableName]
-        };
-      }
+      targetConfig[ tableName ] = {
+        name: `target-${tableName}`,
+        first: tableName,
+        data: [ tableName ]
+      };
     });
 
     this.storeService.add('targetConfig', targetConfig);
