@@ -101,7 +101,7 @@ export class DataService {
   getTargetData(version) {
     return this.httpService.getTargetData(version).pipe(
       map(data => {
-        const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.name));
+        const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name));
         const tables = this.prepareTables(filteredData, 'target');
         this.storeService.add('version', version);
         this.prepareTargetConfig(filteredData);
