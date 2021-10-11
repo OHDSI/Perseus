@@ -15,3 +15,4 @@ cdm_souffleur/model/generate/income_schema/**/*
 cdm_souffleur/model/generate/CDM_xml/DRUG_CLAIMS**/*
 
 build
+.first_run
