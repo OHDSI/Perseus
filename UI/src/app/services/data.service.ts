@@ -30,7 +30,7 @@ export class DataService {
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       const id = i;
-      const name = item.table_name;
+      const name = item.table_name.toLowerCase();
       const rows = [];
 
       for (let j = 0; j < item.column_list.length; j++) {
@@ -45,7 +45,7 @@ export class DataService {
         const rowOptions: RowOptions = {
           id: j,
           tableId: i,
-          tableName: item.table_name,
+          tableName: item.table_name.toLowerCase(),
           name: item.column_list[j].column_name,
           type: item.column_list[j].column_type,
           isNullable: item.column_list[j].is_column_nullable ?
@@ -101,7 +101,7 @@ export class DataService {
   getTargetData(version) {
     return this.httpService.getTargetData(version).pipe(
       map(data => {
-        const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name));
+        const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
         const tables = this.prepareTables(filteredData, 'target');
         this.storeService.add('version', version);
         this.prepareTargetConfig(filteredData);
@@ -157,7 +157,7 @@ export class DataService {
 
     const targetConfig = {};
     data.map(table => {
-      const tableName = table.table_name;
+      const tableName = table.table_name.toLowerCase();
       targetConfig[ tableName ] = {
         name: `target-${tableName}`,
         first: tableName,
