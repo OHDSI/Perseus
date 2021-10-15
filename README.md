@@ -33,7 +33,7 @@ Screenshots
 
 Technology
 ============
-- Angular 12
+- Angular 9
 - Python 3.6
 - Java 15
 - R 4.0.4
@@ -51,6 +51,14 @@ Deployment server requirements
 Getting Started
 ===============
 
+# Starting with docker-compose
+To start all containers at once using docker-compose please
+- make sure docker-compose is installed
+- configure SMTP server as it described further in `Back-end` section
+- launch `startup.sh` file
+
+# Starting each container separately
+
 ### Database
 
 Get link to the vocabulary from [Athena](http://athena.ohdsi.org).
@@ -67,8 +75,27 @@ Replace the vocabulary link with your own
 
 ### Back-end
 
-    docker build -t perseus-backend .
-    docker run -e CDM_SOUFFLEUR_ENV='default' --name perseus-backend -d --network host perseus-backend
+* To get user registration links by e-mail you should configure SMTP server settings first. Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
+    
+SMTP_SERVER=`<your SMTP server host address>`\
+SMTP_PORT=`<your SMTP port>`\
+SMTP_EMAIL=`<email from which registration links will be sent to users>`\
+SMTP_USER=`<SMTP login>`\
+SMTP_PWD=`<SMPT password>`
+
+* Build container with the following command:
+
+    `docker build -t perseus-backend .`
+
+* Run container with the following command:
+
+    * In case SMTP server has been  configured
+
+    `docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend`
+
+    * In case SMTP server has NOT been configured
+
+    `docker run -e CDM_SOUFFLEUR_ENV='default' --name perseus-backend -d --network host perseus-backend`
 
 ### Front-end
     
@@ -96,19 +123,6 @@ https://github.com/SoftwareCountry/DataQualityDashboard
 
 * User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
 * We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues) 
-
-### Configuring SMTP server settings
-* Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
-
-SMTP_SERVER=`<your SMTP server host address>`\
-SMTP_PORT=`<your SMTP port>`\
-SMTP_EMAIL=`<email from which registration links will be sent to users>`\
-SMTP_USER=`<SMTP login>`\
-SMTP_PWD=`<SMPT password>`
-
-* Run back-end container using the following command:
-
-    `docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend`
 
 
 License
