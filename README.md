@@ -33,7 +33,7 @@ Screenshots
 
 Technology
 ============
-- Angular 9
+- Angular 12
 - Python 3.6
 - Java 15
 - R 4.0.4
