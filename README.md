@@ -77,7 +77,7 @@ to [Docker Compose](#starting-with-docker-compose)
 ## Test user
 **Single-user**
 
-If you want to **skip multiuser mode** use user with these credential:
+If you want to **skip multi-user mode** use user with these credential:
 
 Email: `perseus@softwarecountry.com`
 
