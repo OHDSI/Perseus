@@ -72,7 +72,7 @@ SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`
 
-to [Docker Compose](##-starting-with-docker-compose)
+to [Docker Compose](#starting-with-docker-compose)
 
 ## Test user
 **Single-user**
@@ -86,7 +86,7 @@ Password: `perseus`
 ## Starting with Docker Compose
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in [SMTP](##-smtp-server) section
+- configure SMTP server as it described further in [SMTP](#smtp-server) section
 - launch `startup.sh` file
 
 ## Starting each container separately
