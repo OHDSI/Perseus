@@ -59,10 +59,34 @@ Open `database/Dockerfile`
 
 Replace `vocabulary_url` link with your own
 
+## SMTP server
+**Multi-user**
+
+**(Optional) (Required for Docker Compose temporarily)**
+
+* To get user registration links by e-mail you should configure SMTP server settings first. Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
+
+SMTP_SERVER=`<your SMTP server host address>`\
+SMTP_PORT=`<your SMTP port>`\
+SMTP_EMAIL=`<email from which registration links will be sent to users>`\
+SMTP_USER=`<SMTP login>`\
+SMTP_PWD=`<SMPT password>`
+
+to [Docker Compose](##-starting-with-docker-compose)
+
+## Test user
+**Single-user**
+
+If you want to **skip multiuser mode** use user with these credential:
+
+Email: `perseus@softwarecountry.com`
+
+Password: `perseus`
+
 ## Starting with Docker Compose
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in [SMTP](#-smtp-server) section
+- configure SMTP server as it described further in [SMTP](##-smtp-server) section
 - launch `startup.sh` file
 
 ## Starting each container separately
@@ -73,41 +97,21 @@ To start all containers at once using docker-compose please
     docker build -t perseus-database .
     docker run --name perseus-database -d -p 5431:5432 perseus-database
 
-### SMTP server (Optional) (Required for Docker Compose temporarily)
-
-* To get user registration links by e-mail you should configure SMTP server settings first. Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
-    
-SMTP_SERVER=`<your SMTP server host address>`\
-SMTP_PORT=`<your SMTP port>`\
-SMTP_EMAIL=`<email from which registration links will be sent to users>`\
-SMTP_USER=`<SMTP login>`\
-SMTP_PWD=`<SMPT password>`
-
-to [Docker Compose](-starting-with-docker-compose)
-
-### Test user
-
-If you want to **skip multiuser mode** use user with these credential:
-
-Email: 
-
-Password: 
-
 ### Back-end
 
-* Build container with the following command:
+Build container with the following command:
 
-    `docker build -t perseus-backend .`
+    docker build -t perseus-backend .
 
-* Run container with the following command:
+Run container with the following command:
 
-    * In case SMTP server has been  configured
+In case SMTP server has been configured (multi-user)
 
-    `docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend`
+    docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
 
-    * In case SMTP server has NOT been configured
+In case SMTP server has NOT been configured (single-user)
 
-    `docker run -e CDM_SOUFFLEUR_ENV='default' --name perseus-backend -d --network host perseus-backend`
+    docker run -e CDM_SOUFFLEUR_ENV='default' --name perseus-backend -d --network host perseus-backend
 
 ### Front-end
     
