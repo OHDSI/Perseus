@@ -51,29 +51,29 @@ Deployment server requirements
 Getting Started
 ===============
 
-# Starting with docker-compose
+## Vocabulary
+
+Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
+
+Open `database/Dockerfile`
+
+Replace `vocabulary_url` link with your own
+
+## Starting with Docker Compose
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in `Back-end` section
+- configure SMTP server as it described further in [SMTP](#-smtp-server) section
 - launch `startup.sh` file
 
-# Starting each container separately
+## Starting each container separately
 
 ### Database
-
-Get link to the vocabulary from [Athena](http://athena.ohdsi.org).
-
-    cd database
-
-Open load_csv.sh
-
-Replace the vocabulary link with your own
 
     cd database
     docker build -t perseus-database .
     docker run --name perseus-database -d -p 5431:5432 perseus-database
 
-### Back-end
+### SMTP server (Optional) (Required for Docker Compose temporarily)
 
 * To get user registration links by e-mail you should configure SMTP server settings first. Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
     
@@ -82,6 +82,18 @@ SMTP_PORT=`<your SMTP port>`\
 SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`
+
+to [Docker Compose](-starting-with-docker-compose)
+
+### Test user
+
+If you want to **skip multiuser mode** use user with these credential:
+
+Email: 
+
+Password: 
+
+### Back-end
 
 * Build container with the following command:
 
