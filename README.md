@@ -33,7 +33,7 @@ Screenshots
 
 Technology
 ============
-- Angular 9
+- Angular 12
 - Python 3.6
 - Java 15
 - R 4.0.4
@@ -50,6 +50,14 @@ Deployment server requirements
 
 Getting Started
 ===============
+
+# Starting with docker-compose
+To start all containers at once using docker-compose please
+- make sure docker-compose is installed
+- configure SMTP server as it described further in `Back-end` section
+- launch `startup.sh` file
+
+# Starting each container separately
 
 ### Database
 

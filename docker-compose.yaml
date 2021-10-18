@@ -1,0 +1,60 @@
+version: "3"
+services:
+  backend:
+    build: .
+    container_name: 
+      perseus-backend
+    network_mode: "host"
+    restart: always
+    environment:
+      CDM_SOUFFLEUR_ENV: "prod"
+  frontend:
+    build: ./UI
+    container_name: 
+      perseus-frontend
+    network_mode: "host"
+    restart: always
+  db:
+    build: ./database
+    container_name: 
+      perseus-database
+    volumes:
+      - type: volume
+        source: perseusdb
+        target: /var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    restart: always
+  white_rabbit:
+    build: ../WhiteRabbit
+    container_name: 
+      white-rabbit-service
+    network_mode: "host"
+    restart: always
+  dqd_service:
+    build:
+      context: ../DataQualityDashboard
+      args:
+        prop: prod
+    container_name: 
+      dqd-service
+    network_mode: "host"
+    restart: always
+  r_serve:
+    build:
+      context: ../DataQualityDashboard/R
+      args:
+        prop: prod
+    container_name: 
+      r-serve
+    network_mode: "host"
+    restart: always
+  cdm_builder:
+    build: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi
+    container_name: 
+      cdm-builder-service
+    network_mode: "host"
+    restart: always
+
+volumes:
+  perseusdb:
