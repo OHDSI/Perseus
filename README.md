@@ -2,7 +2,9 @@ Introduction
 ========
 Perseus combines intuitive and easy to use Web-based UI for design and  implement ETL (extract, transform, and load) configuration and service for conversion the native/raw data to the OMOP Common Data Model (CDM).
 
-Additionally Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
+Additionally, Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
+
+[**Getting started**](#getting-started)
 
 Features
 ========
@@ -44,7 +46,8 @@ Deployment server requirements
 ===============
 
  - Unix OS (Ubuntu), Docker,
- - 4GB RAM, 100 GB HDD,
+ - 4GB RAM, 
+ - ~100 GB HDD (Depend on [Vocabulary](#vocabulary) size),
  - Sudo user,
  - Open ports: 443, 80, 8001.
 
