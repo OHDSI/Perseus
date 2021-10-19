@@ -4,6 +4,8 @@ Perseus combines intuitive and easy to use Web-based UI for design and  implemen
 
 Additionally, Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
 
+[**Wiki**](https://github.com/SoftwareCountry/Perseus/wiki)
+
 [**Getting started**](#getting-started)
 
 Features
