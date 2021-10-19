@@ -1,6 +1,6 @@
 import random
 import string
-
+import os
 from werkzeug.utils import redirect
 from cdm_souffleur.model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
 from cdm_souffleur.model.user import *
@@ -18,7 +18,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 user_registration_links = {}
 reset_pwd_links = {}
 key = Fernet.generate_key()
-fernet = Fernet(app.config.get('EMAIL_ENCODE_KEY'))
+fernet = Fernet(os.getenv("EMAIL_SECRET_KEY"))
 
 
 def refresh_registration_links():
