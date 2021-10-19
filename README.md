@@ -92,7 +92,7 @@ Password: `perseus`
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
 - set vocabulary link, see [Vocabulary](#vocabulary) section
-- configure SMTP server as it described further in [SMTP](#smtp-server) section **(Optional)**
+- configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
 - launch `startup.sh` file
 
 ## Starting each container separately
