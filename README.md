@@ -67,7 +67,7 @@ Replace `vocabulary_url` link with your own
 ## SMTP server
 **Multi-user**
 
-**(Optional) (Required for Docker Compose temporarily)**
+**(Optional)**
 
 * To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content (**without spaces**):
 
@@ -91,7 +91,7 @@ Password: `perseus`
 ## Starting with Docker Compose
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in [SMTP](#smtp-server) section
+- configure SMTP server as it described further in [SMTP](#smtp-server) section **(Optional)**
 - launch `startup.sh` file
 
 ## Starting each container separately
