@@ -69,7 +69,7 @@ Replace `vocabulary_url` link with your own
 
 **(Optional)**
 
-* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content (**without spaces**):
+* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content **(without spaces)**:
 
 SMTP_SERVER=`<your SMTP server host address>`\
 SMTP_PORT=`<your SMTP port>`\
@@ -113,11 +113,11 @@ Build container with the following command:
 
 Run container with the following command:
 
-In case SMTP server has been configured **(multi-user)**
+In case SMTP server has been configured [**(multi-user)**](#smtp-server)
 
     docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
 
-In case SMTP server has NOT been configured **(single-user)**
+In case SMTP server has NOT been configured [**(single-user)**](#test-user)
 
     docker run -e CDM_SOUFFLEUR_ENV='prod' --name perseus-backend -d --network host perseus-backend
 
