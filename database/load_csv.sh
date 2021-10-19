@@ -9,6 +9,6 @@ if zipinfo vocabulary.zip > /dev/null; then
 	unzip 'vocabulary.zip' -d vocabulary
 	rm vocabulary.zip
 else
-	echo "Vocabulary link expired"
+	echo "Vocabulary link incorrect or expired"
 	exit 1
 fi
