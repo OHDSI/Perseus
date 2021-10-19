@@ -1,6 +1,7 @@
 from pathlib import Path
 from os.path import dirname
 import sys
+import os
 
 ROOT_DIR = Path(dirname(sys.modules['__main__'].__file__))
 GENERATE_CDM_SOURCE_DATA_PATH = Path('model/generate/CDM_source_data')
@@ -98,3 +99,5 @@ SOLR_FILTERS = {
 }
 
 QUERY_SEARCH_MODE = 'query'
+TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY")
+EMAIL_SECRET_KEY = os.getenv("EMAIL_SECRET_KEY")
