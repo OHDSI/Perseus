@@ -69,7 +69,7 @@ Replace `vocabulary_url` link with your own
 
 **(Optional)**
 
-* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content (**without spaces**):
+* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content **(without spaces)**:
 
 SMTP_SERVER=`<your SMTP server host address>`\
 SMTP_PORT=`<your SMTP port>`\
@@ -89,9 +89,12 @@ Email: `perseus@softwarecountry.com`
 Password: `perseus`
 
 ## Starting with Docker Compose
+**(Docker Compose Version 1.X)**
+
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in [SMTP](#smtp-server) section **(Optional)**
+- set vocabulary link, see [Vocabulary](#vocabulary) section
+- configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
 - launch `startup.sh` file
 
 ## Starting each container separately
@@ -110,11 +113,11 @@ Build container with the following command:
 
 Run container with the following command:
 
-In case SMTP server has been configured (multi-user)
+In case SMTP server has been configured [**(multi-user)**](#smtp-server)
 
     docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
 
-In case SMTP server has NOT been configured (single-user)
+In case SMTP server has NOT been configured [**(single-user)**](#test-user)
 
     docker run -e CDM_SOUFFLEUR_ENV='prod' --name perseus-backend -d --network host perseus-backend
 
