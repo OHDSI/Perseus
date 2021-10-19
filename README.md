@@ -111,11 +111,11 @@ Build container with the following command:
 
 Run container with the following command:
 
-In case SMTP server has been configured (multi-user)
+In case SMTP server has been configured **(multi-user)**
 
     docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
 
-In case SMTP server has NOT been configured (single-user)
+In case SMTP server has NOT been configured **(single-user)**
 
     docker run -e CDM_SOUFFLEUR_ENV='prod' --name perseus-backend -d --network host perseus-backend
 
