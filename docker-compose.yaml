@@ -8,6 +8,8 @@ services:
     restart: always
     environment:
       CDM_SOUFFLEUR_ENV: "prod"
+    env_file:
+      - back-envs.txt
   frontend:
     build: ./UI
     container_name: 
