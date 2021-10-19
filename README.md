@@ -89,6 +89,8 @@ Email: `perseus@softwarecountry.com`
 Password: `perseus`
 
 ## Starting with Docker Compose
+**(Docker Compose Version 1.X)**
+
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
 - set vocabulary link, see [Vocabulary](#vocabulary) section
