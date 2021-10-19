@@ -2,7 +2,11 @@ Introduction
 ========
 Perseus combines intuitive and easy to use Web-based UI for design and  implement ETL (extract, transform, and load) configuration and service for conversion the native/raw data to the OMOP Common Data Model (CDM).
 
-Additionally Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
+Additionally, Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
+
+[**Wiki**](https://github.com/SoftwareCountry/Perseus/wiki)
+
+[**Getting started**](#getting-started)
 
 Features
 ========
@@ -44,30 +48,55 @@ Deployment server requirements
 ===============
 
  - Unix OS (Ubuntu), Docker,
- - 4GB RAM, 100 GB HDD,
+ - 4GB RAM, 
+ - ~100 GB HDD (Depend on [Vocabulary](#vocabulary) size),
  - Sudo user,
  - Open ports: 443, 80, 8001.
 
 Getting Started
 ===============
 
-# Starting with docker-compose
+## Vocabulary
+
+Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
+
+Open `database/Dockerfile`
+
+Replace `vocabulary_url` link with your own
+
+## SMTP server
+**Multi-user**
+
+**(Optional) (Required for Docker Compose temporarily)**
+
+* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content (**without spaces**):
+
+SMTP_SERVER=`<your SMTP server host address>`\
+SMTP_PORT=`<your SMTP port>`\
+SMTP_EMAIL=`<email from which registration links will be sent to users>`\
+SMTP_USER=`<SMTP login>`\
+SMTP_PWD=`<SMPT password>`
+
+to [Docker Compose](#starting-with-docker-compose)
+
+## Test user
+**Single-user**
+
+If you want to **skip multi-user mode** use user with these credential:
+
+Email: `perseus@softwarecountry.com`
+
+Password: `perseus`
+
+## Starting with Docker Compose
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in `Back-end` section
+- configure SMTP server as it described further in [SMTP](#smtp-server) section
 - launch `startup.sh` file
 
-# Starting each container separately
+## Starting each container separately
 
 ### Database
-
-Get link to the vocabulary from [Athena](http://athena.ohdsi.org).
-
-    cd database
-
-Open load_csv.sh
-
-Replace the vocabulary link with your own
 
     cd database
     docker build -t perseus-database .
@@ -75,27 +104,19 @@ Replace the vocabulary link with your own
 
 ### Back-end
 
-* To get user registration links by e-mail you should configure SMTP server settings first. Create file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content:
-    
-SMTP_SERVER=`<your SMTP server host address>`\
-SMTP_PORT=`<your SMTP port>`\
-SMTP_EMAIL=`<email from which registration links will be sent to users>`\
-SMTP_USER=`<SMTP login>`\
-SMTP_PWD=`<SMPT password>`
+Build container with the following command:
 
-* Build container with the following command:
+    docker build -t perseus-backend .
 
-    `docker build -t perseus-backend .`
+Run container with the following command:
 
-* Run container with the following command:
+In case SMTP server has been configured (multi-user)
 
-    * In case SMTP server has been  configured
+    docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
 
-    `docker run -e CDM_SOUFFLEUR_ENV='default' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend`
+In case SMTP server has NOT been configured (single-user)
 
-    * In case SMTP server has NOT been configured
-
-    `docker run -e CDM_SOUFFLEUR_ENV='default' --name perseus-backend -d --network host perseus-backend`
+    docker run -e CDM_SOUFFLEUR_ENV='prod' --name perseus-backend -d --network host perseus-backend
 
 ### Front-end
     
