@@ -1,13 +1,13 @@
 import random
 import string
-import os
 from werkzeug.utils import redirect
 from cdm_souffleur.model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
 from cdm_souffleur.model.user import *
 from cdm_souffleur.model.refresh_token import *
 from cdm_souffleur.services.mailout_service import send_email
 from cdm_souffleur.utils import InvalidUsage
-from cdm_souffleur.utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME
+from cdm_souffleur.utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME, \
+    EMAIL_SECRET_KEY
 from cdm_souffleur.utils.exceptions import AuthorizationError
 from cdm_souffleur import bcrypt
 from cryptography.fernet import Fernet
@@ -18,7 +18,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 user_registration_links = {}
 reset_pwd_links = {}
 key = Fernet.generate_key()
-fernet = Fernet(os.getenv("EMAIL_SECRET_KEY"))
+fernet = Fernet(EMAIL_SECRET_KEY)
 
 
 def refresh_registration_links():

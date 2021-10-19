@@ -8,7 +8,8 @@ import datetime
 from cdm_souffleur.model.baseModel import BaseModel
 from cdm_souffleur.model.blacklist_token import blacklist_token
 from cdm_souffleur.utils import InvalidUsage
-import os
+
+from cdm_souffleur.utils.constants import TOKEN_SECRET_KEY
 
 
 class User(BaseModel):
@@ -29,7 +30,7 @@ class User(BaseModel):
             }
             return jwt.encode(
                 payload,
-                os.getenv("TOKEN_SECRET_KEY"),
+                TOKEN_SECRET_KEY,
                 algorithm='HS256'
             )
         except Exception as e:
@@ -37,7 +38,7 @@ class User(BaseModel):
 
     @staticmethod
     def decode_auth_token(auth_token):
-        payload = jwt.decode(auth_token, os.getenv("TOKEN_SECRET_KEY"), algorithms='HS256')
+        payload = jwt.decode(auth_token, TOKEN_SECRET_KEY, algorithms='HS256')
         user = User.select().where(User.username == payload['sub']).get()
         is_blacklisted_token = blacklist_token.check_blacklist(auth_token)
         if is_blacklisted_token or not user.active:
