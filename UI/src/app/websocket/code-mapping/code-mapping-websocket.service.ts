@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { WebsocketService } from '../websocketService';
 import { Observable } from 'rxjs';
-import { io } from 'socket.io-client';
-import { Socket } from 'socket.io-client/build/socket';
+import { io, Socket } from 'socket.io-client';
 import { AuthService } from '@services/auth/auth.service';
 import { authInjector } from '@services/auth/auth-injector';
 import { serverUrl } from '@app/app.constants';
