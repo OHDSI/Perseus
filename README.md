@@ -76,6 +76,8 @@ SMTP_PORT=`<your SMTP port>`\
 SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`
+TOKEN_SECRET_KEY=`token encoding key`
+EMAIL_SECRET_KEY=`email encoding key`
 
 to [Docker Compose](#starting-with-docker-compose)
 
@@ -101,25 +103,23 @@ To start all containers at once using docker-compose please
 
 ### Database
 
+Set vocabulary link, see [Vocabulary](#vocabulary) section
+
     cd database
     docker build -t perseus-database .
     docker run --name perseus-database -d -p 5431:5432 perseus-database
 
 ### Back-end
 
-Build container with the following command:
+Configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
+
+In the root directory build container with the following command:
 
     docker build -t perseus-backend .
 
 Run container with the following command:
 
-In case SMTP server has been configured [**(multi-user)**](#smtp-server)
-
     docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
-
-In case SMTP server has NOT been configured [**(single-user)**](#test-user)
-
-    docker run -e CDM_SOUFFLEUR_ENV='prod' --name perseus-backend -d --network host perseus-backend
 
 ### Front-end
     
