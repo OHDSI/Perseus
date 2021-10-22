@@ -50,3 +50,15 @@ export const serverErrorExclusionUrls = [
   'save_mapped_codes',
   'is_token_valid'
 ]
+
+export const COLUMNS_TO_EXCLUDE_FROM_TARGET = [
+  'CONCEPT',
+  'VOCABULARY',
+  'DOMAIN',
+  'CONCEPT_CLASS',
+  'CONCEPT_RELATIONSHIP',
+  'RELATIONSHIP',
+  'CONCEPT_SYNONYM',
+  'CONCEPT_ANCESTOR',
+  'SOURCE_TO_CONCEPT_MAP',
+  'DRUG_STRENGTH' ];
