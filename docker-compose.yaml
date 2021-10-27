@@ -2,7 +2,7 @@ version: "3"
 services:
   backend:
     build: .
-    container_name: 
+    container_name:
       perseus-backend
     network_mode: "host"
     restart: always
@@ -12,13 +12,13 @@ services:
       - back-envs.txt
   frontend:
     build: ./UI
-    container_name: 
+    container_name:
       perseus-frontend
     network_mode: "host"
     restart: always
   db:
     build: ./database
-    container_name: 
+    container_name:
       perseus-database
     volumes:
       - type: volume
@@ -29,7 +29,7 @@ services:
     restart: always
   white_rabbit:
     build: ../WhiteRabbit
-    container_name: 
+    container_name:
       white-rabbit-service
     network_mode: "host"
     restart: always
@@ -38,7 +38,7 @@ services:
       context: ../DataQualityDashboard
       args:
         prop: prod
-    container_name: 
+    container_name:
       dqd-service
     network_mode: "host"
     restart: always
@@ -47,13 +47,15 @@ services:
       context: ../DataQualityDashboard/R
       args:
         prop: prod
-    container_name: 
+    container_name:
       r-serve
     network_mode: "host"
     restart: always
   cdm_builder:
-    build: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi
-    container_name: 
+    build:
+      context: ../ETL-CDMBuilder/
+      dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
+    container_name:
       cdm-builder-service
     network_mode: "host"
     restart: always
