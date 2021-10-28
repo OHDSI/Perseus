@@ -9,6 +9,7 @@ class LocalConfig:
     SERVER_PORT = ''
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
+    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
 
 class DevelopmentConfig:
     CDM_SOUFFLEUR_PREFIX = ''
@@ -21,6 +22,7 @@ class DevelopmentConfig:
     SERVER_PORT = ':8080'
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
+    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
 
 
 class StagingConfig:
@@ -34,6 +36,7 @@ class StagingConfig:
     SERVER_PORT = ''
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
+    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
 
 class ProdConfig:
     CDM_SOUFFLEUR_PREFIX = ''
@@ -46,3 +49,4 @@ class ProdConfig:
     SERVER_PORT = ''
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
+    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
