@@ -18,7 +18,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 user_registration_links = {}
 reset_pwd_links = {}
 key = Fernet.generate_key()
-fernet = Fernet(bytes(EMAIL_SECRET_KEY, 'utf-8'))
+fernet = Fernet(EMAIL_SECRET_KEY)
 
 
 def refresh_registration_links():
