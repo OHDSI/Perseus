@@ -6,7 +6,7 @@ class LocalConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = 'localhost'
+    SERVER_PORT = ''
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
 
@@ -18,7 +18,7 @@ class DevelopmentConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = '10.110.1.7:8080'
+    SERVER_PORT = ':8080'
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
 
@@ -31,7 +31,7 @@ class StagingConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = '10.110.1.7'
+    SERVER_PORT = ''
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
 
@@ -43,6 +43,6 @@ class ProdConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = '185.134.75.47'
+    SERVER_PORT = ''
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
