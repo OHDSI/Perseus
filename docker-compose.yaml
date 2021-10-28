@@ -59,6 +59,17 @@ services:
       cdm-builder-service
     network_mode: "host"
     restart: always
+  web:
+    image: nginx
+    container_name:
+      web
+    volumes:
+      - type: bind
+        source: ./UI/default.conf
+        target: /etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    restart: always
 
 volumes:
   perseusdb:
