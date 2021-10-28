@@ -72,7 +72,7 @@ export abstract class WhiteRabbitWebsocketService extends WebsocketService imple
 
   private initStompClient(): void {
     this.stompClient = Stomp.over(() => {
-      this.socket = new SockJS(`${whiteRabbitWsUrl}/${this.endPoint}`);
+      this.socket = new SockJS(`${whiteRabbitWsUrl}/${this.endPoint}`, null, {timeout: 15000});
       return this.socket;
     });
 
