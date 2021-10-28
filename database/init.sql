@@ -253,8 +253,8 @@ CREATE TABLE "cdm"."user"
 );
 
 --- inserting default users to user table
-INSERT INTO "cdm"."user" ("username", "first_name", "last_name", "email", "password", "active") VALUES ('test1', 'name', 'surname', 'test_email@test.ru', '$2b$12$jgJapclm8oeV2FgCPTxXl.MCrcB61uKm82GDTbsbkJeOGIoU0oe0S', '1');
-INSERT INTO "cdm"."user" ("username",  "first_name", "last_name", "email", "password", "active") VALUES ('test2', 'name', 'surname', 'test_email2@test.ru', '$2b$12$3RwT1MKcqpk1usn.hmCklODI4XEwkuTCOzRyxD5OwjwQPqhVwZ6Qi', '1');
+INSERT INTO "cdm"."user" ("username", "first_name", "last_name", "email", "password", "active") VALUES ('test1', 'name', 'surname', 'perseus@softwarecountry.com', '$2b$12$KSyFSYjOloZjDOrYVFg3Z.AdxmYv7gKxJn3AG9UIJ5lDBfmpd5MV2', '1');
+INSERT INTO "cdm"."user" ("username",  "first_name", "last_name", "email", "password", "active") VALUES ('test2', 'name', 'surname', 'perseussupport@softwarecountry.com', '$2b$12$0TwBUiuWPiB4/h82GE3BeOwwc/18lZNzXbrgydZqEs9V1r4oCkbKO', '1');
 
 --- create table for blacklisted tokens
 CREATE TABLE "cdm"."blacklist_token"
