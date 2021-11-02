@@ -60,13 +60,9 @@ services:
     network_mode: "host"
     restart: always
   web:
-    image: nginx
+    build: ./nginx
     container_name:
       web
-    volumes:
-      - type: bind
-        source: ./nginx/default.conf
-        target: /etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     restart: always
