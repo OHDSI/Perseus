@@ -19,7 +19,7 @@ export const serverUrl = environment.port === 80 ?
 
 export const apiUrl = `${serverUrl}/api`
 
-export const whiteRabbitServerUrl = 'http://localhost:8000'
+export const whiteRabbitServerUrl = serverUrl
 export const whiteRabbitPrefix = '/white-rabbit-service'
 export const whiteRabbitWsUrl = `${whiteRabbitServerUrl}${whiteRabbitPrefix}`
 export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}${whiteRabbitPrefix}/api`
