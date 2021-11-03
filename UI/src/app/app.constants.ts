@@ -28,7 +28,7 @@ export const cdmBuilderApiUrl = `${cdmBuilderServerUrl}/cdm-builder/api`
 
 export const dqdServerUrl = `${serverUrl}/dqd`
 export const dqdApiUrl = `${dqdServerUrl}/api`
-export const dqdWsUrl = `${dqdServerUrl}/progress`
+export const dqdWsUrl = `ws://${server}:${port}/dqd/progress`
 //
 
 export const numberOfPanelsWithoutSimilar = 2
