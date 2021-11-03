@@ -18,9 +18,9 @@ export const serverUrl = `${protocol}//${server}:${port}`
 
 export const apiUrl = `${serverUrl}/api`
 
-export const whiteRabbitServerUrl = serverUrl
-export const whiteRabbitWsUrl = `${whiteRabbitServerUrl}/white-rabbit-service`
-export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}/white-rabbit-service/api`
+export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
+export const whiteRabbitWsUrl = whiteRabbitServerUrl
+export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}/api`
 
 export const cdmBuilderServerUrl = serverUrl
 export const cdmBuilderLogUrl = `${cdmBuilderServerUrl}/log`
@@ -28,7 +28,7 @@ export const cdmBuilderApiUrl = `${cdmBuilderServerUrl}/cdm-builder/api`
 
 export const dqdServerUrl = `${serverUrl}/dqd`
 export const dqdApiUrl = `${dqdServerUrl}/api`
-export const dqdWsUrl = `ws://${server}:8001/dqd/progress` // 8001 port
+export const dqdWsUrl = `${dqdServerUrl}/progress`
 //
 
 export const numberOfPanelsWithoutSimilar = 2
