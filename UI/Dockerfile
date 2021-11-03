@@ -5,6 +5,7 @@ COPY package.json .
 RUN npm install
 COPY . .
 RUN npm run build:prod
+
 ### STAGE 2: Run ###
 FROM nginx
 COPY nginx.conf /etc/nginx/nginx.conf
