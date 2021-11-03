@@ -47,22 +47,24 @@ Technology
 Deployment server requirements
 ===============
 
- - Unix OS (Ubuntu), Docker,
+ - Unix / Windows OS, Docker,
  - 4GB RAM, 
- - ~100 GB HDD (Depend on [Vocabulary](#vocabulary) size),
- - Sudo user,
+ - ~10 GB HDD (Depend on [Vocabulary](#vocabulary) size),
  - Open ports: 443, 80, 8001.
 
 Getting Started
 ===============
 
 ## Vocabulary
+**(Optional)**
 
 Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
 
 Open `database/Dockerfile`
 
 Replace `vocabulary_url` link with your own
+
+Leave `vocabulary_url` empty if you want to use default vocabulary
 
 ## SMTP server
 **Multi-user**
@@ -94,15 +96,22 @@ Password: `perseus`
 
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- set vocabulary link, see [Vocabulary](#vocabulary) section
+- set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
 - configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
-- launch `startup.sh` file
+
+Unix:
+
+    startup.sh
+
+Windows:
+
+    startup.cmd
 
 ## Starting each container separately
 
 ### Database
 
-Set vocabulary link, see [Vocabulary](#vocabulary) section
+Set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
 
     cd database
     docker build -t perseus-database .
@@ -112,12 +121,9 @@ Set vocabulary link, see [Vocabulary](#vocabulary) section
 
 Configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
 
-In the root directory build container with the following command:
+In the root directory:
 
     docker build -t perseus-backend .
-
-Run container with the following command:
-
     docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
 
 ### Front-end
