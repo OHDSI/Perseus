@@ -6,30 +6,28 @@ export const similarTableName = 'similar'
 
 export const isProd = environment.production
 export const isDev = !isProd;
-export const isLocal = environment.local
 
-export const dbServer = environment.dbServer
+const server = environment.server || window.location.hostname
+const port = environment.port || window.location.port
+const protocol = window.location.protocol
+
+export const dbServer = server
 
 // urls
-export const server = environment.server
-
-export const serverUrl = environment.port === 80 ?
-  `http://${server}` :
-  `http://${server}:${environment.port}`
+export const serverUrl = `${protocol}//${server}:${port}`
 
 export const apiUrl = `${serverUrl}/api`
 
 export const whiteRabbitServerUrl = serverUrl
-export const whiteRabbitPrefix = '/white-rabbit-service'
-export const whiteRabbitWsUrl = `${whiteRabbitServerUrl}${whiteRabbitPrefix}`
-export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}${whiteRabbitPrefix}/api`
+export const whiteRabbitWsUrl = `${whiteRabbitServerUrl}/white-rabbit-service`
+export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}/white-rabbit-service/api`
 
 export const cdmBuilderServerUrl = serverUrl
 export const cdmBuilderLogUrl = `${cdmBuilderServerUrl}/log`
 export const cdmBuilderApiUrl = `${cdmBuilderServerUrl}/cdm-builder/api`
 
-export const dqdUrl = `${serverUrl}/dqd`
-export const dqdApiUrl = `${dqdUrl}/api`
+export const dqdServerUrl = `${serverUrl}/dqd`
+export const dqdApiUrl = `${dqdServerUrl}/api`
 export const dqdWsUrl = `ws://${server}:8001/dqd/progress` // 8001 port
 //
 

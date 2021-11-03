@@ -6,8 +6,8 @@ const globalEnv = getGlobalEnv()
 export const environment = {
   production: false,
   local: false,
-  server: globalEnv?.server || 'localhost',
-  dbServer: globalEnv?.dbServer || 'localhost',
+  server: globalEnv?.server,
+  dbServer: globalEnv?.dbServer,
   port: 8080,
   conceptTables: CONCEPT_TABLES
 };
