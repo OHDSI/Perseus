@@ -3,18 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { getGlobalEnv } from './environment.util';
-
-const CONCEPT_TABLES = [
-  'CONCEPT',
-  'COMMON',
-  'CONDITION_OCCURRENCE',
-  'DEVICE_EXPOSURE',
-  'DRUG_EXPOSURE',
-  'MEASUREMENT',
-  'OBSERVATION',
-  'PROCEDURE_OCCURRENCE',
-  'SPECIMEN'
-];
+import { CONCEPT_TABLES } from './concept-tables'
 
 const globalEnv = getGlobalEnv()
 
