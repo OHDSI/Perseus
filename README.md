@@ -101,11 +101,11 @@ To start all containers at once using docker-compose please
 
 Unix:
 
-    startup.sh
+    ./startup.sh
 
 Windows:
 
-    startup.cmd
+    ./startup.cmd
 
 ## Starting each container separately
 

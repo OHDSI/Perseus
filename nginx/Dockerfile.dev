@@ -1,2 +1,4 @@
 FROM nginx
 COPY default.dev.conf /etc/nginx/nginx.conf
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
