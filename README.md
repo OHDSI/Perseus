@@ -50,7 +50,7 @@ Deployment server requirements
  - Unix / Windows OS, Docker,
  - 4GB RAM, 
  - ~10 GB HDD (Depend on [Vocabulary](#vocabulary) size),
- - Open ports: 443, 80, 8001.
+ - Open ports: 443, 80.
 
 Getting Started
 ===============
@@ -64,7 +64,9 @@ Open `database/Dockerfile`
 
 Replace `vocabulary_url` link with your own
 
-Leave `vocabulary_url` empty if you want to use default vocabulary
+Set `vocabulary_url` empty if you want to use default vocabulary
+
+Database deployment can take a long time if the dictionary size is large enough
 
 ## SMTP server
 **Multi-user**
@@ -79,7 +81,6 @@ SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`
 TOKEN_SECRET_KEY=`token encoding key`
-EMAIL_SECRET_KEY=`email encoding key`
 
 to [Docker Compose](#starting-with-docker-compose)
 
@@ -88,9 +89,13 @@ to [Docker Compose](#starting-with-docker-compose)
 
 If you want to **skip multi-user mode** use user with these credential:
 
-Email: `perseus@softwarecountry.com`
+Email: 
 
-Password: `perseus`
+    perseus@softwarecountry.com
+
+Password: 
+
+    perseus
 
 ## Starting with Docker Compose
 
