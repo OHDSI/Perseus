@@ -3,4 +3,4 @@ SMTP_PORT=
 SMTP_EMAIL=
 SMTP_USER=
 SMTP_PWD=
-TOKEN_SECRET_KEY=Perseus
+TOKEN_SECRET_KEY=\xac\xe3\xc1\x8ft\x8d\x7fM\x82\x18\xbeM\xc7k*\xd5]\xae(J\xe6}\xe84
