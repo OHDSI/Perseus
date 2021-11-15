@@ -171,13 +171,13 @@ def user_logout(current_user, auth_token):
     return True
 
 
-def send_reset_password_email(email):
+def send_reset_password_email(email, host):
     user = User.select().where(User.email == email)
     if user.exists():
         if not user.get().active:
             raise InvalidUsage('User has not been activated', 401)
         for item in user:
-            send_link_to_user(item.email, item.first_name, 'reset_password', reset_pwd_links)
+            send_link_to_user(item.email, item.first_name, 'reset_password', reset_pwd_links, host)
     else:
         raise InvalidUsage('Email wasn\'t registered', 401)
     return True

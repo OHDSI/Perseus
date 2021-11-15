@@ -65,8 +65,9 @@ def logout(current_user):
 @authorization_api.route('/api/recover-password', methods=['POST'])
 def reset_password_request():
     try:
+        host = getServerHostPort(urlparse(request.base_url).hostname)
         email = request.json['email']
-        send_reset_password_email(email)
+        send_reset_password_email(email, host)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(True)
