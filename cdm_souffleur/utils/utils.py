@@ -3,6 +3,8 @@ from functools import wraps
 from pyspark.sql import SparkSession
 from sqlalchemy import create_engine
 
+from cdm_souffleur import app
+
 
 def time_it(method):
     """decorator to measure time of execution"""
@@ -48,4 +50,7 @@ class Database(metaclass=MetaSingleton):
             self.connection = create_engine(f'postgresql+pypostgresql://{connection_string}')
             return self.connection
 
-
+def getServerHostPort(host):
+    if app.config['SERVER_PORT'] == 8080:
+        return f"http://{host}:8080"
+    return f"http://{host}"
