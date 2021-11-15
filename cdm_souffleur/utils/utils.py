@@ -51,6 +51,6 @@ class Database(metaclass=MetaSingleton):
             return self.connection
 
 def getServerHostPort(host):
-    if app.config['SERVER_PORT']:
+    if 'SERVER_PORT' in app.config:
         return f"http://{host}:{app.config['SERVER_PORT']}"
     return f"http://{host}"
