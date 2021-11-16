@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
-import { dqdUrl } from '@app/app.constants';
+import { dqdServerUrl } from '@app/app.constants';
 import { DqdService } from '@services/data-quality-check/dqd.service';
 import * as fileSaver from 'file-saver';
 import { DbSettings } from '@models/scan-data/db-settings';
@@ -29,7 +29,7 @@ export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent<
   fileLoading = false;
 
   onShowResult() {
-    window.open(`${dqdUrl}/?result=${this.result.payload}`, '_blank');
+    window.open(`${dqdServerUrl}/?result=${this.result.payload}`, '_blank');
   }
 
   onSaveResult() {

@@ -105,7 +105,7 @@
                 }
               ]
             },
-            "stage": {
+            "staging": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -131,11 +131,11 @@
                 }
               ]
             },
-            "local": {
+            "development": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local.ts"
+                  "with": "src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -153,9 +153,6 @@
             },
             "development": {
               "browserTarget": "UI:build:development"
-            },
-            "local": {
-              "browserTarget": "UI:build:local"
             }
           }
         },
