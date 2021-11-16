@@ -6,7 +6,6 @@ class LocalConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = 'localhost'
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
     EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
@@ -19,9 +18,9 @@ class DevelopmentConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = '10.110.1.7:8080'
+    SERVER_PORT = 8080
     SOLR_HOST = 'localhost'
-    SOLR_PORT = '8984'
+    SOLR_PORT = '8983'
     EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
 
 
@@ -33,7 +32,6 @@ class StagingConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = '10.110.1.7'
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
     EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
@@ -46,7 +44,6 @@ class ProdConfig:
     DB_PASSWORD = '5eC_DkMr^3'
     DB_HOST = 'localhost'
     DB_PORT = 5431
-    SERVER_HOST = '185.134.75.47'
     SOLR_HOST = 'localhost'
     SOLR_PORT = '8983'
     EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='

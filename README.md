@@ -47,35 +47,42 @@ Technology
 Deployment server requirements
 ===============
 
- - Unix OS (Ubuntu), Docker,
+ - Unix / Windows OS, Docker,
  - 4GB RAM, 
- - ~100 GB HDD (Depend on [Vocabulary](#vocabulary) size),
- - Sudo user,
- - Open ports: 443, 80, 8001.
+ - ~10 GB HDD (Depend on [Vocabulary](#vocabulary) size),
+ - Open ports: 443, 80.
 
 Getting Started
 ===============
 
 ## Vocabulary
+**(Optional)**
 
 Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
 
-Open `database/Dockerfile`
+Open `database/Dockerfile` and set `voc_url` your own link
 
-Replace `vocabulary_url` link with your own
+Or use docker ARG variable `voc_url`
+
+Set `voc_url` empty if you want to use the default vocabulary
+
+Database deployment can take a long time if the dictionary size is large enough
+
+to [Docker Compose](#starting-with-docker-compose)
 
 ## SMTP server
 **Multi-user**
 
-**(Optional) (Required for Docker Compose temporarily)**
+**(Optional)**
 
-* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content (**without spaces**):
+* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content **(without spaces)**:
 
 SMTP_SERVER=`<your SMTP server host address>`\
 SMTP_PORT=`<your SMTP port>`\
 SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
-SMTP_PWD=`<SMPT password>`
+SMTP_PWD=`<SMPT password>`\
+TOKEN_SECRET_KEY=`token encoding key`
 
 to [Docker Compose](#starting-with-docker-compose)
 
@@ -84,19 +91,43 @@ to [Docker Compose](#starting-with-docker-compose)
 
 If you want to **skip multi-user mode** use user with these credential:
 
-Email: `perseus@softwarecountry.com`
+Email: 
 
-Password: `perseus`
+    perseus@softwarecountry.com
+
+Password: 
+
+    perseus
 
 ## Starting with Docker Compose
+
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- configure SMTP server as it described further in [SMTP](#smtp-server) section
-- launch `startup.sh` file
+- set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
+- configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
+
+Unix:
+
+    ./startup.sh
+
+Windows:
+
+    ./startup.cmd
+
+
+Open `localhost:80` in your browser, preferably Google Chrome
 
 ## Starting each container separately
 
+### Nginx Web Server
+
+    cd nginx
+    docker build -t web .
+    docker run --name web -d -p 80:80 --restart=always web
+
 ### Database
+
+Set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
 
     cd database
     docker build -t perseus-database .
@@ -104,19 +135,12 @@ To start all containers at once using docker-compose please
 
 ### Back-end
 
-Build container with the following command:
+Configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
+
+In the root directory:
 
     docker build -t perseus-backend .
-
-Run container with the following command:
-
-In case SMTP server has been configured (multi-user)
-
     docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
-
-In case SMTP server has NOT been configured (single-user)
-
-    docker run -e CDM_SOUFFLEUR_ENV='prod' --name perseus-backend -d --network host perseus-backend
 
 ### Front-end
     
@@ -140,7 +164,11 @@ https://github.com/SoftwareCountry/ETL-CDMBuilder
 
 https://github.com/SoftwareCountry/DataQualityDashboard
 
-### Getting Involved
+### Finally
+
+Open `localhost:80` in your browser, preferably Google Chrome
+
+## Getting Involved
 
 * User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
 * We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues) 
