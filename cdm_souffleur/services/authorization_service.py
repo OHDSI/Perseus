@@ -57,7 +57,7 @@ def register_user_in_db(password, first_name, last_name, email, host):
             username = f"{username}{count}"
     user = User(username=username, first_name=first_name, last_name=last_name, email=email, password=encrypted_password, active=False)
     user.save()
-    send_link_to_user(email, first_name, 'registration', user_registration_links)
+    send_link_to_user(email, first_name, 'registration', user_registration_links, host)
 
 
 def decrypt_email(str):
