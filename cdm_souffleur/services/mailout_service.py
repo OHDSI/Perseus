@@ -107,7 +107,7 @@ def get_reset_password_html(first_name, host, reset_pwd_key):
       <br>
       Please <a href="{host}/api/check_password_link?token={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to reset your password.</a>
       <br><br>
-      <b>Did not request this change?</b> <a href="{host}/api/register_unauthorized_reset_pwd_request?token={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">Let us know</a>, if it were not you.
+      <b>Did not request this change?</b> <a href="mailto:perseus.support@arcadia.spb.ru" style="text-decoration: none; outline: none; color: #066BBB">Let us know</a>, if it were not you.
       <br><br>
     </p>
 
