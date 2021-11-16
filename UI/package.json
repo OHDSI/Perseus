@@ -36,7 +36,7 @@
     "docx": "^5.3.0",
     "file-saver": "^2.0.2",
     "flatted": "^3.0.4",
-    "jszip": "^3.6.0",
+    "jszip": "^3.7.0",
     "lodash-es": "^4.17.11",
     "ngx-mat-select-search": "^3.0.1",
     "ngx-trim-directive": "^1.1.0",
