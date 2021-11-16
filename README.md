@@ -60,13 +60,15 @@ Getting Started
 
 Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
 
-Open `database/Dockerfile`
+Open `database/Dockerfile` and set `voc_url` your own link
 
-Replace `vocabulary_url` link with your own
+Or use docker ARG variable `voc_url`
 
-Set `vocabulary_url` empty if you want to use default vocabulary
+Set `voc_url` empty if you want to use the default vocabulary
 
 Database deployment can take a long time if the dictionary size is large enough
+
+to [Docker Compose](#starting-with-docker-compose)
 
 ## SMTP server
 **Multi-user**
@@ -79,7 +81,7 @@ SMTP_SERVER=`<your SMTP server host address>`\
 SMTP_PORT=`<your SMTP port>`\
 SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
-SMTP_PWD=`<SMPT password>`
+SMTP_PWD=`<SMPT password>`\
 TOKEN_SECRET_KEY=`token encoding key`
 
 to [Docker Compose](#starting-with-docker-compose)
@@ -112,7 +114,16 @@ Windows:
 
     ./startup.cmd
 
+
+Open `localhost:80` in your browser, preferably Google Chrome
+
 ## Starting each container separately
+
+### Nginx Web Server
+
+    cd nginx
+    docker build -t web .
+    docker run --name web -d -p 80:80 --restart=always web
 
 ### Database
 
@@ -153,7 +164,11 @@ https://github.com/SoftwareCountry/ETL-CDMBuilder
 
 https://github.com/SoftwareCountry/DataQualityDashboard
 
-### Getting Involved
+### Finally
+
+Open `localhost:80` in your browser, preferably Google Chrome
+
+## Getting Involved
 
 * User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
 * We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues) 
