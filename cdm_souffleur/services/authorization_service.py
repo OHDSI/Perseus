@@ -1,13 +1,13 @@
 import random
 import string
-
 from werkzeug.utils import redirect
 from cdm_souffleur.model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
 from cdm_souffleur.model.user import *
 from cdm_souffleur.model.refresh_token import *
 from cdm_souffleur.services.mailout_service import send_email
 from cdm_souffleur.utils import InvalidUsage
-from cdm_souffleur.utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME
+from cdm_souffleur.utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME, \
+    EMAIL_SECRET_KEY
 from cdm_souffleur.utils.exceptions import AuthorizationError
 from cdm_souffleur import bcrypt
 from cryptography.fernet import Fernet
@@ -18,7 +18,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 user_registration_links = {}
 reset_pwd_links = {}
 key = Fernet.generate_key()
-fernet = Fernet(app.config.get('EMAIL_ENCODE_KEY'))
+fernet = Fernet(EMAIL_SECRET_KEY)
 
 
 def refresh_registration_links():
@@ -36,7 +36,7 @@ scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
 
-def register_user_in_db(password, first_name, last_name, email):
+def register_user_in_db(password, first_name, last_name, email, host):
     encrypted_password = bcrypt.generate_password_hash(
         password, app.config.get('BCRYPT_LOG_ROUNDS')
     ).decode()
@@ -46,7 +46,7 @@ def register_user_in_db(password, first_name, last_name, email):
             raise InvalidUsage('This email already exists', 409)
         else:
             update_user_fields(user.get(), first_name, last_name, encrypted_password)
-            send_link_to_user(email, first_name, 'registration', user_registration_links)
+            send_link_to_user(email, first_name, 'registration', user_registration_links, host)
             return
     username = f"{first_name[0].lower()}{last_name.lower()}"
     match_pattern = f"{username}\d*"
@@ -57,7 +57,7 @@ def register_user_in_db(password, first_name, last_name, email):
             username = f"{username}{count}"
     user = User(username=username, first_name=first_name, last_name=last_name, email=email, password=encrypted_password, active=False)
     user.save()
-    send_link_to_user(email, first_name, 'registration', user_registration_links)
+    send_link_to_user(email, first_name, 'registration', user_registration_links, host)
 
 
 def decrypt_email(str):
@@ -71,36 +71,36 @@ def update_user_fields(user, first_name, last_name, encrypted_password):
     user.save()
 
 
-def send_link_to_user(email, first_name, link_type, links_storage):
+def send_link_to_user(email, first_name, link_type, links_storage, host):
     encrypted_email = fernet.encrypt(email.encode()).decode()
     links_storage[email] = datetime.datetime.now()
-    send_email(email, first_name, link_type, encrypted_email)
+    send_email(email, first_name, link_type, host, encrypted_email)
 
 
-def send_link_to_user_repeatedly(email, linkType):
+def send_link_to_user_repeatedly(email, linkType, host):
     user = User.select().where(User.email == email)
     if user.exists():
         if not user.get().active:
             raise InvalidUsage('User has not been activated', 401)
         if linkType == 'registration':
-            send_link_to_user(email, user.get().first_name, linkType, user_registration_links)
+            send_link_to_user(email, user.get().first_name, linkType, user_registration_links, host)
         else:
-            send_link_to_user(email, user.get().first_name, linkType, reset_pwd_links)
+            send_link_to_user(email, user.get().first_name, linkType, reset_pwd_links, host)
 
 
-def activate_user_in_db(str):
+def activate_user_in_db(str, host):
     decrypted_email = fernet.decrypt(str.encode()).decode()
     user = User.select().where(User.email == decrypted_email)
     if user.exists() and user.get().active:
-        return redirect(f"http://{app.config['SERVER_HOST']}/already-registered?email={decrypted_email}", code=302)
+        return redirect(f"{host}/already-registered?email={decrypted_email}", code=302)
     if decrypted_email in user_registration_links:
         selected_user = user.get()
         selected_user.active = True
         selected_user.save()
         user_registration_links.pop(decrypted_email, None)
-        return redirect(f"http://{app.config['SERVER_HOST']}", code=302)
+        return redirect(f"{host}", code=302)
     else:
-        return redirect(f"http://{app.config['SERVER_HOST']}/link-expired?linkType=email&email={decrypted_email}", code=302)
+        return redirect(f"{host}/link-expired?linkType=email&email={decrypted_email}", code=302)
 
 
 def user_login(email, password):
@@ -171,13 +171,13 @@ def user_logout(current_user, auth_token):
     return True
 
 
-def send_reset_password_email(email):
+def send_reset_password_email(email, host):
     user = User.select().where(User.email == email)
     if user.exists():
         if not user.get().active:
             raise InvalidUsage('User has not been activated', 401)
         for item in user:
-            send_link_to_user(item.email, item.first_name, 'reset_password', reset_pwd_links)
+            send_link_to_user(item.email, item.first_name, 'reset_password', reset_pwd_links, host)
     else:
         raise InvalidUsage('Email wasn\'t registered', 401)
     return True

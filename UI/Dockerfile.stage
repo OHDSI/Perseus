@@ -3,9 +3,8 @@ FROM node:14.15.0 AS build-step
 WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install
-RUN npm install -g @angular/cli@~12.1.0
 COPY . .
-RUN ng build --configuration stage
+RUN npm run build:stage
 
 ### STAGE 2: Run ###
 FROM nginx

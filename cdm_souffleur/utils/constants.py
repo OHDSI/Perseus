@@ -1,6 +1,8 @@
 from pathlib import Path
 from os.path import dirname
 import sys
+import os
+from cdm_souffleur import app
 
 ROOT_DIR = Path(dirname(sys.modules['__main__'].__file__))
 GENERATE_CDM_SOURCE_DATA_PATH = Path('model/generate/CDM_source_data')
@@ -17,7 +19,7 @@ FORMAT_SQL_FOR_SPARK_PARAMS = {
     "VARCHAR": "STRING", '&LT;': '<', '&GT;': '>', 'NULL AS': '"" AS'}
 CDM_SCHEMA_PATH = Path('model/sources/CDM/')
 VOCABULARY_DESCRIPTION_PATH = Path('model/sources/VOCABULARY.csv')
-CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5', '6', ]
+CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', '6', ]
 UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema')
 UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes')
 PREDEFINED_LOOKUPS_PATH = Path('model/Lookups')
@@ -98,3 +100,5 @@ SOLR_FILTERS = {
 }
 
 QUERY_SEARCH_MODE = 'query'
+TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY")
+EMAIL_SECRET_KEY = app.config["EMAIL_SECRET_KEY"]

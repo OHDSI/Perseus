@@ -1,5 +1,5 @@
 <dataConfig>
-  <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://192.168.20.47:5431/cdm_souffleur" 
+  <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5431/cdm_souffleur" 
     user="postgres" password="5eC_DkMr^3"/> 
 <document>
 <entity name="Concepts" query="SELECT type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept from usagi.concept_for_index">
