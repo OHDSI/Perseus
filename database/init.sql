@@ -288,6 +288,8 @@ CREATE TABLE "cdm"."refresh_token"
 
 create schema usagi;
 
+
+-- usagi:loadValidConceptIdsAndAtcCodes
 create table usagi.valid_concept_ids
 (
     concept_id INTEGER PRIMARY KEY
@@ -295,9 +297,21 @@ create table usagi.valid_concept_ids
 
 INSERT INTO usagi.valid_concept_ids
     select concept_id from vocabulary.concept where invalid_reason is null;
+    
+-- usagi:loadValidConceptIdsAndAtcCodes
+create table usagi.concept_id_to_atc_code
+(
+    concept_id INTEGER,
+    concept_code VARCHAR
+); 
+
+
+INSERT INTO usagi.concept_id_to_atc_code
+    select concept_id, concept_code from vocabulary.concept where invalid_reason is null and vocabulary_id='ATC';
+
 
     
----MapsToRelationship
+--- MapsToRelationship; usagi:loadRelationships
 create table usagi.maps_to_relationship
 (
     concept_id_1 INTEGER,
@@ -310,18 +324,7 @@ INSERT INTO usagi.maps_to_relationship
 exists(select concept_id from usagi.valid_concept_ids where concept_id=concept_id_1) and exists(select concept_id from usagi.valid_concept_ids where concept_id=concept_id_2);
 
 
-create table usagi.concept_id_to_atc_code
-(
-    concept_id INTEGER,
-    concept_code VARCHAR
-); 
-
-
-INSERT INTO usagi.concept_id_to_atc_code
-    select concept_id, concept_code from vocabulary.concept where invalid_reason is null and vocabulary_id='ATC';
-
-
-
+--- usagi:loadRelationships
 create table usagi.relationship_atc_rxnorm
 (
     concept_id_1 INTEGER,
@@ -334,7 +337,7 @@ INSERT INTO usagi.relationship_atc_rxnorm
 exists(select concept_id from usagi.valid_concept_ids where concept_id=concept_id_1) and exists(select concept_id from usagi.valid_concept_ids where concept_id=concept_id_2);
 
 
----AtcToRxNorm
+---AtcToRxNorm; usagi:loadRelationships (is used when creating source codes - usagi:createSourceCodes)
 create table usagi.atc_to_rxnorm
 (
     concept_code VARCHAR,
@@ -346,7 +349,7 @@ INSERT INTO usagi.atc_to_rxnorm
     select concept_code, concept_id_2 from usagi.concept_id_to_atc_code join usagi.relationship_atc_rxnorm on concept_id=concept_id_1;
 
 
---- ParentChildRelationShip
+--- ParentChildRelationShip; usagi:loadAncestors
 create table usagi.parent_child_relationship
 (
     id SERIAL PRIMARY KEY,
@@ -360,6 +363,7 @@ INSERT INTO usagi.parent_child_relationship (ancestor_concept_id, descendant_con
 exists(select concept_id from usagi.valid_concept_ids where concept_id=ancestor_concept_id) and exists(select concept_id from usagi.valid_concept_ids where concept_id=descendant_concept_id);
 
 
+-- usagi:getParentChildRelationshipsByParentConceptId
 create table usagi.parent_count
 (
     descendant_concept_id INTEGER PRIMARY KEY,
@@ -369,7 +373,7 @@ create table usagi.parent_count
 INSERT INTO usagi.parent_count
     select descendant_concept_id, count(ancestor_concept_id) from usagi.parent_child_relationship group by descendant_concept_id;
 
-
+-- usagi:getParentChildRelationshipsByChildConceptId
 create table usagi.child_count
 (
     ancestor_concept_id INTEGER PRIMARY KEY,
@@ -380,7 +384,7 @@ INSERT INTO usagi.child_count
     select ancestor_concept_id, count(descendant_concept_id) from usagi.parent_child_relationship group by ancestor_concept_id;
 
 
---- Concept  relationship
+--- Concept  relationship; usagi:loadConcepts
 create table usagi.concept
 (
     concept_id INTEGER PRIMARY KEY,
@@ -414,7 +418,7 @@ INSERT INTO usagi.concept (concept_id, concept_name, domain_id, vocabulary_id, c
     from vocabulary.concept;
 
 
---- concepts for indexing
+--- concepts for indexing; usagi:buildIndex
 create table usagi.concept_for_index
 (
     type VARCHAR,
@@ -436,34 +440,34 @@ INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id
     vocabulary_id, 
     concept_class_id, 
     standard_concept
-    from vocabulary.concept 
+    from usagi.concept 
     where standard_concept IN ('S', 'C');
     
 INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept)
 select distinct  'C', 'S', t1.concept_name, t3.concept_id, t3.domain_id, t3.vocabulary_id, t3.concept_class_id, t3.standard_concept
-    from vocabulary.concept as t1
+    from usagi.concept as t1
     JOIN usagi.maps_to_relationship AS t2
     ON t1.concept_id = t2.concept_id_1
-    JOIN vocabulary.concept as t3
+    JOIN usagi.concept as t3
     ON concept_id_2 = t3.concept_id
     where t1.standard_concept is null AND lower(t1.concept_name)!=lower(t3.concept_name);
 
 --- adding concept synonyms    
 INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept)
 select distinct  'C', 'C', t2.concept_synonym_name, t1.concept_id, t1.domain_id, t1.vocabulary_id, t1.concept_class_id, t1.standard_concept
-    from vocabulary.concept as t1
+    from usagi.concept as t1
     JOIN vocabulary.concept_synonym AS t2
     ON t1.concept_id = t2.concept_id
     where t1.standard_concept IN ('S', 'C') AND lower(t1.concept_name)!=lower(t2.concept_synonym_name);
 
 INSERT INTO usagi.concept_for_index(type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept)
 select distinct  'C', 'S', t2.concept_synonym_name, t4.concept_id, t4.domain_id, t4.vocabulary_id, t4.concept_class_id, t4.standard_concept
-    from vocabulary.concept as t1
+    from usagi.concept as t1
     JOIN vocabulary.concept_synonym AS t2
     ON t1.concept_id = t2.concept_id
     JOIN usagi.maps_to_relationship AS t3
     ON t1.concept_id = t3.concept_id_1
-    JOIN vocabulary.concept as t4
+    JOIN usagi.concept as t4
     ON t3.concept_id_2 = t4.concept_id
     where t1.standard_concept is null AND lower(t2.concept_synonym_name)!=lower(t4.concept_name);   
 
