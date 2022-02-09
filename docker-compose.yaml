@@ -1,75 +1,133 @@
-version: "3"
 services:
-  backend:
-    build: .
-    container_name:
-      perseus-backend
-    network_mode: "host"
+#  backend:
+#    build: .
+#    container_name:
+#      perseus-backend
+#    network_mode: "host"
+#    restart: always
+#    environment:
+#      CDM_SOUFFLEUR_ENV: "prod"
+#    env_file:
+#      - back-envs.txt
+#  frontend:
+#    build: ./UI
+#    container_name:
+#      perseus-frontend
+#    network_mode: "host"
+#    restart: always
+#  db:
+#    build: ./database
+#    container_name:
+#      perseus-database
+#    volumes:
+#      - type: volume
+#        source: perseusdb
+#        target: /var/lib/postgresql/data
+#    ports:
+#      - "5431:5432"
+#    restart: always
+#  white_rabbit:
+#    build: ../WhiteRabbit
+#    container_name:
+#      white-rabbit-service
+#    network_mode: "host"
+#    restart: always
+#  dqd_service:
+#    build:
+#      context: ../DataQualityDashboard
+#      args:
+#        prop: prod
+#    container_name:
+#      dqd-service
+#    network_mode: "host"
+#    restart: always
+#  r_serve:
+#    build:
+#      context: ../DataQualityDashboard/R
+#      args:
+#        prop: prod
+#    container_name:
+#      r-serve
+#    network_mode: "host"
+#    restart: always
+#  cdm_builder:
+#    build:
+#      context: ../ETL-CDMBuilder/
+#      dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
+#    container_name:
+#      cdm-builder-service
+#    network_mode: "host"
+#    restart: always
+#  web:
+#    image: nginx
+#    container_name:
+#      web
+#    volumes:
+#      - type: bind
+#        source: ./nginx/default.conf
+#        target: /etc/nginx/conf.d/default.conf
+#    ports:
+#      - "80:80"
+#    restart: always
+  vocabulary:
+    build: ./vocabulary-db
+    container_name: vocabulary
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
+      timeout: 60s
+      interval: 30s
+      retries: 10
+    volumes:
+      - vocabulary:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - vocabulary
     restart: always
+  athena:
+    image: solr
+    container_name: athena
+    command:
+      - solr-precreate
+      - athena
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/athena/admin/ping?wt=json | grep -Po '\"status\": *\"OK\"' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./athena-solr/db-data-config.xml:/opt/solr/server/solr/configsets/_default/conf/db-data-config.xml
+      - ./athena-solr/managed-schema:/opt/solr/server/solr/configsets/_default/conf/managed-schema
+      - ./athena-solr/solrconfig.xml:/opt/solr/server/solr/configsets/_default/conf/solrconfig.xml
+      - ./athena-solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
+      - athena:/var/solr
+    ports:
+      - "8983:8983"
+    networks:
+      - vocabulary
+      - athena
+    depends_on:
+      - vocabulary
+  athena-api:
+    build: ./athena-api
+    command: python /app/main.py
+    container_name: athena-api
     environment:
-      CDM_SOUFFLEUR_ENV: "prod"
-    env_file:
-      - back-envs.txt
-  frontend:
-    build: ./UI
-    container_name:
-      perseus-frontend
-    network_mode: "host"
-    restart: always
-  db:
-    build: ./database
-    container_name:
-      perseus-database
-    volumes:
-      - type: volume
-        source: perseusdb
-        target: /var/lib/postgresql/data
+      ATHENA_ENV: Prod
     ports:
-      - "5431:5432"
-    restart: always
-  white_rabbit:
-    build: ../WhiteRabbit
-    container_name:
-      white-rabbit-service
-    network_mode: "host"
-    restart: always
-  dqd_service:
-    build:
-      context: ../DataQualityDashboard
-      args:
-        prop: prod
-    container_name:
-      dqd-service
-    network_mode: "host"
-    restart: always
-  r_serve:
-    build:
-      context: ../DataQualityDashboard/R
-      args:
-        prop: prod
-    container_name:
-      r-serve
-    network_mode: "host"
-    restart: always
-  cdm_builder:
-    build:
-      context: ../ETL-CDMBuilder/
-      dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
-    container_name:
-      cdm-builder-service
-    network_mode: "host"
-    restart: always
-  web:
-    image: nginx
-    container_name:
-      web
-    volumes:
-      - type: bind
-        source: ./nginx/default.conf
-        target: /etc/nginx/conf.d/default.conf
-    ports:
-      - "80:80"
-    restart: always
+      - "5050:5050"
+    depends_on:
+      - athena
+    networks:
+      - athena
+
+networks:
+  vocabulary:
+    driver: bridge
+  athena:
+    driver: bridge
 
 volumes:
   perseusdb:
+  vocabulary:
+  athena:
