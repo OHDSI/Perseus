@@ -120,14 +120,45 @@ services:
       - athena
     networks:
       - athena
+  usagi-db:
+    container_name: usagi-db
+    image: postgres
+    environment:
+      POSTGRES_USER: perseus
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: usagi
+      PGDATA: /data/postgres
+    volumes:
+      - usagidb:/data/postgres
+      - ./usagi-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5431:5432"
+    networks:
+      - usagi
+    restart: always
+  usagi-api:
+    build: ./usagi-api
+    command: python /app/usagi_api.py
+    container_name: usagi-api
+    environment:
+      USAGI_ENV: Local
+    ports:
+      - "5150:5150"
+    depends_on:
+      - usagi-db
+    networks:
+      - usagi
 
 networks:
   vocabulary:
     driver: bridge
   athena:
     driver: bridge
+  usagi:
+    driver: bridge
 
 volumes:
   perseusdb:
   vocabulary:
   athena:
+  usagidb:
