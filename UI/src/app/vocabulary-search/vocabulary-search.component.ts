@@ -113,6 +113,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     super();
   }
 
+  get isAthenaMode(): boolean {
+    return this.mode === VocabSearchMode.ATHENA
+  }
+
   ngOnInit(): void {
     this.subscribeOnRequests();
 
@@ -222,9 +226,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       this.searchService.search(params, this.mode)
         .pipe(
           catchError(() => {
-            if (this.mode === VocabSearchMode.ATHENA) {
-              this.disableAll = true
-            }
+            this.disableAll = true
             return of({
               content: [],
               totalPages: 1,
