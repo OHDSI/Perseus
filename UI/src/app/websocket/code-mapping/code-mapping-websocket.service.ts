@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from '@services/auth/auth.service';
 import { authInjector } from '@services/auth/auth-injector';
-import { serverUrl } from '@app/app.constants';
+import { usagiWsUrl } from '@app/app.constants';
 import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
 
 @Injectable()
@@ -18,7 +18,10 @@ export class CodeMappingWebsocketService extends WebsocketService {
   }
 
   connect(): Observable<boolean> {
-    this.socket = io(serverUrl, {query: {token: this.authService.user.token}, reconnection: false})
+    this.socket = io(usagiWsUrl, {
+      query: {token: this.authService.user.token},
+      reconnection: false
+    })
     this.socket.connect()
 
     const errorHandler = error => this.connection$.error(error)

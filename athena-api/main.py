@@ -19,6 +19,12 @@ VERSION = app.config["VERSION"]
 athena = Blueprint('athena', __name__, url_prefix=APP_PREFIX)
 
 
+@athena.route('/api/info', methods=['GET'])
+def app_version():
+    app.logger.info("REST request to GET app info")
+    return jsonify({'name': 'Athena', 'version': VERSION})
+
+
 @athena.route('/api', methods=['GET'])
 def search_concepts():
     """save source schema to server side"""
@@ -34,12 +40,6 @@ def search_concepts():
     update_filters = request.args.get('updateFilters')
     search_result = search_athena(SOLR_CONNECTION_STRING, page_size, page, query, sort, order, filters, update_filters)
     return jsonify(search_result)
-
-
-@athena.route('/api/info', methods=['GET'])
-def app_version():
-    app.logger.info("REST request to GET app info")
-    return jsonify({'name': 'Athena', 'version': VERSION})
 
 
 app.register_blueprint(athena)

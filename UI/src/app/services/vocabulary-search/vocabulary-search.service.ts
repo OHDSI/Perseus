@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { apiUrl } from '@app/app.constants';
+import { athenaUrl } from '@app/app.constants';
 import { VocabSearchMode, VocabSearchReqParams, VocabSearchResult } from '@models/vocabulary-search/vocabulray-search';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class VocabularySearchService {
 
   private url = (mode: VocabSearchMode) => {
     if (mode === VocabSearchMode.LOCAL) {
-      return `${apiUrl}/search_concepts`;
+      return `${athenaUrl}`;
     } else {
       return 'https://athena.ohdsi.org/api/v1/concepts';
     }

@@ -3,7 +3,6 @@ import { Column } from '@models/grid/grid';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl } from '@app/app.constants';
 import { CodeMapping } from '@models/code-mapping/code-mapping';
 import { CodeMappingParams } from '@models/code-mapping/code-mapping-params';
 import { Code } from '@models/code-mapping/code';
@@ -12,6 +11,7 @@ import { columnsFromSourceCode, ImportCodesState } from '@models/code-mapping/im
 import { FilterValue } from '@models/filter/filter';
 import { defaultSearchConceptFilters, SearchConceptFilters } from '@models/code-mapping/search-concept-filters';
 import { StateService } from '@services/state/state.service';
+import { usagiUrl } from '@app/app.constants'
 
 const initialState: ImportCodesState = {
   codes: null,
@@ -91,7 +91,7 @@ export class ImportCodesService implements StateService {
     formData.append('file', csv)
     formData.append('delimiter', delimiter)
 
-    return this.httpClient.post<Code[]>(`${apiUrl}/load_codes_to_server`, formData)
+    return this.httpClient.post<Code[]>(`${usagiUrl}/load_codes_to_server`, formData)
       .pipe(
         tap(codes => {
           if (codes.length === 0) {
@@ -109,11 +109,11 @@ export class ImportCodesService implements StateService {
       codes: this.codes,
       filters: this.filters
     }
-    return this.httpClient.post<void>(`${apiUrl}/import_source_codes`, body)
+    return this.httpClient.post<void>(`${usagiUrl}/import_source_codes`, body)
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {
-    return this.httpClient.get<CodeMapping[]>(`${apiUrl}/get_import_source_codes_results`)
+    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/get_import_source_codes_results`)
       .pipe(
         tap(codeMappings => this.state.codeMappings = codeMappings)
       )
@@ -127,7 +127,7 @@ export class ImportCodesService implements StateService {
    */
   getSearchResultByTerm(term: string, filters: SearchConceptFilters, sourceAutoAssignedConceptIds: number[]): Observable<ScoredConcept[]> {
     const body = {term, sourceAutoAssignedConceptIds, filters}
-    return this.httpClient.post<ScoredConcept[]>(`${apiUrl}/get_term_search_results`, body)
+    return this.httpClient.post<ScoredConcept[]>(`${usagiUrl}/get_term_search_results`, body)
   }
 
   saveCodes(name): Observable<void> {
@@ -138,14 +138,14 @@ export class ImportCodesService implements StateService {
       codeMappings: this.codeMappings,
       filters: this.filters
     }
-    return this.httpClient.post<void>(`${apiUrl}/save_mapped_codes`, body)
+    return this.httpClient.post<void>(`${usagiUrl}/save_mapped_codes`, body)
   }
 
   /**
    * Concepts classes, Vocabularies, Domains filters
    */
   fetchFilters(): Observable<{[key: string]: FilterValue[]}> {
-    return this.httpClient.get<{[key: string]: string[]}>(`${apiUrl}/get_filters`)
+    return this.httpClient.get<{[key: string]: string[]}>(`${usagiUrl}/get_filters`)
       .pipe(
         map(res => {
           const parsed: {[key: string]: FilterValue[]} = {}
@@ -164,10 +164,10 @@ export class ImportCodesService implements StateService {
   }
 
   cancelCalculateScoresByCsvCodes(): Observable<void> {
-    return this.httpClient.get<void>(`${apiUrl}/cancel_concept_mapping_task`)
+    return this.httpClient.get<void>(`${usagiUrl}/cancel_concept_mapping_task`)
   }
 
   cancelCalculateScoresBySavedMapping(): Observable<void> {
-    return this.httpClient.get<void>(`${apiUrl}/cancel_load_vocabulary_task`)
+    return this.httpClient.get<void>(`${usagiUrl}/cancel_load_vocabulary_task`)
   }
 }
