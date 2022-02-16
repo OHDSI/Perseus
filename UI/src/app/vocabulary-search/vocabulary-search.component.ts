@@ -9,12 +9,12 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { VocabularySearchService } from '@services/vocabulary-search/vocabulary-search.service';
+import { VocabularySearchService } from '@services/athena/vocabulary-search.service';
 import { Concept } from '@models/vocabulary-search/concept';
 import { of, Subject } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
-import { VocabularySearchStateService } from '@services/vocabulary-search/vocabulary-search-state.service';
+import { VocabularySearchStateService } from '@services/athena/vocabulary-search-state.service';
 import { Column, Sort } from '@models/grid/grid';
 import { NavigationGridComponent } from '@grid/navigation-grid/navigation-grid.component';
 import { Pagination } from '@models/grid/pagination';

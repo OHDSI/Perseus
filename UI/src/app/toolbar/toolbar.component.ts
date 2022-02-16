@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '@scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
-import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
 import { codesRouter, mainPageRouter } from '../app.constants';
 import { LogoutComponent } from '@popups/logout/logout.component';

@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 
 import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
-import { apiUrl } from '../app.constants';
 import { createNoCacheHeaders } from '@utils/http-headers';
 import { Configuration, IConfiguration } from '@models/configuration';
+import { perseusApiUrl } from '@app/app.constants'
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
 
-const URL = apiUrl;
+const URL = perseusApiUrl;
 const API_URLS = {
   getCDMVersions: () => `${URL}/get_cdm_versions`,
   getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
@@ -36,7 +36,7 @@ const API_URLS = {
 };
 
 @Injectable()
-export class HttpService {
+export class PerseusApiService {
 
   constructor(private httpClient: HttpClient) {
   }

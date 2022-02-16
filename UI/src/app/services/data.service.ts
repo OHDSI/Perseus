@@ -5,7 +5,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
 import { Mapping } from '@models/mapping';
-import { HttpService } from './http.service';
+import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { removeExtension } from '@utils/file';
@@ -18,7 +18,7 @@ export class DataService {
   batch = [];
 
   constructor(
-    private httpService: HttpService,
+    private httpService: PerseusApiService,
     private storeService: StoreService,
     private bridgeService: BridgeService
   ) {

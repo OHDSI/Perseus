@@ -5,7 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { AuthService } from '@services/auth/auth.service';
 import { authInjector } from '@services/auth/auth-injector';
 import { usagiWsUrl } from '@app/app.constants';
-import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
+import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 
 @Injectable()
 export class CodeMappingWebsocketService extends WebsocketService {

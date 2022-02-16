@@ -16,7 +16,8 @@ export const dbServer = server
 // urls
 export const serverUrl = `${protocol}//${server}:${port}`
 
-export const apiUrl = `${serverUrl}/api`
+export const perseusApiUrl = 'http://localhost:5000/perseus/api'
+// export const perseusApiUrl = `${serverUrl}/api`
 
 export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
 export const whiteRabbitWsUrl = whiteRabbitServerUrl
