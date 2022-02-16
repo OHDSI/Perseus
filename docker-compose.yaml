@@ -78,12 +78,41 @@ services:
       interval: 30s
       retries: 10
     volumes:
-      - vocabulary:/data/postgres
+      - vocabularydb:/data/postgres
     ports:
       - "5432:5432"
     networks:
       - vocabulary
     restart: always
+  perseus-db:
+    container_name: perseus-db
+    image: postgres
+    environment:
+      POSTGRES_USER: perseus
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: perseus
+      PGDATA: /data/postgres
+    volumes:
+      - perseusdb:/data/postgres
+      - ./perseus-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5401:5432"
+    networks:
+      - perseus
+    restart: always
+  perseus-api:
+    build: ./perseus-api
+    command: python /app/main.py
+    container_name: perseus-api
+    environment:
+      PERSEUS_ENV: Local
+      TOKEN_SECRET_KEY: Perseus-Arcad!a
+    ports:
+      - "5000:5000"
+    depends_on:
+      - perseus-db
+    networks:
+      - perseus
   athena:
     image: solr
     container_name: athena
@@ -132,7 +161,7 @@ services:
       - usagidb:/data/postgres
       - ./usagi-db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5431:5432"
+      - "5402:5432"
     networks:
       - usagi
     restart: always
@@ -152,13 +181,15 @@ services:
 networks:
   vocabulary:
     driver: bridge
+  perseus:
+    driver: bridge
   athena:
     driver: bridge
   usagi:
     driver: bridge
 
 volumes:
+  vocabularydb:
   perseusdb:
-  vocabulary:
   athena:
   usagidb:
