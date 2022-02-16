@@ -1,0 +1,5 @@
+Flask==1.0.2
+Flask-Cors==3.0.9
+pysolr==3.9.0
+waitress==2.0.0
+apscheduler==3.8.1
