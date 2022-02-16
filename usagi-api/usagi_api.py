@@ -2,8 +2,8 @@ import json
 import subprocess
 from flask import jsonify, Blueprint, request
 from peewee import DataError
-from config import APP_PREFIX, PORT, VERSION
-from main import app
+from app import app
+from config import APP_PREFIX, VERSION
 from model.usagi.code_mapping import ScoredConceptEncoder
 from model.user.user import token_required
 from service.search_service import search_usagi
@@ -11,41 +11,11 @@ from service.solr_cole_service import run_solr_command
 from service.usagi_service import get_saved_code_mapping, create_concept_mapping, get_vocabulary_list_for_user, \
     load_mapped_concepts_by_vocabulary_name, delete_vocabulary, get_vocabulary_data, get_filters, load_codes_to_server, \
     save_codes
-from service.web_socket_service import socket
 from util.async_directive import cancel_concept_mapping_task, cancel_load_vocabulary_task
 from util.constants import USAGI_IMPORT_STATUS, QUERY_SEARCH_MODE
 from util.exception import InvalidUsage
-from util.usagi_db import usagi_pg_db
-from util.user_db import user_db
-from util.vocabulary_db import vocabulary_pg_db
 
 usagi = Blueprint('usagi', __name__, url_prefix=APP_PREFIX)
-
-
-@app.before_request
-def before_request():
-    if usagi_pg_db.is_closed():
-        usagi_pg_db.connect()
-
-    if user_db.is_closed():
-        user_db.connect()
-
-    if vocabulary_pg_db.is_closed():
-        vocabulary_pg_db.connect()
-
-
-@app.after_request
-def after_request(response):
-    if not usagi_pg_db.is_closed():
-        usagi_pg_db.close()
-
-    if user_db.is_closed():
-        user_db.connect()
-
-    if vocabulary_pg_db.is_closed():
-        vocabulary_pg_db.connect()
-
-    return response
 
 
 @usagi.route('/api/info', methods=['GET'])
@@ -255,9 +225,3 @@ def start_solr_call():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(output)
-
-
-app.register_blueprint(usagi)
-
-if __name__ == '__main__':
-    socket.run(app, port=PORT, host='0.0.0.0')

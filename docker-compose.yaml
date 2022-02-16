@@ -138,7 +138,7 @@ services:
     restart: always
   usagi-api:
     build: ./usagi-api
-    command: python /app/usagi_api.py
+    command: python /app/main.py
     container_name: usagi-api
     environment:
       USAGI_ENV: Local

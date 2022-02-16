@@ -1,8 +1,7 @@
 from flask import request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import logging
-
-from main import app
+from app import app
 from model.user.user import User
 
 socket = SocketIO(app, cors_allowed_origins='*', async_mode="threading")

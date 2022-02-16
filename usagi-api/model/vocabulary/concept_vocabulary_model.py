@@ -1,14 +1,8 @@
 from peewee import *
-from cdm_souffleur.db import pg_db
+from model.vocabulary.vocabulary_base_model import VocabularyBaseModel
 
 
-class BaseModel(Model):
-    class Meta:
-        database = pg_db
-        schema = 'vocabulary'
-
-
-class Concept(BaseModel):
+class Concept(VocabularyBaseModel):
     concept_id = IntegerField(primary_key=True)
     concept_name = TextField()
     domain_id = CharField()
@@ -21,20 +15,20 @@ class Concept(BaseModel):
     invalid_reason = CharField()
 
 
-class Concept_Class(BaseModel):
+class Concept_Class(VocabularyBaseModel):
     concept_class_id = CharField(primary_key=True)
     concept_class_name = CharField()
     concept_class_concept_id = IntegerField()
 
 
-class Concept_Ancestor(BaseModel):
+class Concept_Ancestor(VocabularyBaseModel):
     ancestor_concept_id = IntegerField(primary_key=True)
     descendant_concept_id = IntegerField()
     min_levels_of_separation = IntegerField()
     max_levels_of_separation = IntegerField()
 
 
-class Concept_Relationship(BaseModel):
+class Concept_Relationship(VocabularyBaseModel):
     relationship_id = CharField(primary_key=True)
     concept_id_1 = IntegerField()
     concept_id_2 = IntegerField()
@@ -43,19 +37,19 @@ class Concept_Relationship(BaseModel):
     invalid_reason = CharField()
 
 
-class Concept_Synonym(BaseModel):
+class Concept_Synonym(VocabularyBaseModel):
     language_concept_id = IntegerField(primary_key=True)
     concept_synonym_name = CharField()
     concept_id = IntegerField()
 
 
-class Domain(BaseModel):
+class Domain(VocabularyBaseModel):
     domain_id = CharField(primary_key=True)
     domain_name = CharField()
     domain_concept_id = IntegerField()
 
 
-class Drug_Strength(BaseModel):
+class Drug_Strength(VocabularyBaseModel):
     drug_concept_id = IntegerField(primary_key=True)
     ingredient_concept_id = IntegerField()
     amount_value = DoubleField()
@@ -70,7 +64,7 @@ class Drug_Strength(BaseModel):
     invalid_reason = CharField()
 
 
-class Relationship(BaseModel):
+class Relationship(VocabularyBaseModel):
     relationship_id = CharField(primary_key=True)
     relationship_name = CharField()
     is_hierarchical = CharField()
@@ -79,7 +73,7 @@ class Relationship(BaseModel):
     relationship_concept_id = IntegerField()
 
 
-class Source_To_Concept_Map(BaseModel):
+class Source_To_Concept_Map(VocabularyBaseModel):
     source_concept_id = IntegerField()
     source_code = CharField()
     source_vocabulary_id = CharField()
@@ -93,7 +87,7 @@ class Source_To_Concept_Map(BaseModel):
     id = AutoField()
 
 
-class Vocabulary(BaseModel):
+class Vocabulary(VocabularyBaseModel):
     vocabulary_id = CharField(primary_key=True)
     vocabulary_name = CharField()
     vocabulary_reference = CharField()

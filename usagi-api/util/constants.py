@@ -1,6 +1,6 @@
 from pathlib import Path
 
-USAGI_CORE_NAME = 'concepts' #todo rename to usagi
+USAGI_CORE_NAME = 'concepts'  # todo rename to usagi
 USAGI_FULL_DATA_IMPORT = "solr/usagi/dataimport?command=full-import"
 USAGI_IMPORT_STATUS = "solr/usagi/dataimport?command=status&indent=on&wt=json"
 
@@ -13,6 +13,6 @@ SOLR_FILTERS = {
     'domain_id': 'domains'
 }
 
-UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes')
+UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make stateless
 
 QUERY_SEARCH_MODE = 'query'

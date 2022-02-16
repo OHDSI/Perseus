@@ -1,7 +1,6 @@
 import re
 import pysolr
-
-from main import app
+from app import app
 from model.usagi.code_mapping import ScoredConcept, TargetConcept
 from model.usagi.concept import Concept
 from service.similarity_score_service import get_terms_vectors, cosine_sim_vectors
