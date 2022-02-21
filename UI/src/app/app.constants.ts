@@ -29,6 +29,10 @@ export const cdmBuilderApiUrl = `${cdmBuilderServerUrl}/cdm-builder/api`
 export const dqdServerUrl = `${serverUrl}/dqd`
 export const dqdApiUrl = `${dqdServerUrl}/api`
 export const dqdWsUrl = `ws://${server}:${port}/dqd/progress`
+
+export const athenaUrl = 'http://127.0.0.1:5050/athena/api'
+export const usagiWsUrl = 'http://127.0.0.1:5150'
+export const usagiUrl = 'http://127.0.0.1:5150/usagi/api'
 //
 
 export const numberOfPanelsWithoutSimilar = 2
@@ -46,6 +50,7 @@ export const externalUrls = [
 ]
 
 export const serverErrorExclusionUrls = [
+  'athena',
   'get_term_search_results',
   'save_mapped_codes',
   'is_token_valid'
