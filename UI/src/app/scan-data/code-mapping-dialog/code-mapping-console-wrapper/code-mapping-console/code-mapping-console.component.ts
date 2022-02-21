@@ -7,9 +7,9 @@ import {
   ProgressNotificationStatusCode,
   toFailedMessage
 } from '@models/scan-data/progress-notification';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
+import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 
 @Component({
   selector: 'app-code-mapping-console',

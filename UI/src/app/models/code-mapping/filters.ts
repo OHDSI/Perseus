@@ -1,5 +1,5 @@
 import { Filter } from '../filter/filter';
-import { ImportCodesService } from '../../services/import-codes/import-codes.service';
+import { ImportCodesService } from '../../services/usagi/import-codes.service';
 import { FormControl, FormGroup } from '@angular/forms';
 
 const dropdownFilters: Filter[] = [

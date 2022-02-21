@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { SelectableGridComponent } from '@grid/selectable-grid/selectable-grid.component';
 import { CodeMapping } from '@models/code-mapping/code-mapping';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { Column, columnToField } from '@models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
 import { Concept } from '@models/code-mapping/concept';

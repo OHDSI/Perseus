@@ -4,11 +4,9 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 import pysolr
-import logging
 import os.path
 import datetime
-
-from main import app
+from app import app
 from model.usagi.atc_to_rxnorm import atc_to_rxnorm
 from model.usagi.code_mapping import CodeMappingEncoder, CodeMapping, MappingTarget, MappingStatus
 from model.usagi.mapped_concepts import mapped_concept
@@ -20,8 +18,6 @@ from util.async_directive import fire_and_forget_load_vocabulary, fire_and_forge
 from util.constants import CONCEPT_IDS, UPLOAD_SOURCE_CODES_FOLDER, SOURCE_CODE_TYPE_STRING, SOLR_FILTERS, \
     USAGI_CORE_NAME
 from util.exception import InvalidUsage
-
-logging.basicConfig(level=logging.INFO)
 
 saved_import_results = {}
 fetched_vocabularies = {}

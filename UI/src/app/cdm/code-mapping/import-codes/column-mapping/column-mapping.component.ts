@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '@app/app.constants';
@@ -9,7 +9,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-mapping-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
 import { createFiltersForm } from '@models/code-mapping/filters';
-import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
+import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 import {
   mapBackEndFilterToFormFilters,
   mapFormFiltersToBackEndFilters

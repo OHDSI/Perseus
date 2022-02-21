@@ -1,5 +1,5 @@
 from peewee import *
-from main import app
+from app import app
 
 vocabulary_pg_db = PostgresqlDatabase(app.config["VOCABULARY_DB_NAME"],
                                       user=app.config["VOCABULARY_DB_USER"],

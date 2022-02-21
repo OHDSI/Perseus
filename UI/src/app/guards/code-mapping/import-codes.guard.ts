@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { codesRouter, mainPageRouter } from '@app/app.constants';
 
 @Injectable()

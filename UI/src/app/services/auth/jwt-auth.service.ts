@@ -3,7 +3,7 @@ import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '@models/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl, loginRouter } from '@app/app.constants';
+import { perseusApiUrl, loginRouter } from '@app/app.constants';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -46,12 +46,12 @@ export class JwtAuthService implements AuthService {
 
   login(email: string, password: string): Observable<User> {
     return this.saveUser(
-      this.httpClient.post<User>(`${apiUrl}/login`, {email, password})
+      this.httpClient.post<User>(`${perseusApiUrl}/login`, {email, password})
     )
   }
 
   logout(): Observable<void> {
-    return this.httpClient.get<void>(`${apiUrl}/logout`)
+    return this.httpClient.get<void>(`${perseusApiUrl}/logout`)
       .pipe(
         tap(() => {
           this.resetCurrentUser()
@@ -61,15 +61,15 @@ export class JwtAuthService implements AuthService {
   }
 
   register(user: User): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/register`, user)
+    return this.httpClient.post<void>(`${perseusApiUrl}/register`, user)
   }
 
   recoverPassword(email: string): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/recover-password`, {email})
+    return this.httpClient.post<void>(`${perseusApiUrl}/recover-password`, {email})
   }
 
   reset(password: string, token: string): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/reset-password`, {password, token})
+    return this.httpClient.post<void>(`${perseusApiUrl}/reset-password`, {password, token})
   }
 
   refreshToken(email, token): Observable<User> {
@@ -77,7 +77,7 @@ export class JwtAuthService implements AuthService {
       return throwError('User is not logged in')
     }
     return this.saveUser(
-      this.httpClient.post<User>(`${apiUrl}/update_refresh_access_token`, {email, token})
+      this.httpClient.post<User>(`${perseusApiUrl}/update_refresh_access_token`, {email, token})
     ).pipe(
       catchError(error => {
         localStorage.removeItem(localStorageUserField)
@@ -100,7 +100,7 @@ export class JwtAuthService implements AuthService {
   }
 
   private isTokenValid(): Observable<boolean> {
-    return this.httpClient.get<boolean>(`${apiUrl}/is_token_valid`)
+    return this.httpClient.get<boolean>(`${perseusApiUrl}/is_token_valid`)
       .pipe(
         catchError(() => of(false)),
         tap(value => !value && this.resetCurrentUser())

@@ -1,5 +1,5 @@
 import urllib
-from main import app
+from app import app
 
 
 def run_solr_command(command, current_user = ''):
