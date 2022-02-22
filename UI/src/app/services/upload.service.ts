@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { BridgeService } from './bridge.service';
 import { DataService } from './data.service';
-import { HttpService } from './http.service';
+import { PerseusApiService } from './perseus/perseus-api.service';
 import { Configuration } from '@models/configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
@@ -25,7 +25,7 @@ export class UploadService {
   constructor(
     private snackbar: MatSnackBar,
     private bridgeService: BridgeService,
-    private httpService: HttpService,
+    private httpService: PerseusApiService,
     private dataService: DataService,
     private storeService: StoreService
   ) {

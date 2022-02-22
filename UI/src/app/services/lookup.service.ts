@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { Observable } from 'rxjs';
-import { HttpService } from './http.service';
+import { PerseusApiService } from './perseus/perseus-api.service';
 
 @Injectable()
 export class LookupService {
 
-  constructor(private dataService: DataService, private httpService: HttpService) { }
+  constructor(private dataService: DataService, private httpService: PerseusApiService) { }
 
   getLookup(name, lookupType): Observable<string> {
     return this.httpService.getLookup(name, lookupType);

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { Observable } from 'rxjs';
-import { apiUrl, whiteRabbitApiUrl } from '@app/app.constants';
+import { perseusApiUrl, whiteRabbitApiUrl } from '@app/app.constants';
 
 @Injectable()
 export class FakeDataService {
@@ -22,6 +22,6 @@ export class FakeDataService {
   }
 
   getUserSchema(): Observable<string> {
-    return this.http.get<string>(`${apiUrl}/get_user_schema_name`)
+    return this.http.get<string>(`${perseusApiUrl}/get_user_schema_name`)
   }
 }

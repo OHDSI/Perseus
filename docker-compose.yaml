@@ -69,21 +69,91 @@ services:
 #    ports:
 #      - "80:80"
 #    restart: always
-  vocabulary:
+  shareddb:
+    container_name: shareddb
+    image: postgres
+    environment:
+      POSTGRES_USER: shared
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shared
+      PGDATA: /data/postgres
+    volumes:
+      - shareddb:/data/postgres
+      - ./shared-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - shareddb
+    restart: always
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - shareddb
+    depends_on:
+      - shareddb
+    restart: unless-stopped
+  files-manager:
+    build: ./files-manager
+    container_name: files-manager
+    ports:
+      - "10500:10500"
+    networks:
+      - shareddb
+    depends_on:
+      - shareddb
+  vocabularydb:
     build: ./vocabulary-db
-    container_name: vocabulary
+    container_name: vocabularydb
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
       timeout: 60s
       interval: 30s
       retries: 10
     volumes:
-      - vocabulary:/data/postgres
+      - vocabularydb:/data/postgres
     ports:
-      - "5432:5432"
+      - "5431:5432"
     networks:
-      - vocabulary
+      - vocabularydb
     restart: always
+  perseusdb:
+    container_name: perseus-db
+    image: postgres
+    environment:
+      POSTGRES_USER: perseus
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: perseus
+      PGDATA: /data/postgres
+    volumes:
+      - perseusdb:/data/postgres
+      - ./perseus-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5430:5432"
+    networks:
+      - perseusdb
+    restart: always
+  perseus-api:
+    build: ./perseus-api
+    command: python /app/main.py
+    container_name: perseus-api
+    environment:
+      PERSEUS_ENV: Local
+      TOKEN_SECRET_KEY: Perseus-Arcad!a
+    ports:
+      - "5000:5000"
+    depends_on:
+      - perseus-db
+    networks:
+      - perseusdb
   athena:
     image: solr
     container_name: athena
@@ -104,7 +174,7 @@ services:
     ports:
       - "8983:8983"
     networks:
-      - vocabulary
+      - vocabularydb
       - athena
     depends_on:
       - vocabulary
@@ -120,14 +190,37 @@ services:
       - athena
     networks:
       - athena
+  usagi-api:
+    build: ./usagi-api
+    command: python /app/main.py
+    container_name: usagi-api
+    environment:
+      USAGI_ENV: Local
+    ports:
+      - "5150:5150"
+    depends_on:
+      - shareddb
+    networks:
+      - usagi
+      - shareddb
+      - vocabularydb
 
 networks:
-  vocabulary:
+  vocabularydb:
+    driver: bridge
+  shareddb:
+    driver: bridge
+  perseusdb:
     driver: bridge
   athena:
+    driver: bridge
+  usagi:
     driver: bridge
 
 volumes:
+  vocabularydb:
+  shareddb:
+  pgadmin:
   perseusdb:
-  vocabulary:
   athena:
+  usagi:

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ImportVocabulariesService } from '@services/import-codes/import-vocabularies.service';
+import { ImportVocabulariesService } from '@services/usagi/import-vocabularies.service';
 import { withLoading } from '@utils/loading';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ConfirmOverwriteVocabComponent } from '@code-mapping/mapping-codes/save-vocabulary-popup/confirm-overwrite-vocab/confirm-overwrite-vocab.component';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
 
 @Component({
   selector: 'app-save-vocabulary-popup',

@@ -33,7 +33,7 @@ import { LookupService } from '@services/lookup.service';
 import { getLookupType } from '@utils/lookup-util';
 import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '@shared/base/base.component';
-import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
 import { PanelComponent } from './panel/panel.component';
 import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
