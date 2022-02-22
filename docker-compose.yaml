@@ -106,6 +106,8 @@ services:
     container_name: files-manager
     ports:
       - "10500:10500"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - shareddb
     depends_on:
