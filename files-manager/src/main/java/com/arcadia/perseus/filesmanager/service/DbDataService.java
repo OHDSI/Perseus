@@ -48,4 +48,12 @@ public class DbDataService implements DataService {
 
         return userDataRepository.save(userData);
     }
+
+    @Transactional
+    @Override
+    public void deleteData(String key) {
+        UserData userData = userDataRepository.findByHash(key)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Resource not found by id %s", key)));
+        userDataRepository.delete(userData);
+    }
 }

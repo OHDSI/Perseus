@@ -10,4 +10,6 @@ public interface DataService {
     Resource getData(String key);
 
     UserData saveData(String username, String dataKey, MultipartFile file) throws IOException;
+
+    void deleteData(String key);
 }

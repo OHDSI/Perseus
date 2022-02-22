@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -20,10 +21,10 @@ import static org.springframework.http.ResponseEntity.ok;
 public class DataController {
     private final DataService dataService;
 
-    @GetMapping("/{hash}")
-    public ResponseEntity<Resource> getFile(@PathVariable String hash) {
-        log.info("Rest request to get file by hash {}", hash);
-        return ok(dataService.getData(hash));
+    @GetMapping("/{key}")
+    public ResponseEntity<Resource> getFile(@PathVariable String key) {
+        log.info("Rest request to get file by key {}", key);
+        return ok(dataService.getData(key));
     }
 
     @PostMapping
@@ -32,5 +33,12 @@ public class DataController {
                                              @RequestParam("file") MultipartFile file) throws IOException {
         log.info("Rest request to save file with username {} and data-key {}", username, dataKey);
         return ok(dataService.saveData(username, dataKey, file));
+    }
+
+    @DeleteMapping("/{key}")
+    public ResponseEntity<Void> deleteFile(@PathVariable String key) {
+        log.info("Rest request to delete file by key {}", key);
+        dataService.deleteData(key);
+        return noContent().build();
     }
 }

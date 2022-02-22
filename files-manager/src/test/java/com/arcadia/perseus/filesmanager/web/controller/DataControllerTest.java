@@ -58,10 +58,10 @@ class DataControllerTest {
 
         String contentAsString = postResult.getResponse().getContentAsString();
         UserData userData = new ObjectMapper().readValue(contentAsString, UserData.class);
-        String hash = userData.getHash();
+        String key = userData.getHash();
 
         MockHttpServletRequestBuilder getRequestBuilder = MockMvcRequestBuilders
-                .get("/api/" + hash)
+                .get("/api/" + key)
                 .contentType(APPLICATION_OCTET_STREAM);
 
         MvcResult getResult = mockMvc

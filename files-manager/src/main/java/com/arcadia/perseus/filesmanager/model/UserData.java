@@ -33,7 +33,7 @@ public class UserData {
     private String dataKey;
 
     @JsonIgnore
-    @OneToOne(cascade = ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(cascade = ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     @JoinColumn(name = "blob_id", referencedColumnName = "id")
     private BlobData blobData;
 }
