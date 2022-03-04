@@ -1,5 +1,5 @@
 import { dbServer } from '../app.constants';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { adaptDbType } from '@utils/cdm-adapter';
 
 /* Name uses in UI and White Rabbit */

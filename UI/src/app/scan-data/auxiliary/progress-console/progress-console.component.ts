@@ -1,23 +1,17 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ThemePalette } from '@angular/material/core'
 import { ProgressLog } from '@models/progress-console/progress-log'
 import { BaseComponent } from '@shared/base/base.component'
 import { ProgressLogStatus } from '@models/progress-console/progress-log-status'
-import { interval, Observable, Subscription } from 'rxjs'
-import { Conversion } from '@models/conversion/conversion'
-import { exhaustMap, takeUntil } from 'rxjs/operators'
-import { parseHttpError } from '@utils/error'
-import { ConversionStatus } from '@models/conversion/conversion-status'
 
 @Component({
-  template: ``
+  selector: 'progress-console',
+  templateUrl: 'progress-console.component.html',
+  styleUrls: ['progress-console.component.scss']
 })
-export abstract class ProgressConsoleComponent extends BaseComponent implements OnInit {
-  public static LOGS_REQUEST_INTERVAL = 2500
-
+export class ProgressConsoleComponent extends BaseComponent {
   progressValuePercent = 0
   color: ThemePalette = 'primary'
-  private logsSub: Subscription
   private progressLogs: ProgressLog[] = []
 
   @ViewChild('console')
@@ -27,41 +21,17 @@ export abstract class ProgressConsoleComponent extends BaseComponent implements 
     return this.progressLogs
   }
 
+  @Input()
   set logs(logs: ProgressLog[]) {
-    const lastLog = logs[logs.length - 1]
-    this.progressLogs = logs
-    this.progressValuePercent = lastLog.percent
-    this.scrollToConsoleBottom()
-  }
-
-  ngOnInit() {
-    this.logsSub = interval(ProgressConsoleComponent.LOGS_REQUEST_INTERVAL)
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        exhaustMap(() => this.logsRequest())
-      )
-      .subscribe(
-        logs =>
-          this.logs = logs,
-        error => {
-          this.addErrorLog(parseHttpError(error))
-        }
-      )
-  }
-
-  abstract logsRequest(): Observable<ProgressLog[]>
-
-  stopLogging(conversion: Conversion) {
-    this.logsSub.unsubscribe()
-    if (conversion.statusCode === ConversionStatus.FAILED) {
-      this.color = 'warn'
-      if (this.progressLogs.length === 0) {
-        this.addErrorLog('Process failed')
-      }
+    if (logs.length > 0) {
+      const lastLog = logs[logs.length - 1]
+      this.progressLogs = logs
+      this.progressValuePercent = lastLog.percent
+      this.scrollToConsoleBottom()
     }
   }
 
-  protected addErrorLog(message: string) {
+  addErrorLog(message: string) {
     this.logs.push({
       message,
       statusCode: ProgressLogStatus.ERROR,

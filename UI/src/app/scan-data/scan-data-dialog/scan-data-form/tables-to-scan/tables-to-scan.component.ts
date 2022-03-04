@@ -9,11 +9,11 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { TableToScan } from '@models/scan-data/table-to-scan';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ConnectionResult } from '@models/scan-data/connection-result';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { takeUntil } from 'rxjs/operators';
-import { ScanDataParams } from '@models/scan-data/scan-data-params';
+import { ScanDataParams } from '@models/white-rabbit/scan-data-params';
 import { BaseComponent } from '@shared/base/base.component';
 import { ScanParamsComponent } from './scan-params/scan-params.component';
 

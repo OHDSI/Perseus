@@ -1,16 +1,18 @@
 import { BaseComponent } from '@shared/base/base.component'
-import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { Conversion } from '@models/conversion/conversion'
-import { interval, Observable, Subscription } from 'rxjs'
+import { Observable, Subscription, timer } from 'rxjs'
 import { exhaustMap, takeUntil } from 'rxjs/operators'
 import { ConversionStatus } from '@models/conversion/conversion-status'
+import { ProgressLog } from '@models/progress-console/progress-log'
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { parseHttpError } from '@utils/error'
 
 @Component({
   template: ``
 })
 export abstract class ProgressConsoleWrapperComponent extends BaseComponent implements OnInit {
-  public static CONVERSION_INFO_REQUEST_INTERVAL = 3000
+  public static CONVERSION_INFO_REQUEST_INTERVAL = 3500
 
   @Input()
   conversion: Conversion
@@ -22,12 +24,19 @@ export abstract class ProgressConsoleWrapperComponent extends BaseComponent impl
   @Output()
   close = new EventEmitter<Conversion>()
 
-  abstract consoleComponent: ProgressConsoleComponent
+  @ViewChild(ProgressConsoleComponent)
+  consoleComponent: ProgressConsoleComponent
+
+  get logs(): ProgressLog[] {
+    return this.conversion.logs ?? []
+  }
 
   abstract conversionInfoRequest(): Observable<Conversion>
 
+  abstract onAbortAndCancel(): void
+
   ngOnInit(): void {
-    this.conversionSub = interval(ProgressConsoleWrapperComponent.CONVERSION_INFO_REQUEST_INTERVAL)
+    this.conversionSub = timer(0, ProgressConsoleWrapperComponent.CONVERSION_INFO_REQUEST_INTERVAL)
       .pipe(
         takeUntil(this.ngUnsubscribe),
         exhaustMap(() => this.conversionInfoRequest())
@@ -36,10 +45,17 @@ export abstract class ProgressConsoleWrapperComponent extends BaseComponent impl
         this.conversion = conversion
         if (this.conversion.statusCode !== ConversionStatus.IN_PROGRESS) {
           this.conversionSub.unsubscribe()
-          setTimeout(() => {
-            this.consoleComponent.stopLogging(this.conversion)
-          }, ProgressConsoleComponent.LOGS_REQUEST_INTERVAL + 100)
         }
+      }, error => {
+        this.consoleComponent.addErrorLog(parseHttpError(error))
       })
+  }
+
+  onBack(): void {
+    this.back.emit()
+  }
+
+  onClose(): void {
+    this.close.emit(this.conversion)
   }
 }

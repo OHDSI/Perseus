@@ -1,6 +1,6 @@
 <div class="console-wrapper">
 
-  <scan-data-console style="width: 100%" [conversion]="conversion"></scan-data-console>
+  <progress-console style="width: 100%" [logs]="logs"></progress-console>
 
   <div class="console-wrapper__action" [ngSwitch]="conversion.statusCode">
     <ng-template ngSwitchCase="1">

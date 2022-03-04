@@ -1,42 +1,49 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { AbstractScanDialog } from '../abstract-scan-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { StoreService } from '@services/store.service';
-import { fakeDataDbSettings } from '../scan-data.constants';
 import { FakeConsoleWrapperComponent } from './fake-console-wrapper/fake-console-wrapper.component';
-import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
+import { ConversionDialog } from '@scan-data/conversion-dialog'
+import { Conversion } from '@models/conversion/conversion'
+import { FakeDataService } from '@services/white-rabbit/fake-data.service'
+import { UserSchemaService } from '@services/perseus/user-schema.service'
+import { switchMap, tap } from 'rxjs/operators'
+import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-fake-data-dialog',
   templateUrl: './fake-data-dialog.component.html',
   styleUrls: ['./fake-data-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
 })
-export class FakeDataDialogComponent extends AbstractScanDialog {
+export class FakeDataDialogComponent extends ConversionDialog {
 
   @ViewChild(FakeConsoleWrapperComponent)
   consoleWrapperComponent: FakeConsoleWrapperComponent;
 
-  constructor(dialogRef: MatDialogRef<FakeDataDialogComponent>, private storeService: StoreService) {
+  conversion: Conversion | null = null;
+
+  constructor(dialogRef: MatDialogRef<FakeDataDialogComponent>,
+              private fakeDataService: FakeDataService,
+              private storeService: StoreService,
+              private schemaService: UserSchemaService,
+              private dialogService: MatDialog) {
     super(dialogRef);
   }
 
-  async onGenerate(params: { maxRowCount: number, doUniformSampling: boolean }) {
-    const {reportFile, source} = this.storeService.state;
-    const itemsToScanCount = source.length;
-    const fakeDataParams: FakeDataParams = {
-      ...params,
-      dbSettings: fakeDataDbSettings
-    };
-
-    this.websocketParams = {
-      payload: {
-        params: fakeDataParams,
-        report: reportFile
-      },
-      itemsToScanCount,
-    };
-
-    this.index = 1;
+  generateFakeData(fakeDataSettings: FakeDataSettings) {
+    const {reportFile} = this.storeService.state;
+    this.schemaService.getUserSchema()
+      .pipe(
+        tap(schema => fakeDataSettings.userSchema = schema),
+        switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings, reportFile))
+      )
+      .subscribe(conversion => {
+        this.conversion = conversion
+        this.index = ConversionDialogStatus.CONVERSION
+      }, error => {
+        openErrorDialog(this.dialogService, 'Failed to Generate Fake data', parseHttpError(error))
+      })
   }
 
   protected changeSize() {

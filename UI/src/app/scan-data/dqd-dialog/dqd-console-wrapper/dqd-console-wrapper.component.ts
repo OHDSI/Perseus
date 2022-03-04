@@ -4,7 +4,7 @@ import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
 import { dqdServerUrl } from '@app/app.constants';
 import { DqdService } from '@services/data-quality-check/dqd.service';
 import * as fileSaver from 'file-saver';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { parseHttpError } from '@utils/error';
 import { finalize } from 'rxjs/operators';
 

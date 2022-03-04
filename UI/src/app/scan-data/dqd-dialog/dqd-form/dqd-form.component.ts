@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { whiteRabbitDatabaseTypes } from '../../scan-data.constants';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { DqdConnectionSettingsStateService } from '@services/data-quality-check/dqd-connection-settings-state.service';
 import { AbstractResourceFormComponent } from '../../auxiliary/resource-form/abstract-resource-form.component';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';

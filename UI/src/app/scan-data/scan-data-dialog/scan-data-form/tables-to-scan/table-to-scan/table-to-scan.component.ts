@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { TableToScan } from '@models/scan-data/table-to-scan';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
 
 @Component({
   selector: 'app-table-to-scan',

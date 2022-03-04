@@ -1,16 +1,16 @@
 import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { ConnectionResult } from '@models/scan-data/connection-result';
-import { TableToScan } from '@models/scan-data/table-to-scan';
-import { DbSettings, DbSettingsBuilder } from '@models/scan-data/db-settings';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
+import { DbSettings, DbSettingsBuilder } from '@models/white-rabbit/db-settings';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
-import { ScanDataParams } from '@models/scan-data/scan-data-params';
+import { ScanDataParams } from '@models/white-rabbit/scan-data-params';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 import { ConnectFormComponent } from './connect-form/connect-form.component';
-import { DelimitedTextFileSettingsBuilder, FilesSettings } from '@models/scan-data/files-settings';
-import { ScanSettings } from '@models/scan-data/scan-settings';
+import { DelimitedTextFileSettingsBuilder, FilesSettings } from '@models/white-rabbit/files-settings';
+import { ScanSettings } from '@models/white-rabbit/scan-settings';
 import { cdmBuilderDatabaseTypes } from '../../scan-data.constants';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
-import { ScanSettingsType } from '@models/scan-data/scan-settings-type'
+import { ScanSettingsType } from '@models/white-rabbit/scan-settings-type'
 
 @Component({
   selector: 'app-scan-data-form',

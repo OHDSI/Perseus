@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { StateService } from '@services/state/state.service';
 
 const initialState: DbSettings = {

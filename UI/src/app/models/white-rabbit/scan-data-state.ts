@@ -1,8 +1,8 @@
-import { DbSettings } from '@models/scan-data/db-settings';
-import { FilesSettings } from '@models/scan-data/files-settings';
-import { ScanDataParams } from '@models/scan-data/scan-data-params';
-import { TableToScan } from '@models/scan-data/table-to-scan';
-import { ConnectionResult } from '@models/scan-data/connection-result';
+import { DbSettings } from '@models/white-rabbit/db-settings';
+import { FilesSettings } from '@models/white-rabbit/files-settings';
+import { ScanDataParams } from '@models/white-rabbit/scan-data-params';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { DbTypes } from '@scan-data/scan-data.constants'
 
 export interface ScanDataState {

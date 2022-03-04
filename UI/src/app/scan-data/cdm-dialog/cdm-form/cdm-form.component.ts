@@ -3,8 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { FakeDataStateService } from '@services/white-rabbit/fake-data-state.service';
-import { DbSettings } from '@models/scan-data/db-settings';
-import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { DbSettings } from '@models/white-rabbit/db-settings';
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { CdmSourceFormComponent } from './cdm-source-form/cdm-source-form.component';
 import { CdmDestinationFormComponent } from './cdm-destination-form/cdm-destination-form.component';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
@@ -36,7 +36,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   destinationDataType: string;
 
-  fakeDataParams: FakeDataParams;
+  fakeDataParams: FakeDataSettings;
 
   isConvertButtonDisabled = true;
 
@@ -44,7 +44,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   convert = new EventEmitter<CdmSettings>();
 
   @Output()
-  generateFakeData = new EventEmitter<FakeDataParams>();
+  generateFakeData = new EventEmitter<FakeDataSettings>();
 
   @Output()
   cancel = new EventEmitter<void>();

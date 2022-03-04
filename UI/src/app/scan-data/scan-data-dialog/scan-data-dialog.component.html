@@ -18,6 +18,7 @@
     <ng-template #scanProgressBlock>
       <app-scan-data-console-wrapper style="width: 100%"
                                      [conversion]="conversion"
+                                     [project]="project"
                                      (back)="onCancel()"
                                      (close)="onClose()"></app-scan-data-console-wrapper>
     </ng-template>

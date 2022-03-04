@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ScanDataUploadService } from '@services/white-rabbit/scan-data-upload.service';
 import { saveAs } from 'file-saver';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
@@ -7,7 +7,7 @@ import { blobToFile } from '@utils/file';
 import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component';
 import { Conversion } from '@models/conversion/conversion'
 import { Observable } from 'rxjs'
-import { ScanDataConsoleComponent } from '@scan-data/scan-data-dialog/scan-console-wrapper/scan-data-console/scan-data-console.component'
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -19,8 +19,14 @@ import { ScanDataConsoleComponent } from '@scan-data/scan-data-dialog/scan-conso
   ]
 })
 export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent {
-  @ViewChild(ScanDataConsoleComponent)
-  consoleComponent: ScanDataConsoleComponent
+  @Input()
+  conversion: Conversion
+
+  @Input()
+  project: string
+
+  @ViewChild(ProgressConsoleComponent)
+  consoleComponent: ProgressConsoleComponent
 
   constructor(private whiteRabbitService: ScanDataService,
               private scanDataUploadService: ScanDataUploadService) {
@@ -28,15 +34,11 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   get scanReportFileName(): string {
-    return `${this.conversion.project}.xlsx`
+    return `${this.project}.xlsx`
   }
 
   conversionInfoRequest(): Observable<Conversion> {
-    return this.whiteRabbitService.conversionInfo(this.conversion.id)
-  }
-
-  onBack(): void {
-    this.back.emit()
+    return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
   }
 
   onAbortAndCancel(): void {
@@ -54,8 +56,8 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   onUploadReport(): void {
     this.whiteRabbitService.downloadScanReport(this.conversion.id)
       .pipe(
-        switchMap(blob => this.scanDataUploadService
-          .uploadScanReport(blobToFile(blob, this.scanReportFileName))
+        switchMap(blob =>
+          this.scanDataUploadService.uploadScanReport(blobToFile(blob, this.scanReportFileName))
         )
       )
       .subscribe(

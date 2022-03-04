@@ -1,4 +1,4 @@
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 
 /* Adapt white-rabbit dbSettings to CDM-builder settings */

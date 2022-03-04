@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { Observable } from 'rxjs';
-import { perseusApiUrl, whiteRabbitApiUrl } from '@app/app.constants';
+import { whiteRabbitApiUrl } from '@app/app.constants';
+import { Conversion } from '@models/conversion/conversion'
 
 @Injectable()
 export class FakeDataService {
@@ -10,18 +11,18 @@ export class FakeDataService {
   constructor(private http: HttpClient) {
   }
 
-  generateFakeData(fakeDataSettings: FakeDataParams, userId: string, scanReport: File): Observable<void> {
+  generateFakeData(settings: FakeDataSettings, scanReport: File): Observable<Conversion> {
     const formData = new FormData();
     formData.append('file', scanReport)
-    formData.append('settings', JSON.stringify(fakeDataSettings))
-    return this.http.post<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`, formData)
+    formData.append('settings', JSON.stringify(settings))
+    return this.http.post<Conversion>(`${whiteRabbitApiUrl}/fake-data`, formData)
   }
 
-  abort(userId: string): Observable<void> {
-    return this.http.get<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`)
+  conversionInfoWithLogs(conversionId: number): Observable<Conversion> {
+    return this.http.get<Conversion>(`${whiteRabbitApiUrl}/fake-data/conversion/${conversionId}`)
   }
 
-  getUserSchema(): Observable<string> {
-    return this.http.get<string>(`${perseusApiUrl}/get_user_schema_name`)
+  abort(conversionId: number): Observable<void> {
+    return this.http.get<void>(`${whiteRabbitApiUrl}/fake-data/abort/${conversionId}`)
   }
 }

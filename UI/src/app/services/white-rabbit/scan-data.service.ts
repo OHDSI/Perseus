@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConnectionResult } from '@models/scan-data/connection-result';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { HttpClient } from '@angular/common/http';
 import { whiteRabbitApiUrl } from '@app/app.constants';
-import { TableToScan } from '@models/scan-data/table-to-scan';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { map } from 'rxjs/operators';
-import { FilesSettings } from '@models/scan-data/files-settings';
-import { ProgressLog } from '@models/progress-console/progress-log'
+import { FilesSettings } from '@models/white-rabbit/files-settings';
 import { Conversion } from '@models/conversion/conversion'
 
 @Injectable()
@@ -46,12 +45,8 @@ export class ScanDataService {
     return this.http.post<Conversion>(`${whiteRabbitApiUrl}/scan-report/files`, formData)
   }
 
-  conversionInfo(conversionId: number): Observable<Conversion> {
+  conversionInfoWithLogs(conversionId: number): Observable<Conversion> {
     return this.http.get<Conversion>(`${whiteRabbitApiUrl}/scan-report/conversion/${conversionId}`)
-  }
-
-  logs(conversionId: number): Observable<ProgressLog[]> {
-    return this.http.get<ProgressLog[]>(`${whiteRabbitApiUrl}/scan-report/logs/${conversionId}`)
   }
 
   abort(conversionId: number): Observable<void> {

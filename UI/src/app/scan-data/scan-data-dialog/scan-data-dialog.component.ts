@@ -6,10 +6,10 @@ import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.ser
 import { ConversionDialog } from '@scan-data/conversion-dialog'
 import { Conversion } from '@models/conversion/conversion'
 import { ScanDataService } from '@services/white-rabbit/scan-data.service'
-import { ScanSettings } from '@models/scan-data/scan-settings'
-import { ScanSettingsType } from '@models/scan-data/scan-settings-type'
-import { DbSettings } from '@models/scan-data/db-settings'
-import { FilesSettings } from '@models/scan-data/files-settings'
+import { ScanSettings } from '@models/white-rabbit/scan-settings'
+import { ScanSettingsType } from '@models/white-rabbit/scan-settings-type'
+import { DbSettings } from '@models/white-rabbit/db-settings'
+import { FilesSettings } from '@models/white-rabbit/files-settings'
 import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 
@@ -21,9 +21,10 @@ import { openErrorDialog, parseHttpError } from '@utils/error'
 export class ScanDataDialogComponent extends ConversionDialog {
 
   @ViewChild(ScanConsoleWrapperComponent)
-  consoleWrapperComponent: ScanConsoleWrapperComponent;
+  consoleWrapperComponent: ScanConsoleWrapperComponent
 
-  conversion: Conversion | null = null;
+  conversion: Conversion | null = null
+  project: string
 
   constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>,
               private scanDataService: ScanDataService,
@@ -47,6 +48,7 @@ export class ScanDataDialogComponent extends ConversionDialog {
       this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
     request$.subscribe(conversion => {
       this.conversion = conversion
+      this.project = conversion.project
       this.index = ConversionDialogStatus.CONVERSION
     }, error => {
       openErrorDialog(this.dialogService, 'Failed to scan data', parseHttpError(error))
