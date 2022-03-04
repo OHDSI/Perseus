@@ -1,14 +1,15 @@
 import { DbSettings } from '@models/scan-data/db-settings';
-import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
-import { ScanParams } from '@models/scan-data/scan-params';
+import { FilesSettings } from '@models/scan-data/files-settings';
+import { ScanDataParams } from '@models/scan-data/scan-data-params';
 import { TableToScan } from '@models/scan-data/table-to-scan';
 import { ConnectionResult } from '@models/scan-data/connection-result';
+import { DbTypes } from '@scan-data/scan-data.constants'
 
 export interface ScanDataState {
   dataType: string;
   dbSettings: DbSettings;
-  fileSettings: DelimitedTextFileSettings;
-  scanParams: ScanParams;
+  fileSettings: FilesSettings;
+  scanParams: ScanDataParams;
   tablesToScan: TableToScan[];
   filteredTablesToScan: TableToScan[];
   searchTableName: string
@@ -17,14 +18,15 @@ export interface ScanDataState {
 }
 
 export const initialState: ScanDataState = {
-  dataType: null,
+  dataType: DbTypes.SQL_SERVER,
   dbSettings: {
-    server: null,
-    user: null,
-    password: null,
-    database: null,
-    schema: null,
-    port: null
+    dbType: DbTypes.SQL_SERVER,
+    server: '822JNJ16S03V',
+    port: 1433,
+    user: 'cdm_builder',
+    password: 'builder1!',
+    database: 'mdcd_native_test',
+    schema: 'dbo'
   },
   fileSettings: {
     fileType: null,

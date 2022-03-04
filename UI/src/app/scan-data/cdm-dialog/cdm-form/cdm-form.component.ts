@@ -7,7 +7,7 @@ import { DbSettings } from '@models/scan-data/db-settings';
 import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { CdmSourceFormComponent } from './cdm-source-form/cdm-source-form.component';
 import { CdmDestinationFormComponent } from './cdm-destination-form/cdm-destination-form.component';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { dictionaryDbSettingForCdmBuilder } from '../../scan-data.constants';
 import { StoreService } from '@services/store.service';
 import { adaptCdmVersions } from '@utils/cdm-adapter';

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Subject } from 'rxjs';
 import { DbSettings } from '@models/scan-data/db-settings';
-import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
+import { FilesSettings } from '@models/scan-data/files-settings';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '@models/scan-data/scan-settings';
 import {
@@ -39,7 +39,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   fileSettingsForm: FormGroup;
 
   @Input()
-  fileSettings: DelimitedTextFileSettings;
+  fileSettings: FilesSettings;
 
   @Input()
   filesToScan: File[];

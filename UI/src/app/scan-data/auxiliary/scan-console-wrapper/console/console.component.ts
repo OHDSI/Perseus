@@ -13,6 +13,9 @@ import { WebsocketService } from '@websocket/websocketService';
 import { ThemePalette } from '@angular/material/core';
 import { ScanResult, ScanStatus } from '@models/scan-data/scan-result';
 
+/**
+ * @deprecated Use ProgressConsoleComponent
+ */
 @Component({
   template: ''
 })

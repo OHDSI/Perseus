@@ -13,7 +13,7 @@ import { TableToScan } from '@models/scan-data/table-to-scan';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ConnectionResult } from '@models/scan-data/connection-result';
 import { takeUntil } from 'rxjs/operators';
-import { ScanParams } from '@models/scan-data/scan-params';
+import { ScanDataParams } from '@models/scan-data/scan-data-params';
 import { BaseComponent } from '@shared/base/base.component';
 import { ScanParamsComponent } from './scan-params/scan-params.component';
 
@@ -31,7 +31,7 @@ import { ScanParamsComponent } from './scan-params/scan-params.component';
 export class TablesToScanComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @Input()
-  scanParams: ScanParams;
+  scanParams: ScanDataParams;
 
   @Input()
   tablesToScan: TableToScan[];

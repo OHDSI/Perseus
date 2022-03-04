@@ -2,6 +2,9 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { AbstractConsoleWrapperComponent } from './auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 
+/**
+ * @deprecated Use ProgressConsoleComponent
+ */
 export abstract class AbstractScanDialog {
 
   websocketParams: WebsocketParams;

@@ -3,17 +3,14 @@ import { ConnectionResult } from '@models/scan-data/connection-result';
 import { TableToScan } from '@models/scan-data/table-to-scan';
 import { DbSettings, DbSettingsBuilder } from '@models/scan-data/db-settings';
 import { TablesToScanComponent } from './tables-to-scan/tables-to-scan.component';
-import { ScanParams } from '@models/scan-data/scan-params';
+import { ScanDataParams } from '@models/scan-data/scan-data-params';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 import { ConnectFormComponent } from './connect-form/connect-form.component';
-import {
-  DelimitedTextFileSettings,
-  DelimitedTextFileSettingsBuilder
-} from '@models/scan-data/delimited-text-file-settings';
+import { DelimitedTextFileSettingsBuilder, FilesSettings } from '@models/scan-data/files-settings';
 import { ScanSettings } from '@models/scan-data/scan-settings';
-import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { cdmBuilderDatabaseTypes } from '../../scan-data.constants';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
+import { ScanSettingsType } from '@models/scan-data/scan-settings-type'
 
 @Component({
   selector: 'app-scan-data-form',
@@ -26,11 +23,11 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dbSettings: DbSettings;
 
-  fileSettings: DelimitedTextFileSettings;
+  fileSettings: FilesSettings;
 
   searchTableName: string
 
-  scanParams: ScanParams;
+  scanParams: ScanDataParams;
 
   tablesToScan: TableToScan[];
 
@@ -44,7 +41,7 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   cancel = new EventEmitter<void>();
 
   @Output()
-  scanTables = new EventEmitter<{dbName: string; params: WebsocketParams}>();
+  scanTables = new EventEmitter<{type: ScanSettingsType, settings: ScanSettings}>();
 
   @ViewChild(ConnectFormComponent)
   connectFormComponent: ConnectFormComponent;
@@ -74,9 +71,8 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onScanTables(): void {
-    const dbName = this.getDbName();
-    const params = this.createWebSocketParams();
-    this.scanTables.emit({dbName, params});
+    const settings = this.createSettings();
+    this.scanTables.emit(settings);
   }
 
   reset(): void {
@@ -125,28 +121,23 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  private createWebSocketParams(): WebsocketParams {
-    let payload: ScanSettings;
-
-    payload = this.connectFormComponent.isDbSettings ?
+  private createSettings(): {type: ScanSettingsType, settings: ScanSettings} {
+    const type = this.connectFormComponent.isDbSettings ? ScanSettingsType.DB : ScanSettingsType.FILES
+    const settings = type === ScanSettingsType.DB ?
       new DbSettingsBuilder()
-      .setDbType(this.connectFormComponent.dataType)
-      .setDbSettings(this.connectFormComponent.form.value)
-      .setScanParams(this.tablesToScanComponent.scanParams)
-      .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
-      .build() :
+        .setDbType(this.connectFormComponent.dataType)
+        .setDbSettings(this.connectFormComponent.form.value)
+        .setScanParams(this.tablesToScanComponent.scanParams)
+        .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
+        .build() :
       new DelimitedTextFileSettingsBuilder()
-      .setFileType(this.connectFormComponent.dataType)
-      .setFileSettings(this.connectFormComponent.fileSettingsForm.value)
-      .setScanParams(this.tablesToScanComponent.scanParams)
-      .setTableToScan(this.tablesToScanComponent.filteredTablesToScan)
-      .setFilesToScan(this.connectFormComponent.filesToScan)
-      .build();
-
-    return {
-      payload,
-      itemsToScanCount: payload.itemsToScanCount,
-    };
+        .setFileType(this.connectFormComponent.dataType)
+        .setFileSettings(this.connectFormComponent.fileSettingsForm.value)
+        .setScanParams(this.tablesToScanComponent.scanParams)
+        .setTableToScan(this.tablesToScanComponent.filteredTablesToScan)
+        .setFilesToScan(this.connectFormComponent.filesToScan)
+        .build();
+    return {type, settings}
   }
 
   private saveCdmDbSettingsState() {
@@ -160,14 +151,6 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
           ...this.connectFormComponent.form.value
         }
       };
-    }
-  }
-
-  private getDbName() {
-    if (this.connectFormComponent.isDbSettings) {
-      return this.connectFormComponent.form.value.database;
-    } else {
-      return 'ScanReport';
     }
   }
 }

@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { DbTypes, fakeDataDbSettings } from '../scan-data.constants';
 import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { WebsocketParams } from '@models/scan-data/websocket-params';

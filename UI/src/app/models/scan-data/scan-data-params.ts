@@ -1,4 +1,4 @@
-export interface ScanParams {
+export interface ScanDataParams {
   sampleSize: number;
   scanValues: boolean;
   minCellCount: number;

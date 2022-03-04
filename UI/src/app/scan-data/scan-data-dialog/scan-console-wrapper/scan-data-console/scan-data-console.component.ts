@@ -1,68 +1,24 @@
-import { Component, Input } from '@angular/core';
-import { ConsoleComponent } from '../../../auxiliary/scan-console-wrapper/console/console.component';
-import { finalize } from 'rxjs/operators';
-import {
-  ProgressNotification,
-  ProgressNotificationStatus,
-  ProgressNotificationStatusCode,
-  toFailedMessage
-} from '@models/scan-data/progress-notification';
-import { ScanDataWebsocketService } from '@websocket/white-rabbit/scan-data/scan-data-websocket.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
-import { parseHttpError } from '@utils/error';
-import { WebsocketParams } from '@models/scan-data/websocket-params';
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { Observable } from 'rxjs';
+import { Conversion } from '@models/conversion/conversion'
+import { ProgressLog } from '@models/progress-console/progress-log'
 
 @Component({
   selector: 'scan-data-console',
-  templateUrl: '../../../auxiliary/scan-console-wrapper/console/console.component.html',
-  styleUrls: ['../../../auxiliary/scan-console-wrapper/console/console.component.scss'],
-  providers: [ScanDataWebsocketService]
+  templateUrl: '../../../auxiliary/progress-console/progress-console.component.html',
+  styleUrls: ['../../../auxiliary/progress-console/progress-console.component.scss']
 })
-export class ScanDataConsoleComponent extends ConsoleComponent<string> {
-
+export class ScanDataConsoleComponent extends ProgressConsoleComponent implements OnInit {
   @Input()
-  params: WebsocketParams;
+  conversion!: Conversion
 
-  private scannedItemsCount = 0;
-
-  constructor(private scanDataWebsocketService: ScanDataWebsocketService,
-              private whiteRabbitService: ScanDataService) {
-    super(scanDataWebsocketService);
+  constructor(private whiteRabbitService: ScanDataService) {
+    super()
   }
 
-  abortAndCancel() {
-    if (this.scanDataWebsocketService.userId) {
-      this.whiteRabbitService.abort(this.scanDataWebsocketService.userId)
-        .pipe(finalize(() => this.websocketService.disconnect()))
-        .subscribe()
-    }
-  }
-
-  protected handleProgressMessage(message: string): void {
-    const notification = JSON.parse(message) as ProgressNotification;
-    this.showNotificationMessage(notification);
-
-    switch ((notification.status as ProgressNotificationStatus).code) {
-      case ProgressNotificationStatusCode.IN_PROGRESS: {
-        this.progressValue = this.scannedItemsCount / this.params.itemsToScanCount * 100;
-        this.scannedItemsCount++;
-        break;
-      }
-      case ProgressNotificationStatusCode.FINISHED: {
-        this.whiteRabbitService.result(this.scanDataWebsocketService.userId)
-          .subscribe(
-            result => this.onSuccess(result),
-            error => {
-              this.showNotificationMessage(toFailedMessage(parseHttpError(error)))
-              this.onFailed()
-            }
-          )
-        break;
-      }
-      case ProgressNotificationStatusCode.FAILED: {
-        this.onFailed()
-        break;
-      }
-    }
+  logsRequest(): Observable<ProgressLog[]> {
+    return this.whiteRabbitService.logs(this.conversion.id);
   }
 }

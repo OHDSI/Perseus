@@ -37,9 +37,11 @@ export class JwtInterceptor implements HttpInterceptor {
   }
 
   private addAuthorizationHeader(request: HttpRequest<any>): HttpRequest<any> {
+    const user = this.authService.user
     return request.clone({
       setHeaders: {
-        Authorization: this.authService.user.token
+        Authorization: user.token,
+        Username: user.email
       }
     })
   }

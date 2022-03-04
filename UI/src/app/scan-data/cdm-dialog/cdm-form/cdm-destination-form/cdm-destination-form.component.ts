@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder } from '../../../scan-data.constants';
 import { adaptDbSettingsForDestination } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';

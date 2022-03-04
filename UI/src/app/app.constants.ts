@@ -16,10 +16,12 @@ export const dbServer = server
 // urls
 export const serverUrl = `${protocol}//${server}:${port}`
 
-export const perseusApiUrl = 'http://localhost:5000/perseus/api'
+// export const perseusApiUrl = 'http://localhost:5000/perseus/api'
+export const perseusApiUrl = 'http://jnjcicdu1:8080/api'
 // export const perseusApiUrl = `${serverUrl}/api`
 
-export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
+export const whiteRabbitServerUrl = `http://localhost:8000/white-rabbit`
+// export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
 export const whiteRabbitWsUrl = whiteRabbitServerUrl
 export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}/api`
 
@@ -51,6 +53,7 @@ export const externalUrls = [
 ]
 
 export const serverErrorExclusionUrls = [
+  'athena.ohdsi.org',
   'athena',
   'get_term_search_results',
   'save_mapped_codes',

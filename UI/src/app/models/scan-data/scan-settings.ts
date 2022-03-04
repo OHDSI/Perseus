@@ -1,7 +1,5 @@
-import { ScanParams } from './scan-params';
+import { ScanDataParams } from './scan-data-params';
 
 export interface ScanSettings {
-  itemsToScanCount?: number;
-
-  scanParams?: ScanParams;
+  scanDataParams?: ScanDataParams;
 }

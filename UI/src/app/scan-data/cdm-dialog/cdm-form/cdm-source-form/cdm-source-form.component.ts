@@ -6,7 +6,7 @@ import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } f
 import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { adaptDbSettingsForSource } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { hasLimits } from '@utils/scan-data-util';
