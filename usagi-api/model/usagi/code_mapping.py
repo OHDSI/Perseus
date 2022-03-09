@@ -31,9 +31,9 @@ class Type(str, Enum):
 
 
 class TargetConcept:
-    def __init__(self, conceptId=0, conceptName="Unmapped", conceptClassId='', vocabularyId='',
-                 conceptCode='', domainId='', validStartDate='', validEndDate='', invalidReason='',
-                 standardConcept="", additionalInformation="", parentCount=0, childCount=0):
+    def __init__(self, conceptId=0, conceptName="Unmapped", conceptClassId = '', vocabularyId = '',
+                 conceptCode = '', domainId = '', validStartDate = '', validEndDate = '', invalidReason='',
+                 standardConcept = "", additionalInformation = "", parentCount = 0, childCount = 0):
         self.conceptId = conceptId
         self.conceptName = conceptName
         self.conceptClassId = conceptClassId
@@ -50,36 +50,51 @@ class TargetConcept:
 
 
 class ScoredConcept:
-    def __init__(self, match_score=0, concept=TargetConcept(), term=[]):
+    def __init__(self, match_score=0, concept=TargetConcept(), term = None):
         self.match_score = match_score
         self.concept = concept
-        self.term = term
+        if term is None:
+            self.term = []
+        else:
+            self.term = term
 
 
 class MappingTarget:
-    def __init__(self, concept=TargetConcept(), mappingType=Type.MAPS_TO, createdBy='', createdTime=0, term=[]):
-        self.concept = concept
+    def __init__(self, concept=None, mappingType=Type.MAPS_TO, createdBy = '', createdTime = 0, term = None):
+        if concept is None:
+            self.concept = TargetConcept()
+        else:
+            self.concept = concept
         self.mappingType = mappingType
         self.createdBy = createdBy
         self.createdTime = createdTime
-        self.term = term
+        if term is None:
+            self.term = []
+        else:
+            self.term = term
 
 
 class CodeMapping:
-    def __init__(self, source_code=SourceCode(),
-                 matchScore=0,
-                 mappingStatus=MappingStatus.UNCHECKED,
-                 equivalence=Equivalence.UNREVIEWED,
-                 targetConcepts=[],
-                 comment='',
-                 statusSetBy='',
-                 statusSetOn=0,
-                 assignedReviewer=''):
-        self.sourceCode = source_code
+    def __init__(self, source_code = None,
+                 matchScore = 0,
+                 mappingStatus = MappingStatus.UNCHECKED,
+                 equivalence = Equivalence.UNREVIEWED,
+                 targetConcepts = None,
+                 comment = '',
+                 statusSetBy = '',
+                 statusSetOn = 0,
+                 assignedReviewer = ''):
+        if source_code is None:
+            self.sourceCode = SourceCode()
+        else:
+            self.sourceCode = source_code
         self.matchScore = matchScore
         self.mappingStatus = mappingStatus
         self.equivalence = equivalence
-        self.targetConcepts = targetConcepts
+        if targetConcepts is None:
+            self.targetConcepts = []
+        else:
+            self.targetConcepts = targetConcepts
         self.comment = comment
         self.statusSetBy = statusSetBy
         self.statusSetOn = statusSetOn
