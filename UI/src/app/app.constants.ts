@@ -57,7 +57,8 @@ export const serverErrorExclusionUrls = [
   'athena',
   'get_term_search_results',
   'save_mapped_codes',
-  'is_token_valid'
+  'is_token_valid',
+  'scan-report/conversion'
 ]
 
 export const COLUMNS_TO_EXCLUDE_FROM_TARGET = [

@@ -3,7 +3,6 @@ import { FilesSettings } from '@models/white-rabbit/files-settings';
 import { ScanDataParams } from '@models/white-rabbit/scan-data-params';
 import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { ConnectionResult } from '@models/white-rabbit/connection-result';
-import { DbTypes } from '@scan-data/scan-data.constants'
 
 export interface ScanDataState {
   dataType: string;
@@ -18,15 +17,14 @@ export interface ScanDataState {
 }
 
 export const initialState: ScanDataState = {
-  dataType: DbTypes.SQL_SERVER,
+  dataType: null,
   dbSettings: {
-    dbType: DbTypes.SQL_SERVER,
-    server: '822JNJ16S03V',
-    port: 1433,
-    user: 'cdm_builder',
-    password: 'builder1!',
-    database: 'mdcd_native_test',
-    schema: 'dbo'
+    server: null,
+    user: null,
+    password: null,
+    database: null,
+    schema: null,
+    port: null
   },
   fileSettings: {
     fileType: null,

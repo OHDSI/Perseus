@@ -41,6 +41,10 @@ export class ProgressConsoleComponent extends BaseComponent {
     this.scrollToConsoleBottom()
   }
 
+  changeProgressColorToError(): void {
+    this.color = 'warn'
+  }
+
   private scrollToConsoleBottom() {
     const console = this.console.nativeElement;
     // delayed scroll, after render new message
