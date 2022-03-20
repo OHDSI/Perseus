@@ -25,7 +25,6 @@ import { CdmConsoleComponent } from './cdm-dialog/cdm-console-wrapper/cdm-consol
 import { DataBaseExistWarningPopupComponent } from './auxiliary/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
-import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { SharedModule } from '@shared/shared.module';
 import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
@@ -60,7 +59,6 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
     DataBaseExistWarningPopupComponent,
     DqdDialogComponent,
     DqdConsoleWrapperComponent,
-    DqdConsoleComponent,
     DqdFormComponent,
     CodeMappingDialogComponent,
     CodeMappingConsoleWrapperComponent,

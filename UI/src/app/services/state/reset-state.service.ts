@@ -6,7 +6,7 @@ import { DrawService } from '@services/draw.service';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 import { FakeDataStateService } from '@services/white-rabbit/fake-data-state.service';
-import { DqdConnectionSettingsStateService } from '@services/data-quality-check/dqd-connection-settings-state.service';
+import { DataQualityCheckStateService } from '@services/data-quality-check/data-quality-check-state.service';
 import { VocabularySearchStateService } from '@services/athena/vocabulary-search-state.service';
 import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { ScoredConceptsCacheService } from '@services/usagi/scored-concepts-cache.service';
@@ -21,7 +21,7 @@ export class ResetStateService {
     ScanDataStateService,
     CdmStateService,
     FakeDataStateService,
-    DqdConnectionSettingsStateService,
+    DataQualityCheckStateService,
     VocabularySearchStateService,
     ImportCodesService,
     ScoredConceptsCacheService

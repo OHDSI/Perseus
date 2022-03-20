@@ -2,7 +2,7 @@
 
   <progress-console style="width: 100%" [logs]="logs"></progress-console>
 
-  <div class="console-wrapper__action" [ngSwitch]="conversion.statusCode">
+  <div class="console-wrapper__action" [ngSwitch]="conversion?.statusCode">
     <ng-template ngSwitchCase="1">
       <button class="console-wrapper__action-abort cancel"
               (click)="onAbortAndCancel()">Abort and cancel

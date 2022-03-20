@@ -28,8 +28,8 @@ import { FakeDataService } from '@services/white-rabbit/fake-data.service';
 import { FakeDataStateService } from '@services/white-rabbit/fake-data-state.service';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
-import { DqdService } from '@services/data-quality-check/dqd.service';
-import { DqdConnectionSettingsStateService } from '@services/data-quality-check/dqd-connection-settings-state.service';
+import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service';
+import { DataQualityCheckStateService } from '@services/data-quality-check/data-quality-check-state.service';
 import { ICON_NAMES } from './icons';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -79,8 +79,8 @@ import { CanRedirectMappingService } from '@services/breadcrumb/can-redirect-map
     FakeDataStateService,
     CdmBuilderService,
     CdmStateService,
-    DqdService,
-    DqdConnectionSettingsStateService,
+    DataQualityCheckService,
+    DataQualityCheckStateService,
     MappingGuard,
     ImportCodesService,
     ScoredConceptsCacheService,

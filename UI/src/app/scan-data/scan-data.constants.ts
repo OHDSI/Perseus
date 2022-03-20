@@ -80,13 +80,7 @@ export const dqdDatabaseTypes = [
   DbTypes.SQL_SERVER,
   DbTypes.POSTGRESQL,
   DbTypes.ORACLE,
-  DbTypes.PDW,
   DbTypes.REDSHIFT,
-  DbTypes.NETEZZA,
-  DbTypes.IMPALA,
-  DbTypes.HIVE,
-  DbTypes.BIGQUERY,
-  DbTypes.SQLITE
 ];
 
 export const defaultPorts = {

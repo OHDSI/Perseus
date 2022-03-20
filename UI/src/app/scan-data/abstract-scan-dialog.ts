@@ -3,7 +3,7 @@ import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { AbstractConsoleWrapperComponent } from './auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 
 /**
- * @deprecated Use ProgressConsoleComponent
+ * @deprecated Use ConversionDialog
  */
 export abstract class AbstractScanDialog {
 
