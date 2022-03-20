@@ -1,10 +1,10 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { whiteRabbitDatabaseTypes } from '../../scan-data.constants';
+import { dqdDatabaseTypes } from '../../scan-data.constants';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { DbSettings } from '@models/white-rabbit/db-settings';
-import { DqdConnectionSettingsStateService } from '@services/data-quality-check/dqd-connection-settings-state.service';
+import { DataQualityCheckStateService } from '@services/data-quality-check/data-quality-check-state.service';
 import { AbstractResourceFormComponent } from '../../auxiliary/resource-form/abstract-resource-form.component';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 
@@ -23,7 +23,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
 
   formControlNames = ['server', 'port', 'user', 'password', 'database', 'schema'];
 
-  dataTypes = whiteRabbitDatabaseTypes;
+  dataTypes = dqdDatabaseTypes;
 
   @Output()
   check = new EventEmitter<DbSettings>();
@@ -34,7 +34,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
               private whiteRabbitService: ScanDataService, // todo interface with testConnection method
-              private stateService: DqdConnectionSettingsStateService) {
+              private stateService: DataQualityCheckStateService) {
     super(formBuilder, matDialog);
   }
 
