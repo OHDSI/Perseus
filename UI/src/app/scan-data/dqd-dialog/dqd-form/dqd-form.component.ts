@@ -6,7 +6,8 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { DbSettings } from '@models/white-rabbit/db-settings';
 import { DataQualityCheckStateService } from '@services/data-quality-check/data-quality-check-state.service';
 import { AbstractResourceFormComponent } from '../../auxiliary/resource-form/abstract-resource-form.component';
-import { ScanDataService } from '@services/white-rabbit/scan-data.service';
+import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service'
+import { parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-dqd-form',
@@ -33,7 +34,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
 
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
-              private whiteRabbitService: ScanDataService, // todo interface with testConnection method
+              private dqdService: DataQualityCheckService,
               private stateService: DataQualityCheckStateService) {
     super(formBuilder, matDialog);
   }
@@ -64,7 +65,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
 
     const dbSettings = this.form.value as DbSettings;
 
-    this.whiteRabbitService.testConnection(dbSettings)
+    this.dqdService.testConnection(dbSettings)
       .pipe(
         finalize(() => this.tryConnect = false)
       )
@@ -80,7 +81,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
         error => {
           this.connectionResult = {
             canConnect: false,
-            message: error.error,
+            message: parseHttpError(error),
           };
           this.showErrorPopup(this.connectionResult.message);
         }
