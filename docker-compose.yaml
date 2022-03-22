@@ -44,6 +44,8 @@ services:
         target: /etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
+    networks:
+      - main
     restart: always
   shareddb:
     container_name: shareddb
@@ -85,9 +87,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     networks:
+      - main
       - shareddb
       - files-manager
     depends_on:
+      - web
       - shareddb
   white-rabbit:
     build: ../WhiteRabbit
@@ -230,6 +234,8 @@ services:
 #      - vocabularydb
 
 networks:
+  main:
+    driver: bridge
   shareddb:
     driver: bridge
   files-manager:
