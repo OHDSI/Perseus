@@ -1,14 +1,14 @@
-import { DbSettings } from '@models/scan-data/db-settings';
-import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
-import { ScanParams } from '@models/scan-data/scan-params';
-import { TableToScan } from '@models/scan-data/table-to-scan';
-import { ConnectionResult } from '@models/scan-data/connection-result';
+import { DbSettings } from '@models/white-rabbit/db-settings';
+import { FilesSettings } from '@models/white-rabbit/files-settings';
+import { ScanDataParams } from '@models/white-rabbit/scan-data-params';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
 
 export interface ScanDataState {
   dataType: string;
   dbSettings: DbSettings;
-  fileSettings: DelimitedTextFileSettings;
-  scanParams: ScanParams;
+  fileSettings: FilesSettings;
+  scanParams: ScanDataParams;
   tablesToScan: TableToScan[];
   filteredTablesToScan: TableToScan[];
   searchTableName: string

@@ -2,12 +2,11 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractScanDialog } from '../abstract-scan-dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { DbTypes, fakeDataDbSettings } from '../scan-data.constants';
-import { FakeDataParams } from '@models/scan-data/fake-data-params';
 import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { StoreService } from '@services/store.service';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { adaptDestinationCdmSettings } from '@utils/cdm-adapter';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 
@@ -76,7 +75,7 @@ export class CdmDialogComponent extends AbstractScanDialog {
   async onGenerateFakeData(params: { maxRowCount: number, doUniformSampling: boolean }) {
     const {reportFile, source} = this.storeService.state;
     const itemsToScanCount = source.length;
-    const fakeDataParams: FakeDataParams = {
+    const fakeDataParams = {
       ...params,
       dbSettings: fakeDataDbSettings
     };

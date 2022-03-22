@@ -10,3 +10,10 @@ CREATE USER white_rabbit WITH PASSWORD 'password';
 
 GRANT USAGE ON SCHEMA white_rabbit TO white_rabbit;
 GRANT ALL PRIVILEGES ON SCHEMA white_rabbit TO white_rabbit;
+
+
+CREATE SCHEMA "dqd";
+CREATE USER dqd WITH PASSWORD 'password';
+
+GRANT USAGE ON SCHEMA dqd TO dqd;
+GRANT ALL PRIVILEGES ON SCHEMA dqd TO dqd;

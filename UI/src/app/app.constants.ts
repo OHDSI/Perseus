@@ -16,18 +16,19 @@ export const dbServer = server
 // urls
 export const serverUrl = `${protocol}//${server}:${port}`
 
-export const perseusApiUrl = 'http://localhost:5000/perseus/api'
+// export const perseusApiUrl = 'http://localhost:5000/perseus/api'
+export const perseusApiUrl = 'http://jnjcicdu1:8080/api'
 // export const perseusApiUrl = `${serverUrl}/api`
 
-export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
-export const whiteRabbitWsUrl = whiteRabbitServerUrl
+export const whiteRabbitServerUrl = `http://localhost:8000/white-rabbit`
+// export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
 export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}/api`
 
 export const cdmBuilderServerUrl = serverUrl
 export const cdmBuilderLogUrl = `${cdmBuilderServerUrl}/log`
 export const cdmBuilderApiUrl = `${cdmBuilderServerUrl}/cdm-builder/api`
 
-export const dqdServerUrl = `${serverUrl}/dqd`
+export const dqdServerUrl = `http://localhost:8001/data-quality-check`
 export const dqdApiUrl = `${dqdServerUrl}/api`
 export const dqdWsUrl = `ws://${server}:${port}/dqd/progress`
 
@@ -51,10 +52,12 @@ export const externalUrls = [
 ]
 
 export const serverErrorExclusionUrls = [
+  'athena.ohdsi.org',
   'athena',
   'get_term_search_results',
   'save_mapped_codes',
-  'is_token_valid'
+  'is_token_valid',
+  'scan-report/conversion'
 ]
 
 export const COLUMNS_TO_EXCLUDE_FROM_TARGET = [

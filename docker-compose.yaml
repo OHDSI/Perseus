@@ -26,30 +26,6 @@ services:
 #    ports:
 #      - "5431:5432"
 #    restart: always
-#  white_rabbit:
-#    build: ../WhiteRabbit
-#    container_name:
-#      white-rabbit-service
-#    network_mode: "host"
-#    restart: always
-#  dqd_service:
-#    build:
-#      context: ../DataQualityDashboard
-#      args:
-#        prop: prod
-#    container_name:
-#      dqd-service
-#    network_mode: "host"
-#    restart: always
-#  r_serve:
-#    build:
-#      context: ../DataQualityDashboard/R
-#      args:
-#        prop: prod
-#    container_name:
-#      r-serve
-#    network_mode: "host"
-#    restart: always
 #  cdm_builder:
 #    build:
 #      context: ../ETL-CDMBuilder/
@@ -110,119 +86,169 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     networks:
       - shareddb
+      - files-manager
     depends_on:
       - shareddb
-  vocabularydb:
-    build: ./vocabulary-db
-    container_name: vocabularydb
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
-      timeout: 60s
-      interval: 30s
-      retries: 10
-    volumes:
-      - vocabularydb:/data/postgres
+  white-rabbit:
+    build: ../WhiteRabbit
+    container_name:
+      white-rabbit
     ports:
-      - "5431:5432"
+      - "8000:8000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
-      - vocabularydb
+      - shareddb
+      - files-manager
+    depends_on:
+      - shareddb
+      - files-manager
     restart: always
-  perseusdb:
-    container_name: perseus-db
-    image: postgres
-    environment:
-      POSTGRES_USER: perseus
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: perseus
-      PGDATA: /data/postgres
-    volumes:
-      - perseusdb:/data/postgres
-      - ./perseus-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  r-serve:
+    build:
+      context: ../DataQualityDashboard/R
+      args:
+        prop: docker
+    container_name:
+      r-serve
     ports:
-      - "5430:5432"
+      - "6311:6311"
     networks:
-      - perseusdb
+      - r-serve
+      - shareddb
     restart: always
-  perseus-api:
-    build: ./perseus-api
-    command: python /app/main.py
-    container_name: perseus-api
-    environment:
-      PERSEUS_ENV: Local
-      TOKEN_SECRET_KEY: Perseus-Arcad!a
-    ports:
-      - "5000:5000"
-    depends_on:
-      - perseus-db
-    networks:
-      - perseusdb
-  athena:
-    image: solr
-    container_name: athena
-    command:
-      - solr-precreate
-      - athena
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/athena/admin/ping?wt=json | grep -Po '\"status\": *\"OK\"' || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - ./athena-solr/db-data-config.xml:/opt/solr/server/solr/configsets/_default/conf/db-data-config.xml
-      - ./athena-solr/managed-schema:/opt/solr/server/solr/configsets/_default/conf/managed-schema
-      - ./athena-solr/solrconfig.xml:/opt/solr/server/solr/configsets/_default/conf/solrconfig.xml
-      - ./athena-solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
-      - athena:/var/solr
-    ports:
-      - "8983:8983"
-    networks:
-      - vocabularydb
-      - athena
-    depends_on:
-      - vocabulary
-  athena-api:
-    build: ./athena-api
-    command: python /app/main.py
-    container_name: athena-api
-    environment:
-      ATHENA_ENV: Prod
-    ports:
-      - "5050:5050"
-    depends_on:
-      - athena
-    networks:
-      - athena
-  usagi-api:
-    build: ./usagi-api
-    command: python /app/main.py
-    container_name: usagi-api
-    environment:
-      USAGI_ENV: Local
-    ports:
-      - "5150:5150"
     depends_on:
       - shareddb
+  dqd_service:
+    build:
+      context: ../DataQualityDashboard
+    container_name:
+      dqd-service
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
-      - usagi
       - shareddb
-      - vocabularydb
+      - files-manager
+    depends_on:
+      - shareddb
+      - files-manager
+#  vocabularydb:
+#    build: ./vocabulary-db
+#    container_name: vocabularydb
+#    healthcheck:
+#      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
+#      timeout: 60s
+#      interval: 30s
+#      retries: 10
+#    volumes:
+#      - vocabularydb:/data/postgres
+#    ports:
+#      - "5431:5432"
+#    networks:
+#      - vocabularydb
+#    restart: always
+#  perseusdb:
+#    container_name: perseus-db
+#    image: postgres
+#    environment:
+#      POSTGRES_USER: perseus
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: perseus
+#      PGDATA: /data/postgres
+#    volumes:
+#      - perseusdb:/data/postgres
+#      - ./perseus-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+#    ports:
+#      - "5430:5432"
+#    networks:
+#      - perseusdb
+#    restart: always
+#  perseus-api:
+#    build: ./perseus-api
+#    command: python /app/main.py
+#    container_name: perseus-api
+#    environment:
+#      PERSEUS_ENV: Local
+#      TOKEN_SECRET_KEY: Perseus-Arcad!a
+#    ports:
+#      - "5000:5000"
+#    depends_on:
+#      - perseus-db
+#    networks:
+#      - perseusdb
+#  athena:
+#    image: solr
+#    container_name: athena
+#    command:
+#      - solr-precreate
+#      - athena
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/athena/admin/ping?wt=json | grep -Po '\"status\": *\"OK\"' || exit 1"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#    volumes:
+#      - ./athena-solr/db-data-config.xml:/opt/solr/server/solr/configsets/_default/conf/db-data-config.xml
+#      - ./athena-solr/managed-schema:/opt/solr/server/solr/configsets/_default/conf/managed-schema
+#      - ./athena-solr/solrconfig.xml:/opt/solr/server/solr/configsets/_default/conf/solrconfig.xml
+#      - ./athena-solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
+#      - athena:/var/solr
+#    ports:
+#      - "8983:8983"
+#    networks:
+#      - vocabularydb
+#      - athena
+#    depends_on:
+#      - vocabulary
+#  athena-api:
+#    build: ./athena-api
+#    command: python /app/main.py
+#    container_name: athena-api
+#    environment:
+#      ATHENA_ENV: Prod
+#    ports:
+#      - "5050:5050"
+#    depends_on:
+#      - athena
+#    networks:
+#      - athena
+#  usagi-api:
+#    build: ./usagi-api
+#    command: python /app/main.py
+#    container_name: usagi-api
+#    environment:
+#      USAGI_ENV: Local
+#    ports:
+#      - "5150:5150"
+#    depends_on:
+#      - shareddb
+#    networks:
+#      - usagi
+#      - shareddb
+#      - vocabularydb
 
 networks:
-  vocabularydb:
-    driver: bridge
   shareddb:
     driver: bridge
-  perseusdb:
+  files-manager:
     driver: bridge
-  athena:
+  r-serve:
     driver: bridge
-  usagi:
-    driver: bridge
+#  perseusdb:
+#    driver: bridge
+#  athena:
+#    driver: bridge
+#  usagi:
+#    driver: bridge
+#  vocabularydb:
+#    driver: bridge
 
 volumes:
-  vocabularydb:
   shareddb:
   pgadmin:
-  perseusdb:
-  athena:
-  usagi:
+#  vocabularydb:
+#  perseusdb:
+#  athena:
+#  usagi:

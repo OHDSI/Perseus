@@ -1,0 +1,52 @@
+.progress-console {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__bar {
+    width: 543px;
+
+    p {
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 15px;
+      color: #404040;
+    }
+  }
+
+  &__content {
+    p {
+      margin-top: 20px;
+      margin-bottom: 3px;
+      flex: 1;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 15px;
+      color: #808080;
+    }
+
+    &__logs {
+      width: 543px;
+      height: 220px;
+      overflow-y: auto;
+      background: #FFFFFF;
+      box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
+      border-radius: 2px;
+      box-sizing: border-box;
+      padding: 14px 29px 14px 19px;
+
+      p {
+        margin: 0;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 24px;
+        color: #000000;
+
+        &.error {
+          color: #FF4646;
+        }
+      }
+    }
+  }
+}

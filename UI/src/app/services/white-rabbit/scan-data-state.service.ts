@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IScanDataStateService } from '@models/scan-data/state';
-import { initialState, ScanDataState } from '@models/scan-data/scan-data-state';
+import { initialState, ScanDataState } from '@models/white-rabbit/scan-data-state';
 import { StateService } from '@services/state/state.service';
 
 @Injectable()

@@ -4,6 +4,9 @@ import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { ProgressNotificationStatusCode } from '@models/scan-data/progress-notification';
 import { ScanResult, ScanStatus } from '@models/scan-data/scan-result';
 
+/**
+ * @deprecated Use ProgressConsoleWrapperComponent
+ */
 @Component({
   template: ''
 })

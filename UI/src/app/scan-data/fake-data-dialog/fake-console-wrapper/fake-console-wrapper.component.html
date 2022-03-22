@@ -1,23 +1,22 @@
 <div class="console-wrapper">
 
-  <app-fake-console [params]="params"
-                    (completion)="onComplete($event)"></app-fake-console>
+  <progress-console [logs]="logs"></progress-console>
 
-  <div class="console-wrapper__action" [ngSwitch]="result?.status">
+  <div class="console-wrapper__action" [ngSwitch]="conversion.statusCode">
     <ng-template ngSwitchCase="1">
+      <button class="console-wrapper__action-abort cancel"
+              (click)="onAbortAndCancel()">Abort and cancel
+      </button>
+    </ng-template>
+
+    <ng-template ngSwitchCase="2">
       <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
       <button class="console-wrapper__action-back confirm" (click)="onClose()">Close</button>
     </ng-template>
 
-    <ng-template ngSwitchCase="2">
+    <ng-template ngSwitchDefault="2">
       <button class="console-wrapper__action-back cancel"
               (click)="this.onBack()">Back
-      </button>
-    </ng-template>
-
-    <ng-template ngSwitchDefault>
-      <button class="console-wrapper__action-abort cancel"
-              (click)="onAbortAndCancel()">Abort and cancel
       </button>
     </ng-template>
   </div>

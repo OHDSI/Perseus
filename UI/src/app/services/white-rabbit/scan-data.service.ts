@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConnectionResult } from '@models/scan-data/connection-result';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { HttpClient } from '@angular/common/http';
 import { whiteRabbitApiUrl } from '@app/app.constants';
-import { TableToScan } from '@models/scan-data/table-to-scan';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { map } from 'rxjs/operators';
-import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
+import { FilesSettings } from '@models/white-rabbit/files-settings';
+import { Conversion } from '@models/conversion/conversion'
 
 @Injectable()
 export class ScanDataService {
@@ -28,38 +29,33 @@ export class ScanDataService {
       );
   }
 
-  generateScanReportByDb(dbSettings: DbSettings, userId: string): Observable<void> {
-    return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/db/${userId}`, dbSettings)
+  generateScanReportByDb(dbSettings: DbSettings): Observable<Conversion> {
+    return this.http.post<Conversion>(`${whiteRabbitApiUrl}/scan-report/db`, dbSettings)
   }
 
-  generateScanReportByFiles(fileSettings: DelimitedTextFileSettings, userId: string): Observable<void> {
+  generateScanReportByFiles(fileSettings: FilesSettings): Observable<Conversion> {
     const formData = new FormData();
-    const settings = {
+    formData.append('settings', JSON.stringify({
       fileType: fileSettings.fileType,
       delimiter: fileSettings.delimiter,
-      scanParams: fileSettings.scanParams
-    }
-    formData.append('settings', JSON.stringify(settings))
+      scanDataParams: fileSettings.scanDataParams
+    }))
     fileSettings.files.forEach(file => formData.append('files', file))
 
-    return this.http.post<void>(`${whiteRabbitApiUrl}/scan-report/files/${userId}`, formData)
+    return this.http.post<Conversion>(`${whiteRabbitApiUrl}/scan-report/files`, formData)
   }
 
-  /* Return scan-report file server location */
-  result(userId: string): Observable<string> {
-    return this.http.get<{payload: string}>(`${whiteRabbitApiUrl}/scan-report/result/${userId}`)
-      .pipe(
-        map(result => result.payload)
-      )
+  conversionInfoWithLogs(conversionId: number): Observable<Conversion> {
+    return this.http.get<Conversion>(`${whiteRabbitApiUrl}/scan-report/conversion/${conversionId}`)
   }
 
-  downloadScanReport(fileLocation: string): Observable<Blob> {
-    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/${fileLocation}`, {
+  abort(conversionId: number): Observable<void> {
+    return this.http.get<void>(`${whiteRabbitApiUrl}/scan-report/abort/${conversionId}`)
+  }
+
+  downloadScanReport(conversionId: number): Observable<Blob> {
+    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/result/${conversionId}`, {
       responseType: 'blob' as 'json'
     })
-  }
-
-  abort(userId: string): Observable<void> {
-    return this.http.get<void>(`${whiteRabbitApiUrl}/scan-report/abort/${userId}`)
   }
 }
