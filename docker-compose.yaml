@@ -45,9 +45,7 @@ services:
     ports:
       - "80:80"
     networks:
-      main:
-        aliases:
-          - web
+      - files-manager
   shareddb:
     container_name: shareddb
     image: postgres
