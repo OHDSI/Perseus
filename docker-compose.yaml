@@ -45,7 +45,9 @@ services:
     ports:
       - "80:80"
     networks:
-      - main
+      main:
+        aliases:
+          - web
     restart: always
   shareddb:
     container_name: shareddb
