@@ -16,6 +16,6 @@ public class InfoController {
     @GetMapping()
     public ResponseEntity<InfoResponse> getInfo() {
         log.info("Rest request to get App info");
-        return ok(new InfoResponse(0.4, "White Rabbit"));
+        return ok(new InfoResponse(0.4, "Files Manager"));
     }
 }
