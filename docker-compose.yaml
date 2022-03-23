@@ -34,6 +34,22 @@ services:
 #      cdm-builder-service
 #    network_mode: "host"
 #    restart: always
+#  pgadmin:
+#    container_name: pgadmin
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+#      PGADMIN_CONFIG_SERVER_MODE: 'False'
+#    volumes:
+#      - pgadmin:/var/lib/pgadmin
+#    ports:
+#      - "5050:80"
+#    networks:
+#      - shareddb
+#    depends_on:
+#      - shareddb
+#    restart: unless-stopped
   web:
     image: nginx
     container_name:
@@ -58,22 +74,6 @@ services:
       - ./shared-db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-#  pgadmin:
-#    container_name: pgadmin
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-#      PGADMIN_CONFIG_SERVER_MODE: 'False'
-#    volumes:
-#      - pgadmin:/var/lib/pgadmin
-#    ports:
-#      - "5050:80"
-#    networks:
-#      - shareddb
-#    depends_on:
-#      - shareddb
-#    restart: unless-stopped
   files-manager:
     build: ./files-manager
     container_name: files-manager
@@ -94,36 +94,29 @@ services:
     depends_on:
       - shareddb
       - files-manager
-#  r-serve:
-#    build:
-#      context: ../DataQualityDashboard/R
-#      args:
-#        prop: docker
-#    container_name:
-#      r-serve
-#    ports:
-#      - "6311:6311"
-#    networks:
-#      - r-serve
-#      - shareddb
-#    restart: always
-#    depends_on:
-#      - shareddb
-#  dqd_service:
-#    build:
-#      context: ../DataQualityDashboard
-#    container_name:
-#      dqd-service
-#    ports:
-#      - "8001:8001"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - shareddb
-#      - files-manager
-#    depends_on:
-#      - shareddb
-#      - files-manager
+  r-serve:
+    build:
+      context: ../DataQualityDashboard/R
+      args:
+        prop: docker
+    container_name:
+      r-serve
+    ports:
+      - "6311:6311"
+    depends_on:
+      - shareddb
+  data-quality-dashboard:
+    build:
+      context: ../DataQualityDashboard
+    container_name:
+      data-quality-dashboard
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - shareddb
+      - files-manager
 #  vocabularydb:
 #    build: ./vocabulary-db
 #    container_name: vocabularydb
