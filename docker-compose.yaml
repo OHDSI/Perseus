@@ -58,9 +58,6 @@ services:
       - ./shared-db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-#    networks:
-#      - shareddb
-    restart: always
 #  pgadmin:
 #    container_name: pgadmin
 #    image: dpage/pgadmin4
@@ -84,22 +81,19 @@ services:
       - "10500:10500"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - shareddb
-#      - files-manager
     depends_on:
       - shareddb
-#  white-rabbit:
-#    build: ../WhiteRabbit
-#    container_name:
-#      white-rabbit
-#    ports:
-#      - "8000:8000"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    depends_on:
-#      - shareddb
-#      - files-manager
+  white-rabbit:
+    build: ../WhiteRabbit
+    container_name:
+      white-rabbit
+    ports:
+      - "8000:8000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - shareddb
+      - files-manager
 #  r-serve:
 #    build:
 #      context: ../DataQualityDashboard/R
