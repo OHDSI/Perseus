@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.sql.Blob;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -26,9 +28,9 @@ public class DbDataService implements DataService {
 
     @Transactional(readOnly = true)
     @Override
-    public Resource getData(String key) {
-        UserData userData = userDataRepository.findByHash(key)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Resource not found by id %s", key)));
+    public Resource getData(final Long userDataId) {
+        UserData userData = userDataRepository.findById(userDataId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("UserData not found by id %s", userDataId)));
         byte[] data = userData.getBlobData().getData();
         return new ByteArrayResource(data);
     }
@@ -38,7 +40,17 @@ public class DbDataService implements DataService {
     public UserData saveData(String username, String dataKey, MultipartFile file) throws IOException {
         byte[] data = file.getBytes();
         String hash = hashService.hash(data);
-        BlobData blobData = blobDataRepository.save(BlobData.builder().data(data).build());
+
+        Optional<UserData> byAllParameters =
+                userDataRepository.findByHashAndUsernameAndDataKey(hash, username, dataKey);
+        if (byAllParameters.isPresent()) {
+            return byAllParameters.get();
+        }
+
+        Optional<UserData> byHash = userDataRepository.findByHash(hash);
+        BlobData blobData = byHash
+                .map(UserData::getBlobData)
+                .orElseGet(() -> blobDataRepository.save(BlobData.builder().data(data).build()));
         UserData userData = UserData.builder()
                 .hash(hash)
                 .username(username)

@@ -47,7 +47,7 @@ class DbDataServiceTest {
         assertEquals(username, userData.getUsername());
         assertEquals(dataKey, userData.getDataKey());
 
-        Resource resource = dataService.getData(userData.getHash());
+        Resource resource = dataService.getData(userData.getId());
         byte[] data = resource.getInputStream().readAllBytes();
 
         assertEquals(hashService.hash(bytes), hashService.hash(data));

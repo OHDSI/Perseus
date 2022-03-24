@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
 import static org.springframework.http.ResponseEntity.noContent;
@@ -21,15 +23,15 @@ import static org.springframework.http.ResponseEntity.ok;
 public class DataController {
     private final DataService dataService;
 
-    @GetMapping("/{key}")
-    public ResponseEntity<Resource> getFile(@PathVariable String key) {
-        log.info("Rest request to get file by key {}", key);
-        return ok(dataService.getData(key));
+    @GetMapping("/{userDataId}")
+    public ResponseEntity<Resource> getFile(@PathVariable Long userDataId) {
+        log.info("Rest request to get file by id {}", userDataId);
+        return ok(dataService.getData(userDataId));
     }
 
     @PostMapping
-    public ResponseEntity<UserData> saveFile(@RequestParam("username") String username,
-                                             @RequestParam("dataKey") String dataKey,
+    public ResponseEntity<UserData> saveFile(@NotBlank @RequestParam("username") String username,
+                                             @NotBlank @RequestParam("dataKey") String dataKey,
                                              @RequestParam("file") MultipartFile file) throws IOException {
         log.info("Rest request to save file with username {} and data-key {}", username, dataKey);
         return ok(dataService.saveData(username, dataKey, file));
