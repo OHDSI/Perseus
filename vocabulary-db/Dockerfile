@@ -1,6 +1,6 @@
 FROM postgres 
 
-ARG voc_url=""
+ARG voc_url="https://athena.ohdsi.org/api/v1/vocabularies/zip/c6d49cb1-d0a1-4ee7-ac2d-43c710994230"
 ENV VOC_URL=${voc_url}
 COPY vocabulary_download_v5.zip tmp/vocabulary.zip
 COPY load_csv.sh load_csv.sh
