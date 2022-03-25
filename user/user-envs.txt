@@ -1,5 +1,5 @@
-SMTP_SERVER=mail.arcadialab.ru
-SMTP_PORT=587
-SMTP_EMAIL=perseus_test1@arcadialab.ru
-SMTP_USER=perseus_test1
-SMTP_PWD=K2W3Bx)G3j!gf%
+SMTP_SERVER=
+SMTP_PORT=
+SMTP_EMAIL=
+SMTP_USER=
+SMTP_PWD=
