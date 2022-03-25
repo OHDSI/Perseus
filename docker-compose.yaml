@@ -95,9 +95,9 @@ services:
       - shareddb
       - files-manager
   cdm-builder:
-    build: ../cdm-builder
+    build: ../ETL-CDMBuilder/source
     container_name:
-      cdm-builder
+      cdm-builder-service
     ports:
       - "9000:9000"
     environment:
