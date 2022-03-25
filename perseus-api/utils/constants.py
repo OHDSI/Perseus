@@ -1,8 +1,6 @@
-from pathlib import Path
-from os.path import dirname
 import sys
-import os
-from app import app
+from os.path import dirname
+from pathlib import Path
 
 ROOT_DIR = Path(dirname(sys.modules['__main__'].__file__))
 GENERATE_CDM_XML_PATH = Path('model/generate/Definitions') # todo make stateless - xml used by cdm builder
@@ -17,24 +15,7 @@ UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema') # todo make s
 UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make stateless
 PREDEFINED_LOOKUPS_PATH = Path('model/Lookups') # not changed
 INCOME_LOOKUPS_PATH = Path('model/UserDefinedLookups') # todo make stateless
-SMTP_PORT_STL = 587
-PASSWORD_LINK_EXPIRATION_TIME = 172800  # 48 hours
-REGISTRATION_LINK_EXPIRATION_TIME = 172800 # 48 hours
-CONCEPT_IDS = 'autoConceptId'
-ATC = 'ATC column'
-SOURCE_CODE_TYPE_STRING = "S"
-SOLR_PATH = "solr-8.8.1/server/solr"
-SOLR_CREATE_MAIN_INDEX_CORE = "solr/admin/cores?action=CREATE&name=concepts&instanceDir=concepts&config=solrconfig.xml&dataDir=data"
-ATHENA_CREATE_CORE = "solr/admin/cores?action=CREATE&name=athena&instanceDir=athena&config=solrconfig.xml&dataDir=data"
-SOLR_FULL_DATA_IMPORT = "solr/concepts/dataimport?command=full-import"
-ATHENA_FULL_DATA_IMPORT = "solr/athena/dataimport?command=full-import"
-SOLR_CREATE_CORE = "solr/admin/cores?action=CREATE&name="
-SOLR_RELOAD_CORE = "solr/admin/cores?action=RELOAD&core="
-SOLR_UNLOAD_CORE = "solr/admin/cores?action=UNLOAD&core="
-SOLR_IMPORT_STATUS = "solr/concepts/dataimport?command=status&indent=on&wt=json"
-ATHENA_IMPORT_STATUS = "solr/athena/dataimport?command=status&indent=on&wt=json"
-USAGI_CORE_NAME = 'concepts'
-ATHENA_CORE_NAME = 'athena'
+
 COLUMN_TYPES_MAPPING = {
      16: 'bool',
      17: 'blob',
@@ -76,26 +57,3 @@ LIST_OF_COLUMN_INFO_FIELDS = [
 
 N_ROWS_CHECKED_FIELD_NAME = 'N rows checked'
 N_ROWS_FIELD_NAME = 'N rows'
-
-VOCABULARY_FILTERS = {
-    'concept_class_id': 'conceptClass',
-    'domain_id': 'domain',
-    'invalid_reason': 'invalidReason',
-    'standard_concept': 'standardConcept',
-    'vocabulary_id': 'vocabulary',
-}
-
-
-SOLR_FILTERS = {
-    'vocabulary_id': 'vocabularies',
-    'concept_class_id': 'conceptClasses',
-    'domain_id': 'domains'
-}
-
-QUERY_SEARCH_MODE = 'query'
-os_env = os.getenv("TOKEN_SECRET_KEY")
-if os_env is None:
-    print('TOKEN_SECRET_KEY env variable is None', sys.stderr)
-    exit(1)
-TOKEN_SECRET_KEY = os_env
-EMAIL_SECRET_KEY = app.config["EMAIL_SECRET_KEY"]

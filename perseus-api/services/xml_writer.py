@@ -19,7 +19,7 @@ import os
 from pathlib import Path
 from utils.similar_names_map import similar_names_map
 from itertools import groupby
-from db import pg_db
+from db import user_schemas_db
 
 
 def _convert_underscore_to_camel(word: str):
@@ -164,7 +164,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
 
 # method adds {sc} to table names used in join and from clauses avoiding those cases when words similar to table names areinside double/single quotes
 def addSchemaNames(sql, view_sql):
-    cursor = pg_db.execute_sql(sql)
+    cursor = user_schemas_db.execute_sql(sql)
     for row in cursor.fetchall():
         view_sql = re.sub(
             f"(?i)join {row[0]} (?!(?=[^(\'|\")]*\"[^(\'|\")]*(?:(\'|\")[^(\'|\")]*(\'|\")[^(\'|\")]*)*$))",

@@ -11,7 +11,7 @@ from utils.exceptions import InvalidUsage
 import json
 from werkzeug.utils import secure_filename
 from itertools import groupby
-from db import pg_db
+from db import user_schemas_db
 import re
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
@@ -28,7 +28,7 @@ def get_source_schema(current_user, schemaname):
      arg actually is path
      """
     print("schema name: " + str(schemaname))
-    reset_schema(pg_db, name=current_user)
+    reset_schema(user_schemas_db, name=current_user)
     filepath = Path(schemaname)
 
     schema = []
@@ -63,27 +63,27 @@ def get_source_schema(current_user, schemaname):
             create_table_sql += create_column_sql
         create_table_sql = create_table_sql.rstrip(',')
         create_table_sql += ' );'
-        cursor = pg_db.execute_sql(create_table_sql)
+        cursor = user_schemas_db.execute_sql(create_table_sql)
         schema.append(table_)
     return schema
 
 
-def reset_schema(pg_db, name='public'):
+def reset_schema(user_schemas_db, name='public'):
     exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)
-    cursor = pg_db.execute_sql(exists_sql)
+    cursor = user_schemas_db.execute_sql(exists_sql)
     if cursor.rowcount:
         drop_schema_sql = 'DROP SCHEMA {0} CASCADE;'.format(name)
-        pg_db.execute_sql(drop_schema_sql)
+        user_schemas_db.execute_sql(drop_schema_sql)
     create_schema_sql = ' CREATE SCHEMA {0};'.format(name)
-    pg_db.execute_sql(create_schema_sql)
+    user_schemas_db.execute_sql(create_schema_sql)
 
 
 def save_source_schema_in_db(current_user, source_tables):
-    reset_schema(pg_db, name=current_user)
+    reset_schema(user_schemas_db, name=current_user)
 
     for row in source_tables:
         if row['sql'] == '':
-            create_table_sql = '';
+            create_table_sql = ''
             table_name = row['name']
             create_table_sql += 'CREATE TABLE {0}.{1} ('.format(current_user, table_name)
             for field in row['rows']:
@@ -96,7 +96,7 @@ def save_source_schema_in_db(current_user, source_tables):
                     create_table_sql += create_column_sql
             create_table_sql = create_table_sql.rstrip(',')
             create_table_sql += ' );'
-            cursor = pg_db.execute_sql(create_table_sql)
+            cursor = user_schemas_db.execute_sql(create_table_sql)
 
 
 def convert_column_type(type):
@@ -120,7 +120,7 @@ def get_field_type(type):
 
 def get_view_from_db(current_user, view_sql):
     view_sql = addSchemaNames(current_user, view_sql)
-    view_cursor = pg_db.execute_sql(view_sql).description
+    view_cursor = user_schemas_db.execute_sql(view_sql).description
     view_key= lambda a: a.name
     view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
     view_res=[]
@@ -140,7 +140,7 @@ def get_view_from_db(current_user, view_sql):
 
 
 def addSchemaNames(current_user, view_sql):
-    user_schema_tables = pg_db.execute_sql(
+    user_schema_tables = user_schemas_db.execute_sql(
         'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user))
     for row in user_schema_tables.fetchall():
         view_sql = re.sub(f"(?i)join {row[0]} ", f'join {current_user}.{row[0]} ', view_sql)
@@ -152,7 +152,7 @@ def addSchemaNames(current_user, view_sql):
 def run_sql_transformation(current_user, sql_transformation):
     for val in sql_transformation:
         val = addSchemaNames(current_user, val)
-        pg_db.execute_sql(val).description
+        user_schemas_db.execute_sql(val).description
     return True
 
 
@@ -243,15 +243,3 @@ def load_saved_source_schema_from_server(current_user, schema_name):
     else:
         raise InvalidUsage('Schema was not loaded', 404)
 
-
-if __name__ == '__main__':
-    # for i in get_source_schema():
-    #     print(i.to_json())
-    # prepare_source_data()
-    # for table in get_source_schema('D:/mdcr.xlsx'):
-    #     print(table.to_json())
-    # for table in get_source_schema('D:/mdcr.xlsx'):
-    #     print(table.to_json())
-    # get_top_values('test', 'test')
-    # load_report()
-    pass

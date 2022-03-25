@@ -1,39 +1,31 @@
 PORT = 5000
 APP_PREFIX = '/perseus'
-VERSION = 0.3
+VERSION = 0.4
 
 
 class LocalConfig:
-    DB_NAME = 'cdm_souffleur'
-    DB_USER = 'postgres'
-    DB_PASSWORD = '5eC_DkMr^3'
-    DB_HOST = 'jnjcicdu1'
-    DB_PORT = 5431
-    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
+    APP_LOGIC_DB_NAME = 'shared'
+    APP_LOGIC_DB_USER = 'perseus'
+    APP_LOGIC_DB_PASSWORD = 'password'
+    APP_LOGIC_DB_HOST = 'localhost'
+    APP_LOGIC_DB_PORT = 5432
+
+    USER_SCHEMAS_DB_NAME = 'perseus'
+    USER_SCHEMAS_DB_USER = 'perseus'
+    USER_SCHEMAS_DB_PASSWORD = 'password'
+    USER_SCHEMAS_DB_HOST = 'localhost'
+    USER_SCHEMAS_DB_PORT = 5433
 
 
-class DevelopmentConfig:
-    DB_NAME = 'cdm_souffleur'
-    DB_USER = 'postgres'
-    DB_PASSWORD = '5eC_DkMr^3'
-    DB_HOST = 'localhost'
-    DB_PORT = 5431
-    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
+class DockerConfig:
+    APP_LOGIC_DB_NAME = 'shared'
+    APP_LOGIC_DB_USER = 'perseus'
+    APP_LOGIC_DB_PASSWORD = 'password'
+    APP_LOGIC_DB_HOST = 'shareddb'
+    APP_LOGIC_DB_PORT = 5432
 
-
-class StagingConfig:
-    DB_NAME = 'cdm_souffleur'
-    DB_USER = 'postgres'
-    DB_PASSWORD = '5eC_DkMr^3'
-    DB_HOST = 'localhost'
-    DB_PORT = 5431
-    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
-
-
-class ProdConfig:
-    DB_NAME = 'cdm_souffleur'
-    DB_USER = 'postgres'
-    DB_PASSWORD = '5eC_DkMr^3'
-    DB_HOST = 'localhost'
-    DB_PORT = 5431
-    EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
+    USER_SCHEMAS_DB_NAME = 'perseus'
+    USER_SCHEMAS_DB_USER = 'perseus'
+    USER_SCHEMAS_DB_PASSWORD = 'password'
+    USER_SCHEMAS_DB_HOST = 'perseusdb'
+    USER_SCHEMAS_DB_PORT = 5432
