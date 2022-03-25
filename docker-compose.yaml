@@ -94,6 +94,17 @@ services:
     depends_on:
       - shareddb
       - files-manager
+  cdm-builder:
+    build: ../cdm-builder
+    container_name:
+      cdm-builder
+    ports:
+      - "9000:9000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - shareddb
+      - files-manager
   r-serve:
     build:
       context: ../DataQualityDashboard/R
