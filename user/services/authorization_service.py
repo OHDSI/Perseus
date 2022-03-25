@@ -2,11 +2,11 @@ import random
 import string
 from werkzeug.utils import redirect
 from model.user import User, blacklist_token
-from model.user.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
+from model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
 import datetime
-from model.user.refresh_token import *
+from model.refresh_token import *
 from services.mailout_service import send_email
-from utils import InvalidUsage
+from utils.exceptions import InvalidUsage
 from utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME, \
     EMAIL_SECRET_KEY
 from utils.exceptions import AuthorizationError
@@ -113,7 +113,14 @@ def user_login(email, password):
             auth_token = item.encode_auth_token(item.username)
             token = get_refresh_token(email)
         if auth_token:
-            return {'email': item.email, 'token': auth_token, 'refresh_token': token, 'firstName': item.first_name, 'lastName': item.last_name}
+            return {
+                'username': item.username,
+                'email': item.email,
+                'token': auth_token,
+                'refresh_token': token,
+                'firstName': item.first_name,
+                'lastName': item.last_name
+            }
         else:
             raise AuthorizationError('Incorrect password', 401)
 

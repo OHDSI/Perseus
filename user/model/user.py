@@ -1,14 +1,15 @@
-from jwt import ExpiredSignatureError, InvalidTokenError, InvalidSignatureError, DecodeError, PyJWTError
-from peewee import *
-from app import app
+import datetime
+from functools import wraps
+
 import jwt
 from flask import request
-from functools import wraps
-import datetime
+from jwt import ExpiredSignatureError, InvalidTokenError, PyJWTError
+from peewee import *
+
+from model import blacklist_token
 from model.baseModel import BaseModel
-from model.user import blacklist_token
-from utils import InvalidUsage
 from utils.constants import TOKEN_SECRET_KEY
+from utils.exceptions import InvalidUsage
 
 
 class User(BaseModel):
@@ -53,6 +54,7 @@ def token_required(f):
 
       return f(current_user, *args, **kwargs)
    return decorator
+
 
 def is_token_valid(request):
     token = None

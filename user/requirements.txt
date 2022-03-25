@@ -1,0 +1,12 @@
+APScheduler
+cryptography
+Flask==2.0.3
+Flask_Bcrypt
+Flask_Cors
+peewee
+PyJWT
+waitress
+Werkzeug
+itsdangerous
+py-postgresql
+psycopg2-binary

@@ -1,16 +1,26 @@
-from flask import request, jsonify, Blueprint, flash, url_for
-
-from config import APP_PREFIX
-from model.user.user import token_required, is_token_valid
-from services.authorization_service import *
 from urllib.parse import urlparse
+from flask import request, jsonify, Blueprint
+
+import app
+from config import APP_PREFIX, VERSION
+from model.user import token_required, is_token_valid
+from services.authorization_service import *
+
+from utils.exceptions import InvalidUsage
 from utils.utils import getServerHostPort
 
-authorization_api = Blueprint('authorization_api', __name__, url_prefix=APP_PREFIX)
+user_api = Blueprint('authorization_api', __name__, url_prefix=APP_PREFIX)
 
 
-@authorization_api.route('/api/register', methods=['POST'])
+@user_api.route('/api/info', methods=['GET'])
+def app_info():
+    app.logger.info("REST request to GET app info")
+    return jsonify({'name': 'User', 'version': VERSION})
+
+
+@user_api.route('/api/register', methods=['POST'])
 def register_user():
+    app.logger.info("REST request to register new user")
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         password = request.json['password']
@@ -25,8 +35,9 @@ def register_user():
     return jsonify(True)
 
 
-@authorization_api.route('/api/confirm_registration', methods=['GET'])
+@user_api.route('/api/confirm_registration', methods=['GET'])
 def confirm_registration():
+    app.logger.info("REST request to confirm registration")
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         encrypted_email = request.args['token']
@@ -39,8 +50,9 @@ def confirm_registration():
     return redirect_to_page
 
 
-@authorization_api.route('/api/login', methods=['POST'])
+@user_api.route('/api/login', methods=['POST'])
 def login():
+    app.logger.info("REST request to login user")
     try:
         email = request.json['email']
         password = request.json['password']
@@ -54,9 +66,10 @@ def login():
     return jsonify(auth_token)
 
 
-@authorization_api.route('/api/logout', methods=['GET'])
+@user_api.route('/api/logout', methods=['GET'])
 @token_required
 def logout(current_user):
+    app.logger.info("REST request to logout user")
     try:
         user_logout(current_user, request.headers['Authorization'])
     except Exception as error:
@@ -64,8 +77,9 @@ def logout(current_user):
     return jsonify()
 
 
-@authorization_api.route('/api/recover-password', methods=['POST'])
+@user_api.route('/api/recover-password', methods=['POST'])
 def reset_password_request():
+    app.logger.info("REST request to recover password")
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         email = request.json['email']
@@ -75,8 +89,9 @@ def reset_password_request():
     return jsonify(True)
 
 
-@authorization_api.route('/api/check_password_link', methods=['GET'])
+@user_api.route('/api/check_password_link', methods=['GET'])
 def check_reset_password_link():
+    app.logger.info("REST request to check password link")
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         encrypted_email = request.args['token']
@@ -87,8 +102,9 @@ def check_reset_password_link():
     return redirect(f"{host}/link-expired?linkType=password&email={decrypt_email(encrypted_email)}", code=302)
 
 
-@authorization_api.route('/api/reset-password', methods=['POST'])
+@user_api.route('/api/reset-password', methods=['POST'])
 def reset_password():
+    app.logger.info("REST request to reset password")
     try:
         new_pwd = request.json['password']
         encrypted_email = request.json['token']
@@ -98,8 +114,9 @@ def reset_password():
     return jsonify(True)
 
 
-@authorization_api.route('/api/resend_activation_link', methods=['POST'])
+@user_api.route('/api/resend_activation_link', methods=['POST'])
 def resend_activation_link():
+    app.logger.info("REST request to resend activation link")
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         email = request.json['email']
@@ -110,8 +127,9 @@ def resend_activation_link():
     return jsonify(True)
 
 
-@authorization_api.route('/api/register_unauthorized_reset_pwd_request', methods=['GET'])
+@user_api.route('/api/register_unauthorized_reset_pwd_request', methods=['GET'])
 def register_unauthorized_reset_pwd():
+    app.logger.info("REST request to register unauthorized reset password request")
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         user_key = request.args['token']
@@ -121,8 +139,9 @@ def register_unauthorized_reset_pwd():
     return redirect(f"{host}", code=302)
 
 
-@authorization_api.route('/api/update_refresh_access_token', methods=['POST'])
+@user_api.route('/api/update_refresh_access_token', methods=['POST'])
 def refresh_access_token():
+    app.logger.info("REST request to refresh access token")
     try:
         token = request.json['token']
         email = request.json['email']
@@ -134,8 +153,9 @@ def refresh_access_token():
     return jsonify(tokens)
 
 
-@authorization_api.route('/api/is_token_valid', methods=['GET'])
+@user_api.route('/api/is_token_valid', methods=['GET'])
 def is_token_valid_call():
+    app.logger.info("REST request to check is token valid")
     try:
         is_token_valid(request)
     except InvalidUsage as error:
