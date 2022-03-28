@@ -9,12 +9,6 @@ services:
 #      CDM_SOUFFLEUR_ENV: "prod"
 #    env_file:
 #      - back-envs.txt
-#  frontend:
-#    build: ./UI
-#    container_name:
-#      perseus-frontend
-#    network_mode: "host"
-#    restart: always
 #  db:
 #    build: ./database
 #    container_name:
@@ -167,6 +161,15 @@ services:
       - vocabularydb:/data/postgres
     ports:
       - "5431:5432"
+  frontend:
+    build:
+      context: ./UI
+      args:
+        env: dev
+    container_name:
+      frontend
+    ports:
+      - "4200:4200"
 #  athena:
 #    image: solr
 #    container_name: athena

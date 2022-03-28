@@ -1,10 +1,11 @@
 ### STAGE 1: Build ###
 FROM node:14.15.0 AS build-step
+ARG env=prod
 WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install
 COPY . .
-RUN npm run build:prod
+RUN npm run build:${env}
 
 ### STAGE 2: Run ###
 FROM nginx
