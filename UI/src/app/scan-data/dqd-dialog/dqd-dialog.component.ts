@@ -38,7 +38,7 @@ export class DqdDialogComponent extends ConversionDialog {
         this.project = conversion.project
         this.index = ConversionDialogStatus.CONVERSION
       }, error => {
-        openErrorDialog(this.dialogService, 'Failed data quality check', parseHttpError(error))
+        openErrorDialog(this.dialogService, 'Failed to data quality check', parseHttpError(error))
       })
   }
 

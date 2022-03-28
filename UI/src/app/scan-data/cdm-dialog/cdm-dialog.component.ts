@@ -1,34 +1,45 @@
 import { Component, ViewChild } from '@angular/core';
-import { AbstractScanDialog } from '../abstract-scan-dialog';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
-import { DbTypes, fakeDataDbSettings } from '../scan-data.constants';
-import { WebsocketParams } from '@models/scan-data/websocket-params';
+import { DbTypes } from '../scan-data.constants';
 import { StoreService } from '@services/store.service';
-import { DbSettings } from '@models/white-rabbit/db-settings';
 import { adaptDestinationCdmSettings } from '@utils/cdm-adapter';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
+import { ConversionDialog } from '@scan-data/conversion-dialog'
+import { Conversion } from '@models/conversion/conversion'
+import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service'
+import { AdditionalStatusesForCdmBuilderDialog, ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
+import { switchMap, tap } from 'rxjs/operators'
+import { openErrorDialog, parseHttpError } from '@utils/error'
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings'
+import { UserSchemaService } from '@services/perseus/user-schema.service'
+import { FakeDataService } from '@services/white-rabbit/fake-data.service'
+import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service'
 
 @Component({
   selector: 'app-cdm-dialog',
   templateUrl: './cdm-dialog.component.html',
   styleUrls: ['./cdm-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
 })
-export class CdmDialogComponent extends AbstractScanDialog {
+export class CdmDialogComponent extends ConversionDialog {
 
   @ViewChild(CdmConsoleWrapperComponent)
-  consoleWrapperComponent: CdmConsoleWrapperComponent;
+  consoleWrapperComponent: CdmConsoleWrapperComponent
 
-  whiteRabbitWebsocketParams: WebsocketParams;
+  conversion: Conversion | null = null
+  project: string
 
-  dqdWebsocketParams: WebsocketParams;
-
-  private cdmSettings: CdmSettings;
+  private cdmSettings: CdmSettings
 
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>,
               private storeService: StoreService,
-              private cdmStateService: CdmStateService) {
+              private cdmStateService: CdmStateService,
+              private cdmBuilderService: CdmBuilderService,
+              private dialogService: MatDialog,
+              private schemaService: UserSchemaService,
+              private fakeDataService: FakeDataService,
+              private dataQualityCheckService: DataQualityCheckService) {
     super(dialogRef);
   }
 
@@ -40,53 +51,59 @@ export class CdmDialogComponent extends AbstractScanDialog {
     return this.dataType === DbTypes.MYSQL
   }
 
-  onConvert(cdmSettings: CdmSettings): void {
-    this.cdmSettings = cdmSettings;
-    this.websocketParams = {
-      payload: cdmSettings
-    };
-    this.index = 1;
-  }
-
-  header() {
+  get header(): string {
     switch (this.index) {
-      case 0:
-      case 1: {
+      case ConversionDialogStatus.SET_PARAMETERS:
+      case ConversionDialogStatus.CONVERSION: {
         return 'Convert to CDM';
       }
-      case 2: {
+      case AdditionalStatusesForCdmBuilderDialog.FAKE_DATA_GENERATION: {
         return 'Fake Data Generation';
       }
-      case 3: {
+      case AdditionalStatusesForCdmBuilderDialog.DATA_QUALITY_CHECK: {
         return 'Data Quality Check';
       }
     }
   }
 
-  onDataQualityCheck() {
-    const dbSettings: DbSettings = adaptDestinationCdmSettings(this.cdmSettings);
-
-    this.dqdWebsocketParams = {
-      payload: dbSettings
-    };
-    this.index = 3;
+  onConvert(cdmSettings: CdmSettings): void {
+    this.cdmBuilderService.addMapping()
+      .pipe(
+        switchMap(conversion => {
+          this.conversion = conversion
+          this.cdmSettings = {...cdmSettings, conversionId: this.conversion.id}
+          return this.cdmBuilderService.convert(this.cdmSettings)
+        })
+      )
+      .subscribe(
+        () => this.index = ConversionDialogStatus.CONVERSION,
+        error => openErrorDialog(this.dialogService, 'Failed to convert data', parseHttpError(error))
+      )
   }
 
-  async onGenerateFakeData(params: { maxRowCount: number, doUniformSampling: boolean }) {
-    const {reportFile, source} = this.storeService.state;
-    const itemsToScanCount = source.length;
-    const fakeDataParams = {
-      ...params,
-      dbSettings: fakeDataDbSettings
-    };
+  onGenerateFakeData(fakeDataSettings: FakeDataSettings) {
+    this.schemaService.getUserSchema()
+      .pipe(
+        tap(schema => fakeDataSettings.userSchema = schema),
+        switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings))
+      )
+      .subscribe(conversion => {
+        this.conversion = conversion
+        this.index = AdditionalStatusesForCdmBuilderDialog.FAKE_DATA_GENERATION;
+      }, error => {
+        openErrorDialog(this.dialogService, 'Failed to generate Fake data', parseHttpError(error))
+      })
+  }
 
-    this.whiteRabbitWebsocketParams = {
-      payload: {
-        params: fakeDataParams,
-        report: reportFile
-      },
-      itemsToScanCount,
-    };
-    this.index = 2;
+  onDataQualityCheck() {
+    const dbSettings = adaptDestinationCdmSettings(this.cdmSettings)
+    this.dataQualityCheckService.dataQualityCheck(dbSettings)
+      .subscribe(conversion => {
+        this.conversion = conversion
+        this.project = conversion.project
+        this.index = AdditionalStatusesForCdmBuilderDialog.DATA_QUALITY_CHECK
+      }, error => {
+        openErrorDialog(this.dialogService, 'Failed to data quality check', parseHttpError(error))
+      })
   }
 }

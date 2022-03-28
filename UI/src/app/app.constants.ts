@@ -1,6 +1,6 @@
 import { environment } from '../environments/environment'
 
-export const appVersion = '0.3'
+export const appVersion = '0.4'
 
 export const similarTableName = 'similar'
 
@@ -11,31 +11,20 @@ const server = environment.server || window.location.hostname
 const port = environment.port || window.location.port
 const protocol = window.location.protocol
 
-export const dbServer = server
+export const dbServer = environment.dbServer || server
 
-// urls
 export const serverUrl = `${protocol}//${server}:${port}`
 
-// export const perseusApiUrl = 'http://localhost:5000/perseus/api'
-export const perseusApiUrl = 'http://jnjcicdu1:8080/api'
-// export const perseusApiUrl = `${serverUrl}/api`
-
-export const whiteRabbitServerUrl = `http://localhost:8000/white-rabbit`
-// export const whiteRabbitServerUrl = `${serverUrl}/white-rabbit-service`
-export const whiteRabbitApiUrl = `${whiteRabbitServerUrl}/api`
-
-export const cdmBuilderServerUrl = serverUrl
-export const cdmBuilderLogUrl = `${cdmBuilderServerUrl}/log`
-export const cdmBuilderApiUrl = `${cdmBuilderServerUrl}/cdm-builder/api`
-
-export const dqdServerUrl = `http://localhost:8001/data-quality-check`
+export const authApiUrl = `${serverUrl}/user/api`
+export const perseusApiUrl = `${serverUrl}/perseus/api`
+export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
+export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`
+export const dqdServerUrl = `${serverUrl}/data-quality-dashboard`
 export const dqdApiUrl = `${dqdServerUrl}/api`
-export const dqdWsUrl = `ws://${server}:${port}/dqd/progress`
+export const athenaUrl = `${serverUrl}/athena/api`
 
-export const athenaUrl = 'http://127.0.0.1:5050/athena/api'
 export const usagiWsUrl = 'http://127.0.0.1:5150'
 export const usagiUrl = 'http://127.0.0.1:5150/usagi/api'
-//
 
 export const numberOfPanelsWithoutSimilar = 2
 export const numberOfPanelsWithOneSimilar = 3

@@ -1,32 +1,30 @@
 export interface CdmSettings {
-  sourceEngine: string;
-  destinationEngine: string;
   vocabularyEngine: string;
-
-  sourceServer: string;
-  destinationServer: string;
   vocabularyServer: string;
-
-  sourcePort: number;
-  destinationPort: number;
   vocabularyPort: number;
-
-  sourceSchema: string;
-  destinationSchema: string;
-  vocabularySchema: string;
-
-  sourceDatabase: string;
-  destinationDatabase: string;
   vocabularyDatabase: string;
-
-  sourceUser: string;
-  destinationUser: string;
+  vocabularySchema: string;
   vocabularyUser: string;
-
-  sourcePassword: string;
-  destinationPassword: string;
   vocabularyPassword: string;
+
+  sourceEngine: string;
+  sourceServer: string;
+  sourcePort: number;
+  sourceDatabase: string;
+  sourceSchema: string;
+  sourceUser: string;
+  sourcePassword: string;
+
+  destinationEngine: string;
+  destinationServer: string;
+  destinationPort: number;
+  destinationDatabase: string;
+  destinationSchema: string;
+  destinationUser: string;
+  destinationPassword: string;
 
   mappingsName: string;
   cdmVersion: string;
+
+  conversionId?: number
 }

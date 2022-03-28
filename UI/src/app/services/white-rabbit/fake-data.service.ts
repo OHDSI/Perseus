@@ -4,16 +4,19 @@ import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { Observable } from 'rxjs';
 import { whiteRabbitApiUrl } from '@app/app.constants';
 import { Conversion } from '@models/conversion/conversion'
+import { StoreService } from '@services/store.service'
 
 @Injectable()
 export class FakeDataService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private storeService: StoreService) {
   }
 
-  generateFakeData(settings: FakeDataSettings, scanReport: File): Observable<Conversion> {
+  generateFakeData(settings: FakeDataSettings): Observable<Conversion> {
+    const {reportFile} = this.storeService.state;
     const formData = new FormData();
-    formData.append('file', scanReport)
+    formData.append('file', reportFile)
     formData.append('settings', JSON.stringify(settings))
     return this.http.post<Conversion>(`${whiteRabbitApiUrl}/fake-data`, formData)
   }

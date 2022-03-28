@@ -30,7 +30,7 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   constructor(private whiteRabbitService: ScanDataService,
               private scanDataUploadService: ScanDataUploadService) {
-    super();
+    super()
   }
 
   get scanReportFileName(): string {

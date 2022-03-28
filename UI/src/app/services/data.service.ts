@@ -18,7 +18,7 @@ export class DataService {
   batch = [];
 
   constructor(
-    private httpService: PerseusApiService,
+    private perseusService: PerseusApiService,
     private storeService: StoreService,
     private bridgeService: BridgeService
   ) {
@@ -82,24 +82,24 @@ export class DataService {
     const reportName = removeExtension(this.storeService.state.report) ?? 'mapping'
     return this.getXmlPreview(mapping)
       .pipe(
-        switchMap(() => this.httpService.getZipXml(reportName))
+        switchMap(() => this.perseusService.getZipXml(reportName))
       )
   }
 
   getXmlPreview(mapping: Mapping): Observable<any> {
-    return this.httpService.getXmlPreview(mapping);
+    return this.perseusService.getXmlPreview(mapping);
   }
 
   getSqlPreview(sourceTable: string): Observable<any> {
-    return this.httpService.getSqlPreview(sourceTable);
+    return this.perseusService.getSqlPreview(sourceTable);
   }
 
   getCDMVersions() {
-    return this.httpService.getCDMVersions();
+    return this.perseusService.getCDMVersions();
   }
 
   getTargetData(version) {
-    return this.httpService.getTargetData(version).pipe(
+    return this.perseusService.getTargetData(version).pipe(
       map(data => {
         const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
         const tables = this.prepareTables(filteredData, 'target');
@@ -111,19 +111,19 @@ export class DataService {
   }
 
   getSourceSchema(path) {
-    return this.httpService.getSourceSchema(path).pipe(
+    return this.perseusService.getSourceSchema(path).pipe(
       map(data => this.prepareTables(data, 'source'))
     );
   }
 
   getSourceSchemaData(name: string): Observable<any> {
-    return this.httpService.getSourceSchemaData(name).pipe(
+    return this.perseusService.getSourceSchemaData(name).pipe(
       map(data => this.prepareTables(data, 'source'))
     );
   }
 
   getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<ColumnInfo> {
-    return this.httpService.getColumnInfo(reportName, tableName, columnName)
+    return this.perseusService.getColumnInfo(reportName, tableName, columnName)
       .pipe(
         map(info => {
           if (info.top_10[info.top_10.length - 1] === 'List truncated...') {
@@ -146,11 +146,11 @@ export class DataService {
   }
 
   saveSourceSchemaToDb(sourceTables: any): Observable<any> {
-    return this.httpService.saveSourceSchemaToDb(sourceTables);
+    return this.perseusService.saveSourceSchemaToDb(sourceTables);
   }
 
   getView(sql: any): Observable<any> {
-    return this.httpService.getView(sql);
+    return this.perseusService.getView(sql);
   }
 
   prepareTargetConfig(data) {

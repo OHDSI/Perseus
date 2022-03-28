@@ -21,7 +21,6 @@ import { TestConnectionComponent } from './auxiliary/test-connection/test-connec
 import { CdmDestinationFormComponent } from './cdm-dialog/cdm-form/cdm-destination-form/cdm-destination-form.component';
 import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cdm-source-form.component';
 import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmConsoleComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console/cdm-console.component';
 import { DataBaseExistWarningPopupComponent } from './auxiliary/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
@@ -55,7 +54,6 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
     CdmDestinationFormComponent,
     CdmSourceFormComponent,
     CdmConsoleWrapperComponent,
-    CdmConsoleComponent,
     DataBaseExistWarningPopupComponent,
     DqdDialogComponent,
     DqdConsoleWrapperComponent,

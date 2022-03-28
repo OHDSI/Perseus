@@ -32,17 +32,16 @@ export class FakeDataDialogComponent extends ConversionDialog {
   }
 
   generateFakeData(fakeDataSettings: FakeDataSettings) {
-    const {reportFile} = this.storeService.state;
     this.schemaService.getUserSchema()
       .pipe(
         tap(schema => fakeDataSettings.userSchema = schema),
-        switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings, reportFile))
+        switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings))
       )
       .subscribe(conversion => {
         this.conversion = conversion
         this.index = ConversionDialogStatus.CONVERSION
       }, error => {
-        openErrorDialog(this.dialogService, 'Failed to Generate Fake data', parseHttpError(error))
+        openErrorDialog(this.dialogService, 'Failed to generate Fake data', parseHttpError(error))
       })
   }
 

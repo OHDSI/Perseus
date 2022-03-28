@@ -12,6 +12,7 @@ import { StoreService } from '../store.service';
 import { removeExtension } from '@utils/file';
 import { authInjector } from '../auth/auth-injector';
 import { AuthService } from '../auth/auth.service';
+import { Conversion } from '@models/conversion/conversion'
 
 @Injectable()
 export class CdmBuilderService {
@@ -38,7 +39,7 @@ export class CdmBuilderService {
     return this.testConnection(settings, `${cdmBuilderApiUrl}/checkdestinationconnection`);
   }
 
-  addMapping(): Observable<boolean> {
+  addMapping(): Observable<Conversion> {
     const source = this.storeService.state.mappedSource;
     const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(source);
     const mappingName = this.getMappingName();
@@ -49,21 +50,21 @@ export class CdmBuilderService {
           const formData = new FormData();
           formData.append('File', file);
           formData.append('Name', mappingName);
-          return this.httpClient.post(`${cdmBuilderApiUrl}/addmappings`, formData, {observe: 'response'});
+          return this.httpClient.post<Conversion>(`${cdmBuilderApiUrl}/addmappings`, formData);
         }),
-        map(response => response.status === 200)
       );
   }
 
-  convert(settings: CdmSettings): Observable<boolean> {
-    return this.httpClient.post(cdmBuilderApiUrl, settings, {headers: {'Content-Type': 'application/json'}, observe: 'response'})
-      .pipe(
-        map(response => response.status === 200)
-      );
+  convert(settings: CdmSettings): Observable<void> {
+    return this.httpClient.post<void>(cdmBuilderApiUrl, settings, {headers: {'Content-Type': 'application/json'}})
   }
 
-  abort(): Observable<boolean> {
-    return this.httpClient.get(`${cdmBuilderApiUrl}/abort`, {observe: 'response', responseType: 'text'})
+  conversionInfoWithLog(conversionId: number): Observable<Conversion> {
+    return this.httpClient.get<Conversion>(`${cdmBuilderApiUrl}/log/?conversionId=${conversionId}`)
+  }
+
+  abort(conversionId: number): Observable<boolean> {
+    return this.httpClient.get(`${cdmBuilderApiUrl}/?conversionId=${conversionId}`, {observe: 'response', responseType: 'text'})
       .pipe(
         map(response => response.status === 200)
       );

@@ -59,10 +59,10 @@ export const dictionaryDbSettingForCdmBuilder = {
   vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
   vocabularyServer: dbServer,
   vocabularyPort: 5431,
-  vocabularyDatabase: 'cdm_souffleur',
+  vocabularyDatabase: 'vocabulary',
   vocabularySchema: 'vocabulary',
-  vocabularyUser: 'cdm_builder',
-  vocabularyPassword: 'N7jscuS3ca'
+  vocabularyUser: 'perseus',
+  vocabularyPassword: 'password'
 };
 
 export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';
