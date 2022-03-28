@@ -1,13 +1,13 @@
 from urllib.parse import urlparse
 from flask import request, jsonify, Blueprint
-
 import app
 from config import APP_PREFIX, VERSION
 from model.user import token_required, is_token_valid
 from services.authorization_service import *
-
 from utils.exceptions import InvalidUsage
 from utils.utils import getServerHostPort
+import traceback
+from werkzeug.exceptions import BadRequestKeyError
 
 user_api = Blueprint('authorization_api', __name__, url_prefix=APP_PREFIX)
 
@@ -163,3 +163,39 @@ def is_token_valid_call():
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify(True)
+
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    """handle error of wrong usage on functions"""
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
+@app.errorhandler(AuthorizationError)
+def handle_invalid_usage(error):
+    """handle error of wrong usage on functions"""
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
+@app.errorhandler(BadRequestKeyError)
+def handle_invalid_req_key(error):
+    """handle error of missed/wrong parameter"""
+    response = jsonify({'message': error.__str__()})
+    response.status_code = 400
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
+@app.errorhandler(KeyError)
+def handle_invalid_req_key_header(error):
+    """handle error of missed/wrong parameter"""
+    response = jsonify({'message': f'{error.__str__()} missing'})
+    response.status_code = 400
+    traceback.print_tb(error.__traceback__)
+    return response
