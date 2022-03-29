@@ -1,25 +1,4 @@
 services:
-#  backend:
-#    build: .
-#    container_name:
-#      perseus-backend
-#    network_mode: "host"
-#    restart: always
-#    environment:
-#      CDM_SOUFFLEUR_ENV: "prod"
-#    env_file:
-#      - back-envs.txt
-#  db:
-#    build: ./database
-#    container_name:
-#      perseus-database
-#    volumes:
-#      - type: volume
-#        source: perseusdb
-#        target: /var/lib/postgresql/data
-#    ports:
-#      - "5431:5432"
-#    restart: always
 #  pgadmin:
 #    container_name: pgadmin
 #    image: dpage/pgadmin4
@@ -89,6 +68,7 @@ services:
     depends_on:
       - shareddb
       - files-manager
+      - vocabularydb
   r-serve:
     build:
       context: ../DataQualityDashboard/R
@@ -149,6 +129,7 @@ services:
     depends_on:
       - perseusdb
       - shareddb
+      - files-manager
   vocabularydb:
     build: ./vocabulary-db
     container_name: vocabularydb
