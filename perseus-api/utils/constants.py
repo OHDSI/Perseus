@@ -3,8 +3,8 @@ from os.path import dirname
 from pathlib import Path
 
 ROOT_DIR = Path(dirname(sys.modules['__main__'].__file__))
-GENERATE_CDM_XML_PATH = Path('model/generate/Definitions') # todo make stateless - xml used by cdm builder
-GENERATE_CDM_LOOKUP_SQL_PATH = Path('model/generate/Lookups') # todo make stateless - for cmd builder
+GENERATE_CDM_XML_PATH = Path('model/generate/definitions') # todo make stateless - xml used by cdm builder
+GENERATE_CDM_LOOKUP_SQL_PATH = Path('model/generate/lookups') # todo make stateless - for cmd builder
 GENERATE_BATCH_SQL_PATH = Path('model/generate/batch') # todo make stateless - for cmd builder
 GENERATE_CDM_XML_ARCHIVE_PATH = Path('model/generate') # todo make stateless
 GENERATE_CDM_XML_ARCHIVE_FILENAME = 'CDM_xml'
@@ -13,8 +13,8 @@ CDM_SCHEMA_PATH = Path('model/sources/CDM/') # CDM versions
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', '6', ]
 UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema') # todo make stateless - WR scan report
 UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make stateless
-PREDEFINED_LOOKUPS_PATH = Path('model/Lookups') # not changed
-INCOME_LOOKUPS_PATH = Path('model/UserDefinedLookups') # todo make stateless
+PREDEFINED_LOOKUPS_PATH = Path('model/lookups') # not changed
+INCOME_LOOKUPS_PATH = Path('model/generate/user_defined_lookups') # todo make stateless
 
 COLUMN_TYPES_MAPPING = {
      16: 'bool',

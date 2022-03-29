@@ -737,8 +737,8 @@ def zip_xml(current_user):
             GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "Definitions")
-        add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "Lookups")
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "definitions")
+        add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "lookups")
 
         if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
             zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')

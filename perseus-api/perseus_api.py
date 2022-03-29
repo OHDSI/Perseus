@@ -267,7 +267,7 @@ def handle_invalid_usage(error):
 
 
 @app.errorhandler(BadRequestKeyError)
-def handle_invalid_req_key(error):
+def handle_bad_request_key(error):
     """handle error of missed/wrong parameter"""
     response = jsonify({'message': error.__str__()})
     response.status_code = 400
@@ -276,9 +276,18 @@ def handle_invalid_req_key(error):
 
 
 @app.errorhandler(KeyError)
-def handle_invalid_req_key_header(error):
+def handle_invalid_req_key(error):
     """handle error of missed/wrong parameter"""
     response = jsonify({'message': f'{error.__str__()} missing'})
     response.status_code = 400
+    traceback.print_tb(error.__traceback__)
+    return response
+
+
+@app.errorhandler(Exception)
+def handle_excpetion(error):
+    """handle error of missed/wrong parameter"""
+    response = jsonify({'message': error.__str__()})
+    response.status_code = 500
     traceback.print_tb(error.__traceback__)
     return response
