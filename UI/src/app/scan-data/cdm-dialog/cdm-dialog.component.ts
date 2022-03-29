@@ -31,6 +31,7 @@ export class CdmDialogComponent extends ConversionDialog {
   project: string
 
   private cdmSettings: CdmSettings
+  private savedCdmBuilderConversion: Conversion | null = null
 
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>,
               private storeService: StoreService,
@@ -96,6 +97,7 @@ export class CdmDialogComponent extends ConversionDialog {
   }
 
   onDataQualityCheck() {
+    this.savedCdmBuilderConversion = this.conversion
     const dbSettings = adaptDestinationCdmSettings(this.cdmSettings)
     this.dataQualityCheckService.dataQualityCheck(dbSettings)
       .subscribe(conversion => {
@@ -105,5 +107,11 @@ export class CdmDialogComponent extends ConversionDialog {
       }, error => {
         openErrorDialog(this.dialogService, 'Failed to data quality check', parseHttpError(error))
       })
+  }
+
+  onDqdBack() {
+    this.conversion = this.savedCdmBuilderConversion
+    this.savedCdmBuilderConversion = null
+    this.index = ConversionDialogStatus.CONVERSION
   }
 }
