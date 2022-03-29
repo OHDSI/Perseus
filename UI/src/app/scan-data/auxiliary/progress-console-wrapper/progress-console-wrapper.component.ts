@@ -50,6 +50,7 @@ export abstract class ProgressConsoleWrapperComponent extends BaseComponent impl
           }
         }
       }, error => {
+        this.conversionSub.unsubscribe()
         this.conversion.statusCode = ConversionStatus.FAILED
         this.consoleComponent.addErrorLog(parseHttpError(error))
         this.consoleComponent.changeProgressColorToError();

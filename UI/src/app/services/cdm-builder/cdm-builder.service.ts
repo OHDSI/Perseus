@@ -60,7 +60,7 @@ export class CdmBuilderService {
   }
 
   conversionInfoWithLog(conversionId: number): Observable<Conversion> {
-    return this.httpClient.get<Conversion>(`${cdmBuilderApiUrl}/log/?conversionId=${conversionId}`)
+    return this.httpClient.get<Conversion>(`${cdmBuilderApiUrl}/log?conversionId=${conversionId}`)
   }
 
   abort(conversionId: number): Observable<boolean> {
