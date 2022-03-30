@@ -12,8 +12,8 @@ import { ConfigurationService } from '@services/configuration.service';
 import { DataService } from '@services/data.service';
 import { DrawService } from '@services/draw.service';
 import { PerseusApiService } from '@services/perseus/perseus-api.service';
-import { LookupService } from '@services/lookup.service';
-import { ReportGenerationService } from '@services/report-generation.service';
+import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
+import { ReportGenerationService } from '@services/report/report-generation.service';
 import { StoreService } from '@services/store.service';
 import { UploadService } from '@services/upload.service';
 import { VocabulariesService } from '@services/vocabularies.service';
@@ -63,7 +63,7 @@ import { CanRedirectMappingService } from '@services/breadcrumb/can-redirect-map
     DataService,
     DrawService,
     PerseusApiService,
-    LookupService,
+    PerseusLookupService,
     ReportGenerationService,
     StoreService,
     UploadService,

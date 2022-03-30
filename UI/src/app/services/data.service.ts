@@ -15,14 +15,9 @@ import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
 
 @Injectable()
 export class DataService {
-  batch = [];
-
-  constructor(
-    private perseusService: PerseusApiService,
-    private storeService: StoreService,
-    private bridgeService: BridgeService
-  ) {
-  }
+  constructor(private perseusService: PerseusApiService,
+              private storeService: StoreService,
+              private bridgeService: BridgeService) {}
 
   _normalize(data, area) {
     const tables = [];
@@ -90,10 +85,6 @@ export class DataService {
     return this.perseusService.getXmlPreview(mapping);
   }
 
-  getSqlPreview(sourceTable: string): Observable<any> {
-    return this.perseusService.getSqlPreview(sourceTable);
-  }
-
   getCDMVersions() {
     return this.perseusService.getCDMVersions();
   }
@@ -107,18 +98,6 @@ export class DataService {
         this.prepareTargetConfig(filteredData);
         return tables;
       })
-    );
-  }
-
-  getSourceSchema(path) {
-    return this.perseusService.getSourceSchema(path).pipe(
-      map(data => this.prepareTables(data, 'source'))
-    );
-  }
-
-  getSourceSchemaData(name: string): Observable<any> {
-    return this.perseusService.getSourceSchemaData(name).pipe(
-      map(data => this.prepareTables(data, 'source'))
     );
   }
 
@@ -154,7 +133,6 @@ export class DataService {
   }
 
   prepareTargetConfig(data) {
-
     const targetConfig = {};
     data.map(table => {
       const tableName = table.table_name.toLowerCase();

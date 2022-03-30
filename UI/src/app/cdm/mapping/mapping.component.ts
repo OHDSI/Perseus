@@ -29,12 +29,12 @@ import {
 import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/select-table-dropdown.component';
 import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
 import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
-import { LookupService } from '@services/lookup.service';
+import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { getLookupType } from '@utils/lookup-util';
 import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
 import { PanelComponent } from './panel/panel.component';
 import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
 import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
@@ -125,7 +125,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     mappingElementRef: ElementRef,
     private overlayService: OverlayService,
     private router: Router,
-    private lookupService: LookupService,
+    private lookupService: PerseusLookupService,
     private activatedRoute: ActivatedRoute,
     private vocabularyObserverService: VocabularyObserverService,
     private reportGenerationService: ReportGenerationService

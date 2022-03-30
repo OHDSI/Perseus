@@ -37,7 +37,6 @@ export class CommonUtilsService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-
   findTableByKeyValue(tables, key, value) {
     return tables.find(it => it[ key ] === value);
   }
@@ -84,7 +83,6 @@ export class CommonUtilsService {
       }
     });
   }
-
 
   openResetWarningDialog(settings: any) {
     const { warning, header, okButton, deleteButton, deleteSourceAndTarget, loadReport } = settings;

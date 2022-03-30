@@ -8,7 +8,7 @@ import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { cloneDeep } from 'src/app/infrastructure/utility';
 import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
-import { LookupService } from 'src/app/services/lookup.service';
+import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
@@ -34,7 +34,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
               private renderer: Renderer2,
               private overlayService: OverlayService,
               public dialogRef: MatDialogRef<ConceptTransformationComponent>,
-              private lookupService: LookupService
+              private lookupService: PerseusLookupService
   ) {
     super();
   }
