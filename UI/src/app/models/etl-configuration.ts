@@ -7,7 +7,7 @@ import { Concepts, IConcepts } from '@models/concepts';
 import { Clones, IClones } from '@models/clones';
 import { TargetConfig } from '@models/state';
 
-export interface IConfiguration {
+export interface IEtlConfiguration {
   name?: string;
   tablesConfiguration?: TargetConfig;
   mappingsConfiguration?: IArrowCache;
@@ -24,7 +24,7 @@ export interface IConfiguration {
   concepts?: IConcepts;
 }
 
-export class Configuration implements IConfiguration {
+export class EtlConfiguration implements IEtlConfiguration {
   name?: string;
   tablesConfiguration?: TargetConfig;
 
@@ -57,7 +57,7 @@ export class Configuration implements IConfiguration {
   @Type(() => Concepts)
   concepts?: IConcepts;
 
-  constructor(options: IConfiguration = {}) {
+  constructor(options: IEtlConfiguration = {}) {
     this.name = options.name
     this.mappingsConfiguration = options.mappingsConfiguration
     this.tablesConfiguration = options.tablesConfiguration

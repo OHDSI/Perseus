@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
-import { ITableOptions, Table } from 'src/app/models/table';
+import { ITable, ITableOptions, Table } from 'src/app/models/table';
 import { Mapping } from '@models/mapping';
 import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
@@ -124,8 +124,8 @@ export class DataService {
       );
   }
 
-  saveSourceSchemaToDb(sourceTables: any): Observable<any> {
-    return this.perseusService.saveSourceSchemaToDb(sourceTables);
+  createSourceSchema(sourceTables: ITable[]): Observable<string> {
+    return this.perseusService.createSourceSchema(sourceTables);
   }
 
   getView(sql: any): Observable<any> {
@@ -146,7 +146,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data, key: keyof State) {
+  prepareTables(data: any[], key: keyof State) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

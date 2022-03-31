@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { UploadService } from '../upload.service';
 import { BridgeService } from '../bridge.service';
 import { DataService } from '../data.service';
 import { finalize, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { StoreService } from '../store.service';
+import { PerseusApiService } from '@services/perseus/perseus-api.service'
 
 @Injectable()
 export class ScanDataUploadService {
-
-  constructor(private uploadService: UploadService,
+  constructor(private perseusApiService: PerseusApiService,
               private bridgeService: BridgeService,
               private dataService: DataService,
               private storeService: StoreService) {
@@ -20,7 +19,7 @@ export class ScanDataUploadService {
     this.storeService.add('reportFile', report);
     this.dataService.saveReportName(report.name, 'report');
 
-    return this.uploadService.uploadSchema([report])
+    return this.perseusApiService.uploadScanReportAndCreateSourceSchema(report)
       .pipe(
         switchMap(res => {
           this.bridgeService.resetAllMappings();

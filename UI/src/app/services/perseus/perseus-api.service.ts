@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
 import { createNoCacheHeaders } from '@utils/http-headers';
 import { perseusApiUrl } from '@app/app.constants'
+import { ITable } from '@models/table'
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -17,17 +17,34 @@ const API_URLS = {
   getColumnInfo: (reportName, tableName, columnName) => `${URL}/get_column_info?report_name=${reportName}&table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
   getZipXml: () => `${URL}/get_zip_xml`,
-  postSaveLoadSchema: () => `${URL}/save_and_load_schema`,
   saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`,
   getView: () => `${URL}/get_view`,
-  validateSql: () => `${URL}/validate_sql`,
-  loadReportToServer: () => `${URL}/load_schema_to_server`
+  validateSql: () => `${URL}/validate_sql`
 };
 
 @Injectable()
 export class PerseusApiService {
 
   constructor(private httpClient: HttpClient) {
+  }
+
+  uploadScanReport(scanReportFile: File): Observable<void> {
+    const formData: FormData = new FormData();
+    formData.append('scanReportFile', scanReportFile, scanReportFile.name);
+    return this.httpClient.post<void>(`${perseusApiUrl}/upload_scan_report`, formData);
+  }
+
+  /**
+   * @return source tables list
+   */
+  uploadScanReportAndCreateSourceSchema(scanReportFile: File): Observable<any[]> {
+    const formData: FormData = new FormData();
+    formData.append('scanReportFile', scanReportFile, scanReportFile.name);
+    return this.httpClient.post<any[]>(`${perseusApiUrl}/upload_scan_report_and_create_source_schema`, formData);
+  }
+
+  createSourceSchema(sourceTables: ITable[]): Observable<string> {
+    return this.httpClient.post<string>(`${perseusApiUrl}/create_source_schema`, sourceTables);
   }
 
   getCDMVersions(): Observable<string[]> {
@@ -54,23 +71,11 @@ export class PerseusApiService {
       )
   }
 
-  postSaveLoadSchema(formData: FormData) {
-    return this.httpClient.post(API_URLS.postSaveLoadSchema(), formData);
-  }
-
-  saveSourceSchemaToDb(sourceTables: any) {
-    return this.httpClient.post(API_URLS.saveSourceSchemaToDb(), sourceTables);
-  }
-
   getView(sql: any): Observable<any> {
     return this.httpClient.post(API_URLS.getView(), sql);
   }
 
   validateSql(sql: any): Observable<any> {
     return this.httpClient.post(API_URLS.validateSql(), sql);
-  }
-
-  loadReportToServer(file: any) {
-    return this.httpClient.post(API_URLS.loadReportToServer(), file);
   }
 }

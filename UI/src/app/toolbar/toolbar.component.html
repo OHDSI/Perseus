@@ -28,13 +28,13 @@
     <input #sourceUpload
            type="file"
            accept=".xlsx, .xls"
-           (change)="onFileUpload($event)"
+           (change)="onScanReportUpload($event)"
            hidden />
 
     <input #mappingUpload
            type="file"
            accept=".etl"
-           (change)="onMappingUpload($event)"
+           (change)="onEtlMappingUpload($event)"
            hidden />
 
     <button mat-menu-item

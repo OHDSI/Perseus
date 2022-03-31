@@ -1,6 +1,6 @@
 import { IArrowCache } from '@models/arrow-cache';
 import { State } from '@models/state';
-import { Configuration, IConfiguration } from '@models/configuration';
+import { EtlConfiguration, IEtlConfiguration } from '@models/etl-configuration';
 import { IConstantCache } from '@models/constant-cache';
 import { classToPlain, plainToClass } from 'class-transformer';
 import { Connection } from '@models/connection';
@@ -8,13 +8,13 @@ import { Row } from '@models/row';
 import { Table } from '@models/table';
 
 /**
- * @return Configuration - Flyweight mapping object to save to a file
+ * @return EtlConfiguration - Flyweight mapping object to save to a file
  */
 export function mappingStateToPlain(configurationName: string,
                                     state: State,
                                     arrowCache: IArrowCache,
-                                    constantsCache: IConstantCache): Record<string, Configuration> {
-  const options: IConfiguration = {
+                                    constantsCache: IConstantCache): Record<string, EtlConfiguration> {
+  const options: IEtlConfiguration = {
     name: configurationName,
     mappingsConfiguration: arrowCache,
     tablesConfiguration: state.targetConfig,
@@ -30,12 +30,12 @@ export function mappingStateToPlain(configurationName: string,
     recalculateSimilar: state.recalculateSimilar,
     concepts: state.concepts
   }
-  const configuration = new Configuration(options)
-  return classToPlain<Configuration>(configuration)
+  const configuration = new EtlConfiguration(options)
+  return classToPlain<EtlConfiguration>(configuration)
 }
 
-export function plainToConfiguration(plain: Record<string, Configuration>): Configuration {
-  const configuration = plainToClass(Configuration, plain)
+export function plainToConfiguration(plain: Record<string, EtlConfiguration>): EtlConfiguration {
+  const configuration = plainToClass(EtlConfiguration, plain)
   // Type decorator doesn't work with index fields
   const mapProperties = {
     mappingsConfiguration: Connection,

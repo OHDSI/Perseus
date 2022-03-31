@@ -834,7 +834,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.bridgeService.applyConfiguration$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables))
+        switchMap(configuration => this.dataService.createSourceSchema(configuration.sourceTables))
       )
       .subscribe(() => {
         this.sourceRows = [];
