@@ -11,11 +11,8 @@ import { mappingStateToPlain } from '@utils/configuration';
 @Injectable()
 export class ConfigurationService {
 
-  constructor(
-    private bridgeService: BridgeService,
-    private storeService: StoreService
-  ) {
-  }
+  constructor(private bridgeService: BridgeService,
+              private storeService: StoreService) {}
 
   saveConfiguration(configurationName: string): Observable<string> {
     if (!configurationName || configurationName.trim().length === 0) {

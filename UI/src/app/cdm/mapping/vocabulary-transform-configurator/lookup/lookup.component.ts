@@ -9,7 +9,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
-import { LookupService } from '@services/lookup.service';
+import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { EditorFromTextArea } from 'codemirror';
 
 const editorSettings = {
@@ -59,7 +59,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   private codeMirrorDirty = false;
 
   constructor(
-    private lookupService: LookupService,
+    private lookupService: PerseusLookupService,
     private matDialog: MatDialog) {
   }
 

@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BridgeService } from './bridge.service';
 import { DataService } from './data.service';
 import { PerseusApiService } from './perseus/perseus-api.service';
-import { Configuration } from '@models/configuration';
+import { EtlConfiguration } from '@models/etl-configuration';
 import { StoreService } from './store.service';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import * as jsZip from 'jszip';
@@ -22,14 +22,11 @@ export class UploadService {
   // mapping json loading
   private loading$ = new BehaviorSubject<boolean>(false);
 
-  constructor(
-    private snackbar: MatSnackBar,
-    private bridgeService: BridgeService,
-    private httpService: PerseusApiService,
-    private dataService: DataService,
-    private storeService: StoreService
-  ) {
-  }
+  constructor(private snackbar: MatSnackBar,
+              private bridgeService: BridgeService,
+              private perseusApiService: PerseusApiService,
+              private dataService: DataService,
+              private storeService: StoreService) {}
 
   get mappingLoading$() {
     return this.loading$.asObservable();
@@ -39,43 +36,34 @@ export class UploadService {
     this.loading$.next(value);
   }
 
-  uploadSchema(files: File[], loadWithoutDb?: boolean): Observable<any> {
-    const formData: FormData = new FormData();
-    for (const file of files) {
-      formData.append('file', file, file.name);
-    }
-    return loadWithoutDb ? this.httpService.loadReportToServer(formData) : this.httpService.postSaveLoadSchema(formData);
-  }
-
-  onScanReportChange(event: any): Observable<any> {
-    const files = event.target.files;
-    this.storeService.add('reportFile', files[0]);
-    return this.uploadSchema(files)
+  uploadScanReportAndCreateSourceSchema(event: any): Observable<any> {
+    const scanReportFile = event.target.files[0]
+    this.bridgeService.reportLoading();
+    this.storeService.add('reportFile', scanReportFile);
+    return this.perseusApiService.uploadScanReportAndCreateSourceSchema(scanReportFile)
       .pipe(
         tap(res => {
-          this.snackbar.open(
-            'Success file upload',
-            ' DISMISS '
-          );
+          this.snackbar.open('Success file upload', ' DISMISS ');
           this.bridgeService.resetAllMappings();
           this.dataService.prepareTables(res, 'source');
-          this.dataService.saveReportName(files[0].name, 'report');
+          this.dataService.saveReportName(scanReportFile.name, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
         }),
         catchError(error => {
-          this.bridgeService.reportLoading$.next(false)
           const templateMessage = 'Failed to load report'
           const errorMessage = parseHttpError(error)
           throw new Error(
             errorMessage ? `${templateMessage}: ${errorMessage}` : templateMessage
           );
-        })
+        }),
+        finalize(() =>
+          this.bridgeService.reportLoaded()
+        )
       );
   }
 
-  onMappingChange(event: any): Observable<any> {
+  uploadEtlMapping(event: any): Observable<any> {
     this.mappingLoading = true;
-
     return fromPromise(jsZip.loadAsync(event.target.files[0]))
       .pipe(
         switchMap(zip => {
@@ -87,7 +75,7 @@ export class UploadService {
             fileNames.map(key => {
               const dotIndex = key.lastIndexOf('.');
               const isJson = key.substring(dotIndex + 1) === 'json';
-              return this.loadMappingAndReport(zip.files[key], isJson as boolean)
+              return this.loadEtlMappingOrScanReport(zip.files[key], isJson as boolean)
             }))
         }),
         catchError(error => {
@@ -101,43 +89,40 @@ export class UploadService {
       )
   }
 
-  loadMappingAndReport(zipObject: JSZipObject, isJson: boolean): Observable<any> {
+  onFileInputClick(el: ElementRef) {
+    if (el.nativeElement.files && el.nativeElement.files.length > 0) {
+      el.nativeElement.value = '';
+    }
+    el.nativeElement.click();
+  }
+
+  private loadEtlMappingOrScanReport(zipObject: JSZipObject, isJson: boolean): Observable<any> {
     if (isJson) {
       return readJsZipFile(zipObject, 'string')
         .pipe(
           tap(content => {
             const configurationPlain = JSON.parse(content)
             const configuration = plainToConfiguration(configurationPlain)
-            this.loadMapping(configuration)
+            this.loadEtlMapping(configuration)
           })
         )
     } else {
       return jZipObjectToFile(zipObject, 'blob', MediaType.XLSX)
         .pipe(
-          switchMap(file => this.loadReport([file]))
+          switchMap(file => this.loadScanReport(file))
         )
     }
   }
 
-  loadMapping(configuration: Configuration) {
+  private loadEtlMapping(configuration: EtlConfiguration) {
     this.bridgeService.applyConfiguration(configuration);
   }
 
-  loadReport(files: File[]): Observable<any> {
-    this.storeService.add('reportFile', files[0]);
-    return this.uploadSchema(files, true)
+  private loadScanReport(scanReportFile: File): Observable<any> {
+    this.storeService.add('reportFile', scanReportFile);
+    return this.perseusApiService.uploadScanReport(scanReportFile)
       .pipe(
-        tap(() => this.snackbar.open(
-          'Success file upload',
-          ' DISMISS '
-        ))
+        tap(() => this.snackbar.open('Success file upload', ' DISMISS '))
       )
-  }
-
-  onFileInputClick(el: ElementRef) {
-    if (el.nativeElement.files && el.nativeElement.files.length > 0) {
-      el.nativeElement.value = '';
-    }
-    el.nativeElement.click();
   }
 }

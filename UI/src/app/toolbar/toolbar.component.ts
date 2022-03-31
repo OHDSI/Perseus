@@ -16,7 +16,7 @@ import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '@scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
 import { codesRouter, mainPageRouter } from '../app.constants';
 import { LogoutComponent } from '@popups/logout/logout.component';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
@@ -119,9 +119,9 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.storeService.state.source.length ? this.commonUtilsService.loadNewReportWithWarning() : this.commonUtilsService.loadReportWithoutWarning();
   }
 
-  onFileUpload(event: Event) {
+  onScanReportUpload(event: Event) {
     this.bridgeService.reportLoading();
-    this.uploadService.onScanReportChange(event)
+    this.uploadService.uploadScanReportAndCreateSourceSchema(event)
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
@@ -134,8 +134,8 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       )
   }
 
-  onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event)
+  onEtlMappingUpload(event: Event) {
+    this.uploadService.uploadEtlMapping(event)
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {

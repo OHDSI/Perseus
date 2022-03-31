@@ -5,7 +5,7 @@ import { DrawService } from 'src/app/services/draw.service';
 import { Command } from '../infrastructure/command';
 import { cloneDeep, uniq } from '../infrastructure/utility';
 import { IArrowCache } from '@models/arrow-cache';
-import { Configuration } from '@models/configuration';
+import { EtlConfiguration } from '@models/etl-configuration';
 import { IConnector } from '@models/connector';
 import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@services/mapping-service';
 import { ITable, Table } from '@models/table';
@@ -87,7 +87,7 @@ export class BridgeService implements StateService {
     private storeService: StoreService
   ) { }
 
-  applyConfiguration$ = new Subject<Configuration>();
+  applyConfiguration$ = new Subject<EtlConfiguration>();
   resetAllMappings$ = new Subject<any>();
   saveAndLoadSchema$ = new Subject<any>();
   reportLoading$ = new Subject<boolean>();
@@ -304,7 +304,7 @@ export class BridgeService implements StateService {
     });
   }
 
-  applyConfiguration(configuration: Configuration) {
+  applyConfiguration(configuration: EtlConfiguration) {
     this.deleteAllArrows();
 
     this.constantsCache = configuration.constants

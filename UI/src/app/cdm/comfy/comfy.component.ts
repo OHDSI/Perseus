@@ -195,7 +195,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables))
+        switchMap(configuration => this.dataService.createSourceSchema(configuration.sourceTables))
       )
       .subscribe(res => {
         if (res === 'OK') {
@@ -506,8 +506,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   onScanReportUpload(event: Event) {
-    this.bridgeService.reportLoading();
-    this.uploadService.onScanReportChange(event)
+    this.uploadService.uploadScanReportAndCreateSourceSchema(event)
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
@@ -639,7 +638,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event)
+    this.uploadService.uploadEtlMapping(event)
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {

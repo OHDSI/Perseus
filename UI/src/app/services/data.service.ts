@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
-import { ITableOptions, Table } from 'src/app/models/table';
+import { ITable, ITableOptions, Table } from 'src/app/models/table';
 import { Mapping } from '@models/mapping';
 import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
@@ -15,14 +15,9 @@ import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
 
 @Injectable()
 export class DataService {
-  batch = [];
-
-  constructor(
-    private perseusService: PerseusApiService,
-    private storeService: StoreService,
-    private bridgeService: BridgeService
-  ) {
-  }
+  constructor(private perseusService: PerseusApiService,
+              private storeService: StoreService,
+              private bridgeService: BridgeService) {}
 
   _normalize(data, area) {
     const tables = [];
@@ -90,10 +85,6 @@ export class DataService {
     return this.perseusService.getXmlPreview(mapping);
   }
 
-  getSqlPreview(sourceTable: string): Observable<any> {
-    return this.perseusService.getSqlPreview(sourceTable);
-  }
-
   getCDMVersions() {
     return this.perseusService.getCDMVersions();
   }
@@ -107,18 +98,6 @@ export class DataService {
         this.prepareTargetConfig(filteredData);
         return tables;
       })
-    );
-  }
-
-  getSourceSchema(path) {
-    return this.perseusService.getSourceSchema(path).pipe(
-      map(data => this.prepareTables(data, 'source'))
-    );
-  }
-
-  getSourceSchemaData(name: string): Observable<any> {
-    return this.perseusService.getSourceSchemaData(name).pipe(
-      map(data => this.prepareTables(data, 'source'))
     );
   }
 
@@ -145,8 +124,8 @@ export class DataService {
       );
   }
 
-  saveSourceSchemaToDb(sourceTables: any): Observable<any> {
-    return this.perseusService.saveSourceSchemaToDb(sourceTables);
+  createSourceSchema(sourceTables: ITable[]): Observable<string> {
+    return this.perseusService.createSourceSchema(sourceTables);
   }
 
   getView(sql: any): Observable<any> {
@@ -154,7 +133,6 @@ export class DataService {
   }
 
   prepareTargetConfig(data) {
-
     const targetConfig = {};
     data.map(table => {
       const tableName = table.table_name.toLowerCase();
@@ -168,7 +146,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data, key: keyof State) {
+  prepareTables(data: any[], key: keyof State) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;
