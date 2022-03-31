@@ -5,8 +5,8 @@ from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
 from flask import request, jsonify, send_from_directory
 from services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
-from services.source_schema import load_schema_to_server, \
-    load_saved_source_schema_from_server, save_source_schema_in_db, get_view_from_db, run_sql_transformation, \
+from services.source_schema import load_scan_report_to_server, \
+    create_source_schema_by_scan_report, create_source_schema_in_db, get_view_from_db, run_sql_transformation, \
     get_column_info, get_field_type
 from services.cdm_schema import get_exist_version, get_schema
 from utils.exceptions import InvalidUsage
@@ -25,48 +25,29 @@ def get_app_version():
     return jsonify({'name': 'Perseus', 'version': VERSION})
 
 
-@perseus.route('/api/load_schema', methods=['GET', 'POST'])
+@perseus.route('/api/upload_scan_report', methods=['POST'])
 @username_header
-def load_schema(current_user):
-    """save source schema to server side"""
-    app.logger.info("REST request to load schema")
+def upload_scan_report(current_user):
+    """Save White Rabbit scan report to server"""
+    app.logger.info("REST request to upload WR scan report")
     try:
-        if request.method == 'POST':
-            file = request.files['file']
-            load_schema_to_server(file, current_user)
-    except InvalidUsage as e:
-        raise e
+        scan_report_file = request.files['scanReportFile']
+        load_scan_report_to_server(scan_report_file, current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
-    return jsonify(success=True)
+        raise InvalidUsage('Schema was not loaded', 500)
+    return jsonify('OK')
 
 
-@perseus.route('/api/load_saved_source_schema', methods=['GET'])
+@perseus.route('/api/upload_scan_report_and_create_source_schema', methods=['POST'])
 @username_header
-def load_saved_source_schema_call(current_user):
-    """load saved source schema by name"""
-    app.logger.info("REST request to load saved source schema")
-    try:
-        schema_name = request.args['schema_name']
-        saved_schema = load_saved_source_schema_from_server(current_user, schema_name)
-    except InvalidUsage as e:
-        raise e
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
-    return jsonify([s.to_json() for s in saved_schema])
-
-
-@perseus.route(f'/api/save_and_load_schema', methods=['GET', 'POST'])
-@username_header
-def save_and_load_schema_call(current_user):
-    """save schema to server and load it from server in the same request"""
-    app.logger.info("REST request to save and load schema")
+def upload_scan_report_and_create_source_schema(current_user):
+    """Save White Rabbit scan report to server and create source schema"""
+    app.logger.info("REST request to upload WR scan report and create source schema")
     try:
         delete_generated_xml(current_user)
-        if request.method == 'POST':
-            file = request.files['file']
-            load_schema_to_server(file, current_user)
-        saved_schema = load_saved_source_schema_from_server(current_user, file.filename)
+        scan_report_file = request.files['scanReportFile']
+        load_scan_report_to_server(scan_report_file, current_user)
+        saved_schema = create_source_schema_by_scan_report(current_user, scan_report_file.filename)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -74,26 +55,14 @@ def save_and_load_schema_call(current_user):
     return jsonify([s.to_json() for s in saved_schema])
 
 
-@perseus.route(f'/api/load_schema_to_server', methods=['POST'])
+@perseus.route('/api/create_source_schema', methods=['POST'])
 @username_header
-def load_schema_call(current_user):
-    """save schema to server and load it from server in the same request"""
-    app.logger.info("REST request to load schema to server")
-    try:
-        file = request.files['file']
-        load_schema_to_server(file, current_user)
-    except Exception as error:
-        raise InvalidUsage('Schema was not loaded', 500)
-    return jsonify('OK')
-
-
-@perseus.route('/api/save_source_schema_to_db', methods=['POST'])
-@username_header
-def save_source_schema_to_db_call(current_user):
-    app.logger.info("REST request to save source schema to db")
+def create_source_schema(current_user):
+    """Create source schema by source tables from ETL mapping"""
+    app.logger.info("REST request to create source schema")
     try:
         source_tables = request.json
-        save_source_schema_in_db(current_user, source_tables)
+        create_source_schema_in_db(current_user, source_tables)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify('OK')
@@ -101,7 +70,7 @@ def save_source_schema_to_db_call(current_user):
 
 @perseus.route('/api/get_view', methods=['POST'])
 @username_header
-def get_View(current_user):
+def get_view(current_user):
     app.logger.info("REST request to get view")
     try:
         view_sql = request.get_json()
@@ -115,7 +84,7 @@ def get_View(current_user):
 
 @perseus.route('/api/validate_sql', methods=['POST'])
 @username_header
-def validate_Sql(current_user):
+def validate_sql(current_user):
     app.logger.info("REST request to validate sql")
     try:
         sql_transformation = request.get_json()

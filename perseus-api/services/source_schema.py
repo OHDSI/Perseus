@@ -23,10 +23,8 @@ with open('configuration/default.json', 'r') as configuration_file:
     print(configuration)
 
 
-def get_source_schema(current_user, schemaname):
-    """return tables and columns of source schema based on WR report,
-     arg actually is path
-     """
+def __create_source_schema_by_scan_report__(current_user, schemaname):
+    """Create source schema by White Rabbit scan report and return it. Cast to postgres types"""
     print("schema name: " + str(schemaname))
     reset_schema(user_schemas_db, name=current_user)
     filepath = Path(schemaname)
@@ -78,7 +76,8 @@ def reset_schema(user_schemas_db, name='public'):
     user_schemas_db.execute_sql(create_schema_sql)
 
 
-def save_source_schema_in_db(current_user, source_tables):
+def create_source_schema_in_db(current_user, source_tables):
+    """Create source schema by source tables from ETL mapping. Without casting to postgres types"""
     reset_schema(user_schemas_db, name=current_user)
 
     for row in source_tables:
@@ -215,8 +214,8 @@ def _allowed_file(filename):
             raise InvalidUsage("Incorrect scan report extension. Only xlsx or xls are allowed", 400)
 
 
-def load_schema_to_server(file, current_user):
-    """save source schema to server side"""
+def load_scan_report_to_server(file, current_user):
+    """Save White Rabbit scan report to server"""
     checked_filename = _allowed_file(file.filename)
     if file and checked_filename:
         filename = secure_filename(checked_filename)
@@ -226,19 +225,18 @@ def load_schema_to_server(file, current_user):
         except FileExistsError:
             print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} already exist")
         path = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{filename}"
+        # todo fix saving already existed file
         file.save(path)
         file.close()
         _open_book(current_user, Path(path))
     return
 
 
-def load_saved_source_schema_from_server(current_user, schema_name):
-    """load saved source schema by name"""
+def create_source_schema_by_scan_report(current_user, schema_name):
+    """Create source schema by White Rabbit scan report"""
     schema_name = secure_filename(schema_name)
-    if schema_name in get_existing_source_schemas_list(
-            f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"):
-        source_schema = get_source_schema(current_user,
-            f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{schema_name}")
+    if schema_name in get_existing_source_schemas_list(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"):
+        source_schema = __create_source_schema_by_scan_report__(current_user, f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{schema_name}")
         return source_schema
     else:
         raise InvalidUsage('Schema was not loaded', 404)
