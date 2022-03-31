@@ -16,7 +16,7 @@ import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { createDbConnectionForm } from '@utils/form';
-import { DataTypeGroup } from '@models/data-type-group';
+import { DataTypeGroup } from '@models/white-rabbit/data-type-group';
 import { hasLimits } from '@utils/scan-data-util';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 

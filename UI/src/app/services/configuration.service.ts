@@ -37,14 +37,14 @@ export class ConfigurationService {
       )
   }
 
-  saveOnLocalDisk(blobMapping: Blob, configurationName: string): Promise<Blob> {
+  private saveOnLocalDisk(blobMapping: Blob, configurationName: string): Promise<Blob> {
     return this.createZip(
       [ blobMapping, this.storeService.state.reportFile ],
       [ `${configurationName}.json`, this.storeService.state.report ]
     )
   }
 
-  createZip(files: any[], names: any[]): Promise<Blob> {
+  private createZip(files: any[], names: any[]): Promise<Blob> {
     const zip = new JSZip();
     files.forEach((item, index) => {
       zip.file(names[ index ], item);
