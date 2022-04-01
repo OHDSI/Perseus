@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.arcadia.perseus.filesmanager.service.MD5ServiceTest.readFileFromResourcesAsByteArray;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,12 +43,12 @@ class DbDataServiceTest {
         String fileName = "cprd_1k.etl";
         byte[] bytes = readFileFromResourcesAsByteArray(getClass(), fileName);
         MockMultipartFile multipartFile = new MockMultipartFile(fileName, bytes);
-        UserData userData = dataService.saveData(username, dataKey, multipartFile);
+        UserData userData = dataService.saveFile(username, dataKey, multipartFile);
 
         assertEquals(username, userData.getUsername());
         assertEquals(dataKey, userData.getDataKey());
 
-        Resource resource = dataService.getData(userData.getId());
+        Resource resource = dataService.getFile(userData.getId());
         byte[] data = resource.getInputStream().readAllBytes();
 
         assertEquals(hashService.hash(bytes), hashService.hash(data));
@@ -63,8 +64,8 @@ class DbDataServiceTest {
         byte[] bytes2 = readFileFromResourcesAsByteArray(getClass(), fileName2);
         MockMultipartFile multipartFile1 = new MockMultipartFile(fileName1, bytes1);
         MockMultipartFile multipartFile2 = new MockMultipartFile(fileName2, bytes2);
-        UserData userData1 = dataService.saveData(username, dataKey, multipartFile1);
-        UserData userData2 = dataService.saveData(username, dataKey, multipartFile2);
+        UserData userData1 = dataService.saveFile(username, dataKey, multipartFile1);
+        UserData userData2 = dataService.saveFile(username, dataKey, multipartFile2);
 
         assertTrue(userDataRepository.findById(userData1.getId()).isPresent());
         assertTrue(userDataRepository.findById(userData2.getId()).isPresent());
@@ -78,16 +79,18 @@ class DbDataServiceTest {
         String fileName = "cprd_1k.etl";
         byte[] bytes = readFileFromResourcesAsByteArray(getClass(), fileName);
         BlobData blobData = BlobData.builder().data(bytes).build();
+        blobDataRepository.save(blobData);
         UserData userData = UserData.builder()
                 .hash(hash)
                 .dataKey("test")
                 .username("test")
+                .fileName("test.xlsx")
                 .blobData(blobData)
                 .build();
-        blobData.setUserData(userData);
+        blobData.setUserDataList(List.of(userData));
         userDataRepository.saveAndFlush(userData);
 
-        dataService.deleteData(hash);
+        dataService.deleteData(userData.getId());
 
         assertNotNull(userData.getId());
         assertNotNull(blobData.getId());

@@ -7,9 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface DataService {
-    Resource getData(Long userDataId);
+    Resource getFile(Long userDataId);
 
-    UserData saveData(String username, String dataKey, MultipartFile file) throws IOException;
+    UserData saveFile(String username, String dataKey, MultipartFile file) throws IOException;
 
-    void deleteData(String key);
+    void deleteData(Long userDataId);
+
+    UserData getUserData(Long userDataId);
 }
