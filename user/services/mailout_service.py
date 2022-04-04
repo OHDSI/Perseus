@@ -68,13 +68,13 @@ def get_registration_html(first_name, host, registration_key):
       <br>
       thank you for registering to Perseus.
       <br><br>
-      Please <a href="{host}/api/confirm_registration?token={registration_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to activate your account</a> and confirm your E-mail.
+      Please <a href="{host}/user/api/confirm_registration?token={registration_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to activate your account</a> and confirm your E-mail.
       <br><br>
     </p>
 
     <span class="registration__button" style="display: inline-block; text-align: center; background: #066BBB; border-radius: 2px">
       <span style="display: inline-block">
-        <a href="{host}/api/confirm_registration?token={registration_key}"
+        <a href="{host}/user/api/confirm_registration?token={registration_key}"
            style="color: #fff; border-color: #066BBB; border-width: 9px 29px; border-style: solid; text-align: center; text-decoration: none; outline: none; font-weight: 500; font-size: 14px; line-height: 18px;">
           Activate Account
         </a>
@@ -103,7 +103,7 @@ def get_reset_password_html(first_name, host, reset_pwd_key):
       <br>
       we recieved a request to change your Perseus password.
       <br>
-      Please <a href="{host}/api/check_password_link?token={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to reset your password.</a>
+      Please <a href="{host}/user/api/check_password_link?token={reset_pwd_key}" style="text-decoration: none; outline: none; color: #066BBB">click here to reset your password.</a>
       <br><br>
       <b>Did not request this change?</b> <a href="mailto:perseus.support@arcadia.spb.ru" style="text-decoration: none; outline: none; color: #066BBB">Let us know</a>, if it were not you.
       <br><br>
@@ -111,7 +111,7 @@ def get_reset_password_html(first_name, host, reset_pwd_key):
 
     <span class="recovery__button" style="display: inline-block; text-align: center; background: #066BBB; border-radius: 2px">
       <span style="display: inline-block">
-        <a href="{host}/api/check_password_link?token={reset_pwd_key}"
+        <a href="{host}/user/api/check_password_link?token={reset_pwd_key}"
            style="color: #fff; border-color: #066BBB; border-width: 9px 34px; border-style: solid; text-align: center; text-decoration: none; outline: none; font-weight: 500; font-size: 14px; line-height: 18px;">
           Reset Account
         </a>
