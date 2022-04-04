@@ -1,13 +1,12 @@
 from peewee import ProgrammingError
 from app import app
+from services.response.upload_scan_report_response import to_upload_scan_report_response
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT
 from flask import request, jsonify, send_from_directory
 from services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
-from services.source_schema import load_scan_report_to_server, \
-    create_source_schema_by_scan_report, create_source_schema_in_db, get_view_from_db, run_sql_transformation, \
-    get_column_info, get_field_type
+from services import source_schema_service, scan_reports_service, etl_mapping_service
 from services.cdm_schema import get_exist_version, get_schema
 from utils.exceptions import InvalidUsage
 import traceback
@@ -28,11 +27,10 @@ def get_app_version():
 @perseus.route('/api/upload_scan_report', methods=['POST'])
 @username_header
 def upload_scan_report(current_user):
-    """Save White Rabbit scan report to server"""
     app.logger.info("REST request to upload WR scan report")
     try:
         scan_report_file = request.files['scanReportFile']
-        load_scan_report_to_server(scan_report_file, current_user)
+        scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
     except Exception as error:
         raise InvalidUsage('Schema was not loaded', 500)
     return jsonify('OK')
@@ -41,28 +39,34 @@ def upload_scan_report(current_user):
 @perseus.route('/api/upload_scan_report_and_create_source_schema', methods=['POST'])
 @username_header
 def upload_scan_report_and_create_source_schema(current_user):
-    """Save White Rabbit scan report to server and create source schema"""
     app.logger.info("REST request to upload WR scan report and create source schema")
     try:
         delete_generated_xml(current_user)
         scan_report_file = request.files['scanReportFile']
-        load_scan_report_to_server(scan_report_file, current_user)
-        saved_schema = create_source_schema_by_scan_report(current_user, scan_report_file.filename)
+        file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
+        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report_file.filename)
+        etl_mapping = etl_mapping_service.create_etl_mapping(current_user, file_save_response)
+        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except InvalidUsage as error:
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify([s.to_json() for s in saved_schema])
 
 
-@perseus.route('/api/create_source_schema', methods=['POST'])
+@perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
 @username_header
-def create_source_schema(current_user):
+def create_source_schema_by_scan_report(current_user):
+    """Create source schema by ScanReportRequest"""
+
+
+@perseus.route('/api/create_source_schema_by_tables', methods=['POST'])
+@username_header
+def create_source_schema_by_tables(current_user):
     """Create source schema by source tables from ETL mapping"""
     app.logger.info("REST request to create source schema")
     try:
         source_tables = request.json
-        create_source_schema_in_db(current_user, source_tables)
+        source_schema_service.create_source_schema_by_tables(current_user, source_tables)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
     return jsonify('OK')
@@ -74,7 +78,7 @@ def get_view(current_user):
     app.logger.info("REST request to get view")
     try:
         view_sql = request.get_json()
-        view_result = get_view_from_db(current_user, view_sql['sql'])
+        view_result = source_schema_service.get_view_from_db(current_user, view_sql['sql'])
     except ProgrammingError as error:
         raise InvalidUsage(error.__str__(), 400)
     except Exception as error:
@@ -88,7 +92,7 @@ def validate_sql(current_user):
     app.logger.info("REST request to validate sql")
     try:
         sql_transformation = request.get_json()
-        sql_result = run_sql_transformation(current_user, sql_transformation['sql'])
+        sql_result = source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
     except ProgrammingError as error:
         raise InvalidUsage(error.__str__(), 400)
     except Exception as error:
@@ -125,7 +129,7 @@ def get_column_info_call(current_user):
         table_name = request.args['table_name']
         column_name = request.args.get('column_name')
         report_name = request.args.get('report_name')
-        info = get_column_info(current_user, report_name, table_name, column_name);
+        info = source_schema_service.get_column_info(current_user, report_name, table_name, column_name);
     except InvalidUsage as error:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
     except FileNotFoundError as error:
@@ -222,7 +226,7 @@ def get_schema_name(current_user):
 def get_field_type_call(current_user):
     app.logger.info("REST request to get field type")
     type = request.args['type']
-    result_type = get_field_type(type)
+    result_type = source_schema_service.get_field_type(type)
     return jsonify(result_type)
 
 

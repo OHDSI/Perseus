@@ -85,9 +85,6 @@ GRANT ALL PRIVILEGES ON SCHEMA builder TO builder;
 CREATE SCHEMA "perseus";
 CREATE USER perseus WITH PASSWORD 'password';
 
-GRANT USAGE ON SCHEMA perseus TO perseus;
-GRANT ALL PRIVILEGES ON SCHEMA perseus TO perseus;
-
 CREATE TABLE "perseus"."etl_mappings"
 (
     id               BIGINT PRIMARY KEY,
@@ -104,3 +101,8 @@ CREATE TABLE "perseus"."etl_mappings"
 --     file_id        BIGINT NOT NULL,
 --     etl_mapping_id BIGINT NOT NULL REFERENCES "perseus"."etl_mappings"
 -- );
+
+GRANT USAGE ON SCHEMA perseus TO perseus;
+GRANT ALL PRIVILEGES ON SCHEMA perseus TO perseus;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "perseus" TO "perseus";
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "perseus" TO "perseus";
