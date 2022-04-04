@@ -3,23 +3,21 @@ import { BridgeService } from '../bridge.service';
 import { DataService } from '../data.service';
 import { finalize, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { StoreService } from '../store.service';
 import { PerseusApiService } from '@services/perseus/perseus-api.service'
+import { ScanReport } from '@models/scan-report/scan-report'
 
 @Injectable()
 export class ScanDataUploadService {
   constructor(private perseusApiService: PerseusApiService,
               private bridgeService: BridgeService,
-              private dataService: DataService,
-              private storeService: StoreService) {
+              private dataService: DataService) {
   }
 
-  uploadScanReport(report: File): Observable<void> {
+  uploadScanReport(scanReport: ScanReport): Observable<void> {
     this.bridgeService.reportLoading();
-    this.storeService.add('reportFile', report);
-    this.dataService.saveReportName(report.name, 'report');
+    this.dataService.saveReportName(scanReport.fileName, 'report');
 
-    return this.perseusApiService.uploadScanReportAndCreateSourceSchema(report)
+    return this.perseusApiService.create_source_schema_by_scan_report(scanReport)
       .pipe(
         switchMap(res => {
           this.bridgeService.resetAllMappings();
