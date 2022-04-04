@@ -42,7 +42,6 @@ CREATE TABLE "user"."blacklist_token"
     id             SERIAL PRIMARY KEY,
     token          VARCHAR(500) UNIQUE NOT NULL,
     blacklisted_on TIMESTAMP           NOT NULL
-
 );
 
 CREATE TABLE "user"."unauthorized_reset_pwd_request"
@@ -86,5 +85,24 @@ GRANT ALL PRIVILEGES ON SCHEMA builder TO builder;
 CREATE SCHEMA "perseus";
 CREATE USER perseus WITH PASSWORD 'password';
 
+CREATE TABLE "perseus"."etl_mappings"
+(
+    id               BIGINT PRIMARY KEY,
+    username         VARCHAR(30)  NOT NULL,
+    schema_name      VARCHAR(255) NOT NULL,
+    cdm_version      VARCHAR(10),
+    scan_report_name VARCHAR(255) NOT NULL,
+    scan_report_id   BIGINT       NOT NULL
+);
+
+-- CREATE TABLE "perseus"."user_defined_lookups"
+-- (
+--     id             BIGINT PRIMARY KEY,
+--     file_id        BIGINT NOT NULL,
+--     etl_mapping_id BIGINT NOT NULL REFERENCES "perseus"."etl_mappings"
+-- );
+
 GRANT USAGE ON SCHEMA perseus TO perseus;
 GRANT ALL PRIVILEGES ON SCHEMA perseus TO perseus;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "perseus" TO "perseus";
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "perseus" TO "perseus";

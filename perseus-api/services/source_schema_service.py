@@ -1,9 +1,13 @@
 from pathlib import Path
 import pandas as pd
+
+from services.scan_reports_service import _allowed_file
 from utils.column_types_mapping import postgres_types_mapping, postgres_types
 from utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
     LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
 import os
+
+from utils.directory_util import is_directory_contains_file
 from view.Table import Table, Column
 from pandasql import sqldf
 import xlrd
@@ -11,7 +15,7 @@ from utils.exceptions import InvalidUsage
 import json
 from werkzeug.utils import secure_filename
 from itertools import groupby
-from db import user_schemas_db
+from db import user_schema_db
 import re
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
@@ -23,11 +27,23 @@ with open('configuration/default.json', 'r') as configuration_file:
     print(configuration)
 
 
-def __create_source_schema_by_scan_report__(current_user, schemaname):
+def create_source_schema_by_scan_report(current_user: str, scan_report_name: str):
+    """Create source schema by White Rabbit scan report"""
+    scan_report_name = secure_filename(scan_report_name)
+    user_schema_folder = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"
+    if is_directory_contains_file(user_schema_folder, scan_report_name):
+        print("schema name: " + str(scan_report_name))
+        source_schema_path = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{scan_report_name}"
+        source_schema = _create_source_schema_by_scan_report(current_user, source_schema_path)
+        return source_schema
+    else:
+        raise InvalidUsage('Schema was not loaded', 404)
+
+
+def _create_source_schema_by_scan_report(current_user, source_schema_path):
     """Create source schema by White Rabbit scan report and return it. Cast to postgres types"""
-    print("schema name: " + str(schemaname))
-    reset_schema(user_schemas_db, name=current_user)
-    filepath = Path(schemaname)
+    reset_schema(name=current_user)
+    filepath = Path(source_schema_path)
 
     schema = []
     book = _open_book(current_user, filepath)
@@ -61,24 +77,14 @@ def __create_source_schema_by_scan_report__(current_user, schemaname):
             create_table_sql += create_column_sql
         create_table_sql = create_table_sql.rstrip(',')
         create_table_sql += ' );'
-        cursor = user_schemas_db.execute_sql(create_table_sql)
+        cursor = user_schema_db.execute_sql(create_table_sql)
         schema.append(table_)
     return schema
 
 
-def reset_schema(user_schemas_db, name='public'):
-    exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)
-    cursor = user_schemas_db.execute_sql(exists_sql)
-    if cursor.rowcount:
-        drop_schema_sql = 'DROP SCHEMA {0} CASCADE;'.format(name)
-        user_schemas_db.execute_sql(drop_schema_sql)
-    create_schema_sql = ' CREATE SCHEMA {0};'.format(name)
-    user_schemas_db.execute_sql(create_schema_sql)
-
-
-def create_source_schema_in_db(current_user, source_tables):
+def create_source_schema_by_tables(current_user, source_tables):
     """Create source schema by source tables from ETL mapping. Without casting to postgres types"""
-    reset_schema(user_schemas_db, name=current_user)
+    reset_schema(name=current_user)
 
     for row in source_tables:
         if row['sql'] == '':
@@ -95,7 +101,17 @@ def create_source_schema_in_db(current_user, source_tables):
                     create_table_sql += create_column_sql
             create_table_sql = create_table_sql.rstrip(',')
             create_table_sql += ' );'
-            cursor = user_schemas_db.execute_sql(create_table_sql)
+            cursor = user_schema_db.execute_sql(create_table_sql)
+
+
+def reset_schema(name='public'):
+    exists_sql = 'select schema_name FROM information_schema.schemata WHERE schema_name = \'{0}\';'.format(name)
+    cursor = user_schema_db.execute_sql(exists_sql)
+    if cursor.rowcount:
+        drop_schema_sql = 'DROP SCHEMA {0} CASCADE;'.format(name)
+        user_schema_db.execute_sql(drop_schema_sql)
+    create_schema_sql = ' CREATE SCHEMA {0};'.format(name)
+    user_schema_db.execute_sql(create_schema_sql)
 
 
 def convert_column_type(type):
@@ -118,8 +134,8 @@ def get_field_type(type):
 
 
 def get_view_from_db(current_user, view_sql):
-    view_sql = addSchemaNames(current_user, view_sql)
-    view_cursor = user_schemas_db.execute_sql(view_sql).description
+    view_sql = add_schema_names(current_user, view_sql)
+    view_cursor = user_schema_db.execute_sql(view_sql).description
     view_key= lambda a: a.name
     view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
     view_res=[]
@@ -138,8 +154,8 @@ def get_view_from_db(current_user, view_sql):
     return view_res
 
 
-def addSchemaNames(current_user, view_sql):
-    user_schema_tables = user_schemas_db.execute_sql(
+def add_schema_names(current_user, view_sql):
+    user_schema_tables = user_schema_db.execute_sql(
         'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user))
     for row in user_schema_tables.fetchall():
         view_sql = re.sub(f"(?i)join {row[0]} ", f'join {current_user}.{row[0]} ', view_sql)
@@ -150,8 +166,8 @@ def addSchemaNames(current_user, view_sql):
 
 def run_sql_transformation(current_user, sql_transformation):
     for val in sql_transformation:
-        val = addSchemaNames(current_user, val)
-        user_schemas_db.execute_sql(val).description
+        val = add_schema_names(current_user, val)
+        user_schema_db.execute_sql(val).description
     return True
 
 
@@ -197,47 +213,4 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
         return info
     except KeyError as e:
         raise InvalidUsage('Column invalid' + e.__str__(), 404)
-
-
-def get_existing_source_schemas_list(path):
-    return os.listdir(str(path))
-
-
-def _allowed_file(filename):
-    """check allowed extension of file"""
-    if '.' not in filename:
-        return f"{filename}.xlsx"
-    else:
-        if filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
-            return filename
-        else:
-            raise InvalidUsage("Incorrect scan report extension. Only xlsx or xls are allowed", 400)
-
-
-def load_scan_report_to_server(file, current_user):
-    """Save White Rabbit scan report to server"""
-    checked_filename = _allowed_file(file.filename)
-    if file and checked_filename:
-        filename = secure_filename(checked_filename)
-        try:
-            os.makedirs(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}")
-            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} created")
-        except FileExistsError:
-            print(f"Directory {UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user} already exist")
-        path = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{filename}"
-        # todo fix saving already existed file
-        file.save(path)
-        file.close()
-        _open_book(current_user, Path(path))
-    return
-
-
-def create_source_schema_by_scan_report(current_user, schema_name):
-    """Create source schema by White Rabbit scan report"""
-    schema_name = secure_filename(schema_name)
-    if schema_name in get_existing_source_schemas_list(f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"):
-        source_schema = __create_source_schema_by_scan_report__(current_user, f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{schema_name}")
-        return source_schema
-    else:
-        raise InvalidUsage('Schema was not loaded', 404)
 

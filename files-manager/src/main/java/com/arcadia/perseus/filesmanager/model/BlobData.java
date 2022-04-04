@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.util.List;
+
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Data
@@ -25,6 +28,6 @@ public class BlobData {
     @Column(nullable = false)
     private byte[] data;
 
-    @OneToOne(mappedBy = "blobData")
-    private UserData userData;
+    @OneToMany(mappedBy = "blobData", fetch = LAZY)
+    private List<UserData> userDataList;
 }

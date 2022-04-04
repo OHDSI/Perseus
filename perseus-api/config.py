@@ -16,6 +16,8 @@ class LocalConfig:
     USER_SCHEMAS_DB_HOST = 'localhost'
     USER_SCHEMAS_DB_PORT = 5433
 
+    FILE_MANAGER_API_URL = 'http://localhost:10500/files-manager'
+
 
 class DockerConfig:
     APP_LOGIC_DB_NAME = 'shared'
@@ -29,3 +31,5 @@ class DockerConfig:
     USER_SCHEMAS_DB_PASSWORD = 'password'
     USER_SCHEMAS_DB_HOST = 'perseusdb'
     USER_SCHEMAS_DB_PORT = 5432
+
+    FILE_MANAGER_API_URL = 'http://files-manager:10500/files-manager'

@@ -3,7 +3,6 @@ import { ScanDataUploadService } from '@services/white-rabbit/scan-data-upload.s
 import { saveAs } from 'file-saver';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { switchMap } from 'rxjs/operators';
-import { blobToFile } from '@utils/file';
 import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component';
 import { Conversion } from '@models/conversion/conversion'
 import { Observable } from 'rxjs'
@@ -54,10 +53,10 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   onUploadReport(): void {
-    this.whiteRabbitService.downloadScanReport(this.conversion.id)
+    this.whiteRabbitService.result(this.conversion.id)
       .pipe(
-        switchMap(blob =>
-          this.scanDataUploadService.uploadScanReport(blobToFile(blob, this.scanReportFileName))
+        switchMap(scanReport =>
+          this.scanDataUploadService.uploadScanReport(scanReport)
         )
       )
       .subscribe(

@@ -8,6 +8,7 @@ import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { map } from 'rxjs/operators';
 import { FilesSettings } from '@models/white-rabbit/files-settings';
 import { Conversion } from '@models/conversion/conversion'
+import { ScanReport } from '@models/scan-report/scan-report'
 
 @Injectable()
 export class ScanDataService {
@@ -53,8 +54,12 @@ export class ScanDataService {
     return this.http.get<void>(`${whiteRabbitApiUrl}/scan-report/abort/${conversionId}`)
   }
 
+  result(conversionId: number): Observable<ScanReport> {
+    return this.http.get<ScanReport>(`${whiteRabbitApiUrl}/scan-report/result/${conversionId}`)
+  }
+
   downloadScanReport(conversionId: number): Observable<Blob> {
-    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/result/${conversionId}`, {
+    return this.http.get<Blob>(`${whiteRabbitApiUrl}/scan-report/result-as-resource/${conversionId}`, {
       responseType: 'blob' as 'json'
     })
   }

@@ -1,6 +1,6 @@
 import { IComment } from './comment';
 
-export interface MappingLookupSqlFiled {
+export interface MappingLookupSqlField {
   source_field: string;
   sql_field: string;
   sql_alias: string;
@@ -16,7 +16,7 @@ export interface MappingLookup {
   target_table: string;
   fields: Array<MappingLookupField>;
   lookup: string;
-  sql_field: Array<MappingLookupSqlFiled>;
+  sql_field: Array<MappingLookupSqlField>;
 }
 
 export interface MappingNode {

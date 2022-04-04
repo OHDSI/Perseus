@@ -11,10 +11,10 @@ GENERATE_CDM_XML_ARCHIVE_FILENAME = 'CDM_xml'
 GENERATE_CDM_XML_ARCHIVE_FORMAT = 'zip'
 CDM_SCHEMA_PATH = Path('model/sources/CDM/') # CDM versions
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', '6', ]
-UPLOAD_SOURCE_SCHEMA_FOLDER = Path('model/generate/income_schema') # todo make stateless - WR scan report
-UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make stateless
 PREDEFINED_LOOKUPS_PATH = Path('model/lookups') # not changed
 INCOME_LOOKUPS_PATH = Path('model/generate/user_defined_lookups') # todo make stateless
+
+UPLOAD_SOURCE_SCHEMA_FOLDER = Path('cache/scan-reports') # todo make stateless - WR scan report
 
 COLUMN_TYPES_MAPPING = {
      16: 'bool',

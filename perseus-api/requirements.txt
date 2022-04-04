@@ -9,3 +9,4 @@ xlrd==1.2.0
 itsdangerous
 py-postgresql
 psycopg2-binary
+requests

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Data
@@ -18,7 +17,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Entity
 @Table(
         name = "user_data",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"hash", "username", "data_key"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"hash", "username", "data_key", "file_name"})
 )
 public class UserData {
     @Id
@@ -36,8 +35,11 @@ public class UserData {
     @Column(name = "data_key", nullable = false)
     private String dataKey;
 
+    @Column(name = "file_name", nullable = false)
+    private String fileName;
+
     @JsonIgnore
-    @OneToOne(cascade = ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blob_id", referencedColumnName = "id")
     private BlobData blobData;
 }

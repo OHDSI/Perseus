@@ -28,21 +28,21 @@ public class DbDataService implements DataService {
 
     @Transactional(readOnly = true)
     @Override
-    public Resource getData(final Long userDataId) {
-        UserData userData = userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("UserData not found by id %s", userDataId)));
+    public Resource getFile(final Long userDataId) {
+        UserData userData = findUserDataByIdOrThrowNotFoundException(userDataId);
         byte[] data = userData.getBlobData().getData();
         return new ByteArrayResource(data);
     }
 
     @Transactional
     @Override
-    public UserData saveData(String username, String dataKey, MultipartFile file) throws IOException {
+    public UserData saveFile(String username, String dataKey, MultipartFile file) throws IOException {
         byte[] data = file.getBytes();
         String hash = hashService.hash(data);
+        String filename = file.getOriginalFilename();
 
         Optional<UserData> byAllParameters =
-                userDataRepository.findByHashAndUsernameAndDataKey(hash, username, dataKey);
+                userDataRepository.findByHashAndUsernameAndDataKeyAndFileName(hash, username, dataKey, filename);
         if (byAllParameters.isPresent()) {
             return byAllParameters.get();
         }
@@ -55,6 +55,7 @@ public class DbDataService implements DataService {
                 .hash(hash)
                 .username(username)
                 .dataKey(dataKey)
+                .fileName(filename)
                 .blobData(blobData)
                 .build();
 
@@ -63,9 +64,22 @@ public class DbDataService implements DataService {
 
     @Transactional
     @Override
-    public void deleteData(String key) {
-        UserData userData = userDataRepository.findByHash(key)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Resource not found by id %s", key)));
+    public void deleteData(Long userDataId) {
+        UserData userData = findUserDataByIdOrThrowNotFoundException(userDataId);
         userDataRepository.delete(userData);
+        BlobData blobData = userData.getBlobData();
+        if (blobData.getUserDataList().size() < 2) {
+            blobDataRepository.delete(blobData);
+        }
+    }
+
+    @Override
+    public UserData getUserData(Long userDataId) {
+        return findUserDataByIdOrThrowNotFoundException(userDataId);
+    }
+
+    private UserData findUserDataByIdOrThrowNotFoundException(Long userDataId) {
+        return userDataRepository.findById(userDataId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Resource not found by id %s", userDataId)));
     }
 }

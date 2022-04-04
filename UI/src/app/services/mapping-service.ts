@@ -123,7 +123,6 @@ export class MappingService {
     return mapping;
   }
 
-
   addConceptFields(mapping: Mapping) {
     Object.keys(this.concepts).forEach(key => {
       const tableNames = key.split('|');
