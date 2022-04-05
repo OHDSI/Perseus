@@ -69,8 +69,8 @@ class DbDataServiceTest {
 
         assertTrue(userDataRepository.findById(userData1.getId()).isPresent());
         assertTrue(userDataRepository.findById(userData2.getId()).isPresent());
-        assertTrue(userDataRepository.findByHash(userData1.getHash()).isPresent());
-        assertTrue(userDataRepository.findByHash(userData2.getHash()).isPresent());
+        assertTrue(userDataRepository.findFirstByHash(userData1.getHash()).isPresent());
+        assertTrue(userDataRepository.findFirstByHash(userData2.getHash()).isPresent());
     }
 
     @Test
@@ -94,7 +94,7 @@ class DbDataServiceTest {
 
         assertNotNull(userData.getId());
         assertNotNull(blobData.getId());
-        assertTrue(userDataRepository.findByHash(hash).isEmpty());
+        assertTrue(userDataRepository.findFirstByHash(hash).isEmpty());
         assertTrue(userDataRepository.findById(userData.getId()).isEmpty());
         assertTrue(blobDataRepository.findById(blobData.getId()).isEmpty());
     }

@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.sql.Blob;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -47,7 +46,7 @@ public class DbDataService implements DataService {
             return byAllParameters.get();
         }
 
-        Optional<UserData> byHash = userDataRepository.findByHash(hash);
+        Optional<UserData> byHash = userDataRepository.findFirstByHash(hash);
         BlobData blobData = byHash
                 .map(UserData::getBlobData)
                 .orElseGet(() -> blobDataRepository.save(BlobData.builder().data(data).build()));

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserDataRepository extends JpaRepository<UserData, Long> {
-    Optional<UserData> findByHash(String hash);
+    Optional<UserData> findFirstByHash(String hash);
 
     Optional<UserData> findByHashAndUsernameAndDataKeyAndFileName(String hash, String username, String dataKey, String fileName);
 }
