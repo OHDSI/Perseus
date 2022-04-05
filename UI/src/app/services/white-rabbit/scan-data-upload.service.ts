@@ -20,9 +20,9 @@ export class ScanDataUploadService {
 
     return this.perseusApiService.createSourceSchemaByScanReport(scanReport)
       .pipe(
-        switchMap(res => {
+        switchMap(sourceTables => {
           this.bridgeService.resetAllMappings();
-          this.dataService.prepareTables(res, Area.Source);
+          this.dataService.prepareTables(sourceTables, Area.Source);
           this.bridgeService.saveAndLoadSchema$.next();
           return of(null);
         }),
