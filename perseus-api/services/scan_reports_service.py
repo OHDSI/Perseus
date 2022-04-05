@@ -1,5 +1,6 @@
 import os
 
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from model.etl_mapping import EtlMapping
@@ -27,17 +28,24 @@ def get_scan_report_path(etl_mapping: EtlMapping):
     return scan_report_path
 
 
-def load_scan_report_to_server(file, current_user: str):
+def load_scan_report_to_server(scan_report_file: FileStorage, current_user: str):
     """Save White Rabbit scan report to server"""
-    checked_filename = _allowed_file(file.filename)
-    if file and checked_filename:
+    checked_filename = _allowed_file(scan_report_file.filename)
+    if scan_report_file and checked_filename:
         filename = secure_filename(checked_filename)
         _create_user_directory(current_user)
         path = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{filename}"
         # todo fix saving already existed file
-        file.save(path)
-        file_save_response = files_manager_service.save_file(current_user, 'scan-report', file)
-        file.close()
+        scan_report_file.save(path)
+        content_type = scan_report_file.content_type
+        file_save_response = files_manager_service.save_file(
+            current_user,
+            'scan-report',
+            filename,
+            path,
+            content_type
+        )
+        scan_report_file.close()
         return file_save_response
     raise InvalidUsage("Incorrect scan report", 400)
 

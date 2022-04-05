@@ -11,10 +11,12 @@ def find_by_id(id: int):
 
 
 def create_etl_mapping(username: str, file_save_response: FileSaveResponse):
-    return EtlMapping.create(username=username,
+    etl_mapping = EtlMapping(username=username,
                              schema_name=username,
                              scan_report_name=file_save_response.fileName,
                              scan_report_id=file_save_response.id)
+    etl_mapping.save()
+    return etl_mapping
 
 
 def set_cdm_version(id: int, cdm_version: str):
