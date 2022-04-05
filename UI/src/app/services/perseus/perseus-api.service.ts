@@ -7,6 +7,7 @@ import { createNoCacheHeaders } from '@utils/http-headers';
 import { perseusApiUrl } from '@app/app.constants'
 import { ITable } from '@models/table'
 import { ScanReport } from '@models/scan-report/scan-report'
+import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -38,10 +39,10 @@ export class PerseusApiService {
   /**
    * @return source tables list
    */
-  uploadScanReportAndCreateSourceSchema(scanReportFile: File): Observable<any[]> {
+  uploadScanReportAndCreateSourceSchema(scanReportFile: File): Observable<UploadScanReportResponse> {
     const formData: FormData = new FormData();
     formData.append('scanReportFile', scanReportFile, scanReportFile.name);
-    return this.httpClient.post<any[]>(`${perseusApiUrl}/upload_scan_report_and_create_source_schema`, formData);
+    return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/upload_scan_report_and_create_source_schema`, formData);
   }
 
   /**

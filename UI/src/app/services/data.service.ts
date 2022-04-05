@@ -10,8 +10,9 @@ import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { removeExtension } from '@utils/file';
 import { ColumnInfo } from '@models/column-info/column-info';
-import { State } from '@models/state';
 import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
+import { Area } from '@models/area'
+import { SourceTableResponse } from '@models/perseus/source-table-response'
 
 @Injectable()
 export class DataService {
@@ -19,7 +20,7 @@ export class DataService {
               private storeService: StoreService,
               private bridgeService: BridgeService) {}
 
-  _normalize(data, area) {
+  _normalize(data: SourceTableResponse[], area: Area) {
     const tables = [];
     const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
@@ -93,7 +94,7 @@ export class DataService {
     return this.perseusService.getTargetData(version).pipe(
       map(data => {
         const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
-        const tables = this.prepareTables(filteredData, 'target');
+        const tables = this.prepareTables(filteredData, Area.Target);
         this.storeService.add('version', version);
         this.prepareTargetConfig(filteredData);
         return tables;
@@ -146,7 +147,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data: any[], key: keyof State) {
+  prepareTables(data: SourceTableResponse[], key: Area) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

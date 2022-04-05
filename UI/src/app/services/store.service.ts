@@ -6,6 +6,8 @@ import { removeExtension } from '@utils/file';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
 import { StateService } from '@services/state/state.service';
+import { Area } from '@models/area'
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 const initialState: State = {
   target: [],
@@ -43,7 +45,7 @@ export class StoreService implements StateService {
     return {...this.storeState.getValue()}
   }
 
-  add<K extends keyof State>(key: K, value: State[K]) {
+  add<K extends keyof State>(key: K | Area, value: State[K]) {
     this.state = { ...this.state, [ key ]: value };
   }
 
@@ -105,8 +107,12 @@ export class StoreService implements StateService {
       )
   }
 
-  reset() {
+  reset(): void {
     this.storeState.next({...initialState});
+  }
+
+  addEtlMapping(etlMapping: EtlMapping): void {
+    this.add('etlMapping', etlMapping)
   }
 }
 
