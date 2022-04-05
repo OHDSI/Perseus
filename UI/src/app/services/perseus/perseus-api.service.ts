@@ -47,7 +47,7 @@ export class PerseusApiService {
   /**
    * @return source tables list
    */
-  create_source_schema_by_scan_report(scanReport: ScanReport): Observable<any> {
+  createSourceSchemaByScanReport(scanReport: ScanReport): Observable<any> {
     return this.httpClient.post<any[]>(`${perseusApiUrl}/create_source_schema_by_scan_report`, scanReport);
   }
 

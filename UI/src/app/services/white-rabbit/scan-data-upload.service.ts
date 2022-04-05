@@ -17,7 +17,7 @@ export class ScanDataUploadService {
     this.bridgeService.reportLoading();
     this.dataService.saveReportName(scanReport.fileName, 'report');
 
-    return this.perseusApiService.create_source_schema_by_scan_report(scanReport)
+    return this.perseusApiService.createSourceSchemaByScanReport(scanReport)
       .pipe(
         switchMap(res => {
           this.bridgeService.resetAllMappings();
