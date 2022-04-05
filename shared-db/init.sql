@@ -87,7 +87,7 @@ CREATE USER perseus WITH PASSWORD 'password';
 
 CREATE TABLE "perseus"."etl_mappings"
 (
-    id               BIGINT PRIMARY KEY,
+    id               SERIAL PRIMARY KEY,
     username         VARCHAR(30)  NOT NULL,
     schema_name      VARCHAR(255) NOT NULL,
     cdm_version      VARCHAR(10),

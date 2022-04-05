@@ -30,6 +30,6 @@ class DockerConfig:
     USER_SCHEMAS_DB_USER = 'perseus'
     USER_SCHEMAS_DB_PASSWORD = 'password'
     USER_SCHEMAS_DB_HOST = 'perseusdb'
-    USER_SCHEMAS_DB_PORT = 5432
+    USER_SCHEMAS_DB_PORT = 5433
 
     FILE_MANAGER_API_URL = 'http://files-manager:10500/files-manager'

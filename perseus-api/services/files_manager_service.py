@@ -23,12 +23,15 @@ def get_file(data_id: int):
             raise InvalidUsage('Can download file', 500)
 
 
-def save_file(username: str, data_key: str, file: FileStorage):
+def save_file(username: str,
+              data_key: str,
+              filename: str,
+              file_path: str,
+              content_type: str):
     url = f'{FILE_MANAGER_URL}/api'
-    file.name = file.filename
-    files = {'file': file}
+    files = {'file': (filename, open(file_path, 'rb'), content_type)}
     values = {'username': username, 'dataKey': data_key}
-    r = requests.post(url=url, files=files, data=values)
+    r = requests.post(url=url, files=files, data=values, verify=False)
     if r.status_code == 200:
         json_result = json.loads(r.content.decode('utf-8'))
         return file_save_reponse.from_json(json_result)
