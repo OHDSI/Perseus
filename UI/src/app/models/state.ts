@@ -2,8 +2,10 @@ import { ITable } from './table';
 import { IRow } from './row';
 import { IConcepts } from '@models/concepts';
 import { IClones } from '@models/clones';
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 export interface State {
+  etlMapping?: EtlMapping
   version?: string,
   filteredTables?: {
     items: ITable[]

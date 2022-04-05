@@ -4,7 +4,8 @@ import { DataService } from '../data.service';
 import { finalize, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { PerseusApiService } from '@services/perseus/perseus-api.service'
-import { ScanReport } from '@models/scan-report/scan-report'
+import { ScanReportRequest } from '@models/perseus/scan-report-request'
+import { Area } from '@models/area'
 
 @Injectable()
 export class ScanDataUploadService {
@@ -13,15 +14,15 @@ export class ScanDataUploadService {
               private dataService: DataService) {
   }
 
-  uploadScanReport(scanReport: ScanReport): Observable<void> {
+  uploadScanReport(scanReport: ScanReportRequest): Observable<void> {
     this.bridgeService.reportLoading();
     this.dataService.saveReportName(scanReport.fileName, 'report');
 
     return this.perseusApiService.createSourceSchemaByScanReport(scanReport)
       .pipe(
-        switchMap(res => {
+        switchMap(sourceTables => {
           this.bridgeService.resetAllMappings();
-          this.dataService.prepareTables(res, 'source');
+          this.dataService.prepareTables(sourceTables, Area.Source);
           this.bridgeService.saveAndLoadSchema$.next();
           return of(null);
         }),

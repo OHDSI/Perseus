@@ -505,8 +505,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.commonUtilsService.openSetCDMDialog();
   }
 
-  onScanReportUpload(event: Event) {
-    this.uploadService.uploadScanReportAndCreateSourceSchema(event)
+  onScanReportUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
+    this.uploadService.uploadScanReportAndCreateSourceSchema(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {

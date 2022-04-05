@@ -119,9 +119,13 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.storeService.state.source.length ? this.commonUtilsService.loadNewReportWithWarning() : this.commonUtilsService.loadReportWithoutWarning();
   }
 
-  onScanReportUpload(event: Event) {
+  onScanReportUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
     this.bridgeService.reportLoading();
-    this.uploadService.uploadScanReportAndCreateSourceSchema(event)
+    this.uploadService.uploadScanReportAndCreateSourceSchema(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
