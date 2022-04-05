@@ -15,6 +15,8 @@ import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { parseHttpError } from '@utils/error';
 import { jZipObjectToFile, readJsZipFile } from '@utils/jzip-util';
 import { plainToConfiguration } from '@utils/configuration';
+import { Area } from '@models/area'
+import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
 
 @Injectable()
 export class UploadService {
@@ -36,16 +38,16 @@ export class UploadService {
     this.loading$.next(value);
   }
 
-  uploadScanReportAndCreateSourceSchema(event: any): Observable<any> {
-    const scanReportFile = event.target.files[0]
+  uploadScanReportAndCreateSourceSchema(scanReportFile: File): Observable<UploadScanReportResponse> {
     this.bridgeService.reportLoading();
     this.storeService.add('reportFile', scanReportFile);
     return this.perseusApiService.uploadScanReportAndCreateSourceSchema(scanReportFile)
       .pipe(
         tap(res => {
           this.snackbar.open('Success file upload', ' DISMISS ');
+          this.storeService.addEtlMapping(res.etl_mapping)
           this.bridgeService.resetAllMappings();
-          this.dataService.prepareTables(res, 'source');
+          this.dataService.prepareTables(res.source_tables, Area.Source);
           this.dataService.saveReportName(scanReportFile.name, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
         }),

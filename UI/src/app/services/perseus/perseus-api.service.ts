@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { createNoCacheHeaders } from '@utils/http-headers';
 import { perseusApiUrl } from '@app/app.constants'
 import { ITable } from '@models/table'
-import { ScanReport } from '@models/scan-report/scan-report'
+import { ScanReportRequest } from '@models/perseus/scan-report-request'
 import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
 
 // use for dev purposes
@@ -48,7 +48,7 @@ export class PerseusApiService {
   /**
    * @return source tables list
    */
-  createSourceSchemaByScanReport(scanReport: ScanReport): Observable<any> {
+  createSourceSchemaByScanReport(scanReport: ScanReportRequest): Observable<any> {
     return this.httpClient.post<any[]>(`${perseusApiUrl}/create_source_schema_by_scan_report`, scanReport);
   }
 
