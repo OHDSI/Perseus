@@ -1,3 +1,4 @@
+from app import app
 from model.etl_mapping import EtlMapping
 from services.response.file_save_reponse import FileSaveResponse
 from utils.exceptions import NotFoundException
@@ -11,6 +12,7 @@ def find_by_id(id: int):
 
 
 def create_etl_mapping(username: str, file_save_response: FileSaveResponse):
+    app.logger.info("Creating new ETL mapping...")
     etl_mapping = EtlMapping(username=username,
                              schema_name=username,
                              scan_report_name=file_save_response.fileName,

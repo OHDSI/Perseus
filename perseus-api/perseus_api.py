@@ -6,7 +6,7 @@ from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
 from flask import request, jsonify, send_from_directory
 from services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
-from services import source_schema_service, scan_reports_service, etl_mapping_service
+from services import source_schema_service, scan_reports_service, etl_mapping_service, etl_archive_service
 from services.cdm_schema import get_exist_version, get_schema
 from utils.exceptions import InvalidUsage
 import traceback
@@ -29,18 +29,6 @@ def get_app_version():
 def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
     try:
-        scan_report_file = request.files['scanReportFile']
-        scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
-    except Exception as error:
-        raise InvalidUsage('Schema was not loaded', 500)
-    return jsonify('OK')
-
-
-@perseus.route('/api/upload_scan_report_and_create_source_schema', methods=['POST'])
-@username_header
-def upload_scan_report_and_create_source_schema(current_user):
-    app.logger.info("REST request to upload WR scan report and create source schema")
-    try:
         delete_generated_xml(current_user)
         scan_report_file = request.files['scanReportFile']
         file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
@@ -53,23 +41,19 @@ def upload_scan_report_and_create_source_schema(current_user):
         raise InvalidUsage(error.__str__(), 500)
 
 
-@perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
+@perseus.route('/api/upload_etl_mapping', methods=['POST'])
 @username_header
-def create_source_schema_by_scan_report(current_user):
-    """Create source schema by ScanReportRequest"""
-
-
-@perseus.route('/api/create_source_schema_by_tables', methods=['POST'])
-@username_header
-def create_source_schema_by_tables(current_user):
+def upload_etl_mapping(current_user):
     """Create source schema by source tables from ETL mapping"""
     app.logger.info("REST request to create source schema")
     try:
-        source_tables = request.json
-        source_schema_service.create_source_schema_by_tables(current_user, source_tables)
+        delete_generated_xml(current_user)
+        etl_archive = request.files['etlArchiveFile']
+        return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
+    except InvalidUsage as error:
+        raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify('OK')
 
 
 @perseus.route('/api/get_view', methods=['POST'])
@@ -258,7 +242,7 @@ def handle_invalid_req_key(error):
 
 
 @app.errorhandler(Exception)
-def handle_excpetion(error):
+def handle_exception(error):
     """handle error of missed/wrong parameter"""
     response = jsonify({'message': error.__str__()})
     response.status_code = 500

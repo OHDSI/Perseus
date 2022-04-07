@@ -4,9 +4,9 @@ from app import app
 from config import PORT
 from db import user_schema_db
 from perseus_api import perseus
-from utils import UPLOAD_SOURCE_SCHEMA_FOLDER
+from utils import UPLOAD_SCAN_REPORT_FOLDER
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_SOURCE_SCHEMA_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_SCAN_REPORT_FOLDER
 app.register_blueprint(perseus)
 
 
