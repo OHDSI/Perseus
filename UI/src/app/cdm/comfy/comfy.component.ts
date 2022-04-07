@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { merge, Observable, Subscription } from 'rxjs';
-import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
 import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { IRow } from 'src/app/models/row';
@@ -43,6 +43,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
 import { State } from '@models/state';
 import { asc } from '@utils/sort';
 import { canOpenMappingPage } from '@utils/mapping-util';
+import { parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-comfy',
@@ -195,16 +196,12 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.bridgeService.applyConfiguration$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(configuration => this.dataService.createSourceSchema(configuration.sourceTables))
+        finalize(() => this.uploadService.mappingLoading = false)
       )
-      .subscribe(res => {
-        if (res === 'OK') {
-          this.uploadService.mappingLoading = false;
-          this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
-        } else {
-          this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ');
-        }
-      }, () => this.uploadService.mappingLoading = false);
+      .subscribe(
+        () => this.snackBar.open('Source schema has been loaded to database', ' DISMISS '),
+        () => this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ')
+      );
 
     this.bridgeService.resetAllMappings$
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -510,13 +507,13 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     if (filesCount < 1) {
       return
     }
-    this.uploadService.uploadScanReportAndCreateSourceSchema(event.target.files[0])
+    this.uploadService.uploadScanReport(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
           data: {
             title: 'Failed to load new report',
-            message: error.message
+            message: parseHttpError(error)
           },
           panelClass: 'scan-data-dialog'
         })
@@ -641,14 +638,18 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.uploadService.onFileInputClick(this.mappingInput);
   }
 
-  onMappingUpload(event: Event) {
-    this.uploadService.uploadEtlMapping(event)
+  onMappingUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
+    this.uploadService.uploadEtlMapping(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
           data: {
             title: 'Failed to open mapping',
-            message: error.message
+            message: parseHttpError(error)
           },
           panelClass: 'scan-data-dialog'
         })

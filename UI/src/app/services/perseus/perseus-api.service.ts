@@ -9,6 +9,7 @@ import { ITable } from '@models/table'
 import { ScanReportRequest } from '@models/perseus/scan-report-request'
 import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
 import { SourceTableResponse } from '@models/perseus/source-table-response'
+import { UploadEtlMappingResponse } from '@models/perseus/upload-etl-mapping-response'
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -31,16 +32,16 @@ export class PerseusApiService {
   constructor(private httpClient: HttpClient) {
   }
 
-  uploadScanReport(scanReportFile: File): Observable<void> {
+  uploadScanReport(scanReportFile: File): Observable<UploadScanReportResponse> {
     const formData: FormData = new FormData();
     formData.append('scanReportFile', scanReportFile, scanReportFile.name);
-    return this.httpClient.post<void>(`${perseusApiUrl}/upload_scan_report`, formData);
+    return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/upload_scan_report`, formData);
   }
 
-  uploadScanReportAndCreateSourceSchema(scanReportFile: File): Observable<UploadScanReportResponse> {
+  uploadEtlMapping(etlMappingArchiveFile: File): Observable<UploadEtlMappingResponse> {
     const formData: FormData = new FormData();
-    formData.append('scanReportFile', scanReportFile, scanReportFile.name);
-    return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/upload_scan_report_and_create_source_schema`, formData);
+    formData.append('etlArchiveFile', etlMappingArchiveFile, etlMappingArchiveFile.name);
+    return this.httpClient.post<UploadEtlMappingResponse>(`${perseusApiUrl}/upload_etl_mapping`, formData)
   }
 
   createSourceSchemaByScanReport(scanReport: ScanReportRequest): Observable<SourceTableResponse[]> {

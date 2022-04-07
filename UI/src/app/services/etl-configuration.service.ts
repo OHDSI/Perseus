@@ -6,10 +6,10 @@ import * as JSZip from 'jszip';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { mappingStateToPlain } from '@utils/configuration';
+import { mappingStateToPlain } from '@utils/etl-configuration-util';
 
 @Injectable()
-export class ConfigurationService {
+export class EtlConfigurationService {
 
   constructor(private bridgeService: BridgeService,
               private storeService: StoreService) {}

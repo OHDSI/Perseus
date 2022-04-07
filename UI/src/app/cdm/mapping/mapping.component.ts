@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
@@ -833,8 +833,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   private subscribeOnUpdateMapping() {
     this.bridgeService.applyConfiguration$
       .pipe(
-        takeUntil(this.ngUnsubscribe),
-        switchMap(configuration => this.dataService.createSourceSchema(configuration.sourceTables))
+        takeUntil(this.ngUnsubscribe)
       )
       .subscribe(() => {
         this.sourceRows = [];

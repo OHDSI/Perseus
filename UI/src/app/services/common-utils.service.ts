@@ -10,7 +10,7 @@ import { OnBoardingComponent } from '@popups/on-boarding/on-boarding.component';
 import { OpenSaveDialogComponent } from '@popups/open-save-dialog/open-save-dialog.component';
 import { ResetWarningComponent } from '@popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
-import { ConfigurationService } from './configuration.service';
+import { EtlConfigurationService } from './etl-configuration.service';
 import { DataService } from './data.service';
 import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
 import { OverlayService } from './overlay/overlay.service';
@@ -30,7 +30,7 @@ export class CommonUtilsService {
     private bridgeService: BridgeService,
     private storeService: StoreService,
     private router: Router,
-    private configService: ConfigurationService,
+    private configService: EtlConfigurationService,
     private snackbar: MatSnackBar,
     rendererFactory: RendererFactory2
   ) {
@@ -85,7 +85,7 @@ export class CommonUtilsService {
   }
 
   openResetWarningDialog(settings: any) {
-    const { warning, header, okButton, deleteButton, deleteSourceAndTarget, loadReport } = settings;
+    const { warning, header, okButton, deleteButton } = settings;
     const matDialog = this.matDialog.open(ResetWarningComponent, {
       data: { warning, header, okButton, deleteButton },
       closeOnNavigation: false,
@@ -183,6 +183,6 @@ export class CommonUtilsService {
     };
     const dialogRef = this.overlayService.open(dialogOptions, target, OnBoardingComponent);
     this.renderer.addClass(target, 'on-boarding-anchor');
-    dialogRef.afterClosed$.subscribe(configOptions => this.renderer.removeClass(target, 'on-boarding-anchor'));
+    dialogRef.afterClosed$.subscribe(() => this.renderer.removeClass(target, 'on-boarding-anchor'));
   }
 }
