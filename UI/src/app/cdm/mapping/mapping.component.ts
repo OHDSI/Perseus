@@ -516,9 +516,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.dataService
       .getZippedXml(mappingJSON)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(file => {
-        saveAs(file);
-      });
+      .subscribe(file => saveAs(file));
   }
 
   openFilter(target) {

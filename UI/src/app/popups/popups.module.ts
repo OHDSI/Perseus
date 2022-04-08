@@ -22,6 +22,7 @@ import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-stri
 import { LogoutComponent } from './logout/logout.component';
 import { HelpPopupComponent } from './help-popup/help-popup.component';
 import { WarningPopupComponent } from './warning-popup/warning-popup.component';
+import { SaveMappingDialogComponent } from './save-mapping-dialog/save-mapping-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { WarningPopupComponent } from './warning-popup/warning-popup.component';
     TransformationTypeComponent,
     LogoutComponent,
     HelpPopupComponent,
-    WarningPopupComponent
+    WarningPopupComponent,
+    SaveMappingDialogComponent
   ],
   imports: [
     SharedModule

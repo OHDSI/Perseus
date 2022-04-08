@@ -45,6 +45,14 @@ export class StoreService implements StateService {
     return {...this.storeState.getValue()}
   }
 
+  get etlMapping(): EtlMapping {
+    return this.state.etlMapping;
+  }
+
+  get etlMappingId(): number {
+    return this.etlMapping.id
+  }
+
   add<K extends keyof State>(key: K | Area, value: State[K]) {
     this.state = { ...this.state, [ key ]: value };
   }

@@ -515,7 +515,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             title: 'Failed to load new report',
             message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       );
   }
@@ -651,7 +651,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
             title: 'Failed to open mapping',
             message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       )
   }

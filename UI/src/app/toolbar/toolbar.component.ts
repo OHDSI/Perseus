@@ -109,7 +109,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openSaveMappingDialog() {
-    this.commonUtilsService.saveMappingDialog(false, false);
+    this.commonUtilsService.saveMappingDialog();
   }
 
   openLoadMappingDialog() {
@@ -134,7 +134,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
             title: 'Failed to load new report',
             message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       )
   }
@@ -152,7 +152,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
             title: 'Failed to open mapping',
             message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       )
   }
@@ -183,9 +183,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.dataService
       .getZippedXml(mappingJSON)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(file => {
-        saveAs(file);
-      });
+      .subscribe(file => saveAs(file));
   }
 
   scanData() {
