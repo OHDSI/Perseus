@@ -8,17 +8,20 @@ CDM_SCHEMA_PATH = Path('model/sources/CDM/')  # CDM versions
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', '6', ]
 PREDEFINED_LOOKUPS_PATH = Path('model/lookups')  # not changed
 
-GENERATE_CDM_XML_PATH = Path('cache/generate/definitions')  # todo make stateless - xml used by cdm builder
-GENERATE_CDM_LOOKUP_SQL_PATH = Path('cache/generate/lookups')  # todo make stateless - for cmd builder
-GENERATE_BATCH_SQL_PATH = Path('cache/generate/batch')  # todo make stateless - for cmd builder
-GENERATE_CDM_XML_ARCHIVE_PATH = Path('cache/generate')  # todo make stateless
-INCOME_LOOKUPS_PATH = Path('cache/generate/user_defined_lookups')  # todo make stateless
+generate_folder = 'cache/generate'
+GENERATE_CDM_XML_PATH = Path(f'{generate_folder}/definitions')  # todo make stateless - xml used by cdm builder
+GENERATE_CDM_LOOKUP_SQL_PATH = Path(f'{generate_folder}/lookups')  # todo make stateless - for cmd builder
+GENERATE_BATCH_SQL_PATH = Path(f'{generate_folder}/batch')  # todo make stateless - for cmd builder
+GENERATE_CDM_XML_ARCHIVE_PATH = Path(f'{generate_folder}/zip_xml')  # todo make stateless
+INCOME_LOOKUPS_PATH = Path(f'{generate_folder}/user_defined_lookups')  # todo make stateless
+GENERATE_ETL_ARHIVE_PATH = Path(f'{generate_folder}/zip_etl')
 
 GENERATE_CDM_XML_ARCHIVE_FILENAME = 'CDM_xml'
-GENERATE_CDM_XML_ARCHIVE_FORMAT = 'zip'
+CDM_XML_ARCHIVE_FORMAT = 'zip'
+ETL_MAPPING_ARCHIVE_FORMAT = 'zip'
 
-UPLOAD_SCAN_REPORT_FOLDER = Path('cache/scan-reports')
-UPLOAD_ETL_FOLDER = Path('cache/etl-archives')
+UPLOAD_SCAN_REPORT_FOLDER = Path('cache/upload/scan-reports')
+UPLOAD_ETL_FOLDER = Path('cache/upload/etl')
 
 COLUMN_TYPES_MAPPING = {
     16: 'bool',

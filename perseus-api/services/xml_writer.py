@@ -6,7 +6,7 @@ from utils.constants import \
     GENERATE_CDM_XML_PATH, \
     GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, \
-    GENERATE_CDM_XML_ARCHIVE_FORMAT, \
+    CDM_XML_ARCHIVE_FORMAT, \
     GENERATE_CDM_LOOKUP_SQL_PATH, \
     PREDEFINED_LOOKUPS_PATH, \
     INCOME_LOOKUPS_PATH, \
@@ -735,7 +735,7 @@ def zip_xml(current_user):
 
         zip_file = zipfile.ZipFile(
             GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
-                (GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
+                (GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
         add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "definitions")
         add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "lookups")

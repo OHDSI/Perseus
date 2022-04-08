@@ -8,19 +8,22 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from app import app
-from services import source_schema_service, files_manager_service, etl_mapping_service
+from model.etl_mapping import EtlMapping
+from services import source_schema_service, files_manager_service, etl_mapping_service, scan_reports_service
 from services.model.etl_archive_content import EtlArchiveContent
+from services.request.generate_etl_archive_request import GenerateEtlArchiveRequest
 from services.response.upload_etl_archive_response import to_upload_etl_archive_response
 from services.scan_reports_service import ALLOWED_SCAN_REPORT_EXTENSIONS
 from utils import file_util
-from utils.constants import UPLOAD_ETL_FOLDER, UPLOAD_SCAN_REPORT_FOLDER, SCAN_REPORT_DATA_KEY
-from utils.directory_util import get_filenames_in_directory
+from utils.constants import UPLOAD_ETL_FOLDER, UPLOAD_SCAN_REPORT_FOLDER, SCAN_REPORT_DATA_KEY, \
+    GENERATE_ETL_ARHIVE_PATH, ETL_MAPPING_ARCHIVE_FORMAT
+from utils.directory_util import get_filenames_in_directory, create_directory
 from utils.exceptions import InvalidUsage
 
 
 def upload_etl_archive(etl_archive: FileStorage, username: str):
     etl_filename = secure_filename(etl_archive.filename)
-    archive_directory: str = _create_upload_etl_user_directory(username)
+    archive_directory = create_directory(f"{UPLOAD_ETL_FOLDER}/{username}")
 
     try:
         etl_file_path = f"{archive_directory}/{etl_filename}"
@@ -36,7 +39,8 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         _check_etl_archive_content(filenames, archive_directory)
         etl_archive_content = _to_etl_archive_content(filenames)
 
-        scan_report_path = f'{UPLOAD_SCAN_REPORT_FOLDER}/{username}/{etl_archive_content.scan_report_file_name}'
+        scan_report_directory = create_directory(f"{UPLOAD_SCAN_REPORT_FOLDER}/{username}")
+        scan_report_path = f'{scan_report_directory}/{etl_archive_content.scan_report_file_name}'
         shutil.copy(f'{archive_directory}/{etl_archive_content.scan_report_file_name}',
                     scan_report_path)
         guess_type = mimetypes.guess_type(scan_report_path)
@@ -64,14 +68,28 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         shutil.rmtree(archive_directory)
 
 
-def _create_upload_etl_user_directory(username: str) -> str:
-    directory_path = f"{UPLOAD_ETL_FOLDER}/{username}"
-    try:
-        os.makedirs(directory_path)
-        print(f"Directory {UPLOAD_ETL_FOLDER}/{username} created")
-    except FileExistsError:
-        print(f"Directory {UPLOAD_ETL_FOLDER}/{username} already exist")
-    return directory_path
+def generate_etl_archive(request: GenerateEtlArchiveRequest, username: str):
+    etl_mapping: EtlMapping = etl_mapping_service.find_by_id(request.etl_mapping_id)
+    if etl_mapping.username != username:
+        raise InvalidUsage("Forbidden save other user ETL mapping", 403)
+
+    scan_report_path = scan_reports_service.get_scan_report_path(etl_mapping)
+    generate_archive_directory = create_directory(f'{GENERATE_ETL_ARHIVE_PATH}/{username}/{request.name}')
+    shutil.copy(scan_report_path, f'{generate_archive_directory}/{etl_mapping.scan_report_name}')
+
+    json_mapping = json.dumps(request.etl_configuration)
+    json_file = open(f'{generate_archive_directory}/{request.name}.json', 'w')
+    json_file.write(json_mapping)
+    json_file.close()
+
+    shutil.make_archive(
+        generate_archive_directory,
+        ETL_MAPPING_ARCHIVE_FORMAT,
+        generate_archive_directory
+    )
+    shutil.rmtree(generate_archive_directory)
+
+    return f'{GENERATE_ETL_ARHIVE_PATH}/{username}', f'{request.name}.zip'
 
 
 def _extract_etl_archive(archive_path, directory_to_extract):

@@ -1,8 +1,9 @@
 from peewee import ProgrammingError
 from app import app
+from services.request import generate_etl_archive_request
 from services.response.upload_scan_report_response import to_upload_scan_report_response
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
-    GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT
+    GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
 from flask import request, jsonify, send_from_directory
 from services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
@@ -53,6 +54,23 @@ def upload_etl_mapping(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
+        app.logger.error(error.__str__())
+        raise InvalidUsage(error.__str__(), 500)
+
+
+@perseus.route('/api/generate_etl_mapping_archive', methods=['POST'])
+@username_header
+def generate_etl_mapping_archive(current_user):
+    app.logger.info("REST request to generate ETL mapping archive")
+    try:
+        request_body = generate_etl_archive_request.from_json(request.get_json())
+        result = etl_archive_service.generate_etl_archive(request_body, current_user)
+        download_name=result[1].replace('.zip', '.etl')
+        return send_from_directory(result[0], result[1], download_name=download_name)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        app.logger.error(error.__str__())
         raise InvalidUsage(error.__str__(), 500)
 
 
@@ -148,7 +166,7 @@ def zip_xml_call(current_user):
         raise InvalidUsage(error.__str__(), 404)
     return send_from_directory(
         directory=f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}",
-        path='.'.join((GENERATE_CDM_XML_ARCHIVE_FILENAME, GENERATE_CDM_XML_ARCHIVE_FORMAT)),
+        path=f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}",
         as_attachment=True
     )
 
