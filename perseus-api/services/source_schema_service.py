@@ -1,39 +1,34 @@
+import re
+from itertools import groupby
 from pathlib import Path
-import pandas as pd
 
+import pandas as pd
+import xlrd
+from pandasql import sqldf
+from werkzeug.utils import secure_filename
+
+from app import app
+from db import user_schema_db
 from services.scan_reports_service import _allowed_file
 from utils.column_types_mapping import postgres_types_mapping, postgres_types
-from utils.constants import UPLOAD_SOURCE_SCHEMA_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
+from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
     LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
-import os
-
 from utils.directory_util import is_directory_contains_file
-from view.Table import Table, Column
-from pandasql import sqldf
-import xlrd
 from utils.exceptions import InvalidUsage
-import json
-from werkzeug.utils import secure_filename
-from itertools import groupby
-from db import user_schema_db
-import re
+from view.Table import Table, Column
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
 opened_reports = {}
 
-with open('configuration/default.json', 'r') as configuration_file:
-    configuration = json.load(configuration_file)
-    print(configuration)
-
 
 def create_source_schema_by_scan_report(current_user: str, scan_report_name: str):
-    """Create source schema by White Rabbit scan report"""
+    app.logger.info("Creating source schema by WR scan report...")
     scan_report_name = secure_filename(scan_report_name)
-    user_schema_folder = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}"
+    user_schema_folder = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}"
     if is_directory_contains_file(user_schema_folder, scan_report_name):
         print("schema name: " + str(scan_report_name))
-        source_schema_path = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{scan_report_name}"
+        source_schema_path = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{scan_report_name}"
         source_schema = _create_source_schema_by_scan_report(current_user, source_schema_path)
         return source_schema
     else:
@@ -46,7 +41,10 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
     filepath = Path(source_schema_path)
 
     schema = []
-    book = _open_book(current_user, filepath)
+    try:
+        book = _open_book(current_user, filepath)
+    except Exception as e:
+        raise InvalidUsage(e.__str__(), 400)
     overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
     # always take the first sheet of the excel file
 
@@ -183,7 +181,7 @@ def _open_book(current_user, filepath=None):
 def get_column_info(current_user, report_name, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
     report_name = secure_filename(_allowed_file(report_name))
-    path_to_schema = f"{UPLOAD_SOURCE_SCHEMA_FOLDER}/{current_user}/{report_name}"
+    path_to_schema = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{report_name}"
     try:
         book = _open_book(current_user, Path(path_to_schema))
         table_overview = pd.read_excel(book, table_name, dtype=str,

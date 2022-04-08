@@ -87,12 +87,13 @@ CREATE USER perseus WITH PASSWORD 'password';
 
 CREATE TABLE "perseus"."etl_mappings"
 (
-    id               SERIAL PRIMARY KEY,
-    username         VARCHAR(30)  NOT NULL,
-    schema_name      VARCHAR(255) NOT NULL,
-    cdm_version      VARCHAR(10),
-    scan_report_name VARCHAR(255) NOT NULL,
-    scan_report_id   BIGINT       NOT NULL
+    id                 SERIAL PRIMARY KEY,
+    username           VARCHAR(30)  NOT NULL,
+    user_schema_name   VARCHAR(255) NOT NULL,
+    source_schema_name VARCHAR(255) NOT NULL,
+    cdm_version        VARCHAR(10),
+    scan_report_name   VARCHAR(255) NOT NULL,
+    scan_report_id     BIGINT       NOT NULL
 );
 
 -- CREATE TABLE "perseus"."user_defined_lookups"

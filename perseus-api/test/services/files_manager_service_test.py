@@ -1,7 +1,7 @@
 import unittest
 
 from services.files_manager_service import get_file
-from utils.exceptions import NotFoundException
+from utils.exceptions import InvalidUsage
 
 
 class FilesManagerTest(unittest.TestCase):
@@ -12,7 +12,7 @@ class FilesManagerTest(unittest.TestCase):
 
     def test_not_found(self):
         data_id = 0
-        with self.assertRaises(NotFoundException):
+        with self.assertRaises(InvalidUsage):
             get_file(data_id)
 
 

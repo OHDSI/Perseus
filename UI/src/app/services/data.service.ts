@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
-import { ITable, ITableOptions, Table } from 'src/app/models/table';
+import { ITableOptions, Table } from 'src/app/models/table';
 import { Mapping } from '@models/mapping';
 import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
@@ -74,7 +74,7 @@ export class DataService {
     return tables;
   }
 
-  getZippedXml(mapping: Mapping): Observable<any> {
+  getZippedXml(mapping: Mapping): Observable<File> {
     const reportName = removeExtension(this.storeService.state.report) ?? 'mapping'
     return this.getXmlPreview(mapping)
       .pipe(
@@ -123,10 +123,6 @@ export class DataService {
           };
         })
       );
-  }
-
-  createSourceSchema(sourceTables: ITable[]): Observable<string> {
-    return this.perseusService.createSourceSchema(sourceTables);
   }
 
   getView(sql: any): Observable<any> {

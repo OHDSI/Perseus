@@ -8,7 +8,7 @@ import { BridgeService } from '@services/bridge.service';
 import { CommonService } from '@services/common.service';
 import { CommonUtilsService } from '@services/common-utils.service';
 import { ConceptTransformationService } from '@services/concept-transformation.sevice';
-import { ConfigurationService } from '@services/configuration.service';
+import { EtlConfigurationService } from '@services/etl-configuration.service';
 import { DataService } from '@services/data.service';
 import { DrawService } from '@services/draw.service';
 import { PerseusApiService } from '@services/perseus/perseus-api.service';
@@ -59,7 +59,7 @@ import { CanRedirectMappingService } from '@services/breadcrumb/can-redirect-map
     CommonService,
     CommonUtilsService,
     ConceptTransformationService,
-    ConfigurationService,
+    EtlConfigurationService,
     DataService,
     DrawService,
     PerseusApiService,

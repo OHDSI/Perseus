@@ -1,12 +1,10 @@
 import json
 
 import requests
-from werkzeug.datastructures import FileStorage
 
 from app import app
 from services.response import file_save_reponse
 from utils import InvalidUsage
-from utils.exceptions import NotFoundException
 
 FILE_MANAGER_URL = app.config["FILE_MANAGER_API_URL"]
 
@@ -18,7 +16,7 @@ def get_file(data_id: int):
         return r.content
     else:
         if r.status_code == 404:
-            raise NotFoundException(f'File not found by id {data_id}')
+            raise InvalidUsage(f'File not found by id {data_id}', 404)
         else:
             raise InvalidUsage('Can download file', 500)
 

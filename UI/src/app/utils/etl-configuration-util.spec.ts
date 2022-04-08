@@ -1,5 +1,5 @@
 import * as testMapping from '@test/test-mapping.json'
-import { plainToConfiguration } from '@utils/configuration';
+import { plainToConfiguration } from '@utils/etl-configuration-util';
 
 describe('Concept Util', () => {
   it('should map plain objects to corresponding class', () => {

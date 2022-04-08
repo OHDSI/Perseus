@@ -12,7 +12,6 @@ import { Arrow } from '@models/arrow';
 
 @Injectable()
 export class ConceptTransformationService {
-
     arrow: Arrow;
     targetTableName;
     conceptFields;
@@ -23,8 +22,6 @@ export class ConceptTransformationService {
     arrowsCache;
     oppositeSourceTable;
     conceptsTable;
-
-    connectedToConceptFields = {};
 
     constructor(targetTableName: any, oppositeSourceTable: any, concepts: any, arrow?: Arrow, cloneTableName?: any, condition?: any, arrowsCache?: any) {
         this.arrow = arrow;
@@ -117,7 +114,6 @@ export class ConceptTransformationService {
         return conceptOptions;
     }
 
-
     deleteFieldsFromConcepts() {
         const connectedFields = this.collectConnectedGroupedFields();
         const fieldType = getConceptFieldType(this.arrow.target.name);
@@ -138,5 +134,4 @@ export class ConceptTransformationService {
         this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList = updateConceptsList(conceptsList);
         updateConceptsIndexes(this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList);
     }
-
 }

@@ -1,0 +1,23 @@
+<h3>Save ETL Mapping</h3>
+
+<mat-icon class="close" mat-dialog-close>close</mat-icon>
+
+<div mat-dialog-content [class.spinner]="loading">
+  <mat-form-field appearance="standard">
+    <mat-label>Name</mat-label>
+    <input [(ngModel)]="etlMappingName" matInput>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-dialog-close
+          mat-flat-button>
+    Cancel
+  </button>
+  <button mat-flat-button
+          color="accent"
+          [disabled]="disabled"
+          (click)="save()">
+    Save
+  </button>
+</div>

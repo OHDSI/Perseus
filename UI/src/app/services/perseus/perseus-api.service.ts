@@ -5,10 +5,11 @@ import { Mapping } from '@models/mapping';
 import { map } from 'rxjs/operators';
 import { createNoCacheHeaders } from '@utils/http-headers';
 import { perseusApiUrl } from '@app/app.constants'
-import { ITable } from '@models/table'
 import { ScanReportRequest } from '@models/perseus/scan-report-request'
 import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
 import { SourceTableResponse } from '@models/perseus/source-table-response'
+import { UploadEtlMappingResponse } from '@models/perseus/upload-etl-mapping-response'
+import { GenerateEtlArchiveRequest } from '@models/perseus/generate-etl-archive-request'
 
 // use for dev purposes
 // import-vocabulary * as schemaData from '../mockups/schema.mockup.json';
@@ -31,24 +32,26 @@ export class PerseusApiService {
   constructor(private httpClient: HttpClient) {
   }
 
-  uploadScanReport(scanReportFile: File): Observable<void> {
+  uploadScanReport(scanReportFile: File): Observable<UploadScanReportResponse> {
     const formData: FormData = new FormData();
     formData.append('scanReportFile', scanReportFile, scanReportFile.name);
-    return this.httpClient.post<void>(`${perseusApiUrl}/upload_scan_report`, formData);
+    return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/upload_scan_report`, formData);
   }
 
-  uploadScanReportAndCreateSourceSchema(scanReportFile: File): Observable<UploadScanReportResponse> {
+  uploadEtlMapping(etlMappingArchiveFile: File): Observable<UploadEtlMappingResponse> {
     const formData: FormData = new FormData();
-    formData.append('scanReportFile', scanReportFile, scanReportFile.name);
-    return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/upload_scan_report_and_create_source_schema`, formData);
+    formData.append('etlArchiveFile', etlMappingArchiveFile, etlMappingArchiveFile.name);
+    return this.httpClient.post<UploadEtlMappingResponse>(`${perseusApiUrl}/upload_etl_mapping`, formData)
   }
 
   createSourceSchemaByScanReport(scanReport: ScanReportRequest): Observable<SourceTableResponse[]> {
     return this.httpClient.post<SourceTableResponse[]>(`${perseusApiUrl}/create_source_schema_by_scan_report`, scanReport);
   }
 
-  createSourceSchema(sourceTables: ITable[]): Observable<string> {
-    return this.httpClient.post<string>(`${perseusApiUrl}/create_source_schema`, sourceTables);
+  generateEtlMappingArchive(request: GenerateEtlArchiveRequest): Observable<Blob> {
+    const headers = createNoCacheHeaders()
+    const url = `${perseusApiUrl}/generate_etl_mapping_archive`
+    return this.httpClient.post(url, request, {headers, responseType: 'blob'})
   }
 
   getCDMVersions(): Observable<string[]> {

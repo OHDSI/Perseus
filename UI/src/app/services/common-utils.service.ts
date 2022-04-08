@@ -7,15 +7,15 @@ import { mergeMap } from 'rxjs/operators';
 import { CdmVersionDialogComponent } from '@popups/cdm-version-dialog/cdm-version-dialog.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { OnBoardingComponent } from '@popups/on-boarding/on-boarding.component';
-import { OpenSaveDialogComponent } from '@popups/open-save-dialog/open-save-dialog.component';
 import { ResetWarningComponent } from '@popups/reset-warning/reset-warning.component';
 import { BridgeService } from './bridge.service';
-import { ConfigurationService } from './configuration.service';
+import { EtlConfigurationService } from './etl-configuration.service';
 import { DataService } from './data.service';
 import { OverlayConfigOptions } from './overlay/overlay-config-options.interface';
 import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
 import { mainPageRouter } from '@app/app.constants';
+import { SaveMappingDialogComponent } from '@popups/save-mapping-dialog/save-mapping-dialog.component'
 
 @Injectable()
 export class CommonUtilsService {
@@ -30,7 +30,7 @@ export class CommonUtilsService {
     private bridgeService: BridgeService,
     private storeService: StoreService,
     private router: Router,
-    private configService: ConfigurationService,
+    private configService: EtlConfigurationService,
     private snackbar: MatSnackBar,
     rendererFactory: RendererFactory2
   ) {
@@ -58,34 +58,21 @@ export class CommonUtilsService {
     ).subscribe();
   }
 
-  saveMappingDialog(deleteSourceAndTargetAfterSave: boolean, loadReport: boolean) {
-    const matDialog = this.matDialog.open(OpenSaveDialogComponent, {
+  saveMappingDialog() {
+    const matDialog = this.matDialog.open(SaveMappingDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
-      panelClass: 'cdm-version-dialog',
-      data: {
-        header: 'Save Mapping',
-        label: 'Name',
-        okButton: 'Save',
-        type: 'input',
-        save$: (payload: string) => this.configService.saveConfiguration(payload)
-      }
+      panelClass: 'cdm-version-dialog'
     });
     matDialog.afterClosed().subscribe(res => {
-      if (res?.action) {
-        this.openSnackbarMessage(res.value);
-        if (deleteSourceAndTargetAfterSave) {
-          this.resetMappingsAndReturnToComfy(true);
-        }
-        if (loadReport) {
-          this.loadReportAndReturnToComfy();
-        }
+      if (res) {
+        this.openSnackbarMessage(res);
       }
     });
   }
 
   openResetWarningDialog(settings: any) {
-    const { warning, header, okButton, deleteButton, deleteSourceAndTarget, loadReport } = settings;
+    const { warning, header, okButton, deleteButton } = settings;
     const matDialog = this.matDialog.open(ResetWarningComponent, {
       data: { warning, header, okButton, deleteButton },
       closeOnNavigation: false,
@@ -108,19 +95,8 @@ export class CommonUtilsService {
     }
   }
 
-  loadReportAndReturnToComfy() {
-    this.router.navigateByUrl(`${mainPageRouter}/comfy`);
-    this.refreshCDM();
-    this.loadReport.next(true);
-  }
-
   loadReportWithoutWarning() {
     this.loadReport.next(true);
-  }
-
-  refreshCDM() {
-    this.storeService.state.targetClones = {};
-    this.dataService.getTargetData(this.storeService.state.version).subscribe();
   }
 
   resetMappingsWithWarning() {
@@ -183,6 +159,6 @@ export class CommonUtilsService {
     };
     const dialogRef = this.overlayService.open(dialogOptions, target, OnBoardingComponent);
     this.renderer.addClass(target, 'on-boarding-anchor');
-    dialogRef.afterClosed$.subscribe(configOptions => this.renderer.removeClass(target, 'on-boarding-anchor'));
+    dialogRef.afterClosed$.subscribe(() => this.renderer.removeClass(target, 'on-boarding-anchor'));
   }
 }
