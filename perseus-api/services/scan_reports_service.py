@@ -8,6 +8,7 @@ from model.etl_mapping import EtlMapping
 from services import files_manager_service
 from utils import UPLOAD_SCAN_REPORT_FOLDER, InvalidUsage
 from utils.constants import SCAN_REPORT_DATA_KEY
+from services.request.scan_report_request import ScanReportRequest
 from utils.directory_util import is_directory_contains_file
 
 ALLOWED_SCAN_REPORT_EXTENSIONS = {'xlsx', 'xls'}
@@ -50,6 +51,20 @@ def load_scan_report_to_server(scan_report_file: FileStorage, username: str):
             content_type
         )
     raise InvalidUsage("Incorrect scan report", 400)
+
+
+def load_scan_report_from_file_manager(scan_report_request: ScanReportRequest, current_user: str):
+    checked_filename = _allowed_file(scan_report_request.file_name)
+    scan_report_file = files_manager_service.get_file(scan_report_request.data_id)
+    if checked_filename:
+        filename = secure_filename(checked_filename)
+        _create_upload_scan_report_user_directory(current_user)
+        path = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{filename}"
+        with open(path, 'wb') as out: ## write temporary file as bytes
+            try:
+                out.write(scan_report_file)
+            except Exception as e:
+                InvalidUsage("Cannot write scan report file to server", 500)
 
 
 def _allowed_file(filename: str):
