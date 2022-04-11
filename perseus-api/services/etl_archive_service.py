@@ -58,7 +58,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         source_tables = mapping_json['source']
         source_schema_service.create_source_schema_by_tables(username, source_tables)
 
-        etl_mapping = etl_mapping_service.create_etl_mapping(username, file_save_response)
+        etl_mapping = etl_mapping_service.create_etl_mapping_by_json_configuration(username, mapping_json, file_save_response)
 
         return to_upload_etl_archive_response(etl_mapping, mapping_json)
     except Exception as e:

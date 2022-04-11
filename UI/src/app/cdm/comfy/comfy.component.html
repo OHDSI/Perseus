@@ -196,29 +196,37 @@
             </div>
           </div>
 
-          <div class="initial"
-               *ngIf="!data.target.length">
-            <p>Please select CDM version to see Target tables</p>
-            <button mat-flat-button
-                    class="cdm-button"
-                    color="accent"
-                    (click)="openCdmVersion(state.cdmVersions[0])">
-              Version {{state.cdmVersions[0]}}
-            </button>
+          <div class="initial" *ngIf="!data.target.length">
+            <ng-container *ngIf="cdmVersions.length > 0; else cannotLoadCdmVersionsBlock">
+              <p>Please select CDM version to see Target tables</p>
 
-            <button mat-flat-button
-                    class="cdm-button"
-                    color="accent"
-                    (click)="openCdmVersion(state.cdmVersions[1])">
-              Version {{state.cdmVersions[1]}}
-            </button>
+              <button mat-flat-button
+                      class="cdm-button"
+                      color="accent"
+                      (click)="openCdmVersion(state.cdmVersions[0])">
+                Version {{state.cdmVersions[0]}}
+              </button>
 
-            <button mat-flat-button
-                    class="cdm-button"
-                    color="accent"
-                    (click)="openSetCDMDialog()">
-              Select Other Version
-            </button>
+              <ng-container *ngIf="cdmVersions.length > 1">
+                <button mat-flat-button
+                        class="cdm-button"
+                        color="accent"
+                        (click)="openCdmVersion(state.cdmVersions[1])">
+                  Version {{state.cdmVersions[1]}}
+                </button>
+              </ng-container>
+
+              <button mat-flat-button
+                      class="cdm-button"
+                      color="accent"
+                      (click)="openSetCDMDialog()">
+                Select Other Version
+              </button>
+            </ng-container>
+
+            <ng-template #cannotLoadCdmVersionsBlock>
+              <p>Cannot load CDM versions</p>
+            </ng-template>
           </div>
         </article>
       </div>

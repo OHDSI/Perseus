@@ -6,15 +6,15 @@ import { ConstantCache, IConstantCache } from '@models/constant-cache';
 import { Concepts, IConcepts } from '@models/concepts';
 import { Clones, IClones } from '@models/clones';
 import { TargetConfig } from '@models/state';
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 export interface IEtlConfiguration {
+  etlMapping?: EtlMapping
   name?: string;
   tablesConfiguration?: TargetConfig;
   mappingsConfiguration?: IArrowCache;
   source?: Table[];
   target?: Table[];
-  report?: string;
-  version?: string;
   filtered?: string;
   recalculateSimilar?: boolean;
   constants?: IConstantCache;
@@ -25,6 +25,7 @@ export interface IEtlConfiguration {
 }
 
 export class EtlConfiguration implements IEtlConfiguration {
+  etlMapping?: EtlMapping
   name?: string;
   tablesConfiguration?: TargetConfig;
 
@@ -37,8 +38,6 @@ export class EtlConfiguration implements IEtlConfiguration {
   @Type(() => Table)
   target?: Table[];
 
-  report?: string;
-  version?: string;
   filtered?: string;
   recalculateSimilar?: boolean;
 
@@ -58,13 +57,12 @@ export class EtlConfiguration implements IEtlConfiguration {
   concepts?: IConcepts;
 
   constructor(options: IEtlConfiguration = {}) {
+    this.etlMapping = options.etlMapping
     this.name = options.name
     this.mappingsConfiguration = options.mappingsConfiguration
     this.tablesConfiguration = options.tablesConfiguration
     this.source = options.source
     this.target = options.target
-    this.report = options.report
-    this.version = options.version
     this.filtered = options.filtered
     this.constants = options.constants
     this.targetClones = options.targetClones
@@ -90,14 +88,6 @@ export class EtlConfiguration implements IEtlConfiguration {
     return this.target
   }
 
-  get reportName(): string {
-    return this.report
-  }
-
-  get cdmVersion(): string {
-    return this.version
-  }
-
   get constantsCache(): ConstantCache {
     return this.constants
   }
@@ -116,9 +106,5 @@ export class EtlConfiguration implements IEtlConfiguration {
 
   get tableConcepts(): Concepts {
     return this.concepts
-  }
-
-  get filteredString(): string {
-    return this.filtered
   }
 }

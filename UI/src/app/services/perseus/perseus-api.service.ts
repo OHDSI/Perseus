@@ -7,7 +7,7 @@ import { createNoCacheHeaders } from '@utils/http-headers';
 import { perseusApiUrl } from '@app/app.constants'
 import { ScanReportRequest } from '@models/perseus/scan-report-request'
 import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
-import { SourceTableResponse } from '@models/perseus/source-table-response'
+import { TableInfoResponse } from '@models/perseus/table-info-response'
 import { UploadEtlMappingResponse } from '@models/perseus/upload-etl-mapping-response'
 import { GenerateEtlArchiveRequest } from '@models/perseus/generate-etl-archive-request'
 
@@ -16,12 +16,9 @@ import { GenerateEtlArchiveRequest } from '@models/perseus/generate-etl-archive-
 
 const URL = perseusApiUrl;
 const API_URLS = {
-  getCDMVersions: () => `${URL}/get_cdm_versions`,
-  getTargetData: (version) => `${URL}/get_cdm_schema?cdm_version=${version}`,
   getColumnInfo: (reportName, tableName, columnName) => `${URL}/get_column_info?report_name=${reportName}&table_name=${tableName}&column_name=${columnName}`,
   getXmlPreview: () => `${URL}/get_xml`,
   getZipXml: () => `${URL}/get_zip_xml`,
-  saveSourceSchemaToDb: () => `${URL}/save_source_schema_to_db`,
   getView: () => `${URL}/get_view`,
   validateSql: () => `${URL}/validate_sql`
 };
@@ -55,11 +52,11 @@ export class PerseusApiService {
   }
 
   getCDMVersions(): Observable<string[]> {
-    return this.httpClient.get<string[]>(API_URLS.getCDMVersions());
+    return this.httpClient.get<string[]>(`${perseusApiUrl}/get_cdm_versions`);
   }
 
-  getTargetData(version: string): Observable<any> {
-    return this.httpClient.get<any>(API_URLS.getTargetData(version));
+  getTargetData(version: string): Observable<TableInfoResponse[]> {
+    return this.httpClient.get<any>(`${perseusApiUrl}/get_cdm_schema?cdm_version=${version}`);
   }
 
   getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<any> {

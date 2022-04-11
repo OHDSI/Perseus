@@ -43,7 +43,8 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
 import { State } from '@models/state';
 import { asc } from '@utils/sort';
 import { canOpenMappingPage } from '@utils/mapping-util';
-import { parseHttpError } from '@utils/error'
+import { openErrorDialog, parseHttpError } from '@utils/error'
+import { PerseusApiService } from '@services/perseus/perseus-api.service'
 
 @Component({
   selector: 'app-comfy',
@@ -52,8 +53,12 @@ import { parseHttpError } from '@utils/error'
 })
 export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  get state() {
+  get state(): State {
     return this.storeService.state;
+  }
+
+  get cdmVersions(): string[] {
+    return this.state.cdmVersions
   }
 
   get vocabularyBottom(): string {
@@ -78,7 +83,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private commonService: CommonService,
     private element: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private vocabularyObserverService: VocabularyObserverService
+    private vocabularyObserverService: VocabularyObserverService,
+    private perseusApiService: PerseusApiService
   ) {
     super();
   }
@@ -106,7 +112,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     source: [],
     target: [],
     targetConfig: {},
-    version: undefined,
     filteredTables: undefined,
     linkTablesSearch: {
       source: undefined,
@@ -181,17 +186,21 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   ngOnInit() {
     this.vocabularies = this.vocabulariesService.vocabularies;
 
-    this.dataService.getCDMVersions().subscribe(res => {
+    this.perseusApiService.getCDMVersions().subscribe(res => {
       res = res.sort((a, b) => (a > b ? -1 : 1));
       this.storeService.add('cdmVersions', res);
     });
 
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.data = res;
-        this.initializeData();
-      }
-    });
+    this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(res => {
+        if (res) {
+          this.data = res;
+          this.initializeData();
+        }
+      });
 
     this.bridgeService.applyConfiguration$
       .pipe(
@@ -348,7 +357,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openCdmVersion(version: string) {
-    return this.dataService.getTargetData(version).subscribe();
+    return this.dataService.getTargetData(version)
+      .subscribe(
+        () => this.snackBar.open('Target schema loaded', ' DISMISS '),
+        error => openErrorDialog(this.matDialog, 'Can not load target schema', parseHttpError(error))
+      )
   }
 
   afterOpenMapping(event?: any) {
@@ -424,7 +437,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByName(area: string, byName: Criteria): void {
-
     const filterByName = (name) => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
     };

@@ -36,8 +36,6 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   cdmVersion: string;
   reportName: string;
 
-  fakeDataDisabled$: Observable<boolean>;
-
   convertToCdmDisabled$: Observable<boolean>;
 
   reportGenerationDisabled$: Observable<boolean>;
@@ -239,12 +237,6 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private initStreamsOfDisabledButtons() {
-    this.fakeDataDisabled$ = this.storeService.state$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        map(state => !state.reportFile)
-      );
-
     this.convertToCdmDisabled$ = this.storeService.state$
       .pipe(
         takeUntil(this.ngUnsubscribe),

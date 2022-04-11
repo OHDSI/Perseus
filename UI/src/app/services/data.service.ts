@@ -12,7 +12,7 @@ import { removeExtension } from '@utils/file';
 import { ColumnInfo } from '@models/column-info/column-info';
 import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
 import { Area } from '@models/area'
-import { SourceTableResponse } from '@models/perseus/source-table-response'
+import { TableInfoResponse } from '@models/perseus/table-info-response'
 
 @Injectable()
 export class DataService {
@@ -20,7 +20,7 @@ export class DataService {
               private storeService: StoreService,
               private bridgeService: BridgeService) {}
 
-  _normalize(data: SourceTableResponse[], area: Area) {
+  _normalize(data: TableInfoResponse[], area: Area) {
     const tables = [];
     const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
@@ -75,7 +75,7 @@ export class DataService {
   }
 
   getZippedXml(mapping: Mapping): Observable<File> {
-    const reportName = removeExtension(this.storeService.state.report) ?? 'mapping'
+    const reportName = removeExtension(this.storeService.scanReportName) ?? 'etl-mapping'
     return this.getXmlPreview(mapping)
       .pipe(
         switchMap(() => this.perseusService.getZipXml(reportName))
@@ -86,16 +86,12 @@ export class DataService {
     return this.perseusService.getXmlPreview(mapping);
   }
 
-  getCDMVersions() {
-    return this.perseusService.getCDMVersions();
-  }
-
-  getTargetData(version) {
+  getTargetData(version: string) {
     return this.perseusService.getTargetData(version).pipe(
       map(data => {
         const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
         const tables = this.prepareTables(filteredData, Area.Target);
-        this.storeService.add('version', version);
+        this.storeService.addCdmVersion(version)
         this.prepareTargetConfig(filteredData);
         return tables;
       })
@@ -143,13 +139,9 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data: SourceTableResponse[], key: Area) {
+  prepareTables(data: TableInfoResponse[], key: Area) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;
-  }
-
-  saveReportName(data, key) {
-    this.storeService.add(key, data);
   }
 }

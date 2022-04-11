@@ -111,7 +111,6 @@
       <span>Generate & Save Files</span>
     </button>
     <button mat-menu-item
-            [disabled]="fakeDataDisabled$ | async"
             (click)="generateFakeData()">
       <mat-icon svgIcon="generate_fake"></mat-icon>
       <span>Generate Fake Data</span>
