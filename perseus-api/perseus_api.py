@@ -34,7 +34,7 @@ def upload_scan_report(current_user):
         scan_report_file = request.files['scanReportFile']
         file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
         saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report_file.filename)
-        etl_mapping = etl_mapping_service.create_etl_mapping(current_user, file_save_response)
+        etl_mapping = etl_mapping_service.create_etl_mapping_by_file_save_resp(current_user, file_save_response)
         return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except InvalidUsage as error:
         raise error
