@@ -7,7 +7,7 @@ class EtlMapping(BaseModel):
     username = CharField(max_length=30)
     user_schema_name = CharField()
     source_schema_name = CharField()
-    cdm_version = CharField(max_length=10)
+    cdm_version = CharField(max_length=10, null=True)
     scan_report_name = CharField()
     scan_report_id = BigIntegerField()
 
