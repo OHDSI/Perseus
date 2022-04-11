@@ -4,6 +4,7 @@ from app import app
 from model.etl_mapping import EtlMapping
 from services.response.file_save_reponse import FileSaveResponse
 from utils.exceptions import InvalidUsage
+from services.request.scan_report_request import ScanReportRequest
 
 
 def find_by_id(id: int):
@@ -21,6 +22,17 @@ def create_etl_mapping(username: str, file_save_response: FileSaveResponse):
                              source_schema_name=file_name,
                              scan_report_name=file_save_response.fileName,
                              scan_report_id=file_save_response.id)
+    etl_mapping.save()
+    return etl_mapping
+
+
+def create_etl_mapping_from_request(username: str, scan_report_request: ScanReportRequest):
+    file_name, extension = os.path.splitext(scan_report_request.file_name)
+    etl_mapping = EtlMapping(username=username,
+                             user_schema_name=username,
+                             source_schema_name=file_name,
+                             scan_report_name=scan_report_request.file_name,
+                             scan_report_id=scan_report_request.data_id)
     etl_mapping.save()
     return etl_mapping
 

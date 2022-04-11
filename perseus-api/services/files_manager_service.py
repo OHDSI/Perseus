@@ -1,5 +1,4 @@
 import json
-
 import requests
 
 from app import app
@@ -18,7 +17,7 @@ def get_file(data_id: int):
         if r.status_code == 404:
             raise InvalidUsage(f'File not found by id {data_id}', 404)
         else:
-            raise InvalidUsage('Can download file', 500)
+            raise InvalidUsage('Cannot download file', 500)
 
 
 def save_file(username: str,
