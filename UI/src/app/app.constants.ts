@@ -16,10 +16,8 @@ export const dbServer = environment.dbServer || server
 export const serverUrl = `${protocol}//${server}:${port}`
 
 export const authApiUrl = `${serverUrl}/user/api`
-// export const perseusApiUrl = `${serverUrl}/perseus/api`
-export const perseusApiUrl = `http://localhost:5000/perseus/api`
-export const whiteRabbitApiUrl = `http://localhost:8000/white-rabbit/api`
-// export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
+export const perseusApiUrl = `${serverUrl}/perseus/api`
+export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`
 export const dqdServerUrl = `${serverUrl}/data-quality-dashboard`
 export const dqdApiUrl = `${dqdServerUrl}/api`
