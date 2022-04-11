@@ -41,8 +41,8 @@ export class PerseusApiService {
     return this.httpClient.post<UploadEtlMappingResponse>(`${perseusApiUrl}/upload_etl_mapping`, formData)
   }
 
-  createSourceSchemaByScanReport(scanReport: ScanReportRequest): Observable<TableInfoResponse[]> {
-    return this.httpClient.post<TableInfoResponse[]>(`${perseusApiUrl}/create_source_schema_by_scan_report`, scanReport);
+  createSourceSchemaByScanReport(scanReport: ScanReportRequest): Observable<UploadScanReportResponse> {
+    return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/create_source_schema_by_scan_report`, scanReport);
   }
 
   generateEtlMappingArchive(request: GenerateEtlArchiveRequest): Observable<Blob> {

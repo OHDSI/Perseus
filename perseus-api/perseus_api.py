@@ -1,4 +1,8 @@
+import traceback
+from flask import Blueprint, request, jsonify, send_from_directory
 from peewee import ProgrammingError
+from werkzeug.exceptions import BadRequestKeyError
+
 from app import app
 from services.request import generate_etl_archive_request
 from services.response.upload_scan_report_response import to_upload_scan_report_response
@@ -8,13 +12,17 @@ from flask import request, jsonify, send_from_directory
 from services.xml_writer import get_xml, zip_xml, \
     delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
 from services import source_schema_service, scan_reports_service, etl_mapping_service, etl_archive_service
-from services.cdm_schema import get_exist_version, get_schema
-from utils.exceptions import InvalidUsage
-import traceback
-from werkzeug.exceptions import BadRequestKeyError
-from flask import Blueprint
 from config import VERSION, APP_PREFIX
+from services import source_schema_service, scan_reports_service, \
+    etl_mapping_service
+from services.xml_writer import get_xml, zip_xml, \
+    delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
+from services.cdm_schema import get_exist_version, get_schema
+from services.request import scan_report_request
+from services.response.upload_scan_report_response import to_upload_scan_report_response
+from utils.exceptions import InvalidUsage
 from utils.utils import username_header
+
 
 perseus = Blueprint('perseus', __name__, url_prefix=APP_PREFIX)
 
@@ -55,6 +63,23 @@ def upload_etl_mapping(current_user):
         raise error
     except Exception as error:
         app.logger.error(error.__str__())
+        raise InvalidUsage(error.__str__(), 500)
+
+
+@perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
+@username_header
+def create_source_schema_by_scan_report(current_user):
+    """Create source schema by ScanReportRequest"""
+    app.logger.info("REST request to upload scan report from file manager and create source schema")
+    try:
+        scan_report = scan_report_request.from_json(request.json)
+        scan_reports_service.load_scan_report_from_file_manager(scan_report, current_user)
+        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report.file_name)
+        etl_mapping = etl_mapping_service.create_etl_mapping_from_request(current_user, scan_report)
+        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
 
 
