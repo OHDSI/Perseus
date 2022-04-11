@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { whiteRabbitApiUrl } from '@app/app.constants';
 import { Conversion } from '@models/conversion/conversion'
 import { StoreService } from '@services/store.service'
+import { FakeDataRequest } from '@models/white-rabbit/fake-data-request'
 
 @Injectable()
 export class FakeDataService {
@@ -14,11 +15,15 @@ export class FakeDataService {
   }
 
   generateFakeData(settings: FakeDataSettings): Observable<Conversion> {
-    const {reportFile} = this.storeService.state;
-    const formData = new FormData();
-    formData.append('file', reportFile)
-    formData.append('settings', JSON.stringify(settings))
-    return this.http.post<Conversion>(`${whiteRabbitApiUrl}/fake-data`, formData)
+    const etlMapping = this.storeService.etlMapping
+    const request: FakeDataRequest = {
+      settings,
+      scanReportInfo: {
+        dataId: etlMapping.scan_report_id,
+        fileName: etlMapping.scan_report_name
+      }
+    }
+    return this.http.post<Conversion>(`${whiteRabbitApiUrl}/fake-data/generate`, request)
   }
 
   conversionInfoWithLogs(conversionId: number): Observable<Conversion> {

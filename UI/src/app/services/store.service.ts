@@ -50,7 +50,15 @@ export class StoreService implements StateService {
   }
 
   get etlMappingId(): number {
-    return this.etlMapping.id
+    return this.etlMapping?.id
+  }
+
+  get cdmVersion(): string {
+    return this.etlMapping?.cdm_version
+  }
+
+  get scanReportName(): string {
+    return this.etlMapping?.scan_report_name
   }
 
   add<K extends keyof State>(key: K | Area, value: State[K]) {
@@ -122,11 +130,18 @@ export class StoreService implements StateService {
   addEtlMapping(etlMapping: EtlMapping): void {
     this.add('etlMapping', etlMapping)
   }
+
+  addCdmVersion(version: string) {
+    this.add('etlMapping', {
+      ...this.etlMapping,
+      cdm_version: version
+    })
+  }
 }
 
 export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
   return {
-    cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
-    reportName: state.report ? removeExtension(state.report) : 'Report name'
+    cdmVersion: state.etlMapping?.cdm_version ? `CDM v${state.etlMapping.cdm_version}` : 'CDM version',
+    reportName: state.etlMapping?.source_schema_name ? removeExtension(state.etlMapping.source_schema_name) : 'Report name'
   };
 }

@@ -35,15 +35,13 @@ export class UploadService {
 
   uploadScanReport(scanReportFile: File): Observable<UploadScanReportResponse> {
     this.bridgeService.reportLoading();
-    this.storeService.add('reportFile', scanReportFile);
     return this.perseusApiService.uploadScanReport(scanReportFile)
       .pipe(
         tap(res => {
           this.snackbar.open('Success file upload', ' DISMISS ');
-          this.storeService.addEtlMapping(res.etl_mapping)
           this.bridgeService.resetAllMappings();
+          this.storeService.addEtlMapping(res.etl_mapping)
           this.dataService.prepareTables(res.source_tables, Area.Source);
-          this.dataService.saveReportName(scanReportFile.name, 'report');
           this.bridgeService.saveAndLoadSchema$.next();
         }),
         catchError(error => {
@@ -63,10 +61,9 @@ export class UploadService {
       .pipe(
         tap(resp => {
           this.snackbar.open('Success file upload', ' DISMISS ');
-          this.storeService.addEtlMapping(resp.etl_mapping)
           this.bridgeService.resetAllMappings();
           const configuration: EtlConfiguration = plainToConfiguration(resp.etl_configuration)
-          this.bridgeService.applyConfiguration(configuration);
+          this.bridgeService.applyConfiguration(configuration, resp.etl_mapping);
         }),
         finalize(() => this.mappingLoading = false)
       )

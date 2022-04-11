@@ -5,7 +5,7 @@ import { parseHttpError } from '@utils/error';
 import { Injectable, OnDestroy } from '@angular/core';
 
 /**
- * @deprecated Use ConversionDialog
+ * @deprecated
  */
 @Injectable()
 export abstract class WebsocketService implements OnDestroy {

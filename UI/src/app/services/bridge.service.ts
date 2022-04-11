@@ -23,6 +23,7 @@ import { getConnectorId } from '@utils/connector';
 import { StateService } from '@services/state/state.service';
 import { IConnection } from '@models/connection';
 import { IConstantCache } from '@models/constant-cache';
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 @Injectable()
 export class BridgeService implements StateService {
@@ -304,7 +305,7 @@ export class BridgeService implements StateService {
     });
   }
 
-  applyConfiguration(configuration: EtlConfiguration) {
+  applyConfiguration(configuration: EtlConfiguration, etlMapping: EtlMapping) {
     this.deleteAllArrows();
 
     this.constantsCache = configuration.constants
@@ -317,12 +318,11 @@ export class BridgeService implements StateService {
 
     this.storeService.state = {
       ...this.storeService.state,
+      etlMapping,
       filtered: configuration.filtered,
-      version: configuration.cdmVersion,
       target: configuration.targetTables,
       source: configuration.sourceTables,
       targetConfig: configuration.tables,
-      report: configuration.reportName,
       targetClones: configuration.targetClones,
       mappingEmpty: !isMappingNotEmpty,
       sourceSimilar: configuration.sourceSimilarRows,

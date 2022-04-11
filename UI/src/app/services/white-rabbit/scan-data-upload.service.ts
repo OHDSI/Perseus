@@ -16,7 +16,6 @@ export class ScanDataUploadService {
 
   uploadScanReport(scanReport: ScanReportRequest): Observable<void> {
     this.bridgeService.reportLoading();
-    this.dataService.saveReportName(scanReport.fileName, 'report');
 
     return this.perseusApiService.createSourceSchemaByScanReport(scanReport)
       .pipe(

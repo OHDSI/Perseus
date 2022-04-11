@@ -2,7 +2,7 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { CdmVersionDialogComponent } from '@popups/cdm-version-dialog/cdm-version-dialog.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
@@ -16,6 +16,7 @@ import { OverlayService } from './overlay/overlay.service';
 import { StoreService } from './store.service';
 import { mainPageRouter } from '@app/app.constants';
 import { SaveMappingDialogComponent } from '@popups/save-mapping-dialog/save-mapping-dialog.component'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Injectable()
 export class CommonUtilsService {
@@ -53,9 +54,12 @@ export class CommonUtilsService {
         if (res1) {
           return this.dataService.getTargetData(res1);
         }
-        return of(false);
+        return EMPTY;
       })
-    ).subscribe();
+    ).subscribe(
+      () => this.openSnackbarMessage('Target schema loaded'),
+      error => openErrorDialog(this.matDialog, 'Can not load target schema', parseHttpError(error))
+    );
   }
 
   saveMappingDialog() {

@@ -71,7 +71,7 @@ export class CdmBuilderService {
   }
 
   getMappingName(): string {
-    const reportName = removeExtension(this.storeService.state.report)
+    const reportName = removeExtension(this.storeService.scanReportName)
     const email = this.authService.user.email
 
     return `${reportName}_${email}`

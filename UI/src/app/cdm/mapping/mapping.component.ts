@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, 
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
-import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
+import { cloneDeep } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -72,8 +72,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   numberOfPanels: number;
 
-  hasScanReport = false;
-
   conceptFieldNames = (conceptFields as any).default;
 
   isVocabularyVisible = false;
@@ -138,8 +136,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.loadMapping();
 
     this.init()
-
-    this.initHasScanReport();
 
     this.setMainHeight();
 
@@ -316,46 +312,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  sourceSimilar(rows) {
-    rows.forEach(row => {
-      this.sourceRows.forEach(sourceRow => {
-        if (sourceRow.name !== row.name) {
-          return;
-        }
-
-        this.mappingConfig.forEach(item => {
-          if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
-            item.push(this.similarTableName);
-          }
-        });
-      });
-    });
-  }
-
-  targetSimilar(rows) {
-    const newItem = [];
-    rows.forEach(row => {
-      this.targetRows.forEach(targetRow => {
-        if (targetRow.name !== row.name) {
-          return;
-        }
-
-        this.mappingConfig.forEach(item => {
-          if (!item.includes(targetRow.tableName)) {
-            return;
-          }
-
-          if (!newItem.length) {
-            newItem.push(this.similarTableName);
-          }
-
-          newItem.push.apply(newItem, item.slice(1));
-        });
-      });
-    });
-    this.mappingConfig.push(uniq(newItem));
-  }
-
   moveSimilarTables() {
     this.moveSimilar(Area.Source);
     this.moveSimilar(Area.Target);
@@ -520,7 +476,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openFilter(target) {
-
     const optionalSaveKey = this.currentTargetTable.name;
 
     const filteredFields = this.filteredFields ? this.filteredFields[optionalSaveKey] : this.filteredFields;
@@ -620,11 +575,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       targetTableName = this.mappingConfig.find(item => item.includes(sourceTableName))[tagretTableNameIndex];
       this.targetTabIndex = this.target.findIndex(element => element.name === targetTableName);
     }
-  }
-
-  isDisabled(tableName: string): boolean {
-    const activeTableName = this.currentSourceTable.name;
-    return !this.mappingConfig.find(item => item.includes(tableName) && item.includes(activeTableName));
   }
 
   isSimilarTabs() {
@@ -734,10 +684,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   private saveMappingStatus() {
     this.storeService.add('mappingEmpty', this.isMappingEmpty());
-  }
-
-  private initHasScanReport() {
-    this.hasScanReport = !!this.storeService.state.reportFile;
   }
 
   private loadMapping() {

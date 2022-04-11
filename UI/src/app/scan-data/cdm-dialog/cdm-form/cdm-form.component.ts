@@ -93,11 +93,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   private loadState() {
     const {sourceDbSettings, destinationDbSettings} = this.cdmStateService.state;
-    let fakeDataParams = null;
-    if (this.storeService.state.reportFile) {
-      fakeDataParams = this.fakeDataStateService.state;
-    }
-
+    const fakeDataParams = this.fakeDataStateService.state;
     this.sourceDataType = sourceDbSettings.dbType;
     this.destinationDataType = destinationDbSettings.dbType;
     this.sourceDbSettings = sourceDbSettings;
@@ -119,7 +115,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   }
 
   private createCdmBuilderSettings(): CdmSettings {
-    const cdmVersion = adaptCdmVersions(this.storeService.state.version)
+    const cdmVersion = adaptCdmVersions(this.storeService.cdmVersion)
     const mappingsName = this.cdmBuilderService.getMappingName()
 
     return {

@@ -1,7 +1,7 @@
 import { EtlMapping } from '@models/perseus/etl-mapping'
-import { SourceTableResponse } from '@models/perseus/source-table-response'
+import { TableInfoResponse } from '@models/perseus/table-info-response'
 
 export interface UploadScanReportResponse {
   etl_mapping: EtlMapping
-  source_tables: SourceTableResponse[]
+  source_tables: TableInfoResponse[]
 }
