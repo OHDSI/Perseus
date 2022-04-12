@@ -12,7 +12,7 @@ import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
-import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
+import { SqlTransformationComponent } from '@mapping/transform-config/sql-transformation/sql-transformation.component';
 import { SqlForTransformation } from '@app/models/transformation/sql-for-transformation';
 import { openErrorDialog, parseHttpError } from '@utils/error'
 

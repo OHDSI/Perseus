@@ -1,0 +1,16 @@
+@import "src/app/styles/mixins";
+
+:host {
+  @include transformation-function();
+}
+
+.date-part {
+  @include transformation-function-toolbar();
+  display: flex;
+
+  .mat-select {
+    @include cdm-input();
+    background: none;
+    width: 120px;
+  }
+}

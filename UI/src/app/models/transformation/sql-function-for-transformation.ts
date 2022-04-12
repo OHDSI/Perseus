@@ -1,8 +1,8 @@
-import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
+import { TransformationFunction } from '@mapping/transform-config/sql-transformation/visual-transformation/function/transformation-function';
 import { Subscription } from 'rxjs';
 import { TransformationFunctionType } from '@models/transformation/transformation-function-type';
 import { FunctionType } from '@models/transformation/function-type';
-import { functionTypes } from '@mapping/sql-transformation/visual-transformation/visual-transformation';
+import { functionTypes } from '@mapping/transform-config/sql-transformation/visual-transformation/visual-transformation';
 
 export interface SqlFunctionForTransformation<T = any> {
   type: TransformationFunctionType

@@ -10,7 +10,7 @@ import { Area } from 'src/app/models/area';
 import { StoreService } from 'src/app/services/store.service';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 import { addSemicolon } from '@utils/text-util';
-import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
+import { SqlTransformationComponent } from '@mapping/transform-config/sql-transformation/sql-transformation.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { Observable } from 'rxjs';
 import { LookupComponent } from '@mapping/transform-config/lookup/lookup.component';
