@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import Model
 from db import pg_db
 
 class BaseModel(Model):

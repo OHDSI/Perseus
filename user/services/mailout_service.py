@@ -1,11 +1,13 @@
 import os
 import socket
-
 import smtplib
 import ssl
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 from utils.constants import SMTP_PORT_STL
+
 
 hostname = socket.gethostname()
 local_ip = socket.gethostbyname(hostname)
