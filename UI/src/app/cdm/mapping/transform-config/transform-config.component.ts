@@ -13,7 +13,7 @@ import { addSemicolon } from '@utils/text-util';
 import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { Observable } from 'rxjs';
-import { LookupComponent } from '@mapping/vocabulary-transform-configurator/lookup/lookup.component';
+import { LookupComponent } from '@mapping/transform-config/lookup/lookup.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 
 @Component({

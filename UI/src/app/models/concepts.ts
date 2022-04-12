@@ -1,4 +1,4 @@
-import { TableConcepts } from '@models/concept-transformation/concept';
+import { TableConcepts } from '@models/perseus/concept-transformation/concept';
 
 export interface IConcepts {
   [key: string]: TableConcepts

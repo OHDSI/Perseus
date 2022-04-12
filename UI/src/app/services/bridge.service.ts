@@ -7,7 +7,12 @@ import { cloneDeep, uniq } from '../infrastructure/utility';
 import { IArrowCache } from '@models/arrow-cache';
 import { EtlConfiguration } from '@models/etl-configuration';
 import { IConnector } from '@models/connector';
-import { addClonesToMapping, addGroupMappings, addViewsToMapping, MappingService } from '@services/mapping-service';
+import {
+  addClonesToMapping,
+  addGroupMappings,
+  addViewsToMapping,
+  ZipXmlMappingModelService
+} from '@services/zip-xml-mapping-model-service';
 import { ITable, Table } from '@models/table';
 import { StoreService } from './store.service';
 import { Area } from '@models/area';
@@ -16,7 +21,7 @@ import { similarTableName } from '../app.constants';
 import * as conceptFieldsFromJson from '../cdm/mapping/concept-fileds-list.json';
 import { ConceptTransformationService } from './concept-transformation.sevice';
 import { getConceptFieldsDictionary } from 'src/app/utils/concept-util';
-import { Mapping } from '@models/mapping';
+import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
 import { canLink, removeDeletedLinksFromFields } from '@utils/bridge';
 import { getConstantId } from '@utils/constant';
 import { getConnectorId } from '@utils/connector';
@@ -602,8 +607,8 @@ export class BridgeService implements StateService {
       });
   }
 
-  generateMapping(sourceTableName: string = '', targetTableName: string = ''): Mapping {
-    const mappingService = new MappingService(
+  generateMappingModelForZipXml(sourceTableName: string = '', targetTableName: string = ''): EtlMappingForZipXmlGeneration {
+    const mappingService = new ZipXmlMappingModelService(
       this.arrowsCache,
       this.constantsCache,
       sourceTableName,
@@ -689,8 +694,8 @@ export class BridgeService implements StateService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  generateMappingWithViewsAndGroups(sourceTables: any): Mapping {
-    const mappingJSON = this.generateMapping();
+  generateMappingWithViewsAndGroups(sourceTables: any): EtlMappingForZipXmlGeneration {
+    const mappingJSON = this.generateMappingModelForZipXml();
 
     if (!sourceTables.length) {
       const { source } = this.storeService.getMappedTables();

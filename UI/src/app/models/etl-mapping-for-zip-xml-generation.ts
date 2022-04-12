@@ -1,4 +1,5 @@
 import { IComment } from './comment';
+import { Lookup } from '@models/perseus/lookup'
 
 export interface MappingLookupSqlField {
   source_field: string;
@@ -25,7 +26,7 @@ export interface MappingNode {
   target_field: string;
   sql_field: string;
   sql_alias: string;
-  lookup?: string;
+  lookup?: string | Lookup;
   lookupType?: string;
   sqlTransformation?: string;
   comments?: IComment[];
@@ -43,7 +44,7 @@ export interface MappingPair {
   clones?: {name: string, condition: string}[];
 }
 
-export interface Mapping {
+export interface EtlMappingForZipXmlGeneration {
   mapping_items: Array<MappingPair>;
   views?: object;
 }

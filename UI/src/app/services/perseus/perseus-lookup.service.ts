@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataService } from '../data.service';
 import { Observable } from 'rxjs';
-import { PerseusApiService } from './perseus-api.service';
 import { perseusApiUrl } from '@app/app.constants'
 import { HttpClient } from '@angular/common/http'
 
@@ -9,16 +7,16 @@ import { HttpClient } from '@angular/common/http'
 export class PerseusLookupService {
   constructor(private httpClient: HttpClient) { }
 
-  getLookup(name, lookupType): Observable<string> {
+  getLookup(name: string, lookupType: string): Observable<string> {
     return this.httpClient.get<string>(`${perseusApiUrl}/get_lookup`, { params: { name , lookupType} });
   }
 
-  getLookupTemplate(lookupType): Observable<string> {
+  getLookupTemplate(lookupType: string): Observable<string> {
     const name = `template_${lookupType}`;
     return this.getLookup(name, lookupType);
   }
 
-  getLookupsList(lookupType): Observable<string[]> {
+  getLookupsList(lookupType: string): Observable<string[]> {
     return this.httpClient.get<string[]>(`${perseusApiUrl}/get_lookups_list`, { params: { lookupType } });
   }
 
@@ -28,7 +26,7 @@ export class PerseusLookupService {
     return this.httpClient.post(`${perseusApiUrl}/save_lookup`, { name, value, lookupType });
   }
 
-  deleteLookup(name, lookupType): Observable<any> {
-    return this.httpClient.delete(`${perseusApiUrl}/delete_lookup`, { params: { name , lookupType } });
+  deleteLookup(name: string, lookupType: string): Observable<void> {
+    return this.httpClient.delete<void>(`${perseusApiUrl}/delete_lookup`, { params: { name , lookupType } });
   }
 }

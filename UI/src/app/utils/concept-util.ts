@@ -1,4 +1,4 @@
-import { Concept, IConceptField, IConceptFields } from '@models/concept-transformation/concept';
+import { Concept, IConceptField, IConceptFields } from '@models/perseus/concept-transformation/concept';
 import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
 import { environment } from '../../environments/environment';

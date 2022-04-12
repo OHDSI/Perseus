@@ -1,4 +1,4 @@
-import { MappingNode } from '@models/mapping';
+import { MappingNode } from '@models/etl-mapping-for-zip-xml-generation';
 import { TargetConfig } from '@models/state';
 
 export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingNode[] {

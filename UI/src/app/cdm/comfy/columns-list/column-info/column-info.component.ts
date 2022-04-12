@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
 import { DataService } from '@services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-import { ColumnInfo, ColumnInfoStatus } from '@models/column-info/column-info';
+import { ColumnInfo, ColumnInfoStatus } from '@models/perseus/column-info';
 
 @Component({
   selector: 'app-field-information',

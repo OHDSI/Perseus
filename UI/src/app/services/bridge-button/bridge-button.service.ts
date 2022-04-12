@@ -5,7 +5,7 @@ import { IConnector } from '@models/connector';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
 import { RulesPopupComponent } from '@popups/rules-popup/rules-popup.component';
-import { TransformConfigComponent } from '@mapping/vocabulary-transform-configurator/transform-config.component';
+import { TransformConfigComponent } from '@mapping/transform-config/transform-config.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { BridgeButtonData } from './model/bridge-button-data';
 import { CommonService } from 'src/app/services/common.service';

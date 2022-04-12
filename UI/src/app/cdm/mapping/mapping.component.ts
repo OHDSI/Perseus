@@ -15,11 +15,11 @@ import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { SetConnectionTypePopupComponent } from '@popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
-import { TransformConfigComponent } from './vocabulary-transform-configurator/transform-config.component';
+import { TransformConfigComponent } from './transform-config/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
-import { addGroupMappings, addViewsToMapping } from '@services/mapping-service';
+import { addGroupMappings, addViewsToMapping } from '@services/zip-xml-mapping-model-service';
 import {
   numberOfPanelsWithOneSimilar,
   numberOfPanelsWithoutSimilar,
@@ -41,6 +41,7 @@ import { ConceptTransformationComponent } from './concept-transformation/concept
 import { Observable, of } from 'rxjs';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
+import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
 
 @Component({
   selector: 'app-mapping',
@@ -116,6 +117,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   constructor(
     private storeService: StoreService,
     private dataService: DataService,
+    private perseusXmlService: PerseusXmlService,
     private commonService: CommonService,
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
@@ -485,20 +487,16 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   previewMapping() {
     const source = this.currentSourceTable;
     const target = this.currentTargetTable;
-    const name = source.name;
-    const mapping = this.bridgeService.generateMapping(name, target.name);
+    const mapping = this.bridgeService.generateMappingModelForZipXml(source.name, target.name);
 
     addViewsToMapping(mapping, source);
-
     addGroupMappings(mapping, source);
 
-    if (!mapping || !mapping.mapping_items || !mapping.mapping_items.length) {
-      return;
+    if (!mapping?.mapping_items?.length) {
+      return
     }
 
-    this.dataService
-      .getXmlPreview(mapping)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.perseusXmlService.getXmlPreview(mapping)
       .subscribe(json => {
         this.matDialog.open(PreviewPopupComponent, {
           data: json,
@@ -508,7 +506,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       });
   }
 
-  generateMappingJson() {
+  generateZipXml() {
     const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(this.source);
 
     this.dataService
@@ -791,7 +789,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private checkIsPersonMapped(): Observable<boolean> {
-    const mapping = this.bridgeService.generateMapping();
+    const mapping = this.bridgeService.generateMappingModelForZipXml();
     const mandatoryPersonFields = [
       'person_id',
       'person_source_value'
