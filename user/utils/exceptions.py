@@ -1,4 +1,6 @@
-class CustomUserException(Exception):
+class InvalidUsage(Exception):
+    status_code = 400
+
     def __init__(self, message, status_code=None):
         Exception.__init__(self)
         self.message = message
@@ -11,9 +13,5 @@ class CustomUserException(Exception):
         return rv
 
 
-class InvalidUsage(CustomUserException):
-    status_code = 400
-
-
-class AuthorizationError(CustomUserException):
+class AuthorizationError(InvalidUsage):
     status_code = 401
