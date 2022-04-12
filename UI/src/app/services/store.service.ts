@@ -128,7 +128,11 @@ export class StoreService implements StateService {
   }
 
   addEtlMapping(etlMapping: EtlMapping): void {
-    this.add('etlMapping', etlMapping)
+    const prevCdmVersion = this.cdmVersion
+    this.add('etlMapping', {
+      ...etlMapping,
+      cdm_version: prevCdmVersion
+    })
   }
 
   addCdmVersion(version: string) {

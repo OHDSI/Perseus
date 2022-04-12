@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, 
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
-import { cloneDeep } from 'src/app/infrastructure/utility';
+import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -304,12 +304,54 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.addSimilar(Area.Target);
   }
 
-  addSimilar(area) {
+  addSimilar(area: Area) {
     const lastIndex = this[area].length - 1;
     const lastTableName = this[area][lastIndex].name;
     if (lastTableName === this.similarTableName) {
       this[`${area}Similar`](this[area][lastIndex].rows);
     }
+  }
+
+  // Used in addSimilar function
+  sourceSimilar(rows) {
+    rows.forEach(row => {
+      this.sourceRows.forEach(sourceRow => {
+        if (sourceRow.name !== row.name) {
+          return;
+        }
+
+        this.mappingConfig.forEach(item => {
+          if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
+            item.push(this.similarTableName);
+          }
+        });
+      });
+    });
+  }
+
+  // Used in addSimilar function
+  targetSimilar(rows) {
+    const newItem = [];
+    rows.forEach(row => {
+      this.targetRows.forEach(targetRow => {
+        if (targetRow.name !== row.name) {
+          return;
+        }
+
+        this.mappingConfig.forEach(item => {
+          if (!item.includes(targetRow.tableName)) {
+            return;
+          }
+
+          if (!newItem.length) {
+            newItem.push(this.similarTableName);
+          }
+
+          newItem.push.apply(newItem, item.slice(1));
+        });
+      });
+    });
+    this.mappingConfig.push(uniq(newItem));
   }
 
   moveSimilarTables() {
