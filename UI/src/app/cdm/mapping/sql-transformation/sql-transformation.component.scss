@@ -1,0 +1,18 @@
+@import "variables";
+@import "mixins";
+
+.sql-transformation {
+  &__mode {
+    position: relative;
+    @include radio-button();
+    width: 150px;
+    margin-bottom: 26px;
+    padding-top: 5px;
+
+    &__hint {
+      position: absolute;
+      top: 0;
+      right: -19px;
+    }
+  }
+}

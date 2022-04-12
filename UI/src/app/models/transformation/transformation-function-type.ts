@@ -1,5 +1,5 @@
-import { TransformationFunction } from '@mapping/transform-config/sql-transformation/visual-transformation/function/transformation-function';
-import { TransformationFunctionComponent } from '@mapping/transform-config/sql-transformation/visual-transformation/function/transformation-function.component';
+import { TransformationFunction } from '@mapping/sql-transformation/visual-transformation/function/transformation-function';
+import { TransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/transformation-function.component';
 import { FunctionType } from '@models/transformation/function-type';
 import { FieldType } from '@utils/field-type';
 

@@ -1,0 +1,31 @@
+@import "mixins";
+
+:host {
+  @include transformation-function();
+}
+
+.replace {
+  @include transformation-function-toolbar();
+  display: flex;
+  justify-content: space-between;
+
+  label {
+    position: relative;
+
+    input {
+      @include cdm-input();
+      @include invalid-text-decoration();
+      background: none;
+      width: 120px;
+    }
+
+    span {
+      position: absolute;
+      top: 22px;
+      left: -5px;
+      right: -30px;
+      color: #FF4646;
+      font-size: 9px;
+    }
+  }
+}

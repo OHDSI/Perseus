@@ -18,7 +18,7 @@ const editorSettings = {
 @Component({
   selector: 'app-target-clone-dialog',
   templateUrl: './target-clone-dialog.component.html',
-  styleUrls: [ './target-clone-dialog.component.scss', '../../transform-config/sql-transformation/manual-transformation/manual-transformation.component.scss' ]
+  styleUrls: [ './target-clone-dialog.component.scss', '../../sql-transformation/manual-transformation/manual-transformation.component.scss' ]
 })
 export class TargetCloneDialogComponent implements OnInit {
 
