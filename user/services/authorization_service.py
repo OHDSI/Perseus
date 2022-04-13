@@ -1,20 +1,23 @@
+import atexit
+import datetime
 import random
 import string
+
+from pewee import fn
 from werkzeug.utils import redirect
-from model.user import User, blacklist_token
+from cryptography.fernet import Fernet
+from apscheduler.schedulers.background import BackgroundScheduler
+
+from app import app, bcrypt
+from model.blacklist_token import blacklist_token
+from model.refresh_token import refresh_token
+from model.user import User
 from model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
-import datetime
-from model.refresh_token import *
 from services.mailout_service import send_email
 from utils.exceptions import InvalidUsage
-from utils.constants import REGISTRATION_LINK_EXPIRATION_TIME, PASSWORD_LINK_EXPIRATION_TIME, \
-    EMAIL_SECRET_KEY
+from utils.constants import REGISTRATION_LINK_EXPIRATION_TIME,\
+    PASSWORD_LINK_EXPIRATION_TIME, EMAIL_SECRET_KEY
 from utils.exceptions import AuthorizationError
-from app import bcrypt
-from cryptography.fernet import Fernet
-import atexit
-from apscheduler.schedulers.background import BackgroundScheduler
-from app import app
 
 
 user_registration_links = {}
@@ -188,7 +191,7 @@ def send_reset_password_email(email, host):
         for item in user:
             send_link_to_user(item.email, item.first_name, 'reset_password', reset_pwd_links, host)
     else:
-        raise InvalidUsage('Email wasn\'t registered', 401)
+        raise InvalidUsage("Email wasn't registered", 401)
     return True
 
 

@@ -1,8 +1,10 @@
-from authorization_api import user_api
+from waitress import serve
+
 from app import app
+from authorization_api import user_api
 from config import PORT
 from db import pg_db
-from waitress import serve
+
 
 app.register_blueprint(user_api)
 

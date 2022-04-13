@@ -1,11 +1,14 @@
 import os
 import socket
-
 import smtplib
 import ssl
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 from utils.constants import SMTP_PORT_STL
+from utils.exceptions import InvalidUsage
+
 
 hostname = socket.gethostname()
 local_ip = socket.gethostbyname(hostname)
@@ -16,6 +19,8 @@ def send_email(receiver_email, first_name, type, host, request_parameter = ''):
 
     context = ssl.create_default_context()
     port = int(os.getenv("SMTP_PORT"))
+    if not port:
+      raise InvalidUsage('Environment variables for SMTP server are not provided')
     try:
         server = smtplib.SMTP(os.getenv("SMTP_SERVER"), port)
         if port == SMTP_PORT_STL:
@@ -23,7 +28,7 @@ def send_email(receiver_email, first_name, type, host, request_parameter = ''):
         server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PWD"))
         server.sendmail(os.getenv("SMTP_EMAIL"), receiver_email, message.as_string())
     except Exception as e:
-        raise e
+        raise InvalidUsage(f"Could not send email with SMTP server: {e.__str__()}", 500)
     finally:
         server.quit()
 

@@ -1,4 +1,5 @@
 from peewee import AutoField, CharField, DateTimeField
+
 from model.baseModel import BaseModel
 
 
