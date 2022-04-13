@@ -2,8 +2,9 @@ import json
 import requests
 
 from app import app
-from services.response import file_save_reponse
 from utils import InvalidUsage
+from services.response import file_save_reponse
+
 
 FILE_MANAGER_URL = app.config["FILE_MANAGER_API_URL"]
 
@@ -20,11 +21,13 @@ def get_file(data_id: int):
             raise InvalidUsage('Cannot download file', 500)
 
 
-def save_file(username: str,
-              data_key: str,
-              filename: str,
-              file_path: str,
-              content_type: str):
+def save_file(
+             username: str,
+             data_key: str,
+             filename: str,
+             file_path: str,
+             content_type: str
+             ):
     url = f'{FILE_MANAGER_URL}/api'
     files = {'file': (filename, open(file_path, 'rb'), content_type)}
     values = {'username': username, 'dataKey': data_key}

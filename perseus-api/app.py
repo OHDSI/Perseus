@@ -1,7 +1,8 @@
-from flask import *
 import os
-from flask_cors import CORS
 import logging
+from flask import Flask
+from flask_cors import CORS
+
 
 app = Flask(__name__)
 env = os.getenv("PERSEUS_ENV").capitalize()
@@ -10,4 +11,3 @@ CORS(app)
 logger = logging.getLogger('waitress')
 logger.setLevel(logging.INFO)
 app.logger = logger
-

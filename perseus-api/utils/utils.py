@@ -1,6 +1,7 @@
-from app import app
 from flask import request
 from functools import wraps
+
+from app import app
 from utils import InvalidUsage
 
 

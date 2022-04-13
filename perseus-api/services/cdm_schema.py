@@ -1,7 +1,8 @@
 import pandas as pd
+from pathlib import Path
+
 from utils import CDM_SCHEMA_PATH, CDM_VERSION_LIST
 from view.Table import Table, Column
-from pathlib import Path
 
 
 def get_exist_version():
@@ -15,8 +16,7 @@ def get_schema(cdm_version):
     if cdm_version in CDM_VERSION_LIST:
         path = Path(CDM_SCHEMA_PATH / ('CDMv' + cdm_version + '.csv'))
     else:
-        raise ValueError('Version {} is not in {}'.format(cdm_version,
-                                                          CDM_VERSION_LIST))
+        raise ValueError(f'Version {cdm_version} is not in {CDM_VERSION_LIST}')
     with open(path, encoding='utf-8') as file:
         cdm_schema_description = pd.read_csv(file)
         cdm_schema_description['COLUMN_NAME_AND_TYPE'] = \

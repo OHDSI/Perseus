@@ -1,6 +1,6 @@
-from model.base_model import BaseModel
-from peewee import *
+from peewee import BigIntegerField, CharField, ForeignKeyField
 
+from model.base_model import BaseModel
 from model.etl_mapping import EtlMapping
 
 

@@ -12,5 +12,7 @@ class UploadEtlArchiveResponse:
 
 
 def to_upload_etl_archive_response(etl_mapping: EtlMapping, etl_configuration):
-    return UploadEtlArchiveResponse(etl_mapping = to_etl_mapping_response(etl_mapping),
-                                    etl_configuration=etl_configuration)
+    return UploadEtlArchiveResponse(
+                                   etl_mapping = to_etl_mapping_response(etl_mapping),
+                                   etl_configuration=etl_configuration
+                                   )

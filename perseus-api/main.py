@@ -6,6 +6,7 @@ from db import user_schema_db
 from perseus_api import perseus
 from utils import UPLOAD_SCAN_REPORT_FOLDER
 
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_SCAN_REPORT_FOLDER
 app.register_blueprint(perseus)
 

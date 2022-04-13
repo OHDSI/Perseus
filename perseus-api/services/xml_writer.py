@@ -1,25 +1,25 @@
 import math
+import os
 import re
+import pandas as pd
+import zipfile
+
+from itertools import groupby
+from shutil import rmtree
+
+from db import user_schema_db
+from utils.similar_names_map import similar_names_map
+from utils.constants import GENERATE_CDM_XML_PATH,\
+                            GENERATE_CDM_XML_ARCHIVE_PATH,\
+                            GENERATE_CDM_XML_ARCHIVE_FILENAME,\
+                            CDM_XML_ARCHIVE_FORMAT,\
+                            GENERATE_CDM_LOOKUP_SQL_PATH,\
+                            PREDEFINED_LOOKUPS_PATH,\
+                            INCOME_LOOKUPS_PATH,\
+                            GENERATE_BATCH_SQL_PATH,\
+                            ROOT_DIR
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
-from utils.constants import \
-    GENERATE_CDM_XML_PATH, \
-    GENERATE_CDM_XML_ARCHIVE_PATH, \
-    GENERATE_CDM_XML_ARCHIVE_FILENAME, \
-    CDM_XML_ARCHIVE_FORMAT, \
-    GENERATE_CDM_LOOKUP_SQL_PATH, \
-    PREDEFINED_LOOKUPS_PATH, \
-    INCOME_LOOKUPS_PATH, \
-    GENERATE_BATCH_SQL_PATH, \
-    ROOT_DIR
-import pandas as pd
-from shutil import rmtree
-import zipfile
-import os
-from pathlib import Path
-from utils.similar_names_map import similar_names_map
-from itertools import groupby
-from db import user_schema_db
 
 
 def _convert_underscore_to_camel(word: str):
@@ -58,9 +58,9 @@ def check_lookup_tables(tables):
 
 def unique(sequence):
     seen = []
-    for x in sequence:
-        if not x in seen:
-            seen.append(x)
+    for item in sequence:
+        if not item in seen:
+            seen.append(item)
     return seen
 
 
@@ -88,7 +88,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
 
         result_data = pd.concat([mapping_data, condition_data, lookup_data]).fillna('')
 
-        for index_, row_ in result_data.iteritems():
+        for _, row_ in result_data.iteritems():
             all_fields += [{k: dic[k] for k in required_fields} for dic in row_]
 
         all_fields_unique = unique(all_fields)
@@ -99,21 +99,13 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
     fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(
         by=['targetCloneName', 'concept_id'])
     sql = 'SELECT '
-    concept_id_counter = 1
-    source_value_counter = 1
-    type_concept_id_counter = 1
-    source_concept_id_counter = 1
     mapped_to_person_id_field = ''
     target_clone_name = ""
-    for index, row in fields.iterrows():
+    for _, row in fields.iterrows():
         source_field = row['sql_field']
         target_field = row['sql_alias']
         if target_clone_name != row['targetCloneName']:
             target_clone_name = row['targetCloneName']
-            concept_id_counter = 1
-            source_value_counter = 1
-            type_concept_id_counter = 1
-            source_concept_id_counter = 1
         if not row['targetCloneName']:
             clone = ""
         else:
@@ -213,13 +205,11 @@ def create_user_directory(path, current_user):
         print(f'Directory {path}/{current_user} already exist')
 
 
-def create_lookup(current_user, lookup, target_field, mapping, lookup_source_to_source_included):
+def create_lookup(current_user, lookup, target_field, lookup_source_to_source_included):
     create_user_directory(GENERATE_CDM_LOOKUP_SQL_PATH, current_user)
 
     if target_field.endswith('source_concept_id'):
         return False
-    else:
-        pair_target_field = target_field.replace('concept_id', 'source_concept_id')
 
     if lookup.endswith('userDefined'):
         basepath = f"{INCOME_LOOKUPS_PATH}/{current_user}"
@@ -429,7 +419,7 @@ def get_xml(current_user, json_):
 
         skip_write_file = False
 
-        for index, record_data in target_tables.iterrows():
+        for _, record_data in target_tables.iterrows():
             mapping = record_data.get('mapping')
             target_table = record_data.get('target_table')
 
@@ -456,13 +446,11 @@ def get_xml(current_user, json_):
                     condition_tag = SubElement(domain_definition_tag, 'Condition')
                     condition_tag.text = condition_text
                 fields_tags = {}
-                counter = 1
 
                 concepts_tag = None
                 concept_tags = {}
                 definitions = []
 
-                mapping_source_values = get_mapping_source_values(groupList)
                 lookups = []
                 for row in groupList:
                     lookup_name = row.get('lookup', None)
@@ -483,7 +471,7 @@ def get_xml(current_user, json_):
 
                     if lookup_name:
                         if lookup_name not in lookups:
-                            lookup_created = create_lookup(current_user, lookup_name, target_field, groupList,
+                            lookup_created = create_lookup(current_user, lookup_name, target_field,
                                                            lookup_source_to_source_included)
                             if lookup_created:
                                 concepts_tag = prepare_concepts_tag(
@@ -724,7 +712,7 @@ def get_lookups_sql(cond: dict):
 
 
 def add_files_to_zip(zip_file, path, directory):
-    for root, dirs, files in os.walk(path):
+    for root, _, files in os.walk(path):
         for file in files:
             zip_file.write(os.path.join(root, file), arcname=os.path.join(directory, file))
 
