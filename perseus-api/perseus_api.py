@@ -5,16 +5,7 @@ from werkzeug.exceptions import BadRequestKeyError
 
 from app import app
 from config import VERSION, APP_PREFIX
-from services.etl_archive_service import upload_etl_archive,\
-                                         generate_etl_archive
-from services.etl_mapping_service import create_etl_mapping_by_file_save_resp,\
-                                         create_etl_mapping_from_request
-from services.scan_reports_service import load_scan_report_from_file_manager,\
-                                          load_scan_report_to_server
-from services.source_schema_service import run_sql_transformation,\
-                                           get_column_info,\
-                                           get_field_type,\
-                                           get_view_from_db
+from services import source_schema_service, scan_reports_service, etl_mapping_service, etl_archive_service
 from services.request import generate_etl_archive_request,\
                              scan_report_request
 from services.response.upload_scan_report_response import to_upload_scan_report_response
@@ -47,9 +38,9 @@ def upload_scan_report(current_user):
     try:
         delete_generated_xml(current_user)
         scan_report_file = request.files['scanReportFile']
-        file_save_response = load_scan_report_to_server(scan_report_file, current_user)
-        saved_schema = create_source_schema_by_scan_report(current_user, scan_report_file.filename)
-        etl_mapping = create_etl_mapping_by_file_save_resp(current_user, file_save_response)
+        file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
+        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report_file.filename)
+        etl_mapping = etl_mapping_service.create_etl_mapping_by_file_save_resp(current_user, file_save_response)
         return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except InvalidUsage as error:
         raise error
@@ -65,7 +56,7 @@ def upload_etl_mapping(current_user):
     try:
         delete_generated_xml(current_user)
         etl_archive = request.files['etlArchiveFile']
-        return jsonify(upload_etl_archive(etl_archive, current_user))
+        return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -81,9 +72,9 @@ def create_source_schema_by_scan_report(current_user):
     app.logger.info("REST request to upload scan report from file manager and create source schema")
     try:
         scan_report = scan_report_request.from_json(request.json)
-        load_scan_report_from_file_manager(scan_report, current_user)
-        saved_schema = create_source_schema_by_scan_report(current_user, scan_report.file_name)
-        etl_mapping = create_etl_mapping_from_request(current_user, scan_report)
+        scan_reports_service.load_scan_report_from_file_manager(scan_report, current_user)
+        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report.file_name)
+        etl_mapping = etl_mapping_service.create_etl_mapping_from_request(current_user, scan_report)
         return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except InvalidUsage as error:
         raise error
@@ -97,7 +88,7 @@ def generate_etl_mapping_archive(current_user):
     app.logger.info("REST request to generate ETL mapping archive")
     try:
         request_body = generate_etl_archive_request.from_json(request.get_json())
-        result = generate_etl_archive(request_body, current_user)
+        result = etl_archive_service.generate_etl_archive(request_body, current_user)
         download_name=result[1].replace('.zip', '.etl')
         return send_from_directory(result[0], result[1], download_name=download_name)
     except InvalidUsage as error:
@@ -113,7 +104,7 @@ def get_view(current_user):
     app.logger.info("REST request to get view")
     try:
         view_sql = request.get_json()
-        view_result = get_view_from_db(current_user, view_sql['sql'])
+        view_result = source_schema_service.get_view_from_db(current_user, view_sql['sql'])
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400)
     except Exception as error:
@@ -127,7 +118,7 @@ def validate_sql(current_user):
     app.logger.info("REST request to validate sql")
     try:
         sql_transformation = request.get_json()
-        sql_result = run_sql_transformation(current_user, sql_transformation['sql'])
+        sql_result = source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400)
     except Exception as error:
@@ -164,7 +155,7 @@ def get_column_info_call(current_user):
         table_name = request.args['table_name']
         column_name = request.args.get('column_name')
         report_name = request.args.get('report_name')
-        info = get_column_info(current_user, report_name, table_name, column_name);
+        info = source_schema_service.get_column_info(current_user, report_name, table_name, column_name);
     except InvalidUsage:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
     except FileNotFoundError:
@@ -260,7 +251,7 @@ def get_schema_name(current_user):
 def get_field_type_call(current_user):
     app.logger.info("REST request to get field type")
     field_type = request.args['type']
-    result_type = get_field_type(field_type)
+    result_type = source_schema_service.get_field_type(field_type)
     return jsonify(result_type)
 
 
