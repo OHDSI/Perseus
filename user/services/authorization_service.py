@@ -3,7 +3,7 @@ import datetime
 import random
 import string
 
-from pewee import fn
+from peewee import fn
 from werkzeug.utils import redirect
 from cryptography.fernet import Fernet
 from apscheduler.schedulers.background import BackgroundScheduler
