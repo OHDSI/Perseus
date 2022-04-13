@@ -4,7 +4,7 @@ from flask import request, jsonify, Blueprint
 from urllib.parse import urlparse
 from werkzeug.exceptions import BadRequestKeyError
 
-import app
+from app import app
 from config import APP_PREFIX, VERSION
 from model.user import token_required, is_token_valid
 from services.authorization_service import activate_user_in_db,\

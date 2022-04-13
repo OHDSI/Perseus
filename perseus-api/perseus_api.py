@@ -4,22 +4,20 @@ from peewee import ProgrammingError
 from werkzeug.exceptions import BadRequestKeyError
 
 from app import app
-from services.request import generate_etl_archive_request
-from services.response.upload_scan_report_response import to_upload_scan_report_response
-from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
-    GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
-from flask import request, jsonify, send_from_directory
-from services.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
-from services import source_schema_service, scan_reports_service, etl_mapping_service, etl_archive_service
 from config import VERSION, APP_PREFIX
-from services import source_schema_service, scan_reports_service, \
-    etl_mapping_service
-from services.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
-from services.cdm_schema import get_exist_version, get_schema
-from services.request import scan_report_request
+from services import source_schema_service, scan_reports_service, etl_mapping_service, etl_archive_service
+from services.request import generate_etl_archive_request,\
+                             scan_report_request
 from services.response.upload_scan_report_response import to_upload_scan_report_response
+from services.xml_writer import get_xml, zip_xml,\
+                                delete_generated_xml,\
+                                get_lookups_list,\
+                                get_lookup, add_lookup,\
+                                del_lookup
+from services.cdm_schema import get_exist_version, get_schema
+from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH,\
+                            GENERATE_CDM_XML_ARCHIVE_FILENAME,\
+                            CDM_XML_ARCHIVE_FORMAT
 from utils.exceptions import InvalidUsage
 from utils.utils import username_header
 
@@ -47,7 +45,7 @@ def upload_scan_report(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Unable to upload WR scan report: {error.__str__()}", 500)
 
 
 @perseus.route('/api/upload_etl_mapping', methods=['POST'])
@@ -63,7 +61,8 @@ def upload_etl_mapping(current_user):
         raise error
     except Exception as error:
         app.logger.error(error.__str__())
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Unable to create source schema by source \
+                            tables from ETL mapping: {error.__str__()}", 500)
 
 
 @perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
@@ -96,7 +95,7 @@ def generate_etl_mapping_archive(current_user):
         raise error
     except Exception as error:
         app.logger.error(error.__str__())
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500)
 
 
 @perseus.route('/api/get_view', methods=['POST'])
@@ -107,9 +106,9 @@ def get_view(current_user):
         view_sql = request.get_json()
         view_result = source_schema_service.get_view_from_db(current_user, view_sql['sql'])
     except ProgrammingError as error:
-        raise InvalidUsage(error.__str__(), 400)
+        raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Unable to get view: {error.__str__()}", 500)
     return jsonify(view_result)
 
 
@@ -121,9 +120,9 @@ def validate_sql(current_user):
         sql_transformation = request.get_json()
         sql_result = source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
     except ProgrammingError as error:
-        raise InvalidUsage(error.__str__(), 400)
+        raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Cound not validate passed SQL: {error.__str__()}", 500)
     return jsonify(sql_result)
 
 
@@ -157,12 +156,12 @@ def get_column_info_call(current_user):
         column_name = request.args.get('column_name')
         report_name = request.args.get('report_name')
         info = source_schema_service.get_column_info(current_user, report_name, table_name, column_name);
-    except InvalidUsage as error:
+    except InvalidUsage:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
         raise InvalidUsage('Report not found', 404)
     except Exception as e:
-        raise InvalidUsage(e.__str__(), 500)
+        raise InvalidUsage(f"Could not get report column info: {e.__str__()}", 500)
     return jsonify(info)
 
 
@@ -188,7 +187,7 @@ def zip_xml_call(current_user):
     try:
         zip_xml(current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 404)
+        raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 404)
     return send_from_directory(
         directory=f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}",
         path=f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}",
@@ -223,7 +222,7 @@ def save_lookup(current_user):
         lookup = request.json
         add_lookup(current_user, lookup)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Could not save lookup: {error.__str__()}", 500)
     return jsonify(success=True)
 
 
@@ -233,11 +232,10 @@ def delete_lookup(current_user):
     app.logger.info("REST request to delete lookup")
     try:
         name = request.args['name']
-        lookup_type = request.args['lookupType']
         del_lookup(current_user, name, 'source_to_standard')
         del_lookup(current_user, name, 'source_to_source')
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Could not delete lookup: {error.__str__()}", 500)
     return jsonify(success=True)
 
 
@@ -252,8 +250,8 @@ def get_schema_name(current_user):
 @username_header
 def get_field_type_call(current_user):
     app.logger.info("REST request to get field type")
-    type = request.args['type']
-    result_type = source_schema_service.get_field_type(type)
+    field_type = request.args['type']
+    result_type = source_schema_service.get_field_type(field_type)
     return jsonify(result_type)
 
 
