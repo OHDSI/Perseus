@@ -4,21 +4,23 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
-import { Mapping } from '@models/mapping';
+import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
 import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { removeExtension } from '@utils/file';
-import { ColumnInfo } from '@models/column-info/column-info';
+import { ColumnInfo } from '@models/perseus/column-info';
 import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
 import { Area } from '@models/area'
 import { TableInfoResponse } from '@models/perseus/table-info-response'
+import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
 
 @Injectable()
 export class DataService {
   constructor(private perseusService: PerseusApiService,
               private storeService: StoreService,
-              private bridgeService: BridgeService) {}
+              private bridgeService: BridgeService,
+              private perseusXmlService: PerseusXmlService) {}
 
   _normalize(data: TableInfoResponse[], area: Area) {
     const tables = [];
@@ -74,16 +76,12 @@ export class DataService {
     return tables;
   }
 
-  getZippedXml(mapping: Mapping): Observable<File> {
+  getZippedXml(mapping: EtlMappingForZipXmlGeneration): Observable<File> {
     const reportName = removeExtension(this.storeService.scanReportName) ?? 'etl-mapping'
-    return this.getXmlPreview(mapping)
+    return this.perseusXmlService.getXmlPreview(mapping)
       .pipe(
-        switchMap(() => this.perseusService.getZipXml(reportName))
+        switchMap(() => this.perseusXmlService.getZipXml(reportName))
       )
-  }
-
-  getXmlPreview(mapping: Mapping): Observable<any> {
-    return this.perseusService.getXmlPreview(mapping);
   }
 
   getTargetData(version: string) {
@@ -119,10 +117,6 @@ export class DataService {
           };
         })
       );
-  }
-
-  getView(sql: any): Observable<any> {
-    return this.perseusService.getView(sql);
   }
 
   prepareTargetConfig(data) {

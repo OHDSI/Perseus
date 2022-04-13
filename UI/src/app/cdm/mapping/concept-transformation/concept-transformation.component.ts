@@ -1,26 +1,27 @@
 import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { StoreService } from 'src/app/services/store.service';
-import { Concept, IConcept, IConceptOptions, ITableConcepts } from '@models/concept-transformation/concept';
+import { Concept, IConcept, IConceptOptions, ITableConcepts } from '@models/perseus/concept-transformation/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { cloneDeep } from 'src/app/infrastructure/utility';
-import { LookupComponent } from '../vocabulary-transform-configurator/lookup/lookup.component';
+import { LookupComponent } from '../transform-config/lookup/lookup.component';
 import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
 import { ConceptTransformationService } from 'src/app/services/concept-transformation.sevice';
 import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
 import { SqlForTransformation } from '@app/models/transformation/sql-for-transformation';
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-concept-transformation',
   templateUrl: './concept-transformation.component.html',
   styleUrls: [
     './concept-transformation.component.scss',
-    '../vocabulary-transform-configurator/transform-config.component.scss'
+    '../transform-config/transform-config.component.scss'
   ]
 })
 export class ConceptTransformationComponent extends BaseComponent implements OnInit {
@@ -34,7 +35,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
               private renderer: Renderer2,
               private overlayService: OverlayService,
               public dialogRef: MatDialogRef<ConceptTransformationComponent>,
-              private lookupService: PerseusLookupService
+              private lookupService: PerseusLookupService,
+              private dialogService: MatDialog
   ) {
     super();
   }
@@ -242,17 +244,20 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   updateLookupValue(updatedLookup: string, lookupType: string) {
     if (updatedLookup) {
       this.conceptsTable.lookup[ 'value' ] = updatedLookup;
-      this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType, this.getLookupName()).subscribe(res => {
-        console.log(res);
-      });
+      this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType, this.getLookupName())
+        .subscribe(
+          () => {},
+          error => openErrorDialog(this.dialogService, 'Failed to save lookup', parseHttpError(error))
+        );
     } else {
       this.lookupService.getLookup(this.conceptsTable.lookup[ 'originName' ], lookupType).subscribe(data => {
         if (data) {
           this.conceptsTable.lookup[ 'value' ] = data;
-          this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType, this.getLookupName()).subscribe(res => {
-            console.log(res);
-          });
-
+          this.lookupService.saveLookup(this.conceptsTable.lookup, lookupType, this.getLookupName())
+            .subscribe(
+              () => {},
+              error => openErrorDialog(this.dialogService, 'Failed to save lookup', parseHttpError(error))
+            );
         }
       });
     }

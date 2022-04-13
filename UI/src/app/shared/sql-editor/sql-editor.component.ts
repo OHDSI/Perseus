@@ -13,10 +13,10 @@ import { Area } from '@models/area';
 import { Table } from '@models/table';
 import { CommonUtilsService } from '@services/common-utils.service';
 import { BridgeService } from '@services/bridge.service';
-import { DataService } from '@services/data.service';
 import { Row, RowOptions } from '@models/row';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { StoreService } from '@services/store.service';
+import { PerseusApiService } from '@services/perseus/perseus-api.service'
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -41,9 +41,9 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     public dialogRef: MatDialogRef<SqlEditorComponent>,
     private cdRef: ChangeDetectorRef,
     private bridgeService: BridgeService,
-    private dataService: DataService,
     private matDialog: MatDialog,
     private storeService: StoreService,
+    private perseusApiService: PerseusApiService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -119,12 +119,12 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
 
   createSourceTableData() {
     const viewTableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
-    let viewSql = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
+    let viewSql: string = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
     viewSql = this.handleSelectAllCases(viewSql);
 
     const viewResultColumns = [];
 
-    this.dataService.getView({ sql: viewSql }).subscribe(res => {
+    this.perseusApiService.getView({ sql: viewSql }).subscribe(res => {
       res.forEach((row, index) => {
         const rowOptions: RowOptions = {
           id: index,
@@ -163,7 +163,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       });
   }
 
-  handleSelectAllCases(viewSql: string) {
+  handleSelectAllCases(viewSql: string): string {
     if (this.editorContent.match(/select \*/gi)) {
       const columns = [];
       Object.keys(this.aliasTableMapping).forEach(item => {

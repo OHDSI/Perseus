@@ -1,4 +1,4 @@
-import { MappingNode } from '@models/mapping';
+import { MappingNode } from '@models/etl-mapping-for-zip-xml-generation';
 import { MappingForImage, MappingImage, MappingImageStyles } from './mapping-image';
 import { CanvasWrapper } from './canvas-wrapper';
 import { similarTableName } from '@app/app.constants';

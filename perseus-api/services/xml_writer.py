@@ -583,6 +583,7 @@ def add_concept_field(attrib, attrib_key_name, concept_tag_key, field_type, grou
     else:
         return ''
 
+
 def add_fields_for_concept(concept_id, concept_tag_key, groupList, clone_key, query_tag):
     attrib = {}
     if concept_id is not None:

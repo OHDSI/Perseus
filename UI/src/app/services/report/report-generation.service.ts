@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ReportCreator } from './report-creator';
 import { WordReportCreator } from './word-report-creator';
 import { stateToInfo, StoreService } from '../store.service';
-import { MappingPair } from '@models/mapping';
+import { MappingPair } from '@models/etl-mapping-for-zip-xml-generation';
 import { Packer } from 'docx';
 import { BridgeService } from '../bridge.service';
 import { PerseusLookupService } from '../perseus/perseus-lookup.service';
@@ -104,8 +104,9 @@ export class ReportGenerationService {
       for (const mappingNode of mappingItem.mapping) {
         if (mappingNode.lookup) {
           lookupTypesSet.add(mappingNode.lookupType);
+          const lookupName: string = typeof mappingNode.lookup === 'string' ? mappingNode.lookup : mappingNode.lookup.name;
           mappingNode.lookup = await this.lookupService
-            .getLookup(mappingNode.lookup, mappingNode.lookupType)
+            .getLookup(lookupName, mappingNode.lookupType)
             .toPromise();
         }
       }

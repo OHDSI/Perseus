@@ -16,7 +16,7 @@ from services.response.upload_etl_archive_response import to_upload_etl_archive_
 from services.scan_reports_service import ALLOWED_SCAN_REPORT_EXTENSIONS
 from utils import file_util
 from utils.constants import UPLOAD_ETL_FOLDER, UPLOAD_SCAN_REPORT_FOLDER, SCAN_REPORT_DATA_KEY, \
-    GENERATE_ETL_ARHIVE_PATH, ETL_MAPPING_ARCHIVE_FORMAT
+    GENERATE_ETL_ARCHIVE_PATH, ETL_MAPPING_ARCHIVE_FORMAT
 from utils.directory_util import get_filenames_in_directory, create_directory
 from utils.exceptions import InvalidUsage
 
@@ -74,7 +74,7 @@ def generate_etl_archive(request: GenerateEtlArchiveRequest, username: str):
         raise InvalidUsage("Forbidden save other user ETL mapping", 403)
 
     scan_report_path = scan_reports_service.get_scan_report_path(etl_mapping)
-    generate_archive_directory = create_directory(f'{GENERATE_ETL_ARHIVE_PATH}/{username}/{request.name}')
+    generate_archive_directory = create_directory(f'{GENERATE_ETL_ARCHIVE_PATH}/{username}/{request.name}')
     shutil.copy(scan_report_path, f'{generate_archive_directory}/{etl_mapping.scan_report_name}')
 
     json_mapping = json.dumps(request.etl_configuration)
@@ -89,7 +89,7 @@ def generate_etl_archive(request: GenerateEtlArchiveRequest, username: str):
     )
     shutil.rmtree(generate_archive_directory)
 
-    return f'{GENERATE_ETL_ARHIVE_PATH}/{username}', f'{request.name}.zip'
+    return f'{GENERATE_ETL_ARCHIVE_PATH}/{username}', f'{request.name}.zip'
 
 
 def _extract_etl_archive(archive_path, directory_to_extract):

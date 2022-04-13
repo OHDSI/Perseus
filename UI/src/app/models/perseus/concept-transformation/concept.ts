@@ -1,3 +1,5 @@
+import { Lookup } from '@models/perseus/lookup'
+
 export interface IConceptField {
   field: string;
   targetFieldName: string;
@@ -39,17 +41,17 @@ export class Concept implements IConcept {
 }
 
 export interface ITableConcepts {
-  lookup: any;
+  lookup: Lookup;
   conceptsList: IConcept[];
 }
 
 export interface ITableConceptsOptions {
-  lookup?: any;
+  lookup?: Lookup;
   conceptsList?: IConcept[];
 }
 
 export class TableConcepts implements ITableConcepts {
-  lookup: any
+  lookup: Lookup
   conceptsList: IConcept[];
 
   constructor(options: ITableConceptsOptions = {}) {

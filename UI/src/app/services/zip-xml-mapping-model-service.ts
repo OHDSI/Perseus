@@ -1,16 +1,17 @@
 import { IArrowCache } from '@models/arrow-cache';
 import { groupBy } from '../infrastructure/utility';
-import { Mapping, MappingNode, MappingPair } from '@models/mapping';
+import { EtlMappingForZipXmlGeneration, MappingNode, MappingPair } from '@models/etl-mapping-for-zip-xml-generation';
 import { IRow } from '@models/row';
 import { ITable } from '@models/table';
 import { getLookupType } from '@utils/lookup-util';
 import * as conceptMap from '@mapping/concept-fileds-list.json'
-import { IConcept, ITableConcepts } from '@models/concept-transformation/concept';
+import { IConcept, ITableConcepts } from '@models/perseus/concept-transformation/concept';
 import { conceptFieldsTypes } from '../app.constants';
 import { IConnection } from '@models/connection';
 import { IConstantCache } from '@models/constant-cache';
+import { Lookup } from '@models/perseus/lookup'
 
-export class MappingService {
+export class ZipXmlMappingModelService {
   connections: Array<IConnection>;
   constants: Array<IRow>;
   sourceTableName: string;
@@ -33,7 +34,7 @@ export class MappingService {
     this.clones = clones;
   }
 
-  generate(): Mapping {
+  generate(): EtlMappingForZipXmlGeneration {
     const conceptTables = Object.keys(this.conceptFieldsMap);
     const merged = this.connections
       .filter(arrow => {
@@ -59,7 +60,7 @@ export class MappingService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup && arrow.lookup[ 'applied' ] ? arrow.lookup[ 'name' ] : '',
+          lookup: arrow.lookup?.applied ? arrow.lookup?.name : '',
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.target.comments,
@@ -115,7 +116,7 @@ export class MappingService {
 
     this.applyConstant(mapPairs, this.constants);
 
-    let mapping: Mapping = Object.create(null);
+    let mapping: EtlMappingForZipXmlGeneration = Object.create(null);
     mapping.mapping_items = mapPairs;
 
     mapping = this.addConceptFields(mapping);
@@ -123,7 +124,7 @@ export class MappingService {
     return mapping;
   }
 
-  addConceptFields(mapping: Mapping) {
+  private addConceptFields(mapping: EtlMappingForZipXmlGeneration) {
     Object.keys(this.concepts).forEach(key => {
       const tableNames = key.split('|');
       const conceptTargetTable = tableNames[ 0 ];
@@ -166,7 +167,7 @@ export class MappingService {
     return mapping;
   }
 
-  createConceptConstantNode(concept: IConcept, fieldType: string, lookup: any) {
+  private createConceptConstantNode(concept: IConcept, fieldType: string, lookup: Lookup) {
     return {
       concept_id: concept.id,
       source_field: '',
@@ -181,7 +182,7 @@ export class MappingService {
     };
   }
 
-  createConceptMappingNode(concept: IConcept, fieldType: string, lookup: any) {
+  private createConceptMappingNode(concept: IConcept, fieldType: string, lookup: any) {
     if (!concept.fields[ fieldType ].field && !concept.fields[ fieldType ].constant) {
       return;
     }
@@ -204,16 +205,16 @@ export class MappingService {
     return node;
   }
 
-  getConceptLookupType(fieldName: string) {
+  private getConceptLookupType(fieldName: string) {
     return fieldName.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
   }
 
-  getConceptSqlTransformation(sqlApplied: boolean, sql: string, fieldName: string, cloneTableName: string) {
+  private getConceptSqlTransformation(sqlApplied: boolean, sql: string, fieldName: string, cloneTableName: string) {
     const targetColumnName = cloneTableName ? `${cloneTableName}_${fieldName}` : fieldName;
     return sql && sqlApplied ? `${sql} as ${targetColumnName}` : '';
   }
 
-  getSqlTransformation(arrow: any) {
+  private getSqlTransformation(arrow: any) {
     const targetColumnName = arrow.target.cloneTableName ? `${arrow.target.cloneTableName}_${arrow.target.name}` : arrow.target.name;
     return arrow.sql && arrow.sql[ 'applied' ] ? `${arrow.sql[ 'name' ]} as ${targetColumnName}` : '';
   }
@@ -224,7 +225,7 @@ export class MappingService {
     }, node.sql_field);
   }
 
-  applyConstant(mapPairs: any[], rows: IRow[]) {
+  private applyConstant(mapPairs: any[], rows: IRow[]) {
     const mappings = mapPairs.map(x => {
       return { table: x.target_table, mapping: x.mapping };
     });
@@ -248,7 +249,7 @@ export class MappingService {
   }
 }
 
-export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
+export function addViewsToMapping(mapping: EtlMappingForZipXmlGeneration, source: ITable): EtlMappingForZipXmlGeneration {
   const sql = source['sql'];
   if (sql) {
     if (!mapping['views']) {
@@ -260,7 +261,7 @@ export function addViewsToMapping(mapping: Mapping, source: ITable): Mapping {
   return mapping;
 }
 
-export function addGroupMappings(mapping: Mapping, source: ITable) {
+export function addGroupMappings(mapping: EtlMappingForZipXmlGeneration, source: ITable) {
   if (source.name !== 'similar') {
     const mappingIndex = mapping.mapping_items.findIndex(item => item.source_table === source.name);
     if (mappingIndex === -1) {
@@ -304,7 +305,7 @@ export function addGroupMappings(mapping: Mapping, source: ITable) {
   }
 }
 
-export function addClonesToMapping(mapping: Mapping): Mapping {
+export function addClonesToMapping(mapping: EtlMappingForZipXmlGeneration): EtlMappingForZipXmlGeneration {
   mapping.mapping_items
     .forEach(mappingItem => {
       const clones = {};
