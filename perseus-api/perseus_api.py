@@ -1,28 +1,24 @@
 import traceback
-from flask import Blueprint, request, jsonify, send_from_directory
+
+from flask import Blueprint
+from flask import request, jsonify, send_from_directory
 from peewee import ProgrammingError
 from werkzeug.exceptions import BadRequestKeyError
 
 from app import app
-from services.request import generate_etl_archive_request
-from services.response.upload_scan_report_response import to_upload_scan_report_response
-from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
-    GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
-from flask import request, jsonify, send_from_directory
-from services.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
-from services import source_schema_service, scan_reports_service, etl_mapping_service, etl_archive_service
 from config import VERSION, APP_PREFIX
 from services import source_schema_service, scan_reports_service, \
-    etl_mapping_service
-from services.xml_writer import get_xml, zip_xml, \
-    delete_generated_xml, get_lookups_list, get_lookup, add_lookup, del_lookup
+    etl_mapping_service, etl_archive_service, lookup_service
 from services.cdm_schema import get_exist_version, get_schema
+from services.request import generate_etl_archive_request
 from services.request import scan_report_request
+from services.request.lookup import lookup_request
 from services.response.upload_scan_report_response import to_upload_scan_report_response
+from services.xml_writer import get_xml, zip_xml, delete_generated_xml
+from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
+    GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
 from utils.exceptions import InvalidUsage
 from utils.utils import username_header
-
 
 perseus = Blueprint('perseus', __name__, url_prefix=APP_PREFIX)
 
@@ -196,49 +192,60 @@ def zip_xml_call(current_user):
     )
 
 
-@perseus.route('/api/get_lookup')
-@username_header
-def get_lookup_by_name(current_user):
-    app.logger.info("REST request to get lookup")
+@perseus.route('/api/lookup/sql')
+def get_lookup_by():
+    app.logger.info("REST request to get lookup sql")
+    id = request.args['id']
     name = request.args['name']
     lookup_type = request.args['lookupType']
-    lookup = get_lookup(current_user, name, lookup_type)
+    lookup = lookup_service.get_lookup_sql(int(id), name, lookup_type)
     return jsonify(lookup)
 
 
-@perseus.route('/api/get_lookups_list')
+@perseus.route('/api/lookup/names')
 @username_header
 def get_lookups(current_user):
     app.logger.info("REST request to get lookup list")
     lookup_type = request.args['lookupType']
-    lookups_list = get_lookups_list(current_user, lookup_type)
+    lookups_list = lookup_service.get_lookups_list(current_user, lookup_type)
     return jsonify(lookups_list)
 
 
-@perseus.route('/api/save_lookup', methods=['POST'])
+@perseus.route('/api/lookup', methods=['POST'])
 @username_header
-def save_lookup(current_user):
-    app.logger.info("REST request to save lookup")
+def create_lookup(current_user):
+    app.logger.info("REST request to create lookup")
     try:
-        lookup = request.json
-        add_lookup(current_user, lookup)
+        lookup = lookup_request.from_json(request.json)
+        lookup_service.create_lookup(current_user, lookup)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(success=True)
+    return '', 204
 
 
-@perseus.route('/api/delete_lookup', methods=['DELETE'])
+@perseus.route('/api/lookup', methods=['PUT'])
+@username_header
+def update_lookup(current_user):
+    app.logger.info("REST request to create lookup")
+    try:
+        id = request.args['id']
+        lookup = lookup_request.from_json(request.json)
+        lookup_service.update_lookup(current_user, int(id), lookup)
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return '', 204
+
+
+@perseus.route('/api/lookup', methods=['DELETE'])
 @username_header
 def delete_lookup(current_user):
     app.logger.info("REST request to delete lookup")
     try:
-        name = request.args['name']
-        lookup_type = request.args['lookupType']
-        del_lookup(current_user, name, 'source_to_standard')
-        del_lookup(current_user, name, 'source_to_source')
+        id = request.args['id']
+        lookup_service.del_lookup(current_user, int(id))
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return jsonify(success=True)
+    return '', 204
 
 
 @perseus.route('/api/get_user_schema_name', methods=['GET'])
@@ -249,8 +256,7 @@ def get_schema_name(current_user):
 
 
 @perseus.route('/api/get_field_type', methods=['GET'])
-@username_header
-def get_field_type_call(current_user):
+def get_field_type_call():
     app.logger.info("REST request to get field type")
     type = request.args['type']
     result_type = source_schema_service.get_field_type(type)

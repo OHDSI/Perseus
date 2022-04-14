@@ -150,7 +150,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         view = views.get(source_table, None)
 
     if view:
-        view = addSchemaNames(
+        view = add_schema_names(
             'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user), view)
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
@@ -163,7 +163,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
 
 
 # method adds {sc} to table names used in join and from clauses avoiding those cases when words similar to table names areinside double/single quotes
-def addSchemaNames(sql, view_sql):
+def add_schema_names(sql, view_sql):
     cursor = user_schema_db.execute_sql(sql)
     for row in cursor.fetchall():
         view_sql = re.sub(
@@ -180,13 +180,6 @@ def addSchemaNames(sql, view_sql):
             f'from {{sc}}.{row[0]})', view_sql)
 
     return view_sql
-
-
-def has_pair(field_name, mapping):
-    for item in mapping:
-        if item['target_field'] == field_name:
-            return True
-    return False
 
 
 def get_lookup_data(filepath):
@@ -280,22 +273,6 @@ def prepare_concepts_tag(concept_tags, concepts_tag, domain_definition_tag, conc
     return concepts_tag
 
 
-def is_mapping_contains_type_concept_id(field, mapping, concept_id):
-    return is_mapping_contains(field, 'type_concept_id', mapping, concept_id)
-
-
-def is_mapping_contains_source_value(field, mapping, concept_id):
-    return is_mapping_contains(field, 'source_value', mapping, concept_id)
-
-
-def number_of_type_concept_id(field, mapping):
-    return number_of_fields_contained(field, 'type_concept_id', mapping)
-
-
-def number_of_source_value(field, mapping):
-    return number_of_fields_contained(field, 'source_value', mapping)
-
-
 def is_mapping_contains(field, key, mapping, concept_id, check = True):
     for row in mapping:
         lookup_name = row.get('lookup', None)
@@ -328,16 +305,6 @@ def number_of_fields_contained(field, key, mapping):
     return fields_counter
 
 
-def is_mapping_contains_concept_id(field, replace_key, key, mapping):
-    for row in mapping:
-        target_field = row['target_field']
-        if target_field.startswith('value_as'):
-            continue
-        if target_field == field.replace(replace_key, key):
-            return target_field
-    return None
-
-
 def get_mapping_source_values(mapping):
     source_values = []
     for row in mapping:
@@ -350,20 +317,6 @@ def get_mapping_source_values(mapping):
                 continue
             source_values.append(target_field)
     return source_values
-
-
-def find_all_concept_id_fields(mapping):
-    concept_ids_fields = []
-
-    for row in mapping:
-        target_field = row['target_field']
-        if target_field.startswith('value_as'):
-            continue
-        if is_concept_id(target_field):
-            if target_field in concept_ids_fields:
-                continue
-            concept_ids_fields.append(target_field)
-    return concept_ids_fields
 
 
 def generate_bath_sql_file(current_user, mapping, source_table, views):
@@ -401,11 +354,6 @@ def clear(current_user):
         os.unlink(file_path)
     except Exception as err:
         print(f'Failed to delete {file_path}. Reason: {err}')
-
-
-def add_counter_to_attrib_key(key, item, counter):
-    if item.attrib.get(key, None) is not None:
-        item.attrib[key] = f'{item.attrib[key]}_{counter}'
 
 
 def get_xml(current_user, json_):
@@ -639,90 +587,6 @@ def write_xml(current_user, tag, filename, result):
     result.update({filename: _prettify(tag)})
 
 
-def get_lookups_sql(cond: dict):
-    """prepare sql's for lookups"""
-    result = {}
-    try:
-        os.mkdir(GENERATE_CDM_LOOKUP_SQL_PATH)
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} created')
-    except FileExistsError:
-        print(f'Directory {GENERATE_CDM_LOOKUP_SQL_PATH} already exist')
-    for lookup_record in cond:
-        for k, v in lookup_record.items():
-            source_vocabulary_in = ', '.join(v.get('source_vocabulary').get('in'))
-            source_vocabulary_not_in = ', '.join(v.get('source_vocabulary').get('not_in'))
-            target_vocabulary_in = ', '.join(v.get('target_vocabulary').get('in'))
-            target_vocabulary_not_in = ', '.join(v.get('target_vocabulary').get('not_in'))
-            target_concept_class_in = ', '.join(v.get('target_concept_class').get('in'))
-            target_concept_class_not_in = ', '.join(v.get('target_concept_class').get('not_in'))
-            target_domain_in = ', '.join(v.get('target_domain').get('in'))
-            target_domain_not_in = ', '.join(v.get('target_domain').get('not_in'))
-            sql = f'''
-                Standard AS (
-                    SELECT DISTINCT
-                        SOURCE_CODE,
-                        TARGET_CONCEPT_ID,
-                        TARGET_DOMAIN_ID,
-                        SOURCE_VALID_START_DATE AS VALID_START_DATE,
-                        SOURCE_VALID_END_DATE AS VALID_END_DATE,
-                        SOURCE_VOCABULARY_ID
-                    FROM Source_to_Standard
-                    WHERE
-                        SOURCE_VOCABULARY_ID IN {source_vocabulary_in} AND
-                        SOURCE_VOCABULARY_ID NOT IN {source_vocabulary_not_in} AND
-                        TARGET_VOCABULARY_ID IN {target_vocabulary_in} AND
-                        TARGET_VOCABULARY_ID NOT IN {target_vocabulary_not_in} AND
-                        TARGET_CONCEPT_CLASS_ID IN {target_concept_class_in} AND
-                        TARGET_CONCEPT_CLASS_ID NOT IN {target_concept_class_not_in} AND
-                        TARGET_DOMAIN_ID) IN {target_domain_in} AND
-                        TARGET_DOMAIN_ID NOT IN {target_domain_not_in} AND
-                        (TARGET_STANDARD_CONCEPT IS NOT NULL OR TARGET_STANDARD_CONCEPT != '') AND
-                        (TARGET_INVALID_REASON IS NULL or TARGET_INVALID_REASON = '')
-                ), 
-                Source AS (
-                    SELECT DISTINCT
-                        SOURCE_CODE,
-                        TARGET_CONCEPT_ID,
-                        SOURCE_VALID_START_DATE,
-                        SOURCE_VALID_END_DATE
-                    FROM Source_to_Source
-                    WHERE
-                        SOURCE_VOCABULARY_ID IN {source_vocabulary_in} AND
-                        SOURCE_VOCABULARY_ID NOT IN {source_vocabulary_not_in} AND
-                        TARGET_VOCABULARY_ID IN {target_vocabulary_in} AND
-                        TARGET_VOCABULARY_ID NOT IN {target_vocabulary_not_in} AND
-                        TARGET_CONCEPT_CLASS_ID IN {target_concept_class_in} AND
-                        TARGET_CONCEPT_CLASS_ID NOT IN {target_concept_class_not_in} AND
-                        TARGET_DOMAIN_ID) IN {target_domain_in} AND
-                        TARGET_DOMAIN_ID NOT IN {target_domain_not_in}
-                ),
-                S_S AS (
-                    SELECT SOURCE_CODE FROM Standard
-                    UNION
-                    SELECT SOURCE_CODE FROM Source
-                )
-                SELECT DISTINCT
-                    S_S.SOURCE_CODE,
-                    Standard.TARGET_CONCEPT_ID,
-                    Standard.TARGET_DOMAIN_ID,
-                    Standard.VALID_START_DATE,
-                    Standard.VALID_END_DATE,
-                    Standard.SOURCE_VOCABULARY_ID,
-                    Source.TARGET_CONCEPT_ID AS SOURCE_TARGET_CONCEPT_ID,
-                    Source.SOURCE_VALID_START_DATE AS SOURCE_VALID_START_DATE,
-                    Source.SOURCE_VALID_END_DATE,
-                    ingredient_level.ingredient_concept_id
-                FROM S_S
-                LEFT JOIN Standard ON Standard.SOURCE_CODE = S_S.SOURCE_CODE
-                LEFT JOIN Source ON Source.SOURCE_CODE = S_S.SOURCE_CODE
-                LEFT JOIN ingredient_level ON ingredient_level.concept_id = Standard.TARGET_CONCEPT_ID
-            '''
-            sql_file = open(GENERATE_CDM_LOOKUP_SQL_PATH / (k + '.sql'), 'w+')
-            sql_file.write(sql)
-            result.update({k: sql})
-    return result
-
-
 def add_files_to_zip(zip_file, path, directory):
     for root, dirs, files in os.walk(path):
         for file in files:
@@ -768,146 +632,3 @@ def delete_generated_sql(current_user):
 def delete_generated_archive(current_user):
     """clean lookup sql folder"""
     delete_generated(f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}")
-
-
-def get_lookups_list(current_user, lookup_type):
-    lookups_list = []
-
-    def updateList(base_path):
-        path = os.path.join(base_path, lookup_type)
-        if os.path.isdir(path):
-            files = os.listdir(path)
-            lookups_list.extend(
-                map(lambda x: f"{x.replace('.txt', '')}", files)
-            )
-
-    updateList(PREDEFINED_LOOKUPS_PATH)
-    updateList(f"{INCOME_LOOKUPS_PATH}/{current_user}")
-
-    return lookups_list
-
-
-def get_lookup(current_user, name, lookup_type):
-    lookup = ''
-    if len(name.split('.')) > 1:
-        path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
-    else:
-        if 'template' in name:
-            path = os.path.join(PREDEFINED_LOOKUPS_PATH, f"{name}.txt")
-        else:
-            path = os.path.join(PREDEFINED_LOOKUPS_PATH, lookup_type, f"{name}.txt")
-    if os.path.isfile(path):
-        with open(path, mode='r') as f:
-            lookup = f.readlines()
-    return ''.join(lookup)
-
-
-def add_lookup(current_user, lookup):
-    name = lookup['name']
-    lookup_type = lookup['lookupType']
-    filepath = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type)
-    filename = os.path.join(filepath, f'{name}.txt')
-    if not os.path.isdir(filepath):
-        os.makedirs(filepath)
-
-    with open(filename, mode='w') as f:
-        f.write(lookup['value'])
-
-
-def del_lookup(current_user, name, lookup_type):
-    path = os.path.join(f"{INCOME_LOOKUPS_PATH}/{current_user}", lookup_type, f"{name}.txt")
-    if os.path.isfile(path):
-        os.remove(path)
-
-
-if __name__ == '__main__':
-    pass
-    # with open('sources/mock_input/ENROLLMENT_DETAIL.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/OUTPATIENT_SERVICES.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/DRUG_CLAIMS.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/FACILITY_HEADER.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/INPATIENT_ADMISSIONS.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/INPATIENT_SERVICES.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/LAB.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/LONG_TERM_CARE.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # SQL for near written manually in output cause of specific
-    # with open('sources/mock_input/HEALTH_RISK_ASSESSMENT.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/L_LOCATION.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/L_PROVIDER.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-    # with open('sources/mock_input/mock.json') as file:
-    #     data = json.load(file)
-    #     print(get_xml(data))
-#     from ast import literal_eval
-#     condition = literal_eval('''[{'lookup' :
-# {
-#   'source_vocabulary': {
-#     'in': ['s_voc1', 's_voc2'],
-#     'not_in': ['s_voc3', 's_voc4']
-#   }
-#   ,
-#   'target_vocabulary': {
-#     'in': ['t_voc1', 't_voc2'],
-#     'not_in': ['t_voc3', 't_voc4']
-#   },
-#   'source_concept_class': {
-#     'in': ['s_concept1', 's_concept2'],
-#     'not_in': ['s_concept3', 's_concept4']
-#   },
-#   'target_concept_class': {
-#     'in': ['t_concept1', 't_concept2'],
-#     'not_in': ['t_concept3', 't_concept4']
-#   },
-#   'target_domain': {
-#     'in': ['t_domain1', 't_domain2'],
-#     'not_in': ['t_domain3', 't_domain4']
-#   }
-# }
-# },
-# {'lookup2' :
-# {
-#   'source_vocabulary': {
-#     'in': ['s_voc1', 's_voc2'],
-#     'not_in': ['s_voc3', 's_voc4']
-#   },
-#   'target_vocabulary': {
-#     'in': ['t_voc1', 't_voc2'],
-#     'not_in': ['t_voc3', 't_voc4']
-#   },
-#   'source_concept_class': {
-#     'in': ['s_concept1', 's_concept2'],
-#     'not_in': ['s_concept3', 's_concept4']
-#   },
-#   'target_concept_class': {
-#     'in': ['t_concept1', 't_concept2'],
-#     'not_in': ['t_concept3', 't_concept4']
-#   },
-#   'target_domain': {
-#     'in': ['t_domain1', 't_domain2'],
-#     'not_in': ['t_domain3', 't_domain4']
-#   }
-# }
-# }]''')
-#     print(condition)
-#     get_lookups_sql(condition)
