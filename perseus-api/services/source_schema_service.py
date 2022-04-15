@@ -184,12 +184,7 @@ def _open_book(current_user, filepath=None):
 def get_column_info(current_user, etl_mapping_id, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
     current_etl_mapping = EtlMapping.select().where((EtlMapping.username == current_user) & (EtlMapping.id == etl_mapping_id)).get()
-    report_name = secure_filename(_allowed_file(current_etl_mapping.scan_report_name))
-    scan_report_directory = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}"
-    if not is_directory_contains_file(scan_report_directory, report_name):
-        path_to_schema = get_scan_report_path(current_etl_mapping)
-    else:
-        path_to_schema = f"{scan_report_directory}/{report_name}"
+    path_to_schema = get_scan_report_path(current_etl_mapping)
     try:
         book = _open_book(current_user, Path(path_to_schema))
         table_overview = pd.read_excel(book, table_name, dtype=str,
