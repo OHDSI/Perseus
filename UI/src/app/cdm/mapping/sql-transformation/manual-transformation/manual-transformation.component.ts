@@ -1,8 +1,4 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import {
-  SQL_FUNCTIONS,
-  SQL_STRING_FUNCTIONS
-} from '@popups/rules-popup/transformation-input/model/sql-string-functions';
 import { EditorConfiguration, EditorFromTextArea } from 'codemirror';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { initCodeMirror } from '@utils/code-mirror';
@@ -10,6 +6,7 @@ import { SqlForTransformation } from '@models/transformation/sql-for-transformat
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
+import { SQL_FUNCTIONS, SQL_STRING_FUNCTIONS } from '@models/transformation-input/sql-string-functions'
 
 const editorSettings: EditorConfiguration = {
   mode: 'text/x-mysql',

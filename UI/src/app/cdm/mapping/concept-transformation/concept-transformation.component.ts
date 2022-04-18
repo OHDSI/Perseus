@@ -259,7 +259,8 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.dialogRef.close();
     } else {
       const selectedLookup = this.lookupComponent.selected
-      this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = {id: selectedLookup.id, name: selectedLookup.name}
+      this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = selectedLookup ?
+        {id: selectedLookup.id, name: selectedLookup.name} : {}
       this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable
       this.dialogRef.close();
     }

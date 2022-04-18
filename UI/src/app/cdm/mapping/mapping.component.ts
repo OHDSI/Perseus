@@ -32,7 +32,6 @@ import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
 import { PanelComponent } from './panel/panel.component';
-import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
 import { EMPTY, Observable, of } from 'rxjs';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
@@ -120,7 +119,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private commonService: CommonService,
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
-    private rulesPopupService: RulesPopupService,
     mappingElementRef: ElementRef,
     private overlayService: OverlayService,
     private router: Router,
@@ -795,12 +793,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private init() {
-    this.rulesPopupService.deleteConnector$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(connectorKey => {
-        this.bridgeService.deleteArrow(connectorKey);
-      });
-
     this.storeService.on('filteredFields')
       .subscribe(res => {
         if (res) {
