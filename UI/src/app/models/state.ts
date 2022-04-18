@@ -1,6 +1,6 @@
 import { ITable } from './table';
 import { IRow } from './row';
-import { IConcepts } from '@models/concepts';
+import { IConcepts } from '@models/perseus/concepts';
 import { IClones } from '@models/clones';
 import { EtlMapping } from '@models/perseus/etl-mapping'
 

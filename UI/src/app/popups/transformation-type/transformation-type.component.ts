@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 @Component({
   selector: 'app-transformation-type',
   templateUrl: './transformation-type.component.html',
-  styleUrls: [ './transformation-type.component.scss', '../set-connection-type-popup/set-connection-type-popup.component.scss' ]
+  styleUrls: [ './transformation-type.component.scss', '../choose-transformation-type-popup/choose-transformation-type-popup.component.scss' ]
 })
 export class TransformationTypeComponent implements OnInit {
 

@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { SqlFunction, SqlFunctionDefinition } from './model/sql-string-functions';
 import { Observable } from 'rxjs';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { SqlFunctionsInjector } from '../model/sql-functions-injector';
+import { SqlFunctionsInjector } from '@models/sql-functions-injector';
 import { isString } from 'src/app/infrastructure/utility';
 import { sqlParametersValidator } from './model/sql-function-validator';
 import { map, startWith } from 'rxjs/operators';

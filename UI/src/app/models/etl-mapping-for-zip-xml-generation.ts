@@ -1,5 +1,6 @@
 import { IComment } from './comment';
 import { Lookup } from '@models/perseus/lookup'
+import { LookupType } from '@models/perseus/lookup-type'
 
 export interface MappingLookupSqlField {
   source_field: string;
@@ -27,7 +28,8 @@ export interface MappingNode {
   sql_field: string;
   sql_alias: string;
   lookup?: string | Lookup;
-  lookupType?: string;
+  lookupType?: LookupType;
+  lookupId?: number
   sqlTransformation?: string;
   comments?: IComment[];
   condition?: string;

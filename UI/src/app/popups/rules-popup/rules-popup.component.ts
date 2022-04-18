@@ -1,7 +1,7 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { OverlayDialogRef } from 'src/app/services/overlay/overlay.service';
 import { OVERLAY_DIALOG_DATA } from 'src/app/services/overlay/overlay-dialog-data';
-import { TransformRulesData } from './model/transform-rules-data';
+import { TransformationDialogData } from '@models/transformation-dialog-data';
 import { TransformationInputComponent } from './transformation-input/transformation-input.component';
 import { SqlFunction } from './transformation-input/model/sql-string-functions';
 import { RulesPopupService } from './services/rules-popup.service';
@@ -34,7 +34,7 @@ export class RulesPopupComponent {
   constructor(
     private rulesPopupService: RulesPopupService,
     public dialogRef: OverlayDialogRef,
-    @Inject(OVERLAY_DIALOG_DATA) public payload: TransformRulesData
+    @Inject(OVERLAY_DIALOG_DATA) public payload: TransformationDialogData
   ) {
     const { arrowCache, connector } = this.payload;
     if (arrowCache[connector.id]) {

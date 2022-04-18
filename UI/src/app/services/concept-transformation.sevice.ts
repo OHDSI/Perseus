@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Concept,
-  IConceptOptions,
-  ITableConceptsOptions,
-  TableConcepts
-} from '@models/perseus/concept-transformation/concept';
+import { Concept, IConceptOptions } from '@models/perseus/concept';
 import { cloneDeep } from '../infrastructure/utility';
 import * as conceptMap from '@mapping/concept-fileds-list.json';
 import {
@@ -14,6 +9,7 @@ import {
   updateConceptsList
 } from 'src/app/utils/concept-util';
 import { Arrow } from '@models/arrow';
+import { ConceptTables, IConceptTablesOptions } from '@models/perseus/concept-tables'
 
 @Injectable()
 export class ConceptTransformationService {
@@ -88,11 +84,11 @@ export class ConceptTransformationService {
     }
 
     addNewConceptTable(connectedFields?: any, fieldType?: any) {
-        const conceptTableOptions: ITableConceptsOptions = {
+        const conceptTableOptions: IConceptTablesOptions = {
             lookup: {},
             conceptsList: []
         };
-        this.conceptsTable = new TableConcepts(conceptTableOptions);
+        this.conceptsTable = new ConceptTables(conceptTableOptions);
         this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] = {} : this.conceptsTable.lookup['Default'] = {};
 
         if (connectedFields) {

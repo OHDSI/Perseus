@@ -1,9 +1,10 @@
-import { Concept, IConceptField, IConceptFields } from '@models/perseus/concept-transformation/concept';
+import { Concept } from '@models/perseus/concept';
 import { IRow } from '@models/row';
 import * as conceptMap from '../cdm/mapping/concept-fileds-list.json';
 import { environment } from '../../environments/environment';
 import { IConnector } from '@models/connector';
 import { conceptFieldsTypes } from '@app/app.constants';
+import { IConceptField, IConceptFields } from '@models/perseus/concept-field'
 
 const conceptFieldNames = (conceptMap as any).default;
 

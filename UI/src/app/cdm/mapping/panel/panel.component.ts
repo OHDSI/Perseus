@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import { MatDialog } from '@angular/material/dialog';
 import { ITable, Table } from '@models/table';
 import { BridgeService } from '@services/bridge.service';
-import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '@shared/search-by-name/search-by-name.component';
 import { StoreService } from '@services/store.service';
@@ -77,7 +76,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private bridgeService: BridgeService,
-    private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
     private matDialog: MatDialog,
     private overlayService: OverlayService,

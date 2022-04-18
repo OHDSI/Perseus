@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { saveAs } from 'file-saver';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
@@ -12,10 +12,8 @@ import { StoreService } from 'src/app/services/store.service';
 import { PreviewPopupComponent } from '@popups/preview-popup/preview-popup.component';
 import { OverlayConfigOptions } from 'src/app/services/overlay/overlay-config-options.interface';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
-import { SetConnectionTypePopupComponent } from '@popups/set-connection-type-popup/set-connection-type-popup.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
-import { TransformConfigComponent } from './transform-config/transform-config.component';
 import { Area } from 'src/app/models/area';
 import * as groups from './groups-conf.json';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,18 +28,23 @@ import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/sele
 import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
 import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
 import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
-import { getLookupType } from '@utils/lookup-util';
-import * as conceptFields from './concept-fileds-list.json';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
 import { PanelComponent } from './panel/panel.component';
 import { RulesPopupService } from '@popups/rules-popup/services/rules-popup.service';
-import { ConceptTransformationComponent } from './concept-transformation/concept-transformation.component';
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
-import { openErrorDialog, parseHttpError } from '@utils/error';
 import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
+import {
+  handleLookupTransformationResult,
+  handleSqlTransformationResult,
+  isNoConceptColumn,
+  openChooseTransformationTypePopup,
+  openConceptTransformationDialog,
+  openTransformationPopup
+} from '@utils/transformtaion-dialog-util'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
   selector: 'app-mapping',
@@ -69,11 +72,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   similarTableName = similarTableName;
   filteredFields;
 
-  lookup;
-
   numberOfPanels: number;
-
-  conceptFieldNames = (conceptFields as any).default;
 
   isVocabularyVisible = false;
 
@@ -128,7 +127,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     private lookupService: PerseusLookupService,
     private activatedRoute: ActivatedRoute,
     private vocabularyObserverService: VocabularyObserverService,
-    private reportGenerationService: ReportGenerationService
+    private reportGenerationService: ReportGenerationService,
+    private snackBar: MatSnackBar
   ) {
     super();
     this.commonService.mappingElement = mappingElementRef;
@@ -199,89 +199,39 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       if (child.localName !== 'path') {
         continue;
       }
-
-      const arrow = this.bridgeService.arrowsCache[child.id];
-
+      const arrowCacheId = child.id
+      const arrow = this.bridgeService.arrowsCache[arrowCacheId];
       const endXYAttributeIndex = 7;
       const {upperLimit, lowerLimit} = this.getLimits(child.attributes[endXYAttributeIndex].value);
+
       if (offset >= upperLimit && offset <= lowerLimit) {
-
-        const dialogOptions: OverlayConfigOptions = {
-          hasBackdrop: true,
-          backdropClass: 'custom-backdrop',
-          positionStrategyFor: 'transformation-type',
-          payload: {
-            arrow
-          }
-        };
-
         const htmlElementId = arrow.target.name;
         const htmlElement = this.targetPanelComponet.nativeElement.querySelector(`#target-${htmlElementId}`)
-        if (!this.conceptFieldNames[arrow.target.tableName]?.includes(htmlElementId)) {
-          const dialogRef = this.overlayService.open(dialogOptions, htmlElement, SetConnectionTypePopupComponent);
-          dialogRef.afterClosed$.subscribe((configOptions: any) => {
-            const {connectionType} = configOptions;
-            if (connectionType) {
-              const selectedTab = connectionType === 'L' ? 'Lookup' : 'SQL Function';
-              const lookupType = getLookupType(arrow);
-              const transformDialogRef = this.matDialog.open(TransformConfigComponent, {
-                closeOnNavigation: false,
-                disableClose: true,
-                panelClass: 'perseus-dialog',
-                data: {
-                  arrowCache: this.bridgeService.arrowsCache,
-                  connector: arrow.connector,
-                  lookupName: arrow.lookup ? arrow.lookup['name'] : '',
-                  lookupType,
-                  sql: arrow.sql,
-                  tab: selectedTab
-                }
-              });
 
-              transformDialogRef.afterClosed().subscribe((options: any) => {
-                if (options) {
-                  const {lookup, sql} = options;
-                  if (lookup) {
-                    if (lookup['originName']) {
-                      this.lookup = lookup;
-                      this.lookup['applied'] = true;
-                      const lookupName = this.lookup['name'] ? this.lookup['name'] : this.lookup['originName'];
-                      this.bridgeService.arrowsCache[child.id].lookup = {name: lookupName, applied: true};
-                    }
-
-                    if (lookup['originName'] && lookup['name'] && lookup['originName'] !== lookup['name']) {
-                      this.lookupService.saveLookup(this.lookup, lookupType)
-                        .subscribe(
-                          () => {},
-                          error => openErrorDialog(this.matDialog, 'Failed to save lookup', parseHttpError(error))
-                        );
-                    }
-                  }
-                  if (sql) {
-                    if (sql['name'] || sql['name'] === '') {
-                      arrow.sql = sql;
-                      arrow.sql['applied'] = sql['name'] !== '';
-                    }
-                  }
-                  this.bridgeService.updateConnectedRows(arrow);
+        if (isNoConceptColumn(arrow.target.tableName, htmlElementId)) {
+          openChooseTransformationTypePopup(this.overlayService, arrow, htmlElement).afterClosed$
+            .pipe(
+              switchMap(({connectionType}) => connectionType ?
+                openTransformationPopup(this.matDialog, this.bridgeService.arrowsCache, arrow, connectionType).afterClosed() :
+                EMPTY
+              )
+            )
+            .subscribe(options => {
+              if (options) {
+                const {lookup, sql} = options;
+                if (lookup) {
+                  handleLookupTransformationResult(lookup, arrowCacheId, this.bridgeService, this.lookupService, this.snackBar, this.matDialog)
                 }
-              });
-            }
-          });
+                if (sql) {
+                  handleSqlTransformationResult(sql, arrow)
+                }
+                this.bridgeService.updateConnectedRows(arrow);
+              }
+            });
         } else {
-          const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
-            closeOnNavigation: false,
-            disableClose: true,
-            panelClass: 'perseus-dialog',
-            maxHeight: '100%',
-            data: {
-              arrowCache: this.bridgeService.arrowsCache,
-              row: arrow.target,
-              oppositeSourceTable: this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
-            }
-          });
+          const oppositeSourceTable = this.targetPanel.oppositeTableName ? this.targetPanel.oppositeTableName : 'similar'
+          openConceptTransformationDialog(this.matDialog, this.bridgeService.arrowsCache, arrow.target, oppositeSourceTable)
         }
-        return;
       }
     }
   }

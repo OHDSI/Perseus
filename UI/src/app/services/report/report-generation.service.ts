@@ -10,6 +10,7 @@ import { saveAs } from 'file-saver';
 import { ITable } from '@models/table';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { LookupType } from '@models/perseus/lookup-type'
 
 export enum ReportType {
   WORD,
@@ -84,7 +85,7 @@ export class ReportGenerationService {
       .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
       .createTablesMappingImage(mappingHeader, this.mappingConfig);
 
-    const lookupTypesSet = new Set<string>(); // Lookups for appendix
+    const lookupTypesSet = new Set<LookupType>(); // Lookups for appendix
     const sortAscByTargetFunc = (a: MappingPair, b: MappingPair) =>
       a.target_table > b.target_table ? 1 : (a.target_table === b.target_table ? 0 : -1);
     const sortedMappingItems = mapping.mapping_items.sort(sortAscByTargetFunc);
@@ -106,7 +107,7 @@ export class ReportGenerationService {
           lookupTypesSet.add(mappingNode.lookupType);
           const lookupName: string = typeof mappingNode.lookup === 'string' ? mappingNode.lookup : mappingNode.lookup.name;
           mappingNode.lookup = await this.lookupService
-            .getLookup(lookupName, mappingNode.lookupType)
+            .getLookupSqlByName(lookupName, mappingNode.lookupType)
             .toPromise();
         }
       }
@@ -169,7 +170,7 @@ export class ReportGenerationService {
       let onNewPage = false;
       for (const lookupType of lookupTypesSet) {
         const sqlTemplate = await this.lookupService
-          .getLookupTemplate(lookupType)
+          .getTemplateLookupSql(lookupType)
           .toPromise();
 
         reportCreator

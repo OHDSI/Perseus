@@ -111,10 +111,7 @@
         </mat-tab>
         <mat-tab [label]="'Lookup'">
             <div>
-                <app-lookup #lookupComponent
-                  [lookupType]="lookupType"
-                  [lookup]="getLookup()"
-                  [name]="getLookupName()"></app-lookup>
+                <app-lookup #lookupComponent [lookupType]="lookupType" [lookup]="getLookup()"></app-lookup>
             </div>
         </mat-tab>
     </mat-tab-group>
@@ -128,6 +125,7 @@
           mat-button
           mat-flat-button
           color="accent"
+          [disabled]="applyDisabled"
           (click)="add()"
           class="button-add">Apply
         </button>
