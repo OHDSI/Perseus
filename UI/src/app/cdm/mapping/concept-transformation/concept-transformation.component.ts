@@ -21,6 +21,7 @@ import { toLookupRequest } from '@utils/lookup-util'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { LookupType } from '@models/perseus/lookup-type'
 import { Observable } from 'rxjs'
+import { DEFAULT_CLONE } from '@models/clones'
 
 @Component({
   selector: 'app-concept-transformation',
@@ -124,12 +125,12 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     if ( this.conceptsTable.lookup['name'] ) {
       const copiedLookup = cloneDeep(this.conceptsTable.lookup);
       const lookups = {};
-      this.targetCloneName ? lookups[ this.targetCloneName] = copiedLookup : lookups['Default'] = copiedLookup;
+      this.targetCloneName ? lookups[ this.targetCloneName] = copiedLookup : lookups[DEFAULT_CLONE] = copiedLookup;
       this.conceptsTable.lookup = lookups;
     } else {
-      if (!this.targetCloneName && this.conceptsTable.lookup['Default'] || !this.conceptsTable.lookup[this.targetCloneName]) {
+      if (!this.targetCloneName && this.conceptsTable.lookup[DEFAULT_CLONE] || !this.conceptsTable.lookup[this.targetCloneName]) {
         const copiedLookup = cloneDeep(Object.values(this.conceptsTable.lookup)[0])
-        this.targetCloneName ? this.conceptsTable.lookup[ this.targetCloneName] = copiedLookup : this.conceptsTable.lookup['Default'] = copiedLookup;
+        this.targetCloneName ? this.conceptsTable.lookup[ this.targetCloneName] = copiedLookup : this.conceptsTable.lookup[DEFAULT_CLONE] = copiedLookup;
       }
     }
 
@@ -183,14 +184,14 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   }
 
   getLookup() {
-    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] : this.conceptsTable.lookup['Default'];
+    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] : this.conceptsTable.lookup[DEFAULT_CLONE];
   }
 
   getLookupName() {
-    if (!this.conceptsTable.lookup[this.targetCloneName] && !this.conceptsTable.lookup['Default'] ) {
+    if (!this.conceptsTable.lookup[this.targetCloneName] && !this.conceptsTable.lookup[DEFAULT_CLONE] ) {
       return this.conceptsTable.lookup['name'];
     }
-    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName]['name'] : this.conceptsTable.lookup['Default']['name'];
+    return this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName]['name'] : this.conceptsTable.lookup[DEFAULT_CLONE]['name'];
   }
 
   toggleSqlTransformation(event: any) {
@@ -249,7 +250,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     if (this.lookupComponent.updatedSourceToStandard || this.lookupComponent.updatedSourceToSource) {
       this.updateLookupValue(this.lookupComponent.updatedLookup)
         .subscribe(lookup => {
-          this.conceptsTable.lookup[this.targetCloneName ?? 'Default'] = {id: lookup.id, name: lookup.name}
+          this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = {id: lookup.id, name: lookup.name}
           this.snackBar.open('Lookup successfully saved!', ' DISMISS ')
         }, error => {
           openErrorDialog(this.dialogService, 'Failed to save lookup', parseHttpError(error))
@@ -258,7 +259,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.dialogRef.close();
     } else {
       const selectedLookup = this.lookupComponent.selected
-      this.conceptsTable.lookup[this.targetCloneName ?? 'Default'] = {id: selectedLookup.id, name: selectedLookup.name}
+      this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = {id: selectedLookup.id, name: selectedLookup.name}
       this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable
       this.dialogRef.close();
     }
