@@ -10,5 +10,7 @@ class UploadScanReportResponse:
 
 
 def to_upload_scan_report_response(etl_mapping: EtlMapping, saved_schema):
-    return UploadScanReportResponse(etl_mapping=to_etl_mapping_response(etl_mapping),
-                                    source_tables=[s.to_json() for s in saved_schema])
+    return UploadScanReportResponse(
+                                   etl_mapping=to_etl_mapping_response(etl_mapping),
+                                   source_tables=[s.to_json() for s in saved_schema]
+                                   )

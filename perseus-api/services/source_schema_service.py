@@ -1,21 +1,24 @@
 import re
+import xlrd
+import pandas as pd
+
 from itertools import groupby
 from pathlib import Path
-
-import pandas as pd
-import xlrd
 from pandasql import sqldf
 from werkzeug.utils import secure_filename
 
 from app import app
 from db import user_schema_db
-from services.scan_reports_service import _allowed_file
+from model.etl_mapping import EtlMapping
+from services.scan_reports_service import _allowed_file, get_scan_report_path
 from utils.column_types_mapping import postgres_types_mapping, postgres_types
-from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING, TYPES_WITH_MAX_LENGTH, \
-    LIST_OF_COLUMN_INFO_FIELDS, N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
+from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING,\
+                            TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS,\
+                            N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
 from utils.directory_util import is_directory_contains_file
 from utils.exceptions import InvalidUsage
 from view.Table import Table, Column
+
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
@@ -44,7 +47,7 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
     try:
         book = _open_book(current_user, filepath)
     except Exception as e:
-        raise InvalidUsage(e.__str__(), 400)
+        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 400)
     overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
     # always take the first sheet of the excel file
 
@@ -52,7 +55,7 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
         """select `table`, group_concat(field || ':' || type || ':' || "Max length", ',') as fields
          from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
-    for index, row in tables_pd.iterrows():
+    for _, row in tables_pd.iterrows():
         create_table_sql = '';
         table_name = row['Table']
         fields = row['fields'].split(',')
@@ -75,7 +78,7 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
             create_table_sql += create_column_sql
         create_table_sql = create_table_sql.rstrip(',')
         create_table_sql += ' );'
-        cursor = user_schema_db.execute_sql(create_table_sql)
+        user_schema_db.execute_sql(create_table_sql)
         schema.append(table_)
     return schema
 
@@ -99,7 +102,7 @@ def create_source_schema_by_tables(current_user, source_tables):
                     create_table_sql += create_column_sql
             create_table_sql = create_table_sql.rstrip(',')
             create_table_sql += ' );'
-            cursor = user_schema_db.execute_sql(create_table_sql)
+            user_schema_db.execute_sql(create_table_sql)
 
 
 def reset_schema(name='public'):
@@ -112,19 +115,19 @@ def reset_schema(name='public'):
     user_schema_db.execute_sql(create_schema_sql)
 
 
-def convert_column_type(type):
-    if type.upper() in postgres_types_mapping:
-        return postgres_types_mapping[type.upper()]
+def convert_column_type(culumn_type):
+    if culumn_type.upper() in postgres_types_mapping:
+        return postgres_types_mapping[culumn_type.upper()]
     else:
-        return type.upper()
+        return culumn_type.upper()
 
 
-def remove_parentheses(type):
-    return re.sub(r'\([^)]*\)', '', type)
+def remove_parentheses(field_type):
+    return re.sub(r'\([^)]*\)', '', field_type)
 
 
-def get_field_type(type):
-    converted_type = remove_parentheses(convert_column_type(type.upper())).lower()
+def get_field_type(field_type):
+    converted_type = remove_parentheses(convert_column_type(field_type.upper())).lower()
     for key in postgres_types:
         if converted_type in postgres_types[key]:
             return key
@@ -137,7 +140,7 @@ def get_view_from_db(current_user, view_sql):
     view_key= lambda a: a.name
     view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
     view_res=[]
-    for key, group in view_groups:
+    for _, group in view_groups:
         for index, item in enumerate(list(group)):
             res_item={}
             res_item['type'] = COLUMN_TYPES_MAPPING[item.type_code]
@@ -178,10 +181,10 @@ def _open_book(current_user, filepath=None):
     return book
 
 
-def get_column_info(current_user, report_name, table_name, column_name=None):
+def get_column_info(current_user, etl_mapping_id, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
-    report_name = secure_filename(_allowed_file(report_name))
-    path_to_schema = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{report_name}"
+    current_etl_mapping = EtlMapping.select().where((EtlMapping.username == current_user) & (EtlMapping.id == etl_mapping_id)).get()
+    path_to_schema = get_scan_report_path(current_etl_mapping)
     try:
         book = _open_book(current_user, Path(path_to_schema))
         table_overview = pd.read_excel(book, table_name, dtype=str,
@@ -211,4 +214,3 @@ def get_column_info(current_user, report_name, table_name, column_name=None):
         return info
     except KeyError as e:
         raise InvalidUsage('Column invalid' + e.__str__(), 404)
-

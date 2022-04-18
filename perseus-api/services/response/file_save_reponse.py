@@ -10,7 +10,9 @@ class FileSaveResponse:
 
 
 def from_json(json: dict):
-    return FileSaveResponse(id=json['id'],
-                     username=json['username'],
-                     dataKey=json['dataKey'],
-                     fileName=json['fileName'])
+    return FileSaveResponse(
+                           id=json['id'],
+                           username=json['username'],
+                           dataKey=json['dataKey'],
+                           fileName=json['fileName']
+                           )

@@ -8,4 +8,7 @@ class ScanReportRequest:
 
 
 def from_json(json: dict):
-    return ScanReportRequest(data_id=json['dataId'], file_name=json['fileName'])
+    return ScanReportRequest(
+                            data_id=json['dataId'],
+                            file_name=json['fileName']
+                            )

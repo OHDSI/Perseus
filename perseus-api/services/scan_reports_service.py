@@ -4,12 +4,13 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from app import app
-from model.etl_mapping import EtlMapping
 from services import files_manager_service
 from utils import UPLOAD_SCAN_REPORT_FOLDER, InvalidUsage
-from utils.constants import SCAN_REPORT_DATA_KEY
+from model.etl_mapping import EtlMapping
 from services.request.scan_report_request import ScanReportRequest
+from utils.constants import SCAN_REPORT_DATA_KEY
 from utils.directory_util import is_directory_contains_file
+
 
 ALLOWED_SCAN_REPORT_EXTENSIONS = {'xlsx', 'xls'}
 

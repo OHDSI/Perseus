@@ -1,5 +1,4 @@
-from peewee import *
-
+from peewee import CharField, TextField, AutoField
 from model.base_model import BaseModel
 
 

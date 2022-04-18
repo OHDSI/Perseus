@@ -1,4 +1,5 @@
-from peewee import *
+from peewee import Model
+
 from db import app_logic_db
 
 

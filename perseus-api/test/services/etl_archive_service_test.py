@@ -17,7 +17,7 @@ class EtlArchiveServiceTest(unittest.TestCase):
         etl_archive_service._extract_etl_archive('../resource/test.etl', to_extract)
         filenames = etl_archive_service.get_filenames_in_directory(to_extract)
         try:
-            etl_archive_service._check_etl_archive_content(filenames, to_extract)
+            etl_archive_service._check_etl_archive_content(filenames)
         except Exception as e:
             self.fail(f"Unexpected exception: {e}")
 

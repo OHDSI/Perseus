@@ -1,10 +1,9 @@
 import datetime
-from functools import wraps
 
-import jwt
+from functools import wraps
 from flask import request
-from jwt import ExpiredSignatureError, InvalidTokenError, PyJWTError
-from peewee import *
+from jwt import encode, decode, ExpiredSignatureError, InvalidTokenError, PyJWTError
+from peewee import AutoField, BooleanField, CharField
 
 from model import blacklist_token
 from model.baseModel import BaseModel
@@ -28,7 +27,7 @@ class User(BaseModel):
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=43200),
                 'iat': datetime.datetime.utcnow(),
             }
-            return jwt.encode(
+            return encode(
                 payload,
                 TOKEN_SECRET_KEY,
                 algorithm='HS256'
@@ -38,7 +37,7 @@ class User(BaseModel):
 
     @staticmethod
     def decode_auth_token(auth_token):
-        payload = jwt.decode(auth_token, TOKEN_SECRET_KEY, algorithms='HS256')
+        payload = decode(auth_token, TOKEN_SECRET_KEY, algorithms='HS256')
         user = User.select().where(User.username == payload['sub']).get()
         is_blacklisted_token = blacklist_token.check_blacklist(auth_token)
         if is_blacklisted_token or not user.active:

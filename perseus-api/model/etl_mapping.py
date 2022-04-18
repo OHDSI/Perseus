@@ -1,4 +1,5 @@
-from peewee import *
+from peewee import AutoField, CharField, BigIntegerField 
+
 from model.base_model import BaseModel
 
 
