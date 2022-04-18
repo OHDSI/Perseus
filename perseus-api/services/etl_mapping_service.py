@@ -10,7 +10,7 @@ from services.request.scan_report_request import ScanReportRequest
 def find_by_id(id: int):
     try:
         return EtlMapping.get(EtlMapping.id == id)
-    except IndexError:
+    except Exception:
         raise InvalidUsage(f'ETL mapping not found by id {id}', 404)
 
 

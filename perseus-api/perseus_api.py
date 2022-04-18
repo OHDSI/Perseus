@@ -10,9 +10,9 @@ from config import VERSION, APP_PREFIX
 from services import source_schema_service, scan_reports_service, \
     etl_mapping_service, etl_archive_service, lookup_service
 from services.cdm_schema import get_exist_version, get_schema
-from services.request import generate_etl_archive_request
+from services.request import generate_etl_archive_request, lookup_request
 from services.request import scan_report_request
-from services.request.lookup import lookup_request
+from services.response import lookup_list_item_response
 from services.response.upload_scan_report_response import to_upload_scan_report_response
 from services.xml_writer import get_xml, zip_xml, delete_generated_xml
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
@@ -193,21 +193,23 @@ def zip_xml_call(current_user):
 
 
 @perseus.route('/api/lookup/sql')
-def get_lookup_by():
+def get_lookup_sql():
     app.logger.info("REST request to get lookup sql")
-    id = request.args['id']
-    name = request.args['name']
-    lookup_type = request.args['lookupType']
-    lookup = lookup_service.get_lookup_sql(int(id), name, lookup_type)
+    id = request.args.get('id', None, int)
+    name = request.args.get('name', None, str)
+    lookup_type = request.args.get('lookupType', None, str)
+    if lookup_type is None:
+        raise InvalidUsage('Can not extract lookup type', 400)
+    lookup = lookup_service.get_lookup_sql(id, name, lookup_type)
     return jsonify(lookup)
 
 
-@perseus.route('/api/lookup/names')
+@perseus.route('/api/lookups')
 @username_header
 def get_lookups(current_user):
     app.logger.info("REST request to get lookup list")
     lookup_type = request.args['lookupType']
-    lookups_list = lookup_service.get_lookups_list(current_user, lookup_type)
+    lookups_list = lookup_service.get_lookups(lookup_type, current_user)
     return jsonify(lookups_list)
 
 
@@ -216,11 +218,11 @@ def get_lookups(current_user):
 def create_lookup(current_user):
     app.logger.info("REST request to create lookup")
     try:
-        lookup = lookup_request.from_json(request.json)
-        lookup_service.create_lookup(current_user, lookup)
+        lookup_req = lookup_request.from_json(request.json)
+        lookup = lookup_service.create_lookup(current_user, lookup_req)
+        return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return '', 204
 
 
 @perseus.route('/api/lookup', methods=['PUT'])
@@ -228,12 +230,14 @@ def create_lookup(current_user):
 def update_lookup(current_user):
     app.logger.info("REST request to create lookup")
     try:
-        id = request.args['id']
-        lookup = lookup_request.from_json(request.json)
-        lookup_service.update_lookup(current_user, int(id), lookup)
+        id = request.args.get('id', None, int)
+        if id is None:
+            raise InvalidUsage('Can not extract lookup id', 400)
+        lookup_req = lookup_request.from_json(request.json)
+        lookup = lookup_service.update_lookup(current_user, id, lookup_req)
+        return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500)
-    return '', 204
 
 
 @perseus.route('/api/lookup', methods=['DELETE'])

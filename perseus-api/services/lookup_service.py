@@ -1,13 +1,14 @@
 import os
+from typing import List
 
 from model.user_defined_lookup import UserDefinedLookup as Lookup
-from services.request.lookup.lookup_request import LookupRequest
+from services.request.lookup_request import LookupRequest
 from services.response.lookup_list_item_response import LookupListItemResponse
 from utils import InvalidUsage
 from utils.constants import PREDEFINED_LOOKUPS_PATH
 
 
-def get_lookups_names(lookup_type: str, username: str):
+def get_lookups(lookup_type: str, username: str) -> List[LookupListItemResponse]:
     lookups_names_list = []
 
     def extract_lookups_from_server_directory(base_path):
@@ -19,7 +20,7 @@ def get_lookups_names(lookup_type: str, username: str):
             )
 
     def extract_lookups_from_database():
-        select_query = Lookup.select().where(username == username, lookup_type == lookup_type)
+        select_query = Lookup.select().where(username == username)
         lookups_names_list.extend(
             [LookupListItemResponse(id=lookup.id, name=lookup.name) for lookup in select_query]
         )
@@ -34,8 +35,13 @@ def get_lookup_sql(id: int, name: str, lookup_type: str) -> str:
     if id is not None:
         try:
             lookup: Lookup = Lookup.get(Lookup.id == id)
-            return lookup.value
-        except IndexError:
+            if lookup_type == 'source_to_standard':
+                return lookup.source_to_standard
+            elif lookup_type == 'source_to_source':
+                return lookup.source_to_source
+            else:
+                raise InvalidUsage(f'Unsupported lookup type {lookup_type}')
+        except Exception:
             raise InvalidUsage(f'Lookup entity not found by id {id}', 404)
     else:
         if 'template' in name:
@@ -75,12 +81,11 @@ def update_lookup(username: str, id: int, lookup_request: LookupRequest) -> Look
         if lookup.username != username:
             return create_lookup(username, lookup_request)
         else:
-            return lookup.update(
-                name=lookup_request.name,
-                username=username,
-                source_to_standard=lookup_request.source_to_standard,
-                source_to_source=lookup_request.source_to_source
-            )
+            lookup.source_to_standard = lookup_request.source_to_standard
+            lookup.source_to_source = lookup_request.source_to_source
+            lookup.save()
+
+            return lookup
     except IndexError:
         raise InvalidUsage(f'Lookup entity not found by id {id}', 404)
 
@@ -89,4 +94,4 @@ def del_lookup(username: str, lookup_id: int):
     lookup: Lookup = Lookup.get(Lookup.id == lookup_id)
     if username != lookup.username:
         raise InvalidUsage('Can not delete lookup entity owned other user', 403)
-    lookup.delete()
+    lookup.delete_instance()
