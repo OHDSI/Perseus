@@ -96,8 +96,8 @@ export class DataService {
     );
   }
 
-  getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<ColumnInfo> {
-    return this.perseusService.getColumnInfo(reportName, tableName, columnName)
+  getColumnInfo(etlMappingId: number, tableName: string, columnName: string): Observable<ColumnInfo> {
+    return this.perseusService.getColumnInfo(etlMappingId, tableName, columnName)
       .pipe(
         map(info => {
           if (info.top_10[info.top_10.length - 1] === 'List truncated...') {

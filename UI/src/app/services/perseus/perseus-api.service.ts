@@ -45,8 +45,8 @@ export class PerseusApiService {
     return this.httpClient.get<any>(`${perseusApiUrl}/get_cdm_schema?cdm_version=${version}`);
   }
 
-  getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<any> {
-    return this.httpClient.get<any>(`${perseusApiUrl}/get_column_info?report_name=${reportName}&table_name=${tableName}&column_name=${columnName}`);
+  getColumnInfo(etlMappingId: number, tableName: string, columnName: string): Observable<any> {
+    return this.httpClient.get<any>(`${perseusApiUrl}/get_column_info?etl_mapping_id=${etlMappingId}&table_name=${tableName}&column_name=${columnName}`);
   }
 
   getView(sql: {sql: string}): Observable<ViewSqlResponse[]> {

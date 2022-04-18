@@ -154,8 +154,8 @@ def get_column_info_call(current_user):
     try:
         table_name = request.args['table_name']
         column_name = request.args.get('column_name')
-        report_name = request.args.get('report_name')
-        info = source_schema_service.get_column_info(current_user, report_name, table_name, column_name);
+        etl_mapping_id = request.args.get('etl_mapping_id')
+        info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name);
     except InvalidUsage:
         raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
     except FileNotFoundError:

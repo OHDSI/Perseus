@@ -9,7 +9,8 @@ from werkzeug.utils import secure_filename
 
 from app import app
 from db import user_schema_db
-from services.scan_reports_service import _allowed_file
+from model.etl_mapping import EtlMapping
+from services.scan_reports_service import _allowed_file, get_scan_report_path
 from utils.column_types_mapping import postgres_types_mapping, postgres_types
 from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING,\
                             TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS,\
@@ -47,7 +48,7 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
         book = _open_book(current_user, filepath)
     except Exception as e:
         raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 400)
-    pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
+    overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
     # always take the first sheet of the excel file
 
     tables_pd = sqldf(
@@ -180,10 +181,10 @@ def _open_book(current_user, filepath=None):
     return book
 
 
-def get_column_info(current_user, report_name, table_name, column_name=None):
+def get_column_info(current_user, etl_mapping_id, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
-    report_name = secure_filename(_allowed_file(report_name))
-    path_to_schema = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{report_name}"
+    current_etl_mapping = EtlMapping.select().where((EtlMapping.username == current_user) & (EtlMapping.id == etl_mapping_id)).get()
+    path_to_schema = get_scan_report_path(current_etl_mapping)
     try:
         book = _open_book(current_user, Path(path_to_schema))
         table_overview = pd.read_excel(book, table_name, dtype=str,
