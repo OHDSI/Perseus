@@ -10,15 +10,13 @@ import { OpenSaveDialogComponent } from './open-save-dialog/open-save-dialog.com
 import { PreviewPopupComponent } from './preview-popup/preview-popup.component';
 import { PrismComponent } from './preview-popup/prism.component';
 import { ResetWarningComponent } from './reset-warning/reset-warning.component';
-import { RulesPopupComponent } from './rules-popup/rules-popup.component';
-import { TransformationInputComponent } from './rules-popup/transformation-input/transformation-input.component';
 import { SelectConceptFieldComponent } from './select-concept-field/select-concept-field.component';
 import { SelectTableDropdownComponent } from './select-table-dropdown/select-table-dropdown.component';
-import { SetConnectionTypePopupComponent } from './set-connection-type-popup/set-connection-type-popup.component';
+import { ChooseTransformationTypePopupComponent } from './choose-transformation-type-popup/choose-transformation-type-popup.component';
 import { SharedModule } from '@shared/shared.module';
 import { TransformationTypeComponent } from './transformation-type/transformation-type.component';
-import { SqlFunctionsInjector } from './rules-popup/model/sql-functions-injector';
-import { SQL_FUNCTIONS } from './rules-popup/transformation-input/model/sql-string-functions';
+import { SqlFunctionsInjector } from '@models/sql-functions-injector';
+import { SQL_FUNCTIONS } from '@models/transformation-input/sql-string-functions';
 import { LogoutComponent } from './logout/logout.component';
 import { HelpPopupComponent } from './help-popup/help-popup.component';
 import { WarningPopupComponent } from './warning-popup/warning-popup.component';
@@ -37,11 +35,9 @@ import { SaveMappingDialogComponent } from './save-mapping-dialog/save-mapping-d
     PreviewPopupComponent,
     PrismComponent,
     ResetWarningComponent,
-    RulesPopupComponent,
-    TransformationInputComponent,
     SelectConceptFieldComponent,
     SelectTableDropdownComponent,
-    SetConnectionTypePopupComponent,
+    ChooseTransformationTypePopupComponent,
     TransformationTypeComponent,
     LogoutComponent,
     HelpPopupComponent,
@@ -63,11 +59,9 @@ import { SaveMappingDialogComponent } from './save-mapping-dialog/save-mapping-d
     PreviewPopupComponent,
     PrismComponent,
     ResetWarningComponent,
-    RulesPopupComponent,
-    TransformationInputComponent,
     SelectConceptFieldComponent,
     SelectTableDropdownComponent,
-    SetConnectionTypePopupComponent,
+    ChooseTransformationTypePopupComponent,
     TransformationTypeComponent
   ],
   providers: [

@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
-import { TransformRulesData } from '@popups/rules-popup/model/transform-rules-data';
+import { TransformationDialogData } from '@models/transformation-dialog-data';
 import { IConnector } from '@models/connector';
 import { BridgeService } from 'src/app/services/bridge.service';
 import { PerseusApiService } from '@services/perseus/perseus-api.service';
@@ -15,6 +15,9 @@ import { openErrorDialog, parseHttpError } from '@utils/error';
 import { Observable } from 'rxjs';
 import { LookupComponent } from '@mapping/transform-config/lookup/lookup.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
+import { Lookup } from '@models/perseus/lookup'
+import { TransformationDialogResult } from '@models/transformation-dialog-result'
+import { LookupType } from '@models/perseus/lookup-type'
 
 @Component({
   selector: 'app-transform-config',
@@ -22,18 +25,21 @@ import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.co
   styleUrls: [ './transform-config.component.scss' ]
 })
 export class TransformConfigComponent implements OnInit {
-
   sourceTables: ITable[];
-  connector: IConnector;
-  tabIndex = 0
   sourceFields: string
+  sourceType: string
+
+  connector: IConnector;
   titleInfo: string;
+
   tab: string;
-  lookupName;
-  lookupType;
-  lookup = {};
-  sql: SqlForTransformation = {};
+  tabIndex = 0
+
+  lookupType: LookupType;
+  lookup: Lookup;
   lookupDisabled: boolean;
+
+  sql: SqlForTransformation = {};
 
   @ViewChild('sqlTransformationComponent')
   sqlTransformationComponent: SqlTransformationComponent
@@ -41,11 +47,9 @@ export class TransformConfigComponent implements OnInit {
   @ViewChild('lookupComponent')
   lookupComponent: LookupComponent
 
-  sourceType: string
-
   constructor(
-    @Inject(MAT_DIALOG_DATA) public payload: TransformRulesData,
-    public dialogRef: MatDialogRef<TransformConfigComponent>,
+    @Inject(MAT_DIALOG_DATA) public payload: TransformationDialogData,
+    public dialogRef: MatDialogRef<TransformConfigComponent, TransformationDialogResult>,
     private matDialog: MatDialog,
     private storeService: StoreService,
     private bridgeService: BridgeService,
@@ -62,17 +66,18 @@ export class TransformConfigComponent implements OnInit {
   }
 
   get applyDisabled() {
-    return this.tabIndex === 0 && !!this.sqlTransformationComponent && !this.sqlTransformationComponent.valid
+    return (this.tabIndex === 0 && this.sqlTransformationComponent?.invalid) ||
+      (this.tabIndex === 1 && !!this.lookupComponent?.invalid)
   }
 
   ngOnInit() {
-    this.lookupName = this.payload['lookupName'];
-    this.lookupType = this.payload['lookupType'];
-    if (this.lookupName) { // Set lookup value
-      this.lookup['value'] = this.lookupName
+    this.lookup = this.payload.lookup ?? {}
+    this.lookupType = this.payload.lookupType;
+    if (this.lookup.name) {
+      this.lookup.value = this.lookup.name
     }
-    this.sql = {...this.payload['sql']}
-    this.tab = this.payload['tab'];
+    this.sql = {...this.payload.sql}
+    this.tab = this.payload.tab;
     this.tabIndex = this.tab === 'Lookup' ? 1 : 0
 
     const { arrowCache, connector } = this.payload;
@@ -92,7 +97,7 @@ export class TransformConfigComponent implements OnInit {
 
   onApply() {
     if (this.tab === 'Lookup') {
-      this.dialogRef.close({lookup: this.lookup});
+      this.dialogRef.close({lookup: this.lookupComponent.updatedLookup});
     } else {
       const sql = this.resultSql
       this.validateSql(sql.name)

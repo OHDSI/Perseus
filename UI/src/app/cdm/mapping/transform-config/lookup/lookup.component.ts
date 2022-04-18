@@ -11,6 +11,10 @@ import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
 import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { EditorFromTextArea } from 'codemirror';
+import { Lookup } from '@models/perseus/lookup'
+import { LookupType } from '@models/perseus/lookup-type'
+import { LookupListItem } from '@models/perseus/lookup-list-item'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -30,28 +34,25 @@ const editorSettings = {
   styleUrls: ['./lookup.component.scss']
 })
 export class LookupComponent implements OnInit, AfterViewInit {
-  @Input() lookup;
-  @Input() name;
-  @Input() lookupType;
-  @Input() notConceptTableField;
+  @Input() lookup: Lookup;
+  @Input() lookupType: LookupType;
+  @Input() notConceptTableField = false;
 
   @ViewChild('editor', { static: true }) editor;
   @ViewChild('disabledEditor', { static: true }) disabledEditor;
 
-  items;
-
-  selected = '';
+  items: LookupListItem[];
+  selected: LookupListItem;
 
   disabledCodeMirror: EditorFromTextArea;
   codeMirror: EditorFromTextArea;
 
   editMode = false;
-
   originText = '';
 
   updatedSourceToStandard = '';
   updatedSourceToSource = '';
-  updatedName = '';
+  updatedName: string | null = null;
   withSourceToSource = true;
   userDefined = false;
 
@@ -61,6 +62,18 @@ export class LookupComponent implements OnInit, AfterViewInit {
   constructor(
     private lookupService: PerseusLookupService,
     private matDialog: MatDialog) {
+  }
+
+  get updatedLookup(): Lookup {
+    return {
+      ...this.lookup,
+      updatedName: this.updatedName,
+      lookupType: this.lookupType,
+      sourceToSourceIncluded: this.withSourceToSource,
+      source_to_source: this.updatedSourceToSource,
+      source_to_standard: this.updatedSourceToStandard,
+      isUserDefined: this.userDefined
+    }
   }
 
   get sourceToSourceNotEdited() {
@@ -75,80 +88,90 @@ export class LookupComponent implements OnInit, AfterViewInit {
     return this.selectDirty || this.codeMirrorDirty
   }
 
-  ngOnInit() {
-    if (this.name) {
-      this.selected = this.name;
-    }
+  get showPleaseSetNewName(): boolean {
+    return !this.userDefined && (!this.updatedName || this.updatedName === this.lookup?.originName)
+  }
 
+  get invalid(): boolean {
+    return this.editMode && this.showPleaseSetNewName
+  }
+
+  get isConceptTableField(): boolean {
+    return !this.notConceptTableField
+  }
+
+  ngOnInit() {
+    if (this.lookup.name) {
+      this.selected = {id: this.lookup.id, name: this.lookup.name};
+      this.userDefined = this.isUserDefined(this.lookup)
+    }
     this.updateItems();
   }
 
   ngAfterViewInit() {
     this.initCodeMirror();
-    if (this.name) {
-      this.refreshCodeMirror(this.name, false);
+    if (this.lookup.name) {
+      this.lookup.originName = this.lookup.name;
+      this.refreshCodeMirror(this.lookup, false, true);
     }
   }
 
   updateItems() {
-    this.lookupService.getLookupsList(this.lookupType)
-      .subscribe(data => this.items = [''].concat(data));
+    this.lookupService.getLookups(this.lookupType)
+      .subscribe(data => this.items = [{name: ''}, ...data]);
   }
 
-  initCodeMirror() {
-    if (!this.disabledCodeMirror && this.disabledEditor) {
-      this.disabledCodeMirror = CodeMirror.fromTextArea(this.disabledEditor.nativeElement, {
-        ...editorSettings,
-        readOnly: true
-      });
-    }
-
-    if (!this.codeMirror && this.editor) {
-      this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings);
-      this.codeMirror.on('change', this.onChangeValue.bind(this));
-    }
-  }
-
-  refreshCodeMirror(value, newLookupSelected?: boolean) {
-    if (this.disabledCodeMirror) {
-      this.lookupService.getLookupTemplate(this.lookupType)
+  refreshCodeMirror(value: Lookup, newLookupSelected: boolean, lookupTypeChanged: boolean = false) {
+    if (lookupTypeChanged && this.disabledCodeMirror) {
+      this.lookupService.getTemplateLookupSql(this.lookupType)
         .subscribe(data => this.disabledCodeMirror.setValue(data));
     }
+    if (!this.codeMirror) {
+      return
+    }
+    if (!this.editMode || this.sourceToSourceNotEdited || this.sourceToStandardNotEdited || newLookupSelected) {
+      let lookupName = value.name
+      const lookupId = value.id
+      if (this.lookupType === 'source_to_standard' && this.sourceToStandardNotEdited || this.lookupType === 'source_to_source' && this.sourceToSourceNotEdited) {
+        lookupName = this.lookup.originName ? this.lookup.originName : this.lookup.name;
+      }
+      const getLookupSql = value.id ?
+        (type: LookupType) => this.lookupService.getLookupSqlById(lookupId, type) :
+        (type: LookupType) => this.lookupService.getLookupSqlByName(lookupName, type)
 
-    if (this.codeMirror) {
-      if (!this.editMode || this.sourceToSourceNotEdited || this.sourceToStandardNotEdited || newLookupSelected) {
-        if (this.lookupType === 'source_to_standard' && this.sourceToStandardNotEdited ||
-          this.lookupType === 'source_to_source' && this.sourceToSourceNotEdited) {
-          value = this.lookup['originName'] ? this.lookup['originName'] : this.lookup['name'];
-        }
-
-        this.lookupService.getLookup(value, this.lookupType).subscribe(data => {
+      getLookupSql(this.lookupType)
+        .subscribe(data => {
           this.codeMirror.setValue(data);
           this.subscribeOnCodeMirrorChange()
           this.originText = data;
-          this.withSourceToSource = !!data;
+          if (!this.notConceptTableField && this.lookupType === 'source_to_source') {
+            this.withSourceToSource = !!data;
+          }
           if (newLookupSelected) {
             this.editMode = false;
-            this.updatedSourceToSource = undefined;
-            this.updatedSourceToStandard = undefined;
+            this.updatedSourceToSource = ''
+            this.updatedSourceToStandard = '';
           }
-        });
-        if (this.lookupType !== 'source_to_source') {
-          this.lookupService.getLookup(value, 'source_to_source').subscribe(data => {
-            this.withSourceToSource = !!data;
-          });
-        }
-      } else {
-        if (this.lookupType === 'source_to_source') {
-          this.codeMirror.setValue(this.updatedSourceToSource);
-        } else {
-          this.codeMirror.setValue(this.updatedSourceToStandard);
-        }
-        this.subscribeOnCodeMirrorChange()
+        }, getError =>
+          openErrorDialog(this.matDialog, 'Failed to get lookup', parseHttpError(getError))
+        );
+      if (!this.notConceptTableField && this.lookupType !== 'source_to_source') {
+        getLookupSql('source_to_source').subscribe(
+          data => this.withSourceToSource = !!data,
+          () => this.withSourceToSource = false
+        );
       }
-      this.lookup[ 'originName' ] = value;
+    } else {
+      if (this.lookupType === 'source_to_source') {
+        this.codeMirror.setValue(this.updatedSourceToSource);
+      } else {
+        this.codeMirror.setValue(this.updatedSourceToStandard);
+      }
+      this.subscribeOnCodeMirrorChange()
     }
-
+    if (!lookupTypeChanged) {
+      this.lookup.originName = this.lookup.name;
+    }
   }
 
   onChangeValue(cm, event) {
@@ -163,9 +186,9 @@ export class LookupComponent implements OnInit, AfterViewInit {
       this.editMode = false;
     }
 
-    this.lookup[ 'value' ] = currentValue;
+    this.lookup.value = currentValue;
     this.lookupType === 'source_to_standard' ?
-      this.lookup[ 'source_to_standard' ] = currentValue : this.lookup[ 'source_to_source' ] = currentValue;
+      this.lookup.source_to_standard = currentValue : this.lookup.source_to_source = currentValue;
 
     if (this.editMode) {
       this.lookupType === 'source_to_standard' ? this.updatedSourceToStandard = currentValue : this.updatedSourceToSource = currentValue;
@@ -173,34 +196,30 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   onChangeName(event) {
-    this.lookup['name'] = `${event.currentTarget.value}.userDefined`;
-    this.updatedName = event.currentTarget.value;
+    this.lookup.name = event.currentTarget.value;
+    this.updatedName = this.lookup.name;
   }
 
-  isUserDefined() {
-    const index = this.lookup['name'].lastIndexOf('.');
-    return this.lookup['name'].substring(index + 1) === 'userDefined';
+  isUserDefined(value: Lookup): boolean {
+    return !!value.id
   }
 
-  selectLookup(event) {
+  selectLookup(event: {value: LookupListItem}) {
     this.selectDirty = true
-    this.lookup['name'] = event.value;
-    this.userDefined = this.isUserDefined();
+    this.lookup = {id: event.value.id, name: event.value.name};
+    this.userDefined = this.isUserDefined(this.lookup);
     this.initCodeMirror();
-    this.refreshCodeMirror(event.value, true);
+    this.refreshCodeMirror(this.lookup, true);
     this.updatedSourceToSource = '';
     this.updatedSourceToStandard = '';
   }
 
-  edit(event, item) {
+  edit(item: LookupListItem): void {
     this.editMode = true;
     this.selectLookup({value: item});
   }
 
-  delete(event, item, index) {
-    event.stopPropagation();
-    event.preventDefault();
-
+  delete(id: number): void {
     const dialog = this.matDialog.open(DeleteWarningComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -210,23 +229,50 @@ export class LookupComponent implements OnInit, AfterViewInit {
         message: 'You want to delete lookup'
       }
     });
-
     dialog.afterClosed().subscribe(res => {
       if (res) {
-        this.lookupService.deleteLookup(item, this.lookupType).subscribe(_ => {
-          this.updateItems();
-        });
+        this.lookupService.deleteLookup(id).subscribe(_ => {
+          if (this.selected.id === id) {
+            this.selected = {name: ''}
+            this.selectLookup({value: this.selected})
+          }
+          this.updateItems()
+        })
       }
     });
   }
 
-  lookupTypeChanged(type: any) {
+  lookupTypeChanged(type: LookupType) {
     this.lookupType = type === 'source_to_standard' ? 'source_to_source' : 'source_to_standard';
-    this.refreshCodeMirror(this.lookup['name']);
+    this.refreshCodeMirror(this.lookup, false, true);
   }
 
-  includeSourceToStandardChanged(event: any) {
-    this.lookup['sourceToSourceIncluded'] = !this.lookup['sourceToSourceIncluded'];
+  includeSourceToStandardChanged() {
+    this.lookup.sourceToSourceIncluded = !this.lookup.sourceToSourceIncluded;
+  }
+
+  compareSelectedItems(first: LookupListItem, second: LookupListItem): boolean {
+    if (first?.id && second?.id) {
+      return first.id === second.id
+    } else if (first?.id || second?.id) {
+      return false
+    } else if (first && second) {
+      return first.name === second.name
+    }
+  }
+
+  private initCodeMirror() {
+    if (!this.disabledCodeMirror && this.disabledEditor) {
+      this.disabledCodeMirror = CodeMirror.fromTextArea(this.disabledEditor.nativeElement, {
+        ...editorSettings,
+        readOnly: true
+      });
+    }
+
+    if (!this.codeMirror && this.editor) {
+      this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings);
+      this.codeMirror.on('change', this.onChangeValue.bind(this));
+    }
   }
 
   private subscribeOnCodeMirrorChange() {

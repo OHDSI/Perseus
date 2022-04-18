@@ -3,7 +3,7 @@ import { Table } from './table';
 import { ArrowCache, IArrowCache } from '@models/arrow-cache';
 import { Type } from 'class-transformer';
 import { ConstantCache, IConstantCache } from '@models/constant-cache';
-import { Concepts, IConcepts } from '@models/concepts';
+import { Concepts, IConcepts } from '@models/perseus/concepts';
 import { Clones, IClones } from '@models/clones';
 import { TargetConfig } from '@models/state';
 import { EtlMapping } from '@models/perseus/etl-mapping'

@@ -16,7 +16,6 @@ import { AreaComponent } from '@mapping/panel/area/area.component';
 import { DraggableDirective } from '@mapping/panel/directives/draggable.directive';
 import { PanelTableComponent } from '@mapping/panel/panel-table/panel-table.component';
 import { TargetCloneDialogComponent } from '@mapping/panel/target-clone-dialog/target-clone-dialog.component';
-import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 import { SqlTransformationComponent } from './sql-transformation/sql-transformation.component';
 import { ReplaceTransformationFunctionComponent } from '@mapping/sql-transformation/visual-transformation/function/replace-transformation-function/replace-transformation-function.component';
 import { VisualTransformationComponent } from './sql-transformation/visual-transformation/visual-transformation.component';
@@ -56,9 +55,6 @@ import { SwitchCaseTransformationFunctionComponent } from './sql-transformation/
   ],
   bootstrap: [
     MappingComponent
-  ],
-  providers: [
-    BridgeButtonService
   ]
 })
 export class MappingModule { }

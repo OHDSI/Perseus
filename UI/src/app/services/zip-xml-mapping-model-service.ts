@@ -5,11 +5,13 @@ import { IRow } from '@models/row';
 import { ITable } from '@models/table';
 import { getLookupType } from '@utils/lookup-util';
 import * as conceptMap from '@mapping/concept-fileds-list.json'
-import { IConcept, ITableConcepts } from '@models/perseus/concept-transformation/concept';
+import { IConcept } from '@models/perseus/concept';
 import { conceptFieldsTypes } from '../app.constants';
 import { IConnection } from '@models/connection';
 import { IConstantCache } from '@models/constant-cache';
 import { Lookup } from '@models/perseus/lookup'
+import { LookupType } from '@models/perseus/lookup-type'
+import { IConceptTables } from '@models/perseus/concept-tables'
 
 export class ZipXmlMappingModelService {
   connections: Array<IConnection>;
@@ -18,11 +20,11 @@ export class ZipXmlMappingModelService {
   targetTableName: string;
   conceptFieldsMap = (conceptMap as any).default;
   concepts: {
-    [key: string]: ITableConcepts
+    [key: string]: IConceptTables
   };
   clones: any;
 
-  constructor(arrowCache: IArrowCache, constants: IConstantCache, sourceTableName: string, targetTableName: string, concepts: { [key: string]: ITableConcepts }, clones: any) {
+  constructor(arrowCache: IArrowCache, constants: IConstantCache, sourceTableName: string, targetTableName: string, concepts: { [key: string]: IConceptTables }, clones: any) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
@@ -182,7 +184,7 @@ export class ZipXmlMappingModelService {
     };
   }
 
-  private createConceptMappingNode(concept: IConcept, fieldType: string, lookup: any) {
+  private createConceptMappingNode(concept: IConcept, fieldType: string, lookup: Lookup) {
     if (!concept.fields[ fieldType ].field && !concept.fields[ fieldType ].constant) {
       return;
     }
@@ -205,7 +207,7 @@ export class ZipXmlMappingModelService {
     return node;
   }
 
-  private getConceptLookupType(fieldName: string) {
+  private getConceptLookupType(fieldName: string): LookupType {
     return fieldName.endsWith('source_concept_id') ? 'source_to_source' : 'source_to_standard';
   }
 

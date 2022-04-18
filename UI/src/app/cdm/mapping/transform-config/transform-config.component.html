@@ -15,9 +15,9 @@
       </mat-tab>
 
       <mat-tab label="LOOKUP" [disabled]="lookupDisabled">
-        <app-lookup #lookupComponent [lookupType]="lookupType"
+        <app-lookup #lookupComponent
+                    [lookupType]="lookupType"
                     [lookup]="lookup"
-                    [name]="lookupName"
                     notConceptTableField="true"></app-lookup>
       </mat-tab>
     </mat-tab-group>
