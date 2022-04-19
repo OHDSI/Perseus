@@ -44,6 +44,8 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
     filepath = Path(source_schema_path)
 
     schema = []
+    global opened_reports
+    opened_reports = {}
     try:
         book = _open_book(current_user, filepath)
     except Exception as e:
