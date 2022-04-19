@@ -1,17 +1,11 @@
-import { Lookup } from '@models/perseus/lookup'
-
-interface SimplifiedLookup {
-  id?: number
-  name: string
-  lookupType: string
-}
+import { LookupForEtlConfiguration } from '@models/perseus/lookup'
 
 export interface IConceptLookup {
-  [key: string]: Lookup
+  [key: string]: LookupForEtlConfiguration
 }
 
 export class ConceptLookup implements IConceptLookup {
   // @ts-ignore
   @Type(() => SimplifiedLookup)
-  [key: string]: Lookup
+  [key: string]: LookupForEtlConfiguration
 }

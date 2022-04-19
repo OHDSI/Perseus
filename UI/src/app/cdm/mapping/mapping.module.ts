@@ -8,7 +8,7 @@ import { ConceptTransformationComponent } from './concept-transformation/concept
 import { ConceptColumnComponent } from './concept-transformation/concept-column/concept-column.component';
 import { ManualTransformationComponent } from './sql-transformation/manual-transformation/manual-transformation.component';
 import { TransformConfigComponent } from './transform-config/transform-config.component';
-import { LookupComponent } from './transform-config/lookup/lookup.component';
+import { LookupComponent } from './lookup/lookup.component';
 import { PopupsModule } from '@popups/popups.module';
 import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 import { PanelComponent } from '@mapping/panel/panel.component';

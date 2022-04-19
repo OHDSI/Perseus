@@ -3,7 +3,7 @@ import { IConnector } from '@models/connector';
 import { SqlForTransformation } from '@models/transformation/sql-for-transformation';
 import { Type } from 'class-transformer';
 import { Arrow } from '@models/arrow';
-import { Lookup } from '@models/perseus/lookup'
+import { Lookup, LookupForEtlConfiguration } from '@models/perseus/lookup'
 import { SqlFunction } from '@models/transformation-input/sql-string-functions'
 
 export interface IConnection {
@@ -27,7 +27,7 @@ export class Connection implements IConnection {
   connector: IConnector;
 
   transforms?: SqlFunction[];
-  lookup?: Lookup
+  lookup?: LookupForEtlConfiguration
   type?: string;
   sql?: SqlForTransformation;
 }

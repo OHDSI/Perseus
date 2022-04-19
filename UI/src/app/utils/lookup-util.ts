@@ -1,5 +1,5 @@
 import { IConnection } from '@models/connection';
-import { Lookup } from '@models/perseus/lookup'
+import { Lookup, LookupForEtlConfiguration } from '@models/perseus/lookup'
 import { LookupRequest } from '@models/perseus/lookup-request'
 import { LookupType } from '@models/perseus/lookup-type'
 
@@ -13,4 +13,14 @@ export function toLookupRequest(lookup: Lookup): LookupRequest {
     source_to_source: lookup.source_to_source,
     source_to_standard: lookup.source_to_standard
   }
+}
+
+export function toLookupForEtlConfiguration(lookup: Lookup): LookupForEtlConfiguration {
+  return lookup?.name ? {
+    id: lookup.id,
+    name: lookup.name ? lookup.name : lookup.originName,
+    lookupType: lookup.lookupType,
+    sourceToSourceIncluded: lookup.sourceToSourceIncluded,
+    applied: true
+  } : null
 }

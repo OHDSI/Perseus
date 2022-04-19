@@ -90,6 +90,12 @@ export class SqlTransformationComponent implements OnInit {
     }
   }
 
+  refresh(): void {
+    if (this.mode === 'manual') {
+      this.manualTransformationComponent.refresh()
+    }
+  }
+
   private initFieldType() {
     this.fieldTypeService.getSimplifiedType(this.fieldType)
       .subscribe(

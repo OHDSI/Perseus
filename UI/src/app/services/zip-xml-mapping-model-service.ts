@@ -9,7 +9,7 @@ import { IConcept } from '@models/perseus/concept';
 import { conceptFieldsTypes } from '../app.constants';
 import { IConnection } from '@models/connection';
 import { IConstantCache } from '@models/constant-cache';
-import { Lookup } from '@models/perseus/lookup'
+import { LookupForEtlConfiguration } from '@models/perseus/lookup'
 import { LookupType } from '@models/perseus/lookup-type'
 import { IConceptTables } from '@models/perseus/concept-tables'
 
@@ -62,7 +62,7 @@ export class ZipXmlMappingModelService {
           targetTable: arrow.target.tableName,
           targetColumn: arrow.target.name,
           targetColumnAlias: arrow.target.name,
-          lookup: arrow.lookup?.applied ? arrow.lookup?.name : '',
+          lookup: arrow.lookup?.applied ? arrow.lookup : undefined,
           lookupType: getLookupType(arrow),
           sqlTransformation: this.getSqlTransformation(arrow),
           comments: arrow.target.comments,
@@ -169,7 +169,7 @@ export class ZipXmlMappingModelService {
     return mapping;
   }
 
-  private createConceptConstantNode(concept: IConcept, fieldType: string, lookup: Lookup) {
+  private createConceptConstantNode(concept: IConcept, fieldType: string, lookup: LookupForEtlConfiguration) {
     return {
       concept_id: concept.id,
       source_field: '',
@@ -184,7 +184,7 @@ export class ZipXmlMappingModelService {
     };
   }
 
-  private createConceptMappingNode(concept: IConcept, fieldType: string, lookup: Lookup) {
+  private createConceptMappingNode(concept: IConcept, fieldType: string, lookup: LookupForEtlConfiguration) {
     if (!concept.fields[ fieldType ].field && !concept.fields[ fieldType ].constant) {
       return;
     }

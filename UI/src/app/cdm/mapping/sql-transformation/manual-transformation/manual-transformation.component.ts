@@ -69,4 +69,8 @@ export class ManualTransformationComponent extends BaseComponent implements Afte
     const selectedFunction = this.sqlFunctions.filter(func => func.name === text);
     this.codeMirror.getDoc().replaceSelection(selectedFunction[0].getTemplate());
   }
+
+  refresh(): void {
+    setTimeout(() => this.codeMirror?.refresh())
+  }
 }

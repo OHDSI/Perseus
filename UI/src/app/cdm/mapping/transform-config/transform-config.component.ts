@@ -13,7 +13,7 @@ import { addSemicolon } from '@utils/text-util';
 import { SqlTransformationComponent } from '@mapping/sql-transformation/sql-transformation.component';
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { Observable } from 'rxjs';
-import { LookupComponent } from '@mapping/transform-config/lookup/lookup.component';
+import { LookupComponent } from '@mapping/lookup/lookup.component';
 import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component';
 import { Lookup } from '@models/perseus/lookup'
 import { TransformationDialogResult } from '@models/transformation-dialog-result'
@@ -96,15 +96,14 @@ export class TransformConfigComponent implements OnInit {
   }
 
   onApply() {
-    if (this.tab === 'Lookup') {
-      this.dialogRef.close({lookup: this.lookupComponent.updatedLookup});
-    } else {
-      const sql = this.resultSql
-      this.validateSql(sql.name)
-        .subscribe(() => this.dialogRef.close({sql}),
-          error => openErrorDialog(this.matDialog, 'Sql error', parseHttpError(error))
-        )
-    }
+    const sql = this.resultSql
+    const lookup = this.lookupComponent.updatedLookup
+    this.validateSql(sql.name)
+      .subscribe(() => {
+          this.dialogRef.close({sql, lookup})
+        },
+        error => openErrorDialog(this.matDialog, 'Sql error', parseHttpError(error))
+      )
   }
 
   validateSql(sql: string): Observable<void> {
@@ -142,6 +141,15 @@ export class TransformConfigComponent implements OnInit {
         .subscribe(res => res && this.dialogRef.close())
     } else {
       this.dialogRef.close();
+    }
+  }
+
+  onTabIndexChanged(index: number) {
+    this.tabIndex = index
+    if (index === 0) {
+      this.sqlTransformationComponent.refresh()
+    } else {
+      this.lookupComponent.refresh()
     }
   }
 

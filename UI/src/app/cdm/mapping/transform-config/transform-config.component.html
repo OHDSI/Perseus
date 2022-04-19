@@ -6,7 +6,7 @@
   </div>
 
   <div class="apply-transformation__content">
-    <mat-tab-group [(selectedIndex)]="tabIndex">
+    <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)" [selectedIndex]="tabIndex">
       <mat-tab label="SQL FUNCTION">
         <app-sql-transformation #sqlTransformationComponent
                                 [sql]="sql"

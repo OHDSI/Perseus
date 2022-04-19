@@ -5,7 +5,7 @@ import { OverlayDialogRef, OverlayService } from '@services/overlay/overlay.serv
 import { ChooseTransformationTypePopupComponent } from '@popups/choose-transformation-type-popup/choose-transformation-type-popup.component'
 import { TransformConfigComponent } from '@mapping/transform-config/transform-config.component'
 import { MatDialog } from '@angular/material/dialog'
-import { getLookupType, toLookupRequest } from '@utils/lookup-util'
+import { getLookupType, toLookupForEtlConfiguration, toLookupRequest } from '@utils/lookup-util'
 import { MatDialogRef } from '@angular/material/dialog/dialog-ref'
 import { IArrowCache } from '@models/arrow-cache'
 import { IRow } from '@models/row'
@@ -89,6 +89,10 @@ export function handleLookupTransformationResult(lookup: Lookup,
                                                  lookupService: PerseusLookupService,
                                                  snackBar: MatSnackBar,
                                                  matDialog: MatDialog): void {
+  if (!lookup?.name) {
+    bridgeService.arrowsCache[arrowCacheId].lookup = undefined
+    return
+  }
   const isCreated = isCreatedLookup(lookup)
   const isUpdated = isUpdatedLookup(lookup)
   if (isCreated || isUpdated) {
@@ -98,20 +102,26 @@ export function handleLookupTransformationResult(lookup: Lookup,
       lookupService.createLookup(lookupRequest)
     saveLookup$.subscribe(
       savedLookup => {
-        bridgeService.arrowsCache[arrowCacheId].lookup = {id: savedLookup.id, name: savedLookup.name, applied: true}
+        bridgeService.arrowsCache[arrowCacheId].lookup = toLookupForEtlConfiguration(savedLookup)
         snackBar.open('Lookup successfully saved!', ' DISMISS ')
       },
       error => openErrorDialog(matDialog, 'Failed to save lookup', parseHttpError(error))
     );
   } else if (lookup.originName || lookup.originName === '') {
-    const lookupName = lookup.name ? lookup.name : lookup.originName
-    bridgeService.arrowsCache[arrowCacheId].lookup = {id: lookup.id, name: lookupName, applied: true}
+    bridgeService.arrowsCache[arrowCacheId].lookup = toLookupForEtlConfiguration(lookup)
+  } else {
+    bridgeService.arrowsCache[arrowCacheId].lookup = undefined
   }
 }
 
 export function handleSqlTransformationResult(sql: SqlForTransformation, arrow: IConnection): void {
-  if (sql.name || sql.name === '') {
+  if (!sql) {
+    return
+  }
+  if (sql.name) {
     arrow.sql = sql;
     arrow.sql.applied = sql.name !== '';
+  } else {
+    arrow.sql = undefined
   }
 }
