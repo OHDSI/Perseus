@@ -7,7 +7,7 @@ import { Concept, IConcept, IConceptOptions } from '@models/perseus/concept';
 import * as conceptMap from '../concept-fileds-list.json';
 import { OverlayService } from 'src/app/services/overlay/overlay.service';
 import { cloneDeep } from 'src/app/infrastructure/utility';
-import { LookupComponent } from '../transform-config/lookup/lookup.component';
+import { LookupComponent } from '../lookup/lookup.component';
 import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { createConceptFields, updateConceptsIndexes, updateConceptsList } from 'src/app/utils/concept-util';
@@ -17,7 +17,7 @@ import { SqlForTransformation } from '@app/models/transformation/sql-for-transfo
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { IConceptTables } from '@models/perseus/concept-tables'
 import { Lookup } from '@models/perseus/lookup'
-import { toLookupRequest } from '@utils/lookup-util'
+import { toLookupForEtlConfiguration, toLookupRequest } from '@utils/lookup-util'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { LookupType } from '@models/perseus/lookup-type'
 import { Observable } from 'rxjs'
@@ -201,7 +201,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
   onTabIndexChanged(index: number) {
     this.tabIndex = index
     if (index === 1) {
-      this.lookupComponent.refreshCodeMirror(this.lookupComponent.lookup, false, true);
+      this.lookupComponent.refresh()
     }
   }
 
@@ -250,7 +250,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
     if (this.lookupComponent.updatedSourceToStandard || this.lookupComponent.updatedSourceToSource) {
       this.updateLookupValue(this.lookupComponent.updatedLookup)
         .subscribe(lookup => {
-          this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = {id: lookup.id, name: lookup.name}
+          this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = toLookupForEtlConfiguration(lookup)
           this.snackBar.open('Lookup successfully saved!', ' DISMISS ')
         }, error => {
           openErrorDialog(this.dialogService, 'Failed to save lookup', parseHttpError(error))
@@ -259,8 +259,7 @@ export class ConceptTransformationComponent extends BaseComponent implements OnI
       this.dialogRef.close();
     } else {
       const selectedLookup = this.lookupComponent.selected
-      this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = selectedLookup ?
-        {id: selectedLookup.id, name: selectedLookup.name} : {}
+      this.conceptsTable.lookup[this.targetCloneName ?? DEFAULT_CLONE] = toLookupForEtlConfiguration(selectedLookup)
       this.storeService.state.concepts[ `${this.targetTableName}|${this.payload.oppositeSourceTable}` ] = this.conceptsTable
       this.dialogRef.close();
     }

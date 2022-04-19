@@ -14,12 +14,12 @@ export class PerseusXmlService {
   constructor(private http: HttpClient) { }
 
   getXmlPreview(mapping: EtlMappingForZipXmlGeneration): Observable<any> {
-    return this.http.post(`${perseusApiUrl}/get_xml`, mapping);
+    return this.http.post(`${perseusApiUrl}/xml_preview`, mapping);
   }
 
-  getZipXml(name: string): Observable<File> {
+  generateZipXml(name: string, mapping: EtlMappingForZipXmlGeneration): Observable<File> {
     const headers = createNoCacheHeaders()
-    return this.http.get(`${perseusApiUrl}/get_zip_xml`, {headers, responseType: 'blob'})
+    return this.http.post(`${perseusApiUrl}/generate_zip_xml`, mapping, {headers, responseType: 'blob'})
       .pipe(
         map(blob => new File([blob], `${name}-xml.zip`))
       )

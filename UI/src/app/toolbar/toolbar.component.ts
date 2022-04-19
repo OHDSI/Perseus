@@ -171,17 +171,11 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   generateAndSave() {
     const {source} = this.storeService.getMappedTables();
-
     const areaRows = [];
-
     const sourceTables = this.bridgeService.prepareTables(source, Area.Source, areaRows);
-
     const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(sourceTables);
 
-    this.dataService
-      .getZippedXml(mappingJSON)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(file => saveAs(file));
+    this.dataService.getZippedXml(mappingJSON).subscribe(file => saveAs(file));
   }
 
   scanData() {

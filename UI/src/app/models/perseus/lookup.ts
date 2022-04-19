@@ -12,3 +12,11 @@ export interface Lookup {
   source_to_source?: string
   source_to_standard?: string
 }
+
+export interface LookupForEtlConfiguration {
+  id: number | null
+  name: string
+  lookupType: string,
+  sourceToSourceIncluded: boolean,
+  applied?: boolean
+}

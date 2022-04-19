@@ -14,7 +14,7 @@ from services.request import generate_etl_archive_request, \
     scan_report_request, lookup_request
 from services.response import lookup_list_item_response
 from services.response.upload_scan_report_response import to_upload_scan_report_response
-from services.xml_writer import get_xml, zip_xml, delete_generated_xml
+from services import xml_writer
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
 from utils.exceptions import InvalidUsage
@@ -34,7 +34,6 @@ def get_app_version():
 def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
     try:
-        delete_generated_xml(current_user)
         scan_report_file = request.files['scanReportFile']
         file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
         saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report_file.filename)
@@ -52,7 +51,6 @@ def upload_etl_mapping(current_user):
     """Create source schema by source tables from ETL mapping"""
     app.logger.info("REST request to create source schema")
     try:
-        delete_generated_xml(current_user)
         etl_archive = request.files['etlArchiveFile']
         return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
     except InvalidUsage as error:
@@ -163,27 +161,26 @@ def get_column_info_call(current_user):
     return jsonify(info)
 
 
-@perseus.route('/api/get_xml', methods=['POST'])
+@perseus.route('/api/xml_preview', methods=['POST'])
 @username_header
 def xml(current_user):
-    """return XML for CDM builder in map {source_table: XML, } and
-    create file on back-end
-    """
-    app.logger.info("REST request to get XML")
+    app.logger.info("REST request to get XML preview")
     json = request.get_json()
-    xml_ = get_xml(current_user, json)
+    xml_ = xml_writer.get_xml(current_user, json)
+    xml_writer.clear(current_user)
+
     return jsonify(xml_)
 
 
-@perseus.route('/api/get_zip_xml')
+@perseus.route('/api/generate_zip_xml', methods=['POST'])
 @username_header
 def zip_xml_call(current_user):
-    """return attached ZIP of XML's from back-end folder
-    TODO  - now the folder is not cleared
-    """
-    app.logger.info("REST request to get zip XML")
+    app.logger.info("REST request to generate zip XML")
     try:
-        zip_xml(current_user)
+        json = request.get_json()
+        xml_writer.get_xml(current_user, json)
+        xml_writer.zip_xml(current_user)
+        xml_writer.clear(current_user)
     except Exception as error:
         raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 404)
     return send_from_directory(

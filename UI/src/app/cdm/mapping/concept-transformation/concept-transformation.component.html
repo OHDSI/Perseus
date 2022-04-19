@@ -2,7 +2,7 @@
     <h3>Concept Configuration</h3>
     <app-close-dialog-button class="close" (click)="close()"></app-close-dialog-button>
     <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
-        <mat-tab [label]="'Fields'">
+        <mat-tab label="Fields">
             <a class="add-concept-link"
             (click)="addConcept()">Add concept</a>
             <div class="table-container">
@@ -109,10 +109,8 @@
               <div class="sql-container__blocker" *ngIf="noSelected"></div>
             </div>
         </mat-tab>
-        <mat-tab [label]="'Lookup'">
-            <div>
-                <app-lookup #lookupComponent [lookupType]="lookupType" [lookup]="getLookup()"></app-lookup>
-            </div>
+        <mat-tab label="Lookup">
+          <app-lookup #lookupComponent [lookupType]="lookupType" [lookup]="getLookup()"></app-lookup>
         </mat-tab>
     </mat-tab-group>
     <div class="buttons">

@@ -8,12 +8,13 @@ from itertools import groupby
 from shutil import rmtree
 
 from db import user_schema_db
+from services import lookup_service
 from utils.similar_names_map import similar_names_map
-from utils.constants import GENERATE_CDM_XML_PATH,\
+from utils.constants import GENERATE_ETL_XML_PATH,\
                             GENERATE_CDM_XML_ARCHIVE_PATH,\
                             GENERATE_CDM_XML_ARCHIVE_FILENAME,\
                             CDM_XML_ARCHIVE_FORMAT,\
-                            GENERATE_CDM_LOOKUP_SQL_PATH,\
+                            GENERATE_LOOKUP_SQL_PATH,\
                             PREDEFINED_LOOKUPS_PATH,\
                             INCOME_LOOKUPS_PATH,\
                             GENERATE_BATCH_SQL_PATH,\
@@ -174,57 +175,12 @@ def add_schema_names(sql, view_sql):
     return view_sql
 
 
-def get_lookup_data(filepath):
-    with open(filepath, mode='r') as f:
-        return f.read()
-
-
-def add_lookup_data(folder, basepath, lookup, template):
-    lookup_body_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_{folder}.txt')
-    lookup_body_data = get_lookup_data(lookup_body_filepath).split('\n\n')[1]
-
-    lookup_filepath = os.path.join(basepath, folder, f'{lookup}.txt')
-    lookup_data = get_lookup_data(lookup_filepath)
-
-    replace_key = '{_}'.replace('_', folder)
-    return template.replace(replace_key, f'{lookup_body_data}{lookup_data}')
-
-
 def create_user_directory(path, current_user):
     try:
         os.makedirs(f"{path}/{current_user}")
         print(f'Directory {path}/{current_user} created')
     except FileExistsError:
         print(f'Directory {path}/{current_user} already exist')
-
-
-def create_lookup(current_user, lookup, target_field, lookup_source_to_source_included):
-    create_user_directory(GENERATE_CDM_LOOKUP_SQL_PATH, current_user)
-
-    if target_field.endswith('source_concept_id'):
-        return False
-
-    if lookup.endswith('userDefined'):
-        basepath = f"{INCOME_LOOKUPS_PATH}/{current_user}"
-    else:
-        basepath = PREDEFINED_LOOKUPS_PATH
-
-    if lookup_source_to_source_included:
-        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, 'template_result.txt')
-        template_data = get_lookup_data(template_filepath)
-
-        results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
-        results_data = add_lookup_data('source_to_source', basepath, lookup, results_data)
-    else:
-        template_filepath = os.path.join(PREDEFINED_LOOKUPS_PATH, f'template_result_only_source_to_standard.txt')
-        template_data = get_lookup_data(template_filepath)
-
-        results_data = add_lookup_data('source_to_standard', basepath, lookup, template_data)
-
-    result_filepath = os.path.join(GENERATE_CDM_LOOKUP_SQL_PATH, current_user, f'{lookup.split(".")[0]}.sql')
-    with open(result_filepath, mode='w') as f:
-        f.write(results_data)
-    return True
 
 
 def is_concept_id(field: str):
@@ -336,18 +292,11 @@ def generate_bath_sql_file(current_user, mapping, source_table, views):
 
 def clear(current_user):
     delete_generated_xml(current_user)
-    delete_generated_sql(current_user)
-    delete_generated_archive(current_user)
-
-    file_path = os.path.join(ROOT_DIR, GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql')
-    try:
-        os.unlink(file_path)
-    except Exception as err:
-        print(f'Failed to delete {file_path}. Reason: {err}')
+    delete_generated_lookup_sql(current_user)
+    delete_generated_batch_sql(current_user)
 
 
 def get_xml(current_user, json_):
-    """prepare XML for CDM"""
     clear(current_user)
     result = {}
     previous_target_table = ''
@@ -399,16 +348,11 @@ def get_xml(current_user, json_):
                 concept_tags = {}
                 definitions = []
 
-                lookups = []
+                create_user_directory(GENERATE_LOOKUP_SQL_PATH, current_user)
+                generated_lookups_names = []
                 for row in groupList:
-                    lookup_name = row.get('lookup', None)
-                    if lookup_name:
-                        if 'sourceToSourceIncluded' in lookup_name:
-                            lookup_source_to_source_included = lookup_name['sourceToSourceIncluded']
-                        else:
-                            lookup_source_to_source_included = ''
-                        if 'name' in lookup_name:
-                            lookup_name = lookup_name['name']
+                    lookup_data = row.get('lookup', None)
+
                     sql_transformation = row.get('sqlTransformation', None)
                     target_field = row.get('target_field', None)
                     concept_tag_key = target_field.replace('_concept_id', '') if is_concept_id(target_field) else \
@@ -417,25 +361,34 @@ def get_xml(current_user, json_):
                                 target_field.replace('_type_concept_id', '') if is_type_concept_id(
                                     target_field) else target_field
 
-                    if lookup_name:
-                        if lookup_name not in lookups:
-                            lookup_created = create_lookup(current_user, lookup_name, target_field,
-                                                           lookup_source_to_source_included)
-                            if lookup_created:
-                                concepts_tag = prepare_concepts_tag(
-                                    concept_tags,
-                                    concepts_tag,
-                                    domain_definition_tag,
-                                    concept_tag_key,
-                                    target_field
-                                )
+                    if target_field.endswith('source_concept_id') or not lookup_data:
+                        continue
 
-                                concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
+                    if 'name' in lookup_data:
+                        lookup_name = lookup_data['name']
+                        is_legacy_lookup = False
+                    else:
+                        lookup_name = lookup_data
+                        is_legacy_lookup = True
 
-                                mapper = SubElement(concept_id_mapper, 'Mapper')
-                                lookup = SubElement(mapper, 'Lookup')
-                                lookup.text = lookup_name.split(".")[0]
-                                lookups.append(lookup_name)
+                    if lookup_name not in generated_lookups_names:
+                        if is_legacy_lookup:
+                            lookup_service.generate_lookup_file_legacy(lookup_name, current_user)
+                        else:
+                            lookup_service.generate_lookup_file(lookup_data, current_user)
+
+                        concepts_tag = prepare_concepts_tag(
+                            concept_tags,
+                            concepts_tag,
+                            domain_definition_tag,
+                            concept_tag_key,
+                            target_field
+                        )
+                        concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
+                        mapper = SubElement(concept_id_mapper, 'Mapper')
+                        lookup = SubElement(mapper, 'Lookup')
+                        lookup.text = lookup_name
+                        generated_lookups_names.append(lookup_data)
 
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
@@ -570,8 +523,8 @@ def apply_sql_transformation(sql_transformation, source_field, target_field, clo
 
 def write_xml(current_user, tag, filename, result):
     xml = ElementTree(tag)
-    create_user_directory(GENERATE_CDM_XML_PATH, current_user)
-    xml.write(GENERATE_CDM_XML_PATH / current_user / (filename + '.xml'))
+    create_user_directory(GENERATE_ETL_XML_PATH, current_user)
+    xml.write(GENERATE_ETL_XML_PATH / current_user / (filename + '.xml'))
     result.update({filename: _prettify(tag)})
 
 
@@ -590,8 +543,8 @@ def zip_xml(current_user):
             GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
                 (GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, f"{GENERATE_CDM_XML_PATH}/{current_user}", "definitions")
-        add_files_to_zip(zip_file, f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}", "lookups")
+        add_files_to_zip(zip_file, f"{GENERATE_ETL_XML_PATH}/{current_user}", "definitions")
+        add_files_to_zip(zip_file, f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}", "lookups")
 
         if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
             zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
@@ -608,15 +561,12 @@ def delete_generated(path):
 
 
 def delete_generated_xml(current_user):
-    """clean mapping folder"""
-    delete_generated(f"{GENERATE_CDM_XML_PATH}/{current_user}")
+    delete_generated(f"{GENERATE_ETL_XML_PATH}/{current_user}")
 
 
-def delete_generated_sql(current_user):
-    """clean lookup sql folder"""
-    delete_generated(f"{GENERATE_CDM_LOOKUP_SQL_PATH}/{current_user}")
+def delete_generated_lookup_sql(current_user):
+    delete_generated(f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}")
 
 
-def delete_generated_archive(current_user):
-    """clean lookup sql folder"""
-    delete_generated(f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}")
+def delete_generated_batch_sql(current_user):
+    delete_generated(f"{GENERATE_BATCH_SQL_PATH}/{current_user}")

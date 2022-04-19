@@ -1,5 +1,5 @@
 import { IComment } from './comment';
-import { Lookup } from '@models/perseus/lookup'
+import { LookupForEtlConfiguration } from '@models/perseus/lookup'
 import { LookupType } from '@models/perseus/lookup-type'
 
 export interface MappingLookupSqlField {
@@ -17,7 +17,7 @@ export interface MappingLookup {
   source_table: string;
   target_table: string;
   fields: Array<MappingLookupField>;
-  lookup: string;
+  lookup: LookupForEtlConfiguration;
   sql_field: Array<MappingLookupSqlField>;
 }
 
@@ -27,9 +27,8 @@ export interface MappingNode {
   target_field: string;
   sql_field: string;
   sql_alias: string;
-  lookup?: string | Lookup;
+  lookup?: LookupForEtlConfiguration | string;
   lookupType?: LookupType;
-  lookupId?: number
   sqlTransformation?: string;
   comments?: IComment[];
   condition?: string;

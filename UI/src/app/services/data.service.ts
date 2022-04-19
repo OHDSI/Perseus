@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-
+import { map } from 'rxjs/operators';
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
 import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
@@ -78,10 +77,7 @@ export class DataService {
 
   getZippedXml(mapping: EtlMappingForZipXmlGeneration): Observable<File> {
     const reportName = removeExtension(this.storeService.scanReportName) ?? 'etl-mapping'
-    return this.perseusXmlService.getXmlPreview(mapping)
-      .pipe(
-        switchMap(() => this.perseusXmlService.getZipXml(reportName))
-      )
+    return this.perseusXmlService.generateZipXml(reportName, mapping)
   }
 
   getTargetData(version: string) {

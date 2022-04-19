@@ -10,13 +10,14 @@ CDM_SCHEMA_PATH = Path('model/sources/CDM/')
 PREDEFINED_LOOKUPS_PATH = Path('model/lookups')
 
 generate_folder = 'cache/generate'
-GENERATE_CDM_XML_PATH = Path(f'{generate_folder}/xml-definitions')  # todo make stateless - xml used by cdm builder
-GENERATE_CDM_LOOKUP_SQL_PATH = Path(f'{generate_folder}/lookups')  # todo make stateless - for cmd builder
-GENERATE_BATCH_SQL_PATH = Path(f'{generate_folder}/batch')  # todo make stateless - for cmd builder
-GENERATE_CDM_XML_ARCHIVE_PATH = Path(f'{generate_folder}/zip_xml')  # todo make stateless
-GENERATE_ETL_ARCHIVE_PATH = Path(f'{generate_folder}/zip_etl')
+GENERATE_ETL_XML_PATH = Path(f'{generate_folder}/xml-definitions')
+GENERATE_LOOKUP_SQL_PATH = Path(f'{generate_folder}/lookups')
+GENERATE_BATCH_SQL_PATH = Path(f'{generate_folder}/batch')
 
-GENERATE_CDM_XML_ARCHIVE_FILENAME = 'CDM_xml'
+GENERATE_CDM_XML_ARCHIVE_PATH = Path(f'{generate_folder}/zip_xml')  # todo clear folder job
+GENERATE_ETL_ARCHIVE_PATH = Path(f'{generate_folder}/zip_etl') # todo clear folder job
+
+GENERATE_CDM_XML_ARCHIVE_FILENAME = 'etl_xml'
 CDM_XML_ARCHIVE_FORMAT = 'zip'
 ETL_MAPPING_ARCHIVE_FORMAT = 'zip'
 

@@ -65,7 +65,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   get updatedLookup(): Lookup {
-    return {
+    return this.lookup ? {
       ...this.lookup,
       updatedName: this.updatedName,
       lookupType: this.lookupType,
@@ -73,7 +73,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
       source_to_source: this.updatedSourceToSource,
       source_to_standard: this.updatedSourceToStandard,
       isUserDefined: this.userDefined
-    }
+    } : null
   }
 
   get sourceToSourceNotEdited() {
@@ -101,6 +101,9 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    if (!this.lookup) {
+      this.lookup = {}
+    }
     if (this.lookup.name) {
       this.selected = {id: this.lookup.id, name: this.lookup.name};
       this.userDefined = this.isUserDefined(this.lookup)
@@ -261,6 +264,10 @@ export class LookupComponent implements OnInit, AfterViewInit {
     }
   }
 
+  refresh(): void {
+    setTimeout(() => this.codeMirror?.refresh())
+  }
+
   private initCodeMirror() {
     if (!this.disabledCodeMirror && this.disabledEditor) {
       this.disabledCodeMirror = CodeMirror.fromTextArea(this.disabledEditor.nativeElement, {
@@ -276,8 +283,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
   }
 
   private subscribeOnCodeMirrorChange() {
-    this.codeMirror.on('change', this.onChangeValue.bind(this));
-    const onChange = (() => {
+    const onChange = (event => {
       this.codeMirrorDirty = true
       this.codeMirror.off('change', onChange)
     })
