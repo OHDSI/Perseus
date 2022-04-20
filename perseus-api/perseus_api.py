@@ -56,7 +56,6 @@ def upload_etl_mapping(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        app.logger.error(error.__str__())
         raise InvalidUsage(f"Unable to create source schema by source \
                             tables from ETL mapping: {error.__str__()}", 500)
 
@@ -90,7 +89,6 @@ def generate_etl_mapping_archive(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        app.logger.error(error.__str__())
         raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500)
 
 
@@ -152,10 +150,10 @@ def get_column_info_call(current_user):
         column_name = request.args.get('column_name')
         etl_mapping_id = request.args.get('etl_mapping_id')
         info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name);
-    except InvalidUsage:
-        raise InvalidUsage('Info cannot be loaded due to not standard structure of report', 400)
-    except FileNotFoundError:
-        raise InvalidUsage('Report not found', 404)
+    except InvalidUsage as e:
+        raise InvalidUsage(f'Info cannot be loaded due to not standard structure of report: {e.__str__()}', 400)
+    except FileNotFoundError as e:
+        raise InvalidUsage(f'Report not found: {e.__str__()}', 404)
     except Exception as e:
         raise InvalidUsage(f"Could not get report column info: {e.__str__()}", 500)
     return jsonify(info)
@@ -268,6 +266,7 @@ def get_field_type_call():
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     """handle error of wrong usage on functions"""
+    app.logger.error(error.__str__())
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     traceback.print_tb(error.__traceback__)
@@ -276,7 +275,7 @@ def handle_invalid_usage(error):
 
 @app.errorhandler(BadRequestKeyError)
 def handle_bad_request_key(error):
-    """handle error of missed/wrong parameter"""
+    app.logger.error(error.__str__())
     response = jsonify({'message': error.__str__()})
     response.status_code = 400
     traceback.print_tb(error.__traceback__)
@@ -285,7 +284,7 @@ def handle_bad_request_key(error):
 
 @app.errorhandler(KeyError)
 def handle_invalid_req_key(error):
-    """handle error of missed/wrong parameter"""
+    app.logger.error(error.__str__())
     response = jsonify({'message': f'{error.__str__()} missing'})
     response.status_code = 400
     traceback.print_tb(error.__traceback__)
@@ -294,7 +293,7 @@ def handle_invalid_req_key(error):
 
 @app.errorhandler(Exception)
 def handle_exception(error):
-    """handle error of missed/wrong parameter"""
+    app.logger.error(error.__str__())
     response = jsonify({'message': error.__str__()})
     response.status_code = 500
     traceback.print_tb(error.__traceback__)
