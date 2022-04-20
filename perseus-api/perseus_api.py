@@ -265,7 +265,7 @@ def get_field_type_call():
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
-    app.logger.error(error.__str__())
+    app.logger.error(error.message)
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     traceback.print_tb(error.__traceback__)

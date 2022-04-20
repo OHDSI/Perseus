@@ -105,16 +105,16 @@ services:
       - "5001:5001"
     depends_on:
       - shareddb
-  perseusdb:
-    container_name: perseusdb
+  sourcedb:
+    container_name: sourcedb
     image: postgres
     environment:
       POSTGRES_USER: perseus
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: perseus
+      POSTGRES_DB: source
       PGDATA: /data/postgres
     volumes:
-      - perseusdb:/data/postgres
+      - sourcedb:/data/postgres
     ports:
       - "5433:5432"
   perseus:
@@ -126,7 +126,7 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - perseusdb
+      - sourcedb
       - shareddb
       - files-manager
   vocabularydb:
@@ -203,7 +203,7 @@ services:
 
 volumes:
   shareddb:
-  perseusdb:
+  sourcedb:
   vocabularydb:
 #  pgadmin:
 #  athena:
