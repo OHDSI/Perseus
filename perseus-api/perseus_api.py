@@ -266,35 +266,35 @@ def get_field_type_call():
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     """handle error of wrong usage on functions"""
-    app.logger.error(error.__str__())
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     traceback.print_tb(error.__traceback__)
+    app.logger.error(response)
     return response
 
 
 @app.errorhandler(BadRequestKeyError)
 def handle_bad_request_key(error):
-    app.logger.error(error.__str__())
     response = jsonify({'message': error.__str__()})
     response.status_code = 400
     traceback.print_tb(error.__traceback__)
+    app.logger.error(response)
     return response
 
 
 @app.errorhandler(KeyError)
 def handle_invalid_req_key(error):
-    app.logger.error(error.__str__())
     response = jsonify({'message': f'{error.__str__()} missing'})
     response.status_code = 400
     traceback.print_tb(error.__traceback__)
+    app.logger.error(response)
     return response
 
 
 @app.errorhandler(Exception)
 def handle_exception(error):
-    app.logger.error(error.__str__())
     response = jsonify({'message': error.__str__()})
     response.status_code = 500
     traceback.print_tb(error.__traceback__)
+    app.logger.error(response)
     return response
