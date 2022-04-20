@@ -150,9 +150,22 @@ services:
       frontend
     ports:
       - "4200:4200"
-#  athena:
+  solr:
+    image: solr
+    container_name: solr
+    command:
+      - solr-precreate
+      - athena
+      - /opt/solr/server/solr/configsets/athena/conf
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr:/var/solr
+      - ./solr/athena:/opt/solr/server/solr/configsets/athena
+      - ./solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
+#  solr:
 #    image: solr
-#    container_name: athena
+#    container_name: solr
 #    command:
 #      - solr-precreate
 #      - athena
@@ -166,14 +179,9 @@ services:
 #      - ./athena-solr/managed-schema:/opt/solr/server/solr/configsets/_default/conf/managed-schema
 #      - ./athena-solr/solrconfig.xml:/opt/solr/server/solr/configsets/_default/conf/solrconfig.xml
 #      - ./athena-solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
-#      - athena:/var/solr
+#      - solr:/var/solr
 #    ports:
 #      - "8983:8983"
-#    networks:
-#      - vocabularydb
-#      - athena
-#    depends_on:
-#      - vocabulary
 #  athena-api:
 #    build: ./athena-api
 #    command: python /app/main.py
@@ -205,6 +213,5 @@ volumes:
   shareddb:
   perseusdb:
   vocabularydb:
+  solr:
 #  pgadmin:
-#  athena:
-#  usagi:

@@ -111,17 +111,17 @@
     -->
 
 
-<field name="concept_id" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
-<field name="concept_name" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
-<field name="domain_id" type="string" indexed="true" stored="true"></field> 
-<field name="vocabulary_id" type="string" indexed="true" stored="true"></field> 
-<field name="concept_class_id" type="string" indexed="true" stored="true"></field> 
-<field name="standard_concept" type="string" indexed="true" stored="true"></field>
-<field name="concept_code" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
-<field name="valid_start_date" type="pdate" indexed="true" stored="true"></field>
-<field name="valid_end_date" type="pdate" indexed="true" stored="true"></field>
-<field name="invalid_reason" type="string" indexed="true" stored="true"></field>
-<field name="concept_name_for_sort" type="string" indexed="true" stored="true"></field>
+    <field name="concept_id" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
+    <field name="concept_name" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
+    <field name="domain_id" type="string" indexed="true" stored="true"></field>
+    <field name="vocabulary_id" type="string" indexed="true" stored="true"></field>
+    <field name="concept_class_id" type="string" indexed="true" stored="true"></field>
+    <field name="standard_concept" type="string" indexed="true" stored="true"></field>
+    <field name="concept_code" type="text_general" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
+    <field name="valid_start_date" type="pdate" indexed="true" stored="true"></field>
+    <field name="valid_end_date" type="pdate" indexed="true" stored="true"></field>
+    <field name="invalid_reason" type="string" indexed="true" stored="true"></field>
+    <field name="concept_name_for_sort" type="string" indexed="true" stored="true"></field>
 
 
     <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
