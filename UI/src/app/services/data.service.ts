@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
 import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
@@ -13,13 +13,16 @@ import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
 import { Area } from '@models/area'
 import { TableInfoResponse } from '@models/perseus/table-info-response'
 import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
+import { MatDialog } from '@angular/material/dialog'
+import { fromBlobError, openErrorDialog, parseHttpError } from '@utils/error'
 
 @Injectable()
 export class DataService {
   constructor(private perseusService: PerseusApiService,
               private storeService: StoreService,
               private bridgeService: BridgeService,
-              private perseusXmlService: PerseusXmlService) {}
+              private perseusXmlService: PerseusXmlService,
+              private dialogService: MatDialog) {}
 
   _normalize(data: TableInfoResponse[], area: Area) {
     const tables = [];
@@ -78,6 +81,13 @@ export class DataService {
   getZippedXml(mapping: EtlMappingForZipXmlGeneration): Observable<File> {
     const reportName = removeExtension(this.storeService.scanReportName) ?? 'etl-mapping'
     return this.perseusXmlService.generateZipXml(reportName, mapping)
+      .pipe(
+        fromBlobError(),
+        catchError(error => {
+          openErrorDialog(this.dialogService, 'Failed to generate XML preview', parseHttpError(error))
+          throw error
+        })
+      )
   }
 
   getTargetData(version: string) {

@@ -44,6 +44,7 @@ import {
   openTransformationPopup
 } from '@utils/transformtaion-dialog-util'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-mapping',
@@ -451,7 +452,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
           maxHeight: '80vh',
           minWidth: '80vh'
         });
-      });
+      }, error =>
+        openErrorDialog(this.matDialog, 'Failed to generate XML preview', parseHttpError(error))
+      );
   }
 
   generateZipXml() {
