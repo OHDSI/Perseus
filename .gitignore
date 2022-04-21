@@ -1,17 +1,3 @@
-source_schema/mdcr.xlsx
-cdm_souffleur/view/__pycache__/
-**.xml
 **.iml
 .idea
-**/__pycache__/
-.idea/workspace.xml
-cdm_souffleur/controller/generate/**/*
-cdm_souffleur/controller/generate/CDM_xml/*.xml
-cdm_souffleur/model/generate/CDM_xml/**/*
-
-source_schema/**/*
-cdm_souffleur/model/generate/income_schema/**/*
-cdm_souffleur/model/generate/CDM_xml/DRUG_CLAIMS**/*
-
-build
 .first_run

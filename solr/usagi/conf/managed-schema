@@ -110,16 +110,16 @@
          If you don't need it, consider removing it and the corresponding copyField directive.
     -->
 
-type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
+    type, term_type, term, concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
 
-<field name="type" type="string" indexed="true" stored="true"></field>
-<field name="term_type" type="string" indexed="true" stored="true"></field>
-<field name="term" type="text_vector" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field> 
-<field name="concept_id" type="string" indexed="true" stored="true"></field> 
-<field name="domain_id" type="string" indexed="true" stored="true"></field> 
-<field name="vocabulary_id" type="string" indexed="true" stored="true"></field> 
-<field name="concept_class_id" type="string" indexed="true" stored="true"></field> 
-<field name="standard_concept" type="string" indexed="true" stored="true"></field>
+    <field name="type" type="string" indexed="true" stored="true"></field>
+    <field name="term_type" type="string" indexed="true" stored="true"></field>
+    <field name="term" type="text_vector" indexed="true" termVectors="true" termPositions="false" termOffsets="false" termPayloads="false" stored="true"></field>
+    <field name="concept_id" type="string" indexed="true" stored="true"></field>
+    <field name="domain_id" type="string" indexed="true" stored="true"></field>
+    <field name="vocabulary_id" type="string" indexed="true" stored="true"></field>
+    <field name="concept_class_id" type="string" indexed="true" stored="true"></field>
+    <field name="standard_concept" type="string" indexed="true" stored="true"></field>
 
 
     <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
