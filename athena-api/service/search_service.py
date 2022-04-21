@@ -10,11 +10,18 @@ CONCEPT_TYPE_STRING	= "C"
 SOLR_CONNECTION_STRING = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{ATHENA_CORE_NAME}"
 
 
+def count():
+    solr = pysolr.Solr(SOLR_CONNECTION_STRING)
+    results = solr.search('*:*', rows=0)
+    return results.hits
+
+
 def search_athena(page_size, page, query, sort, order, filters, update_filters):
     result_concepts = []
     solr = pysolr.Solr(SOLR_CONNECTION_STRING, always_commit=True)
     filter_queries = create_athena_filter_queries(filters)
-    final_query = f"concept_name:{'+'.join(re.split(' ', query))} OR concept_code:{'+'.join(re.split(' ', query))} OR concept_id:{'+'.join(re.split(' ', query))}" if query else '*:*'
+    final_query = f"concept_name:{'+'.join(re.split(' ', query))} OR concept_code:{'+'.join(re.split(' ', query))} OR concept_id:{'+'.join(re.split(' ', query))}" \
+        if query else '*:*'
     start_record = (int(page) - 1)*int(page_size)
     facet_fields = VOCABULARY_FILTERS.keys()
     params = {
