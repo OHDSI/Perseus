@@ -7,6 +7,7 @@ from services.request.lookup_request import LookupRequest
 from services.response.lookup_list_item_response import LookupListItemResponse
 from utils import InvalidUsage
 from utils.constants import PREDEFINED_LOOKUPS_PATH, GENERATE_LOOKUP_SQL_PATH
+from utils.exceptions import LookupNotFoundById
 
 
 def get_lookups(lookup_type: str, username: str) -> List[LookupListItemResponse]:
@@ -36,7 +37,7 @@ def get_lookup_by_id(id: int) -> Lookup:
     try:
         return Lookup.get(Lookup.id == id)
     except Exception:
-        raise InvalidUsage(f'Lookup entity not found by id {id}', 404)
+        raise LookupNotFoundById(f'Lookup entity not found by id {id}.')
 
 
 def get_lookup_sql(id: int, name: str, lookup_type: str) -> str:

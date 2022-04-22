@@ -252,12 +252,12 @@ export class ZipXmlMappingModelService {
 }
 
 export function addViewsToMapping(mapping: EtlMappingForZipXmlGeneration, source: ITable): EtlMappingForZipXmlGeneration {
-  const sql = source['sql'];
+  const sql = source.sql;
   if (sql) {
-    if (!mapping['views']) {
-      mapping['views'] = {};
+    if (!mapping.views) {
+      mapping.views = {};
     }
-    mapping['views'][source.name] = sql;
+    mapping.views[source.name] = sql;
   }
 
   return mapping;

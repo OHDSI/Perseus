@@ -9,6 +9,8 @@ from shutil import rmtree
 
 from db import user_schema_db
 from services import lookup_service
+from utils import InvalidUsage
+from utils.exceptions import LookupNotFoundById
 from utils.similar_names_map import similar_names_map
 from utils.constants import GENERATE_ETL_XML_PATH,\
                             GENERATE_CDM_XML_ARCHIVE_PATH,\
@@ -375,7 +377,14 @@ def get_xml(current_user, json_):
                         if is_legacy_lookup:
                             lookup_service.generate_lookup_file_legacy(lookup_name, current_user)
                         else:
-                            lookup_service.generate_lookup_file(lookup_data, current_user)
+                            try:
+                                lookup_service.generate_lookup_file(lookup_data, current_user)
+                            except LookupNotFoundById as e:
+                                source_field = row.get('source_field', None)
+                                raise InvalidUsage(f'{e.message}\n'
+                                                   f'Please, change \'{lookup_name}\' lookup '
+                                                   f'for {source_table} - {target_table} tables '
+                                                   f'and {source_field} - {target_field} fields')
 
                         concepts_tag = prepare_concepts_tag(
                             concept_tags,
