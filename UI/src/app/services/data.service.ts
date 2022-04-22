@@ -84,7 +84,7 @@ export class DataService {
       .pipe(
         fromBlobError(),
         catchError(error => {
-          openErrorDialog(this.dialogService, 'Failed to generate XML preview', parseHttpError(error))
+          openErrorDialog(this.dialogService, 'Failed to generate zip XML', parseHttpError(error))
           throw error
         })
       )
