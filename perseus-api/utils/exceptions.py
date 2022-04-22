@@ -12,11 +12,15 @@ class InvalidUsage(Exception):
         rv['message'] = self.message
         return rv
 
+    def __str__(self):
+        return self.message
 
-class WrongReportStructure(InvalidUsage):
 
-    def __init__(self, message, status_code=None):
+class LookupNotFoundById(InvalidUsage):
+    def __init__(self, message):
         Exception.__init__(self)
-        self.message = f'Wrong structure of report file. {message}.'
-        if status_code is not None:
-            self.status_code = status_code
+        self.message = message
+        self.status_code = 404
+
+    def __str__(self):
+        return self.message
