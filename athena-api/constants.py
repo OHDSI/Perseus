@@ -1,3 +1,5 @@
+from app import app
+
 VOCABULARY_FILTERS = {
     'concept_class_id': 'conceptClass',
     'domain_id': 'domain',

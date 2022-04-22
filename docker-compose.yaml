@@ -168,18 +168,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-#  athena-api:
-#    build: ./athena-api
-#    command: python /app/main.py
-#    container_name: athena-api
-#    environment:
-#      ATHENA_ENV: Prod
-#    ports:
-#      - "5050:5050"
-#    depends_on:
-#      - athena
-#    networks:
-#      - athena
+  athena:
+    build: ./athena-api
+    command: python /app/main.py
+    container_name: athena
+    environment:
+      ATHENA_ENV: Docker
+    ports:
+      - "5001:5001"
+    depends_on:
+      - solr
 #  usagi-api:
 #    build: ./usagi-api
 #    command: python /app/main.py

@@ -12,8 +12,8 @@ job_id = 'import_data'
 
 def import_data():
     app.logger.info("Import data job started")
-    solr_conn_string = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}"
     try:
+        solr_conn_string = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}"
         create_index_if_not_exist(app.logger, solr_conn_string)
         app.logger.info("Import data job finished")
     except Exception as e:

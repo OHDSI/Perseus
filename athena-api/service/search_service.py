@@ -7,18 +7,18 @@ from constants import VOCABULARY_FILTERS, ATHENA_CORE_NAME
 
 CONCEPT_TERM = "C"
 CONCEPT_TYPE_STRING	= "C"
-SOLR_CONNECTION_STRING = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{ATHENA_CORE_NAME}"
+SOLR_CONN_STRING = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{ATHENA_CORE_NAME}"
 
 
 def count():
-    solr = pysolr.Solr(SOLR_CONNECTION_STRING)
+    solr = pysolr.Solr(SOLR_CONN_STRING)
     results = solr.search('*:*', rows=0)
     return results.hits
 
 
 def search_athena(page_size, page, query, sort, order, filters, update_filters):
     result_concepts = []
-    solr = pysolr.Solr(SOLR_CONNECTION_STRING, always_commit=True)
+    solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
     filter_queries = create_athena_filter_queries(filters)
     final_query = f"concept_name:{'+'.join(re.split(' ', query))} OR concept_code:{'+'.join(re.split(' ', query))} OR concept_id:{'+'.join(re.split(' ', query))}" \
         if query else '*:*'
