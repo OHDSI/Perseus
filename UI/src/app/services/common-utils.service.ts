@@ -22,6 +22,8 @@ import { openErrorDialog, parseHttpError } from '@utils/error'
 export class CommonUtilsService {
   private renderer: Renderer2;
   private readonly loadReport = new BehaviorSubject<any>(false);
+  private readonly loadMapping = new BehaviorSubject<any>(false);
+  readonly loadSourceMapping$ = this.loadMapping.asObservable();
   readonly loadSourceReport$ = this.loadReport.asObservable();
 
   constructor(
@@ -75,7 +77,20 @@ export class CommonUtilsService {
     });
   }
 
-  openResetWarningDialog(settings: any) {
+  saveMappingBeforeNewOneDialog(action: string) {
+    const matDialog = this.matDialog.open(SaveMappingDialogComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'cdm-version-dialog'
+    });
+    matDialog.afterClosed().subscribe(res => {
+      if (res) {
+        this.openSnackbarMessage(res)      
+      }
+    });
+  }
+
+  openResetWarningDialog(settings: any, action: string) {
     const { warning, header, okButton, deleteButton } = settings;
     const matDialog = this.matDialog.open(ResetWarningComponent, {
       data: { warning, header, okButton, deleteButton },
@@ -83,10 +98,18 @@ export class CommonUtilsService {
       disableClose: false,
       panelClass: 'warning-dialog',
     });
-
+    const actionMapping = {
+      load_report: () => this.loadReportWithoutWarning(),
+      new_mapping: () => this.loadNewMapping(),
+    }
     matDialog.afterClosed().subscribe(res => {
       if (res === 'Delete') {
         this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
+      } else {
+        if (res === 'Save') {
+          this.saveMappingBeforeNewOneDialog(action)
+        }
+        actionMapping[action]()
       }
     });
   }
@@ -103,6 +126,10 @@ export class CommonUtilsService {
     this.loadReport.next(true);
   }
 
+  loadNewMapping() {
+    this.loadMapping.next(true);
+  }
+
   resetMappingsWithWarning() {
     const settings = {
       warning: 'You want to reset all mappings. This action cannot be undone',
@@ -111,18 +138,18 @@ export class CommonUtilsService {
       deleteButton: 'Delete',
       deleteSourceAndTarget: true,
     };
-    this.openResetWarningDialog(settings);
+    this.openResetWarningDialog(settings, 'delete_mappings');
   }
 
   resetSourceAndTargetWithWarning() {
     const settings = {
-      warning: 'All mappings will be lost. Do you want to save created mappings?',
-      header: 'Save mappings',
+      warning: 'All the changes in current mapping will be lost. Save your current mapping before opening new one?',
+      header: 'Save mapping',
       okButton: 'Save',
-      deleteButton: 'Delete',
+      deleteButton: "Don't Save",
       deleteSourceAndTarget: true
     };
-    this.openResetWarningDialog(settings);
+    this.openResetWarningDialog(settings, 'new_mapping');
   }
 
   loadNewReportWithWarning() {
@@ -130,11 +157,11 @@ export class CommonUtilsService {
       warning: 'You want to load a new report. All changes will be lost. Do you want to save current mappings?',
       header: 'Load new report',
       okButton: 'Save',
-      deleteButton: 'Don\'t save',
+      deleteButton: "Don't Save",
       deleteSourceAndTarget: false,
       loadReport: true
     };
-    this.openResetWarningDialog(settings);
+    this.openResetWarningDialog(settings, "load_report");
   }
 
   deleteTableWithWarning() {
