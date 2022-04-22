@@ -1,6 +1,8 @@
+import json
 import urllib
 from urllib.request import urlopen
 from constants import ATHENA_FULL_DATA_IMPORT, ATHENA_IMPORT_STATUS
+from service import search_service
 
 
 def run_solr_command(solr_connection_string, command, current_user = ''):
@@ -9,16 +11,16 @@ def run_solr_command(solr_connection_string, command, current_user = ''):
     return content
 
 
-def check_index_created(solr_connection_string):
-    response = run_solr_command(solr_connection_string, ATHENA_IMPORT_STATUS)
-    if 'Indexing completed.' in response:
-        return True
-    return False
-
-
 def create_index_if_not_exist(logger, solr_connection_string):
-    if check_index_created(solr_connection_string):
+    count = search_service.count()
+    if count != 0:
         logger.info("Solr data already imported")
     else:
-        result = run_solr_command(solr_connection_string, ATHENA_FULL_DATA_IMPORT)
-        logger.info("Run solr data import command with result %s", result)
+        status_response_str = run_solr_command(solr_connection_string, ATHENA_IMPORT_STATUS)
+        status_response = json.loads(status_response_str)
+        status = status_response['status']
+        if status == 'busy':
+            logger.info("The import data process has already started")
+        else:
+            result = run_solr_command(solr_connection_string, ATHENA_FULL_DATA_IMPORT)
+            logger.info("Run solr data import command with result %s", result)

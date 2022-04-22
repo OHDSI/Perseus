@@ -1,3 +1,5 @@
+from app import app
+
 VOCABULARY_FILTERS = {
     'concept_class_id': 'conceptClass',
     'domain_id': 'domain',
@@ -7,5 +9,5 @@ VOCABULARY_FILTERS = {
 }
 
 ATHENA_CORE_NAME = 'athena'
-ATHENA_FULL_DATA_IMPORT = "solr/athena/dataimport?command=full-import"
-ATHENA_IMPORT_STATUS = "solr/athena/dataimport?command=status&indent=on&wt=json"
+ATHENA_FULL_DATA_IMPORT = f"solr/{ATHENA_CORE_NAME}/dataimport?command=full-import"
+ATHENA_IMPORT_STATUS = f"solr/{ATHENA_CORE_NAME}/dataimport?command=status&indent=on&wt=json"

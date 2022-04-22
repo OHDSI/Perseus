@@ -150,42 +150,29 @@ services:
       frontend
     ports:
       - "4200:4200"
-#  athena:
-#    image: solr
-#    container_name: athena
-#    command:
-#      - solr-precreate
-#      - athena
-#    healthcheck:
-#      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/athena/admin/ping?wt=json | grep -Po '\"status\": *\"OK\"' || exit 1"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#    volumes:
-#      - ./athena-solr/db-data-config.xml:/opt/solr/server/solr/configsets/_default/conf/db-data-config.xml
-#      - ./athena-solr/managed-schema:/opt/solr/server/solr/configsets/_default/conf/managed-schema
-#      - ./athena-solr/solrconfig.xml:/opt/solr/server/solr/configsets/_default/conf/solrconfig.xml
-#      - ./athena-solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
-#      - athena:/var/solr
-#    ports:
-#      - "8983:8983"
-#    networks:
-#      - vocabularydb
-#      - athena
-#    depends_on:
-#      - vocabulary
-#  athena-api:
-#    build: ./athena-api
-#    command: python /app/main.py
-#    container_name: athena-api
-#    environment:
-#      ATHENA_ENV: Prod
-#    ports:
-#      - "5050:5050"
-#    depends_on:
-#      - athena
-#    networks:
-#      - athena
+  solr:
+    image: solr
+    container_name: solr
+    command:
+      - solr-precreate
+      - athena
+      - /opt/solr/server/solr/configsets/athena/conf
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr:/var/solr
+      - ./solr/athena:/opt/solr/server/solr/configsets/athena
+      - ./solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
+  athena:
+    build: ./athena-api
+    command: python /app/main.py
+    container_name: athena
+    environment:
+      ATHENA_ENV: Docker
+    ports:
+      - "5001:5001"
+    depends_on:
+      - solr
 #  usagi-api:
 #    build: ./usagi-api
 #    command: python /app/main.py
@@ -205,6 +192,5 @@ volumes:
   shareddb:
   sourcedb:
   vocabularydb:
+  solr:
 #  pgadmin:
-#  athena:
-#  usagi:
