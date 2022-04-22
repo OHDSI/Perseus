@@ -85,6 +85,12 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       }
     });
 
+    this.commonUtilsService.loadSourceMapping$.subscribe(res => {
+      if (res) {
+        this.uploadService.onFileInputClick(this.mappingInput);
+      }
+    });
+
     this.initStreamsOfDisabledButtons();
 
     this.subscribeOnReportConfigReady();
