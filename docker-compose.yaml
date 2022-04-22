@@ -163,11 +163,6 @@ services:
       - solr:/var/solr
       - ./solr/athena:/opt/solr/server/solr/configsets/athena
       - ./solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8983/solr/athena/admin/ping?wt=json | grep -Po '\"status\": *\"OK\"' || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
   athena:
     build: ./athena-api
     command: python /app/main.py

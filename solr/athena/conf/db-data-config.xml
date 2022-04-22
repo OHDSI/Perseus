@@ -1,5 +1,5 @@
 <dataConfig>
-    <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://jnjperseusu1.arcadia.intranet:5431/vocabulary"
+    <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://vocabularydb:5432/vocabulary"
                 user="perseus" password="password"/>
     <document>
         <entity name="Concepts"
