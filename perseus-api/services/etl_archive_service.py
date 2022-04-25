@@ -69,7 +69,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         return to_upload_etl_archive_response(etl_mapping, mapping_json)
     except Exception as e:
         etl_archive.close()
-        raise InvalidUsage(f"Could not create etl mapping with etl archive: {e.__str__()}", 500)
+        raise InvalidUsage(f"Could not upload etl archive: {e.__str__()}", 500)
     finally:
         shutil.rmtree(archive_directory)
 

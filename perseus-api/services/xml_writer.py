@@ -363,41 +363,39 @@ def get_xml(current_user, json_):
                                 target_field.replace('_type_concept_id', '') if is_type_concept_id(
                                     target_field) else target_field
 
-                    if target_field.endswith('source_concept_id') or not lookup_data:
-                        continue
-
-                    if 'name' in lookup_data:
-                        lookup_name = lookup_data['name']
-                        is_legacy_lookup = False
-                    else:
-                        lookup_name = lookup_data
-                        is_legacy_lookup = True
-
-                    if lookup_name not in generated_lookups_names:
-                        if is_legacy_lookup:
-                            lookup_service.generate_lookup_file_legacy(lookup_name, current_user)
+                    if lookup_data and not target_field.endswith('source_concept_id'):
+                        if 'name' in lookup_data:
+                            lookup_name = lookup_data['name']
+                            is_legacy_lookup = False
                         else:
-                            try:
-                                lookup_service.generate_lookup_file(lookup_data, current_user)
-                            except LookupNotFoundById as e:
-                                source_field = row.get('source_field', None)
-                                raise InvalidUsage(f'{e.message}\n'
-                                                   f'Please, change \'{lookup_name}\' lookup '
-                                                   f'for {source_table} - {target_table} tables '
-                                                   f'and {source_field} - {target_field} fields')
+                            lookup_name = lookup_data
+                            is_legacy_lookup = True
 
-                        concepts_tag = prepare_concepts_tag(
-                            concept_tags,
-                            concepts_tag,
-                            domain_definition_tag,
-                            concept_tag_key,
-                            target_field
-                        )
-                        concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
-                        mapper = SubElement(concept_id_mapper, 'Mapper')
-                        lookup = SubElement(mapper, 'Lookup')
-                        lookup.text = lookup_name
-                        generated_lookups_names.append(lookup_data)
+                        if lookup_name not in generated_lookups_names:
+                            if is_legacy_lookup:
+                                lookup_service.generate_lookup_file_legacy(lookup_name, current_user)
+                            else:
+                                try:
+                                    lookup_service.generate_lookup_file(lookup_data, current_user)
+                                except LookupNotFoundById as e:
+                                    source_field = row.get('source_field', None)
+                                    raise InvalidUsage(f'{e.message}\n'
+                                                       f'Please, change \'{lookup_name}\' lookup '
+                                                       f'for {source_table} - {target_table} tables '
+                                                       f'and {source_field} - {target_field} fields')
+
+                            concepts_tag = prepare_concepts_tag(
+                                concept_tags,
+                                concepts_tag,
+                                domain_definition_tag,
+                                concept_tag_key,
+                                target_field
+                            )
+                            concept_id_mapper = SubElement(concept_tags[concept_tag_key], 'ConceptIdMapper')
+                            mapper = SubElement(concept_id_mapper, 'Mapper')
+                            lookup = SubElement(mapper, 'Lookup')
+                            lookup.text = lookup_name
+                            generated_lookups_names.append(lookup_data)
 
                     source_field = row['source_field']
                     sql_alias = row['sql_alias']
