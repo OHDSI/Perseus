@@ -94,8 +94,8 @@ export class BridgeService implements StateService {
   ) { }
 
   applyConfiguration$ = new Subject<EtlConfiguration>();
-  resetAllMappings$ = new Subject<any>();
-  saveAndLoadSchema$ = new Subject<any>();
+  resetAllMappings$ = new Subject<void>();
+  saveAndLoadSchema$ = new Subject<void>();
   reportLoading$ = new Subject<boolean>();
   removeConnection$ = new Subject<IConnection>();
 
