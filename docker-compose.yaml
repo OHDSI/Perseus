@@ -170,7 +170,7 @@ services:
     environment:
       ATHENA_ENV: Docker
     ports:
-      - "5001:5001"
+      - "5002:5002"
     depends_on:
       - solr
 #  usagi-api:

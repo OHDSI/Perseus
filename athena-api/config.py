@@ -1,4 +1,4 @@
-PORT = 5001
+PORT = 5002
 APP_PREFIX = '/athena'
 VERSION = 0.4
 
