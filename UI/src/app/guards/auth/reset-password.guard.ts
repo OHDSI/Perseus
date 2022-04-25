@@ -5,7 +5,7 @@ import { loginRouter } from '@app/app.constants';
 @Injectable({
   providedIn: 'root'
 })
-export class ResetPasswordGuardGuard implements CanActivate {
+export class ResetPasswordGuard implements CanActivate {
 
   constructor(private router: Router) {
   }
