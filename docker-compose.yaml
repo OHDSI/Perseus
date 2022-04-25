@@ -145,7 +145,7 @@ services:
     build:
       context: ./UI
       args:
-        env: prod
+        env: dev
     container_name:
       frontend
     ports:
