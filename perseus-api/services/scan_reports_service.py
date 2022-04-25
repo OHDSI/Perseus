@@ -18,6 +18,7 @@ scan_reports_cache = {}
 
 
 def get_scan_report_path(etl_mapping: EtlMapping):
+    # Todo store etl_mapping id in cache and check
     scan_report_name = secure_filename(etl_mapping.scan_report_name)
     username = etl_mapping.username
     scan_report_directory = f"{UPLOAD_SCAN_REPORT_FOLDER}/{username}"
