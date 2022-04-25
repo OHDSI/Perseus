@@ -1,5 +1,5 @@
 PORT = 5000
-APP_PREFIX = '/perseus'
+APP_PREFIX = '/backend'
 VERSION = 0.4
 
 

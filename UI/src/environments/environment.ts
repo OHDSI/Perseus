@@ -9,7 +9,6 @@ export const environment = {
   local: false,
   server: 'jnjperseusu1',
   dbServer: 'jnjperseusu1',
-  port: 80,
   conceptTables: CONCEPT_TABLES
 };
 

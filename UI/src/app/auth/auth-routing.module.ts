@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { SignOutComponent } from './sign-out/sign-out.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ResetPasswordGuardGuard } from '@guards/auth/reset-password-guard.guard';
 import { AlreadyRegisteredGuard } from '@guards/auth/already-registered.guard';
 import { AlreadyRegisteredComponent } from './already-registered/already-registered.component';
 import { LinkExpiredComponent } from './link-expired/link-expired.component';
 import { LinkExpiredGuard } from '@guards/auth/link-expired.guard';
+import { ResetPasswordGuard } from '@guards/auth/reset-password.guard'
 
 const routes: Routes = [
   {
@@ -29,7 +29,7 @@ const routes: Routes = [
   },
   {
     path: 'reset-password',
-    canActivate: [ResetPasswordGuardGuard],
+    canActivate: [ResetPasswordGuard],
     component: ResetPasswordComponent
   },
   {

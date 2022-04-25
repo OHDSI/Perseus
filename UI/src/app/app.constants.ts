@@ -8,15 +8,14 @@ export const isProd = environment.production
 export const isDev = !isProd;
 
 const server = environment.server || window.location.hostname
-const port = environment.port || window.location.port
 const protocol = window.location.protocol
 
 export const dbServer = environment.dbServer || server
 
-export const serverUrl = `${protocol}//${server}:${port}`
+export const serverUrl = `${protocol}//${server}`
 
 export const authApiUrl = `${serverUrl}/user/api`
-export const perseusApiUrl = `${serverUrl}/perseus/api`
+export const perseusApiUrl = `${serverUrl}/backend/api`
 export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`
 export const dqdServerUrl = `${serverUrl}/data-quality-dashboard`
