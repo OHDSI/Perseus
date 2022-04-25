@@ -117,10 +117,10 @@ services:
       - sourcedb:/data/postgres
     ports:
       - "5433:5432"
-  perseus:
+  backend:
     build: ./perseus-api
     command: python /app/main.py
-    container_name: perseus
+    container_name: backend
     environment:
       PERSEUS_ENV: Docker
     ports:
@@ -145,7 +145,7 @@ services:
     build:
       context: ./UI
       args:
-        env: dev
+        env: prod
     container_name:
       frontend
     ports:
