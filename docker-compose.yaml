@@ -92,6 +92,7 @@ services:
     depends_on:
       - shareddb
       - files-manager
+      - r-serve
   user:
     build: ./user
     command: python /app/main.py
