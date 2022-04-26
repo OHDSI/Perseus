@@ -35,7 +35,7 @@ export class DataQualityCheckService {
   }
 
   resultPageUrl(scanId: number): string {
-    const username = this.authService.user.email
+    const username = this.authService.user.username
     return `${dqdServerUrl}/?scanId=${scanId}&username=${username}`
   }
 }
