@@ -77,7 +77,7 @@ export class CommonUtilsService {
     });
   }
 
-  saveMappingBeforeNewOneDialog(action: string) {
+  saveMappingBeforeNewOneDialog(callback: Function) {
     const matDialog = this.matDialog.open(SaveMappingDialogComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -85,7 +85,8 @@ export class CommonUtilsService {
     });
     matDialog.afterClosed().subscribe(res => {
       if (res) {
-        this.openSnackbarMessage(res)      
+        this.openSnackbarMessage(res)
+        callback()   
       }
     });
   }
@@ -107,9 +108,10 @@ export class CommonUtilsService {
         this.resetMappingsAndReturnToComfy(settings.deleteSourceAndTarget);
       } else {
         if (res === 'Save') {
-          this.saveMappingBeforeNewOneDialog(action)
+          this.saveMappingBeforeNewOneDialog(actionMapping[action])
+        } else {
+          actionMapping[action]()
         }
-        actionMapping[action]()
       }
     });
   }

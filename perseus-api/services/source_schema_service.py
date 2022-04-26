@@ -45,7 +45,9 @@ def _create_source_schema_by_scan_report(current_user, source_schema_path):
 
     schema = []
     global opened_reports
-    opened_reports = {}
+    if current_user in opened_reports and opened_reports[current_user]['path'] == filepath:
+        opened_reports[current_user]['path'] = ''
+        opened_reports[current_user]['book'].release_resources()
     try:
         book = _open_book(current_user, filepath)
     except Exception as e:
@@ -176,7 +178,7 @@ def run_sql_transformation(current_user, sql_transformation):
 
 def _open_book(current_user, filepath=None):
     if current_user not in opened_reports or opened_reports[current_user]['path'] != filepath:
-        book = xlrd.open_workbook(Path(filepath))
+        book = xlrd.open_workbook(Path(filepath), on_demand=True)
         opened_reports[current_user] = {'path': filepath, 'book': book}
     else:
         book = opened_reports[current_user]['book']
