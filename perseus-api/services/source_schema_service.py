@@ -10,7 +10,8 @@ from werkzeug.utils import secure_filename
 from app import app
 from db import user_schema_db
 from model.etl_mapping import EtlMapping
-from services.scan_reports_service import _allowed_file, get_scan_report_path
+from services import etl_mapping_service, cache_service
+from services.scan_reports_service import get_scan_report_path
 from utils.column_types_mapping import postgres_types_mapping, postgres_types
 from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING,\
                             TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS,\
@@ -22,39 +23,34 @@ from view.Table import Table, Column
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
-opened_reports = {}
 
-
-def create_source_schema_by_scan_report(current_user: str, scan_report_name: str):
+def create_source_schema_by_scan_report(current_user: str, etl_mapping: EtlMapping):
     app.logger.info("Creating source schema by WR scan report...")
-    scan_report_name = secure_filename(scan_report_name)
+    scan_report_name = secure_filename(etl_mapping.scan_report_name)
     user_schema_folder = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}"
     if is_directory_contains_file(user_schema_folder, scan_report_name):
         print("schema name: " + str(scan_report_name))
-        source_schema_path = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{scan_report_name}"
-        source_schema = _create_source_schema_by_scan_report(current_user, source_schema_path)
+        scan_report_path = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{scan_report_name}"
+        source_schema = _create_source_schema_by_scan_report(current_user, etl_mapping.id, scan_report_path)
         return source_schema
     else:
-        raise InvalidUsage('Schema was not loaded', 404)
+        raise InvalidUsage('Schema was not loaded', 500)
 
 
-def _create_source_schema_by_scan_report(current_user, source_schema_path):
+def _create_source_schema_by_scan_report(current_user, etl_mapping_id: int, scan_report_path):
     """Create source schema by White Rabbit scan report and return it. Cast to postgres types"""
     reset_schema(name=current_user)
-    filepath = Path(source_schema_path)
 
-    schema = []
-    global opened_reports
-    if current_user in opened_reports and opened_reports[current_user]['path'] == filepath:
-        opened_reports[current_user]['path'] = ''
-        opened_reports[current_user]['book'].release_resources()
     try:
-        book = _open_book(current_user, filepath)
+        book = xlrd.open_workbook(Path(scan_report_path), on_demand=True)
+        cache_service.set_uploaded_scan_report_info(current_user, etl_mapping_id, scan_report_path, book)
     except Exception as e:
-        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 400)
+        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 500)
+
     overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
     # always take the first sheet of the excel file
 
+    schema = []
     tables_pd = sqldf(
         """select `table`, group_concat(field || ':' || type || ':' || "Max length", ',') as fields
          from overview group by `table`;""")
@@ -176,21 +172,29 @@ def run_sql_transformation(current_user, sql_transformation):
     return True
 
 
-def _open_book(current_user, filepath=None):
-    if current_user not in opened_reports or opened_reports[current_user]['path'] != filepath:
-        book = xlrd.open_workbook(Path(filepath), on_demand=True)
-        opened_reports[current_user] = {'path': filepath, 'book': book}
-    else:
-        book = opened_reports[current_user]['book']
+def _open_book(current_user, etl_mapping: EtlMapping):
+    scan_report_path = get_scan_report_path(etl_mapping)
+    book = xlrd.open_workbook(Path(scan_report_path), on_demand=True)
+    cache_service.set_uploaded_scan_report_info(current_user, etl_mapping.id, scan_report_path, book)
+
     return book
+
+
+def _get_or_open_book(current_user, etl_mapping: EtlMapping):
+    opened_report_data = cache_service.get_scan_report_info(current_user)
+    if opened_report_data is None \
+            or opened_report_data.book is None \
+            or opened_report_data.etl_mapping_id != etl_mapping.id:
+        return _open_book(current_user, etl_mapping)
+    else:
+        return opened_report_data.book
 
 
 def get_column_info(current_user, etl_mapping_id, table_name, column_name=None):
     """return top 10 values be freq for target table and/or column"""
-    current_etl_mapping = EtlMapping.select().where((EtlMapping.username == current_user) & (EtlMapping.id == etl_mapping_id)).get()
-    path_to_schema = get_scan_report_path(current_etl_mapping)
+    current_etl_mapping: EtlMapping = etl_mapping_service.find_by_id(etl_mapping_id, current_user)
     try:
-        book = _open_book(current_user, Path(path_to_schema))
+        book = _get_or_open_book(current_user, current_etl_mapping)
         table_overview = pd.read_excel(book, table_name, dtype=str,
                                        na_filter=False,
                                        engine='xlrd')
