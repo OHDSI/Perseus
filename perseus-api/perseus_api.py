@@ -1,10 +1,10 @@
+import os
 import traceback
 
-from flask import Blueprint
+from flask import Blueprint, after_this_request
 from flask import request, jsonify, send_from_directory
 from peewee import ProgrammingError
 from werkzeug.exceptions import BadRequestKeyError
-
 from app import app
 from config import VERSION, APP_PREFIX
 from services import source_schema_service, scan_reports_service, \
@@ -86,9 +86,18 @@ def generate_etl_mapping_archive(current_user):
     app.logger.info("REST request to generate ETL mapping archive")
     try:
         request_body = generate_etl_archive_request.from_json(request.get_json())
-        result = etl_archive_service.generate_etl_archive(request_body, current_user)
-        download_name=result[1].replace('.zip', '.etl')
-        return send_from_directory(result[0], result[1], download_name=download_name)
+        directory, filename = etl_archive_service.generate_etl_archive(request_body, current_user)
+        download_name = filename.replace('.zip', '.etl')
+
+        @after_this_request
+        def remove_generated_file(response):
+            try:
+                os.remove(f'{directory}/{filename}')
+            except Exception as error:
+                app.logger.error("Error removing downloaded file", error)
+            return response
+
+        return send_from_directory(directory, filename, download_name=download_name)
     except InvalidUsage as error:
         raise error
     except Exception as error:
@@ -164,7 +173,7 @@ def get_column_info_call(current_user):
 
 @perseus.route('/api/xml_preview', methods=['POST'])
 @username_header
-def xml(current_user):
+def generate_xml_preview(current_user):
     app.logger.info("REST request to get XML preview")
     json = request.get_json()
     xml_ = xml_writer.get_xml(current_user, json)
@@ -175,7 +184,7 @@ def xml(current_user):
 
 @perseus.route('/api/generate_zip_xml', methods=['POST'])
 @username_header
-def zip_xml_call(current_user):
+def generate_zip_xml(current_user):
     app.logger.info("REST request to generate zip XML")
     try:
         json = request.get_json()
@@ -184,10 +193,22 @@ def zip_xml_call(current_user):
         xml_writer.clear(current_user)
     except Exception as error:
         raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 404)
+    directory = f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}"
+    filename = f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}"
+
+    @after_this_request
+    def remove_generated_file(response):
+        try:
+            os.remove(f'{directory}/{filename}')
+        except Exception as error:
+            app.logger.error("Error removing downloaded file", error)
+        return response
+
     return send_from_directory(
-        directory=f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}",
-        path=f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}",
-        as_attachment=True
+        directory=directory,
+        path=filename,
+        as_attachment=True,
+        download_name = filename
     )
 
 
