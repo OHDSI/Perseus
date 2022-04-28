@@ -10,3 +10,4 @@ itsdangerous
 py-postgresql
 psycopg2-binary
 requests
+APScheduler==3.9.1
