@@ -8,7 +8,7 @@ from werkzeug.exceptions import BadRequestKeyError
 from app import app
 from config import VERSION, APP_PREFIX
 from services import source_schema_service, scan_reports_service, \
-    etl_mapping_service, etl_archive_service, lookup_service
+    etl_mapping_service, etl_archive_service, lookup_service, cache_service
 from services.cdm_schema import get_exist_version, get_schema
 from services.request import generate_etl_archive_request, \
     scan_report_request, lookup_request
@@ -35,9 +35,10 @@ def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
     try:
         scan_report_file = request.files['scanReportFile']
+        cache_service.release_resource_if_used(current_user)
         file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
-        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report_file.filename)
         etl_mapping = etl_mapping_service.create_etl_mapping_by_file_save_resp(current_user, file_save_response)
+        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, etl_mapping)
         return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except InvalidUsage as error:
         raise error
@@ -52,6 +53,7 @@ def upload_etl_mapping(current_user):
     app.logger.info("REST request to create source schema")
     try:
         etl_archive = request.files['etlArchiveFile']
+        cache_service.release_resource_if_used(current_user)
         return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
     except InvalidUsage as error:
         raise error
@@ -66,10 +68,11 @@ def create_source_schema_by_scan_report(current_user):
     """Create source schema by ScanReportRequest"""
     app.logger.info("REST request to upload scan report from file manager and create source schema")
     try:
-        scan_report = scan_report_request.from_json(request.json)
-        scan_reports_service.load_scan_report_from_file_manager(scan_report, current_user)
-        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, scan_report.file_name)
-        etl_mapping = etl_mapping_service.create_etl_mapping_from_request(current_user, scan_report)
+        scan_report_req = scan_report_request.from_json(request.json)
+        cache_service.release_resource_if_used(current_user)
+        scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
+        etl_mapping = etl_mapping_service.create_etl_mapping_from_request(current_user, scan_report_req)
+        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, etl_mapping)
         return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except InvalidUsage as error:
         raise error
@@ -149,7 +152,7 @@ def get_column_info_call(current_user):
         table_name = request.args['table_name']
         column_name = request.args.get('column_name')
         etl_mapping_id = request.args.get('etl_mapping_id')
-        info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name);
+        info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name)
     except InvalidUsage as e:
         raise InvalidUsage(f'Info cannot be loaded due to not standard structure of report: {e.__str__()}', 400)
     except FileNotFoundError as e:

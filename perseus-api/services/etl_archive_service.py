@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 
 from app import app
 from model.etl_mapping import EtlMapping
+from services import cache_service
 from services.files_manager_service import save_file
 from services.etl_mapping_service import create_etl_mapping_by_json_configuration,\
                                          find_by_id
@@ -33,7 +34,6 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
 
     try:
         etl_file_path = f"{archive_directory}/{etl_filename}"
-        # todo fix saving already existed file
         etl_archive.save(etl_file_path)
         _extract_etl_archive(etl_file_path, archive_directory)
         etl_archive.close()
@@ -47,8 +47,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
 
         scan_report_directory = create_directory(f"{UPLOAD_SCAN_REPORT_FOLDER}/{username}")
         scan_report_path = f'{scan_report_directory}/{etl_archive_content.scan_report_file_name}'
-        shutil.copy(f'{archive_directory}/{etl_archive_content.scan_report_file_name}',
-                    scan_report_path)
+        shutil.copy(f'{archive_directory}/{etl_archive_content.scan_report_file_name}', scan_report_path)
         guess_type = mimetypes.guess_type(scan_report_path)
         file_save_response = save_file(
             username,
@@ -58,13 +57,14 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
             guess_type[0]
         )
 
-        mapping_json_file = file_util.open_file(archive_directory, etl_archive_content.mapping_json_file_name)
+        mapping_json_file = file_util.open_file(f'{archive_directory}/{etl_archive_content.mapping_json_file_name}')
         mapping_json = json.load(mapping_json_file)
         mapping_json_file.close()
         source_tables = mapping_json['source']
         create_source_schema_by_tables(username, source_tables)
 
         etl_mapping = create_etl_mapping_by_json_configuration(username, mapping_json, file_save_response)
+        cache_service.set_uploaded_scan_report_info(username, etl_mapping.id, scan_report_path)
 
         return to_upload_etl_archive_response(etl_mapping, mapping_json)
     except Exception as e:
@@ -75,9 +75,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
 
 
 def generate_etl_archive(request: GenerateEtlArchiveRequest, username: str):
-    etl_mapping: EtlMapping = find_by_id(request.etl_mapping_id)
-    if etl_mapping.username != username:
-        raise InvalidUsage("Forbidden to save other user ETL mapping", 403)
+    etl_mapping: EtlMapping = find_by_id(request.etl_mapping_id, username)
 
     scan_report_path = get_scan_report_path(etl_mapping)
     generate_archive_directory = create_directory(f'{GENERATE_ETL_ARCHIVE_PATH}/{username}/{request.name}')

@@ -7,9 +7,12 @@ from services.request.scan_report_request import ScanReportRequest
 from utils.exceptions import InvalidUsage
 
 
-def find_by_id(idNum: int):
+def find_by_id(idNum: int, username: str):
     try:
-        return EtlMapping.get(EtlMapping.id == idNum)
+        etl_mapping: EtlMapping = EtlMapping.get(EtlMapping.id == idNum)
+        if etl_mapping.username != username:
+            raise InvalidUsage('Cannot get access to other user ETL mapping', 403)
+        return etl_mapping
     except:
         raise InvalidUsage(f'ETL mapping not found by id {idNum}', 404)
 
@@ -28,7 +31,7 @@ def create_etl_mapping_by_file_save_resp(username: str, file_save_response: File
     return etl_mapping
 
 
-def create_etl_mapping_from_request(username: str, scan_report_request: ScanReportRequest):
+def create_etl_mapping_from_request(username: str, scan_report_request: ScanReportRequest) -> EtlMapping:
     app.logger.info("Creating new ETL mapping from scan report request")
     file_name = os.path.splitext(scan_report_request.file_name)[0]
     etl_mapping = EtlMapping(
