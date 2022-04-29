@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
-import { CdmConsoleComponent } from './cdm-console/cdm-console.component';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Conversion } from '@models/conversion/conversion'
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component'
+import { Observable } from 'rxjs'
+import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service'
 
 @Component({
   selector: 'app-cdm-console-wrapper',
@@ -11,15 +14,29 @@ import { CdmConsoleComponent } from './cdm-console/cdm-console.component';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class CdmConsoleWrapperComponent extends AbstractConsoleWrapperComponent<void> {
+export class CdmConsoleWrapperComponent extends ProgressConsoleWrapperComponent {
+  @Input()
+  conversion: Conversion
+
+  @ViewChild(ProgressConsoleComponent)
+  consoleComponent: ProgressConsoleComponent
 
   @Output()
-  dataQualityCheck = new EventEmitter<void>();
+  dataQualityCheck = new EventEmitter<void>()
 
-  @ViewChild(CdmConsoleComponent)
-  consoleComponent: CdmConsoleComponent;
+  constructor(private cdbBuilderService: CdmBuilderService) {
+    super()
+  }
+
+  conversionInfoRequest(): Observable<Conversion> {
+    return this.cdbBuilderService.conversionInfoWithLog(this.conversion.id);
+  }
+
+  onAbortAndCancel(): void {
+    this.cdbBuilderService.abort(this.conversion.id)
+  }
 
   onDataQualityCheck() {
-    this.dataQualityCheck.emit();
+    this.dataQualityCheck.emit()
   }
 }

@@ -5,6 +5,5 @@ export const environment = {
   local: false,
   server: null,
   dbServer: null,
-  port: null,
   conceptTables: CONCEPT_TABLES
 };

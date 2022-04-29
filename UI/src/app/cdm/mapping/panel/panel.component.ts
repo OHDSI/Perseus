@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import { MatDialog } from '@angular/material/dialog';
 import { ITable, Table } from '@models/table';
 import { BridgeService } from '@services/bridge.service';
-import { BridgeButtonService } from '@services/bridge-button/bridge-button.service';
 import { PanelTableComponent } from './panel-table/panel-table.component';
 import { Criteria } from '@shared/search-by-name/search-by-name.component';
 import { StoreService } from '@services/store.service';
@@ -13,6 +12,8 @@ import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/sele
 import { OverlayConfigOptions } from '@services/overlay/overlay-config-options.interface';
 import { OverlayService } from '@services/overlay/overlay.service';
 import { getConstantId } from '@utils/constant';
+import { DEFAULT_CLONE } from '@models/clones'
+import { openErrorDialog } from '@utils/error'
 
 @Component({
   selector: 'app-panel',
@@ -77,7 +78,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private bridgeService: BridgeService,
-    private bridgeButtonService: BridgeButtonService,
     private storeService: StoreService,
     private matDialog: MatDialog,
     private overlayService: OverlayService,
@@ -198,6 +198,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
     });
     matDialog.afterClosed().subscribe(res => {
       if (res.action) {
+        if (res.value === DEFAULT_CLONE) {
+          openErrorDialog(this.matDialog, 'Forbidden clone name', 'This clone name forbidden')
+          return;
+        }
         const cloneFromTableName = this.table.cloneName;
         if (!this.storeService.state.targetClones[ this.table.name ]) {
           this.storeService.state.targetClones[ this.table.name ] = [];

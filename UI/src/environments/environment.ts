@@ -7,9 +7,8 @@ import { CONCEPT_TABLES } from './concept-tables'
 export const environment = {
   production: false,
   local: false,
-  server: 'jnjcicdu1',
-  dbServer: 'jnjcicdu1',
-  port: 8080,
+  server: 'jnjperseusu1',
+  dbServer: 'jnjperseusu1',
   conceptTables: CONCEPT_TABLES
 };
 

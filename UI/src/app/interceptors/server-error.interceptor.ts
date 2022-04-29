@@ -1,12 +1,13 @@
-import { Compiler, Injectable, Injector, Type } from '@angular/core';
+import { Compiler, Injectable, Injector, Optional, Type } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppConnectorService } from '@services/app-connector.service';
 import { ServerErrorComponent } from '../server-error/server-error.component';
 import { ServerNotRespondingPopupComponent } from '../server-error/server-not-responding-popup/server-not-responding-popup.component';
 import { ServerErrorPopupComponent } from '../server-error/server-error-popup/server-error-popup.component';
 import { externalUrls, serverErrorExclusionUrls } from '../app.constants';
+import { MatDialog } from '@angular/material/dialog'
 
 @Injectable()
 export class ServerErrorInterceptor implements HttpInterceptor {
@@ -18,23 +19,20 @@ export class ServerErrorInterceptor implements HttpInterceptor {
 
   constructor(private appConnector: AppConnectorService,
               private compiler: Compiler,
-              private injector: Injector) {
+              private injector: Injector,
+              @Optional() private dialogService: MatDialog) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const isExclusionUrl = req => this.exclusionUrls.find(url => req.url.includes(url))
+    const isNotServerError = error => error.status !== 0 && error.status < 500
 
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if ((error.status !== 0 && error.status < 500) || isExclusionUrl(request)) {
+          if (isNotServerError(error) || isExclusionUrl(request) || this.appConnector.isOpen) {
             throw error
           }
-
-          if (this.appConnector.isOpen) {
-            return EMPTY
-          }
-
           let Component: Type<ServerErrorComponent>
           import('../server-error/server-error.module')
             .then(({ServerErrorModule}) => {
@@ -49,7 +47,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
                 payload: error.status === 500 ? ServerErrorPopupComponent : ServerNotRespondingPopupComponent
               }
             })
-          return EMPTY
+          throw error
         })
       );
   }

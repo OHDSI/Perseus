@@ -3,10 +3,10 @@ import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm, createFakeDataForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder, fakeData } from '../../../scan-data.constants';
-import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { adaptDbSettingsForSource } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { hasLimits } from '@utils/scan-data-util';
@@ -28,10 +28,10 @@ import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 export class CdmSourceFormComponent extends AbstractResourceFormComponent implements OnInit {
 
   @Input()
-  fakeDataParams: FakeDataParams;
+  fakeDataParams: FakeDataSettings;
 
   @Output()
-  generateFakeData = new EventEmitter<FakeDataParams>();
+  generateFakeData = new EventEmitter<FakeDataSettings>();
 
   fakeDataForm: FormGroup;
 

@@ -8,7 +8,7 @@ import {
   Output
 } from '@angular/core';
 import { ScoredConcept } from '@models/code-mapping/scored-concept';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { catchError, filter, map, pairwise, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { Observable, Observer, of, ReplaySubject, Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ import {
 import { createFiltersForm, fillFilters, getFilters } from '@models/code-mapping/filters';
 import { SearchMode } from '@models/code-mapping/search-mode';
 import { isFormChanged, toScoredConceptWithSelection, toSearchByTermParams } from './edit-mapping-panel';
-import { ScoredConceptsCacheService } from '@services/import-codes/scored-concepts-cache.service';
+import { ScoredConceptsCacheService } from '@services/usagi/scored-concepts-cache.service';
 import { getTerm } from '@utils/code-mapping-util';
 import { SearchByTermParams } from '@models/code-mapping/search-by-term-params';
 

@@ -1,10 +1,11 @@
 import { ITable } from './table';
 import { IRow } from './row';
-import { IConcepts } from '@models/concepts';
+import { IConcepts } from '@models/perseus/concepts';
 import { IClones } from '@models/clones';
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 export interface State {
-  version?: string,
+  etlMapping?: EtlMapping
   filteredTables?: {
     items: ITable[]
     types: string,
@@ -15,7 +16,6 @@ export interface State {
   targetConfig: TargetConfig,
   source: ITable[],
   mappedSource?: ITable[],
-  report?: string // Full report name with extension,
   linkTablesSearch: {
     source?: string,
     target?: string,
@@ -26,7 +26,6 @@ export interface State {
   },
   cdmVersions?: string[],
   targetClones?: IClones,
-  reportFile?: File,
   mappingEmpty?: boolean,
   sourceSimilar?: IRow[],
   targetSimilar?: IRow[],

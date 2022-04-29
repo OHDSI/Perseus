@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { ImportCodesService } from '@services/import-codes/import-codes.service';
-import { ImportVocabulariesService } from '@services/import-codes/import-vocabularies.service';
+import { ImportCodesService } from '@services/usagi/import-codes.service';
+import { ImportVocabulariesService } from '@services/usagi/import-vocabularies.service';
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '@shared/set-delimiter-dialog/set-delimiter-dialog.component';
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '@app/app.constants';
 import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-mapping-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
-import { ImportCodesMediatorService } from '@services/import-codes/import-codes-mediator.service';
+import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 import { columnsFromSourceCode } from '@models/code-mapping/import-codes-state';
 import { withLoading } from '@utils/loading';
 import { ConsoleHeader } from '@models/code-mapping/console-header';

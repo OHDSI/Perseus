@@ -1,12 +1,13 @@
-import { Component, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
-import { DqdConsoleComponent } from './dqd-console/dqd-console.component';
-import { dqdServerUrl } from '@app/app.constants';
-import { DqdService } from '@services/data-quality-check/dqd.service';
+import { Component, Input, ViewChild } from '@angular/core';
+import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service';
 import * as fileSaver from 'file-saver';
-import { DbSettings } from '@models/scan-data/db-settings';
-import { parseHttpError } from '@utils/error';
-import { finalize } from 'rxjs/operators';
+import { openErrorDialog, parseHttpError } from '@utils/error';
+import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component'
+import { Conversion } from '@models/conversion/conversion'
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { Observable } from 'rxjs'
+import { withLoading } from '@utils/loading'
+import { MatDialog } from '@angular/material/dialog'
 
 @Component({
   selector: 'app-dqd-console-wrapper',
@@ -17,34 +18,53 @@ import { finalize } from 'rxjs/operators';
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class DqdConsoleWrapperComponent extends AbstractConsoleWrapperComponent<string> {
+export class DqdConsoleWrapperComponent extends ProgressConsoleWrapperComponent {
+  @Input()
+  conversion: Conversion
 
-  constructor(private dqdService: DqdService) {
-    super();
+  @Input()
+  project: string
+
+  @ViewChild(ProgressConsoleComponent)
+  consoleComponent: ProgressConsoleComponent;
+
+  loading = false;
+
+  get scanId(): number {
+    return this.conversion.id
   }
 
-  @ViewChild(DqdConsoleComponent)
-  consoleComponent: DqdConsoleComponent;
+  constructor(private dataQualityCheckService: DataQualityCheckService,
+              private dialogService: MatDialog) {
+    super()
+  }
 
-  fileLoading = false;
+  conversionInfoRequest(): Observable<Conversion> {
+    return this.dataQualityCheckService.scanInfoWithLogs(this.scanId);
+  }
+
+  onAbortAndCancel() {
+    this.dataQualityCheckService.abort(this.scanId)
+      .subscribe(() => this.back.emit())
+  }
 
   onShowResult() {
-    window.open(`${dqdServerUrl}/?result=${this.result.payload}`, '_blank');
+    window.open(this.dataQualityCheckService.resultPageUrl(this.scanId), '_blank');
   }
 
   onSaveResult() {
-    this.fileLoading = true
-
-    this.dqdService.download(this.result.payload)
+    this.dataQualityCheckService.downloadJsonResultFile(this.scanId)
       .pipe(
-        finalize(() => this.fileLoading = false)
+        withLoading(this)
       )
-      .subscribe(json => {
-        const blob = new Blob([JSON.stringify(json)], {type: 'application/json'});
-        const dbSettings = this.params.payload as DbSettings;
-        fileSaver.saveAs(blob, `${dbSettings.database}.${dbSettings.schema}.json`);
-      }, error =>
-        this.showErrorMessage(parseHttpError(error))
+      .subscribe(
+        json => {
+          const blob = new Blob([JSON.stringify(json)], {type: 'application/json'});
+          fileSaver.saveAs(blob, `${this.project}.json`);
+        },
+        error => openErrorDialog(
+          this.dialogService, 'Failed to save result json file', parseHttpError(error)
+        )
       );
   }
 }

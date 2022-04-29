@@ -6,12 +6,13 @@
 
   <div class="scan-dialog__content" [ngSwitch]="index">
     <app-dqd-form *ngSwitchCase="0" style="width: 100%"
-                  (check)="onCheck($event)"
+                  (check)="onDataQualityCheck($event)"
                   (cancel)="onClose()"></app-dqd-form>
 
     <app-dqd-console-wrapper *ngSwitchCase="1" style="width: 100%"
-                             [params]="websocketParams"
-                             (cancel)="onCancel()"
+                             [conversion]="conversion"
+                             [project]="project"
+                             (back)="onCancel()"
                              (close)="onClose()"></app-dqd-console-wrapper>
   </div>
 </div>

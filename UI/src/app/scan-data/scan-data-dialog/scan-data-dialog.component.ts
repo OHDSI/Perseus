@@ -1,25 +1,35 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { AbstractScanDialog } from '../abstract-scan-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ScanConsoleWrapperComponent } from './scan-console-wrapper/scan-console-wrapper.component';
-import { WebsocketParams } from '@models/scan-data/websocket-params';
 import { DbTypes } from '@scan-data/scan-data.constants';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
+import { ConversionDialog } from '@scan-data/conversion-dialog'
+import { Conversion } from '@models/conversion/conversion'
+import { ScanDataService } from '@services/white-rabbit/scan-data.service'
+import { ScanSettings } from '@models/white-rabbit/scan-settings'
+import { ScanSettingsType } from '@models/white-rabbit/scan-settings-type'
+import { DbSettings } from '@models/white-rabbit/db-settings'
+import { FilesSettings } from '@models/white-rabbit/files-settings'
+import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-scan-data-dialog',
   templateUrl: './scan-data-dialog.component.html',
   styleUrls: ['./scan-data-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss'],
 })
-export class ScanDataDialogComponent extends AbstractScanDialog {
+export class ScanDataDialogComponent extends ConversionDialog {
 
   @ViewChild(ScanConsoleWrapperComponent)
-  consoleWrapperComponent: ScanConsoleWrapperComponent;
+  consoleWrapperComponent: ScanConsoleWrapperComponent
 
-  dbName: string;
+  conversion: Conversion | null = null
+  project: string
 
   constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>,
-              private scanDataStateService: ScanDataStateService) {
+              private scanDataService: ScanDataService,
+              private scanDataStateService: ScanDataStateService,
+              private dialogService: MatDialog) {
     super(dialogRef);
   }
 
@@ -31,10 +41,17 @@ export class ScanDataDialogComponent extends AbstractScanDialog {
     return this.dataType === DbTypes.MYSQL
   }
 
-  onScanTables(payload: {dbName: string, params: WebsocketParams}): void {
-    const {dbName, params} = payload;
-    this.dbName = dbName;
-    this.websocketParams = params;
-    this.index = 1;
+  onScanTables(data: {type: ScanSettingsType, settings: ScanSettings}): void {
+    const {type, settings} = data;
+    const request$ = type === ScanSettingsType.DB ?
+      this.scanDataService.generateScanReportByDb(settings as DbSettings) :
+      this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
+    request$.subscribe(conversion => {
+      this.conversion = conversion
+      this.project = conversion.project
+      this.index = ConversionDialogStatus.CONVERSION
+    }, error => {
+      openErrorDialog(this.dialogService, 'Failed to scan data', parseHttpError(error))
+    })
   }
 }

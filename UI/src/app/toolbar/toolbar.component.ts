@@ -15,13 +15,14 @@ import { Observable } from 'rxjs';
 import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
 import { DqdDialogComponent } from '@scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
-import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report-generation.service';
+import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
+import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
 import { codesRouter, mainPageRouter } from '../app.constants';
 import { LogoutComponent } from '@popups/logout/logout.component';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { HelpPopupComponent } from '@popups/help-popup/help-popup.component';
 import { AuthFacadeService } from '@services/state/auth-facade.service';
+import { parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-toolbar',
@@ -34,8 +35,6 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   cdmVersion: string;
   reportName: string;
-
-  fakeDataDisabled$: Observable<boolean>;
 
   convertToCdmDisabled$: Observable<boolean>;
 
@@ -86,6 +85,12 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
       }
     });
 
+    this.commonUtilsService.loadSourceMapping$.subscribe(res => {
+      if (res) {
+        this.uploadService.onFileInputClick(this.mappingInput);
+      }
+    });
+
     this.initStreamsOfDisabledButtons();
 
     this.subscribeOnReportConfigReady();
@@ -108,7 +113,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   openSaveMappingDialog() {
-    this.commonUtilsService.saveMappingDialog(false, false);
+    this.commonUtilsService.saveMappingDialog();
   }
 
   openLoadMappingDialog() {
@@ -119,31 +124,39 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
     this.storeService.state.source.length ? this.commonUtilsService.loadNewReportWithWarning() : this.commonUtilsService.loadReportWithoutWarning();
   }
 
-  onFileUpload(event: Event) {
+  onScanReportUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
     this.bridgeService.reportLoading();
-    this.uploadService.onScanReportChange(event)
+    this.uploadService.uploadScanReport(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
           data: {
             title: 'Failed to load new report',
-            message: error.message
+            message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       )
   }
 
-  onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event)
+  onEtlMappingUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
+    this.uploadService.uploadEtlMapping(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
           data: {
             title: 'Failed to open mapping',
-            message: error.message
+            message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       )
   }
@@ -164,19 +177,11 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   generateAndSave() {
     const {source} = this.storeService.getMappedTables();
-
     const areaRows = [];
-
     const sourceTables = this.bridgeService.prepareTables(source, Area.Source, areaRows);
-
     const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(sourceTables);
 
-    this.dataService
-      .getZippedXml(mappingJSON)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(file => {
-        saveAs(file);
-      });
+    this.dataService.getZippedXml(mappingJSON).subscribe(file => saveAs(file));
   }
 
   scanData() {
@@ -232,12 +237,6 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private initStreamsOfDisabledButtons() {
-    this.fakeDataDisabled$ = this.storeService.state$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        map(state => !state.reportFile)
-      );
-
     this.convertToCdmDisabled$ = this.storeService.state$
       .pipe(
         takeUntil(this.ngUnsubscribe),

@@ -21,18 +21,15 @@ import { TestConnectionComponent } from './auxiliary/test-connection/test-connec
 import { CdmDestinationFormComponent } from './cdm-dialog/cdm-form/cdm-destination-form/cdm-destination-form.component';
 import { CdmSourceFormComponent } from './cdm-dialog/cdm-form/cdm-source-form/cdm-source-form.component';
 import { CdmConsoleWrapperComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console-wrapper.component';
-import { CdmConsoleComponent } from './cdm-dialog/cdm-console-wrapper/cdm-console/cdm-console.component';
-import { ScanDataConsoleComponent } from './scan-data-dialog/scan-console-wrapper/scan-data-console/scan-data-console.component';
 import { DataBaseExistWarningPopupComponent } from './auxiliary/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
 import { DqdDialogComponent } from './dqd-dialog/dqd-dialog.component';
 import { DqdConsoleWrapperComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console-wrapper.component';
-import { DqdConsoleComponent } from './dqd-dialog/dqd-console-wrapper/dqd-console/dqd-console.component';
 import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { SharedModule } from '@shared/shared.module';
-import { FakeConsoleComponent } from './fake-data-dialog/fake-console-wrapper/fake-console/fake-console.component';
 import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
 import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console-wrapper.component';
 import { CodeMappingConsoleComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console/code-mapping-console.component';
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
 
 @NgModule({
   declarations: [
@@ -57,17 +54,14 @@ import { CodeMappingConsoleComponent } from './code-mapping-dialog/code-mapping-
     CdmDestinationFormComponent,
     CdmSourceFormComponent,
     CdmConsoleWrapperComponent,
-    CdmConsoleComponent,
-    ScanDataConsoleComponent,
     DataBaseExistWarningPopupComponent,
     DqdDialogComponent,
     DqdConsoleWrapperComponent,
-    DqdConsoleComponent,
     DqdFormComponent,
-    FakeConsoleComponent,
     CodeMappingDialogComponent,
     CodeMappingConsoleWrapperComponent,
-    CodeMappingConsoleComponent
+    CodeMappingConsoleComponent,
+    ProgressConsoleComponent
   ],
   imports: [
     FormsModule,

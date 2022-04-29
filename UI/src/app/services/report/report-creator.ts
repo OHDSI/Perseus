@@ -1,4 +1,4 @@
-import { MappingNode } from '@models/mapping';
+import { MappingNode } from '@models/etl-mapping-for-zip-xml-generation';
 import { MappingForImage } from './image/mapping-image';
 import { IRow } from '@models/row';
 

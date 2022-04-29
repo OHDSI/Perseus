@@ -1,27 +1,19 @@
 <div class="console-wrapper">
+  <progress-console style="width: 100%" [logs]="logs"></progress-console>
 
-  <app-cdm-console [params]="params"
-                   (completion)="onComplete($event)"></app-cdm-console>
-
-  <div class="console-wrapper__action" [ngSwitch]="result?.status">
+  <div class="console-wrapper__action" [ngSwitch]="conversion?.statusCode">
     <ng-template ngSwitchCase="1">
-      <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
-
-      <button class="console-wrapper__action-back confirm" (click)="onClose()">Close</button>
-
-      <button class="console-wrapper__action-dqd confirm" (click)="onDataQualityCheck()">Data Quality Check</button>
+      <button class="console-wrapper__action-abort cancel" (click)="onAbortAndCancel()">Abort and cancel</button>
     </ng-template>
 
     <ng-template ngSwitchCase="2">
-      <button class="console-wrapper__action-back cancel"
-              (click)="this.onBack()">Back
-      </button>
+      <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
+      <button class="console-wrapper__action-back confirm" (click)="onClose()">Close</button>
+      <button class="console-wrapper__action-dqd confirm" (click)="onDataQualityCheck()">Data Quality Check</button>
     </ng-template>
 
     <ng-template ngSwitchDefault>
-      <button class="console-wrapper__action-abort cancel"
-              (click)="onAbortAndCancel()">Abort and cancel
-      </button>
+      <button class="console-wrapper__action-back cancel" (click)="this.onBack()">Back</button>
     </ng-template>
   </div>
 </div>

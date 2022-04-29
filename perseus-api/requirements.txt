@@ -1,0 +1,13 @@
+Flask==2.0.3
+Flask_Cors==3.0.9
+pandas==0.23.4
+pandasql==0.7.3
+peewee
+waitress==2.1.1
+Werkzeug
+xlrd==1.2.0
+itsdangerous
+py-postgresql
+psycopg2-binary
+requests
+APScheduler==3.9.1

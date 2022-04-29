@@ -1,0 +1,68 @@
+<div class="lookup">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-number">1</div>
+      <span class="stage-title">Select Lookup</span>
+    </div>
+    <div class="stage-body" [class.invalid-with-border]="!originText && lookup?.name">
+      <mat-form-field class="select-lookup" appearance="fill">
+        <mat-label>Select Lookup</mat-label>
+        <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected" [compareWith]="compareSelectedItems">
+          <mat-option *ngFor="let item of items" [value]="item">
+            {{item.name}}
+            <ng-container *ngIf="isUserDefined(item)">
+              <mat-icon svgIcon="delete" (click)="delete(item.id)"></mat-icon>
+              <mat-icon svgIcon="edit" (click)="edit(item)"></mat-icon>
+            </ng-container>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="lookup-type-params">
+        <ng-container *ngIf="isConceptTableField">
+          <mat-radio-button [checked]="lookupType === 'source_to_standard'"
+                            (change)="lookupTypeChanged($event.value)"
+                            [value]="lookupType">Source to Standard</mat-radio-button>
+          <mat-radio-button [checked]="lookupType === 'source_to_source'"
+                            (change)="lookupTypeChanged($event.value)"
+                            [value]="lookupType">Source to Source</mat-radio-button>
+          <mat-checkbox [checked]="lookup?.sourceToSourceIncluded"
+                        [disabled]="!withSourceToSource"
+                        (change)="includeSourceToStandardChanged()">Include Source to Source</mat-checkbox>
+        </ng-container>
+      </div>
+
+      <div class="flex-div">
+      <div class="preview-title">SQL Preview</div>
+      <div class="invalid-label" *ngIf="lookup?.value === '' && lookup?.name"> &mdash; Please type SQL here</div>
+      </div>
+      <mat-expansion-panel [class.hidden]="!selected" class="select-preview">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{lookupType | prettyName}}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <textarea #disabledEditor disabled></textarea>
+      </mat-expansion-panel>
+      <textarea #editor class="ened"></textarea>
+    </div>
+  </div>
+  <div class="stage stage-2" *ngIf="editMode">
+    <div class="stage-header">
+      <div class="stage-number">2</div>
+      <span class="stage-title">Set name for modified lookup</span>
+    </div>
+    <mat-form-field
+      class="lookup-name"
+      appearance="fill"
+      [ngClass]="{'invalid-name': lookup?.name === '.userDefined'}">
+      <mat-label>
+        <mat-label>Lookup Name</mat-label>
+        <mat-label class="invalid-label" *ngIf="showPleaseSetNewName">&mdash; Please set new name</mat-label>
+      </mat-label>
+      <input
+        matInput
+        (input)="onChangeName($event)"
+        [value]="selected.name"
+      >
+    </mat-form-field>
+  </div>
+</div>
