@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import PostgresqlDatabase
 from app import app
 
 usagi_pg_db = PostgresqlDatabase(app.config["USAGI_DB_NAME"],
