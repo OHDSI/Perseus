@@ -11,10 +11,10 @@ class LocalConfig:
     APP_LOGIC_DB_PORT = 5432
 
     USER_SCHEMAS_DB_NAME = 'source'
-    USER_SCHEMAS_DB_USER = 'perseus'
+    USER_SCHEMAS_DB_USER = 'source'
     USER_SCHEMAS_DB_PASSWORD = 'password'
     USER_SCHEMAS_DB_HOST = 'localhost'
-    USER_SCHEMAS_DB_PORT = 5433
+    USER_SCHEMAS_DB_PORT = 5432
 
     FILE_MANAGER_API_URL = 'http://localhost:10500/files-manager'
 
@@ -27,9 +27,9 @@ class DockerConfig:
     APP_LOGIC_DB_PORT = 5432
 
     USER_SCHEMAS_DB_NAME = 'source'
-    USER_SCHEMAS_DB_USER = 'perseus'
+    USER_SCHEMAS_DB_USER = 'source'
     USER_SCHEMAS_DB_PASSWORD = 'password'
-    USER_SCHEMAS_DB_HOST = 'sourcedb'
+    USER_SCHEMAS_DB_HOST = 'shareddb'
     USER_SCHEMAS_DB_PORT = 5432
 
     FILE_MANAGER_API_URL = 'http://files-manager:10500/files-manager'

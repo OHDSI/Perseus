@@ -7,6 +7,8 @@ import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-c
 import { Conversion } from '@models/conversion/conversion'
 import { Observable } from 'rxjs'
 import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { MatDialog } from '@angular/material/dialog'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -28,7 +30,8 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   consoleComponent: ProgressConsoleComponent
 
   constructor(private whiteRabbitService: ScanDataService,
-              private scanDataUploadService: ScanDataUploadService) {
+              private scanDataUploadService: ScanDataUploadService,
+              private dialogService: MatDialog) {
     super()
   }
 
@@ -60,7 +63,8 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
         )
       )
       .subscribe(
-        () => this.close.emit(this.conversion)
+        () => this.close.emit(this.conversion),
+        error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))
       )
   }
 }

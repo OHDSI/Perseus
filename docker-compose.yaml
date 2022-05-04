@@ -106,18 +106,6 @@ services:
       - "5001:5001"
     depends_on:
       - shareddb
-  sourcedb:
-    container_name: sourcedb
-    image: postgres
-    environment:
-      POSTGRES_USER: perseus
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: source
-      PGDATA: /data/postgres
-    volumes:
-      - sourcedb:/data/postgres
-    ports:
-      - "5433:5432"
   backend:
     build: ./perseus-api
     command: python /app/main.py
@@ -127,7 +115,6 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - sourcedb
       - shareddb
       - files-manager
   vocabularydb:
@@ -191,7 +178,6 @@ services:
 
 volumes:
   shareddb:
-  sourcedb:
   vocabularydb:
   solr:
 #  pgadmin:
