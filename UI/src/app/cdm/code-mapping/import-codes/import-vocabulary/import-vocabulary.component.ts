@@ -4,16 +4,13 @@ import { ImportVocabulariesService } from '@services/usagi/import-vocabularies.s
 import { openErrorDialog, parseHttpError } from '@utils/error';
 import { MatDialog } from '@angular/material/dialog';
 import { SetDelimiterDialogComponent } from '@shared/set-delimiter-dialog/set-delimiter-dialog.component';
-import { catchError, filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { codesRouter, mainPageRouter } from '@app/app.constants';
-import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-mapping-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
-import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 import { columnsFromSourceCode } from '@models/code-mapping/import-codes-state';
 import { withLoading } from '@utils/loading';
-import { ConsoleHeader } from '@models/code-mapping/console-header';
 import { RemoveVocabularyConfirmComponent } from '@code-mapping/import-codes/import-vocabulary/remove-vocabulary-confirm/remove-vocabulary-confirm.component';
 
 @Component({
@@ -35,6 +32,8 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   loading = false;
 
+  cannotLoadVocabularies = false
+
   @ViewChild('csvInput', {static: true})
   csvInput: ElementRef
 
@@ -43,7 +42,6 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   constructor(private importCodesService: ImportCodesService,
               private importVocabulariesService: ImportVocabulariesService,
-              private importCodesMediatorService: ImportCodesMediatorService,
               private dialogService: MatDialog,
               private router: Router) {
     super()
@@ -53,8 +51,11 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
     this.importVocabulariesService.all()
       .subscribe(
         vocabularies => this.vocabularies = [...vocabularies],
-        error => openErrorDialog(this.dialogService, 'Failed to load vocabularies', parseHttpError(error)),
-        () => !this.vocabularies && (this.vocabularies = [])
+        error => {
+          openErrorDialog(this.dialogService, 'Failed to load vocabularies', parseHttpError(error))
+          this.vocabularies = []
+          this.cannotLoadVocabularies = true
+        }
       )
   }
 
@@ -100,16 +101,8 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onEdit(index: number) {
     const vocabularyName = this.vocabularies[index]
-    this.importCodesMediatorService.consoleHeader = ConsoleHeader.LOAD_VOCABULARY
-    this.importCodesMediatorService.onWebsocketConnect$ = this.importVocabulariesService.prepareVocabulary(vocabularyName)
-    this.importCodesMediatorService.onAbort$ = this.importCodesService.cancelCalculateScoresBySavedMapping()
-
-    this.dialogService
-      .open(CodeMappingDialogComponent, { panelClass: 'scan-data-dialog', disableClose: true })
-      .afterClosed()
+    this.importVocabulariesService.prepareVocabulary(vocabularyName)
       .pipe(
-        takeUntil(this.ngUnsubscribe),
-        filter(value => value),
         switchMap(() => this.importVocabulariesService.getVocabulary())
       )
       .subscribe(

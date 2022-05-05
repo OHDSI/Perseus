@@ -12,7 +12,7 @@ import { openErrorDialog, parseHttpError } from '@utils/error'
   templateUrl: './cdm-console-wrapper.component.html',
   styleUrls: [
     './cdm-console-wrapper.component.scss',
-    '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss',
+    '../../auxiliary/progress-console-wrapper/console-wrapper.component.scss',
     '../../styles/scan-data-buttons.scss'
   ]
 })

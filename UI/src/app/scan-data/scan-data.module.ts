@@ -28,7 +28,6 @@ import { DqdFormComponent } from './dqd-dialog/dqd-form/dqd-form.component';
 import { SharedModule } from '@shared/shared.module';
 import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
 import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console-wrapper.component';
-import { CodeMappingConsoleComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console/code-mapping-console.component';
 import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
 
 @NgModule({
@@ -60,7 +59,6 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
     DqdFormComponent,
     CodeMappingDialogComponent,
     CodeMappingConsoleWrapperComponent,
-    CodeMappingConsoleComponent,
     ProgressConsoleComponent
   ],
   imports: [
@@ -72,8 +70,7 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
     ScanDataDialogComponent,
     FakeDataDialogComponent,
     CdmDialogComponent,
-    DqdDialogComponent,
-    CodeMappingConsoleComponent
+    DqdDialogComponent
   ]
 })
 export class ScanDataModule {

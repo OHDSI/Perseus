@@ -1,12 +1,15 @@
-<div class="scan-dialog">
+<div class="scan-dialog" [class.spinner]="loading">
   <div class="scan-dialog__header">
-    <h4>{{importCodesMediatorService.consoleHeader}}</h4>
+    <h4>Calculating Scores</h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
   </div>
 
   <div class="scan-dialog__content">
-    <app-code-mapping-console-wrapper (close)="onClose()"
-                                      (cancel)="onClose()"
-                                      (completed)="onCompleted()"></app-code-mapping-console-wrapper>
+    <ng-container *ngIf="conversion">
+      <app-code-mapping-console-wrapper [conversion]="conversion"
+                                        (back)="onCancel()"
+                                        (close)="onClose()"
+                                        (completed)="onCompleted()"></app-code-mapping-console-wrapper>
+    </ng-container>
   </div>
 </div>

@@ -21,9 +21,7 @@ export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`
 export const dqdServerUrl = `${serverUrl}/data-quality-dashboard`
 export const dqdApiUrl = `${dqdServerUrl}/api`
 export const athenaUrl = `${serverUrl}/athena/api`
-
-export const usagiWsUrl = 'http://127.0.0.1:5150'
-export const usagiUrl = 'http://127.0.0.1:5150/usagi/api'
+export const usagiUrl = `${serverUrl}/usagi/api`
 
 export const numberOfPanelsWithoutSimilar = 2
 export const numberOfPanelsWithOneSimilar = 3

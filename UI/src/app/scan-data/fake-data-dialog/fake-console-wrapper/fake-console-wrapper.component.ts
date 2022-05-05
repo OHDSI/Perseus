@@ -8,7 +8,7 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
 @Component({
   selector: 'app-fake-data-console-wrapper',
   templateUrl: './fake-console-wrapper.component.html',
-  styleUrls: ['fake-console-wrapper.component.scss', '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss', '../../styles/scan-data-buttons.scss']
+  styleUrls: ['fake-console-wrapper.component.scss', '../../auxiliary/progress-console-wrapper/console-wrapper.component.scss', '../../styles/scan-data-buttons.scss']
 })
 export class FakeConsoleWrapperComponent extends ProgressConsoleWrapperComponent {
   @Input()
