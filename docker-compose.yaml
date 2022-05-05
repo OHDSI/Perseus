@@ -161,20 +161,18 @@ services:
       - "5002:5002"
     depends_on:
       - solr
-#  usagi-api:
-#    build: ./usagi-api
-#    command: python /app/main.py
-#    container_name: usagi-api
-#    environment:
-#      USAGI_ENV: Local
-#    ports:
-#      - "5150:5150"
-#    depends_on:
-#      - shareddb
-#    networks:
-#      - usagi
-#      - shareddb
-#      - vocabularydb
+  usagi:
+    build: ./usagi-api
+    command: python /app/main.py
+    container_name: usagi
+    environment:
+      USAGI_ENV: Docker
+    ports:
+      - "5003:5003"
+    depends_on:
+      - shareddb
+      - vocabularydb
+      - solr
 
 volumes:
   shareddb:
