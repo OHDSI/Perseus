@@ -1,6 +1,7 @@
 PORT = 5003
 APP_PREFIX = '/usagi'
 VERSION = 0.4
+TOKEN_SECRET_KEY = 'Perseus-Arcad!a'
 
 
 class LocalConfig:
@@ -21,6 +22,12 @@ class LocalConfig:
 
     FILE_MANAGER_API_URL = 'http://localhost:10500/files-manager'
 
+    USER_DB_NAME = 'cdm_souffleur'
+    USER_DB_USER = 'postgres'
+    USER_DB_PASSWORD = '5eC_DkMr^3'
+    USER_DB_HOST = 'jnjcicdu1'
+    USER_DB_PORT = '5431'
+
 
 class DockerConfig:
     SOLR_HOST = 'solr'
@@ -39,3 +46,9 @@ class DockerConfig:
     VOCABULARY_DB_PORT = 5432
 
     FILE_MANAGER_API_URL = 'http://files-manager:10500/files-manager'
+
+    USER_DB_NAME = 'cdm_souffleur'
+    USER_DB_USER = 'postgres'
+    USER_DB_PASSWORD = '5eC_DkMr^3'
+    USER_DB_HOST = 'jnjcicdu1'
+    USER_DB_PORT = '5431'
