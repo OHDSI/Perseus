@@ -1,15 +1,16 @@
 import json
-
-from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 import pysolr
 import os.path
 import datetime
+
+from werkzeug.utils import secure_filename
+
 from app import app
 from model.usagi.atc_to_rxnorm import atc_to_rxnorm
 from model.usagi.code_mapping import CodeMappingEncoder, CodeMapping, MappingTarget, MappingStatus
-from model.usagi.mapped_concepts import mapped_concept
+from model.usagi2.code_mapping_snapshot import CodeMappingSnapshot
 from model.usagi.source_code import SourceCode
 from model.vocabulary.source_to_concept_map import Source_To_Concept_Map
 from service.search_service import search_usagi
@@ -175,15 +176,15 @@ def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_par
     source_and_mapped_codes_dict = {'codes': codes, 'mappingParams': mapping_params, 'codeMappings': mapped_codes, 'filters': filters}
     source_and_mapped_codes_string = json.dumps(source_and_mapped_codes_dict)
 
-    saved_mapped_concepts = mapped_concept.select().where(
-        (mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
+    saved_mapped_concepts = CodeMappingSnapshot.select().where(
+        (CodeMappingSnapshot.username == current_user) & (CodeMappingSnapshot.name == vocabulary_name))
     if saved_mapped_concepts.exists():
         saved_mapped_concepts = saved_mapped_concepts.get()
         saved_mapped_concepts.codes_and_mapped_concepts = source_and_mapped_codes_string
         saved_mapped_concepts.created_on = datetime.datetime.utcnow()
         saved_mapped_concepts.save()
     else:
-        new_saved_mapped_concepts = mapped_concept(name=vocabulary_name,
+        new_saved_mapped_concepts = CodeMappingSnapshot(name=vocabulary_name,
                                                    codes_and_mapped_concepts=source_and_mapped_codes_string,
                                                    username=current_user,
                                                    created_on=datetime.datetime.utcnow())
@@ -193,7 +194,7 @@ def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_par
 
 def delete_vocabulary(vocabulary_name, current_user):
     try:
-        delete_vocabulary_query = mapped_concept.delete().where((mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
+        delete_vocabulary_query = CodeMappingSnapshot.delete().where((CodeMappingSnapshot.username == current_user) & (CodeMappingSnapshot.name == vocabulary_name))
         delete_vocabulary_query.execute()
         delete_rows_query = Source_To_Concept_Map.delete().where((Source_To_Concept_Map.source_vocabulary_id == vocabulary_name) & (Source_To_Concept_Map.username == current_user))
         delete_rows_query.execute()
@@ -203,7 +204,7 @@ def delete_vocabulary(vocabulary_name, current_user):
 
 def get_vocabulary_list_for_user(current_user):
     result = []
-    saved_mapped_concepts = mapped_concept.select().where(mapped_concept.username == current_user).order_by(mapped_concept.created_on.desc())
+    saved_mapped_concepts = CodeMappingSnapshot.select().where(CodeMappingSnapshot.username == current_user).order_by(CodeMappingSnapshot.created_on.desc())
     if saved_mapped_concepts.exists():
         for item in saved_mapped_concepts:
             result.append(item.name)
@@ -214,8 +215,8 @@ def get_vocabulary_list_for_user(current_user):
 def load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user):
     try:
         emit_status(current_user, f"import_codes_status", "Fetching saved source codes", 0)
-        saved_mapped_concepts = mapped_concept.select().where(
-            (mapped_concept.username == current_user) & (mapped_concept.name == vocabulary_name))
+        saved_mapped_concepts = CodeMappingSnapshot.select().where(
+            (CodeMappingSnapshot.username == current_user) & (CodeMappingSnapshot.name == vocabulary_name))
         if saved_mapped_concepts.exists():
             codes_and_saved_mappings_string = saved_mapped_concepts.get().codes_and_mapped_concepts
             codes_and_saved_mappings = json.loads(codes_and_saved_mappings_string)

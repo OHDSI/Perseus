@@ -8,7 +8,6 @@ from model.usagi2.code_mapping_conversion import CodeMappingConversion
 from model.usagi2.code_mapping_conversion_log import CodeMappingConversionLog
 from model.usagi2.code_mapping_conversion_result import CodeMappingConversionResult
 from model.usagi2.code_mapping_snapshot import CodeMappingSnapshot
-from model.usagi2.mapped_concepts import mapped_concept
 from util.usagi_db import usagi_pg_db
 
 
@@ -32,5 +31,4 @@ def create_usagi2_tables():
         CodeMappingConversionLog,
         CodeMappingConversionResult,
         CodeMappingSnapshot,
-        mapped_concept
     ])
