@@ -8,23 +8,40 @@ from model.usagi.parent import Parent_Count
 
 from model.vocabulary.concept_vocabulary_model import Concept, Concept_Relationship, Concept_Ancestor, Concept_Synonym
 
+from util.constants import INSERT_BATCH_SIZE
 from util.usagi_db import usagi_pg_db
+
+
+def create_rows_for_tables():
+    create_valid_concept_ids()
+    create_concept_id_to_atc_code()
+    create_maps_to_relationship()
+    create_relationship_atc_rxnorm()
+    create_atc_to_rxnorm()
+    create_parent_child_relationship()
+    create_parent_count()
+    create_child_count()
+    create_usagi_concept()
+    create_concept_for_index()
+    create_concept_for_index_2()
+    create_concept_for_index_3()
+    create_concept_for_index_4()
 
 
 def create_valid_concept_ids():
     if Valid_Concept_Ids.select().count() == 0:
         records = Concept.select(Concept.concept_id).where(Concept.invalid_reason.is_null(True)).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Valid_Concept_Ids.insert_many(rows).execute()
 
 def create_concept_id_to_atc_code():
     if Concept_Id_To_Atc_Code.select().count() == 0:
         records = Concept.select(Concept.concept_id, Concept.concept_code).where((Concept.invalid_reason.is_null(True)) & (Concept.vocabulary_id=='ATC')).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Concept_Id_To_Atc_Code.insert_many(rows).execute()
 
 def create_maps_to_relationship():
@@ -44,8 +61,8 @@ def create_maps_to_relationship():
             )
         ).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Maps_To_Relationship.insert_many(rows).execute()
 
 
@@ -66,8 +83,8 @@ def create_relationship_atc_rxnorm():
             )
         ).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Relationship_Atc_Rxnorm.insert_many(rows).execute()
 
 
@@ -80,8 +97,8 @@ def create_atc_to_rxnorm():
             )
         ).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 atc_to_rxnorm.insert_many(rows).execute()
 
 
@@ -101,8 +118,8 @@ def create_parent_child_relationship():
             )
         ).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Parent_Child_Relationship.insert_many(rows).execute()
 
 
@@ -113,8 +130,8 @@ def create_parent_count():
             fn.COUNT(Parent_Child_Relationship.ancestor_concept_id).alias('parent_count')
         ).group_by(Parent_Child_Relationship.descendant_concept_id).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Parent_Count.insert_many(rows).execute()
 
 
@@ -125,8 +142,8 @@ def create_child_count():
             fn.COUNT(Parent_Child_Relationship.descendant_concept_id).alias('child_count')
         ).group_by(Parent_Child_Relationship.ancestor_concept_id).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Child_Count.insert_many(rows).execute()
 
 
@@ -152,8 +169,8 @@ def create_usagi_concept():
         ).dicts()
 
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 UConcept.insert_many(rows).execute()
 
 
@@ -164,8 +181,8 @@ def create_concept_for_index():
             UConcept.vocabulary_id, UConcept.concept_class_id, UConcept.standard_concept
         ).where(UConcept.standard_concept.in_(('S', 'C'))).dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Concept_For_Index.insert_many([{"type": 'C', "term_type": 'C', **row} for row in rows]).execute()
 
 
@@ -189,8 +206,8 @@ def create_concept_for_index_2():
             )
         ).distinct().dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Concept_For_Index.insert_many([{"type": 'S', "term_type": 'C', **row} for row in rows]).execute()
 
 
@@ -219,8 +236,8 @@ def create_concept_for_index_3():
             )
         ).distinct().dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Concept_For_Index.insert_many([{"type": 'C', "term_type": 'C', **row} for row in rows]).execute()
 
 
@@ -255,6 +272,6 @@ def create_concept_for_index_4():
             )
         ).distinct().dicts()
         with usagi_pg_db.atomic():
-            for idx in range(0, len(records), 100):
-                rows = records[idx:idx + 100]
+            for idx in range(0, len(records), INSERT_BATCH_SIZE):
+                rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Concept_For_Index.insert_many([{"type": 'C', "term_type": 'S', **row} for row in rows]).execute()
