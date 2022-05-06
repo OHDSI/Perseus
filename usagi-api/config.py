@@ -1,26 +1,26 @@
-PORT = 5150
+PORT = 5003
 APP_PREFIX = '/usagi'
-VERSION = 0.3
+VERSION = 0.4
 TOKEN_SECRET_KEY = 'Perseus-Arcad!a'
 
 
 class LocalConfig:
-    SOLR_HOST = 'jnjcicdu1'
-    SOLR_PORT = '8983'
-    IS_LOCAL = False
-    IS_PROD = False
+    SOLR_HOST = 'localhost'
+    SOLR_PORT = 8983
 
-    USAGI_DB_NAME = 'cdm_souffleur'
-    USAGI_DB_USER = 'postgres'
-    USAGI_DB_PASSWORD = '5eC_DkMr^3'
-    USAGI_DB_HOST = 'jnjcicdu1'
-    USAGI_DB_PORT = '5431'
+    USAGI_DB_NAME = 'shared'
+    USAGI_DB_USER = 'usagi'
+    USAGI_DB_PASSWORD = 'password'
+    USAGI_DB_HOST = 'localhost'
+    USAGI_DB_PORT = 5432
 
-    VOCABULARY_DB_NAME = 'cdm_souffleur'
-    VOCABULARY_DB_USER = 'postgres'
-    VOCABULARY_DB_PASSWORD = '5eC_DkMr^3'
-    VOCABULARY_DB_HOST = 'jnjcicdu1'
-    VOCABULARY_DB_PORT = '5431'
+    VOCABULARY_DB_NAME = 'vocabulary'
+    VOCABULARY_DB_USER = 'perseus'
+    VOCABULARY_DB_PASSWORD = 'password'
+    VOCABULARY_DB_HOST = 'localhost'
+    VOCABULARY_DB_PORT = 5431
+
+    FILE_MANAGER_API_URL = 'http://localhost:10500/files-manager'
 
     USER_DB_NAME = 'cdm_souffleur'
     USER_DB_USER = 'postgres'
@@ -29,76 +29,26 @@ class LocalConfig:
     USER_DB_PORT = '5431'
 
 
-class DevelopmentConfig:
-    SOLR_HOST = 'localhost'
-    SOLR_PORT = '8983'
-    IS_LOCAL = False
-    IS_PROD = False
+class DockerConfig:
+    SOLR_HOST = 'solr'
+    SOLR_PORT = 8983
 
-    USAGI_DB_NAME = 'cdm_souffleur'
-    USAGI_DB_USER = 'postgres'
-    USAGI_DB_PASSWORD = '5eC_DkMr^3'
-    USAGI_DB_HOST = 'localhost'
-    USAGI_DB_PORT = '5431'
+    USAGI_DB_NAME = 'shared'
+    USAGI_DB_USER = 'usagi'
+    USAGI_DB_PASSWORD = 'password'
+    USAGI_DB_HOST = 'shareddb'
+    USAGI_DB_PORT = 5432
 
-    VOCABULARY_DB_NAME = 'cdm_souffleur'
-    VOCABULARY_DB_USER = 'postgres'
-    VOCABULARY_DB_PASSWORD = '5eC_DkMr^3'
-    VOCABULARY_DB_HOST = 'localhost'
-    VOCABULARY_DB_PORT = '5431'
+    VOCABULARY_DB_NAME = 'vocabulary'
+    VOCABULARY_DB_USER = 'perseus'
+    VOCABULARY_DB_PASSWORD = 'password'
+    VOCABULARY_DB_HOST = 'vocabularydb'
+    VOCABULARY_DB_PORT = 5432
 
-    USER_DB_NAME = 'cdm_souffleur'
-    USER_DB_USER = 'postgres'
-    USER_DB_PASSWORD = '5eC_DkMr^3'
-    USER_DB_HOST = 'localhost'
-    USER_DB_PORT = '5431'
-
-
-class StagingConfig:
-    SOLR_HOST = 'localhost'
-    SOLR_PORT = '8983'
-    IS_LOCAL = False
-    IS_PROD = True
-
-    USAGI_DB_NAME = 'cdm_souffleur'
-    USAGI_DB_USER = 'postgres'
-    USAGI_DB_PASSWORD = '5eC_DkMr^3'
-    USAGI_DB_HOST = 'localhost'
-    USAGI_DB_PORT = '5431'
-
-    VOCABULARY_DB_NAME = 'cdm_souffleur'
-    VOCABULARY_DB_USER = 'postgres'
-    VOCABULARY_DB_PASSWORD = '5eC_DkMr^3'
-    VOCABULARY_DB_HOST = 'localhost'
-    VOCABULARY_DB_PORT = '5431'
+    FILE_MANAGER_API_URL = 'http://files-manager:10500/files-manager'
 
     USER_DB_NAME = 'cdm_souffleur'
     USER_DB_USER = 'postgres'
     USER_DB_PASSWORD = '5eC_DkMr^3'
-    USER_DB_HOST = 'localhost'
-    USER_DB_PORT = '5431'
-
-
-class ProdConfig:
-    SOLR_HOST = 'localhost'
-    SOLR_PORT = '8983'
-    IS_LOCAL = False
-    IS_PROD = True
-
-    USAGI_DB_NAME = 'cdm_souffleur'
-    USAGI_DB_USER = 'postgres'
-    USAGI_DB_PASSWORD = '5eC_DkMr^3'
-    USAGI_DB_HOST = 'localhost'
-    USAGI_DB_PORT = '5431'
-
-    VOCABULARY_DB_NAME = 'cdm_souffleur'
-    VOCABULARY_DB_USER = 'postgres'
-    VOCABULARY_DB_PASSWORD = '5eC_DkMr^3'
-    VOCABULARY_DB_HOST = 'localhost'
-    VOCABULARY_DB_PORT = '5431'
-
-    USER_DB_NAME = 'cdm_souffleur'
-    USER_DB_USER = 'postgres'
-    USER_DB_PASSWORD = '5eC_DkMr^3'
-    USER_DB_HOST = 'localhost'
+    USER_DB_HOST = 'jnjcicdu1'
     USER_DB_PORT = '5431'
