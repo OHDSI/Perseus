@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { BridgeService } from '@services/bridge.service';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { Router } from '@angular/router';
 import { mainPageRouter } from '../app.constants';
+import { StoreService } from '@services/store.service'
 
 @Component({
   selector: 'app-cdm',
@@ -16,7 +17,8 @@ export class CdmComponent extends BaseComponent implements OnInit {
   currentUrl: string;
 
   constructor(private bridgeService: BridgeService,
-              private router: Router) {
+              private router: Router,
+              private storeService: StoreService) {
     super()
   }
 
@@ -24,6 +26,11 @@ export class CdmComponent extends BaseComponent implements OnInit {
     this.subscribeOnResize();
 
     this.subscribeOnUrlChange();
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHandler(): Observable<boolean> | boolean {
+    return !this.storeService.etlMappingId
   }
 
   private subscribeOnResize() {
