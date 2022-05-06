@@ -28,7 +28,7 @@ export class CdmComponent extends BaseComponent implements OnInit {
     this.subscribeOnUrlChange();
   }
 
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   beforeUnloadHandler(): Observable<boolean> | boolean {
     return !this.storeService.etlMappingId
   }
