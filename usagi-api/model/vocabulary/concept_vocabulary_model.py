@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import AutoField, DateField, DoubleField, IntegerField, CharField, TextField
 from model.vocabulary.vocabulary_base_model import VocabularyBaseModel
 
 
@@ -8,7 +8,7 @@ class Concept(VocabularyBaseModel):
     domain_id = CharField()
     vocabulary_id = CharField()
     concept_class_id = CharField()
-    standard_concept = CharField()
+    standard_concept = CharField(null=True)
     concept_code = CharField()
     valid_start_date = DateField()
     valid_end_date = DateField()
@@ -34,7 +34,7 @@ class Concept_Relationship(VocabularyBaseModel):
     concept_id_2 = IntegerField()
     valid_start_date = DateField()
     valid_end_date = DateField()
-    invalid_reason = CharField()
+    invalid_reason = CharField(null=True)
 
 
 class Concept_Synonym(VocabularyBaseModel):
