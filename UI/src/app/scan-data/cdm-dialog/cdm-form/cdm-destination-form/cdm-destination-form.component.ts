@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/abstract-resource-form.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm } from '@utils/form';
-import { cdmBuilderDatabaseTypes, dictionaryDbSettingForCdmBuilder } from '../../../scan-data.constants';
+import { cdmBuilderDatabaseTypes } from '../../../scan-data.constants';
 import { adaptDbSettingsForDestination } from '@utils/cdm-adapter';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
@@ -31,11 +31,7 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
   }
 
   get settings() {
-    const dbType = this.dataType;
-    return  {
-      ...dictionaryDbSettingForCdmBuilder,
-      ...adaptDbSettingsForDestination({dbType, ...this.form.value})
-    };
+    return adaptDbSettingsForDestination({dbType: this.dataType, ...this.form.value})
   }
 
   get isNotValid() {
