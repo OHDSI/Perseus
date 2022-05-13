@@ -49,7 +49,7 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
 
   get settings() {
     return this.isSourceDbSettings ?
-      adaptDbSettingsForSource({dbType: this.dataTypes, ...this.form.value}) :
+      adaptDbSettingsForSource({dbType: this.dataType, ...this.form.value}) :
       {}
   }
 
