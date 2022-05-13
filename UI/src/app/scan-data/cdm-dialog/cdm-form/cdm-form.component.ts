@@ -8,7 +8,6 @@ import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { CdmSourceFormComponent } from './cdm-source-form/cdm-source-form.component';
 import { CdmDestinationFormComponent } from './cdm-destination-form/cdm-destination-form.component';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
-import { dictionaryDbSettingForCdmBuilder } from '../../scan-data.constants';
 import { StoreService } from '@services/store.service';
 import { adaptCdmVersions } from '@utils/cdm-adapter';
 import { Observable, of } from 'rxjs';
@@ -121,7 +120,6 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
     return {
       ...this.sourceFormComponent.settings,
       ...this.destinationFormComponent.settings,
-      ...dictionaryDbSettingForCdmBuilder,
       mappingsName,
       cdmVersion
     };
