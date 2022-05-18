@@ -1,6 +1,6 @@
 import traceback
 
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, Response
 from urllib.parse import urlparse
 from werkzeug.exceptions import BadRequestKeyError
 
@@ -13,6 +13,7 @@ from services.authorization_service import activate_user_in_db,\
      redirect, register_user_in_db,\
      send_reset_password_email, send_link_to_user_repeatedly,\
      user_login, user_logout
+from utils.constants import USERNAME_HEADER, AUTHORIZATION_HEADER
 from utils.exceptions import InvalidUsage, AuthorizationError
 from utils.utils import getServerHostPort
 
@@ -64,14 +65,14 @@ def login():
     try:
         email = request.json['email']
         password = request.json['password']
-        auth_token = user_login(email, password)
+        login_res = user_login(email, password)
+        return jsonify(login_res)
     except InvalidUsage as error:
         raise error
     except AuthorizationError as error:
         raise error
     except Exception as error:
         raise InvalidUsage(f'Unable to login user: {error.__str__()}', 500)
-    return jsonify(auth_token)
 
 
 @user_api.route('/api/logout', methods=['GET'])
@@ -79,7 +80,7 @@ def login():
 def logout(current_user):
     app.logger.info("REST request to logout user")
     try:
-        user_logout(current_user, request.headers['Authorization'])
+        user_logout(current_user, request.headers[AUTHORIZATION_HEADER])
     except Exception as error:
         raise InvalidUsage(f'Unable to logout user: {error.__str__()}', 500)
     return jsonify()
@@ -165,12 +166,28 @@ def refresh_access_token():
 def is_token_valid_call():
     app.logger.info("REST request to check if token is valid")
     try:
-        is_token_valid(request)
+        username = is_token_valid(request)
+        response = Response()
+        response.headers[USERNAME_HEADER] = username
+        return response
     except InvalidUsage as error:
-        return jsonify(False)
+        raise error
     except Exception as error:
         raise InvalidUsage(f'Unable to check if token is valid: {error.__str__()}', 500)
-    return jsonify(True)
+
+
+@user_api.route('/api/is_token_valid_internal', methods=['GET'])
+def is_token_valid_internal():
+    app.logger.info("Internal REST request to check if token is valid")
+    try:
+        username = is_token_valid(request)
+        response = Response()
+        response.headers[USERNAME_HEADER] = username
+        return response
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(f'Unable to check if token is valid: {error.__str__()}', 500)
 
 
 @app.errorhandler(InvalidUsage)

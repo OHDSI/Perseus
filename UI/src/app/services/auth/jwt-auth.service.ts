@@ -4,7 +4,7 @@ import { User } from '@models/auth/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { authApiUrl, loginRouter } from '@app/app.constants';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -39,9 +39,6 @@ export class JwtAuthService implements AuthService {
     }
 
     return this.isTokenValid()
-      .pipe(
-        tap(value => this.tokenValid = value)
-      )
   }
 
   login(email: string, password: string): Observable<User> {
@@ -102,8 +99,11 @@ export class JwtAuthService implements AuthService {
   private isTokenValid(): Observable<boolean> {
     return this.httpClient.get<boolean>(`${authApiUrl}/is_token_valid`)
       .pipe(
-        catchError(() => of(false)),
-        tap(value => !value && this.resetCurrentUser())
+        map(() => true),
+        catchError(() => {
+          this.resetCurrentUser()
+          return of(false)
+        })
       )
   }
 
