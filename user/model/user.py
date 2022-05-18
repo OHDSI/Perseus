@@ -21,17 +21,18 @@ class User(BaseModel):
     active = BooleanField()
 
     def encode_auth_token(self, username, **kwargs):
+        exp = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=43200)
         try:
             payload = {
                 'sub': username,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=43200),
+                'exp': exp,
                 'iat': datetime.datetime.utcnow(),
             }
             return encode(
                 payload,
                 TOKEN_SECRET_KEY,
                 algorithm='HS256'
-            )
+            ), exp
         except Exception as e:
             raise InvalidUsage("Can not encode jwt token", 500)
 
@@ -65,9 +66,8 @@ def is_token_valid(request):
         raise InvalidUsage('A valid token is missing', 401)
 
     try:
-        current_user = User.decode_auth_token(token)
+        return User.decode_auth_token(token)
     except ExpiredSignatureError as error:
         raise InvalidUsage('Token expired. Please log in again', 401)
     except PyJWTError as error:
         raise InvalidUsage('Token is invalid', 401)
-    return current_user
