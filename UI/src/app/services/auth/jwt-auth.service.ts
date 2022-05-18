@@ -3,7 +3,7 @@ import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '@models/auth/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { authApiUrl, dqdApiUrl, filesManagerApiUrl, loginRouter } from '@app/app.constants';
+import { authApiUrl, loginRouter } from '@app/app.constants';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -100,7 +100,7 @@ export class JwtAuthService implements AuthService {
   }
 
   private isTokenValid(): Observable<boolean> {
-    return this.httpClient.get<boolean>(`${filesManagerApiUrl}/auth`)
+    return this.httpClient.get<boolean>(`${authApiUrl}/is_token_valid`)
       .pipe(
         map(() => true),
         catchError(() => {
