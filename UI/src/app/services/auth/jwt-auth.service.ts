@@ -3,8 +3,8 @@ import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '@models/auth/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { authApiUrl, loginRouter } from '@app/app.constants';
-import { catchError, tap } from 'rxjs/operators';
+import { authApiUrl, dqdApiUrl, filesManagerApiUrl, loginRouter } from '@app/app.constants';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -40,13 +40,13 @@ export class JwtAuthService implements AuthService {
 
     return this.isTokenValid()
       .pipe(
-        tap(value => this.tokenValid = value)
+        tap(() => this.tokenValid = true)
       )
   }
 
   login(email: string, password: string): Observable<User> {
     return this.saveUser(
-      this.httpClient.post<User>(`${authApiUrl}/login`, {email, password})
+      this.httpClient.post<User>(`${authApiUrl}/login`, {email, password}, {withCredentials: true})
     )
   }
 
@@ -100,10 +100,13 @@ export class JwtAuthService implements AuthService {
   }
 
   private isTokenValid(): Observable<boolean> {
-    return this.httpClient.get<boolean>(`${authApiUrl}/is_token_valid`)
+    return this.httpClient.get<boolean>(`${filesManagerApiUrl}/auth`)
       .pipe(
-        catchError(() => of(false)),
-        tap(value => !value && this.resetCurrentUser())
+        map(() => true),
+        catchError(() => {
+          this.resetCurrentUser()
+          return of(false)
+        })
       )
   }
 
