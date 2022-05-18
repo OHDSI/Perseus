@@ -113,7 +113,7 @@ def user_login(email, password):
     user = get_active_user(email)
     for item in user:
         if bcrypt.check_password_hash(item.password, password):
-            auth_token = item.encode_auth_token(item.username)
+            auth_token, exp = item.encode_auth_token(item.username)
             token = get_refresh_token(email)
         if auth_token:
             return {
@@ -122,7 +122,8 @@ def user_login(email, password):
                 'token': auth_token,
                 'refresh_token': token,
                 'firstName': item.first_name,
-                'lastName': item.last_name
+                'lastName': item.last_name,
+                'expires': exp
             }
         else:
             raise AuthorizationError('Incorrect password', 401)
@@ -167,7 +168,7 @@ def get_refresh_access_token_pair(email, token):
         random_string = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(100))
         update_refresh_token(random_string, token)
         user = get_active_user(email).get()
-        auth_token = user.encode_auth_token(user.username)
+        auth_token, exp = user.encode_auth_token(user.username)
         return {'email': user.email, 'token': auth_token, 'refresh_token': random_string}
     else:
         raise InvalidUsage('Token has expired. Please log in again', 400)
