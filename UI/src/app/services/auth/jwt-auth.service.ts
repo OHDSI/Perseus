@@ -39,14 +39,11 @@ export class JwtAuthService implements AuthService {
     }
 
     return this.isTokenValid()
-      .pipe(
-        tap(() => this.tokenValid = true)
-      )
   }
 
   login(email: string, password: string): Observable<User> {
     return this.saveUser(
-      this.httpClient.post<User>(`${authApiUrl}/login`, {email, password}, {withCredentials: true})
+      this.httpClient.post<User>(`${authApiUrl}/login`, {email, password})
     )
   }
 
