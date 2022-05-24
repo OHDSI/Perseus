@@ -8,3 +8,6 @@ class RefreshToken(BaseModel):
     email = CharField(unique=True)
     refresh_token = CharField()
     expiration_date = DateTimeField()
+
+    class Meta:
+        db_table = 'refresh_token'

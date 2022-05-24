@@ -7,6 +7,9 @@ class BlacklistToken(BaseModel):
     token = CharField(unique=True)
     blacklisted_on = DateTimeField()
 
+    class Meta:
+        db_table = 'blacklist_token'
+
     @staticmethod
     def check_blacklist(auth_token):
         blacklisted_token = BlacklistToken.select().where(BlacklistToken.token == auth_token)
