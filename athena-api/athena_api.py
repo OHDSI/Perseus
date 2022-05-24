@@ -1,5 +1,6 @@
-from flask import request, jsonify, Blueprint
+import traceback
 
+from flask import request, jsonify, Blueprint
 from app import app
 from config import APP_PREFIX, VERSION
 from service.search_service import search_athena
@@ -29,3 +30,12 @@ def search_concepts():
     update_filters = request.args.get('updateFilters')
     search_result = search_athena(page_size, page, query, sort, order, filters, update_filters)
     return jsonify(search_result)
+
+
+@app.errorhandler(Exception)
+def handle_exception(error):
+    app.logger.error(error.__str__())
+    response = jsonify({'message': error.__str__()})
+    response.status_code = 500
+    traceback.print_tb(error.__traceback__)
+    return response

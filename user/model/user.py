@@ -5,7 +5,7 @@ from flask import request
 from jwt import encode, decode, ExpiredSignatureError, InvalidTokenError, PyJWTError
 from peewee import AutoField, BooleanField, CharField
 
-from model import blacklist_token
+from model import BlacklistToken
 from model.baseModel import BaseModel
 from utils.constants import TOKEN_SECRET_KEY
 from utils.exceptions import InvalidUsage
@@ -40,7 +40,7 @@ class User(BaseModel):
     def decode_auth_token(auth_token):
         payload = decode(auth_token, TOKEN_SECRET_KEY, algorithms='HS256')
         user = User.select().where(User.username == payload['sub']).get()
-        is_blacklisted_token = blacklist_token.check_blacklist(auth_token)
+        is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
         if is_blacklisted_token or not user.active:
            raise InvalidTokenError
         return payload['sub']

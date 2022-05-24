@@ -9,11 +9,12 @@ from cryptography.fernet import Fernet
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from app import app, bcrypt
-from model.blacklist_token import blacklist_token
-from model.refresh_token import refresh_token
+from model.blacklisttoken import BlacklistToken
+from model.refreshtoken import RefreshToken
 from model.user import User
-from model.unauthorized_reset_pwd_request import unauthorized_reset_pwd_request
+from model.unauthorizedresetpwdrequest import UnauthorizedResetPwdRequest
 from services.mailout_service import send_email
+from utils.password import decode_password
 from utils.exceptions import InvalidUsage
 from utils.constants import REGISTRATION_LINK_EXPIRATION_TIME,\
     PASSWORD_LINK_EXPIRATION_TIME, EMAIL_SECRET_KEY
@@ -42,9 +43,7 @@ atexit.register(lambda: scheduler.shutdown())
 
 
 def register_user_in_db(password, first_name, last_name, email, host):
-    encrypted_password = bcrypt.generate_password_hash(
-        password, app.config.get('BCRYPT_LOG_ROUNDS')
-    ).decode()
+    encrypted_password = decode_password(password)
     user = User.select().where(User.email == email)
     if user.exists():
         if user.get().active:
@@ -145,10 +144,10 @@ def get_active_user(param, type = ''):
 
 def get_refresh_token(email):
     random_string = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(100))
-    token = refresh_token.select().where(refresh_token.email == email)
+    token = RefreshToken.select().where(RefreshToken.email == email)
     if not token.exists():
-        token = refresh_token(email=email, refresh_token=random_string,
-                              expiration_date=datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=2592000))
+        token = RefreshToken(email=email, refresh_token=random_string,
+                             expiration_date=datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=2592000))
         token.save()
     else:
         update_refresh_token(random_string, token)
@@ -157,13 +156,13 @@ def get_refresh_token(email):
 
 def update_refresh_token(random_string, token):
     selected_token = token.get()
-    selected_token.refresh_token = random_string
+    selected_token.RefreshToken = random_string
     selected_token.expiration_date = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=2592000)
     selected_token.save()
 
 
 def get_refresh_access_token_pair(email, token):
-    token = refresh_token.select().where((refresh_token.email == email) & (refresh_token.refresh_token == token) & (refresh_token.expiration_date < datetime.datetime.utcnow()))
+    token = RefreshToken.select().where((RefreshToken.email == email) & (RefreshToken.refresh_token == token) & (RefreshToken.expiration_date < datetime.datetime.utcnow()))
     if token.exists():
         random_string = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(100))
         update_refresh_token(random_string, token)
@@ -175,10 +174,10 @@ def get_refresh_access_token_pair(email, token):
 
 
 def user_logout(current_user, auth_token):
-    blacklisted_token = blacklist_token(token=auth_token, blacklisted_on=datetime.datetime.now())
+    blacklisted_token = BlacklistToken(token=auth_token, blacklisted_on=datetime.datetime.now())
     blacklisted_token.save()
     user = get_active_user(current_user, 'username').get()
-    token = refresh_token.select().where(refresh_token.email == user.email)
+    token = RefreshToken.select().where(RefreshToken.email == user.email)
     if token.exists():
         token.get().delete_instance()
     return True
@@ -215,7 +214,7 @@ def reset_password_for_user(new_pwd, encrypted_email):
 def register_unauthorized_reset_pwd_in_db(user_key):
     if user_key in reset_pwd_links:
         user = User.select().where(User.email == reset_pwd_links[user_key]).get()
-        report = unauthorized_reset_pwd_request(username=user.username, report_date=datetime.datetime.utcnow())
+        report = UnauthorizedResetPwdRequest(username=user.username, report_date=datetime.datetime.utcnow())
         report.save()
         reset_pwd_links.pop(user_key, None)
     else:

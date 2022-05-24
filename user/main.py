@@ -3,6 +3,7 @@ from waitress import serve
 from app import app
 from authorization_api import user_api
 from config import PORT
+from create_tables import create_tables, create_test_users
 from db import pg_db
 
 
@@ -23,4 +24,6 @@ def after_request(response):
 
 
 if __name__ == '__main__':
+    create_tables()
+    create_test_users()
     serve(app, host='0.0.0.0', port=PORT)

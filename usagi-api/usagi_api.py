@@ -42,7 +42,7 @@ def create_codes(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
@@ -55,7 +55,7 @@ def get_import_source_codes_results_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return import_source_codes_results
 
 
@@ -71,7 +71,7 @@ def load_codes_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(codes_file)
 
 
@@ -103,11 +103,11 @@ def save_mapped_codes_call(current_user):
         filters = request.json['filters']
         result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
     except DataError as error:
-        raise InvalidUsage(error.__str__(), 400)
+        raise InvalidUsage(error.__str__(), 400, base=error)
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return json.dumps(result)
 
 
@@ -120,7 +120,7 @@ def get_vocabulary_list_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(result)
 
 
@@ -134,7 +134,7 @@ def load_mapped_concepts_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
@@ -148,7 +148,7 @@ def delete_vocabulary_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
@@ -161,7 +161,7 @@ def get_vocabulary_data_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(result)
 
 
@@ -174,7 +174,7 @@ def get_filters_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(result)
 
 
@@ -185,7 +185,7 @@ def cancel_concept_mapping_task_call(current_user):
     try:
         cancel_concept_mapping_task(current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
@@ -196,7 +196,7 @@ def cancel_load_vocabulary_task_call(current_user):
     try:
         cancel_load_vocabulary_task(current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
@@ -208,7 +208,7 @@ def solr_import_status_call():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return response
 
 
@@ -223,5 +223,5 @@ def start_solr_call():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(output)
