@@ -9,10 +9,10 @@ from cryptography.fernet import Fernet
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from app import app, bcrypt
-from model.blacklisttoken import BlacklistToken
-from model.refreshtoken import RefreshToken
+from model.blacklist_token import BlacklistToken
+from model.refresh_token import RefreshToken
 from model.user import User
-from model.unauthorizedresetpwdrequest import UnauthorizedResetPwdRequest
+from model.unauthorized_reset_pwd_request import UnauthorizedResetPwdRequest
 from services.mailout_service import send_email
 from utils.password import decode_password
 from utils.exceptions import InvalidUsage

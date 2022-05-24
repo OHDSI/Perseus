@@ -1,7 +1,7 @@
 from db import pg_db
 from model import User, BlacklistToken
-from model.refreshtoken import RefreshToken
-from model.unauthorizedresetpwdrequest import UnauthorizedResetPwdRequest
+from model.refresh_token import RefreshToken
+from model.unauthorized_reset_pwd_request import UnauthorizedResetPwdRequest
 from utils.password import decode_password
 
 
