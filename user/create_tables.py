@@ -10,23 +10,27 @@ def create_tables():
 
 
 def create_test_users():
-    if User.select().count == 0:
+    if User.select().count() == 0:
+        print("Creating test users...")
         users = [
             {
                 'username': 'perseus',
-                'first_name': 'name',
-                'last_name': 'surname',
+                'first_name': 'Perseus',
+                'last_name': 'Perseus',
                 'email': 'perseus@softwarecountry.com',
                 'password': decode_password('perseus'),
                 'active': True
             },
             {
                 'username': 'perseus-support',
-                'first_name': 'name',
-                'last_name': 'surname',
+                'first_name': 'Perseus',
+                'last_name': 'Support',
                 'email': 'perseussupport@softwarecountry.com',
                 'password': decode_password('perseus'),
                 'active': True
             }
         ]
         User.insert_many(users).execute()
+        print('Test users created!')
+    else:
+        print('Users found in the database. Skipping creating test users.')
