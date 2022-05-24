@@ -2,7 +2,6 @@ import traceback
 
 from flask import request, jsonify, Blueprint, Response
 from urllib.parse import urlparse
-from werkzeug.exceptions import BadRequestKeyError
 
 from app import app
 from config import APP_PREFIX, VERSION
@@ -40,7 +39,7 @@ def register_user():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f'Unable to register user: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to register user: {error.__str__()}', 500, base=error)
     return jsonify(True)
 
 
@@ -54,7 +53,7 @@ def confirm_registration():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f'Unable to confirm registration: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to confirm registration: {error.__str__()}', 500, base=error)
 
     return redirect_to_page
 
@@ -67,12 +66,10 @@ def login():
         password = request.json['password']
         login_res = user_login(email, password)
         return jsonify(login_res)
-    except InvalidUsage as error:
-        raise error
-    except AuthorizationError as error:
+    except (AuthorizationError, InvalidUsage) as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f'Unable to login user: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to login user: {error.__str__()}', 500, base=error)
 
 
 @user_api.route('/api/logout', methods=['GET'])
@@ -82,7 +79,7 @@ def logout(current_user):
     try:
         user_logout(current_user, request.headers[AUTHORIZATION_HEADER])
     except Exception as error:
-        raise InvalidUsage(f'Unable to logout user: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to logout user: {error.__str__()}', 500, base=error)
     return jsonify()
 
 
@@ -94,7 +91,7 @@ def reset_password_request():
         email = request.json['email']
         send_reset_password_email(email, host)
     except Exception as error:
-        raise InvalidUsage(f'Unable to recover password: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to recover password: {error.__str__()}', 500, base=error)
     return jsonify(True)
 
 
@@ -107,7 +104,7 @@ def check_reset_password_link():
         if password_link_active(encrypted_email):
             return redirect(f"{host}/reset-password?token={encrypted_email}", code=302)
     except Exception as error:
-        raise InvalidUsage(f'Unable to check password link: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to check password link: {error.__str__()}', 500, base=error)
     return redirect(f"{host}/link-expired?linkType=password&email={decrypt_email(encrypted_email)}", code=302)
 
 
@@ -119,7 +116,7 @@ def reset_password():
         encrypted_email = request.json['token']
         reset_password_for_user(new_pwd, encrypted_email)
     except Exception as error:
-        raise InvalidUsage(f'Unable to reset password: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to reset password: {error.__str__()}', 500, base=error)
     return jsonify(True)
 
 
@@ -132,7 +129,7 @@ def resend_activation_link():
         linkType = request.json['linkType']
         send_link_to_user_repeatedly(email, linkType, host)
     except Exception as error:
-        raise InvalidUsage(f'Unable to resend activation link: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to resend activation link: {error.__str__()}', 500, base=error)
     return jsonify(True)
 
 
@@ -144,7 +141,7 @@ def register_unauthorized_reset_pwd():
         user_key = request.args['token']
         register_unauthorized_reset_pwd_in_db(user_key)
     except Exception as error:
-        raise InvalidUsage(f'Unable to register unauthorized reset password request: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to register unauthorized reset password request: {error.__str__()}', 500, base=error)
     return redirect(f"{host}", code=302)
 
 
@@ -158,7 +155,7 @@ def refresh_access_token():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f'Unable to refresh access token: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to refresh access token: {error.__str__()}', 500, base=error)
     return jsonify(tokens)
 
 
@@ -173,7 +170,7 @@ def is_token_valid_call():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f'Unable to check if token is valid: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to check if token is valid: {error.__str__()}', 500, base=error)
 
 
 @user_api.route('/api/is_token_valid_internal', methods=['GET'])
@@ -187,7 +184,7 @@ def is_token_valid_internal():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f'Unable to check if token is valid: {error.__str__()}', 500)
+        raise InvalidUsage(f'Unable to check if token is valid: {error.__str__()}', 500, base=error)
 
 
 @app.errorhandler(InvalidUsage)
@@ -204,23 +201,5 @@ def handle_invalid_usage(error):
     """handle error of wrong usage on functions"""
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    traceback.print_tb(error.__traceback__)
-    return response
-
-
-@app.errorhandler(BadRequestKeyError)
-def handle_invalid_req_key(error):
-    """handle error of missed/wrong parameter"""
-    response = jsonify({'message': error.__str__()})
-    response.status_code = 400
-    traceback.print_tb(error.__traceback__)
-    return response
-
-
-@app.errorhandler(KeyError)
-def handle_invalid_req_key_header(error):
-    """handle error of missed/wrong parameter"""
-    response = jsonify({'message': f'{error.__str__()} missing'})
-    response.status_code = 400
     traceback.print_tb(error.__traceback__)
     return response
