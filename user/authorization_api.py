@@ -12,6 +12,7 @@ from services.authorization_service import activate_user_in_db,\
      redirect, register_user_in_db,\
      send_reset_password_email, send_link_to_user_repeatedly,\
      user_login, user_logout
+from services.mailout_service import is_smtp_configured
 from utils.constants import USERNAME_HEADER, AUTHORIZATION_HEADER
 from utils.exceptions import InvalidUsage, AuthorizationError
 from utils.utils import getServerHostPort
@@ -29,6 +30,8 @@ def app_info():
 @user_api.route('/api/register', methods=['POST'])
 def register_user():
     app.logger.info("REST request to register new user")
+    if not is_smtp_configured():
+        raise InvalidUsage(f'Variables for SMTP server not specified', 500)
     try:
         host = getServerHostPort(urlparse(request.base_url).hostname)
         password = request.json['password']
