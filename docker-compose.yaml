@@ -1,20 +1,7 @@
 services:
-#  pgadmin:
-#    container_name: pgadmin
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-#      PGADMIN_CONFIG_SERVER_MODE: 'False'
-#    volumes:
-#      - pgadmin:/var/lib/pgadmin
-#    ports:
-#      - "5050:80"
-#    depends_on:
-#      - shareddb
-#    restart: unless-stopped
   web:
     build: ./nginx
+    image: perseushub.azurecr.io/web:latest
     container_name:
       web
     ports:
@@ -123,7 +110,7 @@ services:
     build:
       context: ./UI
       args:
-        env: dev
+        env: prod
     container_name:
       frontend
     ports:
@@ -151,21 +138,20 @@ services:
       - "5002:5002"
     depends_on:
       - solr
-  usagi:
-    build: ./usagi-api
-    command: python /app/main.py
-    container_name: usagi
-    environment:
-      USAGI_ENV: Docker
-    ports:
-      - "5003:5003"
-    depends_on:
-      - shareddb
-      - vocabularydb
-      - solr
+#  usagi:
+#    build: ./usagi-api
+#    command: python /app/main.py
+#    container_name: usagi
+#    environment:
+#      USAGI_ENV: Docker
+#    ports:
+#      - "5003:5003"
+#    depends_on:
+#      - shareddb
+#      - vocabularydb
+#      - solr
 
 volumes:
   shareddb:
   vocabularydb:
   solr:
-#  pgadmin:
