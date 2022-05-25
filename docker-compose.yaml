@@ -163,17 +163,5 @@ services:
 
 volumes:
   shareddb:
-    driver: azure_file
-    driver_opts:
-      share_name: shareddb
-      storage_account_name: shareddb
   vocabularydb:
-    driver: azure_file
-    driver_opts:
-      share_name: vocabularydb
-      storage_account_name: vocabularydb
   solr:
-    driver: azure_file
-    driver_opts:
-      share_name: solr
-      storage_account_name: solr
