@@ -14,27 +14,17 @@ services:
 #      - shareddb
 #    restart: unless-stopped
   web:
-    image: nginx
+    build: ./nginx
     container_name:
       web
-    volumes:
-      - type: bind
-        source: ./nginx/default.conf
-        target: /etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     restart: always
   shareddb:
+    build: ./shared-db
     container_name: shareddb
-    image: postgres
-    environment:
-      POSTGRES_USER: shared
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: shared
-      PGDATA: /data/postgres
     volumes:
       - shareddb:/data/postgres
-      - ./shared-db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
   files-manager:
