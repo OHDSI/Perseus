@@ -1,7 +1,7 @@
 services:
   web:
     build: ./nginx
-    image: perseushub.azurecr.io/web:latest
+    image: perseushub.azurecr.io/web
     container_name:
       web
     ports:
@@ -9,6 +9,7 @@ services:
     restart: always
   shareddb:
     build: ./shared-db
+    image: perseushub.azurecr.io/shareddb
     container_name: shareddb
     volumes:
       - shareddb:/data/postgres
@@ -16,6 +17,7 @@ services:
       - "5432:5432"
   files-manager:
     build: ./files-manager
+    image: perseushub.azurecr.io/files-manager
     container_name: files-manager
     ports:
       - "10500:10500"
@@ -25,6 +27,7 @@ services:
       - shareddb
   white-rabbit:
     build: ../WhiteRabbit
+    image: perseushub.azurecr.io/white-rabbit
     container_name:
       white-rabbit
     ports:
@@ -38,6 +41,7 @@ services:
     build: 
        context: ../ETL-CDMBuilder
        dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
+    image: perseushub.azurecr.io/cdm-builder
     container_name:
       cdm-builder
     ports:
@@ -51,6 +55,7 @@ services:
       context: ../DataQualityDashboard/R
       args:
         prop: docker
+    image: perseushub.azurecr.io/r-serve
     container_name:
       r-serve
     ports:
@@ -60,6 +65,7 @@ services:
   data-quality-dashboard:
     build:
       context: ../DataQualityDashboard
+    image: perseushub.azurecr.io/data-quality-dashboard
     container_name:
       data-quality-dashboard
     ports:
@@ -72,6 +78,7 @@ services:
       - r-serve
   user:
     build: ./user
+    image: perseushub.azurecr.io/user
     command: python /app/main.py
     container_name: user
     environment:
@@ -85,6 +92,7 @@ services:
       - shareddb
   backend:
     build: ./perseus-api
+    image: perseushub.azurecr.io/backend
     command: python /app/main.py
     container_name: backend
     environment:
@@ -96,6 +104,7 @@ services:
       - files-manager
   vocabularydb:
     build: ./vocabulary-db
+    image: perseushub.azurecr.io/vocabularydb
     container_name: vocabularydb
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
@@ -111,12 +120,14 @@ services:
       context: ./UI
       args:
         env: prod
+    image: perseushub.azurecr.io/frontend
     container_name:
       frontend
     ports:
       - "4200:4200"
   solr:
-    image: solr
+    build: ./solr
+    image: perseushub.azurecr.io/solr
     container_name: solr
     command:
       - solr-precreate
@@ -126,10 +137,9 @@ services:
       - "8983:8983"
     volumes:
       - solr:/var/solr
-      - ./solr/athena:/opt/solr/server/solr/configsets/athena
-      - ./solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
   athena:
     build: ./athena-api
+    image: perseushub.azurecr.io/athena
     command: python /app/main.py
     container_name: athena
     environment:
@@ -153,5 +163,17 @@ services:
 
 volumes:
   shareddb:
+    driver: azure_file
+    driver_opts:
+      share_name: shareddb
+      storage_account_name: shareddb
   vocabularydb:
+    driver: azure_file
+    driver_opts:
+      share_name: vocabularydb
+      storage_account_name: vocabularydb
   solr:
+    driver: azure_file
+    driver_opts:
+      share_name: solr
+      storage_account_name: solr
