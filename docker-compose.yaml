@@ -113,8 +113,11 @@ services:
       retries: 10
     volumes:
       - vocabularydb:/data/postgres
+    expose:
+      - "5431"
     ports:
-      - "5431:5432"
+      - "5431:5431"
+    command: -p 5431
   frontend:
     build:
       context: ./UI
@@ -163,5 +166,17 @@ services:
 
 volumes:
   shareddb:
+    driver: azure_file
+    driver_opts:
+      share_name: shareddb
+      storage_account_name: shareddb
   vocabularydb:
+    driver: azure_file
+    driver_opts:
+      share_name: vocabularydb
+      storage_account_name: vocabularydb
   solr:
+    driver: azure_file
+    driver_opts:
+      share_name: solr
+      storage_account_name: solr
