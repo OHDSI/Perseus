@@ -71,11 +71,9 @@ services:
       - r-serve
   user:
     build: ./user
-    command: python /app/main.py
     container_name: user
     environment:
       USER_ENV: Docker
-      TOKEN_SECRET_KEY: Perseus-Arcadia
     env_file:
       - user/user-envs.txt
     ports:
@@ -84,7 +82,6 @@ services:
       - shareddb
   backend:
     build: ./perseus-api
-    command: python /app/main.py
     container_name: backend
     environment:
       PERSEUS_ENV: Docker
@@ -117,17 +114,12 @@ services:
   solr:
     build: ./solr
     container_name: solr
-    command:
-      - solr-precreate
-      - athena
-      - /opt/solr/server/solr/configsets/athena/conf
     ports:
       - "8983:8983"
     volumes:
       - solr:/var/solr
   athena:
     build: ./athena-api
-    command: python /app/main.py
     container_name: athena
     environment:
       ATHENA_ENV: Docker

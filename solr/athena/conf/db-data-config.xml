@@ -1,6 +1,8 @@
 <dataConfig>
-    <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://vocabularydb:5432/vocabulary"
-                user="perseus" password="password"/>
+    <dataSource driver="org.postgresql.Driver"
+                url="${dataimporter.request.jdbcurl}"
+                user="${dataimporter.request.jdbcuser}"
+                password="${dataimporter.request.jdbcpassword}"/>
     <document>
         <entity name="Concepts"
                 query="SELECT
