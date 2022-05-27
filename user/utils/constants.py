@@ -10,9 +10,12 @@ REGISTRATION_LINK_EXPIRATION_TIME = 172800 # 48 hours
 USERNAME_HEADER = 'Username'
 AUTHORIZATION_HEADER = 'Authorization'
 
-os_env = os.getenv("TOKEN_SECRET_KEY")
-if os_env is None:
+TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY")
+EMAIL_SECRET_KEY = os.getenv("EMAIL_SECRET_KEY")
+
+if TOKEN_SECRET_KEY is None:
     print('TOKEN_SECRET_KEY env variable is None', sys.stderr)
     exit(1)
-TOKEN_SECRET_KEY = os_env
-EMAIL_SECRET_KEY = app.config["EMAIL_SECRET_KEY"]
+if EMAIL_SECRET_KEY is None:
+    print('EMAIL_SECRET_KEY env variable is None', sys.stderr)
+    exit(1)
