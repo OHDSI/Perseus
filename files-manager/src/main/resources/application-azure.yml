@@ -1,0 +1,28 @@
+server:
+  port: 10500
+  error:
+    include-message: always
+  servlet:
+    context-path: /files-manager
+spring:
+  application:
+    name: Files Manager
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  datasource:
+    url: ${SHARED_DB_URL}
+    username: ${SHARED_DB_FM_USERNAME}
+    password: ${SHARED_DB_FM_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+
