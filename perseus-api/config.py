@@ -39,8 +39,8 @@ class DockerConfig:
 
 class AzureConfig:
     APP_LOGIC_DB_NAME = os.getenv("SHARED_DB_NAME")
-    APP_LOGIC_DB_USER = os.getenv("SHARED_DB_USER")
-    APP_LOGIC_DB_PASSWORD = os.getenv("SHARED_DB_PASSWORD")
+    APP_LOGIC_DB_USER = os.getenv("SHARED_DB_PERSEUS_USER")
+    APP_LOGIC_DB_PASSWORD = os.getenv("SHARED_DB_PERSEUS_PASSWORD")
     APP_LOGIC_DB_HOST = os.getenv("SHARED_DB_HOST")
     APP_LOGIC_DB_PORT = os.getenv("SHARED_DB_PORT")
 

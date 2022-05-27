@@ -25,8 +25,8 @@ class DockerConfig:
 
 class AzureConfig:
     DB_NAME = os.getenv("SHARED_DB_NAME")
-    DB_USER = os.getenv("SHARED_DB_USER")
-    DB_PASSWORD = os.getenv("SHARED_DB_PASSWORD")
+    DB_USER = os.getenv("SHARED_DB_U_USER")
+    DB_PASSWORD = os.getenv("SHARED_DB_U_PASSWORD")
     DB_HOST = os.getenv("SHARED_DB_HOST")
     DB_PORT = os.getenv("SHARED_DB_PORT")
     EMAIL_SECRET_KEY = '8cmuh4t5xTtR1EHaojWL0aqCR3vZ48PZF5AYkTe0iqo='
