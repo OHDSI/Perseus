@@ -5,8 +5,12 @@ from peewee import DataError
 from app import app
 from config import APP_PREFIX, VERSION
 from model.usagi.code_mapping import ScoredConceptEncoder
+from model.usagi2.code_mapping_conversion import CodeMappingConversion
+from model.usagi2.code_mapping_conversion_log import CodeMappingConversionLog
+from model.usagi2.code_mapping_conversion_result import CodeMappingConversionResult
+from model.usagi2.conversion_status import ConversionStatus
 from service.search_service import search_usagi
-from service.solr_cole_service import run_solr_command
+from service.solr_core_service import run_solr_command
 from service.usagi_service import get_saved_code_mapping, create_concept_mapping, get_vocabulary_list_for_user, \
     load_mapped_concepts_by_vocabulary_name, delete_vocabulary, get_vocabulary_data, get_filters, load_codes_to_server, \
     save_codes
@@ -36,14 +40,52 @@ def create_codes(current_user):
         auto_concept_id_column = params['autoConceptId']
         additional_info_columns = params['additionalInfo']
         concept_ids_or_atc = params['columnType']
+        project = 'some'
         codes = request.json['codes']
         filters = request.json['filters']
-        create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
+        conversion = CodeMappingConversion.create(
+                                                 username=current_user,
+                                                 project=project,
+                                                 status_code=ConversionStatus.IN_PROGRESS.value,
+                                                 status_name = ConversionStatus.IN_PROGRESS.name
+                                                 )
+        create_concept_mapping(conversion, current_user, codes, filters, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify('OK')
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify({'id': conversion.id,
+                    'project': conversion.project,
+                    'statusCode': conversion.status_code,
+                    'statusName': conversion.status_name,
+                    'logs': []})
+
+
+@usagi.route('/api/import_source_codes_status', methods=['GET'])
+@username_header
+def get_import_source_codes_logs_call(current_user):
+    app.logger.info("REST request GET concept mapping logs")
+    try:
+        conversion = request.args["conversionId"]
+        conversion = CodeMappingConversion.get(CodeMappingConversion.id==conversion)
+        logs = CodeMappingConversionLog.select(
+            CodeMappingConversionLog.message,
+            CodeMappingConversionLog.status_code,
+            CodeMappingConversionLog.status_name,
+            CodeMappingConversionLog.percent
+            ).where(CodeMappingConversionLog.conversion==conversion).dicts()
+        print(logs)
+    except InvalidUsage as error:
+        raise error
+    except Exception as error:
+        raise InvalidUsage(error.__str__(), 500)
+    return jsonify({
+                'id': conversion.id,
+                'project': conversion.project,
+                'statusCode': conversion.status_code,
+                'statusName': conversion.status_name,
+                'logs': [log for log in logs]
+                })
 
 
 @usagi.route('/api/get_import_source_codes_results', methods=['GET'])
@@ -101,7 +143,9 @@ def save_mapped_codes_call(current_user):
         vocabulary_name = request.json['name']
         mapping_params = request.json['mappingParams']
         filters = request.json['filters']
-        result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+        conversion = request.json['conversionId']
+        conversion = CodeMappingConversion.get(CodeMappingConversion.id==conversion)
+        result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name, conversion)
     except DataError as error:
         raise InvalidUsage(error.__str__(), 400, base=error)
     except InvalidUsage as error:
@@ -185,7 +229,16 @@ def cancel_concept_mapping_task_call(current_user):
     try:
         cancel_concept_mapping_task(current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
+        raise InvalidUsage(error.__str__(), 500)
+    conversion = request.args.get('conversion')
+    conversion = CodeMappingConversion.get(CodeMappingConversion.id==conversion)
+    CodeMappingConversionLog.create(
+                message="Import aborted",
+                status_code=ConversionStatus.ABORTED.value,
+                status_name=ConversionStatus.ABORTED.name,
+                conversion=conversion
+            )
+    CodeMappingConversionResult.create(result=ConversionStatus.ABORTED.value, conversion=conversion)
     return jsonify('OK')
 
 

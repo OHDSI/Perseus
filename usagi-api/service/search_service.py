@@ -8,6 +8,12 @@ from util.constants import USAGI_CORE_NAME
 
 CONCEPT_TERM = "C"
 CONCEPT_TYPE_STRING	= "C"
+SOLR_CONN_STRING = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{USAGI_CORE_NAME}"
+
+def count():
+    solr = pysolr.Solr(SOLR_CONN_STRING)
+    results = solr.search('*:*', rows=0)
+    return results.hits
 
 
 def search_usagi(filters, query, source_auto_assigned_concept_ids):

@@ -1,5 +1,6 @@
 import json
 import os
+from time import perf_counter
 import pandas as pd
 import pysolr
 import os.path
@@ -11,10 +12,13 @@ from app import app
 from model.usagi.atc_to_rxnorm import atc_to_rxnorm
 from model.usagi.code_mapping import CodeMappingEncoder, CodeMapping, MappingTarget, MappingStatus
 from model.usagi2.code_mapping_snapshot import CodeMappingSnapshot
+from model.usagi2.code_mapping_conversion_result import CodeMappingConversionResult
+from model.usagi2.code_mapping_conversion_log import CodeMappingConversionLog
+from model.usagi2.code_mapping_conversion import CodeMappingConversion
+from model.usagi2.conversion_status import ConversionStatus
 from model.usagi.source_code import SourceCode
 from model.vocabulary.source_to_concept_map import Source_To_Concept_Map
 from service.search_service import search_usagi
-from service.web_socket_service import emit_status
 from util.async_directive import fire_and_forget_load_vocabulary, fire_and_forget_concept_mapping
 from util.constants import CONCEPT_IDS, UPLOAD_SOURCE_CODES_FOLDER, SOURCE_CODE_TYPE_STRING, SOLR_FILTERS, \
     USAGI_CORE_NAME
@@ -105,19 +109,25 @@ def create_derived_index(current_user, source_codes):
 
 
 @fire_and_forget_concept_mapping
-def create_concept_mapping(current_user, codes, filters, source_code_column, source_name_column, source_frequency_column,
+def create_concept_mapping(conversion, current_user, codes, filters, source_code_column, source_name_column, source_frequency_column,
                            auto_concept_id_column, concept_ids_or_atc, additional_info_columns):
     try:
         source_codes = create_source_codes(current_user, codes, source_code_column, source_name_column,
                                            source_frequency_column, auto_concept_id_column, concept_ids_or_atc,
                                            additional_info_columns)
         global_mapping_list = []
-        for source_code in source_codes:
+        for idx, source_code in enumerate(source_codes):
             code_mapping = CodeMapping()
             code_mapping.sourceCode = source_code
             code_mapping.sourceCode.source_auto_assigned_concept_ids = \
                 list(code_mapping.sourceCode.source_auto_assigned_concept_ids) if code_mapping.sourceCode.source_auto_assigned_concept_ids else []
-            emit_status(current_user, f"import_codes_status", f"Searching {source_code.source_name}", 1)
+            CodeMappingConversionLog.create(
+                message=f"Searching {source_code.source_name}",
+                percent=100//len(source_codes)*idx,
+                status_code=ConversionStatus.IN_PROGRESS.value,
+                status_name=ConversionStatus.IN_PROGRESS.name,
+                conversion=conversion
+            )
             scored_concepts = search_usagi(filters, source_code.source_name, source_code.source_auto_assigned_concept_ids)
             if len(scored_concepts):
                 target_concept = MappingTarget(concept=scored_concepts[0].concept, createdBy='<auto>', term=scored_concepts[0].term)
@@ -132,10 +142,27 @@ def create_concept_mapping(current_user, codes, filters, source_code_column, sou
                 code_mapping.mappingStatus = MappingStatus.AUTO_MAPPED
             global_mapping_list.append(code_mapping)
         saved_import_results[current_user] = global_mapping_list
-        emit_status(current_user, f"import_codes_status", "Import finished", 2)
+        CodeMappingConversion.update(
+            status_code=ConversionStatus.COMPLETED.value,
+            status_name=ConversionStatus.COMPLETED.name,
+        ).where(CodeMappingConversion.id==conversion.id).execute()
+        CodeMappingConversionLog.create(
+                message="Import finished",
+                percent=100,
+                status_code=ConversionStatus.COMPLETED.value,
+                status_name=ConversionStatus.COMPLETED.name,
+                conversion=conversion
+            )
+        CodeMappingConversionResult.create(result=ConversionStatus.COMPLETED.value, conversion=conversion)
     except Exception as error:
-        emit_status(current_user, f"import_codes_status", error.__str__(), 4)
-    return
+        CodeMappingConversionLog.create(
+                message=error.__str__(),
+                percent=0,
+                status_code=ConversionStatus.FAILED.value,
+                status_name=ConversionStatus.FAILED.name,
+                conversion=conversion
+            )
+        CodeMappingConversionResult.create(result=ConversionStatus.FAILED.value, conversion=conversion)
 
 
 def get_saved_code_mapping(current_user):
@@ -144,9 +171,8 @@ def get_saved_code_mapping(current_user):
     return result
 
 
-def save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
+def save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name, conversion):
     try:
-        delete_vocabulary(vocabulary_name, current_user)
         for item in mapped_codes:
             if 'approved' in item:
                 if item['approved']:
@@ -166,13 +192,13 @@ def save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocab
                                                     username=current_user)
                         mapped_code.save()
 
-        save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
+        save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name, conversion)
     except Exception as error:
         raise InvalidUsage(error.__str__(), 400)
     return True
 
 
-def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name):
+def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name, conversion):
     source_and_mapped_codes_dict = {'codes': codes, 'mappingParams': mapping_params, 'codeMappings': mapped_codes, 'filters': filters}
     source_and_mapped_codes_string = json.dumps(source_and_mapped_codes_dict)
 
@@ -185,9 +211,10 @@ def save_source_codes_and_mapped_concepts_in_db(current_user, codes, mapping_par
         saved_mapped_concepts.save()
     else:
         new_saved_mapped_concepts = CodeMappingSnapshot(name=vocabulary_name,
-                                                   codes_and_mapped_concepts=source_and_mapped_codes_string,
-                                                   username=current_user,
-                                                   created_on=datetime.datetime.utcnow())
+                                                        snapshot=source_and_mapped_codes_string,
+                                                        username=current_user,
+                                                        time=datetime.datetime.utcnow(),
+                                                        conversion=conversion)
         new_saved_mapped_concepts.save()
     return
 
@@ -204,7 +231,7 @@ def delete_vocabulary(vocabulary_name, current_user):
 
 def get_vocabulary_list_for_user(current_user):
     result = []
-    saved_mapped_concepts = CodeMappingSnapshot.select().where(CodeMappingSnapshot.username == current_user).order_by(CodeMappingSnapshot.created_on.desc())
+    saved_mapped_concepts = CodeMappingSnapshot.select().where(CodeMappingSnapshot.username == current_user).order_by(CodeMappingSnapshot.time.desc())
     if saved_mapped_concepts.exists():
         for item in saved_mapped_concepts:
             result.append(item.name)
@@ -214,18 +241,16 @@ def get_vocabulary_list_for_user(current_user):
 @fire_and_forget_load_vocabulary
 def load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user):
     try:
-        emit_status(current_user, f"import_codes_status", "Fetching saved source codes", 0)
         saved_mapped_concepts = CodeMappingSnapshot.select().where(
             (CodeMappingSnapshot.username == current_user) & (CodeMappingSnapshot.name == vocabulary_name))
         if saved_mapped_concepts.exists():
             codes_and_saved_mappings_string = saved_mapped_concepts.get().codes_and_mapped_concepts
             codes_and_saved_mappings = json.loads(codes_and_saved_mappings_string)
-            emit_status(current_user, f"import_codes_status", "Process finished", 2)
             fetched_vocabularies[current_user] = codes_and_saved_mappings
         else:
             raise InvalidUsage('Vocabulary not found', 404)
     except Exception as error:
-        emit_status(current_user, f"import_codes_status", error.__str__(), 4)
+        raise InvalidUsage('Load mapped concepts by vocabulary name failed', 500)
     return
 
 

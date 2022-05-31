@@ -178,6 +178,7 @@ VACUUM FULL "vocabulary"."relationship";
 --- source_to_concept_map
 CREATE TABLE "vocabulary"."source_to_concept_map"
 (
+   id                       serial         PRIMARY KEY,
    source_code              varchar(255)    NOT NULL,
    source_concept_id        int            NOT NULL,
    source_vocabulary_id     varchar(20)    NOT NULL,
@@ -186,7 +187,8 @@ CREATE TABLE "vocabulary"."source_to_concept_map"
    target_vocabulary_id     varchar(20)    NOT NULL,
    valid_start_date         date           NOT NULL,
    valid_end_date           date           NOT NULL,
-   invalid_reason           varchar(1)
+   invalid_reason           varchar(1),
+   username                 varchar(255)    NOT NULL,
 );
 
 -- ALTER TABLE "vocabulary"."source_to_concept_map" ADD CONSTRAINT xpk_source_to_concept_map PRIMARY KEY (source_vocabulary_id,target_concept_id,source_code,valid_end_date);
@@ -225,3 +227,5 @@ CREATE USER perseus WITH ENCRYPTED PASSWORD 'password';
 --- permissions
 GRANT USAGE ON SCHEMA vocabulary TO perseus;
 GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO perseus;
+GRANT INSERT on "vocabulary"."source_to_concept_map" to perseus;
+GRANT UPDATE on "vocabulary"."source_to_concept_map_id_seq" to perseus;

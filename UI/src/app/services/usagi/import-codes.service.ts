@@ -20,7 +20,8 @@ const initialState: ImportCodesState = {
   mappingParams: null,
   codeMappings: null,
   filters: defaultSearchConceptFilters(),
-  isExisted: false
+  isExisted: false,
+  conversionId: null
 }
 
 @Injectable()
@@ -34,6 +35,10 @@ export class ImportCodesService implements StateService {
 
   get codes(): Code[] {
     return this.state.codes
+  }
+
+  get conversionId(): number {
+    return this.state.conversionId
   }
 
   get columns(): Column[] {
@@ -113,8 +118,12 @@ export class ImportCodesService implements StateService {
     return this.httpClient.post<Conversion>(`${usagiUrl}/import_source_codes`, body)
   }
 
+  setConversionId(conversionId: number): void {
+    this.state.conversionId = conversionId
+  }
+
   calculatingScoresInfoWithLogs(conversionId: number): Observable<Conversion> {
-    return this.httpClient.get<Conversion>(`${usagiUrl}/import_source_codes_status/${conversionId}`)
+    return this.httpClient.get<Conversion>(`${usagiUrl}/import_source_codes_status?conversionId=${conversionId}`)
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {
@@ -141,7 +150,8 @@ export class ImportCodesService implements StateService {
       codes: this.codes,
       mappingParams: this.mappingParams,
       codeMappings: this.codeMappings,
-      filters: this.filters
+      filters: this.filters,
+      conversionId: this.conversionId
     }
     return this.httpClient.post<void>(`${usagiUrl}/save_mapped_codes`, body)
   }

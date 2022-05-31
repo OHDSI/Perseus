@@ -12,7 +12,7 @@ import { parseHttpError } from '@utils/error'
   template: ``
 })
 export abstract class ProgressConsoleWrapperComponent extends BaseComponent implements OnInit {
-  readonly CONVERSION_INFO_REQUEST_INTERVAL: number = 2800
+  readonly CONVERSION_INFO_REQUEST_INTERVAL: number = 5000
 
   @Input()
   conversion: Conversion
