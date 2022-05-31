@@ -5,7 +5,6 @@ from peewee import DataError
 from app import app
 from config import APP_PREFIX, VERSION
 from model.usagi.code_mapping import ScoredConceptEncoder
-from model.user.user import token_required
 from service.search_service import search_usagi
 from service.solr_cole_service import run_solr_command
 from service.usagi_service import get_saved_code_mapping, create_concept_mapping, get_vocabulary_list_for_user, \
@@ -14,6 +13,7 @@ from service.usagi_service import get_saved_code_mapping, create_concept_mapping
 from util.async_directive import cancel_concept_mapping_task, cancel_load_vocabulary_task
 from util.constants import USAGI_IMPORT_STATUS, QUERY_SEARCH_MODE
 from util.exception import InvalidUsage
+from util.utils import username_header
 
 usagi = Blueprint('usagi', __name__, url_prefix=APP_PREFIX)
 
@@ -25,7 +25,7 @@ def app_version():
 
 
 @usagi.route('/api/import_source_codes', methods=['POST'])
-@token_required
+@username_header
 def create_codes(current_user):
     app.logger.info("REST request to start creating concept mapping process")
     try:
@@ -42,12 +42,12 @@ def create_codes(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
 @usagi.route('/api/get_import_source_codes_results', methods=['GET'])
-@token_required
+@username_header
 def get_import_source_codes_results_call(current_user):
     app.logger.info("REST request GET concept mapping")
     try:
@@ -55,12 +55,12 @@ def get_import_source_codes_results_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return import_source_codes_results
 
 
 @usagi.route('/api/load_codes_to_server', methods=['POST'])
-@token_required
+@username_header
 def load_codes_call(current_user):
     app.logger.info("REST request extract codes from CSV")
     """save schema to server and load it from server in the same request"""
@@ -71,12 +71,12 @@ def load_codes_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(codes_file)
 
 
 @usagi.route('/api/get_term_search_results', methods=['POST'])
-@token_required
+@username_header
 def get_term_search_results_call(current_user):
     app.logger.info("REST request to GET term search result")
     try:
@@ -92,7 +92,7 @@ def get_term_search_results_call(current_user):
 
 
 @usagi.route('/api/save_mapped_codes', methods=['POST'])
-@token_required
+@username_header
 def save_mapped_codes_call(current_user):
     app.logger.info("REST request to save mapped codes")
     try:
@@ -103,16 +103,16 @@ def save_mapped_codes_call(current_user):
         filters = request.json['filters']
         result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name)
     except DataError as error:
-        raise InvalidUsage(error.__str__(), 400)
+        raise InvalidUsage(error.__str__(), 400, base=error)
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return json.dumps(result)
 
 
 @usagi.route('/api/get_vocabulary_list', methods=['GET'])
-@token_required
+@username_header
 def get_vocabulary_list_call(current_user):
     app.logger.info("REST request to GET vocabulary list")
     try:
@@ -120,12 +120,12 @@ def get_vocabulary_list_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(result)
 
 
 @usagi.route('/api/get_vocabulary', methods=['GET'])
-@token_required
+@username_header
 def load_mapped_concepts_call(current_user):
     app.logger.info("REST request to GET vocabulary")
     try:
@@ -134,12 +134,12 @@ def load_mapped_concepts_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
 @usagi.route('/api/delete_vocabulary', methods=['GET'])
-@token_required
+@username_header
 def delete_vocabulary_call(current_user):
     app.logger.info("REST request to DELETE vocabulary")
     try:
@@ -148,12 +148,12 @@ def delete_vocabulary_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
 @usagi.route('/api/get_vocabulary_data', methods=['GET'])
-@token_required
+@username_header
 def get_vocabulary_data_call(current_user):
     app.logger.info("REST request to GET vocabulary data")
     try:
@@ -161,12 +161,12 @@ def get_vocabulary_data_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(result)
 
 
 @usagi.route('/api/get_filters', methods=['GET'])
-@token_required
+@username_header
 def get_filters_call(current_user):
     app.logger.info("REST request to GET filters")
     try:
@@ -174,29 +174,29 @@ def get_filters_call(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(result)
 
 
 @usagi.route('/api/cancel_concept_mapping_task', methods=['GET'])
-@token_required
+@username_header
 def cancel_concept_mapping_task_call(current_user):
     app.logger.info("REST request to GET filters")
     try:
         cancel_concept_mapping_task(current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
 @usagi.route('/api/cancel_load_vocabulary_task', methods=['GET'])
-@token_required
+@username_header
 def cancel_load_vocabulary_task_call(current_user):
     app.logger.info("REST request to cancel mapping codes process")
     try:
         cancel_load_vocabulary_task(current_user)
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify('OK')
 
 
@@ -208,7 +208,7 @@ def solr_import_status_call():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return response
 
 
@@ -223,5 +223,5 @@ def start_solr_call():
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(error.__str__(), 500, base=error)
     return jsonify(output)

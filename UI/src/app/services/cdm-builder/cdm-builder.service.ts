@@ -64,7 +64,7 @@ export class CdmBuilderService {
   }
 
   abort(conversionId: number): Observable<boolean> {
-    return this.httpClient.get(`${cdmBuilderApiUrl}/?conversionId=${conversionId}`, {observe: 'response', responseType: 'text'})
+    return this.httpClient.get(`${cdmBuilderApiUrl}/abort?conversionId=${conversionId}`, {observe: 'response', responseType: 'text'})
       .pipe(
         map(response => response.status === 200)
       );

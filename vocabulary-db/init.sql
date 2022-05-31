@@ -219,7 +219,7 @@ VACUUM FULL "vocabulary"."vocabulary";
 
 
 --- user ---
-CREATE USER perseus WITH PASSWORD 'password';
+CREATE USER perseus WITH ENCRYPTED PASSWORD 'password';
 
 
 --- permissions

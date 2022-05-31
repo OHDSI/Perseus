@@ -16,3 +16,5 @@ SOLR_FILTERS = {
 UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make stateless
 
 QUERY_SEARCH_MODE = 'query'
+
+INSERT_BATCH_SIZE = 100

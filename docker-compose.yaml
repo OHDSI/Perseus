@@ -1,40 +1,16 @@
 services:
-#  pgadmin:
-#    container_name: pgadmin
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-#      PGADMIN_CONFIG_SERVER_MODE: 'False'
-#    volumes:
-#      - pgadmin:/var/lib/pgadmin
-#    ports:
-#      - "5050:80"
-#    depends_on:
-#      - shareddb
-#    restart: unless-stopped
   web:
-    image: nginx
+    build: ./nginx
     container_name:
       web
-    volumes:
-      - type: bind
-        source: ./nginx/default.conf
-        target: /etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     restart: always
   shareddb:
+    build: ./shared-db
     container_name: shareddb
-    image: postgres
-    environment:
-      POSTGRES_USER: shared
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: shared
-      PGDATA: /data/postgres
     volumes:
       - shareddb:/data/postgres
-      - ./shared-db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
   files-manager:
@@ -133,13 +109,13 @@ services:
     build:
       context: ./UI
       args:
-        env: dev
+        env: prod
     container_name:
       frontend
     ports:
       - "4200:4200"
   solr:
-    image: solr
+    build: ./solr
     container_name: solr
     command:
       - solr-precreate
@@ -149,8 +125,6 @@ services:
       - "8983:8983"
     volumes:
       - solr:/var/solr
-      - ./solr/athena:/opt/solr/server/solr/configsets/athena
-      - ./solr/postgresql-42.2.19.jar:/opt/solr/dist/postgresql-42.2.19.jar
   athena:
     build: ./athena-api
     command: python /app/main.py
@@ -161,23 +135,20 @@ services:
       - "5002:5002"
     depends_on:
       - solr
-#  usagi-api:
+#  usagi:
 #    build: ./usagi-api
 #    command: python /app/main.py
-#    container_name: usagi-api
+#    container_name: usagi
 #    environment:
-#      USAGI_ENV: Local
+#      USAGI_ENV: Docker
 #    ports:
-#      - "5150:5150"
+#      - "5003:5003"
 #    depends_on:
 #      - shareddb
-#    networks:
-#      - usagi
-#      - shareddb
 #      - vocabularydb
+#      - solr
 
 volumes:
   shareddb:
   vocabularydb:
   solr:
-#  pgadmin:

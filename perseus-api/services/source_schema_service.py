@@ -47,8 +47,8 @@ def _create_source_schema_by_scan_report(current_user, etl_mapping_id: int, scan
     except Exception as e:
         raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 500)
 
-    overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
     # always take the first sheet of the excel file
+    overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
 
     schema = []
     tables_pd = sqldf(
@@ -56,7 +56,7 @@ def _create_source_schema_by_scan_report(current_user, etl_mapping_id: int, scan
          from overview group by `table`;""")
     tables_pd = tables_pd[tables_pd.Table != '']
     for _, row in tables_pd.iterrows():
-        create_table_sql = '';
+        create_table_sql = ''
         table_name = row['Table']
         fields = row['fields'].split(',')
         table_ = Table(table_name)

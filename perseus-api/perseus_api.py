@@ -43,7 +43,7 @@ def upload_scan_report(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f"Unable to upload WR scan report: {error.__str__()}", 500)
+        raise InvalidUsage(f"Unable to upload WR scan report: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/upload_etl_mapping', methods=['POST'])
@@ -59,7 +59,7 @@ def upload_etl_mapping(current_user):
         raise error
     except Exception as error:
         raise InvalidUsage(f"Unable to create source schema by source \
-                            tables from ETL mapping: {error.__str__()}", 500)
+                            tables from ETL mapping: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
@@ -77,7 +77,7 @@ def create_source_schema_by_scan_report(current_user):
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+        raise InvalidUsage(f"Unable to create source schema by source {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/generate_etl_mapping_archive', methods=['POST'])
@@ -93,15 +93,15 @@ def generate_etl_mapping_archive(current_user):
         def remove_generated_file(response):
             try:
                 os.remove(f'{directory}/{filename}')
-            except Exception as error:
-                app.logger.error("Error removing downloaded file", error)
+            except Exception as e:
+                app.logger.error("Error removing downloaded file", e)
             return response
 
         return send_from_directory(directory, filename, download_name=download_name)
     except InvalidUsage as error:
         raise error
     except Exception as error:
-        raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500)
+        raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/get_view', methods=['POST'])
@@ -112,9 +112,9 @@ def get_view(current_user):
         view_sql = request.get_json()
         view_result = source_schema_service.get_view_from_db(current_user, view_sql['sql'])
     except ProgrammingError as error:
-        raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400)
+        raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400, base=error)
     except Exception as error:
-        raise InvalidUsage(f"Unable to get view: {error.__str__()}", 500)
+        raise InvalidUsage(f"Unable to get view SQL: {error.__str__()}", 500, base=error)
     return jsonify(view_result)
 
 
@@ -126,9 +126,9 @@ def validate_sql(current_user):
         sql_transformation = request.get_json()
         sql_result = source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
     except ProgrammingError as error:
-        raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400)
+        raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400, base=error)
     except Exception as error:
-        raise InvalidUsage(f"Cound not validate passed SQL: {error.__str__()}", 500)
+        raise InvalidUsage(f"Could not validate passed SQL: {error.__str__()}", 500, base=error)
     return jsonify(sql_result)
 
 
@@ -163,11 +163,11 @@ def get_column_info_call(current_user):
         etl_mapping_id = request.args.get('etl_mapping_id')
         info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name)
     except InvalidUsage as e:
-        raise InvalidUsage(f'Info cannot be loaded due to not standard structure of report: {e.__str__()}', 400)
+        raise InvalidUsage(f'Info cannot be loaded due to not standard structure of report: {e.__str__()}', 400, base=e)
     except FileNotFoundError as e:
-        raise InvalidUsage(f'Report not found: {e.__str__()}', 404)
+        raise InvalidUsage(f'Report not found: {e.__str__()}', 404, base=e)
     except Exception as e:
-        raise InvalidUsage(f"Could not get report column info: {e.__str__()}", 500)
+        raise InvalidUsage(f"Could not get report column info: {e.__str__()}", 500, base=e)
     return jsonify(info)
 
 
@@ -192,7 +192,7 @@ def generate_zip_xml(current_user):
         xml_writer.zip_xml(current_user)
         xml_writer.clear(current_user)
     except Exception as error:
-        raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 404)
+        raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 500, base=error)
     directory = f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}"
     filename = f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}"
 
@@ -200,8 +200,8 @@ def generate_zip_xml(current_user):
     def remove_generated_file(response):
         try:
             os.remove(f'{directory}/{filename}')
-        except Exception as error:
-            app.logger.error("Error removing downloaded file", error)
+        except Exception as e:
+            app.logger.error("Error removing downloaded file", e)
         return response
 
     return send_from_directory(
@@ -219,7 +219,7 @@ def get_lookup_sql():
     name = request.args.get('name', None, str)
     lookup_type = request.args.get('lookupType', None, str)
     if lookup_type is None:
-        raise InvalidUsage('Can not extract lookup type', 400)
+        raise InvalidUsage('Lookup type not specified', 400)
     lookup = lookup_service.get_lookup_sql(id, name, lookup_type)
     return jsonify(lookup)
 
@@ -242,7 +242,7 @@ def create_lookup(current_user):
         lookup = lookup_service.create_lookup(current_user, lookup_req)
         return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
     except Exception as error:
-        raise InvalidUsage(f"Could not create lookup: {error.__str__()}", 500)
+        raise InvalidUsage(f"Could not create lookup: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/lookup', methods=['PUT'])
@@ -257,7 +257,7 @@ def update_lookup(current_user):
         lookup = lookup_service.update_lookup(current_user, id, lookup_req)
         return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
     except Exception as error:
-        raise InvalidUsage(f"Could not update lookup: {error.__str__()}", 500)
+        raise InvalidUsage(f"Could not update lookup: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/lookup', methods=['DELETE'])
@@ -268,7 +268,7 @@ def delete_lookup(current_user):
         id = request.args['id']
         lookup_service.del_lookup(current_user, int(id))
     except Exception as error:
-        raise InvalidUsage(f"Could not delete lookup: {error.__str__()}", 500)
+        raise InvalidUsage(f"Could not delete lookup: {error.__str__()}", 500, base=error)
     return '', 204
 
 

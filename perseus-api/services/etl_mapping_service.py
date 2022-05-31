@@ -1,6 +1,7 @@
 import os
 
 from app import app
+from db import app_logic_db
 from model.etl_mapping import EtlMapping
 from services.response.file_save_reponse import FileSaveResponse
 from services.request.scan_report_request import ScanReportRequest
@@ -17,8 +18,9 @@ def find_by_id(idNum: int, username: str):
         raise InvalidUsage(f'ETL mapping not found by id {idNum}', 404)
 
 
+@app_logic_db.atomic()
 def create_etl_mapping_by_file_save_resp(username: str, file_save_response: FileSaveResponse):
-    app.logger.info("Creating new ETL mapping...")
+    app.logger.info("Creating new ETL mapping by file-save response...")
     file_name = os.path.splitext(file_save_response.fileName)[0]
     etl_mapping = EtlMapping(
                             username=username,
@@ -31,8 +33,9 @@ def create_etl_mapping_by_file_save_resp(username: str, file_save_response: File
     return etl_mapping
 
 
+@app_logic_db.atomic()
 def create_etl_mapping_from_request(username: str, scan_report_request: ScanReportRequest) -> EtlMapping:
-    app.logger.info("Creating new ETL mapping from scan report request")
+    app.logger.info("Creating new ETL mapping from scan report request...")
     file_name = os.path.splitext(scan_report_request.file_name)[0]
     etl_mapping = EtlMapping(
                             username=username,
@@ -45,12 +48,13 @@ def create_etl_mapping_from_request(username: str, scan_report_request: ScanRepo
     return etl_mapping
 
 
+@app_logic_db.atomic()
 def create_etl_mapping_by_json_configuration(
                                             username: str,\
                                             json_configuration: dict,\
                                             file_save_response: FileSaveResponse
                                             ):
-    app.logger.info("Creating new ETL mapping...")
+    app.logger.info("Creating new ETL mapping by json configuration...")
     file_name = os.path.splitext(file_save_response.fileName)[0]
     cdm_version = json_configuration['etlMapping']['cdm_version'] \
         if _is_new_configuration(json_configuration) \

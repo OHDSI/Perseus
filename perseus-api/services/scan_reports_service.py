@@ -91,9 +91,9 @@ def _allowed_file(filename: str):
 
 def _create_upload_scan_report_user_directory(username: str):
     directory_path = f"{UPLOAD_SCAN_REPORT_FOLDER}/{username}"
-    try:
+    if os.path.isdir(directory_path):
+        print(f"Directory {directory_path} already exist")
+    else:
         os.makedirs(directory_path)
         print(f"Directory {directory_path} created")
-    except FileExistsError:
-        print(f"Directory {directory_path} already exist")
     return directory_path

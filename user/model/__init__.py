@@ -1,5 +1,5 @@
-from .blacklist_token import blacklist_token
+from .blacklist_token import BlacklistToken
 from .user import User
 
-__all__ = ['blacklist_token',
+__all__ = ['BlacklistToken',
            'User']

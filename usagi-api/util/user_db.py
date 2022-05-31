@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import PostgresqlDatabase
 from app import app
 
 user_db = PostgresqlDatabase(app.config["USER_DB_NAME"],

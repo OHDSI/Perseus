@@ -4,6 +4,8 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
 import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component'
 import { Observable } from 'rxjs'
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service'
+import { MatDialog } from '@angular/material/dialog'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-cdm-console-wrapper',
@@ -24,7 +26,8 @@ export class CdmConsoleWrapperComponent extends ProgressConsoleWrapperComponent 
   @Output()
   dataQualityCheck = new EventEmitter<void>()
 
-  constructor(private cdbBuilderService: CdmBuilderService) {
+  constructor(private cdbBuilderService: CdmBuilderService,
+              private dialogService: MatDialog) {
     super()
   }
 
@@ -34,6 +37,13 @@ export class CdmConsoleWrapperComponent extends ProgressConsoleWrapperComponent 
 
   onAbortAndCancel(): void {
     this.cdbBuilderService.abort(this.conversion.id)
+      .subscribe(
+        () => this.onBack(),
+        error => {
+          openErrorDialog(this.dialogService, 'Abort convert to CDM', parseHttpError(error))
+          this.onBack()
+        }
+      )
   }
 
   onDataQualityCheck() {

@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import PostgresqlDatabase
 from app import app
 
 vocabulary_pg_db = PostgresqlDatabase(app.config["VOCABULARY_DB_NAME"],
