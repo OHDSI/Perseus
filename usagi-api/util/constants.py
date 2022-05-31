@@ -1,6 +1,6 @@
 from pathlib import Path
 
-USAGI_CORE_NAME = 'concepts'  # todo rename to usagi
+USAGI_CORE_NAME = 'usagi'  # todo rename to usagi
 USAGI_FULL_DATA_IMPORT = "solr/usagi/dataimport?command=full-import"
 USAGI_IMPORT_STATUS = "solr/usagi/dataimport?command=status&indent=on&wt=json"
 
@@ -17,4 +17,4 @@ UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make sta
 
 QUERY_SEARCH_MODE = 'query'
 
-INSERT_BATCH_SIZE = 100
+INSERT_BATCH_SIZE = 10000

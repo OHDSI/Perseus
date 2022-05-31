@@ -15,7 +15,7 @@ import { openErrorDialog, parseHttpError } from '@utils/error'
   templateUrl: './scan-console-wrapper.component.html',
   styleUrls: [
     'scan-console-wrapper.component.scss',
-    '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss',
+    '../../auxiliary/progress-console-wrapper/console-wrapper.component.scss',
     '../../styles/scan-data-buttons.scss'
   ]
 })

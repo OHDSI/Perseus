@@ -9,12 +9,10 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { CodeMappingDialogComponent } from '@scan-data/code-mapping-dialog/code-mapping-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
 import { createFiltersForm } from '@models/code-mapping/filters';
-import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 import {
   mapBackEndFilterToFormFilters,
   mapFormFiltersToBackEndFilters
 } from '@models/code-mapping/search-concept-filters';
-import { ConsoleHeader } from '@models/code-mapping/console-header';
 
 @Component({
   selector: 'app-column-mapping',
@@ -32,7 +30,6 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
   filtersForm: FormGroup
 
   constructor(public importCodesService: ImportCodesService,
-              private importCodesMediatorService: ImportCodesMediatorService,
               private router: Router,
               private dialogService: MatDialog) {
     super()
@@ -55,9 +52,6 @@ export class ColumnMappingComponent extends BaseComponent implements OnInit {
   onApply() {
     this.importCodesService.mappingParams = this.form.value
     this.importCodesService.filters = mapFormFiltersToBackEndFilters(this.filtersForm.value)
-    this.importCodesMediatorService.consoleHeader = ConsoleHeader.CALCULATE_SCORE
-    this.importCodesMediatorService.onWebsocketConnect$ = this.importCodesService.calculateScore()
-    this.importCodesMediatorService.onAbort$ = this.importCodesService.cancelCalculateScoresByCsvCodes()
 
     this.dialogService
       .open(CodeMappingDialogComponent, { panelClass: 'scan-data-dialog', disableClose: true })

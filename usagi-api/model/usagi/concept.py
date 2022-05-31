@@ -14,8 +14,8 @@ class Concept(UsagiBaseModel):
     valid_start_date = DateField()
     valid_end_date = DateField()
     invalid_reason = CharField(null=True)
-    parent_count = IntegerField()
-    child_count = IntegerField()
+    parent_count = IntegerField(null=True)
+    child_count = IntegerField(null=True)
 
 
 class Valid_Concept_Ids(UsagiBaseModel):

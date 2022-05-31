@@ -11,7 +11,8 @@ export interface ImportCodesState {
   codeMappings: CodeMapping[],
   filters: SearchConceptFilters,
   isExisted: boolean,
-  vocabularyName?: string
+  vocabularyName?: string,
+  conversionId: number
 }
 
 export function columnsFromSourceCode(code: Code): Column[] {

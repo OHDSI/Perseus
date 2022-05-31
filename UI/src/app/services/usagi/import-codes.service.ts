@@ -12,6 +12,7 @@ import { FilterValue } from '@models/filter/filter';
 import { defaultSearchConceptFilters, SearchConceptFilters } from '@models/code-mapping/search-concept-filters';
 import { StateService } from '@services/state/state.service';
 import { usagiUrl } from '@app/app.constants'
+import { Conversion } from '@models/conversion/conversion'
 
 const initialState: ImportCodesState = {
   codes: null,
@@ -19,7 +20,8 @@ const initialState: ImportCodesState = {
   mappingParams: null,
   codeMappings: null,
   filters: defaultSearchConceptFilters(),
-  isExisted: false
+  isExisted: false,
+  conversionId: null
 }
 
 @Injectable()
@@ -33,6 +35,10 @@ export class ImportCodesService implements StateService {
 
   get codes(): Code[] {
     return this.state.codes
+  }
+
+  get conversionId(): number {
+    return this.state.conversionId
   }
 
   get columns(): Column[] {
@@ -103,13 +109,21 @@ export class ImportCodesService implements StateService {
       )
   }
 
-  calculateScore(): Observable<void> {
+  calculateScore(): Observable<Conversion> {
     const body = {
       params: this.mappingParams,
       codes: this.codes,
       filters: this.filters
     }
-    return this.httpClient.post<void>(`${usagiUrl}/import_source_codes`, body)
+    return this.httpClient.post<Conversion>(`${usagiUrl}/import_source_codes`, body)
+  }
+
+  setConversionId(conversionId: number): void {
+    this.state.conversionId = conversionId
+  }
+
+  calculatingScoresInfoWithLogs(conversionId: number): Observable<Conversion> {
+    return this.httpClient.get<Conversion>(`${usagiUrl}/import_source_codes_status?conversionId=${conversionId}`)
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {
@@ -136,7 +150,8 @@ export class ImportCodesService implements StateService {
       codes: this.codes,
       mappingParams: this.mappingParams,
       codeMappings: this.codeMappings,
-      filters: this.filters
+      filters: this.filters,
+      conversionId: this.conversionId
     }
     return this.httpClient.post<void>(`${usagiUrl}/save_mapped_codes`, body)
   }
@@ -165,9 +180,5 @@ export class ImportCodesService implements StateService {
 
   cancelCalculateScoresByCsvCodes(): Observable<void> {
     return this.httpClient.get<void>(`${usagiUrl}/cancel_concept_mapping_task`)
-  }
-
-  cancelCalculateScoresBySavedMapping(): Observable<void> {
-    return this.httpClient.get<void>(`${usagiUrl}/cancel_load_vocabulary_task`)
   }
 }

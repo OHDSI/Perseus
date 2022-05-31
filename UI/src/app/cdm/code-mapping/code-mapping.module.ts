@@ -15,7 +15,6 @@ import { MappingCodesGuard } from '@guards/code-mapping/mapping-codes.guard';
 import { SaveVocabularyPopupComponent } from './mapping-codes/save-vocabulary-popup/save-vocabulary-popup.component';
 import { EditMappingPanelComponent } from './mapping-codes/edit-mapping-panel/edit-mapping-panel.component';
 import { EditCodeMappingGridComponent } from './mapping-codes/edit-mapping-panel/edit-code-mapping-grid/edit-code-mapping-grid.component';
-import { ImportCodesMediatorService } from '@services/usagi/import-codes-mediator.service';
 import { ImportCodesGridComponent } from './import-codes/column-mapping/import-codes-grid/import-codes-grid.component';
 import { ImportCodesGuard } from '@guards/code-mapping/import-codes.guard';
 import { VocabularySearchModule } from '@vocabulary-search/vocabulary-search.module';
@@ -48,7 +47,6 @@ import { ConfirmOverwriteVocabComponent } from './mapping-codes/save-vocabulary-
   providers: [
     ImportVocabulariesService,
     MappingCodesGuard,
-    ImportCodesMediatorService,
     ImportCodesGuard,
   ]
 })

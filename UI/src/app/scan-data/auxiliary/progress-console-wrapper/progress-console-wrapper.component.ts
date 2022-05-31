@@ -12,7 +12,7 @@ import { parseHttpError } from '@utils/error'
   template: ``
 })
 export abstract class ProgressConsoleWrapperComponent extends BaseComponent implements OnInit {
-  public static CONVERSION_INFO_REQUEST_INTERVAL = 4000
+  readonly CONVERSION_INFO_REQUEST_INTERVAL: number = 5000
 
   @Input()
   conversion: Conversion
@@ -36,7 +36,7 @@ export abstract class ProgressConsoleWrapperComponent extends BaseComponent impl
   abstract onAbortAndCancel(): void
 
   ngOnInit(): void {
-    this.conversionSub = timer(0, ProgressConsoleWrapperComponent.CONVERSION_INFO_REQUEST_INTERVAL)
+    this.conversionSub = timer(0, this.CONVERSION_INFO_REQUEST_INTERVAL)
       .pipe(
         takeUntil(this.ngUnsubscribe),
         exhaustMap(() => this.conversionInfoRequest())

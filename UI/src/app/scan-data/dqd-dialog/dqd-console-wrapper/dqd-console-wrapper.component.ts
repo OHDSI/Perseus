@@ -14,11 +14,13 @@ import { MatDialog } from '@angular/material/dialog'
   templateUrl: './dqd-console-wrapper.component.html',
   styleUrls: [
     './dqd-console-wrapper.component.scss',
-    '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss',
+    '../../auxiliary/progress-console-wrapper/console-wrapper.component.scss',
     '../../styles/scan-data-buttons.scss'
   ]
 })
 export class DqdConsoleWrapperComponent extends ProgressConsoleWrapperComponent {
+  readonly CONVERSION_INFO_REQUEST_INTERVAL = 4000
+
   @Input()
   conversion: Conversion
 
