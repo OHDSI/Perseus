@@ -33,7 +33,6 @@ spring:
             -
               credential:
                 client-id: ${AZURE_CLIENT_ID}
-              endpoint:
-                ${AZURE_ENDPOINT}
+              endpoint: ${AZURE_ENDPOINT}
               profile:
                 tenant-id: ${AZURE_TENANT_ID}
