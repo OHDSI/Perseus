@@ -13,9 +13,9 @@ spring:
       max-request-size: 100MB
       enabled: true
   datasource:
-    url: ${SHARED_DB_URL}
-    username: ${SHARED_DB_FM_USERNAME}
-    password: ${SHARED_DB_FM_PASSWORD}
+    url: ${SharedDbUrl}
+    username: ${SharedDbUser}
+    password: ${SharedDbPass}
   jpa:
     properties:
       hibernate:
@@ -24,5 +24,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-
-
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-source-enabled: true
+          property-sources:
+            -
+              credential:
+                client-id: ${AZURE_CLIENT_ID}
+              endpoint:
+                ${AZURE_ENDPOINT}
+              profile:
+                tenant-id: ${AZURE_TENANT_ID}
