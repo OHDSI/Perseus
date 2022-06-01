@@ -11,7 +11,7 @@
                     vocabulary_id,
                     concept_class_id,
                     standard_concept
-                from usagi.concept_for_index">
+                from usagi_data.concept_for_index">
             <field column="type" name="type"></field>
             <field column="term_type" name="term_type"></field>
             <field column="term" name="term"></field>

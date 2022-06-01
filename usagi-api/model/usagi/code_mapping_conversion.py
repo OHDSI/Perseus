@@ -1,8 +1,8 @@
 from peewee import AutoField, CharField, IntegerField
-from model.usagi2.usagi2_base_model import Usagi2BaseModel
+from model.usagi.usagi_base_model import UsagiBaseModel
 
 
-class CodeMappingConversion(Usagi2BaseModel):
+class CodeMappingConversion(UsagiBaseModel):
     id = AutoField()
     username = CharField()
     project = CharField()

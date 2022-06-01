@@ -1,9 +1,9 @@
 from peewee import CharField, DateField, IntegerField, TextField
 
-from model.usagi.usagi_base_model import UsagiBaseModel
+from model.usagi_data.usagi_data_base_model import UsagiDataBaseModel
 
 
-class Concept(UsagiBaseModel):
+class Concept(UsagiDataBaseModel):
     concept_id = IntegerField(primary_key=True)
     concept_name = TextField()
     domain_id = CharField()
@@ -18,16 +18,16 @@ class Concept(UsagiBaseModel):
     child_count = IntegerField(null=True)
 
 
-class Valid_Concept_Ids(UsagiBaseModel):
+class Valid_Concept_Ids(UsagiDataBaseModel):
     concept_id = IntegerField(primary_key=True)
 
 
-class Concept_Id_To_Atc_Code(UsagiBaseModel):
+class Concept_Id_To_Atc_Code(UsagiDataBaseModel):
     concept_id = IntegerField()
     concept_code = CharField()
 
 
-class Concept_For_Index(UsagiBaseModel):
+class Concept_For_Index(UsagiDataBaseModel):
     type = CharField()
     term = TextField()
     concept_id = IntegerField()
