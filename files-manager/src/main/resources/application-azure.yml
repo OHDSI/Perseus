@@ -14,8 +14,8 @@ spring:
       enabled: true
   datasource:
     url: ${SharedDbUrl}
-    username: ${SharedDbUser}
-    password: ${SharedDbPass}
+    username: ${SharedDbFilesManagerPass}
+    password: ${SharedDbFilesManagerUser}
   jpa:
     properties:
       hibernate:
