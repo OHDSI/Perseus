@@ -4,11 +4,11 @@ from flask import jsonify, Blueprint, request
 from peewee import DataError
 from app import app
 from config import APP_PREFIX, VERSION
-from model.usagi.code_mapping import ScoredConceptEncoder
-from model.usagi2.code_mapping_conversion import CodeMappingConversion
-from model.usagi2.code_mapping_conversion_log import CodeMappingConversionLog
-from model.usagi2.code_mapping_conversion_result import CodeMappingConversionResult
-from model.usagi2.conversion_status import ConversionStatus
+from model.usagi_data.code_mapping import ScoredConceptEncoder
+from model.usagi.code_mapping_conversion import CodeMappingConversion
+from model.usagi.code_mapping_conversion_log import CodeMappingConversionLog
+from model.usagi.code_mapping_conversion_result import CodeMappingConversionResult
+from model.usagi.conversion_status import ConversionStatus
 from service.search_service import search_usagi
 from service.solr_core_service import run_solr_command
 from service.usagi_service import get_saved_code_mapping, create_concept_mapping, get_vocabulary_list_for_user, \

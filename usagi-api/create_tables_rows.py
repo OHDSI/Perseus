@@ -3,11 +3,11 @@ from peewee import fn
 
 from db_engines import vocabulary_engine, usagi_engine
 
-from model.usagi.atc_to_rxnorm import atc_to_rxnorm
-from model.usagi.child import Child_Count
-from model.usagi.concept import Concept as UConcept, Concept_Id_To_Atc_Code, Concept_For_Index, Valid_Concept_Ids
-from model.usagi.relations import Maps_To_Relationship, Parent_Child_Relationship, Relationship_Atc_Rxnorm
-from model.usagi.parent import Parent_Count
+from model.usagi_data.atc_to_rxnorm import atc_to_rxnorm
+from model.usagi_data.child import Child_Count
+from model.usagi_data.concept import Concept as UConcept, Concept_Id_To_Atc_Code, Concept_For_Index, Valid_Concept_Ids
+from model.usagi_data.relations import Maps_To_Relationship, Parent_Child_Relationship, Relationship_Atc_Rxnorm
+from model.usagi_data.parent import Parent_Count
 
 from model.vocabulary.concept_vocabulary_model import Concept, Concept_Relationship, Concept_Ancestor, Concept_Synonym
 

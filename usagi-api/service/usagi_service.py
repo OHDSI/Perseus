@@ -9,14 +9,14 @@ import datetime
 from werkzeug.utils import secure_filename
 
 from app import app
-from model.usagi.atc_to_rxnorm import atc_to_rxnorm
-from model.usagi.code_mapping import CodeMappingEncoder, CodeMapping, MappingTarget, MappingStatus
-from model.usagi2.code_mapping_snapshot import CodeMappingSnapshot
-from model.usagi2.code_mapping_conversion_result import CodeMappingConversionResult
-from model.usagi2.code_mapping_conversion_log import CodeMappingConversionLog
-from model.usagi2.code_mapping_conversion import CodeMappingConversion
-from model.usagi2.conversion_status import ConversionStatus
-from model.usagi.source_code import SourceCode
+from model.usagi_data.atc_to_rxnorm import atc_to_rxnorm
+from model.usagi_data.code_mapping import CodeMappingEncoder, CodeMapping, MappingTarget, MappingStatus
+from model.usagi.code_mapping_snapshot import CodeMappingSnapshot
+from model.usagi.code_mapping_conversion_result import CodeMappingConversionResult
+from model.usagi.code_mapping_conversion_log import CodeMappingConversionLog
+from model.usagi.code_mapping_conversion import CodeMappingConversion
+from model.usagi.conversion_status import ConversionStatus
+from model.usagi_data.source_code import SourceCode
 from model.vocabulary.source_to_concept_map import Source_To_Concept_Map
 from service.search_service import search_usagi
 from util.async_directive import fire_and_forget_load_vocabulary, fire_and_forget_concept_mapping

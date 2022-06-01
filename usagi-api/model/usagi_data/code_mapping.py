@@ -1,7 +1,7 @@
 from json import JSONEncoder
 import json
 from enum import Enum
-from model.usagi.source_code import SourceCode
+from model.usagi_data.source_code import SourceCode
 
 
 class MappingStatus(str, Enum):
