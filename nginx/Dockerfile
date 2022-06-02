@@ -4,7 +4,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends openssh-server \
     && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
 
-COPY IBE/sshd_config /etc/ssh/
+COPY sshd_config /etc/ssh/
 
 ENV NGINX_ENV='docker'
 
