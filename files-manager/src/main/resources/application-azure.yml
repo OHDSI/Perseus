@@ -14,8 +14,8 @@ spring:
       enabled: true
   datasource:
     url: ${SharedDbUrl}
-    username: ${SharedDbFilesManagerPass}
-    password: ${SharedDbFilesManagerUser}
+    username: ${SharedDbFilesManagerUser}
+    password: ${SharedDbFilesManagerPass}
   jpa:
     hibernate:
       ddl-auto: update
