@@ -62,13 +62,13 @@
 
 ## Additional features
 
-## R Server
+### R Server
 
     cd ../DataQualityDashboard/R
     docker build -t r-serve --build-arg prop='docker' .
     docker run --name r-serve -d -p 6311:6311 --network=perseus-net r-serve
 
-## Data Quality Dashboard
+### Data Quality Dashboard
     
     cd ../DataQualityDashboard
     docker build -t data-quality-dashboard .
