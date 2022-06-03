@@ -8,7 +8,7 @@
 
 ### Shared db
 
-    cd shareddb
+    cd shared-db
     docker build -t shareddb .
     docker run --name shareddb -d -p 5432:5432 --network=perseus-net shareddb
 
@@ -86,5 +86,8 @@
     docker build -t athena .
     docker run --name athena -d -p 5002:5002 -e ATHENA_ENV='Docker' --network=perseus-net athena
 
-    
+### Usagi
+    cd usagi-api
+    docker build -t usagi .
+    docker run --name usagi -d -p 5003:5003 -e USAGI_ENV='Docker' --network=perseus-net usagi
     
