@@ -12,7 +12,9 @@ RUN apt-get update \
 
 COPY sshd_config /etc/ssh/
 
-EXPOSE 5000
-EXPOSE 2222
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
 
-ENTRYPOINT ["python", "/app/main.py"]
+EXPOSE 5000 2222
+
+ENTRYPOINT ["entrypoint.sh"]
