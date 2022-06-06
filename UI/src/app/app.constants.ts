@@ -10,8 +10,6 @@ export const isDev = !isProd;
 const server = environment.server || window.location.hostname
 const protocol = window.location.protocol
 
-export const dbServer = environment.dbServer || server
-
 export const serverUrl = `${protocol}//${server}`
 
 export const authApiUrl = `${serverUrl}/user/api`

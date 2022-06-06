@@ -8,7 +8,6 @@ export const environment = {
   production: false,
   local: false,
   server: 'jnjperseusu1',
-  dbServer: 'jnjperseusu1',
   conceptTables: CONCEPT_TABLES
 };
 
