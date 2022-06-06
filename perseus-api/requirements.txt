@@ -1,5 +1,5 @@
 Flask==2.0.3
-Flask_Cors==3.0.9
+Flask_Cors==3.0.10
 pandas==0.23.4
 pandasql==0.7.3
 peewee
@@ -11,3 +11,5 @@ py-postgresql
 psycopg2-binary
 requests
 APScheduler==3.9.1
+azure-identity==1.10.0
+azure-keyvault-secrets==4.4.0
