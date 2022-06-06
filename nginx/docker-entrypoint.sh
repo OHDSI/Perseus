@@ -3,4 +3,6 @@ set -eu
 
 envsubst '${NGINX_ENV}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
 
-exec "$@"
+service ssh start
+
+exec nginx -g 'daemon off;'
