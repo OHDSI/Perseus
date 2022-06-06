@@ -16,8 +16,11 @@ RUN apt-get update \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build-step /usr/src/app/dist /usr/share/nginx/html
+COPY sshd_config /etc/ssh/
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 EXPOSE 4200
 EXPOSE 2222
 
-CMD ["/bin/sh",  "-c",  "exec nginx -g 'daemon off;'"]
+CMD ["./entrypoint.sh"]
