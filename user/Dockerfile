@@ -16,4 +16,4 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 5001 2222
 
-ENTRYPOINT ["python", "/app/main.py"]
+ENTRYPOINT ["./entrypoint.sh"]
