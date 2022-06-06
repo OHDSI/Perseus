@@ -1,5 +1,5 @@
 #!/bin/sh
 
-/etc/init.d/ssh start
+/usr/sbin/sshd -De
 
 java ${JAVA_OPTS} -jar /app.jar ${0} ${@}

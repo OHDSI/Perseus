@@ -11,7 +11,8 @@ RUN ./mvnw package
 FROM openjdk:17-alpine
 
 RUN apk update \
-    && apk add openssh-server \
+    && apk add --no-cache openssh-server \
+    && ssh-keygen -A \
     && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
 
 COPY sshd_config /etc/ssh/
