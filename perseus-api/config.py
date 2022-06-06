@@ -1,11 +1,10 @@
-import os
-
 PORT = 5000
 APP_PREFIX = '/backend'
 VERSION = 0.4
 
 
 class LocalConfig:
+    AZURE_KEY_VAULT = False
     APP_LOGIC_DB_NAME = 'shared'
     APP_LOGIC_DB_USER = 'perseus'
     APP_LOGIC_DB_PASSWORD = 'password'
@@ -22,6 +21,7 @@ class LocalConfig:
 
 
 class DockerConfig:
+    AZURE_KEY_VAULT = False
     APP_LOGIC_DB_NAME = 'shared'
     APP_LOGIC_DB_USER = 'perseus'
     APP_LOGIC_DB_PASSWORD = 'password'
@@ -38,16 +38,4 @@ class DockerConfig:
 
 
 class AzureConfig:
-    APP_LOGIC_DB_NAME = os.getenv("SHARED_DB_NAME")
-    APP_LOGIC_DB_USER = os.getenv("SHARED_DB_PERSEUS_USER")
-    APP_LOGIC_DB_PASSWORD = os.getenv("SHARED_DB_PERSEUS_PASSWORD")
-    APP_LOGIC_DB_HOST = os.getenv("SHARED_DB_HOST")
-    APP_LOGIC_DB_PORT = os.getenv("SHARED_DB_PORT")
-
-    USER_SCHEMAS_DB_NAME = os.getenv("SOURCE_DB_NAME")
-    USER_SCHEMAS_DB_USER = os.getenv("SOURCE_DB_USER")
-    USER_SCHEMAS_DB_PASSWORD = os.getenv("SOURCE_DB_PASSWORD")
-    USER_SCHEMAS_DB_HOST = os.getenv("SOURCE_DB_HOST")
-    USER_SCHEMAS_DB_PORT = os.getenv("SOURCE_DB_PORT")
-
-    FILE_MANAGER_API_URL = os.getenv("FILE_MANAGER_URL")
+    AZURE_KEY_VAULT = True

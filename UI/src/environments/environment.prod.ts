@@ -4,6 +4,5 @@ export const environment = {
   production: true,
   local: false,
   server: null,
-  dbServer: null,
   conceptTables: CONCEPT_TABLES
 };

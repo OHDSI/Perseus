@@ -11,8 +11,9 @@ RUN apt-get update \
     && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
 
 COPY sshd_config /etc/ssh/
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
 
-EXPOSE 5001
-EXPOSE 2222
+EXPOSE 5001 2222
 
-ENTRYPOINT ["python", "/app/main.py"]
+ENTRYPOINT ["./entrypoint.sh"]
