@@ -13,8 +13,6 @@ COPY server.azure.conf /etc/nginx/server.azure.conf
 COPY server.docker.conf /etc/nginx/server.docker.conf
 COPY docker-entrypoint.sh /
 
-EXPOSE 80
-EXPOSE 2222
+EXPOSE 80 2222
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
