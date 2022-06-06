@@ -13,7 +13,7 @@ FROM openjdk:17-alpine
 RUN apk update \
     && apk add --no-cache openssh-server \
     && ssh-keygen -A \
-    && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
+    && echo "root:Docker!" | chpasswd
 
 COPY sshd_config /etc/ssh/
 
