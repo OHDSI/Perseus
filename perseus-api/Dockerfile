@@ -17,4 +17,4 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 5000 2222
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]

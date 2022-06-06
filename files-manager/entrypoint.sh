@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
-service ssh start
-./mvnw spring-boot:run
+/etc/init.d/ssh start
+
+java ${JAVA_OPTS} -jar /app.jar ${0} ${@}
