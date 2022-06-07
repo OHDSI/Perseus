@@ -33,4 +33,4 @@ def create_test_users():
         User.insert_many(users).execute()
         print('Test users created!')
     else:
-        print('Users found in the database. Skipping creating test users.')
+        print('Users found in the database. Skipped creating test users.')

@@ -1,12 +1,12 @@
+from azure.identity import ManagedIdentityCredential
 from azure.keyvault.secrets import SecretClient
-from azure.identity import DefaultAzureCredential
 
 
 def get_secrets() -> dict:
     print('Fetch variables from Azure Key Vault')
     kv_endpoint = 'https://kv-perseus.vault.azure.net/'
 
-    credential = DefaultAzureCredential()
+    credential = ManagedIdentityCredential()
     client = SecretClient(vault_url=kv_endpoint, credential=credential)
     config = {
         'APP_LOGIC_DB_NAME': client.get_secret('SharedDbName').value,
