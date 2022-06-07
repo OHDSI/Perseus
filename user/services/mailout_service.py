@@ -1,10 +1,11 @@
-import os
 import socket
 import smtplib
 import ssl
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+from app import app
 from utils.constants import SMTP_PORT_STL
 from utils.exceptions import InvalidUsage
 
@@ -15,11 +16,11 @@ local_ip = socket.gethostbyname(hostname)
 
 def is_smtp_configured():
     envs = [
-        os.getenv("SMTP_SERVER"),
-        os.getenv("SMTP_PORT"),
-        os.getenv("SMTP_EMAIL"),
-        os.getenv("SMTP_USER"),
-        os.getenv("SMTP_PWD"),
+        app.config["SMTP_SERVER"],
+        app.config["SMTP_PORT"],
+        app.config["SMTP_EMAIL"],
+        app.config["SMTP_USER"],
+        app.config["SMTP_PWD"],
     ]
     return all(env for env in envs)
 
@@ -28,16 +29,16 @@ def send_email(receiver_email, first_name, type, host, request_parameter=''):
     message = create_message(receiver_email, first_name, type, host, request_parameter)
 
     context = ssl.create_default_context()
-    port_as_str = os.getenv("SMTP_PORT")
+    port_as_str = app.config["SMTP_PORT"]
     port = int(port_as_str) if port_as_str else None
     if not port:
         raise InvalidUsage('Environment variables for SMTP server are not provided')
     try:
-        server = smtplib.SMTP(os.getenv("SMTP_SERVER"), port)
+        server = smtplib.SMTP(app.config["SMTP_SERVER"], port)
         if port == SMTP_PORT_STL:
             start_tls(server, context)
-        server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PWD"))
-        server.sendmail(os.getenv("SMTP_EMAIL"), receiver_email, message.as_string())
+        server.login(app.config["SMTP_USER"], app.config["SMTP_PWD"])
+        server.sendmail(app.config["SMTP_EMAIL"], receiver_email, message.as_string())
     except Exception as e:
         raise InvalidUsage(f"Could not send email with SMTP server: {e.__str__()}", 500)
     finally:
@@ -52,7 +53,7 @@ def start_tls(server, context):
 
 def create_message(receiver_email, first_name, type, host, request_parameter):
     message = MIMEMultipart("alternative")
-    message["From"] = os.getenv("SMTP_EMAIL")
+    message["From"] = app.config["SMTP_EMAIL"]
     message["To"] = receiver_email
 
     if type == 'registration':

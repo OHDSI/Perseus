@@ -1,6 +1,5 @@
-from waitress import serve
-
 from app import app
+from waitress import serve
 from authorization_api import user_api
 from config import PORT
 from create_tables import create_tables, create_test_users
