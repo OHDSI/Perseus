@@ -17,14 +17,14 @@ from services.mailout_service import send_email
 from utils.password import decode_password
 from utils.exceptions import InvalidUsage
 from utils.constants import REGISTRATION_LINK_EXPIRATION_TIME,\
-    PASSWORD_LINK_EXPIRATION_TIME, EMAIL_SECRET_KEY
+    PASSWORD_LINK_EXPIRATION_TIME
 from utils.exceptions import AuthorizationError
 
 
 user_registration_links = {}
 reset_pwd_links = {}
 key = Fernet.generate_key()
-fernet = Fernet(EMAIL_SECRET_KEY)
+fernet = Fernet(app.config['EMAIL_SECRET_KEY'])
 
 
 def refresh_registration_links():

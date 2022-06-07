@@ -13,7 +13,14 @@ def get_secrets() -> dict:
         'DB_USER': client.get_secret('SharedDbAuthUser').value,
         'DB_PASSWORD': client.get_secret('SharedDbAuthPass').value,
         'DB_HOST': client.get_secret('SharedDbHost').value,
-        'DB_PORT': client.get_secret('SharedDbPort').value
+        'DB_PORT': client.get_secret('SharedDbPort').value,
+        'TOKEN_SECRET_KEY': client.get_secret('TokenSecretKey').value,
+        'EMAIL_SECRET_KEY': client.get_secret('EmailSecretKey').value,
+        'SMTP_SERVER': client.get_secret('SmtpServer').value,
+        'SMTP_PORT': client.get_secret('SmtpPort').value,
+        'SMTP_EMAIL': client.get_secret('SmtpEmail').value,
+        'SMTP_USER': client.get_secret('SmtpUser').value,
+        'SMTP_PWD': client.get_secret('SmtpPass').value
     }
     client.close()
 
