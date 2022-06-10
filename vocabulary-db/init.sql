@@ -179,7 +179,7 @@ VACUUM FULL "vocabulary"."relationship";
 CREATE TABLE "vocabulary"."source_to_concept_map"
 (
    id                       serial         PRIMARY KEY,
-   source_code              varchar(255)    NOT NULL,
+   source_code              varchar(255)   NOT NULL,
    source_concept_id        int            NOT NULL,
    source_vocabulary_id     varchar(20)    NOT NULL,
    source_code_description  varchar(255),
@@ -188,7 +188,7 @@ CREATE TABLE "vocabulary"."source_to_concept_map"
    valid_start_date         date           NOT NULL,
    valid_end_date           date           NOT NULL,
    invalid_reason           varchar(1),
-   username                 varchar(255)    NOT NULL,
+   username                 varchar(255)   NOT NULL
 );
 
 -- ALTER TABLE "vocabulary"."source_to_concept_map" ADD CONSTRAINT xpk_source_to_concept_map PRIMARY KEY (source_vocabulary_id,target_concept_id,source_code,valid_end_date);

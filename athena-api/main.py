@@ -1,6 +1,6 @@
+from app import app
 from apscheduler.schedulers.background import BackgroundScheduler
 from waitress import serve
-from app import app
 from athena_api import athena
 from config import PORT
 from service.solr_core_service import create_index_if_not_exist
