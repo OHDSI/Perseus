@@ -2,12 +2,7 @@ import math
 import re
 import pysolr
 
-from app import app
-from constants import VOCABULARY_FILTERS, ATHENA_CORE_NAME
-
-CONCEPT_TERM = "C"
-CONCEPT_TYPE_STRING	= "C"
-SOLR_CONN_STRING = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{ATHENA_CORE_NAME}"
+from utils.constants import VOCABULARY_FILTERS, SOLR_CONN_STRING
 
 
 def count():
