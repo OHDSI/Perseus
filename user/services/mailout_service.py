@@ -69,12 +69,11 @@ def create_message(receiver_email, first_name, type, host, request_parameter):
 
 
 def change_host_if_needed(host: str) -> str:
-    is_azure_env = app.config['AZURE_KEY_VAULT']
-    if is_azure_env:
-        server_adress = os.getenv('SERVER_ADDRESS')
-        if not server_adress:
+    if app.config['AZURE_KEY_VAULT']:
+        server_address = os.getenv('SERVER_ADDRESS')
+        if not server_address:
             raise InvalidUsage('SERVER_ADDRESS environment variable not specified', 500)
-        return server_adress
+        return server_address
     else:
         return host
 
