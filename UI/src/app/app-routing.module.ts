@@ -23,9 +23,13 @@ const routes: Routes = [
   }
 ];
 
+const isIframe = window !== window.parent && !window.opener
+
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes, {
+      initialNavigation: !isIframe ? 'enabled' : 'disabled'
+    })
   ],
   exports: [ RouterModule ]
 })

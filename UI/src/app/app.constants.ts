@@ -1,19 +1,21 @@
 import { environment } from '../environments/environment'
+import { Configuration } from '@azure/msal-browser/dist/config/Configuration'
+import { AuthStrategies } from '../environments/auth-strategies'
 
 export const appVersion = '0.4'
-
 export const similarTableName = 'similar'
 
 export const isProd = environment.production
 export const isDev = !isProd;
 
-const server = environment.server || window.location.hostname
-const protocol = window.location.protocol
+export const serverUrl = window.location.origin
 
-export const serverUrl = `${protocol}//${server}`
+export const isAddAuth = environment.authStrategy === AuthStrategies.ADD
 
-export const authApiUrl = `${serverUrl}/user/api`
-export const perseusApiUrl = `${serverUrl}/backend/api`
+export const authApiUrl = isAddAuth ?
+  `${'http://localhost:8002'}/auth/api` :
+  `${'http://localhost:5001'}/user/api`
+export const perseusApiUrl = `${'http://localhost:5000'}/backend/api`
 export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`
 export const dqdServerUrl = `${serverUrl}/data-quality-dashboard`
@@ -56,3 +58,16 @@ export const COLUMNS_TO_EXCLUDE_FROM_TARGET = [
   'SOURCE_TO_CONCEPT_MAP',
   'DRUG_STRENGTH'
 ]
+
+export const azureConfig: Configuration = {
+  auth: {
+    clientId: '<<clientId>>',
+    authority: 'https://login.microsoftonline.com/<<tenantId>>',
+    redirectUri: `${serverUrl}/perseus`,
+    postLogoutRedirectUri: serverUrl
+  },
+  cache: {
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: false
+  }
+}

@@ -16,7 +16,8 @@ export class JwtAuthService implements AuthService {
 
   private tokenValid: boolean
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient,
+              private router: Router) {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
     this.currentUser$ = new BehaviorSubject<User>(user)
   }
@@ -41,7 +42,7 @@ export class JwtAuthService implements AuthService {
     return this.isTokenValid()
   }
 
-  login(email: string, password: string): Observable<User> {
+  login(email?: string, password?: string): Observable<User> {
     return this.saveUser(
       this.httpClient.post<User>(`${authApiUrl}/login`, {email, password})
     )

@@ -24,11 +24,18 @@
     docker build -t backend .
     docker run --name backend -d -p 5000:5000 -e PERSEUS_ENV='Docker' --network=perseus-net backend
 
-### User
+### User (SMTP server auth)
 
     cd user
     docker build -t user .
-    docker run --name user -d -p 5001:5001 -e USER_ENV='Docker' --network=perseus-net user
+    docker run --name user -d -p 5001:5001 --env-file user-envs.txt --network=perseus-net user
+
+### Auth (Azure Active Directory auth)
+    
+    cd auth
+    docker build -t auth .
+    docker run --name auth -d -p 8002:8002 --network=perseus-net auth
+
 
 ### Frontend
     
