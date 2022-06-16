@@ -34,7 +34,7 @@
     
     cd auth
     docker build -t auth .
-    docker run --name auth -d -p 8002:8002 --network=perseus-net auth
+    docker run --name auth -d -p 8002:8002 -e CLIENT_ID='<<Client Id>>' -e SPRING_PROFILES_ACTIVE='prod' --network=perseus-net auth
 
 
 ### Frontend
@@ -42,6 +42,23 @@
     cd UI
     docker build -t frontend --build-arg env='prod' .
     docker run --name frontend -d -p 4200:4200 --network=perseus-net frontend
+
+#### Frontend Azure
+    
+    docker build -t frontend --build-arg env='azure' 
+    docker run --name frontend -d -p 4200:4200 --env-file frontend-envs.txt --network=perseus-net frontend
+
+### Frontend (If npm error)
+
+    npm run build:prod
+    docker build -t frontend -f Dockerfile_no-npm .
+    docker run --name frontend -d -p 4200:4200 --network=perseus-net frontend
+
+#### Or (Azure and npm error)
+    
+    npm run build:azure
+    docker build -t frontend -f Dockerfile_no-npm .
+    docker run --name frontend -d -p 4200:4200 --env-file frontend-envs.txt --network=perseus-net frontend
 
 ### Web
     
