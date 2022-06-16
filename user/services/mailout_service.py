@@ -41,7 +41,7 @@ def send_email(receiver_email, first_name, type, host, request_parameter=''):
         server.login(app.config["SMTP_USER"], app.config["SMTP_PWD"])
         server.sendmail(app.config["SMTP_EMAIL"], receiver_email, message.as_string())
     except Exception as e:
-        raise InvalidUsage(f"Could not send email with SMTP server: {e.__str__()}", 500)
+        raise InvalidUsage(f"Could not send email with SMTP server: {e.__str__()}", 500, base=e)
     finally:
         server.quit()
 

@@ -18,7 +18,7 @@ def get_file(data_id: int):
         if r.status_code == 404:
             raise InvalidUsage(f'File not found by id {data_id}', 404)
         else:
-            raise InvalidUsage('Cannot download file', 500)
+            raise InvalidUsage(f'Cannot download file. File manager response status code: {r.status_code}', 500)
 
 
 def save_file(
@@ -36,4 +36,4 @@ def save_file(
         json_result = json.loads(r.content.decode('utf-8'))
         return file_save_reponse.from_json(json_result)
     else:
-        raise InvalidUsage('Can not save file', 500)
+        raise InvalidUsage(f'Can not save file. File manager response status code: {r.status_code}', 500)

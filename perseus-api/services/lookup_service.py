@@ -92,8 +92,8 @@ def update_lookup(username: str, id: int, lookup_request: LookupRequest) -> Look
             lookup.save()
 
             return lookup
-    except IndexError:
-        raise InvalidUsage(f'Lookup entity not found by id {id}', 404)
+    except IndexError as e:
+        raise InvalidUsage(f'Lookup entity not found by id {id}', 404, base=e)
 
 
 def del_lookup(username: str, lookup_id: int):
@@ -191,5 +191,5 @@ def _get_predefined_lookup_data(filepath):
     try:
         with open(filepath, mode='r') as f:
             return f.read()
-    except:
-        raise InvalidUsage('Predefined lookup not found', 400)
+    except Exception as e:
+        raise InvalidUsage('Predefined lookup not found', 400, base=e)

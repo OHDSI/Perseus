@@ -38,7 +38,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         _extract_etl_archive(etl_file_path, archive_directory)
         etl_archive.close()
     except Exception as e:
-        raise InvalidUsage(f"Error while opening etl archive: {e.__str__()}", 400)
+        raise InvalidUsage(f"Error while opening etl archive: {e.__str__()}", 400, base=e)
     try:
         os.remove(etl_file_path)
         filenames = get_filenames_in_directory(archive_directory)
@@ -69,7 +69,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         return to_upload_etl_archive_response(etl_mapping, mapping_json)
     except Exception as e:
         etl_archive.close()
-        raise InvalidUsage(f"Could not upload etl archive: {e.__str__()}", 500)
+        raise InvalidUsage(f"Could not upload etl archive: {e.__str__()}", 500, base=e)
     finally:
         shutil.rmtree(archive_directory)
 
@@ -102,7 +102,7 @@ def _extract_etl_archive(archive_path, directory_to_extract):
         with zipfile.ZipFile(archive_path, 'r') as zip_ref:
             zip_ref.extractall(directory_to_extract)
     except Exception as e:
-        raise InvalidUsage(f"Can not extract ETL archive: {e.__str__()}", 500)
+        raise InvalidUsage(f"Can not extract ETL archive: {e.__str__()}", 500, base=e)
 
 
 def _check_etl_archive_content(filenames: list):

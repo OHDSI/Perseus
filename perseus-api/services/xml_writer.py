@@ -382,7 +382,7 @@ def get_xml(current_user, json_):
                                     raise InvalidUsage(f'{e.message}\n'
                                                        f'Please, change \'{lookup_name}\' lookup '
                                                        f'for {source_table} - {target_table} tables '
-                                                       f'and {source_field} - {target_field} fields')
+                                                       f'and {source_field} - {target_field} fields', base=e)
 
                             concepts_tag = prepare_concepts_tag(
                                 concept_tags,
@@ -543,21 +543,18 @@ def add_files_to_zip(zip_file, path, directory):
 
 def zip_xml(current_user):
     """add mapping XMLs and lookup sql's to archive"""
-    try:
-        create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
+    create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
 
-        zip_file = zipfile.ZipFile(
-            GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
-                (GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
+    zip_file = zipfile.ZipFile(
+        GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
+            (GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
 
-        add_files_to_zip(zip_file, f"{GENERATE_ETL_XML_PATH}/{current_user}", "definitions")
-        add_files_to_zip(zip_file, f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}", "lookups")
+    add_files_to_zip(zip_file, f"{GENERATE_ETL_XML_PATH}/{current_user}", "definitions")
+    add_files_to_zip(zip_file, f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}", "lookups")
 
-        if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
-            zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
-        zip_file.close()
-    except FileNotFoundError:
-        raise
+    if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
+        zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
+    zip_file.close()
 
 
 def delete_generated(path):

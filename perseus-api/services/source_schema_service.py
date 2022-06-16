@@ -45,7 +45,7 @@ def _create_source_schema_by_scan_report(current_user, etl_mapping_id: int, scan
         book = xlrd.open_workbook(Path(scan_report_path), on_demand=True)
         cache_service.set_uploaded_scan_report_info(current_user, etl_mapping_id, scan_report_path, book)
     except Exception as e:
-        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 500)
+        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 500, base=e)
 
     # always take the first sheet of the excel file
     overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
@@ -202,7 +202,7 @@ def get_column_info(current_user, etl_mapping_id, table_name, column_name=None):
         sql = f"select * from overview where `table`=='{table_name}' and `field`=='{column_name}'"
         tables_pd = sqldf(sql)._series
     except xlrd.biffh.XLRDError as e:
-        raise InvalidUsage(e.__str__(), 404)
+        raise InvalidUsage(e.__str__(), 404, base=e)
     try:
         info = {}
         info['top_10'] = table_overview[column_name].head(10).tolist()
@@ -221,4 +221,4 @@ def get_column_info(current_user, etl_mapping_id, table_name, column_name=None):
                 info[field] = tables_pd[field][0]
         return info
     except KeyError as e:
-        raise InvalidUsage('Column invalid' + e.__str__(), 404)
+        raise InvalidUsage('Column invalid' + e.__str__(), 404, base=e)

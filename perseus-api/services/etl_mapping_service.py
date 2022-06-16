@@ -14,8 +14,10 @@ def find_by_id(idNum: int, username: str):
         if etl_mapping.username != username:
             raise InvalidUsage('Cannot get access to other user ETL mapping', 403)
         return etl_mapping
-    except:
-        raise InvalidUsage(f'ETL mapping not found by id {idNum}', 404)
+    except InvalidUsage as e:
+        raise e
+    except Exception as e:
+        raise InvalidUsage(f'ETL mapping not found by id {idNum}', 404, base=e)
 
 
 @app_logic_db.atomic()

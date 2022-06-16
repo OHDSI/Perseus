@@ -74,7 +74,7 @@ def load_scan_report_from_file_manager(scan_report_request: ScanReportRequest, c
                 out.write(scan_report_file)
                 return path
             except Exception as e:
-                raise InvalidUsage("Cannot write scan report file to server", 500)
+                raise InvalidUsage("Cannot write scan report file to server", 500, base=e)
         raise InvalidUsage("Cannot create scan report file on serve", 500)
 
 
