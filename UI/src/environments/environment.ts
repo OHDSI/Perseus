@@ -7,7 +7,6 @@ import { AuthStrategies } from './auth-strategies'
 
 export const environment = {
   production: false,
-  local: false,
   server: null,
   conceptTables: CONCEPT_TABLES,
   authStrategy: AuthStrategies.SMTP

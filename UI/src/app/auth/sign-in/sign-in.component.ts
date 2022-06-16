@@ -25,11 +25,8 @@ export class SignInComponent extends AuthComponent implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
-    if (isAddAuth) {
-      this.authService.login()
-        .subscribe(
-          () => this.router.navigate([mainPageRouter])
-        )
+    if (this.isAddAuth) {
+      this.submit()
     }
   }
 
@@ -51,9 +48,13 @@ export class SignInComponent extends AuthComponent implements OnInit {
   }
 
   protected initForm() {
-    this.form = new FormGroup({
-      email: new FormControl(null, [Validators.required, Validators.email]),
-      password: new FormControl(null, [Validators.required])
-    })
+    if (this.isAddAuth) {
+      this.form = new FormGroup({});
+    } else {
+      this.form = new FormGroup({
+        email: new FormControl(null, [Validators.required, Validators.email]),
+        password: new FormControl(null, [Validators.required])
+      })
+    }
   }
 }

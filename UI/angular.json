@@ -105,11 +105,11 @@
                 }
               ]
             },
-            "staging": {
+            "azure": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.stage.ts"
+                  "with": "src/environments/environment.azure.ts"
                 }
               ],
               "optimization": true,
@@ -130,14 +130,6 @@
                   "maximumWarning": "6kb"
                 }
               ]
-            },
-            "development": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
-                }
-              ]
             }
           },
           "defaultConfiguration": ""
@@ -150,9 +142,6 @@
           "configurations": {
             "production": {
               "browserTarget": "UI:build:production"
-            },
-            "development": {
-              "browserTarget": "UI:build:development"
             }
           }
         },

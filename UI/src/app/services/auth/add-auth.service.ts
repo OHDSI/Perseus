@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core'
 import { AuthService } from '@services/auth/auth.service'
 import { User } from '@models/auth/user'
 import { Observable, of } from 'rxjs'
-import { MsalService } from '@azure/msal-angular'
 import { HttpClient } from '@angular/common/http'
 import { authApiUrl } from '@app/app.constants'
 import { catchError, map, tap } from 'rxjs/operators'
+import { OAuthService } from 'angular-oauth2-oidc'
+import { authConfig } from '@app/auth.config'
+import { fromPromise } from 'rxjs/internal-compatibility'
 
 @Injectable({
   providedIn: 'root'
@@ -14,40 +16,38 @@ export class AddAuthService implements AuthService {
   isUserLoggedIn = false
   user: User
 
-  constructor(private msalService: MsalService,
-              private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private oauthService: OAuthService) {
+    this.oauthService.configure(authConfig)
   }
 
   get isUserLoggedIn$(): Observable<boolean> {
-    return this.httpClient.get(authApiUrl)
+    const request$ = this.isUserLoggedIn ?
+      this.httpClient.get(authApiUrl) :
+      this.httpClient.get<User>(`${authApiUrl}/user`)
+        .pipe(
+          tap(user => {
+            this.isUserLoggedIn = true;
+            this.user = user
+            this.oauthService.setupAutomaticSilentRefresh()
+          })
+        )
+    return request$
       .pipe(
         map(() => true),
         catchError(() => of(false))
       )
   }
 
-  login(): Observable<User> {
-    return this.msalService.loginPopup()
-      .pipe(
-        map(result => ({
-          username: result.account.username,
-          email: result.account.username
-        })),
-        tap(user => {
-          this.user = user
-          this.isUserLoggedIn = true
-        })
-      )
+  login(): Observable<boolean> {
+    return fromPromise(this.oauthService.loadDiscoveryDocumentAndLogin())
   }
 
   logout(): Observable<void> {
-    return this.msalService.logout()
-      .pipe(
-        tap(() => {
-          this.user = null
-          this.isUserLoggedIn = false
-        })
-      )
+    this.oauthService.logOut()
+    this.user = null
+    this.isUserLoggedIn = false
+    return of()
   }
 
   recoverPassword(email: string): Observable<void> {

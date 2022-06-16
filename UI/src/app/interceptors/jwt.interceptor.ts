@@ -4,8 +4,9 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { authInjector } from '@services/auth/auth-injector';
 import { AuthService } from '@services/auth/auth.service';
 import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
-import { externalUrls, loginRouter } from '../app.constants';
+import { isDev, loginRouter } from '../app.constants';
 import { Router } from '@angular/router';
+import { notExternalUrl } from '@utils/auth-util'
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -14,14 +15,12 @@ export class JwtInterceptor implements HttpInterceptor {
 
   private refreshToken$ = new BehaviorSubject<string>(null);
 
-  private notExternalUrl = requestUrl => !externalUrls.find(url => requestUrl.includes(url))
-
   constructor(@Inject(authInjector) private authService: AuthService,
               private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.authService.isUserLoggedIn && this.notExternalUrl(request.url)) {
-      request = this.addAuthorizationHeader(request)
+    if (this.authService.isUserLoggedIn && notExternalUrl(request.url)) {
+      request = this.cloneWithAuthorizationHeader(request)
     }
 
     return next.handle(request)
@@ -36,13 +35,11 @@ export class JwtInterceptor implements HttpInterceptor {
       )
   }
 
-  private addAuthorizationHeader(request: HttpRequest<any>): HttpRequest<any> {
+  private cloneWithAuthorizationHeader(request: HttpRequest<any>): HttpRequest<any> {
     const user = this.authService.user
+    const headers = isDev ? {Authorization: user.token, Username: user.username} : {Authorization: user.token}
     return request.clone({
-      setHeaders: {
-        Authorization: user.token,
-        Username: user.username
-      }
+      setHeaders: headers
     })
   }
 
@@ -52,7 +49,7 @@ export class JwtInterceptor implements HttpInterceptor {
         .pipe(
           filter(token => token !== null),
           take(1),
-          switchMap(() => next.handle(this.addAuthorizationHeader(request)))
+          switchMap(() => next.handle(this.cloneWithAuthorizationHeader(request)))
         )
     } else {
       this.isRefreshing = true;
@@ -68,7 +65,7 @@ export class JwtInterceptor implements HttpInterceptor {
           }),
           switchMap(user => {
             this.refreshToken$.next(user.refresh_token)
-            return next.handle(this.addAuthorizationHeader(request))
+            return next.handle(this.cloneWithAuthorizationHeader(request))
           }),
           finalize(() => this.isRefreshing = false)
         )
