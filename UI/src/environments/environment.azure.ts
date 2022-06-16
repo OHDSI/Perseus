@@ -1,8 +1,9 @@
 import { CONCEPT_TABLES } from './concept-tables'
+import { AuthStrategies } from './auth-strategies'
 
 export const environment = {
   production: true,
-  local: false,
   server: null,
-  conceptTables: CONCEPT_TABLES
+  conceptTables: CONCEPT_TABLES,
+  authStrategy: AuthStrategies.ADD
 };

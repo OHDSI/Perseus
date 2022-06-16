@@ -1,32 +1,34 @@
 <app-auth-background class="sign-in">
-  <form class="sign-in__form" [formGroup]="form" (ngSubmit)="submit()">
+  <form class="sign-in__form" [formGroup]="form" (ngSubmit)="submit()" [class.add]="isAddAuth">
     <div class="sign-in__form__header">
       <app-auth-logo></app-auth-logo>
     </div>
 
-    <div class="sign-in__form__control">
-      <label for="email">
-        E-mail
-        <app-validate-message *ngIf="email.touched && email.dirty && email.invalid">
-          Invalid address
-        </app-validate-message>
-      </label>
-      <input id="email" type="email" formControlName="email" placeholder="email@example.com" maxlength="50">
-    </div>
+    <ng-container *ngIf="!isAddAuth">
+      <div class="sign-in__form__control">
+        <label for="email">
+          E-mail
+          <app-validate-message *ngIf="email.touched && email.dirty && email.invalid">
+            Invalid address
+          </app-validate-message>
+        </label>
+        <input id="email" type="email" formControlName="email" placeholder="email@example.com" maxlength="50">
+      </div>
 
-    <div class="sign-in__form__control sign-in__form__password-wrapper">
-      <label>Password</label>
-      <app-auth-password-input formControlName="password"></app-auth-password-input>
+      <div class="sign-in__form__control sign-in__form__password-wrapper">
+        <label>Password</label>
+        <app-auth-password-input formControlName="password"></app-auth-password-input>
 
-      <app-auth-error-message *ngIf="error" class="sign-in__form__password-wrapper__error"
-                              [message]="error"></app-auth-error-message>
-    </div>
+        <app-auth-error-message *ngIf="error" class="sign-in__form__password-wrapper__error"
+                                [message]="error"></app-auth-error-message>
+      </div>
+    </ng-container>
 
     <div class="sign-in__form__submit">
       <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Login</button>
     </div>
 
-    <div class="sign-in__form__redirect">
+    <div *ngIf="!isAddAuth" class="sign-in__form__redirect">
       <a [routerLink]="['/sign-out']">Register</a>
       <span>|</span>
       <a [routerLink]="['/recover-password']">Forgot Password ?</a>

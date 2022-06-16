@@ -1,18 +1,19 @@
 import { environment } from '../environments/environment'
+import { AuthStrategies } from '../environments/auth-strategies'
 
 export const appVersion = '0.4'
-
 export const similarTableName = 'similar'
 
 export const isProd = environment.production
 export const isDev = !isProd;
 
-const server = environment.server || window.location.hostname
-const protocol = window.location.protocol
+export const serverUrl = window.location.origin
 
-export const serverUrl = `${protocol}//${server}`
+export const isAddAuth = environment.authStrategy === AuthStrategies.ADD
 
-export const authApiUrl = `${serverUrl}/user/api`
+export const authApiUrl = isAddAuth ?
+  `${serverUrl}/auth/api` :
+  `${serverUrl}/user/api`
 export const perseusApiUrl = `${serverUrl}/backend/api`
 export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`

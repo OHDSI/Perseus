@@ -4,7 +4,7 @@ from flask import request, jsonify, Blueprint
 from app import app
 from config import APP_PREFIX, VERSION
 from service.search_service import search_athena
-from constants import VOCABULARY_FILTERS
+from utils.constants import VOCABULARY_FILTERS
 
 athena = Blueprint('athena', __name__, url_prefix=APP_PREFIX)
 

@@ -3,7 +3,7 @@ import urllib
 from urllib.request import urlopen
 
 from app import app
-from constants import ATHENA_CORE_NAME
+from utils.constants import ATHENA_CORE_NAME
 from service import search_service
 
 

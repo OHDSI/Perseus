@@ -3,9 +3,8 @@ import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '@models/auth/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { authApiUrl, loginRouter } from '@app/app.constants';
+import { authApiUrl } from '@app/app.constants';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,7 @@ export class JwtAuthService implements AuthService {
 
   private tokenValid: boolean
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient) {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
     this.currentUser$ = new BehaviorSubject<User>(user)
   }
@@ -41,7 +40,7 @@ export class JwtAuthService implements AuthService {
     return this.isTokenValid()
   }
 
-  login(email: string, password: string): Observable<User> {
+  login(email?: string, password?: string): Observable<User> {
     return this.saveUser(
       this.httpClient.post<User>(`${authApiUrl}/login`, {email, password})
     )
@@ -52,7 +51,6 @@ export class JwtAuthService implements AuthService {
       .pipe(
         tap(() => {
           this.resetCurrentUser()
-          this.router.navigateByUrl(loginRouter)
         })
       )
   }
