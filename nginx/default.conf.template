@@ -1,5 +1,4 @@
 client_max_body_size 100m;
-include /etc/nginx/mime.types;
 
 proxy_cache_path /var/cache/nginx/tokens levels=1 keys_zone=token_responses:1m max_size=10m;
 
