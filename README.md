@@ -125,6 +125,9 @@ Open `localhost:80` in your browser, preferably Google Chrome
     docker build -t web .
     docker run --name web -d -p 80:80 --restart=always web
 
+### For Azure
+    docker run --name web -d --net=host -v /verify:/verify -v /etc/letsencrypt:/etc/letsencrypt -e NGINX_ENV='azure' perseushub.azurecr.io/web:dev
+
 ### Database
 
 Set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
