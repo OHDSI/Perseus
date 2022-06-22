@@ -11,7 +11,7 @@ job_id = 'import_data'
 
 
 def import_data():
-    app.logger.info("Import data job started")
+    app.logger.info("Import data job started!")
     try:
         create_index_if_not_exist(app.logger, app.config['SOLR_URL'])
         app.logger.info("Import data job finished")
