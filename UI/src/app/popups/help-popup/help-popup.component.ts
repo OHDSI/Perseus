@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { appVersion } from '@app/app.constants';
+import { appVersion, SUPPORT_EMAIL } from '@app/app.constants';
 
 @Component({
   selector: 'app-help-popup',
@@ -10,6 +10,8 @@ import { appVersion } from '@app/app.constants';
 export class HelpPopupComponent {
 
   version = appVersion
+  email = SUPPORT_EMAIL
+  emailHref = `mailto:${SUPPORT_EMAIL}`
 
   constructor(public dialogRef: MatDialogRef<HelpPopupComponent>) {
   }
