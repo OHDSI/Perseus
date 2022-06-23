@@ -57,3 +57,5 @@ export const COLUMNS_TO_EXCLUDE_FROM_TARGET = [
   'SOURCE_TO_CONCEPT_MAP',
   'DRUG_STRENGTH'
 ]
+
+export const SUPPORT_EMAIL = 'perseus.support@softwarecountry.com'
