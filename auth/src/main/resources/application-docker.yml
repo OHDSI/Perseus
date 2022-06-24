@@ -14,4 +14,4 @@ spring:
         enabled: true
         credential:
           client-id: ${CLIENT_ID}
-        app-id-uri: api://${CLIENT_ID}
+        app-id-uri: ${API_URI}
