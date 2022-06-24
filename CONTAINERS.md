@@ -34,7 +34,7 @@
     
     cd auth
     docker build -t auth .
-    docker run --name auth -d -p 8002:8002 -e CLIENT_ID='<<Client Id>>' -e SPRING_PROFILES_ACTIVE='docker' --network=perseus-net auth
+    docker run --name auth -d -p 8002:8002 -e CLIENT_ID='<<Client Id>>' -e API_URI='<<Api Uri>>' -e SPRING_PROFILES_ACTIVE='docker' --network=perseus-net auth
 
 
 ### Frontend
