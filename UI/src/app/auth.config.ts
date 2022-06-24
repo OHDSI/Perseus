@@ -9,5 +9,5 @@ export const authConfig: AuthConfig = {
   clientId: env?.clientId,
   responseType: 'code',
   strictDiscoveryDocumentValidation: false,
-  scope: env?.scope
+  scope: `api://${env?.clientId}/app`
 }
