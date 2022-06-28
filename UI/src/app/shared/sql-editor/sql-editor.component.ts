@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewChecked, ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/edit/matchbrackets';
@@ -10,16 +10,27 @@ import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
 import { cloneDeep } from '@app/infrastructure/utility';
 import { Area } from '@models/area';
-import { Table } from '@models/table';
+import { ITable, Table } from '@models/table';
 import { CommonUtilsService } from '@services/common-utils.service';
 import { BridgeService } from '@services/bridge.service';
 import { Row, RowOptions } from '@models/row';
-import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { StoreService } from '@services/store.service';
 import { PerseusApiService } from '@services/perseus/perseus-api.service'
+import {
+  getTableAliasesInfo,
+  JOIN_MAPPING,
+  mapToPostgresSqlName,
+  onKeyUp,
+  SELECT_MAPPING,
+  selectTemplate
+} from '@shared/sql-editor/sql-editor'
+import { AliasTableMapping, SqlEditorData, TablesColumnsMapping } from '@shared/sql-editor/sql-editor.data'
+import { BaseComponent } from '@shared/base/base.component'
+import { takeUntil } from 'rxjs/operators'
+import { openHttpErrorDialog } from '@utils/error'
 
 const editorSettings = {
-  mode: 'text/x-mysql',
+  mode: 'text/x-sql',
   lineNumbers: false,
   indentWithTabs: true,
   smartIndent: true,
@@ -27,7 +38,6 @@ const editorSettings = {
   autofocus: true,
   extraKeys: { 'Ctrl-Space': 'autocomplete' },
   hint: CodeMirror.hint.sql,
-  hintOptions: {}
 };
 
 @Component({
@@ -35,50 +45,63 @@ const editorSettings = {
   styleUrls: [ './sql-editor.component.scss' ],
   templateUrl: './sql-editor.component.html'
 })
-export class SqlEditorComponent implements OnInit, AfterViewChecked {
+export class SqlEditorComponent extends BaseComponent implements OnInit, AfterViewChecked {
   constructor(
     private commonUtilsService: CommonUtilsService,
-    public dialogRef: MatDialogRef<SqlEditorComponent>,
+    private dialogRef: MatDialogRef<SqlEditorComponent>,
     private cdRef: ChangeDetectorRef,
     private bridgeService: BridgeService,
     private matDialog: MatDialog,
     private storeService: StoreService,
     private perseusApiService: PerseusApiService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    @Inject(MAT_DIALOG_DATA) public data: SqlEditorData
+  ) {
+    super();
   }
 
-  @ViewChild('editor', { static: true }) editor;
-  isNew = true;
-  tables: any;
-  table: any;
-  codeMirror;
-  viewForm = new FormGroup({
-    name: new FormControl('', Validators.compose(
-      [ Validators.maxLength(50), Validators.required ]))
-  });
+  @ViewChild('editor', { static: true })
+  editor;
+  codeMirror: CodeMirror;
+
+  tables: ITable[];
+  table: ITable;
+
+  nameControl = new FormControl('', Validators.compose(
+    [ Validators.maxLength(50), Validators.required ]
+  ));
+
   chips = [];
-  tablesWithoutAlias = [];
-  tableColumnsMapping = {};
-  aliasTableMapping = {};
+
+  tableColumnsMapping: TablesColumnsMapping = {};
+
   tokenReplaceMapping = {
-    join: (context) => [ 'left join', 'right join', 'inner join', 'outer join' ],
+    join: JOIN_MAPPING,
+    JOIN: JOIN_MAPPING,
+    select: SELECT_MAPPING,
+    SELECT: SELECT_MAPPING,
     '*': (context) => {
-      const columnsWithoutAlias = this.tablesWithoutAliasColumns.map(it => it.name);
-      return [ ...this.aliasedTablesColumns(true), ...columnsWithoutAlias ];
+      const {tablesWithoutAlias, aliasTableMapping} = getTableAliasesInfo(this.editorContent)
+      const columnsWithoutAlias = tablesWithoutAlias
+        .reduce((prev, cur) => [...prev, ...this.tableColumnsMapping[cur]], []);
+      return [...this.aliasedTablesColumns(aliasTableMapping, true), ...columnsWithoutAlias];
     }
   };
 
+  viewNameExist = false;
+  editorEmpty = true;
+
   ngOnInit() {
     this.chips = this.data.tables.filter(it => !it.sql);
-    this.isNew = !this.data.table;
     this.tables = cloneDeep(this.data.tables);
     this.table = { ...this.data.table };
     this.initCodeMirror();
-    if (!this.isNew) {
+    if (this.data.action === 'Edit') {
       const { name, sql } = this.table;
-      this.viewForm.get('name').setValue(name);
+      this.nameControl.setValue(name);
       this.codeMirror.setValue(sql);
+      this.editorEmpty = !sql;
     }
+    this.subscribeOnNameChange();
   }
 
   ngAfterViewChecked() {
@@ -86,17 +109,19 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
   }
 
   initCodeMirror() {
-    const tableColumnNamesMapping = {};
-    this.tableColumnsMapping = this.tables.reduce((prev, cur) => {
-      prev[ cur.name ] = cur.rows;
-      tableColumnNamesMapping[ cur.name ] = cur.rows.map(it => it.name);
-      return prev;
+    const tableColumnNamesMapping = {}; // This object used for autocomplete column names
+    this.tableColumnsMapping = this.tables.reduce((mapping, table) => {
+      mapping[table.name] = table.rows;
+      tableColumnNamesMapping[table.name] = table.rows.map(mapToPostgresSqlName);
+      return mapping;
     }, {});
 
-    editorSettings.hintOptions = { tables: tableColumnNamesMapping };
-    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, editorSettings as any);
+    this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, {
+      ...editorSettings,
+      hintOptions: { tables: tableColumnNamesMapping }
+    });
     this.codeMirror.on('cursorActivity', this.onCursorActivity.bind(this));
-    this.codeMirror.on('keyup', this.onKeyUp.bind(this));
+    this.codeMirror.on('keyup', onKeyUp.bind(this));
     this.codeMirror.on('change', this.onChange.bind(this));
   }
 
@@ -104,26 +129,28 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     return this.codeMirror ? this.codeMirror.getValue() : '';
   }
 
-  get tablesWithoutAliasColumns() {
-    return this.tablesWithoutAlias.reduce((prev, cur) => [ ...prev, ...this.tableColumnsMapping[ cur ] ], []);
-  }
-
-  get allColumns() {
-    const aliasedColumns = this.aliasedTablesColumns();
-    return [ ...aliasedColumns, ...this.tablesWithoutAliasColumns ];
-  }
-
   get name() {
-    return this.viewForm.get('name').value;
+    return this.nameControl.value;
   }
 
-  createSourceTableData() {
-    const viewTableId = this.isNew ? (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1 : this.table.id;
+  /**
+   * Generate SQL code when user drag dn drop chip on text area
+   */
+  drop(event: CdkDragDrop<any>) {
+    const text = event.item.element.nativeElement.textContent.trim();
+    this.codeMirror.setValue(this.editorContent ? this.joinTemplate(text) : selectTemplate(text));
+  }
+
+  openOnBoardingTip(target: EventTarget) {
+    this.commonUtilsService.openOnBoardingTip(target, 'sql-editor');
+  }
+
+  apply() {
+    const viewTableId = this.getExistedOrGenerateNewTableId()
     let viewSql: string = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
     viewSql = this.handleSelectAllCases(viewSql);
 
     const viewResultColumns = [];
-
     this.perseusApiService.getView({ sql: viewSql }).subscribe(res => {
       res.forEach((row, index) => {
         const rowOptions: RowOptions = {
@@ -151,34 +178,33 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
       this.removeLinksForDeletedRows(newTable);
       this.dialogRef.close(newTable);
     },
-      error => {
-        const dialog = this.matDialog.open(ErrorPopupComponent, {
-          closeOnNavigation: false,
-          disableClose: false,
-          data: {
-            title: 'View error',
-            message: error.error.message
-          }
-        });
-      });
+      error => openHttpErrorDialog(this.matDialog, 'View SQL error', error));
   }
 
-  handleSelectAllCases(viewSql: string): string {
+  /**
+   * Legacy
+   * Prepare sql function before sending to back-end
+   * Replace * (SELECT ALL) to field list if SQL query contains JOIN operator
+   * This functional need to display column with same name but from different tables in Mapping Fields Page
+   * @return if JOIN query and same columns - parsed sql function with replaced * on fields list, else - content param
+   */
+  private handleSelectAllCases(viewSql: string): string {
+    const {aliasTableMapping} = getTableAliasesInfo(this.editorContent)
     if (this.editorContent.match(/select \*/gi)) {
       const columns = [];
-      Object.keys(this.aliasTableMapping).forEach(item => {
-        this.createColumnAliases(item, columns);
+      Object.keys(aliasTableMapping).forEach(item => {
+        this.createColumnAliases(aliasTableMapping, item, columns);
       });
       const allColumns = columns.join(',')
       viewSql = viewSql.replace(/select \*/gi, `select ${allColumns}`)
     } else {
       const totalColumns = [];
-      Object.keys(this.aliasTableMapping).forEach(item => {
+      Object.keys(aliasTableMapping).forEach(item => {
         const columns = [];
         const matchPattern = `${item}\\.\\*`
         const re = new RegExp(matchPattern, 'gi');
         if (this.editorContent.match(re)) {
-          this.createColumnAliases(item, columns, totalColumns);
+          this.createColumnAliases(aliasTableMapping, item, columns, totalColumns);
           const allColumns = columns.join(',')
           viewSql = viewSql.replace(re, allColumns)
         }
@@ -187,8 +213,11 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     return viewSql;
   }
 
-  createColumnAliases(tableAlias: string, columns: any, totalColumns?: any) {
-    const tableName = this.aliasTableMapping[ tableAlias ];
+  private createColumnAliases(aliasTableMapping: AliasTableMapping,
+                              tableAlias: string,
+                              columns: any,
+                              totalColumns?: any) {
+    const tableName = aliasTableMapping[tableAlias];
     const table = this.storeService.state.source.find(it => it.name === tableName);
     let duplicateColumns;
     table.rows.forEach(row => {
@@ -203,7 +232,7 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     })
   }
 
-  removeLinksForDeletedRows(newTable: Table) {
+  private removeLinksForDeletedRows(newTable: Table) {
     Object.keys(this.bridgeService.arrowsCache).forEach(key => {
       const arrowSourceTableId = Number(key.substr(0, key.indexOf('-')));
       if (arrowSourceTableId === newTable.id) {
@@ -215,134 +244,63 @@ export class SqlEditorComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  modifySourceTableData() {
-    const settings = {
-      ...this.table,
-      sql: this.editorContent,
-      name: this.name
-    };
-    return new Table(settings);
-  }
-
-  apply() {
-    this.createSourceTableData();
-  }
-
-  aliasedTablesColumns(prefix = false) {
-    return Object.keys(this.aliasTableMapping).reduce((prev, cur) => {
-      const tableName = this.aliasTableMapping[ cur ];
-      const columns = this.tableColumnsMapping[ tableName ];
+  private aliasedTablesColumns(aliasTableMapping: AliasTableMapping, prefix = false) {
+    return Object.keys(aliasTableMapping).reduce((prev, cur) => {
+      const tableName = aliasTableMapping[cur];
+      const columns = this.tableColumnsMapping[tableName];
       const tableColumns = prefix ? columns.map(it => `${cur}.${it.name}`) : columns;
       return [ ...prev, ...tableColumns ];
     }, []);
   }
 
-  joinTemplate(text) {
+  private joinTemplate(text) {
     const joinCount = (this.editorContent.match(/join/gi) || []).length;
     return `${this.editorContent}
       join ${text} as t${joinCount + 2} on`;
   }
 
-
-  columnsReducer(prev, cur) {
-    const trimmed = cur.trim();
-    if (trimmed) {
-      const aliases = Object.keys(this.aliasTableMapping);
-      const aliasPrefix = aliases.find(it => trimmed.startsWith(`${it}.`));
-      if (!aliasPrefix) {
-        // case if we have column name string like t2.column_name and at the same time we have no t2 alias
-        return prev;
-      }
-      const tableName = this.aliasTableMapping[ aliasPrefix ];
-      const columns = this.tableColumnsMapping[ tableName ];
-      if (trimmed.slice(aliasPrefix.length + 1) === '*') {
-        return columns;
-      }
-      const column = columns.find(it => it.name === trimmed.slice(aliasPrefix.length + 1));
-      return [ ...prev, column ];
-    }
-    return prev;
+  private onChange(cm, event) {
+    this.nameControl.markAsTouched();
+    const editorContent = this.editorContent
+    this.editorEmpty = !editorContent
   }
 
-  selectTemplate(text) {
-    return `select * from ${text} as t1`;
-  }
-
-  drop(event: CdkDragDrop<any>) {
-    const text = event.item.element.nativeElement.textContent.trim();
-    this.codeMirror.setValue(this.editorContent ? this.joinTemplate(text) : this.selectTemplate(text));
-  }
-
-  onChange(cm, event) {
-    this.tablesWithoutAlias = [];
-    const matches = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ')
-      .matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm);
-    this.viewForm.markAsTouched();
-
-    if (matches) {
-      this.aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
-        const isFrom = cur[ 1 ] && cur[ 1 ] === 'from';
-        const isJoin = cur[ 5 ] && cur[ 5 ] === 'join';
-        let aliasName;
-        let tableName;
-        if (isFrom) {
-          tableName = cur[ 2 ];
-          aliasName = cur[ 4 ];
-        } else if (isJoin) {
-          tableName = cur[ 6 ];
-          aliasName = cur[ 8 ];
-        }
-        if (aliasName && tableName) {
-          prev[ aliasName ] = tableName;
-        }
-        if (!aliasName && tableName) {
-          this.tablesWithoutAlias = [ ...this.tablesWithoutAlias, tableName ];
-        }
-        return prev;
-      }, {});
-    } else {
-      this.aliasTableMapping = {};
-    }
-  }
-
-  onCursorActivity(cm, event) {
-    this.viewForm.markAsTouched();
+  /**
+   * Show hint: token autocomplete by this.tokenReplaceMapping
+   */
+  private onCursorActivity(cm, event) {
+    this.nameControl.markAsTouched();
     const cursor = cm.getCursor();
     const token = cm.getTokenAt(cursor);
     const hasReplaceHints = !!this.tokenReplaceMapping[ token.string ];
     if (hasReplaceHints) {
-      cm.showHint(this.hintOptions(token, cursor) as any);
+      const getList = this.tokenReplaceMapping[ token.string ];
+      const hintOptions = {
+        completeSingle: false,
+        hint: () => ({
+          from: {line: cursor.line, ch: token.start },
+          to: {line: cursor.line, ch: token.end },
+          list: getList(token)
+        })
+      };
+      cm.showHint(hintOptions);
     }
   }
 
-  onKeyUp(cm, event) {
-    if (!cm.state.completionActive && event.code === 'Period') {
-      cm.showHint({ completeSingle: false } as any);
+  private subscribeOnNameChange() {
+    if (this.data.action === 'Create') {
+      const tableNamesInUpperCase = this.tables.map(table => table.name.toUpperCase())
+      this.nameControl.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(value => {
+          this.viewNameExist = tableNamesInUpperCase.includes(value.toUpperCase())
+        })
     }
   }
 
-  hintOptions(token, cursor) {
-    const getList = this.tokenReplaceMapping[ token.string ];
-    return {
-      completeSingle: false,
-      hint: () => ({
-        from: {line: cursor.line, ch: token.start },
-        to: {line: cursor.line, ch: token.end },
-        list: getList(token)
-      })
-    };
+  private getExistedOrGenerateNewTableId(): number {
+    return this.data.action === 'Create' ?
+      (this.tables.reduce((a, b) => a.id > b.id ? a : b).id) + 1
+      : this.table.id;
   }
-
-  openOnBoardingTip(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'sql-editor');
-  }
-
-  viewNameExists() {
-    if (this.tables) {
-      return (this.tables.findIndex((item: any) => item.name.toUpperCase() === this.name.toUpperCase()) !== -1 &&
-        this.data.action === 'Create');
-    }
-    return false;
-  }
-
 }

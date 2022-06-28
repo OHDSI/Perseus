@@ -45,6 +45,7 @@ import { asc } from '@utils/sort';
 import { canOpenMappingPage } from '@utils/mapping-util';
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { PerseusApiService } from '@services/perseus/perseus-api.service'
+import { SqlEditorData } from '@shared/sql-editor/sql-editor.data'
 
 @Component({
   selector: 'app-comfy',
@@ -558,7 +559,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return canOpenMappingPage(this.targetTableNames, this.targetConfig)
   }
 
-  openSqlDialog(data) {
+  openSqlDialog(data: SqlEditorData) {
     return this.matDialog.open(SqlEditorComponent, {
       closeOnNavigation: false,
       disableClose: false,

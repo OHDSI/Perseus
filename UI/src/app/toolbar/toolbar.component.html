@@ -71,6 +71,11 @@
       <mat-icon svgIcon="reset"></mat-icon>
       <span>Delete All Mappings</span>
     </button>
+
+    <button *ngIf="isDev" mat-menu-item
+            (click)="consoleLogStore()">
+      <span>Console log store</span>
+    </button>
   </mat-menu>
 
   <mat-menu #createMapping="matMenu">
