@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   server: null,
   conceptTables: CONCEPT_TABLES,
-  authStrategy: AuthStrategies.SMTP
+  authStrategy: AuthStrategies.FAKE
 };
 
 /*

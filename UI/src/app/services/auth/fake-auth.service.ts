@@ -11,7 +11,7 @@ export class FakeAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>
 
-  private readonly delay = 2000;
+  private readonly delay = 1500;
 
   constructor() {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
@@ -32,7 +32,9 @@ export class FakeAuthService implements AuthService {
 
   login(email: string, password: string, ): Observable<User> {
     const user = {
-      username: email,
+      username: email
+        .replace('@', '_at_')
+        .replace('.', '_'),
       email,
       token: this.token(),
       refresh_token: this.token()

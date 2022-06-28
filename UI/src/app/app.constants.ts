@@ -9,7 +9,8 @@ export const isDev = !isProd;
 
 export const serverUrl = window.location.origin
 
-export const isAddAuth = environment.authStrategy === AuthStrategies.ADD
+export const authStrategy = environment.authStrategy
+export const isAddAuth = authStrategy === AuthStrategies.ADD
 
 export const authApiUrl = isAddAuth ?
   `${serverUrl}/auth/api` :
@@ -26,7 +27,12 @@ export const numberOfPanelsWithoutSimilar = 2
 export const numberOfPanelsWithOneSimilar = 3
 export const numberOfPanelsWithTwoSimilar = 4
 
-export const conceptFieldsTypes = ['concept_id', 'source_value', 'source_concept_id', 'type_concept_id']
+export const conceptFieldsTypes = [
+  'concept_id',
+  'source_value',
+  'source_concept_id',
+  'type_concept_id'
+]
 
 export const mainPageRouter = '/perseus'
 export const loginRouter = '/sign-in'
