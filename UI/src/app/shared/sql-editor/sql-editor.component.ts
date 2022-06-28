@@ -9,14 +9,13 @@ import 'codemirror/addon/hint/sql-hint';
 import * as CodeMirror from 'codemirror/lib/codemirror';
 import 'codemirror/mode/sql/sql';
 import { cloneDeep } from '@app/infrastructure/utility';
-import { Area } from '@models/area';
 import { ITable, Table } from '@models/table';
 import { CommonUtilsService } from '@services/common-utils.service';
 import { BridgeService } from '@services/bridge.service';
-import { Row, RowOptions } from '@models/row';
 import { StoreService } from '@services/store.service';
 import { PerseusApiService } from '@services/perseus/perseus-api.service'
 import {
+  createTable,
   getTableAliasesInfo,
   JOIN_MAPPING,
   mapToPostgresSqlName,
@@ -146,35 +145,12 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   apply() {
-    const viewTableId = this.getExistedOrGenerateNewTableId()
     let viewSql: string = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
     viewSql = this.handleSelectAllCases(viewSql);
 
-    const viewResultColumns = [];
     this.perseusApiService.getView({ sql: viewSql }).subscribe(res => {
-      res.forEach((row, index) => {
-        const rowOptions: RowOptions = {
-          id: index,
-          tableId: viewTableId,
-          tableName: this.name,
-          name: row.name,
-          type: row.type,
-          isNullable: true,
-          comments: [],
-          uniqueIdentifier: false,
-          area: Area.Source
-        };
-        const viewRow = new Row(rowOptions);
-        viewResultColumns.push(viewRow);
-      });
-      const settings = {
-        rows: viewResultColumns,
-        area: Area.Source,
-        id: viewTableId,
-        name: this.name,
-        sql: viewSql
-      };
-      const newTable = new Table(settings);
+      const viewTableId = this.getExistedOrGenerateNewTableId()
+      const newTable = createTable(viewTableId, this.name, viewSql, res);
       this.removeLinksForDeletedRows(newTable);
       this.dialogRef.close(newTable);
     },

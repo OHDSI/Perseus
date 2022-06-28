@@ -1,6 +1,8 @@
-import { ITable } from '@models/table'
+import { ITable, ITableOptions, Table } from '@models/table'
 import { AliasTableMapping } from '@shared/sql-editor/sql-editor.data'
-import { IRow } from '@models/row'
+import { IRow, Row, RowOptions } from '@models/row'
+import { ViewSqlResponse } from '@models/perseus/view-sql-response'
+import { Area } from '@models/area'
 
 export const JOIN_MAPPING = (context) => ['left join', 'right join', 'inner join', 'outer join']
 export const SELECT_MAPPING = (context) => ['select * from']
@@ -82,4 +84,33 @@ export function mapToPostgresSqlName(row: IRow): string {
 
 export function hasCapitalLetter(str) {
   return str.toLowerCase() !== str
+}
+
+export function createTable(tableId: number,
+                            tableName: string,
+                            sql: string,
+                            res: ViewSqlResponse[]): ITable {
+  const viewResultColumns: IRow[] = [];
+  res.forEach((row, index) => {
+    const rowOptions: RowOptions = {
+      id: index,
+      tableId,
+      tableName,
+      name: row.name,
+      type: row.type,
+      isNullable: true,
+      comments: [],
+      uniqueIdentifier: false,
+      area: Area.Source
+    };
+    viewResultColumns.push(new Row(rowOptions));
+  });
+  const settings: ITableOptions = {
+    rows: viewResultColumns,
+    area: Area.Source,
+    id: tableId,
+    name: tableName,
+    sql
+  };
+  return new Table(settings);
 }
