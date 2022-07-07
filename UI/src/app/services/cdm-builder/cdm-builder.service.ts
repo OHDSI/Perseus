@@ -1,17 +1,18 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CdmBuilderStatus } from '@models/scan-data/cdm-builder-status';
+import { CdmBuilderStatus } from '@models/cdm-builder/cdm-builder-status';
 import { cdmBuilderApiUrl } from '@app/app.constants';
-import { CdmSettings } from '@models/scan-data/cdm-settings';
+import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { map, switchMap } from 'rxjs/operators';
-import { ConnectionResult } from '@models/scan-data/connection-result';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { DataService } from '../data.service';
 import { BridgeService } from '../bridge.service';
 import { StoreService } from '../store.service';
 import { removeExtension } from '@utils/file';
 import { authInjector } from '../auth/auth-injector';
 import { AuthService } from '../auth/auth.service';
+import { Conversion } from '@models/conversion/conversion'
 
 @Injectable()
 export class CdmBuilderService {
@@ -38,7 +39,7 @@ export class CdmBuilderService {
     return this.testConnection(settings, `${cdmBuilderApiUrl}/checkdestinationconnection`);
   }
 
-  addMapping(): Observable<boolean> {
+  addMapping(): Observable<Conversion> {
     const source = this.storeService.state.mappedSource;
     const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(source);
     const mappingName = this.getMappingName();
@@ -49,28 +50,28 @@ export class CdmBuilderService {
           const formData = new FormData();
           formData.append('File', file);
           formData.append('Name', mappingName);
-          return this.httpClient.post(`${cdmBuilderApiUrl}/addmappings`, formData, {observe: 'response'});
+          return this.httpClient.post<Conversion>(`${cdmBuilderApiUrl}/addmappings`, formData);
         }),
-        map(response => response.status === 200)
       );
   }
 
-  convert(settings: CdmSettings): Observable<boolean> {
-    return this.httpClient.post(cdmBuilderApiUrl, settings, {headers: {'Content-Type': 'application/json'}, observe: 'response'})
-      .pipe(
-        map(response => response.status === 200)
-      );
+  convert(settings: CdmSettings): Observable<void> {
+    return this.httpClient.post<void>(cdmBuilderApiUrl, settings, {headers: {'Content-Type': 'application/json'}})
   }
 
-  abort(): Observable<boolean> {
-    return this.httpClient.get(`${cdmBuilderApiUrl}/abort`, {observe: 'response', responseType: 'text'})
+  conversionInfoWithLog(conversionId: number): Observable<Conversion> {
+    return this.httpClient.get<Conversion>(`${cdmBuilderApiUrl}/log?conversionId=${conversionId}`)
+  }
+
+  abort(conversionId: number): Observable<boolean> {
+    return this.httpClient.get(`${cdmBuilderApiUrl}/abort?conversionId=${conversionId}`, {observe: 'response', responseType: 'text'})
       .pipe(
         map(response => response.status === 200)
       );
   }
 
   getMappingName(): string {
-    const reportName = removeExtension(this.storeService.state.report)
+    const reportName = removeExtension(this.storeService.scanReportName)
     const email = this.authService.user.email
 
     return `${reportName}_${email}`

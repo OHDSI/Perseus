@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { User } from '@models/user';
+import { User } from '@models/auth/user';
 import { AuthService, localStorageUserField } from './auth.service';
 import { catchError, delay, tap } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ export class FakeAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>
 
-  private readonly delay = 2000;
+  private readonly delay = 1500;
 
   constructor() {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
@@ -31,8 +31,16 @@ export class FakeAuthService implements AuthService {
   }
 
   login(email: string, password: string, ): Observable<User> {
+    const user = {
+      username: email
+        .replace('@', '_at_')
+        .replace('.', '_'),
+      email,
+      token: this.token(),
+      refresh_token: this.token()
+    }
     return this.saveUser(
-      of({email, token: this.token(), refresh_token: this.token()}).pipe(delay(this.delay))
+      of(user).pipe(delay(this.delay))
     )
   }
 
@@ -59,15 +67,21 @@ export class FakeAuthService implements AuthService {
   }
 
   refreshToken(email, token): Observable<User> {
-    return this.saveUser(
-      of({email, token: this.token(), refresh_token: this.token()}).pipe(delay(this.delay))
-    ).pipe(
-      catchError(error => {
-        localStorage.removeItem(localStorageUserField)
-        this.currentUser$.next(null)
-        throw error
-      })
-    )
+    const user = {
+      username: email,
+      email,
+      token: this.token(),
+      refresh_token: this.token()
+    }
+    const user$ = of(user).pipe(delay(this.delay))
+    return this.saveUser(user$)
+      .pipe(
+        catchError(error => {
+          localStorage.removeItem(localStorageUserField)
+          this.currentUser$.next(null)
+          throw error
+        })
+      )
   }
 
   private token = () => Math.random().toString(36).substring(7)

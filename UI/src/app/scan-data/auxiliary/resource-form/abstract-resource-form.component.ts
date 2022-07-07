@@ -1,10 +1,10 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConnectionResult } from '@models/scan-data/connection-result';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { merge, Subject } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
 import { ConnectionErrorPopupComponent } from '../connection-error-popup/connection-error-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { dbTypesRequireSchema, defaultPorts } from '../../scan-data.constants';

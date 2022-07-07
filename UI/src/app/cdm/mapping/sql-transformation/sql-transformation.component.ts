@@ -5,7 +5,7 @@ import { SqlForTransformation } from '@models/transformation/sql-for-transformat
 import { ManualTransformationComponent } from '@mapping/sql-transformation/manual-transformation/manual-transformation.component';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { FieldTypeService } from '@services/field-type.service';
+import { FieldTypeService } from '@services/perseus/field-type.service';
 import { FieldType } from '@utils/field-type';
 
 @Component({
@@ -63,6 +63,10 @@ export class SqlTransformationComponent implements OnInit {
     return this.mode === 'manual' || !this.visualTransformationComponent || this.visualTransformationComponent.valid
   }
 
+  get invalid() {
+    return !this.valid
+  }
+
   @Input()
   set sql(value: SqlForTransformation) {
     this.sqlForTransform = value
@@ -83,6 +87,12 @@ export class SqlTransformationComponent implements OnInit {
       this.sql = {...this.visualTransformationComponent.sql, mode}
     } else {
       this.sql = {mode}
+    }
+  }
+
+  refresh(): void {
+    if (this.mode === 'manual') {
+      this.manualTransformationComponent.refresh()
     }
   }
 

@@ -1,7 +1,7 @@
 <div class="scan-dialog">
   <div class="scan-dialog__header">
     <h4>
-      {{header()}}
+      {{header}}
       <app-warning-hint *ngIf="showMySqlWarning" key="mySqlCdmLimit"></app-warning-hint>
     </h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
@@ -14,19 +14,20 @@
                   (generateFakeData)="onGenerateFakeData($event)"></app-cdm-form>
 
     <app-cdm-console-wrapper *ngSwitchCase="1" style="width: 100%"
-                             [params]="websocketParams"
+                             [conversion]="conversion"
                              (dataQualityCheck)="onDataQualityCheck()"
-                             (cancel)="onCancel()"
+                             (back)="onCancel()"
                              (close)="onClose()"></app-cdm-console-wrapper>
 
     <app-fake-data-console-wrapper *ngSwitchCase="2" style="width: 100%"
-                                   [params]="whiteRabbitWebsocketParams"
-                                   (cancel)="onCancel()"
+                                   [conversion]="conversion"
+                                   (back)="onCancel()"
                                    (close)="onClose()"></app-fake-data-console-wrapper>
 
     <app-dqd-console-wrapper *ngSwitchCase="3" style="width: 100%"
-                             [params]="dqdWebsocketParams"
-                             (cancel)="onCancel()"
+                             [conversion]="conversion"
+                             [project]="project"
+                             (back)="onDqdBack()"
                              (close)="onClose()"></app-dqd-console-wrapper>
   </div>
 </div>

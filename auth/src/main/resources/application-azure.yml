@@ -1,0 +1,17 @@
+server:
+  port: 8002
+  error:
+    include-message: always
+  servlet:
+    context-path: /auth
+
+spring:
+  application:
+    name: Auth
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        credential:
+          client-id: ${CLIENT_ID}
+        app-id-uri: ${API_URI}

@@ -1,30 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-
+import { catchError, map } from 'rxjs/operators';
 import { Row, RowOptions } from 'src/app/models/row';
 import { ITableOptions, Table } from 'src/app/models/table';
-import { Mapping } from '@models/mapping';
-import { HttpService } from './http.service';
+import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
+import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
 import { BridgeService } from './bridge.service';
 import { removeExtension } from '@utils/file';
-import { ColumnInfo } from '@models/column-info/column-info';
-import { State } from '@models/state';
+import { ColumnInfo } from '@models/perseus/column-info';
 import { COLUMNS_TO_EXCLUDE_FROM_TARGET } from '@app/app.constants';
+import { Area } from '@models/area'
+import { TableInfoResponse } from '@models/perseus/table-info-response'
+import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
+import { MatDialog } from '@angular/material/dialog'
+import { fromBlobError, openErrorDialog, parseHttpError } from '@utils/error'
 
 @Injectable()
 export class DataService {
-  batch = [];
+  constructor(private perseusService: PerseusApiService,
+              private storeService: StoreService,
+              private bridgeService: BridgeService,
+              private perseusXmlService: PerseusXmlService,
+              private dialogService: MatDialog) {}
 
-  constructor(
-    private httpService: HttpService,
-    private storeService: StoreService,
-    private bridgeService: BridgeService
-  ) {
-  }
-
-  _normalize(data, area) {
+  _normalize(data: TableInfoResponse[], area: Area) {
     const tables = [];
     const uniqueIdentifierFields = [];
     for (let i = 0; i < data.length; i++) {
@@ -78,52 +78,32 @@ export class DataService {
     return tables;
   }
 
-  getZippedXml(mapping: Mapping): Observable<any> {
-    const reportName = removeExtension(this.storeService.state.report) ?? 'mapping'
-    return this.getXmlPreview(mapping)
+  getZippedXml(mapping: EtlMappingForZipXmlGeneration): Observable<File> {
+    const reportName = removeExtension(this.storeService.scanReportName) ?? 'etl-mapping'
+    return this.perseusXmlService.generateZipXml(reportName, mapping)
       .pipe(
-        switchMap(() => this.httpService.getZipXml(reportName))
+        fromBlobError(),
+        catchError(error => {
+          openErrorDialog(this.dialogService, 'Failed to generate zip XML', parseHttpError(error))
+          throw error
+        })
       )
   }
 
-  getXmlPreview(mapping: Mapping): Observable<any> {
-    return this.httpService.getXmlPreview(mapping);
-  }
-
-  getSqlPreview(sourceTable: string): Observable<any> {
-    return this.httpService.getSqlPreview(sourceTable);
-  }
-
-  getCDMVersions() {
-    return this.httpService.getCDMVersions();
-  }
-
-  getTargetData(version) {
-    return this.httpService.getTargetData(version).pipe(
+  getTargetData(version: string) {
+    return this.perseusService.getTargetData(version).pipe(
       map(data => {
         const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
-        const tables = this.prepareTables(filteredData, 'target');
-        this.storeService.add('version', version);
+        const tables = this.prepareTables(filteredData, Area.Target);
+        this.storeService.addCdmVersion(version)
         this.prepareTargetConfig(filteredData);
         return tables;
       })
     );
   }
 
-  getSourceSchema(path) {
-    return this.httpService.getSourceSchema(path).pipe(
-      map(data => this.prepareTables(data, 'source'))
-    );
-  }
-
-  getSourceSchemaData(name: string): Observable<any> {
-    return this.httpService.getSourceSchemaData(name).pipe(
-      map(data => this.prepareTables(data, 'source'))
-    );
-  }
-
-  getColumnInfo(reportName: string, tableName: string, columnName: string): Observable<ColumnInfo> {
-    return this.httpService.getColumnInfo(reportName, tableName, columnName)
+  getColumnInfo(etlMappingId: number, tableName: string, columnName: string): Observable<ColumnInfo> {
+    return this.perseusService.getColumnInfo(etlMappingId, tableName, columnName)
       .pipe(
         map(info => {
           if (info.top_10[info.top_10.length - 1] === 'List truncated...') {
@@ -145,16 +125,7 @@ export class DataService {
       );
   }
 
-  saveSourceSchemaToDb(sourceTables: any): Observable<any> {
-    return this.httpService.saveSourceSchemaToDb(sourceTables);
-  }
-
-  getView(sql: any): Observable<any> {
-    return this.httpService.getView(sql);
-  }
-
   prepareTargetConfig(data) {
-
     const targetConfig = {};
     data.map(table => {
       const tableName = table.table_name.toLowerCase();
@@ -168,13 +139,9 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data, key: keyof State) {
+  prepareTables(data: TableInfoResponse[], key: Area) {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;
-  }
-
-  saveReportName(data, key) {
-    this.storeService.add(key, data);
   }
 }

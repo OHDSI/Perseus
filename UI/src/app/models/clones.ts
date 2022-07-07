@@ -9,3 +9,5 @@ export class Clones implements IClones {
   @Type(() => Table)
   [key: string]: ITable[]
 }
+
+export const DEFAULT_CLONE = 'Default'

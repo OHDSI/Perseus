@@ -1,8 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { AbstractScanDialog } from '../abstract-scan-dialog';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DqdConsoleWrapperComponent } from './dqd-console-wrapper/dqd-console-wrapper.component';
-import { DbSettings } from '@models/scan-data/db-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
+import { ConversionDialog } from '@scan-data/conversion-dialog'
+import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service'
+import { Conversion } from '@models/conversion/conversion'
+import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-dqd-dialog',
@@ -13,20 +17,29 @@ import { DbSettings } from '@models/scan-data/db-settings';
     '../styles/scan-data-normalize.scss'
   ]
 })
-export class DqdDialogComponent extends AbstractScanDialog {
+export class DqdDialogComponent extends ConversionDialog {
 
   @ViewChild(DqdConsoleWrapperComponent)
   consoleWrapperComponent: DqdConsoleWrapperComponent;
 
-  constructor(dialogRef: MatDialogRef<DqdDialogComponent>) {
+  conversion: Conversion | null
+  project: string
+
+  constructor(dialogRef: MatDialogRef<DqdDialogComponent>,
+              private dataQualityCheckService: DataQualityCheckService,
+              private dialogService: MatDialog) {
     super(dialogRef);
   }
 
-  onCheck(dbSettings: DbSettings): void {
-    this.websocketParams = {
-      payload: dbSettings
-    };
-    this.index = 1;
+  onDataQualityCheck(dbSettings: DbSettings): void {
+    this.dataQualityCheckService.dataQualityCheck(dbSettings)
+      .subscribe(conversion => {
+        this.conversion = conversion
+        this.project = conversion.project
+        this.index = ConversionDialogStatus.CONVERSION
+      }, error => {
+        openErrorDialog(this.dialogService, 'Failed to data quality check', parseHttpError(error))
+      })
   }
 
   protected changeSize() {

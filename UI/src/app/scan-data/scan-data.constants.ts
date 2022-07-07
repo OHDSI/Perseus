@@ -1,7 +1,3 @@
-import { dbServer } from '../app.constants';
-import { DbSettings } from '@models/scan-data/db-settings';
-import { adaptDbType } from '@utils/cdm-adapter';
-
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
   MYSQL = 'MySQL',
@@ -55,38 +51,13 @@ export const cdmBuilderDatabaseTypes: string[] = [
 
 export const fakeData = 'Fake Data';
 
-export const dictionaryDbSettingForCdmBuilder = {
-  vocabularyEngine: adaptDbType(DbTypes.POSTGRESQL),
-  vocabularyServer: dbServer,
-  vocabularyPort: 5431,
-  vocabularyDatabase: 'cdm_souffleur',
-  vocabularySchema: 'vocabulary',
-  vocabularyUser: 'cdm_builder',
-  vocabularyPassword: 'N7jscuS3ca'
-};
-
 export const uniformSamplingTooltipText = 'For all fields, choose every possible value with the same probability';
-
-export const fakeDataDbSettings: DbSettings = {
-  dbType: DbTypes.POSTGRESQL,
-  server: dbServer,
-  database: 'cdm_souffleur',
-  user: 'postgres',
-  password: '5eC_DkMr^3',
-  port: 5431
-};
 
 export const dqdDatabaseTypes = [
   DbTypes.SQL_SERVER,
   DbTypes.POSTGRESQL,
   DbTypes.ORACLE,
-  DbTypes.PDW,
   DbTypes.REDSHIFT,
-  DbTypes.NETEZZA,
-  DbTypes.IMPALA,
-  DbTypes.HIVE,
-  DbTypes.BIGQUERY,
-  DbTypes.SQLITE
 ];
 
 export const defaultPorts = {

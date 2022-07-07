@@ -48,6 +48,7 @@
   }
 
   .mat-dialog-actions {
+    flex-wrap: nowrap;
     justify-content: space-between;
   }
 }

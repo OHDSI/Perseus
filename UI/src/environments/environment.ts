@@ -3,14 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { CONCEPT_TABLES } from './concept-tables'
+import { AuthStrategies } from './auth-strategies'
 
 export const environment = {
   production: false,
-  local: false,
-  server: 'jnjcicdu1',
-  dbServer: 'jnjcicdu1',
-  port: 8080,
-  conceptTables: CONCEPT_TABLES
+  server: null,
+  conceptTables: CONCEPT_TABLES,
+  authStrategy: AuthStrategies.FAKE
 };
 
 /*

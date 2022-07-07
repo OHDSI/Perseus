@@ -63,10 +63,16 @@
         <div class="error-icon-wrapper">
           <mat-icon class="error-icon" svgIcon="error"></mat-icon>
         </div>
-        <div class="error-text">
-          Athena’s server error occured. Please try again later
-          or use Local Vocabulary
+        <div *ngIf="isAthenaMode else perseusError" class="error-text">
+          Athena’s server error occurred. Please try again later
+          or use Perseus Vocabulary
         </div>
+        <ng-template #perseusError>
+          <div class="error-text">
+            Server error occurred. Please try again later
+            or use Athena Vocabulary
+          </div>
+        </ng-template>
       </div>
     </app-navigation-grid>
   </div>

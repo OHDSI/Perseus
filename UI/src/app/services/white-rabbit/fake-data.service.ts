@@ -1,27 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FakeDataParams } from '@models/scan-data/fake-data-params';
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { Observable } from 'rxjs';
-import { apiUrl, whiteRabbitApiUrl } from '@app/app.constants';
+import { whiteRabbitApiUrl } from '@app/app.constants';
+import { Conversion } from '@models/conversion/conversion'
+import { StoreService } from '@services/store.service'
+import { FakeDataRequest } from '@models/white-rabbit/fake-data-request'
 
 @Injectable()
 export class FakeDataService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private storeService: StoreService) {
   }
 
-  generateFakeData(fakeDataSettings: FakeDataParams, userId: string, scanReport: File): Observable<void> {
-    const formData = new FormData();
-    formData.append('file', scanReport)
-    formData.append('settings', JSON.stringify(fakeDataSettings))
-    return this.http.post<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`, formData)
+  generateFakeData(settings: FakeDataSettings): Observable<Conversion> {
+    const etlMapping = this.storeService.etlMapping
+    const request: FakeDataRequest = {
+      settings,
+      scanReportInfo: {
+        dataId: etlMapping.scan_report_id,
+        fileName: etlMapping.scan_report_name
+      }
+    }
+    return this.http.post<Conversion>(`${whiteRabbitApiUrl}/fake-data/generate`, request)
   }
 
-  abort(userId: string): Observable<void> {
-    return this.http.get<void>(`${whiteRabbitApiUrl}/fake-data/${userId}`)
+  conversionInfoWithLogs(conversionId: number): Observable<Conversion> {
+    return this.http.get<Conversion>(`${whiteRabbitApiUrl}/fake-data/conversion/${conversionId}`)
   }
 
-  getUserSchema(): Observable<string> {
-    return this.http.get<string>(`${apiUrl}/get_user_schema_name`)
+  abort(conversionId: number): Observable<void> {
+    return this.http.get<void>(`${whiteRabbitApiUrl}/fake-data/abort/${conversionId}`)
   }
 }

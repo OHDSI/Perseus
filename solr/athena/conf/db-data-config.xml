@@ -1,19 +1,36 @@
 <dataConfig>
-  <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5431/cdm_souffleur" 
-    user="postgres" password="5eC_DkMr^3"/> 
-<document>
-<entity name="Concepts" query="SELECT concept_id, concept_name, domain_id, vocabulary_id, concept_class_id, vocabulary_id, concept_class_id, standard_concept, concept_code,  valid_start_date, valid_end_date, invalid_reason, concept_name AS concept_name_for_sort from vocabulary.concept">
-<field column="concept_id" name="concept_id"></field>
-<field column="concept_name" name="concept_name"></field>
-<field column="domain_id" name="domain_id"></field> 
-<field column="vocabulary_id" name="vocabulary_id"></field>
-<field column="concept_class_id" name="concept_class_id"></field> 
-<field column="standard_concept" name="standard_concept"></field> 
-<field column="concept_code" name="concept_code"></field> 
-<field column="valid_start_date" name="valid_start_date"></field>
-<field column="valid_end_date" name="valid_end_date"></field>
-<field column="invalid_reason" name="invalid_reason"></field>
-<field column="concept_name_for_sort" name="concept_name_for_sort"></field>
-</entity>
-</document>
+    <dataSource driver="org.postgresql.Driver"
+                url="${dataimporter.request.jdbcurl}"
+                user="${dataimporter.request.jdbcuser}"
+                password="${dataimporter.request.jdbcpassword}"/>
+    <document>
+        <entity name="Concepts"
+                query="SELECT
+                    concept_id,
+                    concept_name,
+                    domain_id,
+                    vocabulary_id,
+                    concept_class_id,
+                    vocabulary_id,
+                    concept_class_id,
+                    standard_concept,
+                    concept_code,
+                    valid_start_date,
+                    valid_end_date,
+                    invalid_reason,
+                    concept_name
+                AS concept_name_for_sort from vocabulary.concept">
+            <field column="concept_id" name="concept_id"></field>
+            <field column="concept_name" name="concept_name"></field>
+            <field column="domain_id" name="domain_id"></field>
+            <field column="vocabulary_id" name="vocabulary_id"></field>
+            <field column="concept_class_id" name="concept_class_id"></field>
+            <field column="standard_concept" name="standard_concept"></field>
+            <field column="concept_code" name="concept_code"></field>
+            <field column="valid_start_date" name="valid_start_date"></field>
+            <field column="valid_end_date" name="valid_end_date"></field>
+            <field column="invalid_reason" name="invalid_reason"></field>
+            <field column="concept_name_for_sort" name="concept_name_for_sort"></field>
+        </entity>
+    </document>
 </dataConfig>

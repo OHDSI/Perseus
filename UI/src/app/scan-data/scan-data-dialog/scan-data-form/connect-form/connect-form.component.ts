@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Subject } from 'rxjs';
-import { DbSettings } from '@models/scan-data/db-settings';
-import { DelimitedTextFileSettings } from '@models/scan-data/delimited-text-file-settings';
+import { DbSettings } from '@models/white-rabbit/db-settings';
+import { FilesSettings } from '@models/white-rabbit/files-settings';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
-import { ScanSettings } from '@models/scan-data/scan-settings';
+import { ScanSettings } from '@models/white-rabbit/scan-settings';
 import {
   delimitedFiles,
   fullySupportedDatabases,
@@ -13,10 +13,10 @@ import {
 import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/abstract-resource-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
-import { TableToScan } from '@models/scan-data/table-to-scan';
-import { ConnectionResult } from '@models/scan-data/connection-result';
+import { TableToScan } from '@models/white-rabbit/table-to-scan';
+import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { createDbConnectionForm } from '@utils/form';
-import { DataTypeGroup } from '@models/data-type-group';
+import { DataTypeGroup } from '@models/white-rabbit/data-type-group';
 import { hasLimits } from '@utils/scan-data-util';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 
@@ -39,7 +39,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   fileSettingsForm: FormGroup;
 
   @Input()
-  fileSettings: DelimitedTextFileSettings;
+  fileSettings: FilesSettings;
 
   @Input()
   filesToScan: File[];

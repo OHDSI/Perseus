@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { OVERLAY_DIALOG_DATA } from '@services/overlay/overlay-dialog-data';
 import { DataService } from '@services/data.service';
 import { StoreService } from 'src/app/services/store.service';
-import { ColumnInfo, ColumnInfoStatus } from '@models/column-info/column-info';
+import { ColumnInfo, ColumnInfoStatus } from '@models/perseus/column-info';
 
 @Component({
   selector: 'app-field-information',
@@ -55,7 +55,7 @@ export class ColumnInfoComponent implements OnInit {
     const tableName = this.tableNames[index];
 
     if (this.columnInfos[tableName].status === ColumnInfoStatus.LOADING) {
-      this.dataService.getColumnInfo(this.storeService.state.report, tableName, this.columnName)
+      this.dataService.getColumnInfo(this.storeService.etlMappingId, tableName, this.columnName)
         .subscribe(result => {
           this.columnInfos[tableName].value = result;
           this.columnInfos[tableName].status = ColumnInfoStatus.READY;

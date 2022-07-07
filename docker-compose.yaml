@@ -1,75 +1,146 @@
-version: "3"
 services:
-  backend:
-    build: .
-    container_name:
-      perseus-backend
-    network_mode: "host"
-    restart: always
-    environment:
-      CDM_SOUFFLEUR_ENV: "prod"
-    env_file:
-      - back-envs.txt
-  frontend:
-    build: ./UI
-    container_name:
-      perseus-frontend
-    network_mode: "host"
-    restart: always
-  db:
-    build: ./database
-    container_name:
-      perseus-database
-    volumes:
-      - type: volume
-        source: perseusdb
-        target: /var/lib/postgresql/data
-    ports:
-      - "5431:5432"
-    restart: always
-  white_rabbit:
-    build: ../WhiteRabbit
-    container_name:
-      white-rabbit-service
-    network_mode: "host"
-    restart: always
-  dqd_service:
-    build:
-      context: ../DataQualityDashboard
-      args:
-        prop: prod
-    container_name:
-      dqd-service
-    network_mode: "host"
-    restart: always
-  r_serve:
-    build:
-      context: ../DataQualityDashboard/R
-      args:
-        prop: prod
-    container_name:
-      r-serve
-    network_mode: "host"
-    restart: always
-  cdm_builder:
-    build:
-      context: ../ETL-CDMBuilder/
-      dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
-    container_name:
-      cdm-builder-service
-    network_mode: "host"
-    restart: always
   web:
-    image: nginx
+    build: ./nginx
     container_name:
       web
-    volumes:
-      - type: bind
-        source: ./nginx/default.conf
-        target: /etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     restart: always
+  shareddb:
+    build: ./shared-db
+    container_name: shareddb
+    volumes:
+      - shareddb:/data/postgres
+    ports:
+      - "5432:5432"
+  files-manager:
+    build: ./files-manager
+    container_name: files-manager
+    ports:
+      - "10500:10500"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - shareddb
+  white-rabbit:
+    build: ../WhiteRabbit
+    container_name:
+      white-rabbit
+    ports:
+      - "8000:8000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - shareddb
+      - files-manager
+  cdm-builder:
+    build: 
+       context: ../ETL-CDMBuilder
+       dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
+    container_name:
+      cdm-builder
+    ports:
+      - "9000:9000"
+    depends_on:
+      - shareddb
+      - files-manager
+      - vocabularydb
+  r-serve:
+    build:
+      context: ../DataQualityDashboard/R
+      args:
+        prop: docker
+    container_name:
+      r-serve
+    ports:
+      - "6311:6311"
+    depends_on:
+      - shareddb
+  data-quality-dashboard:
+    build:
+      context: ../DataQualityDashboard
+    container_name:
+      data-quality-dashboard
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - shareddb
+      - files-manager
+      - r-serve
+  user:
+    build: ./user
+    container_name: user
+    environment:
+      USER_ENV: Docker
+    env_file:
+      - user/user-envs.txt
+    ports:
+      - "5001:5001"
+    depends_on:
+      - shareddb
+  backend:
+    build: ./perseus-api
+    container_name: backend
+    environment:
+      PERSEUS_ENV: Docker
+    ports:
+      - "5000:5000"
+    depends_on:
+      - shareddb
+      - files-manager
+  vocabularydb:
+    build: ./vocabulary-db
+    container_name: vocabularydb
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
+      timeout: 60s
+      interval: 30s
+      retries: 10
+    volumes:
+      - vocabularydb:/data/postgres
+    ports:
+      - "5431:5432"
+  frontend:
+    build:
+      context: ./UI
+      args:
+        env: prod
+    container_name:
+      frontend
+    ports:
+      - "4200:4200"
+  solr:
+    build: ./solr
+    container_name: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr:/var/solr
+  athena:
+    build: ./athena-api
+    container_name: athena
+    environment:
+      ATHENA_ENV: Docker
+    ports:
+      - "5002:5002"
+    depends_on:
+      - solr
+#  usagi:
+#    build: ./usagi-api
+#    command: python /app/main.py
+#    container_name: usagi
+#    environment:
+#      USAGI_ENV: Docker
+#    ports:
+#      - "5003:5003"
+#    depends_on:
+#      - shareddb
+#      - vocabularydb
+#      - solr
 
 volumes:
-  perseusdb:
+  shareddb:
+  vocabularydb:
+  solr:

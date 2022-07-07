@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { AuthFacadeService } from '@services/state/auth-facade.service';
+import { loginRouter } from '@app/app.constants'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-logout',
@@ -13,7 +15,8 @@ export class LogoutComponent {
   loading = false
 
   constructor(private dialogRef: MatDialogRef<LogoutComponent>,
-              private authService: AuthFacadeService) { }
+              private authService: AuthFacadeService,
+              private router: Router) {}
 
   logout() {
     this.loading = true
@@ -24,7 +27,7 @@ export class LogoutComponent {
           this.dialogRef.close()
         })
       )
-      .subscribe(() => {})
+      .subscribe(() => this.router.navigateByUrl(loginRouter))
   }
 
   onClose() {

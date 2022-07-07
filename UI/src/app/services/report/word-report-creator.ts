@@ -11,7 +11,7 @@ import {
   TextRun,
   WidthType
 } from 'docx';
-import { MappingNode } from '@models/mapping';
+import { MappingNode } from '@models/etl-mapping-for-zip-xml-generation';
 import { createMappingFieldsImage, createMappingTablesImage } from './image/draw-image-util';
 import { MappingForImage, MappingImage, MappingImageStyles } from './image/mapping-image';
 import { logicForReport } from './logic-for-report';
