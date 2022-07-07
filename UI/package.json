@@ -38,7 +38,7 @@
     "ngx-mat-select-search": "^3.0.1",
     "ngx-trim-directive": "^1.1.0",
     "pako": "^1.0.10",
-    "prismjs": "^1.25.0",
+    "prismjs": "^1.27.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.6.0",
     "zone.js": "~0.11.4"
@@ -56,7 +56,7 @@
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~6.3.4",
+    "karma": "~6.3.16",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
