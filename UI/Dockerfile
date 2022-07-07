@@ -1,15 +1,26 @@
 ### STAGE 1: Build ###
 FROM node:14.15.0 AS build-step
+ARG env=prod
 WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install
 COPY . .
-RUN npm run build:prod
+RUN npm run build:${env}
 
 ### STAGE 2: Run ###
 FROM nginx
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssh-server \
+    && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
+
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build-step /usr/src/app/dist /usr/share/nginx/html
-EXPOSE 4200
+COPY sshd_config /etc/ssh/
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
 
-CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/assets/env.template.js > /usr/share/nginx/html/assets/env.js && exec nginx -g 'daemon off;'"]
+EXPOSE 4200
+EXPOSE 2222
+
+CMD ["./entrypoint.sh"]

@@ -12,19 +12,24 @@ import {
 import { AuthService } from '@services/auth/auth.service';
 import { authInjector } from '@services/auth/auth-injector';
 import { loginRouter } from '@app/app.constants';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { withLoading } from '@utils/loading';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
 
+  private loader$ = new Subject<boolean>();
   loading = false
 
   constructor(private router: Router,
               @Inject(authInjector) private authService: AuthService) {
+    this.loader$
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe(value => this.loading = value)
   }
 
   canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | boolean {
@@ -40,9 +45,10 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
   }
 
   private canLoadOrActivate(): Observable<boolean> {
+    this.loader$.next(true)
     return this.authService.isUserLoggedIn$
       .pipe(
-        withLoading(this),
+        tap(() => this.loader$.next(false)),
         tap(value => !value && this.router.navigate([loginRouter]))
       )
   }

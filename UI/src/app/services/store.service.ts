@@ -6,6 +6,8 @@ import { removeExtension } from '@utils/file';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
 import { StateService } from '@services/state/state.service';
+import { Area } from '@models/area'
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 const initialState: State = {
   target: [],
@@ -43,7 +45,23 @@ export class StoreService implements StateService {
     return {...this.storeState.getValue()}
   }
 
-  add<K extends keyof State>(key: K, value: State[K]) {
+  get etlMapping(): EtlMapping {
+    return this.state.etlMapping;
+  }
+
+  get etlMappingId(): number {
+    return this.etlMapping?.id
+  }
+
+  get cdmVersion(): string {
+    return this.etlMapping?.cdm_version
+  }
+
+  get scanReportName(): string {
+    return this.etlMapping?.scan_report_name
+  }
+
+  add<K extends keyof State>(key: K | Area, value: State[K]) {
     this.state = { ...this.state, [ key ]: value };
   }
 
@@ -105,14 +123,29 @@ export class StoreService implements StateService {
       )
   }
 
-  reset() {
+  reset(): void {
     this.storeState.next({...initialState});
+  }
+
+  addEtlMapping(etlMapping: EtlMapping): void {
+    const prevCdmVersion = this.cdmVersion
+    this.add('etlMapping', {
+      ...etlMapping,
+      cdm_version: prevCdmVersion
+    })
+  }
+
+  addCdmVersion(version: string) {
+    this.add('etlMapping', {
+      ...this.etlMapping,
+      cdm_version: version
+    })
   }
 }
 
 export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
   return {
-    cdmVersion: state.version ? `CDM v${state.version}` : 'CDM version',
-    reportName: state.report ? removeExtension(state.report) : 'Report name'
+    cdmVersion: state.etlMapping?.cdm_version ? `CDM v${state.etlMapping.cdm_version}` : 'CDM version',
+    reportName: state.etlMapping?.source_schema_name ? removeExtension(state.etlMapping.source_schema_name) : 'Report name'
   };
 }

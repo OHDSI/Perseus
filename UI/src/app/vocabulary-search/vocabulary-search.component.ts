@@ -9,12 +9,12 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { VocabularySearchService } from '@services/vocabulary-search/vocabulary-search.service';
+import { VocabularySearchService } from '@services/athena/vocabulary-search.service';
 import { Concept } from '@models/vocabulary-search/concept';
 import { of, Subject } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
-import { VocabularySearchStateService } from '@services/vocabulary-search/vocabulary-search-state.service';
+import { VocabularySearchStateService } from '@services/athena/vocabulary-search-state.service';
 import { Column, Sort } from '@models/grid/grid';
 import { NavigationGridComponent } from '@grid/navigation-grid/navigation-grid.component';
 import { Pagination } from '@models/grid/pagination';
@@ -111,6 +111,10 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   constructor(private searchService: VocabularySearchService,
               private stateService: VocabularySearchStateService) {
     super();
+  }
+
+  get isAthenaMode(): boolean {
+    return this.mode === VocabSearchMode.ATHENA
   }
 
   ngOnInit(): void {
@@ -222,9 +226,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
       this.searchService.search(params, this.mode)
         .pipe(
           catchError(() => {
-            if (this.mode === VocabSearchMode.ATHENA) {
-              this.disableAll = true
-            }
+            this.disableAll = true
             return of({
               content: [],
               totalPages: 1,

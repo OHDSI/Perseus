@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { merge, Observable, Subscription } from 'rxjs';
-import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
 import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { IRow } from 'src/app/models/row';
@@ -36,13 +36,15 @@ import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../../popups/cdm-filter/CdmByTypes.json';
 import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
-import { VocabularyObserverService } from '@services/vocabulary-search/vocabulary-observer.service';
+import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { mainPageRouter } from '@app/app.constants';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
 import { State } from '@models/state';
 import { asc } from '@utils/sort';
 import { canOpenMappingPage } from '@utils/mapping-util';
+import { openErrorDialog, parseHttpError } from '@utils/error'
+import { PerseusApiService } from '@services/perseus/perseus-api.service'
 
 @Component({
   selector: 'app-comfy',
@@ -51,8 +53,12 @@ import { canOpenMappingPage } from '@utils/mapping-util';
 })
 export class ComfyComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  get state() {
+  get state(): State {
     return this.storeService.state;
+  }
+
+  get cdmVersions(): string[] {
+    return this.state.cdmVersions
   }
 
   get vocabularyBottom(): string {
@@ -77,7 +83,8 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     private commonService: CommonService,
     private element: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private vocabularyObserverService: VocabularyObserverService
+    private vocabularyObserverService: VocabularyObserverService,
+    private perseusApiService: PerseusApiService
   ) {
     super();
   }
@@ -105,7 +112,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     source: [],
     target: [],
     targetConfig: {},
-    version: undefined,
     filteredTables: undefined,
     linkTablesSearch: {
       source: undefined,
@@ -180,31 +186,31 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   ngOnInit() {
     this.vocabularies = this.vocabulariesService.vocabularies;
 
-    this.dataService.getCDMVersions().subscribe(res => {
+    this.perseusApiService.getCDMVersions().subscribe(res => {
       res = res.sort((a, b) => (a > b ? -1 : 1));
       this.storeService.add('cdmVersions', res);
     });
 
-    this.storeService.state$.subscribe(res => {
-      if (res) {
-        this.data = res;
-        this.initializeData();
-      }
-    });
+    this.storeService.state$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(res => {
+        if (res) {
+          this.data = res;
+          this.initializeData();
+        }
+      });
 
     this.bridgeService.applyConfiguration$
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        switchMap(configuration => this.dataService.saveSourceSchemaToDb(configuration.sourceTables))
+        finalize(() => this.uploadService.mappingLoading = false)
       )
-      .subscribe(res => {
-        if (res === 'OK') {
-          this.uploadService.mappingLoading = false;
-          this.snackBar.open('Source schema has been loaded to database', ' DISMISS ');
-        } else {
-          this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ');
-        }
-      }, () => this.uploadService.mappingLoading = false);
+      .subscribe(
+        () => this.snackBar.open('Source schema has been loaded to database', ' DISMISS '),
+        () => this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ')
+      );
 
     this.bridgeService.resetAllMappings$
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -351,7 +357,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openCdmVersion(version: string) {
-    return this.dataService.getTargetData(version).subscribe();
+    return this.dataService.getTargetData(version)
+      .subscribe(
+        () => this.snackBar.open('Target schema loaded', ' DISMISS '),
+        error => openErrorDialog(this.matDialog, 'Can not load target schema', parseHttpError(error))
+      )
   }
 
   afterOpenMapping(event?: any) {
@@ -427,7 +437,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   filterByName(area: string, byName: Criteria): void {
-
     const filterByName = (name) => {
       return name.toUpperCase().indexOf(byName.criteria.toUpperCase()) > -1;
     };
@@ -505,17 +514,20 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.commonUtilsService.openSetCDMDialog();
   }
 
-  onScanReportUpload(event: Event) {
-    this.bridgeService.reportLoading();
-    this.uploadService.onScanReportChange(event)
+  onScanReportUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
+    this.uploadService.uploadScanReport(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
           data: {
             title: 'Failed to load new report',
-            message: error.message
+            message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       );
   }
@@ -638,16 +650,20 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.uploadService.onFileInputClick(this.mappingInput);
   }
 
-  onMappingUpload(event: Event) {
-    this.uploadService.onMappingChange(event)
+  onMappingUpload(event) {
+    const filesCount = event?.target?.files?.length ?? 0
+    if (filesCount < 1) {
+      return
+    }
+    this.uploadService.uploadEtlMapping(event.target.files[0])
       .subscribe(
         () => {},
         error => this.matDialog.open(ErrorPopupComponent, {
           data: {
             title: 'Failed to open mapping',
-            message: error.message
+            message: parseHttpError(error)
           },
-          panelClass: 'scan-data-dialog'
+          panelClass: 'perseus-dialog'
         })
       )
   }

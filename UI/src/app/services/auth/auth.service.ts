@@ -1,4 +1,4 @@
-import { User } from '@models/user';
+import { User } from '@models/auth/user';
 import { Observable } from 'rxjs';
 
 export interface AuthService {
@@ -9,7 +9,7 @@ export interface AuthService {
 
   isUserLoggedIn$: Observable<boolean>
 
-  login(email: string, password: string): Observable<User>
+  login(email?: string, password?: string): Observable<boolean | User>
 
   logout(): Observable<void>
 

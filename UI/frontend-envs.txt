@@ -1,0 +1,2 @@
+TENANT_ID=
+CLIENT_ID=

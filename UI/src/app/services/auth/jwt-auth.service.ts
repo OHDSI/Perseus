@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
-import { User } from '@models/user';
+import { User } from '@models/auth/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl, loginRouter } from '@app/app.constants';
-import { catchError, tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { authApiUrl } from '@app/app.constants';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,7 @@ export class JwtAuthService implements AuthService {
 
   private tokenValid: boolean
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient) {
     const user = JSON.parse(localStorage.getItem(localStorageUserField))
     this.currentUser$ = new BehaviorSubject<User>(user)
   }
@@ -39,37 +38,33 @@ export class JwtAuthService implements AuthService {
     }
 
     return this.isTokenValid()
-      .pipe(
-        tap(value => this.tokenValid = value)
-      )
   }
 
-  login(email: string, password: string): Observable<User> {
+  login(email?: string, password?: string): Observable<User> {
     return this.saveUser(
-      this.httpClient.post<User>(`${apiUrl}/login`, {email, password})
+      this.httpClient.post<User>(`${authApiUrl}/login`, {email, password})
     )
   }
 
   logout(): Observable<void> {
-    return this.httpClient.get<void>(`${apiUrl}/logout`)
+    return this.httpClient.get<void>(`${authApiUrl}/logout`)
       .pipe(
         tap(() => {
           this.resetCurrentUser()
-          this.router.navigateByUrl(loginRouter)
         })
       )
   }
 
   register(user: User): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/register`, user)
+    return this.httpClient.post<void>(`${authApiUrl}/register`, user)
   }
 
   recoverPassword(email: string): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/recover-password`, {email})
+    return this.httpClient.post<void>(`${authApiUrl}/recover-password`, {email})
   }
 
   reset(password: string, token: string): Observable<void> {
-    return this.httpClient.post<void>(`${apiUrl}/reset-password`, {password, token})
+    return this.httpClient.post<void>(`${authApiUrl}/reset-password`, {password, token})
   }
 
   refreshToken(email, token): Observable<User> {
@@ -77,7 +72,7 @@ export class JwtAuthService implements AuthService {
       return throwError('User is not logged in')
     }
     return this.saveUser(
-      this.httpClient.post<User>(`${apiUrl}/update_refresh_access_token`, {email, token})
+      this.httpClient.post<User>(`${authApiUrl}/update_refresh_access_token`, {email, token})
     ).pipe(
       catchError(error => {
         localStorage.removeItem(localStorageUserField)
@@ -100,10 +95,13 @@ export class JwtAuthService implements AuthService {
   }
 
   private isTokenValid(): Observable<boolean> {
-    return this.httpClient.get<boolean>(`${apiUrl}/is_token_valid`)
+    return this.httpClient.get<boolean>(`${authApiUrl}/is_token_valid`)
       .pipe(
-        catchError(() => of(false)),
-        tap(value => !value && this.resetCurrentUser())
+        map(() => true),
+        catchError(() => {
+          this.resetCurrentUser()
+          return of(false)
+        })
       )
   }
 

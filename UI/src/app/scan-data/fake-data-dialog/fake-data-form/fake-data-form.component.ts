@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
 import { FormGroup } from '@angular/forms';
 import { createFakeDataForm } from '@utils/form';
 import { uniformSamplingTooltipText } from '../../scan-data.constants';
+import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings'
 
 @Component({
   selector: 'app-fake-data-form',
@@ -10,7 +11,6 @@ import { uniformSamplingTooltipText } from '../../scan-data.constants';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FakeDataFormComponent implements OnInit {
-
   form: FormGroup;
 
   checkboxBackground = '#F9F9F9';
@@ -19,15 +19,15 @@ export class FakeDataFormComponent implements OnInit {
   cancel = new EventEmitter<void>();
 
   @Output()
-  generate = new EventEmitter<{maxRowCount: number, doUniformSampling: boolean}>();
+  generate = new EventEmitter<FakeDataSettings>();
 
   uniformSamplingTooltip = uniformSamplingTooltipText;
 
   ngOnInit(): void {
-    this.initForm();
+    this.form = createFakeDataForm();
   }
 
-  private initForm(): void {
-    this.form = createFakeDataForm();
+  onGenerate(): void {
+    this.generate.emit(this.form.value)
   }
 }

@@ -1,53 +1,70 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { AbstractConsoleWrapperComponent } from '../../auxiliary/scan-console-wrapper/abstract-console-wrapper-component.directive';
 import { ScanDataUploadService } from '@services/white-rabbit/scan-data-upload.service';
 import { saveAs } from 'file-saver';
-import { ScanDataConsoleComponent } from './scan-data-console/scan-data-console.component';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { switchMap } from 'rxjs/operators';
-import { blobToFile } from '@utils/file';
-import { parseHttpError } from '@utils/error';
+import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component';
+import { Conversion } from '@models/conversion/conversion'
+import { Observable } from 'rxjs'
+import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { MatDialog } from '@angular/material/dialog'
+import { openErrorDialog, parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
   templateUrl: './scan-console-wrapper.component.html',
   styleUrls: [
     'scan-console-wrapper.component.scss',
-    '../../auxiliary/scan-console-wrapper/console-wrapper.component.scss',
+    '../../auxiliary/progress-console-wrapper/console-wrapper.component.scss',
     '../../styles/scan-data-buttons.scss'
   ]
 })
-export class ScanConsoleWrapperComponent extends AbstractConsoleWrapperComponent<string> {
-
-  @ViewChild(ScanDataConsoleComponent)
-  consoleComponent: ScanDataConsoleComponent;
+export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent {
+  @Input()
+  conversion: Conversion
 
   @Input()
-  private reportName: string;  // Without extension
+  project: string
+
+  @ViewChild(ProgressConsoleComponent)
+  consoleComponent: ProgressConsoleComponent
 
   constructor(private whiteRabbitService: ScanDataService,
-              private scanDataUploadService: ScanDataUploadService) {
-    super();
+              private scanDataUploadService: ScanDataUploadService,
+              private dialogService: MatDialog) {
+    super()
   }
 
-  onSaveReport() {
-    this.whiteRabbitService.downloadScanReport(this.result.payload)
+  get scanReportFileName(): string {
+    return `${this.project}.xlsx`
+  }
+
+  conversionInfoRequest(): Observable<Conversion> {
+    return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
+  }
+
+  onAbortAndCancel(): void {
+    this.whiteRabbitService.abort(this.conversion.id)
+      .subscribe(() => this.back.emit())
+  }
+
+  onSaveReport(): void {
+    this.whiteRabbitService.downloadScanReport(this.conversion.id)
       .subscribe(
-        file => saveAs(file, `${this.reportName}.xlsx`),
-        error => this.showErrorMessage(parseHttpError(error))
+        file => saveAs(file, this.scanReportFileName)
       )
   }
 
-  onUploadReport() {
-    this.whiteRabbitService.downloadScanReport(this.result.payload)
+  onUploadReport(): void {
+    this.whiteRabbitService.result(this.conversion.id)
       .pipe(
-        switchMap(blob => this.scanDataUploadService.uploadScanReport(
-          blobToFile(blob, `${this.reportName}.xlsx`))
+        switchMap(scanReport =>
+          this.scanDataUploadService.uploadScanReport(scanReport)
         )
       )
       .subscribe(
-        () => this.close.emit(),
-        error => this.showErrorMessage(parseHttpError(error))
+        () => this.close.emit(this.conversion),
+        error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))
       )
   }
 }

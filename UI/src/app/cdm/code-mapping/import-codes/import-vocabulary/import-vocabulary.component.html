@@ -19,7 +19,12 @@
 
     <div *ngIf="vocabularies else loadingVocabulariesBlock" class="import-vocabulary__list">
       <div *ngIf="vocabularies.length === 0 else savedVocabularies" class="import-vocabulary__no-saved-vocabularies">
-        No saved Vocabularies
+        <ng-container *ngIf="cannotLoadVocabularies; else noSavedVocabularies">
+          Cannot load vocabularies
+        </ng-container>
+        <ng-template #noSavedVocabularies>
+          No saved Vocabularies
+        </ng-template>
       </div>
 
       <ng-template #savedVocabularies>

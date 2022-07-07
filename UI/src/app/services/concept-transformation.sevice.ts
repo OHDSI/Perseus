@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Concept, IConceptOptions, ITableConceptsOptions, TableConcepts } from '@models/concept-transformation/concept';
+import { Concept, IConceptOptions } from '@models/perseus/concept';
 import { cloneDeep } from '../infrastructure/utility';
 import * as conceptMap from '@mapping/concept-fileds-list.json';
 import {
@@ -9,10 +9,10 @@ import {
   updateConceptsList
 } from 'src/app/utils/concept-util';
 import { Arrow } from '@models/arrow';
+import { ConceptTables, IConceptTablesOptions } from '@models/perseus/concept-tables'
 
 @Injectable()
 export class ConceptTransformationService {
-
     arrow: Arrow;
     targetTableName;
     conceptFields;
@@ -23,8 +23,6 @@ export class ConceptTransformationService {
     arrowsCache;
     oppositeSourceTable;
     conceptsTable;
-
-    connectedToConceptFields = {};
 
     constructor(targetTableName: any, oppositeSourceTable: any, concepts: any, arrow?: Arrow, cloneTableName?: any, condition?: any, arrowsCache?: any) {
         this.arrow = arrow;
@@ -86,11 +84,11 @@ export class ConceptTransformationService {
     }
 
     addNewConceptTable(connectedFields?: any, fieldType?: any) {
-        const conceptTableOptions: ITableConceptsOptions = {
+        const conceptTableOptions: IConceptTablesOptions = {
             lookup: {},
             conceptsList: []
         };
-        this.conceptsTable = new TableConcepts(conceptTableOptions);
+        this.conceptsTable = new ConceptTables(conceptTableOptions);
         this.targetCloneName ? this.conceptsTable.lookup[this.targetCloneName] = {} : this.conceptsTable.lookup['Default'] = {};
 
         if (connectedFields) {
@@ -117,7 +115,6 @@ export class ConceptTransformationService {
         return conceptOptions;
     }
 
-
     deleteFieldsFromConcepts() {
         const connectedFields = this.collectConnectedGroupedFields();
         const fieldType = getConceptFieldType(this.arrow.target.name);
@@ -138,5 +135,4 @@ export class ConceptTransformationService {
         this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList = updateConceptsList(conceptsList);
         updateConceptsIndexes(this.concepts[ `${this.targetTableName}|${this.oppositeSourceTable}` ].conceptsList);
     }
-
 }

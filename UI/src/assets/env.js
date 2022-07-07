@@ -1,7 +1,5 @@
 (function(window) {
-  window["env"] = window["env"] || {};
-
-  // Environment variables
-  window["env"]["server"] = null;
-  window["env"]["dbServer"] = null;
+  window["envMpAYvc8QMp"] = window["env"] || {};
+  window["envMpAYvc8QMp"]["tenantId"] = "";
+  window["envMpAYvc8QMp"]["clientId"] = "";
 })(this);

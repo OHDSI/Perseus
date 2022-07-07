@@ -4,7 +4,7 @@
           mat-dialog-close>close
 </mat-icon>
 
-<div mat-dialog-content [class.spinner]="loading">
+<div mat-dialog-content>
   <mat-form-field appearance="standard">
     <mat-label>{{data.label}}</mat-label>
     <mat-select *ngIf="data.type === 'select'" [(value)]="resultValue">

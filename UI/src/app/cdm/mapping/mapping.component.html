@@ -260,7 +260,6 @@
 
         <div class="mapping-footer__block general">
           <button class="mapping-footer__fake grey-button blue-color"
-                  [disabled]="!hasScanReport"
                   (click)="generateFakeData()">Generate Fake Data
           </button>
 
@@ -283,7 +282,7 @@
               <span>Convert to CDM</span>
             </button>
 
-            <button mat-menu-item (click)="generateMappingJson()">
+            <button mat-menu-item (click)="generateZipXml()">
               <mat-icon svgIcon="generate_and_save"></mat-icon>
               <span>Generate & Save Files</span>
             </button>

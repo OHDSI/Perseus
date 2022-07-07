@@ -1,0 +1,13 @@
+<div class="progress-console">
+  <div class="progress-console__bar">
+    <p>Scanning... Estimated time depends on selected database</p>
+    <mat-progress-bar mode="determinate" [value]="progressValuePercent" [color]="color"></mat-progress-bar>
+  </div>
+
+  <div class="progress-console__content">
+    <p>Console</p>
+    <div #console class="progress-console__content__logs">
+      <p *ngFor="let log of logs">{{log.message}}</p>
+    </div>
+  </div>
+</div>

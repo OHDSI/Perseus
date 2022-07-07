@@ -5,5 +5,9 @@
   &__form {
     width: 354px;
     height: 338px;
+
+    &.add {
+      height: 195px;
+    }
   }
 }

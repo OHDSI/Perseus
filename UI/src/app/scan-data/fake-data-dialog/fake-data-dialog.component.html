@@ -9,12 +9,12 @@
 
   <div class="scan-dialog__content">
     <app-fake-data-form *ngIf="index === 0; else consoleBlock" style="width: 100%"
-                        (generate)="onGenerate($event)" (cancel)="onClose()"></app-fake-data-form>
+                        (generate)="generateFakeData($event)" (cancel)="onClose()"></app-fake-data-form>
 
     <ng-template #consoleBlock>
       <app-fake-data-console-wrapper style="width: 100%"
-                                     [params]="websocketParams"
-                                     (cancel)="onCancel()"
+                                     [conversion]="conversion"
+                                     (back)="onCancel()"
                                      (close)="onClose()"></app-fake-data-console-wrapper>
     </ng-template>
   </div>

@@ -12,14 +12,14 @@ import { OverlayConfigOptions } from './overlay-config-options.interface';
 import { OVERLAY_DIALOG_DATA } from './overlay-dialog-data';
 import positionsData from './positions.json';
 
-export class OverlayDialogRef {
+export class OverlayDialogRef<T = OverlayConfigOptions | any> {
 
-  private closeSubject = new Subject<OverlayConfigOptions>();
+  private closeSubject = new Subject<T>();
 
   constructor(private overlayRef: OverlayRef) {
   }
 
-  get afterClosed$(): Observable<OverlayConfigOptions> {
+  get afterClosed$(): Observable<T> {
     return this.closeSubject.asObservable();
   }
 
@@ -27,7 +27,7 @@ export class OverlayDialogRef {
     return this.overlayRef.overlayElement
   }
 
-  close(configOptions?: OverlayConfigOptions | any) {
+  close(configOptions?: T) {
     this.overlayRef.dispose();
 
     if (configOptions) {
@@ -45,11 +45,11 @@ export class OverlayService {
   constructor(private overlay: Overlay, private injector: Injector) {
   }
 
-  open(
+  open<T = OverlayConfigOptions | any>(
     configOptions: OverlayConfigOptions,
     anchor: any,
     componentType: any
-  ): OverlayDialogRef {
+  ): OverlayDialogRef<T> {
     const config = this.getOverlayConfig(configOptions, anchor);
 
     const overlayRef = this.overlay.create(config);

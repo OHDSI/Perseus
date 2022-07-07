@@ -1,32 +1,31 @@
 import { Injectable } from '@angular/core';
-import { UploadService } from '../upload.service';
+import { finalize, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { PerseusApiService } from '@services/perseus/perseus-api.service'
+import { ScanReportRequest } from '@models/perseus/scan-report-request'
+import { UploadScanReportResponse } from '@models/perseus/upload-scan-report-response'
+import { Area } from '@models/area'
 import { BridgeService } from '../bridge.service';
 import { DataService } from '../data.service';
-import { finalize, switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
 import { StoreService } from '../store.service';
 
 @Injectable()
 export class ScanDataUploadService {
-
-  constructor(private uploadService: UploadService,
+  constructor(private perseusApiService: PerseusApiService,
               private bridgeService: BridgeService,
               private dataService: DataService,
-              private storeService: StoreService) {
-  }
+              private storeService: StoreService) {}
 
-  uploadScanReport(report: File): Observable<void> {
+  uploadScanReport(scanReportRequest: ScanReportRequest): Observable<UploadScanReportResponse> {
     this.bridgeService.reportLoading();
-    this.storeService.add('reportFile', report);
-    this.dataService.saveReportName(report.name, 'report');
 
-    return this.uploadService.uploadSchema([report])
+    return this.perseusApiService.createSourceSchemaByScanReport(scanReportRequest)
       .pipe(
-        switchMap(res => {
+        tap(res => {
           this.bridgeService.resetAllMappings();
-          this.dataService.prepareTables(res, 'source');
+          this.storeService.addEtlMapping(res.etl_mapping)
+          this.dataService.prepareTables(res.source_tables, Area.Source);
           this.bridgeService.saveAndLoadSchema$.next();
-          return of(null);
         }),
         finalize(() => this.bridgeService.reportLoaded())
       )

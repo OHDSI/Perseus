@@ -1,0 +1,34 @@
+server:
+  port: 10500
+  error:
+    include-message: always
+  servlet:
+    context-path: /files-manager
+spring:
+  application:
+    name: Files Manager
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  datasource:
+    url: ${SharedDbUrl}
+    username: ${SharedDbFilesManagerUser}
+    password: ${SharedDbFilesManagerPass}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-source-enabled: true
+          property-sources:
+            -
+              credential:
+                client-id: ${AZURE_CLIENT_ID}
+              endpoint: https://kv-perseus.vault.azure.net/
+              profile:
+                tenant-id: ${AZURE_TENANT_ID}
