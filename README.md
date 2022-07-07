@@ -61,7 +61,7 @@ Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
 
     cd vocabulary-db
 
-Install vocabulary archive and extract to vocabulary directory.
+Install vocabulary archive and extract to `vocabulary` directory. Full path `vocabulary-db/vocabulary`.
 
 Database deployment can take a long time if the dictionary size is large enough.
 
