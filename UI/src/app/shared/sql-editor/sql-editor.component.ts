@@ -145,16 +145,16 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   apply() {
-    let viewSql: string = this.editorContent.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
-    viewSql = this.handleSelectAllCases(viewSql);
-
-    this.perseusApiService.getView({ sql: viewSql }).subscribe(res => {
-      const viewTableId = this.getExistedOrGenerateNewTableId()
-      const newTable = createTable(viewTableId, this.name, viewSql, res);
-      this.removeLinksForDeletedRows(newTable);
-      this.dialogRef.close(newTable);
-    },
-      error => openHttpErrorDialog(this.matDialog, 'View SQL error', error));
+    const sql: string = this.handleSelectAllCases(this.editorContent);
+    this.perseusApiService.getView({sql})
+      .subscribe(res => {
+          const viewTableId = this.getExistedOrGenerateNewTableId()
+          const newTable = createTable(viewTableId, this.name, sql, res);
+          this.removeLinksForDeletedRows(newTable);
+          this.dialogRef.close(newTable);
+        },
+        error => openHttpErrorDialog(this.matDialog, 'View SQL error', error)
+      );
   }
 
   /**
@@ -165,6 +165,8 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
    * @return if JOIN query and same columns - parsed sql function with replaced * on fields list, else - content param
    */
   private handleSelectAllCases(viewSql: string): string {
+    // Todo remove deleting spaces
+    viewSql = viewSql.replace(/^(\r\n)|(\n)/gi, ' ').replace(/\s\s+/g, ' ');
     const {aliasTableMapping} = getTableAliasesInfo(this.editorContent)
     if (this.editorContent.match(/select \*/gi)) {
       const columns = [];

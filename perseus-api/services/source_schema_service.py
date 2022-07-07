@@ -137,16 +137,16 @@ def get_field_type(field_type):
 def get_view_from_db(current_user, view_sql):
     view_sql = add_schema_names(current_user, view_sql)
     view_cursor = user_schema_db.execute_sql(view_sql).description
-    view_key= lambda a: a.name
+    view_key = lambda a: a.name
     view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
-    view_res=[]
+    view_res = []
     for _, group in view_groups:
         for index, item in enumerate(list(group)):
-            res_item={}
+            res_item = {}
             res_item['type'] = COLUMN_TYPES_MAPPING[item.type_code]
             if res_item['type'] == 'varchar' and item.internal_size > 0:
                 res_item['type'] = '{0}({1})'.format(res_item['type'], item.internal_size)
-            if index>0:
+            if index > 0:
                 res_item['name'] = '{0}_{1}'.format(item.name, index)
             else:
                 res_item['name'] = item.name
