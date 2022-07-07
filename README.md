@@ -169,7 +169,7 @@ https://github.com/SoftwareCountry/DataQualityDashboard
 
 ### Finally
 
-Open `localhost:80` in your browser, preferably Google Chrome
+Open `localhost:80` in your browser, preferably Google Chrome.
 
 ## Getting Involved
 
