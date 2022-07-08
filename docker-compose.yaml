@@ -34,9 +34,7 @@ services:
       - shareddb
       - files-manager
   cdm-builder:
-    build: 
-       context: ../ETL-CDMBuilder
-       dockerfile: ../ETL-CDMBuilder/source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile
+    build: ../ETL-CDMBuilder/source
     container_name:
       cdm-builder
     ports:
