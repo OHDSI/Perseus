@@ -80,8 +80,8 @@
 
 ### CDM Builder
     
-    cd ../ETL-CDMBuilder
-    docker build -t cdm-builder -f "source/org.ohdsi.cdm.presentation.builderwebapi/Dockerfile" .
+    cd ../ETL-CDMBuilder/source
+    docker build -t cdm-builder .
     docker run --name cdm-builder -d -p 9000:9000 --network=perseus-net cdm-builder
 
 ## Additional features
