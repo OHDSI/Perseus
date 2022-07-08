@@ -38,9 +38,9 @@ Screenshots
 Technology
 ============
 - Angular 12
-- Python 3.6
-- Java 15
-- R 4.0.4
+- Python 3.7
+- Java 17
+- R 4.1.3
 - PostgreSQL 13.2
 - .NET Core 3.1
 
@@ -56,33 +56,32 @@ Getting Started
 ===============
 
 ## Vocabulary
-**(Optional)**
 
 Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
 
-Open `database/Dockerfile` and set `voc_url` your own link
+    cd vocabulary-db
 
-Or use docker ARG variable `voc_url`
+Install vocabulary archive and extract to `vocabulary` directory. Full path `vocabulary-db/vocabulary`.
 
-Set `voc_url` empty if you want to use the default vocabulary
+Database deployment can take a long time if the dictionary size is large enough.
 
-Database deployment can take a long time if the dictionary size is large enough
-
-to [Docker Compose](#starting-with-docker-compose)
+To [Docker Compose](#starting-with-docker-compose).
 
 ## SMTP server
 **Multi-user**
 
 **(Optional)**
 
-* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `back-envs.txt` in root directory (CDMSouffleur folder) with the following content **(without spaces)**:
+    cd user
+
+* To get user registration links by e-mail you should configure SMTP server settings first. Edit file named `user-envs.txt` in the `user` directory with the following content **(without spaces)**:
 
 SMTP_SERVER=`<your SMTP server host address>`\
 SMTP_PORT=`<your SMTP port>`\
 SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`\
-TOKEN_SECRET_KEY=`token encoding key`
+TOKEN_SECRET_KEY=`<token encoding key>`
 
 to [Docker Compose](#starting-with-docker-compose)
 
@@ -103,55 +102,19 @@ Password:
 
 To start all containers at once using docker-compose please
 - make sure docker-compose is installed
-- set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
+- set vocabulary link, see [Vocabulary](#vocabulary) section
 - configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
 
-Unix:
-
-    ./startup.sh
-
-Windows:
-
-    ./startup.cmd
-
+    
+    docker compose up -d
 
 Open `localhost:80` in your browser, preferably Google Chrome
 
 ## Starting each container separately
 
-### Nginx Web Server
+https://github.com/SoftwareCountry/Perseus/blob/master/CONTAINERS.md
 
-    cd nginx
-    docker build -t web .
-    docker run --name web -d -p 80:80 --restart=always web
-
-### For Azure
-    docker run --name web -d --net=host -v /verify:/verify -v /etc/letsencrypt:/etc/letsencrypt -e NGINX_ENV='azure' perseushub.azurecr.io/web:dev
-
-### Database
-
-Set vocabulary link, see [Vocabulary](#vocabulary) section **(Optional)**
-
-    cd database
-    docker build -t perseus-database .
-    docker run --name perseus-database -d -p 5431:5432 perseus-database
-
-### Back-end
-
-Configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
-
-In the root directory:
-
-    docker build -t perseus-backend .
-    docker run -e CDM_SOUFFLEUR_ENV='prod' --env-file back-envs.txt --name perseus-backend -d --network host perseus-backend
-
-### Front-end
-    
-    cd UI
-    docker build -t perseus-frontend .
-    docker run --name perseus-frontend -d --network host perseus-frontend
-
-Perseus uses auxiliary services to scan, convert and validate data. 
+Perseus uses auxiliary services to scan, convert and validate data.
 
 Below are links to these services, which should be included in the app build. 
 
@@ -169,7 +132,7 @@ https://github.com/SoftwareCountry/DataQualityDashboard
 
 ### Finally
 
-Open `localhost:80` in your browser, preferably Google Chrome
+Open `localhost:80` in your browser, preferably Google Chrome.
 
 ## Getting Involved
 

@@ -109,7 +109,6 @@ export const SQL_FUNCTIONS: Array<SqlFunction> = [
     parameters: ['\'value\'::TIMESTAMP + (\'number\' * interval \'1 {interval}\')'],
     withoutFunctionName: true
   }),
-  new SqlFunction({ name: 'ISNULL', parameters: ['check_expression', 'replacement_value'] }),
   new SqlFunction({
     name: 'SUBSTRING',
     parameters: ['value', 'start', 'length']
@@ -145,7 +144,6 @@ export const SQL_STRING_FUNCTIONS = [
   'DATEADD',
   'DATEPART',
   'FLOOR',
-  'ISNULL',
   'LEFT',
   'LTRIM',
   'LOWER',
