@@ -1,11 +1,6 @@
 import datetime
 import json
-import os
-import os.path
 import traceback
-
-import pandas as pd
-from werkzeug.utils import secure_filename
 
 from app import app
 from model.usagi.code_mapping_snapshot import CodeMappingSnapshot
@@ -14,13 +9,23 @@ from model.usagi_data.atc_to_rxnorm import atc_to_rxnorm
 from model.usagi_data.code_mapping import CodeMappingEncoder, CodeMapping, MappingTarget, MappingStatus
 from model.usagi_data.source_code import SourceCode
 from model.vocabulary.source_to_concept_map import SourceToConceptMap
-from service.code_mapping_conversion_service import create_log, update_conversion
+from service.code_mapping_conversion_service import create_log, update_conversion, create_conversion
 from service.search_service import search_usagi
+from service.store_csv_service import store_and_parse_csv
 from util.async_directive import fire_and_forget_concept_mapping
-from util.constants import CONCEPT_IDS, UPLOAD_SOURCE_CODES_FOLDER
+from util.constants import CONCEPT_IDS
 from util.exception import InvalidUsage
 
 saved_import_results = {}
+
+
+def load_codes_to_server(file, delimiter, username):
+    if file:
+        file_save_response, source_codes_in_json = store_and_parse_csv(file, delimiter, username)
+        conversion = create_conversion(username, file_save_response.id)
+        return conversion, source_codes_in_json, file_save_response.filePath
+    else:
+        raise InvalidUsage('Request does not contains CSV file')
 
 
 def create_source_codes(current_user, codes, source_code_column, source_name_column, source_frequency_column,
@@ -62,34 +67,6 @@ def add_source_code(row, source_code_column, source_name_column, source_frequenc
     if additional_info_columns:
         new_code.source_additional_info.append({additional_info_columns: row[additional_info_columns]})
     return new_code
-
-
-def load_codes_to_server(file, delimiter, current_user):
-    try:
-        if file:
-            filename = secure_filename(file.filename)
-            try:
-                os.makedirs(f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}")
-                print(f"Directory {UPLOAD_SOURCE_CODES_FOLDER}/{current_user} created")
-            except FileExistsError:
-                print(f"Directory {UPLOAD_SOURCE_CODES_FOLDER}/{current_user} already exist")
-            file.save(f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{filename}")
-            file.close()
-            codes_file = csv_to_json(f"{UPLOAD_SOURCE_CODES_FOLDER}/{current_user}/{filename}", delimiter)
-    except Exception as error:
-        raise InvalidUsage('Codes were not loaded', 400)
-    return codes_file
-
-
-def csv_to_json(filepath, delimiter):
-    json_file = []
-    data = pd.read_csv(filepath, delimiter=delimiter, error_bad_lines=False).fillna('')
-    for row in data.iterrows():
-        json_row = {}
-        for col in data.columns:
-            json_row[col] = str(row[1][col])
-        json_file.append(json_row)
-    return json_file
 
 
 @fire_and_forget_concept_mapping

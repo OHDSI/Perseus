@@ -8,6 +8,7 @@ from create_tables import create_usagi_tables, create_and_fill_usagi_data_tables
 from service.solr_core_service import create_index_if_not_exist
 from usagi_api import usagi
 from util.usagi_db import usagi_pg_db
+from util.vocabulary_db import vocabulary_pg_db
 
 app.register_blueprint(usagi)
 
@@ -19,12 +20,16 @@ job_id = 'import_data'
 def before_request():
     if usagi_pg_db.is_closed():
         usagi_pg_db.connect()
+    if vocabulary_pg_db.is_closed():
+        vocabulary_pg_db.connect()
 
 
 @app.after_request
 def after_request(response):
     if not usagi_pg_db.is_closed():
         usagi_pg_db.close()
+    if not vocabulary_pg_db.is_closed():
+        vocabulary_pg_db.close()
     return response
 
 

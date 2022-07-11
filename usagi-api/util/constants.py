@@ -15,7 +15,7 @@ SOLR_FILTERS = {
     'domain_id': 'domains'
 }
 
-UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes') # todo make stateless
+UPLOAD_SOURCE_CODES_FOLDER = Path('model/generate/source_codes')
 
 QUERY_SEARCH_MODE = 'query'
 

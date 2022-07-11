@@ -1,7 +1,8 @@
 import json
+import os
 import traceback
 
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, after_this_request
 from peewee import DataError
 from app import app
 from config import APP_PREFIX, VERSION
@@ -10,14 +11,16 @@ from model.usagi.code_mapping_conversion_log import CodeMappingConversionLog
 from model.usagi.code_mapping_conversion_result import CodeMappingConversionResult
 from model.usagi.conversion_status import ConversionStatus
 from model.usagi_data.code_mapping import ScoredConceptEncoder
-from service.code_mapping_conversion_service import create_conversion, get_conversion, get_logs
+from service.code_mapping_conversion_service import create_conversion, get_conversion, get_logs, update_conversion
 from service.filters_service import get_filters
 from service.search_service import search_usagi
 from service.snapshot_service import get_snapshots_name_list, get_snapshot, delete_snapshot
 from service.source_to_concept_map_service import delete_source_to_concept_by_snapshot_name
 from service.usagi_service import get_saved_code_mapping, create_concept_mapping, load_codes_to_server, save_codes
 from util.async_directive import cancel_concept_mapping_task
+from util.code_mapping_conversion_util import code_mapping_conversion_to_json
 from util.constants import QUERY_SEARCH_MODE
+from util.conversion_id import get_conversion_id
 from util.exception import InvalidUsage
 from util.utils import username_header
 
@@ -34,16 +37,22 @@ def app_version():
 @username_header
 def load_csv_for_code_mapping_conversion(current_user):
     app.logger.info("REST request to load CSV file for Code Mapping conversion")
-    """save schema to server and load it from server in the same request"""
-    try:
-        file = request.files['file']
-        delimiter = request.form['delimiter']
-        codes_file = load_codes_to_server(file, delimiter, current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify(codes_file)
+    file = request.files['file']
+    delimiter = request.form['delimiter']
+    conversion, source_codes, file_path = load_codes_to_server(file, delimiter, current_user)
+
+    @after_this_request
+    def remove_generated_file(response):
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            app.logger.error("Error removing downloaded file", e)
+        return response
+
+    return jsonify({
+        'conversion': code_mapping_conversion_to_json(conversion),
+        'sourceCodes': source_codes
+    })
 
 
 @usagi.route('/api/code-mapping/launch', methods=['POST'])
@@ -51,6 +60,7 @@ def load_csv_for_code_mapping_conversion(current_user):
 def launch_code_mapping_conversion(current_user):
     app.logger.info("REST request to launch Code Mapping Conversion")
     try:
+        conversion_id = get_conversion_id(request)
         params = request.json['params']
         source_code_column = params['sourceCode']
         source_name_column = params['sourceName']
@@ -60,7 +70,8 @@ def launch_code_mapping_conversion(current_user):
         concept_ids_or_atc = params['columnType']
         codes = request.json['codes']
         filters = request.json['filters']
-        conversion = create_conversion(current_user)
+        conversion = get_conversion(conversion_id, current_user)
+        update_conversion(conversion_id, ConversionStatus.IN_PROGRESS)
         create_concept_mapping(conversion,
                                current_user,
                                codes,
@@ -75,19 +86,16 @@ def launch_code_mapping_conversion(current_user):
         raise error
     except Exception as error:
         raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify({'id': conversion.id,
-                    'statusCode': conversion.status_code,
-                    'statusName': conversion.status_name})
+    return jsonify(code_mapping_conversion_to_json(conversion))
 
 
 @usagi.route('/api/code-mapping/status', methods=['GET'])
-def code_mapping_conversion_status():
+@username_header
+def code_mapping_conversion_status(current_user):
     app.logger.info("REST request to GET Code Mapping conversion status")
     try:
-        conversion_id = request.args.get('conversionId', None, int)
-        if conversion_id is None:
-            raise InvalidUsage('Invalid conversion id', 400)
-        conversion = get_conversion(conversion_id)
+        conversion_id = get_conversion_id(request)
+        conversion = get_conversion(conversion_id, current_user)
         logs = get_logs(conversion)
     except InvalidUsage as error:
         raise error
