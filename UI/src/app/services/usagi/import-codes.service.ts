@@ -97,15 +97,15 @@ export class ImportCodesService implements StateService {
     formData.append('file', csv)
     formData.append('delimiter', delimiter)
 
-    return this.httpClient.post<Code[]>(`${usagiUrl}/load_codes_to_server`, formData)
+    return this.httpClient.post<{conversion: Conversion, sourceCodes: Code[]}>(`${usagiUrl}/code-mapping/load-csv`, formData)
       .pipe(
-        tap(codes => {
-          if (codes.length === 0) {
-            throw new Error('Empty csv file')
-          }
-          this.state.codes = codes
-          this.state.columns = columnsFromSourceCode(codes[0])
-        })
+        tap(resp => {
+          const {conversion, sourceCodes} = resp
+          this.state.conversionId = conversion.id
+          this.state.codes = sourceCodes
+          this.state.columns = columnsFromSourceCode(sourceCodes[0])
+        }),
+        map(resp => resp.sourceCodes)
       )
   }
 
@@ -115,19 +115,16 @@ export class ImportCodesService implements StateService {
       codes: this.codes,
       filters: this.filters
     }
-    return this.httpClient.post<Conversion>(`${usagiUrl}/import_source_codes`, body)
-  }
-
-  setConversionId(conversionId: number): void {
-    this.state.conversionId = conversionId
+    const url = `${usagiUrl}/code-mapping/launch?conversionId=${this.conversionId}`
+    return this.httpClient.post<Conversion>(url, body)
   }
 
   calculatingScoresInfoWithLogs(conversionId: number): Observable<Conversion> {
-    return this.httpClient.get<Conversion>(`${usagiUrl}/import_source_codes_status?conversionId=${conversionId}`)
+    return this.httpClient.get<Conversion>(`${usagiUrl}/code-mapping/status?conversionId=${conversionId}`)
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {
-    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/get_import_source_codes_results`)
+    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/code-mapping/result`)
       .pipe(
         tap(codeMappings => this.state.codeMappings = codeMappings)
       )
@@ -141,7 +138,7 @@ export class ImportCodesService implements StateService {
    */
   getSearchResultByTerm(term: string, filters: SearchConceptFilters, sourceAutoAssignedConceptIds: number[]): Observable<ScoredConcept[]> {
     const body = {term, sourceAutoAssignedConceptIds, filters}
-    return this.httpClient.post<ScoredConcept[]>(`${usagiUrl}/get_term_search_results`, body)
+    return this.httpClient.post<ScoredConcept[]>(`${usagiUrl}/code-mapping/search-by-term`, body)
   }
 
   saveCodes(name): Observable<void> {
@@ -153,14 +150,14 @@ export class ImportCodesService implements StateService {
       filters: this.filters,
       conversionId: this.conversionId
     }
-    return this.httpClient.post<void>(`${usagiUrl}/save_mapped_codes`, body)
+    return this.httpClient.post<void>(`${usagiUrl}/code-mapping/save`, body)
   }
 
   /**
    * Concepts classes, Vocabularies, Domains filters
    */
   fetchFilters(): Observable<{[key: string]: FilterValue[]}> {
-    return this.httpClient.get<{[key: string]: string[]}>(`${usagiUrl}/get_filters`)
+    return this.httpClient.get<{[key: string]: string[]}>(`${usagiUrl}/filters`)
       .pipe(
         map(res => {
           const parsed: {[key: string]: FilterValue[]} = {}
@@ -179,6 +176,6 @@ export class ImportCodesService implements StateService {
   }
 
   cancelCalculateScoresByCsvCodes(): Observable<void> {
-    return this.httpClient.get<void>(`${usagiUrl}/cancel_concept_mapping_task`)
+    return this.httpClient.get<void>(`${usagiUrl}/code-mapping/abort`)
   }
 }

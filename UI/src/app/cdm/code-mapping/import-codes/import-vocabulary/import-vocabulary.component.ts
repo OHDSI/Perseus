@@ -48,7 +48,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.importVocabulariesService.all()
+    this.importVocabulariesService.nameList()
       .subscribe(
         vocabularies => this.vocabularies = [...vocabularies],
         error => {
@@ -101,10 +101,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onEdit(index: number) {
     const vocabularyName = this.vocabularies[index]
-    this.importVocabulariesService.prepareVocabulary(vocabularyName)
-      .pipe(
-        switchMap(() => this.importVocabulariesService.getVocabulary())
-      )
+    this.importVocabulariesService.loadByName(vocabularyName)
       .subscribe(
         state => {
           this.importCodesService.reset({
@@ -128,7 +125,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
     }).afterClosed()
       .pipe(
         switchMap(result => result
-          ? this.importVocabulariesService.remove(vocabulary).pipe(withLoading(this))
+          ? this.importVocabulariesService.removeByName(vocabulary).pipe(withLoading(this))
           : EMPTY
         )
       )
