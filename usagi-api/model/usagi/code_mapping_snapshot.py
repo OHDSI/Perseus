@@ -11,3 +11,6 @@ class CodeMappingSnapshot(UsagiBaseModel):
     time = DateTimeField(default=datetime.now)
     snapshot = TextField()
     conversion = ForeignKeyField(CodeMappingConversion, backref='snapshot')
+
+    class Meta:
+        db_table = 'code_mapping_snapshot'

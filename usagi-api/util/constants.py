@@ -1,8 +1,10 @@
 from pathlib import Path
 
-USAGI_CORE_NAME = 'usagi'  # todo rename to usagi
-USAGI_FULL_DATA_IMPORT = "solr/usagi/dataimport?command=full-import"
-USAGI_IMPORT_STATUS = "solr/usagi/dataimport?command=status&indent=on&wt=json"
+from app import app
+
+USAGI_CORE_NAME = 'usagi'
+
+SOLR_CONN_STRING = f"{app.config['SOLR_URL']}/solr/{USAGI_CORE_NAME}"
 
 CONCEPT_IDS = 'autoConceptId'
 SOURCE_CODE_TYPE_STRING = "S"

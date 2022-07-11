@@ -9,3 +9,6 @@ class CodeMappingConversionResult(UsagiBaseModel):
     time = DateTimeField(default=datetime.now)
     result = TextField(),
     conversion = ForeignKeyField(CodeMappingConversion, backref='result')
+
+    class Meta:
+        db_table = 'code_mapping_conversion_result'
