@@ -1,3 +1,4 @@
+import http
 import json
 import os
 import traceback
@@ -200,6 +201,7 @@ def delete_snapshot_call(current_user):
     snapshot_name = request.args['name']
     delete_snapshot(snapshot_name, current_user)
     delete_source_to_concept_by_snapshot_name(snapshot_name, current_user)
+    return '', http.HTTPStatus.NO_CONTENT
 
 
 @usagi.route('/api/filters', methods=['GET'])
