@@ -1,9 +1,12 @@
 <dataConfig>
-    <dataSource driver="org.postgresql.Driver" url="jdbc:postgresql://jnjcicdu1:5431/cdm_souffleur"
-                user="postgres" password="5eC_DkMr^3"/>
+    <dataSource driver="org.postgresql.Driver"
+                url="${dataimporter.request.jdbcurl}"
+                user="${dataimporter.request.jdbcuser}"
+                password="${dataimporter.request.jdbcpassword}"/>
     <document>
         <entity name="Concepts"
-                query="SELECT type,
+                query="SELECT
+                    type,
                     term_type,
                     term,
                     concept_id,
