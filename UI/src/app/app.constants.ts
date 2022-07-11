@@ -7,7 +7,7 @@ export const similarTableName = 'similar'
 export const isProd = environment.production
 export const isDev = !isProd;
 
-export const serverUrl = window.location.origin
+export const serverUrl = environment.serverUrl || window.location.origin
 
 export const authStrategy = environment.authStrategy
 export const isAddAuth = authStrategy === AuthStrategies.ADD
