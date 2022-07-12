@@ -12,7 +12,7 @@ RUN apt-get update \
 
 COPY sshd_config /etc/ssh/
 
-EXPOSE 5002
+EXPOSE 5003
 EXPOSE 2222
 
 ENTRYPOINT ["python", "/app/main.py"]

@@ -1,14 +1,15 @@
 import re
 import pysolr
-from app import app
 from model.usagi_data.code_mapping import ScoredConcept, TargetConcept
 from model.usagi_data.concept import Concept
+from util.array_util import remove_duplicates
 from service.similarity_score_service import get_terms_vectors, cosine_sim_vectors
-from util.constants import USAGI_CORE_NAME
+from util.constants import SOLR_CONN_STRING
+from util.target_concept_util import create_target_concept
 
 CONCEPT_TERM = "C"
 CONCEPT_TYPE_STRING	= "C"
-SOLR_CONN_STRING = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{USAGI_CORE_NAME}"
+
 
 def count():
     solr = pysolr.Solr(SOLR_CONN_STRING)
@@ -17,43 +18,21 @@ def count():
 
 
 def search_usagi(filters, query, source_auto_assigned_concept_ids):
-    solr_connection_string = f"http://{app.config['SOLR_HOST']}:{app.config['SOLR_PORT']}/solr/{USAGI_CORE_NAME}"
-    solr = pysolr.Solr(solr_connection_string, always_commit=True)
+    solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
     scored_concepts = []
-    if filters:
-        filter_queries = create_usagi_filter_queries(filters, source_auto_assigned_concept_ids)
+    filter_queries = create_usagi_filter_queries(filters, source_auto_assigned_concept_ids) if filters else None
     words = '+'.join(re.split('[^a-zA-Z0-9]', query))
     results = solr.search(f"term:{words}", fl='concept_id, term, score', fq=filter_queries, rows=100).docs
     results = remove_duplicates(results)
     vectors = get_terms_vectors(results, query, 'term')
     for index, item in enumerate(results):
         if 'concept_id' in item:
-            target_concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
-            concept = create_target_concept(target_concept)
+            concept: Concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
+            target_concept: TargetConcept = create_target_concept(concept)
             cosine_simiarity_score = float("{:.2f}".format(cosine_sim_vectors(vectors[0], vectors[index+1])))
-            scored_concepts.append(ScoredConcept(cosine_simiarity_score, concept, item['term']))
+            scored_concepts.append(ScoredConcept(cosine_simiarity_score, target_concept, item['term']))
     scored_concepts.sort(key=lambda x: x.match_score, reverse=True)
     return scored_concepts
-
-
-def remove_duplicates(results):
-    return [i for n, i in enumerate(results) if i not in results[n + 1:]]
-
-
-def create_target_concept(concept):
-    return TargetConcept(concept.concept_id,
-                         concept.concept_name,
-                         concept.concept_class_id,
-                         concept.vocabulary_id,
-                         concept.concept_code,
-                         concept.domain_id,
-                         concept.valid_start_date.strftime("%Y-%m-%d"),
-                         concept.valid_end_date.strftime("%Y-%m-%d"),
-                         concept.invalid_reason,
-                         concept.standard_concept,
-                         "",
-                         concept.parent_count,
-                         concept.parent_count)
 
 
 def create_usagi_filter_queries(filters, source_auto_assigned_concept_ids):

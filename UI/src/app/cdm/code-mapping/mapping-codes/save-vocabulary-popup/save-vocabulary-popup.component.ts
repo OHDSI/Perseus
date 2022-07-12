@@ -50,7 +50,7 @@ export class SaveVocabularyPopupComponent implements OnInit {
   }
 
   private applyNew(name: string) {
-    this.importVocabulariesService.all()
+    this.importVocabulariesService.nameList()
       .pipe(
         withLoading(this),
         map(vocabs => vocabs.includes(name)),

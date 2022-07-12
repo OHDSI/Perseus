@@ -1,8 +1,8 @@
 from peewee import Model
-from util.usagi_db import usagi_pg_db
+from util.vocabulary_db import vocabulary_pg_db
 
 
 class UsagiDataBaseModel(Model):
     class Meta:
-        database = usagi_pg_db
+        database = vocabulary_pg_db
         schema = 'usagi_data'
