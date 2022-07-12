@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from model.usagi.code_mapping_conversion import CodeMappingConversion
 from model.usagi.code_mapping_snapshot import CodeMappingSnapshot
 from util.exception import InvalidUsage
 
@@ -28,32 +29,33 @@ def get_snapshot(snapshot_name: str, username: str):
         raise InvalidUsage('Vocabulary not found', 404)
 
 
-def create_or_update_snapshot(current_user,
+def create_or_update_snapshot(current_user: str,
                               codes,
                               mapping_params,
                               mapped_codes,
                               filters,
-                              vocabulary_name,
-                              conversion) -> CodeMappingSnapshot:
+                              snapshot_name: str,
+                              conversion: CodeMappingConversion) -> CodeMappingSnapshot:
     source_and_mapped_codes_dict = {
         'codes': codes,
         'mappingParams': mapping_params,
         'codeMappings': mapped_codes,
-        'filters': filters
+        'filters': filters,
+        'conversionId': conversion.id
     }
     source_and_mapped_codes_string = json.dumps(source_and_mapped_codes_dict)
     existed_snapshot = CodeMappingSnapshot\
         .select()\
-        .where((CodeMappingSnapshot.username == current_user) & (CodeMappingSnapshot.name == vocabulary_name))
+        .where((CodeMappingSnapshot.username == current_user) & (CodeMappingSnapshot.name == snapshot_name))
 
     if existed_snapshot.exists():
         existed_snapshot = existed_snapshot.get()
         existed_snapshot.snapshot = source_and_mapped_codes_string
-        existed_snapshot.updated_at = datetime.utcnow()
+        existed_snapshot.updated_at = datetime.now()
         existed_snapshot.save()
         return existed_snapshot
     else:
-        new_snapshot = CodeMappingSnapshot(name=vocabulary_name,
+        new_snapshot = CodeMappingSnapshot(name=snapshot_name,
                                            snapshot=source_and_mapped_codes_string,
                                            username=current_user,
                                            conversion=conversion)

@@ -4,14 +4,15 @@ from util.vocabulary_db import vocabulary_pg_db
 
 def save_source_to_concept_map(mapped_codes, snapshot_name: str, username: str):
     with vocabulary_pg_db.atomic():
+        delete_source_to_concept_by_snapshot_name(snapshot_name, username)
+
         for item in mapped_codes:
             if 'approved' in item and item['approved']:
-                source_concept_id = 0
                 source_code = item['sourceCode']['source_code']
                 source_code_description = item['sourceCode']['source_name']
                 for concept in item['targetConcepts']:
                     mapped_code_data = {
-                        "source_concept_id": source_concept_id,
+                        "source_concept_id": 0,
                         "source_code": source_code,
                         "source_vocabulary_id": snapshot_name,
                         "source_code_description": source_code_description,
