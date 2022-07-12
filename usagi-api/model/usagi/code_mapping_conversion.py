@@ -5,7 +5,6 @@ from model.usagi.usagi_base_model import UsagiBaseModel
 class CodeMappingConversion(UsagiBaseModel):
     id = AutoField()
     username = CharField()
-    csv_file_id = BigIntegerField()
     status_code = IntegerField()
     status_name = CharField(max_length=25)
 

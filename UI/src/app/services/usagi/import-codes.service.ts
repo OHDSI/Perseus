@@ -97,15 +97,12 @@ export class ImportCodesService implements StateService {
     formData.append('file', csv)
     formData.append('delimiter', delimiter)
 
-    return this.httpClient.post<{conversion: Conversion, sourceCodes: Code[]}>(`${usagiUrl}/code-mapping/load-csv`, formData)
+    return this.httpClient.post<Code[]>(`${usagiUrl}/code-mapping/load-csv`, formData)
       .pipe(
-        tap(resp => {
-          const {conversion, sourceCodes} = resp
-          this.state.conversionId = conversion.id
+        tap(sourceCodes => {
           this.state.codes = sourceCodes
           this.state.columns = columnsFromSourceCode(sourceCodes[0])
-        }),
-        map(resp => resp.sourceCodes)
+        })
       )
   }
 
@@ -117,6 +114,9 @@ export class ImportCodesService implements StateService {
     }
     const url = `${usagiUrl}/code-mapping/launch?conversionId=${this.conversionId}`
     return this.httpClient.post<Conversion>(url, body)
+      .pipe(
+        tap(conversion => this.state.conversionId = conversion.id)
+      )
   }
 
   calculatingScoresInfoWithLogs(conversionId: number): Observable<Conversion> {

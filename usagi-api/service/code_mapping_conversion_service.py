@@ -3,12 +3,11 @@ from model.usagi.conversion_status import ConversionStatus
 from util.exception import InvalidUsage
 
 
-def create_conversion(username: str, csv_file_id: int):
+def create_conversion(username: str):
     return CodeMappingConversion.create(
         username=username,
-        csv_file_id=csv_file_id,
-        status_code=ConversionStatus.INITIALIZED.value,
-        status_name=ConversionStatus.INITIALIZED.name
+        status_code=ConversionStatus.IN_PROGRESS.value,
+        status_name=ConversionStatus.IN_PROGRESS.name
     )
 
 

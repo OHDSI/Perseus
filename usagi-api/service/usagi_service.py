@@ -20,11 +20,9 @@ from util.exception import InvalidUsage
 
 def extract_codes_from_csv(file, delimiter, username):
     if file:
-        file_save_response, source_codes_in_json = store_and_parse_csv(file, delimiter, username)
-        conversion = create_conversion(username, file_save_response.id)
-        return conversion, source_codes_in_json, file_save_response.filePath
+        return store_and_parse_csv(file, delimiter, username)
     else:
-        raise InvalidUsage('Request does not contains CSV file')
+        raise InvalidUsage('Request does not contain CSV file')
 
 
 """

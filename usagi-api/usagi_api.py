@@ -4,21 +4,18 @@ import os
 import traceback
 
 from flask import jsonify, Blueprint, request, after_this_request
-from peewee import DataError
 from app import app
 from config import APP_PREFIX, VERSION
-from model.usagi.code_mapping_conversion import CodeMappingConversion
-from model.usagi.code_mapping_conversion_log import CodeMappingConversionLog
-from model.usagi.code_mapping_conversion_result import CodeMappingConversionResult
 from model.usagi.conversion_status import ConversionStatus
 from model.usagi_data.code_mapping import ScoredConceptEncoder
-from service.code_mapping_conversion_service import create_conversion, get_conversion_by_username, update_conversion
+from service.code_mapping_conversion_service import get_conversion_by_username, update_conversion, create_conversion
 from service.code_mapping_log_service import get_logs
+from service.code_mapping_snapshot_service import get_snapshots_name_list, get_snapshot, delete_snapshot
 from service.filters_service import get_filters
 from service.search_service import search_usagi
-from service.code_mapping_snapshot_service import get_snapshots_name_list, get_snapshot, delete_snapshot
 from service.source_to_concept_map_service import delete_source_to_concept_by_snapshot_name
-from service.usagi_service import get_concept_mapping_result, create_concept_mapping, extract_codes_from_csv, save_concept_mapping_result
+from service.usagi_service import get_concept_mapping_result, create_concept_mapping, extract_codes_from_csv, \
+    save_concept_mapping_result
 from util.async_directive import cancel_concept_mapping_task
 from util.code_mapping_conversion_util import code_mapping_conversion_to_json
 from util.constants import QUERY_SEARCH_MODE
@@ -41,7 +38,7 @@ def load_csv_for_code_mapping_conversion(current_user):
     app.logger.info("REST request to load CSV file for Code Mapping conversion")
     file = request.files['file']
     delimiter = request.form['delimiter']
-    conversion, source_codes, file_path = extract_codes_from_csv(file, delimiter, current_user)
+    source_codes, file_path = extract_codes_from_csv(file, delimiter, current_user)
 
     @after_this_request
     def remove_generated_file(response):
@@ -51,10 +48,7 @@ def load_csv_for_code_mapping_conversion(current_user):
             app.logger.error("Error removing downloaded file", e)
         return response
 
-    return jsonify({
-        'conversion': code_mapping_conversion_to_json(conversion),
-        'sourceCodes': source_codes
-    })
+    return jsonify(source_codes)
 
 
 @usagi.route('/api/code-mapping/launch', methods=['POST'])
@@ -70,9 +64,7 @@ def launch_code_mapping_conversion(current_user):
     concept_ids_or_atc = params['columnType']
     codes = request.json['codes']
     filters = request.json['filters']
-    conversion_id = get_conversion_id(request)
-    conversion = get_conversion_by_username(conversion_id, current_user)
-    update_conversion(conversion_id, ConversionStatus.IN_PROGRESS)
+    conversion = create_conversion(current_user)
     create_concept_mapping(current_user,
                            conversion,
                            codes,

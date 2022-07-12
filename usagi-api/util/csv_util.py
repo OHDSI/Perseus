@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from pandas.errors import EmptyDataError
 
@@ -15,4 +17,5 @@ def csv_to_list(filepath, delimiter):
             json_file.append(json_row)
         return json_file
     except EmptyDataError as error:
+        os.remove(filepath)
         raise InvalidUsage('Empty CSV file', base=error)
