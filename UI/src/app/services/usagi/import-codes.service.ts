@@ -124,7 +124,7 @@ export class ImportCodesService implements StateService {
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {
-    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/code-mapping/result`)
+    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/code-mapping/result?conversionId=${this.conversionId}`)
       .pipe(
         tap(codeMappings => this.state.codeMappings = codeMappings)
       )
@@ -150,7 +150,7 @@ export class ImportCodesService implements StateService {
       filters: this.filters,
       conversionId: this.conversionId
     }
-    return this.httpClient.post<void>(`${usagiUrl}/code-mapping/save`, body)
+    return this.httpClient.post<void>(`${usagiUrl}/code-mapping/save?conversionId=${this.conversionId}`, body)
   }
 
   /**
@@ -176,6 +176,6 @@ export class ImportCodesService implements StateService {
   }
 
   cancelCalculateScoresByCsvCodes(): Observable<void> {
-    return this.httpClient.get<void>(`${usagiUrl}/code-mapping/abort`)
+    return this.httpClient.get<void>(`${usagiUrl}/code-mapping/abort?conversionId=${this.conversionId}`)
   }
 }
