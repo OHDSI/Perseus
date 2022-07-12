@@ -7,7 +7,7 @@ from model.usagi.usagi_base_model import UsagiBaseModel
 class CodeMappingConversionResult(UsagiBaseModel):
     id = AutoField()
     time = DateTimeField(default=datetime.now)
-    result = TextField(),
+    result = TextField()
     conversion = ForeignKeyField(CodeMappingConversion, backref='result')
 
     class Meta:
