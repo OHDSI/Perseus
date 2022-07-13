@@ -11,3 +11,5 @@ SQLAlchemy==1.4.35
 APScheduler==3.9.1
 Werkzeug~=2.0.2
 requests~=2.27.1
+azure-identity==1.10.0
+azure-keyvault-secrets==4.4.0

@@ -6,7 +6,6 @@ VERSION = 0.4
 class LocalConfig:
     AZURE_KEY_VAULT = False
     SOLR_URL = 'http://localhost:8983'
-    FILE_MANAGER_API_URL = 'http://localhost:10500/files-manager'
 
     USAGI_DB_NAME = 'shared'
     USAGI_DB_USER = 'usagi'
@@ -24,7 +23,6 @@ class LocalConfig:
 class DockerConfig:
     AZURE_KEY_VAULT = False
     SOLR_URL = 'http://solr:8983'
-    FILE_MANAGER_API_URL = 'http://files-manager:10500/files-manager'
 
     USAGI_DB_NAME = 'shared'
     USAGI_DB_USER = 'usagi'

@@ -1,13 +1,15 @@
 import json
 import requests
 
-from app import app
 from model.file_manager import file_save_reponse
 from util.exception import InvalidUsage
 
-FILE_MANAGER_URL = app.config["FILE_MANAGER_API_URL"]
+FILE_MANAGER_URL = ''
 
 
+"""
+Unused, to use specify FILE_MANAGER_URL variable
+"""
 def get_file(data_id: int):
     url = f'{FILE_MANAGER_URL}/api/{data_id}'
     r = requests.get(url)
