@@ -82,7 +82,7 @@
     
     cd ../ETL-CDMBuilder/source
     docker build -t cdm-builder .
-    docker run --name cdm-builder -d -p 9000:9000 --network=perseus-net cdm-builder
+    docker run --name cdm-builder -d -p 9000:9000 -e ASPNETCORE_ENVIRONMENT='Docker' --network=perseus-net cdm-builder
 
 ## Additional features
 
