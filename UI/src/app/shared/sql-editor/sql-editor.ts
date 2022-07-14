@@ -1,5 +1,5 @@
 import { ITable, ITableOptions, Table } from '@models/table'
-import { AliasTableMapping } from '@shared/sql-editor/sql-editor.data'
+import { AliasTableMapping, TablesAliasesInfo } from '@shared/sql-editor/sql-editor.data'
 import { IRow, Row, RowOptions } from '@models/row'
 import { ViewSqlResponse } from '@models/perseus/view-sql-response'
 import { Area } from '@models/area'
@@ -9,36 +9,20 @@ export const SELECT_MAPPING = (context) => ['select * from']
 
 export const selectTemplate = (text: string) => `select * from ${text} as t1`;
 
-/**
- * Show hint: autocomplete column name by this.tableColumnsMapping
- */
-export function onKeyUp(cm, event) {
-  if (!cm.state.completionActive && event.code === 'Period') {
-    cm.showHint({ completeSingle: false });
-  }
+export function joinTemplate(tableName: string, sql: string): string {
+  const joinCount = (sql.match(/join/gi) || []).length;
+  return `${sql}
+      join ${tableName} as t${joinCount + 2} on`;
 }
 
-/**
- * Prepare sql function before sending to back-end
- * Replace * (SELECT ALL) to field list with aliases if SQL query contains JOIN operator and same column in different tables
- * @param content - sql function from Text Editor
- * @param tables - source tables list
- * @return if JOIN query and same columns - parsed sql function with replaced * on fields list, else - content param
- */
-export function addColumnAliasesIfNeeded(content: string, tables: ITable[]): string {
-  const {tablesWithoutAlias, aliasTableMapping} = getTableAliasesInfo(content)
-  throw Error('Not implemented')
-}
+export const selectMatcher = /select\b[ \n]*\*/gi
 
 /**
  * Legacy transferred from component, onChange method
  * @param sqlView - sql function from Text Editor
  * @return tables aliases info
  */
-export function getTableAliasesInfo(sqlView: string): {
-  tablesWithoutAlias: string[]
-  aliasTableMapping: AliasTableMapping
-} {
+export function getTablesAliasesInfo(sqlView: string): TablesAliasesInfo {
   const tablesWithoutAlias: string[] = []
   let aliasTableMapping: AliasTableMapping = {}
   const matches = sqlView

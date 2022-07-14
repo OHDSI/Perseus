@@ -1,4 +1,4 @@
-import { hasCapitalLetter, mapToPostgresSqlName } from '@shared/sql-editor/sql-editor'
+import { hasCapitalLetter, mapToPostgresSqlName, selectMatcher } from '@shared/sql-editor/sql-editor'
 import { Row } from '@models/row'
 
 describe('SqlEditor', () => {
@@ -20,6 +20,24 @@ describe('SqlEditor', () => {
     expect(mapToPostgresSqlName(createFakeRow(column1))).toBe('id')
     expect(mapToPostgresSqlName(createFakeRow(column2))).toBe('"Age"')
     expect(mapToPostgresSqlName(createFakeRow(column3))).toBe('"GENDER"')
+  })
+
+  it('should match select all', () => {
+    const selectAll1 = 'select*'
+    const selectAll2 = 'SELECT *'
+    const selectAll3 = 'Select  *'
+    const selectAll4 = 'SelecT\n*'
+    const selectAll5 = 'seLect \n*'
+    const selectAll6 = 'SELECT * FROM'
+    const selectAll7 = 'SELEC *'
+
+    expect(selectAll1).toMatch(selectMatcher)
+    expect(selectAll2).toMatch(selectMatcher)
+    expect(selectAll3).toMatch(selectMatcher)
+    expect(selectAll4).toMatch(selectMatcher)
+    expect(selectAll5).toMatch(selectMatcher)
+    expect(selectAll6).toMatch(selectMatcher)
+    expect(selectAll7.match(selectMatcher)).toBeNull()
   })
 })
 

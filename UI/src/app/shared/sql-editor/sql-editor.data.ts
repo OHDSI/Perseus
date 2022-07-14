@@ -14,3 +14,8 @@ export type AliasTableMapping = {
 export type TablesColumnsMapping = {
   [tableName: string]: IRow
 } | {}
+
+export interface TablesAliasesInfo {
+  tablesWithoutAlias: string[]
+  aliasTableMapping: AliasTableMapping
+}
