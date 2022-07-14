@@ -318,9 +318,6 @@ def handle_invalid_req_key(error):
 def handle_exception(error):
     app.logger.error(error.__str__())
     response = jsonify({'message': error.__str__()})
-    if error.code:
-        response.code = error.code
-    else:
-        response.status_code = 500
+    response.status_code = 500
     traceback.print_tb(error.__traceback__)
     return response

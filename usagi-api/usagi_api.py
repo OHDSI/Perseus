@@ -1,21 +1,25 @@
+import http
 import json
-import subprocess
-from flask import jsonify, Blueprint, request
-from peewee import DataError
+import os
+import traceback
+
+from flask import jsonify, Blueprint, request, after_this_request
 from app import app
 from config import APP_PREFIX, VERSION
-from model.usagi_data.code_mapping import ScoredConceptEncoder
-from model.usagi.code_mapping_conversion import CodeMappingConversion
-from model.usagi.code_mapping_conversion_log import CodeMappingConversionLog
-from model.usagi.code_mapping_conversion_result import CodeMappingConversionResult
 from model.usagi.conversion_status import ConversionStatus
+from model.usagi_data.code_mapping import ScoredConceptEncoder
+from service.code_mapping_conversion_service import get_conversion_by_username, update_conversion, create_conversion
+from service.code_mapping_log_service import get_logs
+from service.code_mapping_snapshot_service import get_snapshots_name_list, get_snapshot, delete_snapshot
+from service.filters_service import get_filters
 from service.search_service import search_usagi
-from service.solr_core_service import run_solr_command
-from service.usagi_service import get_saved_code_mapping, create_concept_mapping, get_vocabulary_list_for_user, \
-    load_mapped_concepts_by_vocabulary_name, delete_vocabulary, get_vocabulary_data, get_filters, load_codes_to_server, \
-    save_codes
-from util.async_directive import cancel_concept_mapping_task, cancel_load_vocabulary_task
-from util.constants import USAGI_IMPORT_STATUS, QUERY_SEARCH_MODE
+from service.source_to_concept_map_service import delete_source_to_concept_by_snapshot_name
+from service.usagi_service import get_concept_mapping_result, create_concept_mapping, extract_codes_from_csv, \
+    save_concept_mapping_result
+from util.async_directive import cancel_concept_mapping_task
+from util.code_mapping_conversion_util import code_mapping_conversion_to_json
+from util.constants import QUERY_SEARCH_MODE
+from util.conversion_id import get_conversion_id
 from util.exception import InvalidUsage
 from util.utils import username_header
 
@@ -28,253 +32,165 @@ def app_version():
     return jsonify({'name': 'Usagi', 'version': VERSION})
 
 
-@usagi.route('/api/import_source_codes', methods=['POST'])
+@usagi.route('/api/code-mapping/load-csv', methods=['POST'])
 @username_header
-def create_codes(current_user):
-    app.logger.info("REST request to start creating concept mapping process")
-    try:
-        params = request.json['params']
-        source_code_column = params['sourceCode']
-        source_name_column = params['sourceName']
-        source_frequency_column = params['sourceFrequency']
-        auto_concept_id_column = params['autoConceptId']
-        additional_info_columns = params['additionalInfo']
-        concept_ids_or_atc = params['columnType']
-        project = 'some'
-        codes = request.json['codes']
-        filters = request.json['filters']
-        conversion = CodeMappingConversion.create(
-                                                 username=current_user,
-                                                 project=project,
-                                                 status_code=ConversionStatus.IN_PROGRESS.value,
-                                                 status_name = ConversionStatus.IN_PROGRESS.name
-                                                 )
-        create_concept_mapping(conversion, current_user, codes, filters, source_code_column, source_name_column, source_frequency_column, auto_concept_id_column, concept_ids_or_atc, additional_info_columns)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
-    return jsonify({'id': conversion.id,
-                    'project': conversion.project,
-                    'statusCode': conversion.status_code,
-                    'statusName': conversion.status_name,
-                    'logs': []})
+def load_csv_for_code_mapping_conversion(current_user):
+    app.logger.info("REST request to load CSV file for Code Mapping conversion")
+    file = request.files['file']
+    delimiter = request.form['delimiter']
+    source_codes, file_path = extract_codes_from_csv(file, delimiter, current_user)
+
+    @after_this_request
+    def remove_generated_file(response):
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            app.logger.error("Error removing downloaded file", e)
+        return response
+
+    return jsonify(source_codes)
 
 
-@usagi.route('/api/import_source_codes_status', methods=['GET'])
+@usagi.route('/api/code-mapping/launch', methods=['POST'])
 @username_header
-def get_import_source_codes_logs_call(current_user):
-    app.logger.info("REST request GET concept mapping logs")
-    try:
-        conversion = request.args["conversionId"]
-        conversion = CodeMappingConversion.get(CodeMappingConversion.id==conversion)
-        logs = CodeMappingConversionLog.select(
-            CodeMappingConversionLog.message,
-            CodeMappingConversionLog.status_code,
-            CodeMappingConversionLog.status_name,
-            CodeMappingConversionLog.percent
-            ).where(CodeMappingConversionLog.conversion==conversion).dicts()
-        print(logs)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+def launch_code_mapping_conversion(current_user):
+    app.logger.info("REST request to launch Code Mapping Conversion")
+    params = request.json['params']
+    source_code_column = params['sourceCode']
+    source_name_column = params['sourceName']
+    source_frequency_column = params['sourceFrequency']
+    auto_concept_id_column = params['autoConceptId']
+    additional_info_columns = params['additionalInfo']
+    concept_ids_or_atc = params['columnType']
+    codes = request.json['codes']
+    filters = request.json['filters']
+    conversion = create_conversion(current_user)
+    create_concept_mapping(current_user,
+                           conversion,
+                           codes,
+                           filters,
+                           source_code_column,
+                           source_name_column,
+                           source_frequency_column,
+                           auto_concept_id_column,
+                           concept_ids_or_atc,
+                           additional_info_columns)
+    return jsonify(code_mapping_conversion_to_json(conversion))
+
+
+@usagi.route('/api/code-mapping/status', methods=['GET'])
+@username_header
+def code_mapping_conversion_status(current_user):
+    app.logger.info("REST request to GET Code Mapping conversion status")
+    conversion_id = get_conversion_id(request)
+    conversion = get_conversion_by_username(conversion_id, current_user)
+    logs = get_logs(conversion)
     return jsonify({
-                'id': conversion.id,
-                'project': conversion.project,
-                'statusCode': conversion.status_code,
-                'statusName': conversion.status_name,
-                'logs': [log for log in logs]
-                })
+        'id': conversion.id,
+        'statusCode': conversion.status_code,
+        'statusName': conversion.status_name,
+        'logs': [log for log in logs]
+    })
 
 
-@usagi.route('/api/get_import_source_codes_results', methods=['GET'])
+@usagi.route('/api/code-mapping/abort', methods=['GET'])
 @username_header
-def get_import_source_codes_results_call(current_user):
-    app.logger.info("REST request GET concept mapping")
-    try:
-        import_source_codes_results = get_saved_code_mapping(current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return import_source_codes_results
+def abort_code_mapping_conversion(current_user):
+    app.logger.info("REST request to abort Code Mapping conversion")
+    cancel_concept_mapping_task(current_user)
+    conversion_id = get_conversion_id(request)
+    conversion = get_conversion_by_username(conversion_id, current_user)
+    update_conversion(conversion.id, ConversionStatus.ABORTED)
+    return '', http.HTTPStatus.NO_CONTENT
 
 
-@usagi.route('/api/load_codes_to_server', methods=['POST'])
+@usagi.route('/api/code-mapping/result', methods=['GET'])
 @username_header
-def load_codes_call(current_user):
-    app.logger.info("REST request extract codes from CSV")
-    """save schema to server and load it from server in the same request"""
-    try:
-        file = request.files['file']
-        delimiter = request.form['delimiter']
-        codes_file = load_codes_to_server(file, delimiter, current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify(codes_file)
+def code_mapping_conversion_result(current_user):
+    app.logger.info("REST request to GET Code Mapping conversion result")
+    conversion_id = get_conversion_id(request)
+    result = get_concept_mapping_result(conversion_id, current_user)
+    return jsonify(result)
 
 
-@usagi.route('/api/get_term_search_results', methods=['POST'])
-@username_header
-def get_term_search_results_call(current_user):
-    app.logger.info("REST request to GET term search result")
-    try:
-        filters = request.json['filters']
-        term = filters['searchString'] if filters['searchMode'] == QUERY_SEARCH_MODE else request.json['term']
-        source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
-        search_result = search_usagi(filters, term, source_auto_assigned_concept_ids)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
+@usagi.route('/api/code-mapping/search-by-term', methods=['POST'])
+def get_term_search_results_call():
+    app.logger.info("REST request to search by term in Code Mapping conversion result")
+    filters = request.json['filters']
+    term = filters['searchString'] if filters['searchMode'] == QUERY_SEARCH_MODE else request.json['term']
+    source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
+    search_result = search_usagi(filters, term, source_auto_assigned_concept_ids)
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)
 
 
-@usagi.route('/api/save_mapped_codes', methods=['POST'])
+@usagi.route('/api/code-mapping/save', methods=['POST'])
 @username_header
 def save_mapped_codes_call(current_user):
-    app.logger.info("REST request to save mapped codes")
-    try:
-        codes = request.json['codes']
-        mapped_codes = request.json['codeMappings']
-        vocabulary_name = request.json['name']
-        mapping_params = request.json['mappingParams']
-        filters = request.json['filters']
-        conversion = request.json['conversionId']
-        conversion = CodeMappingConversion.get(CodeMappingConversion.id==conversion)
-        result = save_codes(current_user, codes, mapping_params, mapped_codes, filters, vocabulary_name, conversion)
-    except DataError as error:
-        raise InvalidUsage(error.__str__(), 400, base=error)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return json.dumps(result)
+    app.logger.info("REST request to save code mapping conversion result")
+    codes = request.json['codes']
+    mapped_codes = request.json['codeMappings']
+    snapshot_name = request.json['name']
+    mapping_params = request.json['mappingParams']
+    filters = request.json['filters']
+    conversion_id = get_conversion_id(request)
+    conversion = get_conversion_by_username(conversion_id, current_user)
+    save_concept_mapping_result(current_user,
+                                         codes,
+                                         mapping_params,
+                                         mapped_codes,
+                                         filters,
+                                         snapshot_name,
+                                         conversion)
+    return '', http.HTTPStatus.NO_CONTENT
 
 
-@usagi.route('/api/get_vocabulary_list', methods=['GET'])
+@usagi.route('/api/snapshot/names', methods=['GET'])
 @username_header
-def get_vocabulary_list_call(current_user):
-    app.logger.info("REST request to GET vocabulary list")
-    try:
-        result = get_vocabulary_list_for_user(current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
+def snapshots_name_list_call(current_user):
+    app.logger.info("REST request to GET snapshots name list")
+    result = get_snapshots_name_list(current_user)
     return jsonify(result)
 
 
-@usagi.route('/api/get_vocabulary', methods=['GET'])
+@usagi.route('/api/snapshot', methods=['GET'])
 @username_header
-def load_mapped_concepts_call(current_user):
-    app.logger.info("REST request to GET vocabulary")
-    try:
-        vocabulary_name = request.args['name']
-        load_mapped_concepts_by_vocabulary_name(vocabulary_name, current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify('OK')
-
-
-@usagi.route('/api/delete_vocabulary', methods=['GET'])
-@username_header
-def delete_vocabulary_call(current_user):
-    app.logger.info("REST request to DELETE vocabulary")
-    try:
-        vocabulary_name = request.args['name']
-        delete_vocabulary(vocabulary_name, current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify('OK')
-
-
-@usagi.route('/api/get_vocabulary_data', methods=['GET'])
-@username_header
-def get_vocabulary_data_call(current_user):
-    app.logger.info("REST request to GET vocabulary data")
-    try:
-        result = get_vocabulary_data(current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
+def get_snapshot_call(current_user):
+    app.logger.info("REST to GET snapshot")
+    snapshot_name = request.args['name']
+    result = get_snapshot(snapshot_name, current_user)
     return jsonify(result)
 
 
-@usagi.route('/api/get_filters', methods=['GET'])
+@usagi.route('/api/snapshot', methods=['DELETE'])
 @username_header
-def get_filters_call(current_user):
+def delete_snapshot_call(current_user):
+    app.logger.info("REST request to DELETE snapshot")
+    snapshot_name = request.args['name']
+    delete_snapshot(snapshot_name, current_user)
+    delete_source_to_concept_by_snapshot_name(snapshot_name, current_user)
+    return '', http.HTTPStatus.NO_CONTENT
+
+
+@usagi.route('/api/filters', methods=['GET'])
+def get_filters_call():
     app.logger.info("REST request to GET filters")
-    try:
-        result = get_filters(current_user)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
+    result = get_filters()
     return jsonify(result)
 
 
-@usagi.route('/api/cancel_concept_mapping_task', methods=['GET'])
-@username_header
-def cancel_concept_mapping_task_call(current_user):
-    app.logger.info("REST request to GET filters")
-    try:
-        cancel_concept_mapping_task(current_user)
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500)
-    conversion = request.args.get('conversion')
-    conversion = CodeMappingConversion.get(CodeMappingConversion.id==conversion)
-    CodeMappingConversionLog.create(
-                message="Import aborted",
-                status_code=ConversionStatus.ABORTED.value,
-                status_name=ConversionStatus.ABORTED.name,
-                conversion=conversion
-            )
-    CodeMappingConversionResult.create(result=ConversionStatus.ABORTED.value, conversion=conversion)
-    return jsonify('OK')
-
-
-@usagi.route('/api/cancel_load_vocabulary_task', methods=['GET'])
-@username_header
-def cancel_load_vocabulary_task_call(current_user):
-    app.logger.info("REST request to cancel mapping codes process")
-    try:
-        cancel_load_vocabulary_task(current_user)
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify('OK')
-
-
-@usagi.route('/api/solr_import_status', methods=['GET'])
-def solr_import_status_call():
-    app.logger.info("REST request to GET Solr import status")
-    try:
-        response = run_solr_command(USAGI_IMPORT_STATUS)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    app.logger.error(error.message)
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    traceback.print_tb(error.__traceback__)
     return response
 
 
-@usagi.route('/api/start_solr', methods=['GET'])
-def start_solr_call():
-    app.logger.info("REST request to start Solr import process")
-    try:
-        p = subprocess.Popen([f"solr", "start"], stdout =subprocess.PIPE, stderr =subprocess.PIPE, shell=True)
-        output, error = p.communicate()
-        if p.returncode != 0:
-            print("failed %d %s %s" % (p.returncode, output, error))
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(error.__str__(), 500, base=error)
-    return jsonify(output)
+@app.errorhandler(Exception)
+def handle_exception(error):
+    app.logger.error(error.__str__())
+    response = jsonify({'message': error.__str__()})
+    response.status_code = 500
+    traceback.print_tb(error.__traceback__)
+    return response

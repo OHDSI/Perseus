@@ -39,6 +39,8 @@ services:
       cdm-builder
     ports:
       - "9000:9000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
     depends_on:
       - shareddb
       - files-manager

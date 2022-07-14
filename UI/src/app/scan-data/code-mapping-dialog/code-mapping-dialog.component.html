@@ -7,7 +7,6 @@
   <div class="scan-dialog__content">
     <ng-container *ngIf="conversion">
       <app-code-mapping-console-wrapper [conversion]="conversion"
-                                        (back)="onCancel()"
                                         (close)="onClose()"
                                         (completed)="onCompleted()"></app-code-mapping-console-wrapper>
     </ng-container>

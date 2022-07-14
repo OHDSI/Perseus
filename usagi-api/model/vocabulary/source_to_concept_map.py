@@ -2,7 +2,7 @@ from peewee import IntegerField, CharField, DateField, AutoField
 from model.vocabulary.vocabulary_base_model import VocabularyBaseModel
 
 
-class Source_To_Concept_Map(VocabularyBaseModel):
+class SourceToConceptMap(VocabularyBaseModel):
     id = AutoField(primary_key=True)
     source_concept_id = IntegerField()
     source_code = CharField()
@@ -14,3 +14,6 @@ class Source_To_Concept_Map(VocabularyBaseModel):
     valid_end_date = DateField()
     invalid_reason = CharField(null=True)
     username = CharField()
+
+    class Meta:
+        db_table = 'source_to_concept_map'

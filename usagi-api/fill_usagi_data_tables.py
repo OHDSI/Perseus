@@ -1,23 +1,28 @@
 import pandas as pd
 from peewee import fn
-
-from db_engines import vocabulary_engine, usagi_engine
-
+from sqlalchemy import create_engine
+from app import app
 from model.usagi_data.atc_to_rxnorm import atc_to_rxnorm
 from model.usagi_data.child import Child_Count
 from model.usagi_data.concept import Concept as UConcept, Concept_Id_To_Atc_Code, Concept_For_Index, Valid_Concept_Ids
 from model.usagi_data.relations import Maps_To_Relationship, Parent_Child_Relationship, Relationship_Atc_Rxnorm
 from model.usagi_data.parent import Parent_Count
-
-from model.vocabulary.concept_vocabulary_model import Concept, Concept_Relationship, Concept_Ancestor, Concept_Synonym
-
+from model.vocabulary.concept_vocabulary_model import Concept, Concept_Relationship, Concept_Ancestor
 from util.constants import INSERT_BATCH_SIZE
 from util.usagi_db import usagi_pg_db
 
+vocabulary_engine = create_engine(
+    f'postgresql://{app.config["VOCABULARY_DB_USER"]}:{app.config["VOCABULARY_DB_PASSWORD"]}@{app.config["VOCABULARY_DB_HOST"]}:{app.config["VOCABULARY_DB_PORT"]}/{app.config["VOCABULARY_DB_NAME"]}'
+)
+
+usagi_engine = create_engine(
+    f'postgresql://{app.config["USAGI_DB_USER"]}:{app.config["USAGI_DB_PASSWORD"]}@{app.config["USAGI_DB_HOST"]}:{app.config["USAGI_DB_PORT"]}/{app.config["USAGI_DB_NAME"]}'
+)
 
 valid_concept_records = []
 
-def create_rows_for_tables():
+
+def fill_usagi_data_tables():
     create_valid_concept_ids()
     create_concept_id_to_atc_code()
     create_maps_to_relationship()
@@ -32,6 +37,8 @@ def create_rows_for_tables():
     create_concept_for_index_3()
     create_concept_for_index_4()
 
+    valid_concept_records.clear()
+
 
 def create_valid_concept_ids():
     records = Concept.select(Concept.concept_id).where(Concept.invalid_reason.is_null(True)).dicts()
@@ -43,6 +50,7 @@ def create_valid_concept_ids():
                 rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Valid_Concept_Ids.insert_many(rows).execute()
 
+
 def create_concept_id_to_atc_code():
     if Concept_Id_To_Atc_Code.select().count() == 0:
         records = Concept.select(Concept.concept_id, Concept.concept_code).where((Concept.invalid_reason.is_null(True)) & (Concept.vocabulary_id=='ATC')).dicts()
@@ -50,6 +58,7 @@ def create_concept_id_to_atc_code():
             for idx in range(0, len(records), INSERT_BATCH_SIZE):
                 rows = records[idx:idx + INSERT_BATCH_SIZE]
                 Concept_Id_To_Atc_Code.insert_many(rows).execute()
+
 
 def create_maps_to_relationship():
     if Maps_To_Relationship.select().count() == 0:
