@@ -1,57 +1,49 @@
-<h3>{{data.action}} View
-  <mat-icon svgIcon="help"
-            (click)="openOnBoardingTip($event.currentTarget)"></mat-icon>
+<h3>
+  {{data.action}} View
+  <mat-icon svgIcon="help" (click)="openOnBoardingTip($event.currentTarget)"></mat-icon>
 </h3>
-<mat-icon class="close"
-          mat-dialog-close>close
-</mat-icon>
-<div mat-dialog-content
-     [formGroup]="viewForm">
+
+<mat-icon class="close" mat-dialog-close>close</mat-icon>
+
+<div mat-dialog-content>
   <section>
     <label>View Name</label>
-    <mat-form-field appearance="outline"
-                    floatLabel="auto">
-      <input matInput
-             placeholder="Set name for the view"
-             formControlName="name"/>
-      <label class="view-name-invalid" *ngIf="viewNameExists()">View with this name already exists</label>
+    <mat-form-field class="" appearance="outline" floatLabel="auto">
+      <input matInput placeholder="Set name for the view" [formControl]="nameControl"/>
+      <label class="view-name-invalid" *ngIf="viewNameExist">
+        Source table with this name already exists
+      </label>
     </mat-form-field>
   </section>
+
   <section cdkDropList
            #editorArea="cdkDropList"
            [cdkDropListConnectedTo]="[tables]"
            (cdkDropListDropped)="drop($event)"
-           [class.invalid]="viewForm.touched && !editorContent">
+           [class.invalid]="nameControl.touched && editorEmpty">
     <label>SQL Function</label>
     <textarea #editor></textarea>
   </section>
+
   <section>
-    <label>Available Tables</label>
-    <mat-chip-list
-      #tables="cdkDropList"
-      cdkDropList
-      cdkDropListSortingDisabled
-      [cdkDropListData]="chips"
-      [cdkDropListConnectedTo]="[editorArea]"
-      class="table-name">
-      <mat-chip
-        class="table-box"
-        cdkDrag
-        *ngFor="let chip of chips">
+    <label class="available-tables">Available Tables</label>
+    <mat-chip-list #tables="cdkDropList"
+                   class="table-name"
+                   cdkDropList
+                   cdkDropListSortingDisabled
+                   [cdkDropListData]="chips"
+                   [cdkDropListConnectedTo]="[editorArea]">
+      <mat-chip *ngFor="let chip of chips" class="table-box" cdkDrag>
         {{chip.name}}
       </mat-chip>
     </mat-chip-list>
   </section>
 </div>
+
 <div mat-dialog-actions>
-  <button mat-dialog-close
-          mat-flat-button>
-    Cancel
-  </button>
-  <button (click)="createSourceTableData()"
-          mat-flat-button
+  <button mat-dialog-close mat-flat-button>Cancel</button>
+  <button mat-flat-button
           color="accent"
-          [disabled]="viewForm.invalid || !editorContent || viewNameExists()">
-    Apply
-  </button>
+          [disabled]="nameControl.invalid || editorEmpty || viewNameExist"
+          (click)="apply()">Apply</button>
 </div>

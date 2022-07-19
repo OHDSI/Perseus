@@ -24,55 +24,58 @@ export class DataService {
               private perseusXmlService: PerseusXmlService,
               private dialogService: MatDialog) {}
 
-  _normalize(data: TableInfoResponse[], area: Area) {
+  private _normalize(data: TableInfoResponse[], area: Area) {
     const tables = [];
     const uniqueIdentifierFields = [];
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      const id = i;
-      const name = item.table_name.toLowerCase();
+
+    for (let tableId = 0; tableId < data.length; tableId++) {
+      const tableInfo = data[tableId];
+      const tableName = tableInfo.table_name;
       const rows = [];
 
-      for (let j = 0; j < item.column_list.length; j++) {
-        let unique;
+      for (let rowId = 0; rowId < tableInfo.column_list.length; rowId++) {
+        const rowInfo = tableInfo.column_list[rowId]
+        let unique: boolean;
+
         if (area === 'target') {
-          const upperCaseColumnName = item.column_list[j].column_name.toUpperCase();
-          unique = upperCaseColumnName.indexOf('_ID') !== -1 && upperCaseColumnName.replace('_ID', '') === item.table_name.toUpperCase();
+          const upperCaseColumnName = rowInfo.column_name.toUpperCase();
+          const upperCaseTableName = tableInfo.table_name.toUpperCase()
+          unique = upperCaseColumnName.indexOf('_ID') !== -1 &&
+            upperCaseColumnName.replace('_ID', '') === upperCaseTableName;
           if (unique) {
             uniqueIdentifierFields.push(upperCaseColumnName);
           }
         }
+
         const rowOptions: RowOptions = {
-          id: j,
-          tableId: i,
-          tableName: item.table_name.toLowerCase(),
-          name: item.column_list[j].column_name,
-          type: item.column_list[j].column_type,
-          isNullable: item.column_list[j].is_column_nullable ?
-            item.column_list[j].is_column_nullable.toUpperCase() === 'YES' : true,
+          id: rowId,
+          tableId,
+          tableName,
+          name: rowInfo.column_name,
+          type: rowInfo.column_type,
+          isNullable: rowInfo.is_column_nullable ? rowInfo.is_column_nullable.toUpperCase() === 'YES' : true,
           comments: [],
           uniqueIdentifier: unique,
           area
         };
 
-        const row = new Row(rowOptions);
-
-        rows.push(row);
+        rows.push(new Row(rowOptions));
       }
 
       const tableOptions: ITableOptions = {
-        id,
+        id: tableId,
         area,
-        name,
+        name: tableName,
         rows
       };
-
       tables.push(new Table(tableOptions));
     }
 
     if (area === 'target') {
-      const IsUniqueIdentifierRow = (row) => uniqueIdentifierFields.includes(row.name.toUpperCase());
-      this.bridgeService.updateRowsProperties(tables, IsUniqueIdentifierRow, (row: any) => { row.uniqueIdentifier = true; });
+      this.bridgeService.updateRowsProperties(tables,
+        (row) => uniqueIdentifierFields.includes(row.name.toUpperCase()),
+        (row: any) => { row.uniqueIdentifier = true; }
+      );
     }
 
     return tables;

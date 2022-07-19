@@ -48,88 +48,89 @@
                               (complete)="filterByName('source', $event)"
                               (reset)="filterByNameReset('source')"></app-search-by-name>
 
-          <div *ngIf="data.source?.length" class="create-view">
-            <a (click)="openCreateSqlDialog()">
-              Create View
-            </a>
-            <app-hint key="createView"></app-hint>
-          </div>
+          <ng-container *ngIf="data.source?.length else initialBlock">
+            <div class="create-view">
+              <a (click)="openCreateSqlDialog()">
+                Create View
+              </a>
+              <app-hint key="createView"></app-hint>
+            </div>
 
-          <div class="scrolled-items-rtl"
-               *ngIf="data.source?.length"
-               cdkScrollable>
-            <div class="cdm-list"
-                 cdkDropList
-                 id="source"
-                 #sourceList="cdkDropList"
-                 [cdkDropListData]="source"
-                 [cdkDropListConnectedTo]="sourceConnectedTo"
-                 (cdkDropListDropped)="drop.execute($event)">
-              <div class="cdm-box"
-                   highlight
-                   cdkDrag
-                   (cdkDragStarted)="onSourceDrag($event)"
-                   (click)="onSourceClick($event)"
-                   *ngFor="let item of source"
-                   [attr.criteria]="item"
-                   [values]="highlightedTables">
-                <mat-icon>drag_indicator</mat-icon>
-                <div class="table-description source caption">
-                  {{item}}
-                </div>
-                <div class="cdm-box-actions"
-                     *ngIf="isEditable(item)">
-                  <mat-icon svgIcon="edit"
-                            (click)="openEditSqlDialog(item)"></mat-icon>
-                  <mat-icon svgIcon="delete"
-                            (click)="openDeleteViewDialog(item)"></mat-icon>
-                </div>
+            <div class="scrolled-items-rtl" cdkScrollable>
+              <div class="cdm-list"
+                   cdkDropList
+                   id="source"
+                   #sourceList="cdkDropList"
+                   [cdkDropListData]="source"
+                   [cdkDropListConnectedTo]="sourceConnectedTo"
+                   (cdkDropListDropped)="drop.execute($event)">
+                <div class="cdm-box"
+                     highlight
+                     cdkDrag
+                     (cdkDragStarted)="onSourceDrag($event)"
+                     (click)="onSourceClick($event)"
+                     *ngFor="let item of source"
+                     [attr.criteria]="item"
+                     [values]="highlightedTables">
+                  <mat-icon>drag_indicator</mat-icon>
+                  <div class="table-description source caption">
+                    {{item}}
+                  </div>
+                  <div class="cdm-box-actions"
+                       *ngIf="isEditable(item)">
+                    <mat-icon svgIcon="edit"
+                              (click)="openEditSqlDialog(item)"></mat-icon>
+                    <mat-icon svgIcon="delete"
+                              (click)="openDeleteViewDialog(item)"></mat-icon>
+                  </div>
 
-                <div *cdkDragPreview
-                     class="table-description source preview">
-                  {{item}}
+                  <div *cdkDragPreview
+                       class="table-description source preview">
+                    {{item}}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </ng-container>
 
-          <div class="initial"
-               *ngIf="!data.source.length">
-            <p>Please load New Report to see Source tables</p>
+          <ng-template #initialBlock>
+            <div class="initial">
+              <p>Please load New Report to see Source tables</p>
 
-            <input #sourceUpload
-                   type="file"
-                   accept=".xlsx, .xls"
-                   (change)="onScanReportUpload($event)"
-                   hidden/>
+              <input #sourceUpload
+                     type="file"
+                     accept=".xlsx, .xls"
+                     (change)="onScanReportUpload($event)"
+                     hidden/>
 
-            <input #mappingUpload
-                   type="file"
-                   accept=".etl"
-                   (change)="onMappingUpload($event)"
-                   hidden/>
+              <input #mappingUpload
+                     type="file"
+                     accept=".etl"
+                     (change)="onMappingUpload($event)"
+                     hidden/>
 
-            <button mat-flat-button
-                    color="accent"
-                    class="cdm-button"
-                    (click)="loadNewReport()">
-              Load New Report
-            </button>
+              <button mat-flat-button
+                      color="accent"
+                      class="cdm-button"
+                      (click)="loadNewReport()">
+                Load New Report
+              </button>
 
-            <button mat-flat-button
-                    color="accent"
-                    class="cdm-button"
-                    (click)="scanData()">
-              Scan Data
-            </button>
+              <button mat-flat-button
+                      color="accent"
+                      class="cdm-button"
+                      (click)="scanData()">
+                Scan Data
+              </button>
 
-            <button mat-flat-button
-                    color="accent"
-                    class="cdm-button"
-                    (click)="openMapping()">
-              Open Mapping
-            </button>
-          </div>
+              <button mat-flat-button
+                      color="accent"
+                      class="cdm-button"
+                      (click)="openMapping()">
+                Open Mapping
+              </button>
+            </div>
+          </ng-template>
         </article>
 
         <article [class.initial-wrapper]="!data.target?.length">

@@ -18,7 +18,7 @@ from services import xml_writer
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
 from utils.exceptions import InvalidUsage
-from utils.utils import username_header
+from utils.username_header import username_header
 
 perseus = Blueprint('perseus', __name__, url_prefix=APP_PREFIX)
 
@@ -104,13 +104,15 @@ def generate_etl_mapping_archive(current_user):
         raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500, base=error)
 
 
-@perseus.route('/api/get_view', methods=['POST'])
+@perseus.route('/api/view_sql', methods=['POST'])
 @username_header
 def get_view(current_user):
-    app.logger.info("REST request to get view")
+    app.logger.info("REST request to get view sql table info")
     try:
         view_sql = request.get_json()
-        view_result = source_schema_service.get_view_from_db(current_user, view_sql['sql'])
+        view_result = source_schema_service.check_view_sql_and_return_columns_info(current_user, view_sql['sql'])
+    except InvalidUsage as error:
+        raise error
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400, base=error)
     except Exception as error:
@@ -121,15 +123,15 @@ def get_view(current_user):
 @perseus.route('/api/validate_sql', methods=['POST'])
 @username_header
 def validate_sql(current_user):
-    app.logger.info("REST request to validate sql")
+    app.logger.info("REST request to validate sql function")
     try:
         sql_transformation = request.get_json()
-        sql_result = source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
+        source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
+        return '', 204
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400, base=error)
     except Exception as error:
         raise InvalidUsage(f"Could not validate passed SQL: {error.__str__()}", 500, base=error)
-    return jsonify(sql_result)
 
 
 @perseus.route('/api/get_cdm_versions')

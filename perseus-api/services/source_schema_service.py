@@ -1,4 +1,5 @@
 import re
+
 import xlrd
 import pandas as pd
 
@@ -12,12 +13,15 @@ from db import user_schema_db
 from model.etl_mapping import EtlMapping
 from services import etl_mapping_service, cache_service
 from services.scan_reports_service import get_scan_report_path
+from utils import view_sql_util
 from utils.column_types_mapping import postgres_types_mapping, postgres_types
 from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING,\
                             TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS,\
                             N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
 from utils.directory_util import is_directory_contains_file
 from utils.exceptions import InvalidUsage
+from utils.sql_util import select_all_schemas_from_source_table, select_user_tables
+from utils.view_sql_util import is_sql_safety
 from view.Table import Table, Column
 
 
@@ -134,42 +138,50 @@ def get_field_type(field_type):
     return 'unknown type'
 
 
-def get_view_from_db(current_user, view_sql):
-    view_sql = add_schema_names(current_user, view_sql)
-    view_cursor = user_schema_db.execute_sql(view_sql).description
-    view_key= lambda a: a.name
+def check_view_sql_and_return_columns_info(current_user, view_sql: str):
+    all_schemas = select_all_schemas_from_source_table()
+    view_sql = view_sql.strip()
+    is_sql_safety(view_sql, all_schemas)
+    full_view_sql = add_schema_names(current_user, view_sql)
+
+    try:
+        view_cursor = user_schema_db.execute_sql(full_view_sql).description
+    except Exception as error:
+        app.logger.error(f'Can not execute sql: {view_sql}')
+        error_message = "Syntax error in passed to view SQL: " + error.__str__() + \
+                        "\nSee full sql: " + full_view_sql
+        raise InvalidUsage(message=error_message, status_code=400, base=error)
+
+    view_key = lambda a: a.name
     view_groups = groupby(sorted(view_cursor, key=view_key), key=view_key)
-    view_res=[]
+    view_res = []
     for _, group in view_groups:
         for index, item in enumerate(list(group)):
-            res_item={}
-            res_item['type'] = COLUMN_TYPES_MAPPING[item.type_code]
+            res_item = {'type': COLUMN_TYPES_MAPPING[item.type_code]}
             if res_item['type'] == 'varchar' and item.internal_size > 0:
                 res_item['type'] = '{0}({1})'.format(res_item['type'], item.internal_size)
-            if index>0:
-                res_item['name'] = '{0}_{1}'.format(item.name, index)
-            else:
+            if index == 0:
                 res_item['name'] = item.name
+            else:
+                raise InvalidUsage(f'Tables contains same columns names. Please set alias to identify columns.\n'
+                                   f'See full sql:\n{full_view_sql}')
             view_res.append(res_item)
 
     return view_res
 
 
-def add_schema_names(current_user, view_sql):
-    user_schema_tables = user_schema_db.execute_sql(
-        'SELECT table_name FROM information_schema.tables WHERE table_schema=\'{0}\''.format(current_user))
-    for row in user_schema_tables.fetchall():
-        view_sql = re.sub(f"(?i)join {row[0]} ", f'join {current_user}.{row[0]} ', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]} ", f'from {current_user}.{row[0]} ', view_sql)
-        view_sql = re.sub(f"(?i)from {row[0]};", f'from {current_user}.{row[0]};', view_sql)
-    return view_sql
+def add_schema_names(username: str, view_sql: str) -> str:
+    user_schema_tables = select_user_tables(username)
+    return view_sql_util.add_schema_names(username, view_sql, user_schema_tables)
 
 
 def run_sql_transformation(current_user, sql_transformation):
-    for val in sql_transformation:
-        val = add_schema_names(current_user, val)
-        user_schema_db.execute_sql(val).description
-    return True
+    all_schemas = select_all_schemas_from_source_table()
+    for sql in sql_transformation:
+        parsed_sql = sql.strip()
+        is_sql_safety(parsed_sql, all_schemas)
+        parsed_sql = add_schema_names(current_user, parsed_sql)
+        transformation_cursor = user_schema_db.execute_sql(parsed_sql).description
 
 
 def _open_book(current_user, etl_mapping: EtlMapping):
