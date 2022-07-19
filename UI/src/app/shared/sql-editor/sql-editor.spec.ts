@@ -1,4 +1,9 @@
-import { hasCapitalLetter, mapToPostgresSqlName, selectMatcher } from '@shared/sql-editor/sql-editor'
+import {
+  hasCapitalLetter,
+  mapRowToPostgresSqlName,
+  SELECT_MATCHER,
+  TABLE_ALIAS_MATCHER
+} from '@shared/sql-editor/sql-editor'
 import { Row } from '@models/row'
 
 describe('SqlEditor', () => {
@@ -17,9 +22,9 @@ describe('SqlEditor', () => {
     const column2 = 'Age'
     const column3 = 'GENDER'
 
-    expect(mapToPostgresSqlName(createFakeRow(column1))).toBe('id')
-    expect(mapToPostgresSqlName(createFakeRow(column2))).toBe('"Age"')
-    expect(mapToPostgresSqlName(createFakeRow(column3))).toBe('"GENDER"')
+    expect(mapRowToPostgresSqlName(createFakeRow(column1))).toBe('id')
+    expect(mapRowToPostgresSqlName(createFakeRow(column2))).toBe('"Age"')
+    expect(mapRowToPostgresSqlName(createFakeRow(column3))).toBe('"GENDER"')
   })
 
   it('should match select all', () => {
@@ -31,13 +36,32 @@ describe('SqlEditor', () => {
     const selectAll6 = 'SELECT * FROM'
     const selectAll7 = 'SELEC *'
 
-    expect(selectAll1).toMatch(selectMatcher)
-    expect(selectAll2).toMatch(selectMatcher)
-    expect(selectAll3).toMatch(selectMatcher)
-    expect(selectAll4).toMatch(selectMatcher)
-    expect(selectAll5).toMatch(selectMatcher)
-    expect(selectAll6).toMatch(selectMatcher)
-    expect(selectAll7.match(selectMatcher)).toBeNull()
+    expect(selectAll1).toMatch(SELECT_MATCHER)
+    expect(selectAll2).toMatch(SELECT_MATCHER)
+    expect(selectAll3).toMatch(SELECT_MATCHER)
+    expect(selectAll4).toMatch(SELECT_MATCHER)
+    expect(selectAll5).toMatch(SELECT_MATCHER)
+    expect(selectAll6).toMatch(SELECT_MATCHER)
+    expect(selectAll7.match(SELECT_MATCHER)).toBeNull()
+  })
+
+  it('should match table alias', () => {
+    const query1 = 'select * from lower as t1\n' +
+      '      join test_data as t2 on t1.id = t2.id'
+    const query2 = 'select * from lower as t1\n' +
+      '      join upper as t2 on t1.id = t2."ID"\n' +
+      '      join "UPPER2" as t3 on t1.id = t2."ID"'
+    const query3 = 'select * from\n' +
+      'lower as t1\n' +
+      'join test_data\n' +
+      'as t2 on t1.id = t2.id'
+    const query4 = 'select * from   lower as t1\n' +
+      '      join   test_data as t2 on'
+
+    expect(Array.from(query1.match(TABLE_ALIAS_MATCHER.REGEX))?.length).toBe(2)
+    expect(Array.from(query2.match(TABLE_ALIAS_MATCHER.REGEX))?.length).toBe(3)
+    expect(Array.from(query3.match(TABLE_ALIAS_MATCHER.REGEX))?.length).toBe(2)
+    expect(Array.from(query4.match(TABLE_ALIAS_MATCHER.REGEX))?.length).toBe(2)
   })
 })
 

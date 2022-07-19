@@ -19,9 +19,11 @@ import {
   getTablesAliasesInfo,
   JOIN_MAPPING,
   joinTemplate,
+  mapRowToPostgresSqlName,
+  mapTableToPostgresSqlName,
   mapToPostgresSqlName,
   SELECT_MAPPING,
-  selectMatcher,
+  SELECT_MATCHER,
   selectTemplate
 } from '@shared/sql-editor/sql-editor'
 import { AliasTableMapping, SqlEditorData, TablesColumnsMapping } from '@shared/sql-editor/sql-editor.data'
@@ -70,7 +72,7 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
     [Validators.maxLength(50), Validators.required]
   ));
 
-  chips = [];
+  chips: ITable[] = [];
 
   tableColumnsMapping: TablesColumnsMapping = {};
 
@@ -111,9 +113,10 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   initCodeMirror() {
     const tableColumnNamesMapping = {}; // This object used for autocomplete column names
     this.tableColumnsMapping = this.tables.reduce((mapping, table) => {
-      mapping[table.name] = table.rows;
-      tableColumnNamesMapping[table.name] = table.rows.map(mapToPostgresSqlName);
-      return mapping;
+      const tableName = mapTableToPostgresSqlName(table)
+      mapping[tableName] = table.rows
+      tableColumnNamesMapping[tableName] = table.rows.map(mapRowToPostgresSqlName)
+      return mapping
     }, {});
 
     this.codeMirror = CodeMirror.fromTextArea(this.editor.nativeElement, {
@@ -137,7 +140,7 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
    * Generate SQL code when user drag dn drop chip on text area
    */
   drop(event: CdkDragDrop<any>) {
-    const tableName = event.item.element.nativeElement.textContent.trim();
+    const tableName = mapToPostgresSqlName(event.item.element.nativeElement.textContent.trim());
     const sql = this.editorContent
     this.codeMirror.setValue(sql ? joinTemplate(tableName, sql) : selectTemplate(tableName));
   }
@@ -149,7 +152,7 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   apply() {
     const sql: string = this.handleSelectAllCases(this.editorContent);
     this.codeMirror.setValue(sql)
-    this.perseusApiService.getView({sql})
+    this.perseusApiService.viewSql({sql})
       .subscribe(res => {
           const viewTableId = this.getExistedOrGenerateNewTableId()
           const newTable = createTable(viewTableId, this.name, sql, res);
@@ -171,15 +174,15 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
     let resultSql = `${sql}`
     const {aliasTableMapping} = getTablesAliasesInfo(sql)
 
-    const selectMatch = resultSql.match(selectMatcher)
+    const selectMatch = resultSql.match(SELECT_MATCHER)
     if (selectMatch?.length) {
       const columnsAliases: string[] = [];
       Object.keys(aliasTableMapping).forEach(tableAlias => {
         this.fillColumnAliases(aliasTableMapping, tableAlias, columnsAliases);
       });
       const separator = ',\n' + ' '.repeat(selectMatch[0].length - 1)
-      const allColumns = columnsAliases.join(separator)
-      resultSql = resultSql.replace(/select \*/gi, `select ${allColumns}\n`)
+      const allColumns = columnsAliases.length === 0 ? '*' : (columnsAliases.join(separator) + '\n')
+      resultSql = resultSql.replace(/select \*/gi, `select ${allColumns}`)
     } else {
       const totalColumnsAliases: string[] = [];
       Object.keys(aliasTableMapping).forEach(tableAlias => {
@@ -204,9 +207,11 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
     const table = this.storeService.state.source.find(it => it.name === tableName);
     table.rows.forEach(row => {
       const duplicateColumns = totalColumnsAliases ? totalColumnsAliases : columnsAliases
-      const columnName = !duplicateColumns.find(col => col.substring(col.indexOf('.') + 1) === row.name) ?
-        `${tableAlias}.${row.name}` :
-        `${tableAlias}.${row.name} AS ${row.name}_${tableName}`;
+      const columnName = duplicateColumns.find(col =>
+        col.substring(col.indexOf('.') + 1) === mapToPostgresSqlName(row.name)
+      ) ?
+        `${tableAlias}.${mapToPostgresSqlName(row.name)} AS ` + `${row.name}_${tableName}`.toLowerCase() :
+        `${tableAlias}.${mapToPostgresSqlName(row.name)}`;
       if (totalColumnsAliases) {
         totalColumnsAliases.push(columnName)
       }

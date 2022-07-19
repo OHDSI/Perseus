@@ -49,8 +49,8 @@ export class PerseusApiService {
     return this.httpClient.get<any>(`${perseusApiUrl}/get_column_info?etl_mapping_id=${etlMappingId}&table_name=${tableName}&column_name=${columnName}`);
   }
 
-  getView(sql: {sql: string}): Observable<ViewSqlResponse[]> {
-    return this.httpClient.post<ViewSqlResponse[]>(`${perseusApiUrl}/get_view`, sql);
+  viewSql(sql: {sql: string}): Observable<ViewSqlResponse[]> {
+    return this.httpClient.post<ViewSqlResponse[]>(`${perseusApiUrl}/view_sql`, sql);
   }
 
   validateSql(sql: any): Observable<any> {

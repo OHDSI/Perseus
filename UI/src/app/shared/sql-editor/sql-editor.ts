@@ -15,42 +15,46 @@ export function joinTemplate(tableName: string, sql: string): string {
       join ${tableName} as t${joinCount + 2} on`;
 }
 
-export const selectMatcher = /select\b[ \n]*\*/gi
+export const SELECT_MATCHER = /select\b[ \n]*\*/gi
+
+export const TABLE_ALIAS_MATCHER = {
+  REGEX: /(join|from)\b( |\n)+"?(\w+)"?(( |\n)+(as)\b( |\n)+(\w+))?/gi,
+  STR_INDEX: 0,
+  OPERATOR_INDEX: 1,
+  TABLE_NAME_INDEX: 3,
+  ALIAS_NAME_INDEX: 8
+}
+
 
 /**
- * Legacy transferred from component, onChange method
- * @param sqlView - sql function from Text Editor
+ * @param sql - sql function from Text Editor
  * @return tables aliases info
+ * For example input: select * from test_data as t1 join patients on t1.id = patients.id
+ * Result: {
+ *    tablesWithoutAlias: ['patients']
+ *    aliasTableMapping: {'test_data': 't1'}
+ * }
  */
-export function getTablesAliasesInfo(sqlView: string): TablesAliasesInfo {
+export function getTablesAliasesInfo(sql: string): TablesAliasesInfo {
   const tablesWithoutAlias: string[] = []
-  let aliasTableMapping: AliasTableMapping = {}
-  const matches = sqlView
-    .replace(/^(\r\n)|(\n)/gi, ' ')
-    .replace(/\s\s+/g, ' ')
-    .matchAll(/(from) (\w*)\b( as (\w*)\b)?| (join) (\w*)\b( as (\w*)\b)?/igm)
+  const aliasTableMapping: AliasTableMapping = {}
+  const matchesArray: string[][] = Array.from(sql.matchAll(TABLE_ALIAS_MATCHER.REGEX))
 
-  if (matches) {
-    aliasTableMapping = Array.from(matches).reduce((prev, cur) => {
-      const isFrom = cur[ 1 ] && cur[ 1 ] === 'from';
-      const isJoin = cur[ 5 ] && cur[ 5 ] === 'join';
-      let aliasName;
-      let tableName;
-      if (isFrom) {
-        tableName = cur[ 2 ];
-        aliasName = cur[ 4 ];
-      } else if (isJoin) {
-        tableName = cur[ 6 ];
-        aliasName = cur[ 8 ];
+  if (matchesArray?.length) {
+    for (const matches of matchesArray) {
+      const {OPERATOR_INDEX, TABLE_NAME_INDEX, ALIAS_NAME_INDEX, STR_INDEX} = TABLE_ALIAS_MATCHER
+      const operator = matches[OPERATOR_INDEX].toLowerCase()
+      if (operator !== 'from' && operator !== 'join') {
+        throw new Error(`Unexpected SQL operator: ${matches[STR_INDEX]}`)
       }
+      const tableName = matches[TABLE_NAME_INDEX];
+      const aliasName = matches[ALIAS_NAME_INDEX];
       if (aliasName && tableName) {
-        prev[ aliasName ] = tableName;
-      }
-      if (!aliasName && tableName) {
+        aliasTableMapping[aliasName] = tableName;
+      } else if (tableName) {
         tablesWithoutAlias.push(tableName)
       }
-      return prev;
-    }, {});
+    }
   }
 
   return {
@@ -59,11 +63,19 @@ export function getTablesAliasesInfo(sqlView: string): TablesAliasesInfo {
   }
 }
 
+export function mapTableToPostgresSqlName(table: ITable): string {
+  return mapToPostgresSqlName(table.name)
+}
+
+export function mapRowToPostgresSqlName(row: IRow): string {
+  return mapToPostgresSqlName(row.name)
+}
+
 /**
- * @return Postgres column to Postgres name: if name contains Upper case char than return name in double quotes
+ * @return Postgres name: if name contains Upper case char than return name in double quotes
  */
-export function mapToPostgresSqlName(row: IRow): string {
-  return hasCapitalLetter(row.name) ? `"${row.name}"` : row.name
+export function mapToPostgresSqlName(name: string): string {
+  return hasCapitalLetter(name) ? `"${name}"` : name
 }
 
 export function hasCapitalLetter(str) {
