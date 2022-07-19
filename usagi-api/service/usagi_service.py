@@ -16,6 +16,7 @@ from service.source_to_concept_map_service import save_source_to_concept_map
 from service.store_csv_service import store_and_parse_csv
 from util.async_directive import fire_and_forget_concept_mapping
 from util.exception import InvalidUsage
+from util.usagi_db import usagi_pg_db
 
 
 def extract_codes_from_csv(file, delimiter, username):
@@ -39,6 +40,8 @@ def create_concept_mapping(username: str,
                            auto_concept_id_column,
                            concept_ids_or_atc,
                            additional_info_columns):
+    if usagi_pg_db.is_closed():
+        usagi_pg_db.connect()
     try:
         source_codes = create_source_codes(codes,
                                            source_code_column,
@@ -93,6 +96,9 @@ def create_concept_mapping(username: str,
                    conversion=conversion)
         app.logger.error(error_message)
         traceback.print_tb(error.__traceback__)
+    finally:
+        if not usagi_pg_db.is_closed():
+            usagi_pg_db.close()
 
 
 def get_concept_mapping_result(conversion_id: int, username: str):
