@@ -278,14 +278,12 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   private subscribeOnNameChange() {
-    if (this.data.action === 'Create') {
-      const tableNamesInUpperCase = this.tables.map(table => table.name.toUpperCase())
-      this.nameControl.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(value => {
-          this.viewNameExist = tableNamesInUpperCase.includes(value.toUpperCase())
-        })
-    }
+    const tableNamesInUpperCase = this.tables.map(table => table.name.toUpperCase())
+    this.nameControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(value => {
+        this.viewNameExist = tableNamesInUpperCase.includes(value.toUpperCase())
+      })
   }
 
   private getExistedOrGenerateNewTableId(): number {
