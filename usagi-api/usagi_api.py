@@ -113,6 +113,25 @@ def code_mapping_conversion_result(current_user):
     return jsonify(result)
 
 
+"""
+Request body: {
+    term: str
+    sourceAutoAssignedConceptIds: int[]
+    filters: {
+        filterByUserSelectedConceptsAtcCode: bool
+        filterStandardConcepts: bool
+        includeSourceTerms: bool
+        filterByConceptClass: bool
+        conceptClasses: str[]
+        filterByVocabulary: bool
+        vocabularies: str[]
+        filterByDomain: bool
+        domains: str[]
+        searchMode: 'term' | 'query'
+        searchString: str
+    }
+}
+"""
 @usagi.route('/api/code-mapping/search-by-term', methods=['POST'])
 def get_term_search_results_call():
     app.logger.info("REST request to search by term in Code Mapping conversion result")
