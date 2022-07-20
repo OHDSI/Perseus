@@ -9,7 +9,7 @@
   </mat-form-field>
 
   <mat-form-field class="column-mapping-form__control" floatLabel="never" appearance="none">
-    <label>Source name column</label><label class="column-mapping-form__red">*</label>
+    <label>Source name column</label><label class="required">*</label>
     <mat-select formControlName="sourceName">
       <mat-option *ngFor="let column of columns" [value]="column.field">
         {{column.name}}

@@ -12,8 +12,8 @@
     @include form-control();
     margin-bottom: 20px;
   }
+}
 
-  &__red {
-    color: red;
-  }
+.required {
+  color: red;
 }
