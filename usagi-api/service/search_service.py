@@ -1,5 +1,6 @@
 import re
 import pysolr
+from typing import List
 from model.usagi_data.code_mapping import ScoredConcept, TargetConcept
 from model.usagi_data.concept import Concept
 from util.array_util import remove_duplicates
@@ -29,7 +30,7 @@ def search_usagi(filters, query, source_auto_assigned_concept_ids):
         if 'concept_id' in item:
             concept: Concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
             target_concept: TargetConcept = create_target_concept(concept)
-            cosine_simiarity_score = float("{:.2f}".format(cosine_sim_vectors(vectors[0], vectors[index+1])))
+            cosine_simiarity_score = float("{:.2f}".format(cosine_sim_vectors(vectors[0], vectors[index + 1])))
             scored_concepts.append(ScoredConcept(cosine_simiarity_score, target_concept, item['term']))
     scored_concepts.sort(key=lambda x: x.match_score, reverse=True)
     return scored_concepts
@@ -37,13 +38,14 @@ def search_usagi(filters, query, source_auto_assigned_concept_ids):
 
 def create_usagi_filter_queries(filters, source_auto_assigned_concept_ids):
     queries = []
-    create_or_filter_query_usagi(queries, filters['filterByConceptClass'], filters['conceptClasses'], 'concept_class_id')
-    create_or_filter_query_usagi(queries, filters['filterByVocabulary'], filters['vocabularies'], 'vocabulary_id')
-    create_or_filter_query_usagi(queries, filters['filterByDomain'], filters['domains'], 'domain_id')
+    add_filter_query_if_applied(queries, filters['filterByConceptClass'], filters['conceptClasses'], 'concept_class_id')
+    add_filter_query_if_applied(queries, filters['filterByVocabulary'], filters['vocabularies'], 'vocabulary_id')
+    add_filter_query_if_applied(queries, filters['filterByDomain'], filters['domains'], 'domain_id')
     if filters['filterStandardConcepts']:
         queries.append('standard_concept:S')
     if source_auto_assigned_concept_ids and len(source_auto_assigned_concept_ids):
-        create_or_filter_query_usagi(queries, filters['filterByUserSelectedConceptsAtcCode'], source_auto_assigned_concept_ids, 'concept_id')
+        add_filter_query_if_applied(queries, filters['filterByUserSelectedConceptsAtcCode'],
+                                    source_auto_assigned_concept_ids, 'concept_id')
     if filters['includeSourceTerms']:
         queries.append(f'term_type:{CONCEPT_TERM}')
     queries.append(f'type:{CONCEPT_TYPE_STRING}')
@@ -51,17 +53,16 @@ def create_usagi_filter_queries(filters, source_auto_assigned_concept_ids):
     return queries
 
 
-def create_or_filter_query_usagi(queries, filter_applied, values, field_name):
+def add_filter_query_if_applied(queries: List[str],
+                                filter_applied: bool,
+                                values: List[str],
+                                field_name: str):
     if filter_applied:
-        queries = create_or_string(queries, values, field_name)
-    return queries
+        filters_queries = [create_filter_query(item, field_name) for item in values]
+        filter_query = " OR ".join(filters_queries)
+        if filter_query:
+            queries.append(filter_query)
 
 
-def create_or_string(queries, values, field_name):
-    def add_field_name(item, field_name):
-        return f"{field_name}:{item}"
-    values_with_field_name = [add_field_name(item, field_name) for item in values]
-    query = " OR ".join(values_with_field_name)
-    if query:
-        queries.append(query)
-    return queries
+def create_filter_query(value: str, field_name: str) -> str:
+    return f'{field_name}:"{value}"'
