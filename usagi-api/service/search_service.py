@@ -1,15 +1,16 @@
-import re
 import pysolr
 from typing import List
 from model.usagi_data.code_mapping import ScoredConcept, TargetConcept
 from model.usagi_data.concept import Concept
-from util.array_util import remove_duplicates
 from service.similarity_score_service import get_terms_vectors, cosine_sim_vectors
+from util.array_util import remove_duplicates
 from util.constants import SOLR_CONN_STRING
+from util.searh_util import search_term_to_query
 from util.target_concept_util import create_target_concept
 
 CONCEPT_TERM = "C"
 CONCEPT_TYPE_STRING	= "C"
+SEARCH_RESULT_SIZE = 100
 
 
 def count():
@@ -18,14 +19,14 @@ def count():
     return results.hits
 
 
-def search_usagi(filters, query, source_auto_assigned_concept_ids):
+def search_usagi(filters, search_term: str, source_auto_assigned_concept_ids):
     solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
     scored_concepts = []
     filter_queries = create_usagi_filter_queries(filters, source_auto_assigned_concept_ids) if filters else None
-    words = '+'.join(re.split('[^a-zA-Z0-9]', query))
-    results = solr.search(f"term:{words}", fl='concept_id, term, score', fq=filter_queries, rows=100).docs
+    search_query = search_term_to_query(search_term)
+    results = solr.search(search_query, fl='concept_id, term, score', fq=filter_queries, rows=SEARCH_RESULT_SIZE).docs
     results = remove_duplicates(results)
-    vectors = get_terms_vectors(results, query, 'term')
+    vectors = get_terms_vectors(results, search_term, 'term')
     for index, item in enumerate(results):
         if 'concept_id' in item:
             concept: Concept = Concept.select().where(Concept.concept_id == item['concept_id']).get()
