@@ -70,6 +70,13 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
   onFileUpload(event: Event) {
     const csv = (event.target as HTMLInputElement).files[0]
 
+    const ext = csv.name.split('.').pop().toLowerCase();
+
+    if (ext !== 'csv' && ext !== 'txt') {
+      openErrorDialog(this.dialogService, 'Failed to load CSV', 'File format not supported. Only .CSV or .TXT can be uploaded.')
+      return EMPTY
+    }
+
     if (csv) {
       this.dialogService.open(SetDelimiterDialogComponent, {
         panelClass: 'perseus-dialog',
