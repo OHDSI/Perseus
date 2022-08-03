@@ -202,16 +202,19 @@ def get_filters_call():
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     app.logger.error(error.message)
+    traceback.print_tb(error.__traceback__)
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    traceback.print_tb(error.__traceback__)
     return response
 
 
 @app.errorhandler(Exception)
 def handle_exception(error):
-    app.logger.error(error.__str__())
+    app.logger.error(f'{request.url} request returned error: {error.__str__()}')
     response = jsonify({'message': error.__str__()})
-    response.status_code = 500
-    traceback.print_tb(error.__traceback__)
+    if hasattr(error, 'code'):
+        response.status_code = error.code
+    else:
+        traceback.print_tb(error.__traceback__)
+        response.status_code = 500
     return response

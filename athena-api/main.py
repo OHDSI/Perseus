@@ -1,3 +1,4 @@
+import traceback
 from apscheduler.schedulers.background import BackgroundScheduler
 from waitress import serve
 from app import app
@@ -13,10 +14,11 @@ job_id = 'import_data'
 def import_data():
     app.logger.info("Import data job started!")
     try:
-        create_index_if_not_exist(app.logger, app.config['SOLR_URL'])
+        create_index_if_not_exist(app.logger)
         app.logger.info("Import data job finished")
     except Exception as e:
         app.logger.error(f"Import data failed {e}")
+        traceback.print_tb(e.__traceback__)
     finally:
         import_data_scheduler.remove_job(job_id)
 
