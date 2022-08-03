@@ -9,8 +9,7 @@ import { termFromTargetConcept } from '@models/code-mapping/target-concept';
 const baseFields = [
   'filterByUserSelectedConceptsAtcCode',
   'filterStandardConcepts',
-  'includeSourceTerms',
-  'searchMode'
+  'includeSourceTerms'
 ]
 
 const advancedFields = [
