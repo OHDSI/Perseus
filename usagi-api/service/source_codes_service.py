@@ -15,26 +15,26 @@ def create_source_codes(codes,
     for row in codes:
         if 'selected' in row:
             if row['selected']:
-                source_code = add_source_code(row,
-                                              source_code_column,
-                                              source_name_column,
-                                              source_frequency_column,
-                                              auto_concept_id_column,
-                                              concept_ids_or_atc,
-                                              additional_info_columns,
-                                              row)
+                source_code = create_source_code(row,
+                                                 source_code_column,
+                                                 source_name_column,
+                                                 source_frequency_column,
+                                                 auto_concept_id_column,
+                                                 concept_ids_or_atc,
+                                                 additional_info_columns,
+                                                 row)
                 source_codes.append(source_code)
     return source_codes
 
 
-def add_source_code(row,
-                    source_code_column,
-                    source_name_column,
-                    source_frequency_column,
-                    auto_concept_id_column,
-                    concept_ids_or_atc,
-                    additional_info_columns,
-                    code) -> SourceCode:
+def create_source_code(row,
+                       source_code_column,
+                       source_name_column,
+                       source_frequency_column,
+                       auto_concept_id_column,
+                       concept_ids_or_atc,
+                       additional_info_columns,
+                       code) -> SourceCode:
     new_code = SourceCode()
     new_code.code = code
     if not source_code_column:

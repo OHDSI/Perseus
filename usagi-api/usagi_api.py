@@ -136,7 +136,9 @@ Request body: {
 def get_term_search_results_call():
     app.logger.info("REST request to search by term in Code Mapping conversion result")
     filters = request.json['filters']
-    term = filters['searchString'] if filters['searchMode'] == QUERY_SEARCH_MODE else request.json['term']
+    term = filters['searchString'] \
+        if filters['searchMode'] == QUERY_SEARCH_MODE \
+        else request.json['term']
     source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
     search_result = search_usagi(filters, term, source_auto_assigned_concept_ids)
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)

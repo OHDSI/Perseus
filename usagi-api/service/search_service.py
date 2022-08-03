@@ -20,6 +20,8 @@ def count():
 
 
 def search_usagi(filters, search_term: str, source_auto_assigned_concept_ids):
+    if search_term is None:
+        search_term = ''
     solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
     scored_concepts = []
     filter_queries = create_usagi_filter_queries(filters, source_auto_assigned_concept_ids) if filters else None
