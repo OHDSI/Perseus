@@ -136,7 +136,9 @@ Request body: {
 def get_term_search_results_call():
     app.logger.info("REST request to search by term in Code Mapping conversion result")
     filters = request.json['filters']
-    term = filters['searchString'] if filters['searchMode'] == QUERY_SEARCH_MODE else request.json['term']
+    term = filters['searchString'] \
+        if filters['searchMode'] == QUERY_SEARCH_MODE \
+        else request.json['term']
     source_auto_assigned_concept_ids = request.json['sourceAutoAssignedConceptIds']
     search_result = search_usagi(filters, term, source_auto_assigned_concept_ids)
     return json.dumps(search_result, indent=4, cls=ScoredConceptEncoder)
@@ -200,16 +202,19 @@ def get_filters_call():
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     app.logger.error(error.message)
+    traceback.print_tb(error.__traceback__)
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    traceback.print_tb(error.__traceback__)
     return response
 
 
 @app.errorhandler(Exception)
 def handle_exception(error):
-    app.logger.error(error.__str__())
+    app.logger.error(f'{request.url} request returned error: {error.__str__()}')
     response = jsonify({'message': error.__str__()})
-    response.status_code = 500
-    traceback.print_tb(error.__traceback__)
+    if hasattr(error, 'code'):
+        response.status_code = error.code
+    else:
+        traceback.print_tb(error.__traceback__)
+        response.status_code = 500
     return response

@@ -115,13 +115,15 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   onSearchModeChange(value: SearchMode, resetSearchString = true) {
     this.searchMode = value
     const searchString = this.form.get('searchString')
+    this.needUpdate = true
     if (this.searchInputDisabled) {
       if (resetSearchString) {
-        searchString.setValue(null)
+        searchString.setValue(null, {emitEvent: false})
       }
-      searchString.disable({emitEvent: false})
+      searchString.disable()
     } else {
-      searchString.enable({emitEvent: false})
+      searchString.setValue('', {emitEvent: false})
+      searchString.enable()
     }
   }
 
