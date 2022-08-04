@@ -8,16 +8,16 @@ from services.request.scan_report_request import ScanReportRequest
 from utils.exceptions import InvalidUsage
 
 
-def find_by_id(idNum: int, username: str):
+def find_by_id(etl_id: int, username: str):
     try:
-        etl_mapping: EtlMapping = EtlMapping.get(EtlMapping.id == idNum)
+        etl_mapping: EtlMapping = EtlMapping.get(EtlMapping.id == etl_id)
         if etl_mapping.username != username:
             raise InvalidUsage('Cannot get access to other user ETL mapping', 403)
         return etl_mapping
     except InvalidUsage as e:
         raise e
     except Exception as e:
-        raise InvalidUsage(f'ETL mapping not found by id {idNum}', 404, base=e)
+        raise InvalidUsage(f'ETL mapping not found by id {etl_id}', 404, base=e)
 
 
 @app_logic_db.atomic()
@@ -54,17 +54,17 @@ def create_etl_mapping_by_response(username: str,
 
 
 @app_logic_db.atomic()
-def delete_etl_mapping(id: int):
-    EtlMapping.delete_by_id(id)
+def delete_etl_mapping(etl_id: int):
+    EtlMapping.delete_by_id(etl_id)
 
 
 @app_logic_db.atomic()
 def set_scan_report_info(etl_mapping_id: int, file_save_response: FileSaveResponse):
-    EtlMapping\
+    EtlMapping \
         .update(source_schema_name=source_schema_name_from_resp(file_save_response),
                 scan_report_id=file_save_response.id,
-                scan_report_name=file_save_response.fileName)\
-        .where(EtlMapping.id == etl_mapping_id)\
+                scan_report_name=file_save_response.fileName) \
+        .where(EtlMapping.id == etl_mapping_id) \
         .execute()
 
 
