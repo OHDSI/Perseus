@@ -1,5 +1,6 @@
 import os
 import traceback
+from pathlib import Path
 
 from flask import Blueprint, after_this_request
 from flask import request, jsonify, send_from_directory
@@ -33,17 +34,22 @@ def get_app_version():
 @username_header
 def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
+    file = request.files['scanReportFile']
+    cache_service.release_resource_if_used(current_user)
+    filename, content_type, path = scan_reports_service.store_scan_report(file, current_user)
+    etl_mapping = etl_mapping_service.create_etl_mapping(current_user)
     try:
-        scan_report_file = request.files['scanReportFile']
-        cache_service.release_resource_if_used(current_user)
-        file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
-        etl_mapping = etl_mapping_service.create_etl_mapping_by_file_save_resp(current_user, file_save_response)
-        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, etl_mapping)
-        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
-    except InvalidUsage as error:
-        raise error
+        saved_schema = source_schema_service\
+            .create_source_schema_by_scan_report(current_user, etl_mapping.id, filename)
+        file_save_response = scan_reports_service\
+            .load_scan_report_to_file_manager(filename, content_type, current_user)
+        etl_mapping_service.set_scan_report_info(etl_mapping.id, file_save_response)
     except Exception as error:
-        raise InvalidUsage(f"Unable to upload WR scan report: {error.__str__()}", 500, base=error)
+        path.unlink()
+        etl_mapping_service.delete_etl_mapping(etl_mapping.id)
+        raise error
+
+    return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
 
 
 @perseus.route('/api/upload_etl_mapping', methods=['POST'])
@@ -51,15 +57,9 @@ def upload_scan_report(current_user):
 def upload_etl_mapping(current_user):
     """Create source schema by source tables from ETL mapping"""
     app.logger.info("REST request to create source schema")
-    try:
-        etl_archive = request.files['etlArchiveFile']
-        cache_service.release_resource_if_used(current_user)
-        return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(f"Unable to create source schema by source \
-                            tables from ETL mapping: {error.__str__()}", 500, base=error)
+    etl_archive = request.files['etlArchiveFile']
+    cache_service.release_resource_if_used(current_user)
+    return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
 
 
 @perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
@@ -67,41 +67,36 @@ def upload_etl_mapping(current_user):
 def create_source_schema_by_scan_report(current_user):
     """Create source schema by ScanReportRequest"""
     app.logger.info("REST request to upload scan report from file manager and create source schema")
+    scan_report_req = scan_report_request.from_json(request.json)
+    cache_service.release_resource_if_used(current_user)
+    path = scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
+    etl_mapping = etl_mapping_service.create_etl_mapping_by_request(current_user, scan_report_req)
     try:
-        scan_report_req = scan_report_request.from_json(request.json)
-        cache_service.release_resource_if_used(current_user)
-        scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
-        etl_mapping = etl_mapping_service.create_etl_mapping_from_request(current_user, scan_report_req)
-        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, etl_mapping)
-        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
-    except InvalidUsage as error:
-        raise error
+        saved_schema = source_schema_service \
+            .create_source_schema_by_scan_report(current_user, etl_mapping.id, etl_mapping.scan_report_name)
     except Exception as error:
-        raise InvalidUsage(f"Unable to create source schema by source {error.__str__()}", 500, base=error)
+        etl_mapping_service.delete_etl_mapping(etl_mapping.id)
+        path.unlink()
+        raise error
+    return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
 
 
 @perseus.route('/api/generate_etl_mapping_archive', methods=['POST'])
 @username_header
 def generate_etl_mapping_archive(current_user):
     app.logger.info("REST request to generate ETL mapping archive")
-    try:
-        request_body = generate_etl_archive_request.from_json(request.get_json())
-        directory, filename = etl_archive_service.generate_etl_archive(request_body, current_user)
-        download_name = filename.replace('.zip', '.etl')
+    request_body = generate_etl_archive_request.from_json(request.get_json())
+    directory, filename = etl_archive_service.generate_etl_archive(request_body, current_user)
 
-        @after_this_request
-        def remove_generated_file(response):
-            try:
-                os.remove(f'{directory}/{filename}')
-            except Exception as e:
-                app.logger.error("Error removing downloaded file", e)
-            return response
+    @after_this_request
+    def remove_generated_file(response):
+        try:
+            os.remove(Path(directory, filename))
+        except Exception as e:
+            app.logger.error("Can not remove downloaded file", e)
+        return response
 
-        return send_from_directory(directory, filename, download_name=download_name)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500, base=error)
+    return send_from_directory(directory, filename, download_name=filename.replace('.zip', '.etl'))
 
 
 @perseus.route('/api/view_sql', methods=['POST'])
@@ -109,15 +104,11 @@ def generate_etl_mapping_archive(current_user):
 def get_view(current_user):
     app.logger.info("REST request to get view sql table info")
     try:
-        view_sql = request.get_json()
-        view_result = source_schema_service.check_view_sql_and_return_columns_info(current_user, view_sql['sql'])
-    except InvalidUsage as error:
-        raise error
+        view_sql = request.get_json()['sql']
+        view_result = source_schema_service.check_view_sql_and_return_columns_info(current_user, view_sql)
+        return jsonify(view_result)
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400, base=error)
-    except Exception as error:
-        raise InvalidUsage(f"Unable to get view SQL: {error.__str__()}", 500, base=error)
-    return jsonify(view_result)
 
 
 @perseus.route('/api/validate_sql', methods=['POST'])
@@ -125,13 +116,11 @@ def get_view(current_user):
 def validate_sql(current_user):
     app.logger.info("REST request to validate sql function")
     try:
-        sql_transformation = request.get_json()
-        source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
+        sql_transformation = request.get_json()['sql']
+        source_schema_service.run_sql_transformation(current_user, sql_transformation)
         return '', 204
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400, base=error)
-    except Exception as error:
-        raise InvalidUsage(f"Could not validate passed SQL: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/get_cdm_versions')
@@ -164,13 +153,11 @@ def get_column_info_call(current_user):
         column_name = request.args.get('column_name')
         etl_mapping_id = request.args.get('etl_mapping_id')
         info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name)
+        return jsonify(info)
     except InvalidUsage as e:
         raise InvalidUsage(f'Info cannot be loaded due to not standard structure of report: {e.__str__()}', 400, base=e)
     except FileNotFoundError as e:
         raise InvalidUsage(f'Report not found: {e.__str__()}', 404, base=e)
-    except Exception as e:
-        raise InvalidUsage(f"Could not get report column info: {e.__str__()}", 500, base=e)
-    return jsonify(info)
 
 
 @perseus.route('/api/xml_preview', methods=['POST'])
@@ -178,30 +165,29 @@ def get_column_info_call(current_user):
 def generate_xml_preview(current_user):
     app.logger.info("REST request to get XML preview")
     json = request.get_json()
-    xml_ = xml_writer.get_xml(current_user, json)
+    xml = xml_writer.get_xml(current_user, json)
     xml_writer.clear(current_user)
 
-    return jsonify(xml_)
+    return jsonify(xml)
 
 
 @perseus.route('/api/generate_zip_xml', methods=['POST'])
 @username_header
 def generate_zip_xml(current_user):
     app.logger.info("REST request to generate zip XML")
-    try:
-        json = request.get_json()
-        xml_writer.get_xml(current_user, json)
-        xml_writer.zip_xml(current_user)
-        xml_writer.clear(current_user)
-    except Exception as error:
-        raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 500, base=error)
-    directory = f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}"
+
+    json = request.get_json()
     filename = f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}"
+    xml_writer.get_xml(current_user, json)
+    xml_writer.zip_xml(current_user, filename)
+    xml_writer.clear(current_user)
+
+    directory = Path(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
 
     @after_this_request
     def remove_generated_file(response):
         try:
-            os.remove(f'{directory}/{filename}')
+            os.remove(Path(directory, filename))
         except Exception as e:
             app.logger.error("Error removing downloaded file", e)
         return response
@@ -239,38 +225,29 @@ def get_lookups(current_user):
 @username_header
 def create_lookup(current_user):
     app.logger.info("REST request to create lookup")
-    try:
-        lookup_req = lookup_request.from_json(request.json)
-        lookup = lookup_service.create_lookup(current_user, lookup_req)
-        return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
-    except Exception as error:
-        raise InvalidUsage(f"Could not create lookup: {error.__str__()}", 500, base=error)
+    lookup_req = lookup_request.from_json(request.json)
+    lookup = lookup_service.create_lookup(current_user, lookup_req)
+    return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
 
 
 @perseus.route('/api/lookup', methods=['PUT'])
 @username_header
 def update_lookup(current_user):
     app.logger.info("REST request to create lookup")
-    try:
-        id = request.args.get('id', None, int)
-        if id is None:
-            raise InvalidUsage('Can not extract lookup id', 400)
-        lookup_req = lookup_request.from_json(request.json)
-        lookup = lookup_service.update_lookup(current_user, id, lookup_req)
-        return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
-    except Exception as error:
-        raise InvalidUsage(f"Could not update lookup: {error.__str__()}", 500, base=error)
+    id = request.args.get('id', None, int)
+    if id is None:
+        raise InvalidUsage('Can not extract lookup id', 400)
+    lookup_req = lookup_request.from_json(request.json)
+    lookup = lookup_service.update_lookup(current_user, id, lookup_req)
+    return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
 
 
 @perseus.route('/api/lookup', methods=['DELETE'])
 @username_header
 def delete_lookup(current_user):
     app.logger.info("REST request to delete lookup")
-    try:
-        id = request.args['id']
-        lookup_service.del_lookup(current_user, int(id))
-    except Exception as error:
-        raise InvalidUsage(f"Could not delete lookup: {error.__str__()}", 500, base=error)
+    id = request.args['id']
+    lookup_service.del_lookup(current_user, int(id))
     return '', 204
 
 
@@ -294,7 +271,6 @@ def handle_invalid_usage(error):
     app.logger.error(error.message)
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    traceback.print_tb(error.__traceback__)
     return response
 
 

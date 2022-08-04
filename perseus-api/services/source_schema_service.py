@@ -2,12 +2,9 @@ import re
 
 import xlrd
 import pandas as pd
-
 from itertools import groupby
 from pathlib import Path
 from pandasql import sqldf
-from werkzeug.utils import secure_filename
-
 from app import app
 from db import user_schema_db
 from model.etl_mapping import EtlMapping
@@ -18,7 +15,6 @@ from utils.column_types_mapping import postgres_types_mapping, postgres_types
 from utils.constants import UPLOAD_SCAN_REPORT_FOLDER, COLUMN_TYPES_MAPPING,\
                             TYPES_WITH_MAX_LENGTH, LIST_OF_COLUMN_INFO_FIELDS,\
                             N_ROWS_FIELD_NAME, N_ROWS_CHECKED_FIELD_NAME
-from utils.directory_util import is_directory_contains_file
 from utils.exceptions import InvalidUsage
 from utils.sql_util import select_all_schemas_from_source_table, select_user_tables
 from utils.view_sql_util import is_sql_safety
@@ -26,69 +22,79 @@ from view.Table import Table, Column
 
 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+MAX_TABLES = 100
+OVERVIEW_SHEET_COUNT = 2
 
 
-def create_source_schema_by_scan_report(current_user: str, etl_mapping: EtlMapping):
+def create_source_schema_by_scan_report(username: str, etl_mapping_id: int, scan_report_name: str):
     app.logger.info("Creating source schema by WR scan report...")
-    scan_report_name = secure_filename(etl_mapping.scan_report_name)
-    user_schema_folder = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}"
-    if is_directory_contains_file(user_schema_folder, scan_report_name):
-        print("schema name: " + str(scan_report_name))
-        scan_report_path = f"{UPLOAD_SCAN_REPORT_FOLDER}/{current_user}/{scan_report_name}"
-        source_schema = _create_source_schema_by_scan_report(current_user, etl_mapping.id, scan_report_path)
-        return source_schema
-    else:
-        raise InvalidUsage('Schema was not loaded', 500)
+    scan_report_path = Path(UPLOAD_SCAN_REPORT_FOLDER, username, scan_report_name)
+    return _create_source_schema_by_scan_report(username, etl_mapping_id, scan_report_path)
 
 
-def _create_source_schema_by_scan_report(current_user, etl_mapping_id: int, scan_report_path):
+def _create_source_schema_by_scan_report(username: str, etl_mapping_id: int, scan_report_path: Path):
     """Create source schema by White Rabbit scan report and return it. Cast to postgres types"""
-    reset_schema(name=current_user)
+    reset_schema(name=username)
+    try:
+        app.logger.info('Opening scan report WORKBOOK...')
+        book = xlrd.open_workbook(scan_report_path, on_demand=True)
+    except Exception as e:
+        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 400, base=e)
+    if book.nsheets > MAX_TABLES + OVERVIEW_SHEET_COUNT:
+        app.logger.info('Closing scan-report WORKBOOK...')
+        book.release_resources()
+        raise InvalidUsage(f'Scan report too big. Max tables count is {MAX_TABLES}')
 
     try:
-        book = xlrd.open_workbook(Path(scan_report_path), on_demand=True)
-        cache_service.set_uploaded_scan_report_info(current_user, etl_mapping_id, scan_report_path, book)
+        # always take the first sheet of the excel file
+        overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
+
+        tables_pd = sqldf(
+            """select `table`, group_concat(field || ':' || type || ':' || "Max length", ',') as fields
+             from overview group by `table`;""")
+        tables_pd = tables_pd[tables_pd.Table != '']
+        if tables_pd.shape[0] > MAX_TABLES:
+            raise InvalidUsage(f'Scan report too big. Max tables count is {MAX_TABLES}!')
+
+        schema = []
+        for _, row in tables_pd.iterrows():
+            create_table_sql = ''
+            table_name = row['Table']
+            fields = row['fields'].split(',')
+            table_ = Table(table_name)
+            create_table_sql += 'CREATE TABLE {0}."{1}" ('.format(username, table_name)
+            for field in fields:
+                column_description = field.split(':')
+                column_name = column_description[0]
+                column_type = convert_column_type(column_description[1])
+                if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
+                    if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
+                        column_type = column_type.replace('(P)', f'({column_description[2]})')
+                    elif column_type == 'TEXT':
+                        column_type = '{0}'.format(column_description[1])
+                    else:
+                        column_type = '{0}({1})'.format(column_description[1], column_description[2])
+                column = Column(column_name, column_type)
+                table_.column_list.append(column)
+                create_column_sql = '"{0}" {1},'.format(column_name, column_type)
+                create_table_sql += create_column_sql
+            create_table_sql = create_table_sql.rstrip(',')
+            create_table_sql += ' );'
+            user_schema_db.execute_sql(create_table_sql)
+            schema.append(table_)
+
+        cache_service.set_uploaded_scan_report_info(username, etl_mapping_id, str(scan_report_path), book)
+        return schema
     except Exception as e:
-        raise InvalidUsage(f"Could not open scan report file: {e.__str__()}", 500, base=e)
-
-    # always take the first sheet of the excel file
-    overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
-
-    schema = []
-    tables_pd = sqldf(
-        """select `table`, group_concat(field || ':' || type || ':' || "Max length", ',') as fields
-         from overview group by `table`;""")
-    tables_pd = tables_pd[tables_pd.Table != '']
-    for _, row in tables_pd.iterrows():
-        create_table_sql = ''
-        table_name = row['Table']
-        fields = row['fields'].split(',')
-        table_ = Table(table_name)
-        create_table_sql += 'CREATE TABLE {0}."{1}" ('.format(current_user, table_name)
-        for field in fields:
-            column_description = field.split(':')
-            column_name = column_description[0]
-            column_type = convert_column_type(column_description[1])
-            if column_description[2] != '0' and column_description[1].lower() in TYPES_WITH_MAX_LENGTH:
-                if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
-                    column_type = column_type.replace('(P)', f'({column_description[2]})')
-                elif column_type == 'TEXT':
-                    column_type = '{0}'.format(column_description[1])
-                else:
-                    column_type = '{0}({1})'.format(column_description[1], column_description[2])
-            column = Column(column_name, column_type)
-            table_.column_list.append(column)
-            create_column_sql = '"{0}" {1},'.format(column_name, column_type)
-            create_table_sql += create_column_sql
-        create_table_sql = create_table_sql.rstrip(',')
-        create_table_sql += ' );'
-        user_schema_db.execute_sql(create_table_sql)
-        schema.append(table_)
-    return schema
+        app.logger.info('Closing scan-report WORKBOOK...')
+        book.release_resources()
+        raise e
 
 
 def create_source_schema_by_tables(current_user, source_tables):
     """Create source schema by source tables from ETL mapping. Without casting to postgres types"""
+    if len(source_tables) > MAX_TABLES:
+        raise InvalidUsage(f'ETL Mapping contains too many tables. Max tables count is {MAX_TABLES}!')
     reset_schema(name=current_user)
 
     for row in source_tables:
@@ -138,11 +144,11 @@ def get_field_type(field_type):
     return 'unknown type'
 
 
-def check_view_sql_and_return_columns_info(current_user, view_sql: str):
+def check_view_sql_and_return_columns_info(username: str, view_sql: str):
     all_schemas = select_all_schemas_from_source_table()
     view_sql = view_sql.strip()
     is_sql_safety(view_sql, all_schemas)
-    full_view_sql = add_schema_names(current_user, view_sql)
+    full_view_sql = add_schema_names(username, view_sql)
 
     try:
         view_cursor = user_schema_db.execute_sql(full_view_sql).description
@@ -186,8 +192,9 @@ def run_sql_transformation(current_user, sql_transformation):
 
 def _open_book(current_user, etl_mapping: EtlMapping):
     scan_report_path = get_scan_report_path(etl_mapping)
+    app.logger.info('Opening scan report WORKBOOK...')
     book = xlrd.open_workbook(Path(scan_report_path), on_demand=True)
-    cache_service.set_uploaded_scan_report_info(current_user, etl_mapping.id, scan_report_path, book)
+    cache_service.set_uploaded_scan_report_info(current_user, etl_mapping.id, str(scan_report_path), book)
 
     return book
 
