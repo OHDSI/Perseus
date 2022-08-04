@@ -1,5 +1,4 @@
 from xlrd import Book
-
 from app import app
 from services.model import scan_report_cache_info
 from services.model.scan_report_cache_info import ScanReportCacheInfo
@@ -49,3 +48,4 @@ def release_resource_if_used(username: str):
             app.logger.info('Closing scan-report WORKBOOK...')
             cache_data.book.release_resources()
             cache_data.book = None
+        delete_if_exist(cache_data.scan_report_path)

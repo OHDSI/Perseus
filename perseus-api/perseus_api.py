@@ -36,7 +36,7 @@ def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
     file = request.files['scanReportFile']
     cache_service.release_resource_if_used(current_user)
-    filename, content_type = scan_reports_service.store_scan_report(file, current_user)
+    filename, content_type, path = scan_reports_service.store_scan_report(file, current_user)
     etl_mapping = etl_mapping_service.create_etl_mapping(current_user)
     try:
         saved_schema = source_schema_service\
@@ -45,6 +45,7 @@ def upload_scan_report(current_user):
             .load_scan_report_to_file_manager(filename, content_type, current_user)
         etl_mapping_service.set_scan_report_info(etl_mapping.id, file_save_response)
     except Exception as error:
+        path.unlink()
         etl_mapping_service.delete_etl_mapping(etl_mapping.id)
         raise error
 
@@ -68,13 +69,14 @@ def create_source_schema_by_scan_report(current_user):
     app.logger.info("REST request to upload scan report from file manager and create source schema")
     scan_report_req = scan_report_request.from_json(request.json)
     cache_service.release_resource_if_used(current_user)
-    scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
+    path = scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
     etl_mapping = etl_mapping_service.create_etl_mapping_by_request(current_user, scan_report_req)
     try:
         saved_schema = source_schema_service \
             .create_source_schema_by_scan_report(current_user, etl_mapping.id, etl_mapping.scan_report_name)
     except Exception as error:
         etl_mapping_service.delete_etl_mapping(etl_mapping.id)
+        path.unlink()
         raise error
     return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
 
@@ -287,7 +289,6 @@ def handle_invalid_usage(error):
     app.logger.error(error.message)
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    traceback.print_tb(error.__traceback__)
     return response
 
 

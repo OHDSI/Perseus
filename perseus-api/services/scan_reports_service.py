@@ -40,7 +40,7 @@ def load_scan_report_and_get_path(etl_mapping: EtlMapping) -> Path:
     return scan_report_path
 
 
-def store_scan_report(scan_report_file: FileStorage, username: str) -> (str, str):
+def store_scan_report(scan_report_file: FileStorage, username: str) -> (str, str, str):
     app.logger.info("Storing scan report...")
     checked_filename = _allowed_file(scan_report_file.filename)
     if scan_report_file and checked_filename:
@@ -50,7 +50,7 @@ def store_scan_report(scan_report_file: FileStorage, username: str) -> (str, str
         scan_report_file.save(scan_report_path)
         content_type = scan_report_file.content_type
         scan_report_file.close()
-        return filename, content_type
+        return filename, content_type, scan_report_path
     raise InvalidUsage("Incorrect scan report", 400)
 
 
@@ -64,7 +64,7 @@ def load_scan_report_to_file_manager(filename: str, content_type: str, username:
     )
 
 
-def load_scan_report_from_file_manager(scan_report_request: ScanReportRequest, username: str):
+def load_scan_report_from_file_manager(scan_report_request: ScanReportRequest, username: str) -> Path:
     checked_filename = _allowed_file(scan_report_request.file_name)
     scan_report_file = files_manager_service.get_file(scan_report_request.data_id)
     if checked_filename:
