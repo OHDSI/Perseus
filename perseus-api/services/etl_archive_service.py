@@ -23,7 +23,7 @@ from utils.constants import UPLOAD_ETL_FOLDER,\
                             UPLOAD_SCAN_REPORT_FOLDER,\
                             GENERATE_ETL_ARCHIVE_PATH,\
                             ETL_MAPPING_ARCHIVE_FORMAT
-from utils.directory_util import get_filenames_in_directory, create_directory
+from utils.directory_util import get_filenames_in_directory
 from utils.exceptions import InvalidUsage
 
 
@@ -76,26 +76,26 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         shutil.rmtree(archive_path)
 
 
-def generate_etl_archive(request: GenerateEtlArchiveRequest, username: str):
+def generate_etl_archive(request: GenerateEtlArchiveRequest, username: str) -> (Path, str):
     etl_mapping: EtlMapping = find_by_id(request.etl_mapping_id, username)
-
     scan_report_path = get_scan_report_path(etl_mapping)
-    generate_archive_directory = create_directory(f'{GENERATE_ETL_ARCHIVE_PATH}/{username}/{request.name}')
-    shutil.copy(scan_report_path, f'{generate_archive_directory}/{etl_mapping.scan_report_name}')
+    generate_archive_directory = Path(GENERATE_ETL_ARCHIVE_PATH, username, request.name)
+    generate_archive_directory.mkdir(exist_ok=True, parents=True)
 
-    json_mapping = json.dumps(request.etl_configuration)
-    json_file = open(f'{generate_archive_directory}/{request.name}.json', 'w')
-    json_file.write(json_mapping)
-    json_file.close()
+    try:
+        shutil.copy(scan_report_path, Path(generate_archive_directory, etl_mapping.scan_report_name))
+        json_mapping = json.dumps(request.etl_configuration)
+        with open(Path(generate_archive_directory, f'{request.name}.json'), 'w') as json_file:
+            json_file.write(json_mapping)
+        shutil.make_archive(
+            str(generate_archive_directory),
+            ETL_MAPPING_ARCHIVE_FORMAT,
+            generate_archive_directory
+        )
+    finally:
+        shutil.rmtree(generate_archive_directory)
 
-    shutil.make_archive(
-        generate_archive_directory,
-        ETL_MAPPING_ARCHIVE_FORMAT,
-        generate_archive_directory
-    )
-    shutil.rmtree(generate_archive_directory)
-
-    return f'{GENERATE_ETL_ARCHIVE_PATH}/{username}', f'{request.name}.zip'
+    return Path(GENERATE_ETL_ARCHIVE_PATH, username), f'{request.name}.zip'
 
 
 def _extract_etl_archive(archive_path, directory_to_extract):

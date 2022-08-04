@@ -1,5 +1,6 @@
 import os
 import traceback
+from pathlib import Path
 
 from flask import Blueprint, after_this_request
 from flask import request, jsonify, send_from_directory
@@ -82,24 +83,18 @@ def create_source_schema_by_scan_report(current_user):
 @username_header
 def generate_etl_mapping_archive(current_user):
     app.logger.info("REST request to generate ETL mapping archive")
-    try:
-        request_body = generate_etl_archive_request.from_json(request.get_json())
-        directory, filename = etl_archive_service.generate_etl_archive(request_body, current_user)
-        download_name = filename.replace('.zip', '.etl')
+    request_body = generate_etl_archive_request.from_json(request.get_json())
+    directory, filename = etl_archive_service.generate_etl_archive(request_body, current_user)
 
-        @after_this_request
-        def remove_generated_file(response):
-            try:
-                os.remove(f'{directory}/{filename}')
-            except Exception as e:
-                app.logger.error("Error removing downloaded file", e)
-            return response
+    @after_this_request
+    def remove_generated_file(response):
+        try:
+            os.remove(Path(directory, filename))
+        except Exception as e:
+            app.logger.error("Can not remove downloaded file", e)
+        return response
 
-        return send_from_directory(directory, filename, download_name=download_name)
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(f"Unable to  generate ETL mapping archive: {error.__str__()}", 500, base=error)
+    return send_from_directory(directory, filename, download_name=filename.replace('.zip', '.etl'))
 
 
 @perseus.route('/api/view_sql', methods=['POST'])
