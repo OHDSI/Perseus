@@ -104,15 +104,11 @@ def generate_etl_mapping_archive(current_user):
 def get_view(current_user):
     app.logger.info("REST request to get view sql table info")
     try:
-        view_sql = request.get_json()
-        view_result = source_schema_service.check_view_sql_and_return_columns_info(current_user, view_sql['sql'])
-    except InvalidUsage as error:
-        raise error
+        view_sql = request.get_json()['sql']
+        view_result = source_schema_service.check_view_sql_and_return_columns_info(current_user, view_sql)
+        return jsonify(view_result)
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed to view SQL: {error.__str__()}", 400, base=error)
-    except Exception as error:
-        raise InvalidUsage(f"Unable to get view SQL: {error.__str__()}", 500, base=error)
-    return jsonify(view_result)
 
 
 @perseus.route('/api/validate_sql', methods=['POST'])
@@ -120,13 +116,11 @@ def get_view(current_user):
 def validate_sql(current_user):
     app.logger.info("REST request to validate sql function")
     try:
-        sql_transformation = request.get_json()
-        source_schema_service.run_sql_transformation(current_user, sql_transformation['sql'])
+        sql_transformation = request.get_json()['sql']
+        source_schema_service.run_sql_transformation(current_user, sql_transformation)
         return '', 204
     except ProgrammingError as error:
         raise InvalidUsage(f"Syntax error in passed SQL: {error.__str__()}", 400, base=error)
-    except Exception as error:
-        raise InvalidUsage(f"Could not validate passed SQL: {error.__str__()}", 500, base=error)
 
 
 @perseus.route('/api/get_cdm_versions')
@@ -159,13 +153,11 @@ def get_column_info_call(current_user):
         column_name = request.args.get('column_name')
         etl_mapping_id = request.args.get('etl_mapping_id')
         info = source_schema_service.get_column_info(current_user, etl_mapping_id, table_name, column_name)
+        return jsonify(info)
     except InvalidUsage as e:
         raise InvalidUsage(f'Info cannot be loaded due to not standard structure of report: {e.__str__()}', 400, base=e)
     except FileNotFoundError as e:
         raise InvalidUsage(f'Report not found: {e.__str__()}', 404, base=e)
-    except Exception as e:
-        raise InvalidUsage(f"Could not get report column info: {e.__str__()}", 500, base=e)
-    return jsonify(info)
 
 
 @perseus.route('/api/xml_preview', methods=['POST'])
@@ -173,30 +165,29 @@ def get_column_info_call(current_user):
 def generate_xml_preview(current_user):
     app.logger.info("REST request to get XML preview")
     json = request.get_json()
-    xml_ = xml_writer.get_xml(current_user, json)
+    xml = xml_writer.get_xml(current_user, json)
     xml_writer.clear(current_user)
 
-    return jsonify(xml_)
+    return jsonify(xml)
 
 
 @perseus.route('/api/generate_zip_xml', methods=['POST'])
 @username_header
 def generate_zip_xml(current_user):
     app.logger.info("REST request to generate zip XML")
-    try:
-        json = request.get_json()
-        xml_writer.get_xml(current_user, json)
-        xml_writer.zip_xml(current_user)
-        xml_writer.clear(current_user)
-    except Exception as error:
-        raise InvalidUsage(f"Could not zip XML: {error.__str__()}", 500, base=error)
-    directory = f"{GENERATE_CDM_XML_ARCHIVE_PATH}/{current_user}"
+
+    json = request.get_json()
     filename = f"{GENERATE_CDM_XML_ARCHIVE_FILENAME}.{CDM_XML_ARCHIVE_FORMAT}"
+    xml_writer.get_xml(current_user, json)
+    xml_writer.zip_xml(current_user, filename)
+    xml_writer.clear(current_user)
+
+    directory = Path(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
 
     @after_this_request
     def remove_generated_file(response):
         try:
-            os.remove(f'{directory}/{filename}')
+            os.remove(Path(directory, filename))
         except Exception as e:
             app.logger.error("Error removing downloaded file", e)
         return response
@@ -234,38 +225,29 @@ def get_lookups(current_user):
 @username_header
 def create_lookup(current_user):
     app.logger.info("REST request to create lookup")
-    try:
-        lookup_req = lookup_request.from_json(request.json)
-        lookup = lookup_service.create_lookup(current_user, lookup_req)
-        return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
-    except Exception as error:
-        raise InvalidUsage(f"Could not create lookup: {error.__str__()}", 500, base=error)
+    lookup_req = lookup_request.from_json(request.json)
+    lookup = lookup_service.create_lookup(current_user, lookup_req)
+    return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
 
 
 @perseus.route('/api/lookup', methods=['PUT'])
 @username_header
 def update_lookup(current_user):
     app.logger.info("REST request to create lookup")
-    try:
-        id = request.args.get('id', None, int)
-        if id is None:
-            raise InvalidUsage('Can not extract lookup id', 400)
-        lookup_req = lookup_request.from_json(request.json)
-        lookup = lookup_service.update_lookup(current_user, id, lookup_req)
-        return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
-    except Exception as error:
-        raise InvalidUsage(f"Could not update lookup: {error.__str__()}", 500, base=error)
+    id = request.args.get('id', None, int)
+    if id is None:
+        raise InvalidUsage('Can not extract lookup id', 400)
+    lookup_req = lookup_request.from_json(request.json)
+    lookup = lookup_service.update_lookup(current_user, id, lookup_req)
+    return jsonify(lookup_list_item_response.from_user_defined_lookup(lookup))
 
 
 @perseus.route('/api/lookup', methods=['DELETE'])
 @username_header
 def delete_lookup(current_user):
     app.logger.info("REST request to delete lookup")
-    try:
-        id = request.args['id']
-        lookup_service.del_lookup(current_user, int(id))
-    except Exception as error:
-        raise InvalidUsage(f"Could not delete lookup: {error.__str__()}", 500, base=error)
+    id = request.args['id']
+    lookup_service.del_lookup(current_user, int(id))
     return '', 204
 
 

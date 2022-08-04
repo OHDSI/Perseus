@@ -144,11 +144,11 @@ def get_field_type(field_type):
     return 'unknown type'
 
 
-def check_view_sql_and_return_columns_info(current_user, view_sql: str):
+def check_view_sql_and_return_columns_info(username: str, view_sql: str):
     all_schemas = select_all_schemas_from_source_table()
     view_sql = view_sql.strip()
     is_sql_safety(view_sql, all_schemas)
-    full_view_sql = add_schema_names(current_user, view_sql)
+    full_view_sql = add_schema_names(username, view_sql)
 
     try:
         view_cursor = user_schema_db.execute_sql(full_view_sql).description

@@ -33,4 +33,3 @@ def clear_cache():
                 cache_data.book = None
                 app.logger.info(f"Released resources for user \'{key}\'")
             delete_if_exist(cache_data.scan_report_path)
-    app.logger.info("Clear cache job finished")

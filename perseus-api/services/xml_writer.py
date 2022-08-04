@@ -6,7 +6,7 @@ import zipfile
 
 from itertools import groupby
 from shutil import rmtree
-
+from pathlib import Path
 from db import user_schema_db
 from services import lookup_service
 from utils import InvalidUsage
@@ -61,7 +61,7 @@ def check_lookup_tables(tables):
 def unique(sequence):
     seen = []
     for item in sequence:
-        if not item in seen:
+        if item not in seen:
             seen.append(item)
     return seen
 
@@ -176,12 +176,10 @@ def add_schema_names(sql, view_sql):
     return view_sql
 
 
-def create_user_directory(path, current_user):
-    try:
-        os.makedirs(f"{path}/{current_user}")
-        print(f'Directory {path}/{current_user} created')
-    except FileExistsError:
-        print(f'Directory {path}/{current_user} already exist')
+def create_user_directory(path, username):
+    directory = Path(path, username)
+    if not directory.is_dir():
+        directory.mkdir(exist_ok=True, parents=True)
 
 
 def is_concept_id(field: str):
@@ -287,14 +285,20 @@ def generate_bath_sql_file(current_user, mapping, source_table, views):
         if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
     create_user_directory(GENERATE_BATCH_SQL_PATH, current_user)
-    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", mode='w') as f:
+    with open(Path(GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql'), mode='w') as f:
         f.write(sql)
 
 
-def clear(current_user):
-    delete_generated_xml(current_user)
-    delete_generated_lookup_sql(current_user)
-    delete_generated_batch_sql(current_user)
+def clear(username: str):
+    xml = Path(GENERATE_ETL_XML_PATH, username)
+    lookup = Path(GENERATE_LOOKUP_SQL_PATH, username)
+    batch_sql = Path(GENERATE_BATCH_SQL_PATH, username)
+    if xml.is_dir():
+        rmtree(xml)
+    if lookup.is_dir():
+        rmtree(lookup)
+    if batch_sql.is_dir():
+        rmtree(batch_sql)
 
 
 def get_xml(current_user, json_):
@@ -534,42 +538,19 @@ def write_xml(current_user, tag, filename, result):
     result.update({filename: _prettify(tag)})
 
 
-def add_files_to_zip(zip_file, path, directory):
+def add_files_to_zip(zip_file, path: Path, directory: str):
     for root, _, files in os.walk(path):
         for file in files:
             zip_file.write(os.path.join(root, file), arcname=os.path.join(directory, file))
 
 
-def zip_xml(current_user):
+def zip_xml(username: str, filename: str):
     """add mapping XMLs and lookup sql's to archive"""
-    create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
+    create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, username)
+    with zipfile.ZipFile(GENERATE_CDM_XML_ARCHIVE_PATH / username / filename, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        add_files_to_zip(zip_file, Path(GENERATE_ETL_XML_PATH, username), "definitions")
+        add_files_to_zip(zip_file, Path(GENERATE_LOOKUP_SQL_PATH, username), "lookups")
 
-    zip_file = zipfile.ZipFile(
-        GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
-            (GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
-
-    add_files_to_zip(zip_file, f"{GENERATE_ETL_XML_PATH}/{current_user}", "definitions")
-    add_files_to_zip(zip_file, f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}", "lookups")
-
-    if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
-        zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
-    zip_file.close()
-
-
-def delete_generated(path):
-    try:
-        rmtree(path)
-    except Exception:
-        print(f'Directory {path} does not exist')
-
-
-def delete_generated_xml(current_user):
-    delete_generated(f"{GENERATE_ETL_XML_PATH}/{current_user}")
-
-
-def delete_generated_lookup_sql(current_user):
-    delete_generated(f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}")
-
-
-def delete_generated_batch_sql(current_user):
-    delete_generated(f"{GENERATE_BATCH_SQL_PATH}/{current_user}")
+        batch_sql = Path(GENERATE_BATCH_SQL_PATH, username, 'Batch.sql')
+        if os.path.isfile(batch_sql):
+            zip_file.write(batch_sql, arcname='Batch.sql')
