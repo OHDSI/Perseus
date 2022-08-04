@@ -19,8 +19,7 @@ from utils.constants import GENERATE_ETL_XML_PATH,\
                             GENERATE_LOOKUP_SQL_PATH,\
                             PREDEFINED_LOOKUPS_PATH,\
                             INCOME_LOOKUPS_PATH,\
-                            GENERATE_BATCH_SQL_PATH,\
-                            ROOT_DIR
+                            GENERATE_BATCH_SQL_PATH
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 

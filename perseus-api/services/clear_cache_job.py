@@ -12,7 +12,7 @@ job_id = 'clear_cache'
 
 
 def create_clear_cache_job():
-    job_scheduler.add_job(func=clear_cache, trigger='interval', seconds=60 * 31, id=job_id)
+    job_scheduler.add_job(func=clear_cache, trigger='interval', seconds=60 * 15, id=job_id)
     job_scheduler.start()
     print("Created clear cache job")
 
@@ -26,10 +26,11 @@ def clear_cache():
         delta: timedelta = current_time - cache_data.date_time
         seconds = delta.total_seconds()
         minutes = (seconds % 3600) // 60
-        if minutes >= 29:
+        if minutes >= 25:
             if cache_data.book is not None:
+                app.logger.info('Closing scan-report WORKBOOK...')
                 cache_data.book.release_resources()
                 cache_data.book = None
-                app.logger.info(f"Released resources from user \'{key}\'")
+                app.logger.info(f"Released resources for user \'{key}\'")
             delete_if_exist(cache_data.scan_report_path)
     app.logger.info("Clear cache job finished")

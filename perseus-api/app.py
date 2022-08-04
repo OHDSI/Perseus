@@ -43,5 +43,6 @@ dictConfig({
 })
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 15 * 1024 * 1024 # 15Mb
 init_app_config(app)
 CORS(app)

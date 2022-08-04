@@ -1,4 +1,6 @@
 from xlrd import Book
+
+from app import app
 from services.model import scan_report_cache_info
 from services.model.scan_report_cache_info import ScanReportCacheInfo
 from utils.file_util import delete_if_exist
@@ -23,10 +25,14 @@ def get_scan_report_info(username: str) -> ScanReportCacheInfo or None:
         return None
 
 
-def set_uploaded_scan_report_info(username: str, etl_mapping_id: int, scan_report_path: str, book: Book or None = None):
+def set_uploaded_scan_report_info(username: str,
+                                  etl_mapping_id: int,
+                                  scan_report_path: str,
+                                  book: Book or None = None):
     if username in uploaded_scan_report_info:
         cache_data = uploaded_scan_report_info[username]
         if cache_data.book is not None:
+            app.logger.info('Closing scan-report WORKBOOK...')
             cache_data.book.release_resources()
             cache_data.book = None
         if cache_data.scan_report_path != scan_report_path:
@@ -40,5 +46,6 @@ def release_resource_if_used(username: str):
     if username in uploaded_scan_report_info:
         cache_data = uploaded_scan_report_info[username]
         if cache_data.book is not None:
+            app.logger.info('Closing scan-report WORKBOOK...')
             cache_data.book.release_resources()
             cache_data.book = None

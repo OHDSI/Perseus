@@ -33,17 +33,21 @@ def get_app_version():
 @username_header
 def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
+    file = request.files['scanReportFile']
+    cache_service.release_resource_if_used(current_user)
+    filename, content_type = scan_reports_service.store_scan_report(file, current_user)
+    etl_mapping = etl_mapping_service.create_etl_mapping(current_user)
     try:
-        scan_report_file = request.files['scanReportFile']
-        cache_service.release_resource_if_used(current_user)
-        file_save_response = scan_reports_service.load_scan_report_to_server(scan_report_file, current_user)
-        etl_mapping = etl_mapping_service.create_etl_mapping_by_file_save_resp(current_user, file_save_response)
-        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, etl_mapping)
-        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
-    except InvalidUsage as error:
-        raise error
+        saved_schema = source_schema_service\
+            .create_source_schema_by_scan_report(current_user, etl_mapping.id, filename)
+        file_save_response = scan_reports_service\
+            .load_scan_report_to_file_manager(filename, content_type, current_user)
+        etl_mapping_service.set_scan_report_info(etl_mapping.id, file_save_response)
     except Exception as error:
-        raise InvalidUsage(f"Unable to upload WR scan report: {error.__str__()}", 500, base=error)
+        etl_mapping_service.delete_etl_mapping(etl_mapping.id)
+        raise error
+
+    return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
 
 
 @perseus.route('/api/upload_etl_mapping', methods=['POST'])
@@ -51,15 +55,9 @@ def upload_scan_report(current_user):
 def upload_etl_mapping(current_user):
     """Create source schema by source tables from ETL mapping"""
     app.logger.info("REST request to create source schema")
-    try:
-        etl_archive = request.files['etlArchiveFile']
-        cache_service.release_resource_if_used(current_user)
-        return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
-    except InvalidUsage as error:
-        raise error
-    except Exception as error:
-        raise InvalidUsage(f"Unable to create source schema by source \
-                            tables from ETL mapping: {error.__str__()}", 500, base=error)
+    etl_archive = request.files['etlArchiveFile']
+    cache_service.release_resource_if_used(current_user)
+    return jsonify(etl_archive_service.upload_etl_archive(etl_archive, current_user))
 
 
 @perseus.route('/api/create_source_schema_by_scan_report', methods=['POST'])
@@ -67,17 +65,17 @@ def upload_etl_mapping(current_user):
 def create_source_schema_by_scan_report(current_user):
     """Create source schema by ScanReportRequest"""
     app.logger.info("REST request to upload scan report from file manager and create source schema")
+    scan_report_req = scan_report_request.from_json(request.json)
+    cache_service.release_resource_if_used(current_user)
+    scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
+    etl_mapping = etl_mapping_service.create_etl_mapping_by_request(current_user, scan_report_req)
     try:
-        scan_report_req = scan_report_request.from_json(request.json)
-        cache_service.release_resource_if_used(current_user)
-        scan_reports_service.load_scan_report_from_file_manager(scan_report_req, current_user)
-        etl_mapping = etl_mapping_service.create_etl_mapping_from_request(current_user, scan_report_req)
-        saved_schema = source_schema_service.create_source_schema_by_scan_report(current_user, etl_mapping)
-        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
-    except InvalidUsage as error:
-        raise error
+        saved_schema = source_schema_service \
+            .create_source_schema_by_scan_report(current_user, etl_mapping.id, etl_mapping.scan_report_name)
     except Exception as error:
-        raise InvalidUsage(f"Unable to create source schema by source {error.__str__()}", 500, base=error)
+        etl_mapping_service.delete_etl_mapping(etl_mapping.id)
+        raise error
+    return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
 
 
 @perseus.route('/api/generate_etl_mapping_archive', methods=['POST'])
