@@ -18,7 +18,6 @@ def create_clear_cache_job():
 
 
 def clear_cache():
-    app.logger.info("Clear cache job started")
     cache = cache_service.uploaded_scan_report_info
     for key in cache:
         cache_data: ScanReportCacheInfo = cache[key]
