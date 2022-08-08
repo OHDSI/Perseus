@@ -15,7 +15,12 @@ import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { Column, columnToField } from '@models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
 import { Concept } from '@models/code-mapping/concept';
-import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionTopAndHeight, } from './match-score-grid';
+import {
+  defaultRowHeight,
+  getRowIndexByDataAttribute,
+  getSelectionTopAndHeight,
+  sourceColumnKeyToName
+} from './match-score-grid';
 import { termFromTargetConcept } from '@models/code-mapping/target-concept';
 
 @Component({
@@ -176,7 +181,14 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   private initColumns() {
-    this.sourceColumns = this.importCodesService.columns
+    const fieldMapping = {...this.importCodesService.mappingParams}
+    for (const key in fieldMapping) {
+      if (!fieldMapping[key]) {
+        delete fieldMapping[key]
+      }
+    }
+    this.sourceColumns = Object.keys(fieldMapping)
+      .map(key => ({name: sourceColumnKeyToName(key), field: fieldMapping[key]}))
     this.targetColumns = targetColumns
 
     this.sourceDisplayedColumns = ['__select__', ...this.sourceColumns.map(columnToField)]

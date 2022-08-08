@@ -29,3 +29,22 @@ export function getSelectionTopAndHeight(firstRow: HTMLElement,
 
   return {top, height}
 }
+
+export function sourceColumnKeyToName(key: string): string {
+  switch (key) {
+    case 'sourceCode':
+      return 'Source Code'
+    case 'sourceName':
+      return 'Source Name'
+    case 'sourceFrequency':
+      return 'Source Frequency'
+    case 'columnType':
+      return 'Column Type'
+    case 'autoConceptId':
+      return 'Auto concept ID'
+    case 'additionalInfo':
+      return 'Additional Info'
+    default:
+      throw Error('Unexpected column type')
+  }
+}
