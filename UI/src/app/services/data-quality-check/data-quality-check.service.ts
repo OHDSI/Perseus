@@ -31,7 +31,7 @@ export class DataQualityCheckService {
   }
 
   downloadJsonResultFile(scanId: number): Observable<Blob> {
-    return this.httpClient.get<Blob>(`${dqdServerUrl}/json/${scanId}`)
+    return this.httpClient.get<Blob>(`${dqdApiUrl}/result/${scanId}`)
   }
 
   resultPageUrl(scanId: number): string {
