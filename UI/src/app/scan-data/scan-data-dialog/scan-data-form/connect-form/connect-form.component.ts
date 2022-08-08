@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Subject } from 'rxjs';
 import { DbSettings } from '@models/white-rabbit/db-settings';
 import { FilesSettings } from '@models/white-rabbit/files-settings';
-import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, map, takeUntil } from 'rxjs/operators';
 import { ScanSettings } from '@models/white-rabbit/scan-settings';
 import {
   delimitedFiles,
@@ -80,19 +80,22 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
       this.whiteRabbitService.testConnection(dbSettings)
         .pipe(
-          switchMap(connectionResult => {
+          map(connectionResult => {
             this.connectionResult = connectionResult;
             this.connectionResultChange.emit(connectionResult);
-            if (connectionResult.canConnect) {
+            if (connectionResult.canConnect && connectionResult.tableNames?.length) {
               this.subscribeFormChange();
-              return this.whiteRabbitService.tablesInfo(dbSettings);
+              return connectionResult.tableNames.map(tableName => ({
+                tableName,
+                selected: true
+              }))
             } else {
               throw new Error(connectionResult.message)
             }
           }),
           finalize(() => this.tryConnect = false),
         )
-        .subscribe(tablesToScan => {
+        .subscribe((tablesToScan: TableToScan[]) => {
             this.tablesToScanChange.emit(tablesToScan);
           }, error => {
             this.connectionResult = {canConnect: false, message: error.message};

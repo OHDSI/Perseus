@@ -1,4 +1,5 @@
 export interface ConnectionResult {
-  canConnect: boolean;
-  message?: string;
+  canConnect: boolean
+  message?: string
+  tableNames?: string[]
 }
