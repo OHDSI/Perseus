@@ -1,5 +1,10 @@
 export const defaultRowHeight = 34
 
+export interface MatchScoreSort {
+  enabled: boolean
+  order?: 'asc' | 'desc'
+}
+
 /**
  * get index by row data attribute
  */

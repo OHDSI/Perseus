@@ -7,7 +7,7 @@ export interface Column {
 
 export interface Sort {
   field: string;
-  order: string;
+  order: 'asc' | 'desc';
 }
 
 export const columnToField = (column: Column) => column.field

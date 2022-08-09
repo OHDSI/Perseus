@@ -19,6 +19,7 @@ import {
   defaultRowHeight,
   getRowIndexByDataAttribute,
   getSelectionTopAndHeight,
+  MatchScoreSort,
   sourceColumnKeyToName
 } from './match-score-grid';
 import { termFromTargetConcept } from '@models/code-mapping/target-concept';
@@ -65,6 +66,8 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
 
   editingMappingIndex = 0
 
+  matchScoreSort: MatchScoreSort = {enabled: false}
+
   private gridTop: number
 
   private gridHeight = 0
@@ -75,7 +78,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   get sourceData(): CodeMapping[] {
-    return this.data
+    return [...this.data]
   }
 
   get matchScoreData(): number[] {
@@ -99,7 +102,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   ngOnInit() {
     this.initColumns()
 
-    this.data = this.importCodesService.codeMappings
+    this.data = [...this.importCodesService.codeMappings]
   }
 
   ngAfterViewInit() {
@@ -178,6 +181,19 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     const lastTargetConcept = targetConcepts[targetConcepts.length - 1]
     const isLast = lastTargetConcept.concept.conceptId === concept.conceptId && termFromTargetConcept(lastTargetConcept) === concept.term
     return isLast ? '1px solid #E6E6E6' : 'none';
+  }
+
+  onSortByMatchScore() {
+    if (!this.matchScoreSort.enabled) {
+      this.matchScoreSort = {enabled: true, order: 'asc'}
+      this.data = this.data.sort((c1, c2) => c2.matchScore - c1.matchScore)
+    } else if (this.matchScoreSort.order === 'asc') {
+      this.matchScoreSort = {enabled: true, order: 'desc'}
+      this.data = this.data.reverse()
+    } else {
+      this.matchScoreSort = {enabled: false}
+      this.data = [...this.importCodesService.codeMappings]
+    }
   }
 
   private initColumns() {
