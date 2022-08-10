@@ -22,6 +22,36 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - shareddb
+  user:
+    build: ./user
+    container_name: user
+    environment:
+      USER_ENV: Docker
+    env_file:
+      - user/user-envs.txt
+    ports:
+      - "5001:5001"
+    depends_on:
+      - shareddb
+  backend:
+    build: ./perseus-api
+    container_name: backend
+    environment:
+      PERSEUS_ENV: Docker
+    ports:
+      - "5000:5000"
+    depends_on:
+      - shareddb
+      - files-manager
+  frontend:
+    build:
+      context: ./UI
+      args:
+        env: prod
+    container_name:
+      frontend
+    ports:
+      - "4200:4200"
   white-rabbit:
     build: ../WhiteRabbit
     container_name:
@@ -33,6 +63,18 @@ services:
     depends_on:
       - shareddb
       - files-manager
+  vocabularydb:
+    build: ./vocabulary-db
+    container_name: vocabularydb
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
+      timeout: 60s
+      interval: 30s
+      retries: 10
+    volumes:
+      - vocabularydb:/data/postgres
+    ports:
+      - "5431:5432"
   cdm-builder:
     build: ../ETL-CDMBuilder/source
     container_name:
@@ -45,6 +87,35 @@ services:
       - shareddb
       - files-manager
       - vocabularydb
+  solr:
+    build: ./solr
+    container_name: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr:/var/solr
+    depends_on:
+      - vocabularydb
+  athena:
+    build: ./athena-api
+    container_name: athena
+    environment:
+      ATHENA_ENV: Docker
+    ports:
+      - "5002:5002"
+    depends_on:
+      - solr
+  usagi:
+    build: ./usagi-api
+    command: python /app/main.py
+    container_name: usagi
+    environment:
+      USAGI_ENV: Docker
+    ports:
+      - "5003:5003"
+    depends_on:
+      - shareddb
+      - solr
   r-serve:
     build:
       context: ../DataQualityDashboard/R
@@ -69,76 +140,6 @@ services:
       - shareddb
       - files-manager
       - r-serve
-  user:
-    build: ./user
-    container_name: user
-    environment:
-      USER_ENV: Docker
-    env_file:
-      - user/user-envs.txt
-    ports:
-      - "5001:5001"
-    depends_on:
-      - shareddb
-  backend:
-    build: ./perseus-api
-    container_name: backend
-    environment:
-      PERSEUS_ENV: Docker
-    ports:
-      - "5000:5000"
-    depends_on:
-      - shareddb
-      - files-manager
-  vocabularydb:
-    build: ./vocabulary-db
-    container_name: vocabularydb
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
-      timeout: 60s
-      interval: 30s
-      retries: 10
-    volumes:
-      - vocabularydb:/data/postgres
-    ports:
-      - "5431:5432"
-  frontend:
-    build:
-      context: ./UI
-      args:
-        env: prod
-    container_name:
-      frontend
-    ports:
-      - "4200:4200"
-  solr:
-    build: ./solr
-    container_name: solr
-    ports:
-      - "8983:8983"
-    volumes:
-      - solr:/var/solr
-  athena:
-    build: ./athena-api
-    container_name: athena
-    environment:
-      ATHENA_ENV: Docker
-    ports:
-      - "5002:5002"
-    depends_on:
-      - solr
-#  usagi:
-#    build: ./usagi-api
-#    command: python /app/main.py
-#    container_name: usagi
-#    environment:
-#      USAGI_ENV: Docker
-#    ports:
-#      - "5003:5003"
-#    depends_on:
-#      - shareddb
-#      - vocabularydb
-#      - solr
 
 volumes:
   shareddb:
