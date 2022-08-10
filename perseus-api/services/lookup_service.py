@@ -21,7 +21,7 @@ def get_lookups(lookup_type: str, username: str) -> List[LookupListItemResponse]
             )
 
     def extract_lookups_from_database():
-        select_query = Lookup.select().where(username == username)
+        select_query = Lookup.select().where(Lookup.username == username)
         lookups_names_list.extend(
             [LookupListItemResponse(id=lookup.id, name=lookup.name) for lookup in select_query]
         )
@@ -57,7 +57,7 @@ def get_lookup_sql(id: int, name: str, lookup_type: str) -> str:
             with open(path, mode='r') as f:
                 return f.read()
         else:
-            raise InvalidUsage(f'Lookup not found by name {name} and type {type}', 404)
+            raise InvalidUsage(f'Lookup not found by name {name} and type {lookup_type}', 404)
 
 
 def create_lookup(username: str, lookup_request: LookupRequest) -> Lookup:
