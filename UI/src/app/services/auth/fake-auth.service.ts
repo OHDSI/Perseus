@@ -33,8 +33,8 @@ export class FakeAuthService implements AuthService {
   login(email: string, password: string, ): Observable<User> {
     const user = {
       username: email
-        .replace('@', '_at_')
-        .replace('.', '_'),
+        .replaceAll('@', '_at_')
+        .replaceAll('.', '_'),
       email,
       token: this.token(),
       refresh_token: this.token()

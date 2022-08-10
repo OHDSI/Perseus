@@ -21,6 +21,8 @@ UPLOAD_SCAN_REPORT_FOLDER = Path(upload_folder, 'scan-reports')
 UPLOAD_ETL_FOLDER = Path(upload_folder, 'etl')
 INCOME_LOOKUPS_PATH = Path(upload_folder, 'user_defined_lookups')
 
+LOOKUP_MAX_LENGTH = 10000
+
 COLUMN_TYPES_MAPPING = {
     16: 'bool',
     17: 'blob',

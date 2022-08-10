@@ -15,6 +15,9 @@ import { Lookup } from '@models/perseus/lookup'
 import { LookupType } from '@models/perseus/lookup-type'
 import { LookupListItem } from '@models/perseus/lookup-list-item'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { catchError } from 'rxjs/operators'
+import { withLoading } from '@utils/loading'
+import { of } from 'rxjs'
 
 const editorSettings = {
   mode: 'text/x-mysql',
@@ -55,6 +58,8 @@ export class LookupComponent implements OnInit, AfterViewInit {
   updatedName: string | null = null;
   withSourceToSource = true;
   userDefined = false;
+
+  loading = false
 
   private selectDirty = false
   private codeMirrorDirty = false;
@@ -142,7 +147,15 @@ export class LookupComponent implements OnInit, AfterViewInit {
         (type: LookupType) => this.lookupService.getLookupSqlById(lookupId, type) :
         (type: LookupType) => this.lookupService.getLookupSqlByName(lookupName, type)
 
-      getLookupSql(this.lookupType)
+
+      getLookupSql.bind(this)(this.lookupType)
+        .pipe(
+          withLoading(this),
+          catchError(error => {
+            openErrorDialog(this.matDialog, 'Failed to get lookup', parseHttpError(error))
+            return of('')
+          })
+        )
         .subscribe(data => {
           this.codeMirror.setValue(data);
           this.subscribeOnCodeMirrorChange()
@@ -155,9 +168,7 @@ export class LookupComponent implements OnInit, AfterViewInit {
             this.updatedSourceToSource = ''
             this.updatedSourceToStandard = '';
           }
-        }, getError =>
-          openErrorDialog(this.matDialog, 'Failed to get lookup', parseHttpError(getError))
-        );
+        });
       if (!this.notConceptTableField && this.lookupType !== 'source_to_source') {
         getLookupSql('source_to_source').subscribe(
           data => this.withSourceToSource = !!data,
