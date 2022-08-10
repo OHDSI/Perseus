@@ -76,7 +76,7 @@ services:
     ports:
       - "5431:5432"
   cdm-builder:
-    build: ../ETL-CDMBuilder/source
+    build: ../ETL-CDMBuilder
     container_name:
       cdm-builder
     ports:
