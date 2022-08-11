@@ -68,7 +68,14 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
             guess_type
         )
 
-        etl_mapping = create_etl_mapping_by_response(username, file_save_response)
+        etl_mapping_json = mapping_json.get('etlMapping')
+        if etl_mapping_json:
+            cdm_version = etl_mapping_json.get('cdm_version')
+        else:
+            cdm_version = mapping_json.get('version') # Old mapping format
+
+
+        etl_mapping = create_etl_mapping_by_response(username, cdm_version, file_save_response)
         cache_service.set_uploaded_scan_report_info(username, etl_mapping.id, str(scan_report_file))
 
         return to_upload_etl_archive_response(etl_mapping, mapping_json)

@@ -12,8 +12,9 @@ from services import source_schema_service, scan_reports_service, \
     etl_mapping_service, etl_archive_service, lookup_service, cache_service
 from services.cdm_schema import get_exist_version, get_schema
 from services.request import generate_etl_archive_request, \
-    scan_report_request, lookup_request
+    scan_report_request, lookup_request, set_cdm_version_request
 from services.response import lookup_list_item_response
+from services.response.etl_mapping_response import to_etl_mapping_response
 from services.response.upload_scan_report_response import to_upload_scan_report_response
 from services import xml_writer
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
@@ -35,21 +36,21 @@ def get_app_version():
 def upload_scan_report(current_user):
     app.logger.info("REST request to upload WR scan report")
     file = request.files['scanReportFile']
+    cdm_version = request.form.get('cdmVersion', None)
     cache_service.release_resource_if_used(current_user)
     filename, content_type, path = scan_reports_service.store_scan_report(file, current_user)
-    etl_mapping = etl_mapping_service.create_etl_mapping(current_user)
+    etl_mapping = etl_mapping_service.create_etl_mapping(current_user, cdm_version)
     try:
         saved_schema = source_schema_service\
             .create_source_schema_by_scan_report(current_user, etl_mapping.id, filename)
         file_save_response = scan_reports_service\
             .load_scan_report_to_file_manager(filename, content_type, current_user)
-        etl_mapping_service.set_scan_report_info(etl_mapping.id, file_save_response)
+        etl_mapping = etl_mapping_service.set_scan_report_info(etl_mapping.id, file_save_response)
+        return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
     except Exception as error:
         path.unlink()
         etl_mapping_service.delete_etl_mapping(etl_mapping.id)
         raise error
-
-    return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
 
 
 @perseus.route('/api/upload_etl_mapping', methods=['POST'])
@@ -79,6 +80,15 @@ def create_source_schema_by_scan_report(current_user):
         path.unlink()
         raise error
     return jsonify(to_upload_scan_report_response(etl_mapping, saved_schema))
+
+
+@perseus.route('/api/etl-mapping/cdm-version', methods=['PATCH'])
+@username_header
+def set_cdm_version_to_etl_mapping(current_user):
+    app.logger.info("REST request set CDM version to ETL mapping")
+    req = set_cdm_version_request.from_json(request.get_json())
+    result = etl_mapping_service.set_cdm_version(req, current_user)
+    return jsonify(to_etl_mapping_response(result))
 
 
 @perseus.route('/api/generate_etl_mapping_archive', methods=['POST'])
