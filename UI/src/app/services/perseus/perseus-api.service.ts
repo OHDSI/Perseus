@@ -9,15 +9,19 @@ import { TableInfoResponse } from '@models/perseus/table-info-response'
 import { UploadEtlMappingResponse } from '@models/perseus/upload-etl-mapping-response'
 import { GenerateEtlArchiveRequest } from '@models/perseus/generate-etl-archive-request'
 import { ViewSqlResponse } from '@models/perseus/view-sql-response'
+import { EtlMapping } from '@models/perseus/etl-mapping'
 
 @Injectable()
 export class PerseusApiService {
 
   constructor(private httpClient: HttpClient) {}
 
-  uploadScanReport(scanReportFile: File): Observable<UploadScanReportResponse> {
+  uploadScanReport(scanReportFile: File, cdmVersion?: string): Observable<UploadScanReportResponse> {
     const formData: FormData = new FormData();
     formData.append('scanReportFile', scanReportFile, scanReportFile.name);
+    if (cdmVersion) {
+      formData.append('cdmVersion', cdmVersion)
+    }
     return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/upload_scan_report`, formData);
   }
 
@@ -29,6 +33,10 @@ export class PerseusApiService {
 
   createSourceSchemaByScanReport(scanReport: ScanReportRequest): Observable<UploadScanReportResponse> {
     return this.httpClient.post<UploadScanReportResponse>(`${perseusApiUrl}/create_source_schema_by_scan_report`, scanReport);
+  }
+
+  setCdmVersionToEtlMapping(etlMappingId: number, cdmVersion: string) {
+    return this.httpClient.patch<EtlMapping>(`${perseusApiUrl}/etl-mapping/cdm-version`, {etlMappingId, cdmVersion})
   }
 
   generateEtlMappingArchive(request: GenerateEtlArchiveRequest): Observable<Blob> {

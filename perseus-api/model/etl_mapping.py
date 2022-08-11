@@ -8,6 +8,7 @@ class EtlMapping(BaseModel):
     username = CharField()
     user_schema_name = CharField()
     source_schema_name = CharField(null=True)
+    cdm_version = CharField(null=True)
     scan_report_name = CharField(null=True)
     scan_report_id = BigIntegerField(null=True)
 

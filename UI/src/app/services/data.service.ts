@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Row, RowOptions } from 'src/app/models/row';
-import { ITableOptions, Table } from 'src/app/models/table';
+import { ITable, ITableOptions, Table } from 'src/app/models/table';
 import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
 import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
@@ -24,7 +24,7 @@ export class DataService {
               private perseusXmlService: PerseusXmlService,
               private dialogService: MatDialog) {}
 
-  private _normalize(data: TableInfoResponse[], area: Area) {
+  private _normalize(data: TableInfoResponse[], area: Area): ITable[] {
     const tables = [];
     const uniqueIdentifierFields = [];
 
@@ -93,16 +93,19 @@ export class DataService {
       )
   }
 
-  getTargetData(version: string) {
-    return this.perseusService.getTargetData(version).pipe(
+  setCdmVersionAndGetTargetData(version: string): Observable<ITable[]> {
+    const etlMappingId = this.storeService.state.etlMapping?.id
+    this.storeService.addCdmVersion(version)
+    const preRequest$ = etlMappingId ? this.perseusService.setCdmVersionToEtlMapping(etlMappingId, version) : of(null)
+    return preRequest$.pipe(
+      switchMap(() => this.perseusService.getTargetData(version)),
       map(data => {
         const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
         const tables = this.prepareTables(filteredData, Area.Target);
-        this.storeService.addCdmVersion(version)
         this.prepareTargetConfig(filteredData);
         return tables;
       })
-    );
+    )
   }
 
   getColumnInfo(etlMappingId: number, tableName: string, columnName: string): Observable<ColumnInfo> {
@@ -128,7 +131,7 @@ export class DataService {
       );
   }
 
-  prepareTargetConfig(data) {
+  prepareTargetConfig(data): void {
     const targetConfig = {};
     data.map(table => {
       const tableName = table.table_name.toLowerCase();
@@ -142,7 +145,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data: TableInfoResponse[], key: Area) {
+  prepareTables(data: TableInfoResponse[], key: Area): ITable[] {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

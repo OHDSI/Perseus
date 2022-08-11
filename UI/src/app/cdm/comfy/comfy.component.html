@@ -151,84 +151,86 @@
             </mat-icon>
           </h4>
 
-          <app-search-by-name class="comfy-filter-by-name"
-                              placeholder="Search by target table"
-                              [criteria]="data.linkTablesSearch.target"
-                              (complete)="filterByName('target', $event)"
-                              (reset)="filterByNameReset('target')"
-                              *ngIf="data.target?.length"></app-search-by-name>
+          <ng-container *ngIf="data.target?.length else setCdmVersionBlock">
+            <app-search-by-name class="comfy-filter-by-name"
+                                placeholder="Search by target table"
+                                [criteria]="data.linkTablesSearch.target"
+                                (complete)="filterByName('target', $event)"
+                                (reset)="filterByNameReset('target')"></app-search-by-name>
 
-          <div class="scrolled-items"
-               #scrollEl
-               cdkScrollable
-               *ngIf="data.target?.length">
-            <div *ngFor="let targetName of targetTableNames"
-                 cdkDrag
-                 [cdkDragData]="targetName">
-              <div class="vertical-list-item" [attr.data-id]="targetName" [attr.id]="'node-'+targetName">
-                <div cdkDropList
-                     class="vertical-list"
-                     [id]="targetConfig[targetName].name"
-                     [cdkDropListData]="targetConfig[targetName].data"
-                     (cdkDropListDropped)="drop.execute($event)"
-                     [cdkDropListSortingDisabled]="false"
-                     [cdkDropListConnectedTo]="targetTableNames">
-                  <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
-                       class="vertical-box"
-                       [id]="tableName"
-                       cdkDrag
-                       (cdkDragMoved)="dragMoved($event)"
-                       (dblclick)="afterOpenMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
-                    <div class="table-description target caption">
-                      <span class="target-label">{{ tableName }}</span>
-                      <span class="divider"></span>
-                      <mat-icon *ngIf="i > 0"
-                                class="remove-mapping-table"
-                                (click)="removeTableMapping(tableName, targetName, $event)">close
-                      </mat-icon>
-                    </div>
-                    <div *cdkDragPreview
-                         class="table-description target preview">
-                      {{ tableName }}
+            <div class="scrolled-items"
+                 #scrollEl
+                 cdkScrollable>
+              <div *ngFor="let targetName of targetTableNames"
+                   cdkDrag
+                   [cdkDragData]="targetName">
+                <div class="vertical-list-item" [attr.data-id]="targetName" [attr.id]="'node-'+targetName">
+                  <div cdkDropList
+                       class="vertical-list"
+                       [id]="targetConfig[targetName].name"
+                       [cdkDropListData]="targetConfig[targetName].data"
+                       (cdkDropListDropped)="drop.execute($event)"
+                       [cdkDropListSortingDisabled]="false"
+                       [cdkDropListConnectedTo]="targetTableNames">
+                    <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
+                         class="vertical-box"
+                         [id]="tableName"
+                         cdkDrag
+                         (cdkDragMoved)="dragMoved($event)"
+                         (dblclick)="afterOpenMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
+                      <div class="table-description target caption">
+                        <span class="target-label">{{ tableName }}</span>
+                        <span class="divider"></span>
+                        <mat-icon *ngIf="i > 0"
+                                  class="remove-mapping-table"
+                                  (click)="removeTableMapping(tableName, targetName, $event)">close
+                        </mat-icon>
+                      </div>
+                      <div *cdkDragPreview
+                           class="table-description target preview">
+                        {{ tableName }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </ng-container>
 
-          <div class="initial" *ngIf="!data.target.length">
-            <ng-container *ngIf="cdmVersions.length > 0; else cannotLoadCdmVersionsBlock">
-              <p>Please select CDM version to see Target tables</p>
+          <ng-template #setCdmVersionBlock>
+            <div class="initial">
+              <ng-container *ngIf="cdmVersions.length > 0; else cannotLoadCdmVersionsBlock">
+                <p>Please select CDM version to see Target tables</p>
 
-              <button mat-flat-button
-                      class="cdm-button"
-                      color="accent"
-                      (click)="openCdmVersion(state.cdmVersions[0])">
-                Version {{state.cdmVersions[0]}}
-              </button>
-
-              <ng-container *ngIf="cdmVersions.length > 1">
                 <button mat-flat-button
                         class="cdm-button"
                         color="accent"
-                        (click)="openCdmVersion(state.cdmVersions[1])">
-                  Version {{state.cdmVersions[1]}}
+                        (click)="openCdmVersion(state.cdmVersions[0])">
+                  Version {{state.cdmVersions[0]}}
+                </button>
+
+                <ng-container *ngIf="cdmVersions.length > 1">
+                  <button mat-flat-button
+                          class="cdm-button"
+                          color="accent"
+                          (click)="openCdmVersion(state.cdmVersions[1])">
+                    Version {{state.cdmVersions[1]}}
+                  </button>
+                </ng-container>
+
+                <button mat-flat-button
+                        class="cdm-button"
+                        color="accent"
+                        (click)="openSetCDMDialog()">
+                  Select Other Version
                 </button>
               </ng-container>
 
-              <button mat-flat-button
-                      class="cdm-button"
-                      color="accent"
-                      (click)="openSetCDMDialog()">
-                Select Other Version
-              </button>
-            </ng-container>
-
-            <ng-template #cannotLoadCdmVersionsBlock>
-              <p>Cannot load CDM versions</p>
-            </ng-template>
-          </div>
+              <ng-template #cannotLoadCdmVersionsBlock>
+                <p>Cannot load CDM versions</p>
+              </ng-template>
+            </div>
+          </ng-template>
         </article>
       </div>
     </main>

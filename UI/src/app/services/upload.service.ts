@@ -35,7 +35,7 @@ export class UploadService {
 
   uploadScanReport(scanReportFile: File): Observable<UploadScanReportResponse> {
     this.bridgeService.reportLoading();
-    return this.perseusApiService.uploadScanReport(scanReportFile)
+    return this.perseusApiService.uploadScanReport(scanReportFile, this.storeService.cdmVersion)
       .pipe(
         tap(res => {
           this.snackbar.open('Success file upload', ' DISMISS ');
