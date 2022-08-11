@@ -54,7 +54,7 @@ export class CommonUtilsService {
     matDialog.afterClosed().pipe(
       mergeMap(res1 => {
         if (res1) {
-          return this.dataService.getTargetData(res1);
+          return this.dataService.setCdmVersionAndGetTargetData(res1);
         }
         return EMPTY;
       })
@@ -86,7 +86,7 @@ export class CommonUtilsService {
     matDialog.afterClosed().subscribe(res => {
       if (res) {
         this.openSnackbarMessage(res)
-        callback()   
+        callback()
       }
     });
   }
@@ -148,7 +148,7 @@ export class CommonUtilsService {
       warning: 'All the changes in current mapping will be lost. Save your current mapping before opening new one?',
       header: 'Save mapping',
       okButton: 'Save',
-      deleteButton: "Don't Save",
+      deleteButton: 'Don\'t Save',
       deleteSourceAndTarget: true
     };
     this.openResetWarningDialog(settings, 'new_mapping');
@@ -159,11 +159,11 @@ export class CommonUtilsService {
       warning: 'You want to load a new report. All changes will be lost. Do you want to save current mappings?',
       header: 'Load new report',
       okButton: 'Save',
-      deleteButton: "Don't Save",
+      deleteButton: 'Don\'t Save',
       deleteSourceAndTarget: false,
       loadReport: true
     };
-    this.openResetWarningDialog(settings, "load_report");
+    this.openResetWarningDialog(settings, 'load_report');
   }
 
   deleteTableWithWarning() {

@@ -58,8 +58,8 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   onUploadReport(): void {
     this.whiteRabbitService.result(this.conversion.id)
       .pipe(
-        switchMap(scanReport =>
-          this.scanDataUploadService.uploadScanReport(scanReport)
+        switchMap(scanReportReq =>
+          this.scanDataUploadService.uploadScanReport(scanReportReq)
         )
       )
       .subscribe(

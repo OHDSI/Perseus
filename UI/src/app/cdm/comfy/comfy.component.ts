@@ -358,7 +358,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openCdmVersion(version: string) {
-    return this.dataService.getTargetData(version)
+    return this.dataService.setCdmVersionAndGetTargetData(version)
       .subscribe(
         () => this.snackBar.open('Target schema loaded', ' DISMISS '),
         error => openErrorDialog(this.matDialog, 'Can not load target schema', parseHttpError(error))

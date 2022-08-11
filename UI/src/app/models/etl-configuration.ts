@@ -28,6 +28,7 @@ export class EtlConfiguration implements IEtlConfiguration {
   etlMapping?: EtlMapping
   name?: string;
   tablesConfiguration?: TargetConfig;
+  version?: string // old mapping cdm version field
 
   @Type(() => ArrowCache)
   mappingsConfiguration?: IArrowCache;

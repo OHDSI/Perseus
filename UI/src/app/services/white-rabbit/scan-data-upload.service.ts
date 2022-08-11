@@ -18,8 +18,9 @@ export class ScanDataUploadService {
 
   uploadScanReport(scanReportRequest: ScanReportRequest): Observable<UploadScanReportResponse> {
     this.bridgeService.reportLoading();
+    const cdmVersion = this.storeService.cdmVersion
 
-    return this.perseusApiService.createSourceSchemaByScanReport(scanReportRequest)
+    return this.perseusApiService.createSourceSchemaByScanReport({...scanReportRequest, cdmVersion})
       .pipe(
         tap(res => {
           this.bridgeService.resetAllMappings();
