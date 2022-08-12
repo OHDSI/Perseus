@@ -3,7 +3,7 @@ import { Column } from '@models/grid/grid';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { CodeMapping, withoutTargetConcepts } from '@models/code-mapping/code-mapping';
 import { CodeMappingParams } from '@models/code-mapping/code-mapping-params';
 import { Code } from '@models/code-mapping/code';
 import { ScoredConcept } from '@models/code-mapping/scored-concept';
@@ -126,6 +126,9 @@ export class ImportCodesService implements StateService {
   getCodesMappings(): Observable<CodeMapping[]> {
     return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/code-mapping/result?conversionId=${this.conversionId}`)
       .pipe(
+        map(codeMappings => codeMappings.map(codeMapping =>
+          codeMapping.targetConcepts?.length ? codeMapping : withoutTargetConcepts(codeMapping)
+        )),
         tap(codeMappings => this.state.codeMappings = codeMappings)
       )
   }
