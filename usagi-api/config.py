@@ -14,7 +14,7 @@ class LocalConfig:
     USAGI_DB_PORT = 5432
 
     VOCABULARY_DB_NAME = 'vocabulary'
-    VOCABULARY_DB_USER = 'postgres'
+    VOCABULARY_DB_USER = 'perseus'
     VOCABULARY_DB_PASSWORD = 'password'
     VOCABULARY_DB_HOST = 'localhost'
     VOCABULARY_DB_PORT = 5431
@@ -31,7 +31,7 @@ class DockerConfig:
     USAGI_DB_PORT = 5432
 
     VOCABULARY_DB_NAME = 'vocabulary'
-    VOCABULARY_DB_USER = 'postgres'
+    VOCABULARY_DB_USER = 'perseus'
     VOCABULARY_DB_PASSWORD = 'password'
     VOCABULARY_DB_HOST = 'vocabularydb'
     VOCABULARY_DB_PORT = 5432
