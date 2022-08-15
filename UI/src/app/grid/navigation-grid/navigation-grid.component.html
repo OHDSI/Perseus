@@ -6,8 +6,8 @@
       <div class="show-by">
         <label for="show-by">Show by</label>
         <mat-form-field>
-          <mat-select floatLabel="never" appearance="none">
-            <mat-option *ngFor="let option of showByValues" [value]="option.value" [(ngModel)]="pageSize">
+          <mat-select floatLabel="never" appearance="none" [(ngModel)]="pageSize">
+            <mat-option *ngFor="let option of showByValues" [value]="option.value">
               {{option.viewValue}}
             </mat-option>
           </mat-select>

@@ -27,7 +27,7 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
   error: string | boolean
 
   @Input()
-  pageSize = 10
+  pageSize = 15
 
   @Input()
   total = 0
