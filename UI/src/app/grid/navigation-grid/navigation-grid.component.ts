@@ -27,7 +27,7 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
   error: string | boolean
 
   @Input()
-  pageSize = 15
+  pageSize = 10
 
   @Input()
   total = 0
@@ -53,8 +53,8 @@ export class NavigationGridComponent<T> extends GridComponent<T> implements OnIn
 
   showByValues = [
     {
-      value: 15,
-      viewValue: '15'
+      value: 10,
+      viewValue: '10'
     },
     {
       value: 30,
