@@ -127,7 +127,7 @@
       <span>Data Quality Check</span>
     </button>
     <button mat-menu-item
-            [disabled]="reportGenerationDisabled$ | async"
+            [disabled]="convertToCdmDisabled$ | async"
             (click)="generateReport()">
       <mat-icon svgIcon="generate_report"></mat-icon>
       <span>Report</span>
