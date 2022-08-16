@@ -37,6 +37,7 @@ export const conceptFieldsTypes = [
 export const mainPageRouter = '/perseus'
 export const loginRouter = '/sign-in'
 export const codesRouter = '/codes'
+export const mappingRouter = '/mapping'
 
 export const externalUrls = [
   'athena.ohdsi.org'

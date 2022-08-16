@@ -17,7 +17,7 @@ import { DqdDialogComponent } from '@scan-data/dqd-dialog/dqd-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
-import { codesRouter, isDev, mainPageRouter } from '../app.constants';
+import { codesRouter, isDev, mainPageRouter, mappingRouter } from '../app.constants';
 import { LogoutComponent } from '@popups/logout/logout.component';
 import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { HelpPopupComponent } from '@popups/help-popup/help-popup.component';
@@ -223,6 +223,7 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   generateReport() {
+    this.router.navigateByUrl(mainPageRouter + mappingRouter)
     this.reportGenerationService.emit(ReportGenerationEvent.PREPARE)
   }
 
