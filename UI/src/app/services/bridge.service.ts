@@ -608,13 +608,15 @@ export class BridgeService implements StateService {
   }
 
   generateMappingModelForZipXml(sourceTableName: string = '', targetTableName: string = ''): EtlMappingForZipXmlGeneration {
+    const state = this.storeService.state
     const mappingService = new ZipXmlMappingModelService(
       this.arrowsCache,
       this.constantsCache,
       sourceTableName,
       targetTableName,
-      this.storeService.state.concepts,
-      this.storeService.state.targetClones
+      state.concepts,
+      state.targetClones,
+      state.source.map(sourceTable => sourceTable.name)
     );
     return mappingService.generate();
   }
