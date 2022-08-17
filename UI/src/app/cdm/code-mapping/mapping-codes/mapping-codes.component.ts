@@ -48,7 +48,6 @@ export class MappingCodesComponent {
       .subscribe(res => {
         if (res) {
           this.importCodesService.codeMappings = null
-          this.importCodesService.reset()
           this.conceptCacheService.clear()
           this.router.navigateByUrl(mainPageRouter + codesRouter)
         }
