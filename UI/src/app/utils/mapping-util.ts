@@ -1,5 +1,6 @@
 import { MappingNode } from '@models/etl-mapping-for-zip-xml-generation';
-import { TargetConfig } from '@models/state';
+import { ITable } from '@models/table'
+import { TargetConfig } from '@models/target-config'
 
 export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingNode[] {
   const groupReducer = (accumulator: {[key: string]: MappingNode}, currentValue: MappingNode) => {
@@ -31,4 +32,21 @@ export function parseMappingNodesByGroups(mappingNodes: MappingNode[]): MappingN
 
 export function canOpenMappingPage(targetTableNames: string[], targetConfig: TargetConfig): boolean {
   return !!targetTableNames.find(it => targetConfig[it]?.data?.length > 1)
+}
+
+export function isSourceUploaded(source: ITable[]): boolean {
+  return !!source?.length
+}
+
+export function isTablesMapped(targetConfig: TargetConfig) {
+  const targetTables = Object.keys(targetConfig)
+  return targetTables?.some(tableName => targetConfig[tableName].data.length > 1)
+}
+
+export function isViewCreated(source: ITable[]): boolean {
+  return source?.some(table => table.sql)
+}
+
+export function isTablesMappedOrViewCreated(targetConfig: TargetConfig, source: ITable[]): boolean {
+  return isTablesMapped(targetConfig) || isViewCreated(source)
 }

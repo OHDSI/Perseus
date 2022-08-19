@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   templateUrl: './person-mapping-warning-dialog.component.html',
   styleUrls: [
     './person-mapping-warning-dialog.component.scss',
-    '../../../scan-data/styles/scan-data-buttons.scss',
+    '../../scan-data/styles/scan-data-buttons.scss',
     '../../../scan-data/styles/scan-data-normalize.scss'
   ]
 })

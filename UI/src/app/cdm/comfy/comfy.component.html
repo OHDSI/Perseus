@@ -27,13 +27,13 @@
         <article>
           <h4>Source tables
             <ng-container *ngIf="data.source?.length">({{source.length}})</ng-container>
-            <p class="saving" *ngIf="reportLoading$ | async">
+            <p class="saving" *ngIf="uploadService.reportLoading$ | async">
               Loading report
               <span>.</span>
               <span>.</span>
               <span>.</span>
             </p>
-            <p class="saving" *ngIf="mappingLoading$ | async">
+            <p class="saving" *ngIf="uploadService.mappingLoading$ | async">
               Loading mapping
               <span>.</span>
               <span>.</span>
@@ -97,36 +97,24 @@
             <div class="initial">
               <p>Please load New Report to see Source tables</p>
 
-              <input #sourceUpload
-                     type="file"
-                     accept=".xlsx, .xls"
-                     (change)="onScanReportUpload($event)"
-                     hidden/>
-
-              <input #mappingUpload
-                     type="file"
-                     accept=".etl"
-                     (change)="onMappingUpload($event)"
-                     hidden/>
-
               <button mat-flat-button
                       color="accent"
                       class="cdm-button"
-                      (click)="loadNewReport()">
+                      (click)="commonUtilsService.uploadScanDataReport()">
                 Load New Report
               </button>
 
               <button mat-flat-button
                       color="accent"
                       class="cdm-button"
-                      (click)="scanData()">
+                      (click)="commonUtilsService.scanData()">
                 Scan Data
               </button>
 
               <button mat-flat-button
                       color="accent"
                       class="cdm-button"
-                      (click)="openMapping()">
+                      (click)="commonUtilsService.openMapping()">
                 Open Mapping
               </button>
             </div>
@@ -221,7 +209,7 @@
                 <button mat-flat-button
                         class="cdm-button"
                         color="accent"
-                        (click)="openSetCDMDialog()">
+                        (click)="commonUtilsService.setCdmVersion()">
                   Select Other Version
                 </button>
               </ng-container>
@@ -241,14 +229,14 @@
 
     <button mat-flat-button
             class="right-bottom-button-reset"
-            [disabled]="!checkExistingMappings()"
-            (click)="resetMapping()">Delete Mapping
+            [disabled]="resetMappingDisabled"
+            (click)="commonUtilsService.resetMapping()">Reset Mapping
     </button>
 
     <button mat-flat-button
             color="accent"
             class="right-bottom-button"
-            [disabled]="!checkExistingMappings()"
+            [disabled]="gotToLinkFieldsDisabled"
             (click)="afterOpenMapping()">Go To Link Fields
     </button>
   </div>

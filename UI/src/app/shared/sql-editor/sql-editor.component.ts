@@ -1,5 +1,14 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewChecked, ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  Renderer2,
+  RendererFactory2,
+  ViewChild
+} from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import 'codemirror/addon/edit/continuelist';
@@ -30,6 +39,9 @@ import { AliasTableMapping, SqlEditorData, TablesColumnsMapping } from '@shared/
 import { BaseComponent } from '@shared/base/base.component'
 import { takeUntil } from 'rxjs/operators'
 import { openHttpErrorDialog } from '@utils/error'
+import { OverlayConfigOptions } from '@services/overlay/overlay-config-options.interface'
+import { OnBoardingComponent } from '@popups/on-boarding/on-boarding.component'
+import { OverlayService } from '@services/overlay/overlay.service'
 
 const editorSettings = {
   mode: 'text/x-sql',
@@ -48,6 +60,8 @@ const editorSettings = {
   templateUrl: './sql-editor.component.html'
 })
 export class SqlEditorComponent extends BaseComponent implements OnInit, AfterViewChecked {
+  private renderer: Renderer2
+
   constructor(
     private commonUtilsService: CommonUtilsService,
     private dialogRef: MatDialogRef<SqlEditorComponent>,
@@ -56,6 +70,8 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
     private matDialog: MatDialog,
     private storeService: StoreService,
     private perseusApiService: PerseusApiService,
+    private rendererFactory: RendererFactory2,
+    private overlayService: OverlayService,
     @Inject(MAT_DIALOG_DATA) public data: SqlEditorData
   ) {
     super();
@@ -93,6 +109,7 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   editorEmpty = true;
 
   ngOnInit() {
+    this.renderer = this.rendererFactory.createRenderer(null, null);
     this.chips = this.data.tables.filter(it => !it.sql);
     this.tables = cloneDeep(this.data.tables);
     this.table = {...this.data.table};
@@ -146,7 +163,17 @@ export class SqlEditorComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   openOnBoardingTip(target: EventTarget) {
-    this.commonUtilsService.openOnBoardingTip(target, 'sql-editor');
+    const key = 'sql-editor'
+    const dialogOptions: OverlayConfigOptions = {
+      hasBackdrop: true,
+      backdropClass: 'on-boarding-backdrop',
+      panelClass: 'on-boarding-bottom',
+      payload: { key },
+      positionStrategyFor: key
+    };
+    const dialogRef = this.overlayService.open(dialogOptions, target, OnBoardingComponent);
+    this.renderer.addClass(target, 'on-boarding-anchor');
+    dialogRef.afterClosed$.subscribe(() => this.renderer.removeClass(target, 'on-boarding-anchor'));
   }
 
   apply() {
