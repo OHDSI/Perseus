@@ -15,13 +15,13 @@ export const isAddAuth = authStrategy === AuthStrategies.ADD
 export const authApiUrl = isAddAuth ?
   `${serverUrl}/auth/api` :
   `${serverUrl}/user/api`
-export const perseusApiUrl = `${'http://localhost:5000'}/backend/api`
-export const whiteRabbitApiUrl = `http://localhost:8000/white-rabbit/api`
+export const perseusApiUrl = `${serverUrl}/backend/api`
+export const whiteRabbitApiUrl = `${serverUrl}/white-rabbit/api`
 export const cdmBuilderApiUrl = `${serverUrl}/cdm-builder/api`
-export const dqdServerUrl = `http://localhost:8001/data-quality-dashboard`
+export const dqdServerUrl = `${serverUrl}/data-quality-dashboard`
 export const dqdApiUrl = `${dqdServerUrl}/api`
-export const athenaUrl = `http://localhost:5002/athena/api`
-export const usagiUrl = `${'http://localhost:5003'}/usagi/api`
+export const athenaUrl = `${serverUrl}/athena/api`
+export const usagiUrl = `${serverUrl}/usagi/api`
 
 export const numberOfPanelsWithoutSimilar = 2
 export const numberOfPanelsWithOneSimilar = 3
