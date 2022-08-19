@@ -36,7 +36,8 @@ export const whiteRabbitDatabaseTypes: string[] = [
 export const dbTypesRequireSchema: string[] = [
   DbTypes.ORACLE,
   DbTypes.POSTGRESQL,
-  DbTypes.SQL_SERVER
+  DbTypes.SQL_SERVER,
+  DbTypes.AZURE
 ];
 
 export const delimitedFiles: string[] = [
