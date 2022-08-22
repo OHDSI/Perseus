@@ -54,7 +54,7 @@ export class CommonUtilsService {
       okButton: 'Save',
       deleteButton: 'Don\'t Save',
     };
-    this.openWarningDialog(settings)
+    this.openWarningDialog(settings, {width: '376px', height: '238px'})
       .pipe(
         switchMap(result => result === settings.okButton ? this.openSaveMappingDialog() : of(null))
       )
@@ -80,7 +80,7 @@ export class CommonUtilsService {
         okButton: 'Confirm',
         deleteButton: 'Cancel'
       }
-      this.openWarningDialog(settings)
+      this.openWarningDialog(settings, {width: '280px', height: '244px'})
         .pipe(
           map(result => result === settings.okButton)
         )
@@ -92,12 +92,12 @@ export class CommonUtilsService {
 
   resetMapping(): void {
     const settings = {
-      warning: 'You want to reset mapping. This action cannot be undone',
+      warning: 'You want to reset mapping. This action cannot be undone.',
       header: 'Reset mapping',
       okButton: 'Reset',
       deleteButton: 'Cancel',
     };
-    this.openWarningDialog(settings)
+    this.openWarningDialog(settings, {width: '271px', height: '235px'})
       .pipe(
         filter(result => result === settings.okButton)
       )
@@ -116,7 +116,7 @@ export class CommonUtilsService {
         okButton: 'Confirm',
         deleteButton: 'Cancel',
       }
-      before$ = this.openWarningDialog(settings).pipe(
+      before$ = this.openWarningDialog(settings, {width: '298px', height: '234px'}).pipe(
         filter(result => result === settings.okButton)
       )
     } else {
@@ -158,7 +158,7 @@ export class CommonUtilsService {
         okButton: 'Confirm',
         deleteButton: 'Cancel'
       }
-      this.openWarningDialog(settings)
+      this.openWarningDialog(settings, {width: '285px', height: '244px'})
         .pipe(
           map(result => result === settings.okButton)
         )
@@ -168,26 +168,13 @@ export class CommonUtilsService {
     }
   }
 
-  deleteMapping(): void {
-    const settings = {
-      warning: 'You want to delete mapping. This action cannot be undone',
-      header: 'Deleter mapping',
-      okButton: 'Delete',
-      deleteButton: 'Cancel',
-    };
-    this.openWarningDialog(settings)
-      .pipe(
-        filter(result => result === settings.okButton)
-      )
-      .subscribe(() => this.deleteMappingAndReturnToComfy())
-  }
-
-  openWarningDialog(settings: ResetWarningData): Observable<string | undefined> {
+  openWarningDialog(settings: ResetWarningData, size = {width: '268px', height: '254px'}): Observable<string> {
     return this.matDialog.open(ResetWarningComponent, {
       data: settings,
       closeOnNavigation: false,
       disableClose: true,
       panelClass: 'warning-dialog',
+      ...size
     }).afterClosed().pipe(
       filter(result => !!result)
     )

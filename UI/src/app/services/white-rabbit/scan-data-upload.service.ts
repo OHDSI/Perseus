@@ -33,9 +33,10 @@ export class ScanDataUploadService {
         okButton: 'Confirm',
         deleteButton: 'Cancel'
       }
-      before$ = this.commonUtilsService.openWarningDialog(settings).pipe(
-        filter(result => result === settings.okButton)
-      )
+      before$ = this.commonUtilsService.openWarningDialog(settings, {width: '298px', height: '234px'})
+        .pipe(
+          filter(result => result === settings.okButton)
+        )
     } else {
       before$ = of(null)
     }
