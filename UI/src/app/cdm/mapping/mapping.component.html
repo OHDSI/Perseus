@@ -248,7 +248,7 @@
       <div class="mapping-footer__right">
         <div class="mapping-footer__block secondary">
           <button class="mapping-footer__delete-links grey-button red-color"
-                  [disabled]="isMappingEmpty()"
+                  [disabled]="isTableMappingEmpty()"
                   (click)="deleteLinks()">Delete Links
           </button>
 
@@ -260,16 +260,17 @@
 
         <div class="mapping-footer__block general">
           <button class="mapping-footer__fake grey-button blue-color"
-                  (click)="generateFakeData()">Generate Fake Data
+                  (click)="commonUtilService.generateFakeData()">
+            Generate Fake Data
           </button>
 
           <button class="mapping-footer__report grey-button blue-color"
-                  [disabled]="isMappingEmpty()"
-                  (click)="generateReport()">Generate Report
+                  [disabled]="commonUtilService.fieldsNotMapped()"
+                  (click)="commonUtilService.generateReportFile()">Generate Report
           </button>
 
           <button class="mapping-footer__cdm blue-button white-color"
-                  [disabled]="isMappingEmpty()"
+                  [disabled]="commonUtilService.fieldsNotMapped()"
                   [matMenuTriggerFor]="cdmMenu">Convert to CDM
             <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 0L4 4L8 0H0Z" fill="white"/>
@@ -277,12 +278,14 @@
           </button>
 
           <mat-menu #cdmMenu="matMenu">
-            <button mat-menu-item (click)="convertToCdm()">
+            <button mat-menu-item
+                    [disabled]="commonUtilService.fieldsNotMapped()"
+                    (click)="commonUtilService.convertToCdm()">
               <mat-icon svgIcon="convert_data"></mat-icon>
               <span>Convert to CDM</span>
             </button>
 
-            <button mat-menu-item (click)="generateZipXml()">
+            <button mat-menu-item (click)="commonUtilService.generateAndSaveFiles()">
               <mat-icon svgIcon="generate_and_save"></mat-icon>
               <span>Generate & Save Files</span>
             </button>

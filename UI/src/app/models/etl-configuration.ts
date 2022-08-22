@@ -5,8 +5,8 @@ import { Type } from 'class-transformer';
 import { ConstantCache, IConstantCache } from '@models/constant-cache';
 import { Concepts, IConcepts } from '@models/perseus/concepts';
 import { Clones, IClones } from '@models/clones';
-import { TargetConfig } from '@models/state';
 import { EtlMapping } from '@models/perseus/etl-mapping'
+import { TargetConfig } from '@models/target-config'
 
 export interface IEtlConfiguration {
   etlMapping?: EtlMapping
@@ -71,41 +71,5 @@ export class EtlConfiguration implements IEtlConfiguration {
     this.targetSimilar = options.targetSimilar
     this.recalculateSimilar = options.recalculateSimilar
     this.concepts = options.concepts
-  }
-
-  get arrows(): ArrowCache {
-    return this.mappingsConfiguration
-  }
-
-  get tables(): TargetConfig {
-    return this.tablesConfiguration
-  }
-
-  get sourceTables(): Table[] {
-    return this.source
-  }
-
-  get targetTables(): Table[] {
-    return this.target
-  }
-
-  get constantsCache(): ConstantCache {
-    return this.constants
-  }
-
-  get targetSimilarRows(): IRow[] {
-    return this.targetSimilar
-  }
-
-  get sourceSimilarRows(): IRow[] {
-    return this.sourceSimilar
-  }
-
-  get recalculateSimilarTables(): boolean {
-    return this.recalculateSimilar
-  }
-
-  get tableConcepts(): Concepts {
-    return this.concepts
   }
 }

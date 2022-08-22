@@ -2,7 +2,6 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ScanDataUploadService } from '@services/white-rabbit/scan-data-upload.service';
 import { saveAs } from 'file-saver';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
-import { switchMap } from 'rxjs/operators';
 import { ProgressConsoleWrapperComponent } from '@scan-data/auxiliary/progress-console-wrapper/progress-console-wrapper.component';
 import { Conversion } from '@models/conversion/conversion'
 import { Observable } from 'rxjs'
@@ -56,12 +55,7 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   onUploadReport(): void {
-    this.whiteRabbitService.result(this.conversion.id)
-      .pipe(
-        switchMap(scanReportReq =>
-          this.scanDataUploadService.uploadScanReport(scanReportReq)
-        )
-      )
+    this.scanDataUploadService.uploadScanReport(this.conversion.id)
       .subscribe(
         () => this.close.emit(this.conversion),
         error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))

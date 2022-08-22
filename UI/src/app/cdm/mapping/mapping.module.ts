@@ -10,7 +10,6 @@ import { ManualTransformationComponent } from './sql-transformation/manual-trans
 import { TransformConfigComponent } from './transform-config/transform-config.component';
 import { LookupComponent } from './lookup/lookup.component';
 import { PopupsModule } from '@popups/popups.module';
-import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
 import { PanelComponent } from '@mapping/panel/panel.component';
 import { AreaComponent } from '@mapping/panel/area/area.component';
 import { DraggableDirective } from '@mapping/panel/directives/draggable.directive';
@@ -32,7 +31,6 @@ import { SwitchCaseTransformationFunctionComponent } from './sql-transformation/
     ManualTransformationComponent,
     TransformConfigComponent,
     LookupComponent,
-    PersonMappingWarningDialogComponent,
     PanelComponent,
     AreaComponent,
     DraggableDirective,

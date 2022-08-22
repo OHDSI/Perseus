@@ -80,30 +80,18 @@ export class BridgeService implements StateService {
     return this.draggedrowclass;
   }
 
-  set newRowIndex(index: number) {
-    this.newrowindex = index;
-  }
-
-  get newRowIndex() {
-    return this.newrowindex;
-  }
-
   constructor(
     private drawService: DrawService,
     private storeService: StoreService
-  ) { }
+  ) {}
 
   applyConfiguration$ = new Subject<EtlConfiguration>();
-  resetAllMappings$ = new Subject<void>();
-  saveAndLoadSchema$ = new Subject<void>();
-  reportLoading$ = new Subject<boolean>();
   removeConnection$ = new Subject<IConnection>();
 
   private sourcerow: IRow;
   private targetrow: IRow;
   private targetrowrlement = null;
   private draggedrowindex = null;
-  private newrowindex = null;
   private draggedrowy = null;
   private draggedrowclass = null;
 
@@ -263,13 +251,8 @@ export class BridgeService implements StateService {
     this.drawArrow(sourceRow, targetRow);
   }
 
-  /**
-   * @param tables - ITable[] | {[area]: ITable[]}
-   * @param name - row name
-   * @param area - source | target
-   */
   findSimilarRows(tables: ITable[] | {[key: string]: ITable[]},
-                  name: string, area?: string): IRow[] {
+                  name: string, area?: Area): IRow[] {
     const similarRows = [];
     const tablesToSearch = area ? tables[ area ] : tables;
     tablesToSearch.forEach(table => {
@@ -311,29 +294,22 @@ export class BridgeService implements StateService {
   }
 
   applyConfiguration(configuration: EtlConfiguration, etlMapping: EtlMapping) {
-    this.deleteAllArrows();
-
     this.constantsCache = configuration.constants
     this.arrowsCache = configuration.mappingsConfiguration
-
     Object.keys(this.arrowsCache)
       .forEach(arrowKey => this.arrowsCache[ arrowKey ].connector.selected = false);
-
-    const isMappingNotEmpty = Object.keys(configuration.arrows).length > 0;
 
     this.storeService.state = {
       ...this.storeService.state,
       etlMapping,
-      filtered: configuration.filtered,
-      target: configuration.targetTables,
-      source: configuration.sourceTables,
-      targetConfig: configuration.tables,
+      target: configuration.target,
+      source: configuration.source,
+      targetConfig: configuration.tablesConfiguration,
       targetClones: configuration.targetClones,
-      mappingEmpty: !isMappingNotEmpty,
-      sourceSimilar: configuration.sourceSimilarRows,
-      targetSimilar: configuration.targetSimilarRows,
-      recalculateSimilar: configuration.recalculateSimilarTables,
-      concepts: configuration.tableConcepts
+      sourceSimilar: configuration.targetSimilar,
+      targetSimilar: configuration.sourceSimilar,
+      recalculateSimilar: configuration.recalculateSimilar,
+      concepts: configuration.concepts
     };
 
     this.applyConfiguration$.next(configuration);
@@ -581,13 +557,13 @@ export class BridgeService implements StateService {
     this.drawService.deleteAllConnectors();
   }
 
-  deleteAllArrows() {
+  private deleteAllArrows() {
     Object.values(this.arrowsCache).forEach(arrow => {
       this.deleteArrow(arrow.connector.id, true);
     });
   }
 
-  deleteAllConstants() {
+  private deleteAllConstants() {
     this.constantsCache = {};
   }
 
@@ -653,21 +629,6 @@ export class BridgeService implements StateService {
     );
   }
 
-  resetAllMappings() {
-    this.deleteAllArrows();
-    this.deleteAllConstants();
-
-    this.resetAllMappings$.next();
-  }
-
-  reportLoading() {
-    this.reportLoading$.next(true);
-  }
-
-  reportLoaded() {
-    this.reportLoading$.next(false);
-  }
-
   /**
    * Apply or cancel sql or lookup transformation
    * @param arrow - connection between source and target row
@@ -696,7 +657,7 @@ export class BridgeService implements StateService {
     this.storeService.state.source.find(item => item.name === groupTableName).rows = rows;
   }
 
-  generateMappingWithViewsAndGroups(sourceTables: any): EtlMappingForZipXmlGeneration {
+  generateMappingWithViewsAndGroups(sourceTables: ITable[]): EtlMappingForZipXmlGeneration {
     const mappingJSON = this.generateMappingModelForZipXml();
 
     if (!sourceTables.length) {
@@ -721,7 +682,7 @@ export class BridgeService implements StateService {
     return addClonesToMapping(mappingJSON);
   }
 
-  prepareTables(data, area, areaRows) {
+  prepareTables(data: ITable[], area: Area, areaRows: IRow[]): ITable[] {
     const similarRows = [];
 
     const tables = data.map(table => {
@@ -748,7 +709,7 @@ export class BridgeService implements StateService {
     this.tables = {}
   }
 
-  private collectSimilarRows(rows, area, areaRows, similarRows): void {
+  private collectSimilarRows(rows: IRow[], area: Area, areaRows: IRow[], similarRows: IRow[]): void {
     rows.forEach(row => {
       if (!row.grouppedFields || !row.grouppedFields.length) {
 

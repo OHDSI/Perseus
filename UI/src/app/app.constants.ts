@@ -34,6 +34,8 @@ export const conceptFieldsTypes = [
   'type_concept_id'
 ]
 
+export const mainPageName = 'comfy'
+
 export const mainPageRouter = '/perseus'
 export const loginRouter = '/sign-in'
 export const codesRouter = '/codes'
