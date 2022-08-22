@@ -547,9 +547,11 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       disableClose: false,
       panelClass: 'warning-dialog',
       data: {
-        title: 'Delete Links',
+        title: 'Links',
         message: 'You want to delete all links for current source table'
-      }
+      },
+      width: '286px',
+      height: '238px'
     });
 
     dialog.afterClosed().subscribe(res => {

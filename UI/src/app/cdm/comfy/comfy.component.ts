@@ -534,7 +534,9 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       data: {
         title: 'View',
         message: 'You want to delete the view'
-      }
+      },
+      width: '270px',
+      height: '235px'
     })
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
