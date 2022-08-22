@@ -1,6 +1,7 @@
 PORT = 5003
 APP_PREFIX = '/usagi'
 VERSION = 0.4
+IMPORT_DATA_TO_SOLR = False
 
 
 class LocalConfig:

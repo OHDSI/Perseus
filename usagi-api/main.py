@@ -3,7 +3,7 @@ import traceback
 from apscheduler.schedulers.background import BackgroundScheduler
 from waitress import serve
 from app import app
-from config import PORT
+from config import PORT, IMPORT_DATA_TO_SOLR
 from create_tables import create_usagi_tables, create_and_fill_usagi_data_tables
 from service.solr_core_service import create_index_if_not_exist
 from usagi_api import usagi
@@ -50,6 +50,7 @@ if __name__ == '__main__':
     init_usagi_data: str = os.getenv('INIT_USAGI_DATA', "")
     if init_usagi_data.lower() in ['true', 'yes', 'y', '1', 't']:
         create_and_fill_usagi_data_tables()
-    import_data_scheduler.add_job(func=import_data, trigger='interval', seconds=5, id=job_id)
-    import_data_scheduler.start()
+    if IMPORT_DATA_TO_SOLR:
+        import_data_scheduler.add_job(func=import_data, trigger='interval', seconds=5, id=job_id)
+        import_data_scheduler.start()
     serve(app, host='0.0.0.0', port=PORT)

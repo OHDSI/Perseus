@@ -14,7 +14,6 @@ job_id = 'clear_cache'
 def create_clear_cache_job():
     job_scheduler.add_job(func=clear_cache, trigger='interval', seconds=60 * 15, id=job_id)
     job_scheduler.start()
-    print("Created clear cache job")
 
 
 def clear_cache():

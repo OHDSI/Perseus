@@ -66,7 +66,7 @@ def unique(sequence):
     return seen
 
 
-def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables):
+def prepare_sql(current_user, mapping_items, source_table, views, target_tables):
     """prepare sql from mapping json"""
 
     def get_sql_data_items(mapping_items_, source_table_):
@@ -149,7 +149,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
-    if not check_lookup_tables(tagret_tables):
+    if not check_lookup_tables(target_tables):
         sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0}'
         if mapped_to_person_id_field:
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
