@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { AuthService } from '@services/auth/auth.service'
 import { User } from '@models/auth/user'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { HttpClient } from '@angular/common/http'
 import { authApiUrl } from '@app/app.constants'
 import { map, tap } from 'rxjs/operators'
@@ -43,10 +43,13 @@ export class AddAuthService implements AuthService {
   }
 
   logout(): Observable<void> {
-    this.oauthService.logOut()
-    this.user = null
-    this.isUserLoggedIn = false
-    return of()
+    return fromPromise(this.oauthService.revokeTokenAndLogout())
+      .pipe(
+        tap(() => {
+          this.user = null
+          this.isUserLoggedIn = false
+        })
+      )
   }
 
   recoverPassword(email: string): Observable<void> {
@@ -54,7 +57,10 @@ export class AddAuthService implements AuthService {
   }
 
   refreshToken(email, token): Observable<boolean> {
-    return fromPromise(this.oauthService.loadDiscoveryDocumentAndLogin())
+    return fromPromise(this.oauthService.refreshToken())
+      .pipe(
+        map(() => true)
+      )
   }
 
   register(user: User): Observable<void> {
