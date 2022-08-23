@@ -28,6 +28,10 @@
       <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Login</button>
     </div>
 
+    <div *ngIf="authGuard.errorMessage" class="auth-error">
+      {{authGuard.errorMessage}}
+    </div>
+
     <div *ngIf="!isAddAuth" class="sign-in__form__redirect">
       <a [routerLink]="['/sign-out']">Register</a>
       <span>|</span>

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { parseHttpError } from '@utils/error';
 import { isAddAuth, mainPageRouter } from '@app/app.constants';
 import { AuthComponent } from '../auth.component';
+import { AuthGuard } from '@guards/auth/auth.guard'
 
 @Component({
   selector: 'app-sign-in',
@@ -19,6 +20,7 @@ export class SignInComponent extends AuthComponent implements OnInit {
   isAddAuth = isAddAuth
 
   constructor(@Inject(authInjector) authService: AuthService,
+              public authGuard: AuthGuard,
               router: Router) {
     super(authService, router)
   }
