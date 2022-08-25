@@ -7,7 +7,7 @@ from flask import request, jsonify, send_from_directory
 from peewee import ProgrammingError
 from werkzeug.exceptions import BadRequestKeyError
 from app import app
-from config import VERSION, APP_PREFIX
+from config import APP_PREFIX
 from services import source_schema_service, scan_reports_service, \
     etl_mapping_service, etl_archive_service, lookup_service, cache_service
 from services.cdm_schema import get_exist_version, get_schema
@@ -20,6 +20,7 @@ from services import xml_writer
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
 from utils.exceptions import InvalidUsage
+from utils.info_response import info_response
 from utils.username_header import username_header
 
 perseus = Blueprint('perseus', __name__, url_prefix=APP_PREFIX)
@@ -28,7 +29,7 @@ perseus = Blueprint('perseus', __name__, url_prefix=APP_PREFIX)
 @perseus.route('/api/info', methods=['GET'])
 def get_app_version():
     app.logger.info("REST request to GET app info")
-    return jsonify({'name': 'Perseus', 'version': VERSION})
+    return info_response()
 
 
 @perseus.route('/api/upload_scan_report', methods=['POST'])

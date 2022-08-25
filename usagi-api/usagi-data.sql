@@ -1,3 +1,6 @@
+--- ! Connect via Usagi user
+
+
 --- create tables for usagi search
 create schema usagi_data;
 

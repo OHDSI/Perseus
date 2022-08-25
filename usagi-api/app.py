@@ -4,6 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from app_config import init_app_config
 from log import LevelFilter
+from util.info_response import info_response
 
 dictConfig({
     'version': 1,
@@ -45,3 +46,8 @@ dictConfig({
 app = Flask(__name__)
 init_app_config(app)
 CORS(app)
+
+
+@app.route('/')
+def health_check():
+    return info_response()

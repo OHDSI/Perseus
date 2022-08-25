@@ -5,7 +5,7 @@ import traceback
 
 from flask import jsonify, Blueprint, request, after_this_request
 from app import app
-from config import APP_PREFIX, VERSION
+from config import APP_PREFIX
 from model.usagi.conversion_status import ConversionStatus
 from model.usagi_data.code_mapping import ScoredConceptEncoder
 from service.code_mapping_conversion_service import get_conversion_by_username, update_conversion, create_conversion
@@ -21,6 +21,7 @@ from util.code_mapping_conversion_util import code_mapping_conversion_to_json
 from util.constants import QUERY_SEARCH_MODE
 from util.conversion_id import get_conversion_id
 from util.exception import InvalidUsage
+from util.info_response import info_response
 from util.utils import username_header
 
 usagi = Blueprint('usagi', __name__, url_prefix=APP_PREFIX)
@@ -29,7 +30,7 @@ usagi = Blueprint('usagi', __name__, url_prefix=APP_PREFIX)
 @usagi.route('/api/info', methods=['GET'])
 def app_version():
     app.logger.info("REST request to GET app info")
-    return jsonify({'name': 'Usagi', 'version': VERSION})
+    return info_response()
 
 
 @usagi.route('/api/code-mapping/load-csv', methods=['POST'])
