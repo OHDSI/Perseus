@@ -5,6 +5,7 @@ from app import app
 from config import APP_PREFIX, VERSION
 from service.search_service import search_athena
 from utils.constants import VOCABULARY_FILTERS
+from utils.info_response import info_response
 
 athena = Blueprint('athena', __name__, url_prefix=APP_PREFIX)
 
@@ -12,7 +13,7 @@ athena = Blueprint('athena', __name__, url_prefix=APP_PREFIX)
 @athena.route('/api/info', methods=['GET'])
 def app_version():
     app.logger.info("REST request to GET app info")
-    return jsonify({'name': 'Athena', 'version': VERSION})
+    return info_response()
 
 
 @athena.route('/api', methods=['GET'])
