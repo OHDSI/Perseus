@@ -14,7 +14,7 @@ export class JwtInterceptor implements HttpInterceptor {
 
   private isRefreshing = false;
 
-  private refreshToken$ = new BehaviorSubject<string>(null);
+  private refreshToken$ = new BehaviorSubject<string | null>(null);
 
   constructor(@Inject(authInjector) private authService: AuthService,
               private router: Router) {}
@@ -27,7 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if (error.status === 401 && this.authService.isUserLoggedIn) {
+          if (error.status === 401 && this.authService.isUserLoggedIn && notExternalUrl(request.url)) {
             return this.handle401Error(request, next)
           }
 

@@ -7,10 +7,10 @@ import { AlreadyRegisteredGuard } from '@guards/auth/already-registered.guard'
 import { AlreadyRegisteredComponent } from '@app/auth/already-registered/already-registered.component'
 import { LinkExpiredGuard } from '@guards/auth/link-expired.guard'
 import { LinkExpiredComponent } from '@app/auth/link-expired/link-expired.component'
-import { isAddAuth } from '@app/app.constants'
+import { isAzureAuth } from '@app/app.constants'
 
 export function getSmtpUrls(): Routes {
-  if (isAddAuth) {
+  if (isAzureAuth) {
     return []
   } else {
     return [

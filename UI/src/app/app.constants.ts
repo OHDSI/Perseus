@@ -10,9 +10,9 @@ export const isDev = !isProd;
 export const serverUrl = environment.serverUrl || window.location.origin
 
 export const authStrategy = environment.authStrategy
-export const isAddAuth = authStrategy === AuthStrategies.ADD
+export const isAzureAuth = authStrategy === AuthStrategies.AAD
 
-export const authApiUrl = isAddAuth ?
+export const authApiUrl = isAzureAuth ?
   `${serverUrl}/auth/api` :
   `${serverUrl}/user/api`
 export const perseusApiUrl = `${serverUrl}/backend/api`
@@ -42,7 +42,8 @@ export const codesRouter = '/codes'
 export const mappingRouter = '/mapping'
 
 export const externalUrls = [
-  'athena.ohdsi.org'
+  'athena.ohdsi.org',
+  'login.microsoftonline.com'
 ]
 
 export const serverErrorExclusionUrls = [
