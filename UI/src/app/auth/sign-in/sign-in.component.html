@@ -18,18 +18,15 @@
       <div class="sign-in__form__control sign-in__form__password-wrapper">
         <label>Password</label>
         <app-auth-password-input formControlName="password"></app-auth-password-input>
-
-        <app-auth-error-message *ngIf="error" class="sign-in__form__password-wrapper__error"
-                                [message]="error"></app-auth-error-message>
       </div>
     </ng-container>
 
+    <app-auth-error-message *ngIf="error" class="sign-in__form__error"
+                            [style.top]="errorTop"
+                            [message]="error"></app-auth-error-message>
+
     <div class="sign-in__form__submit">
       <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Login</button>
-    </div>
-
-    <div *ngIf="authGuard.errorMessage" class="auth-error">
-      {{authGuard.errorMessage}}
     </div>
 
     <div *ngIf="!isAddAuth" class="sign-in__form__redirect">

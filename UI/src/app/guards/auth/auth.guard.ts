@@ -21,7 +21,7 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
   private loader$ = new BehaviorSubject<boolean>(false);
 
-  errorMessage: string | null = null
+  errorMessage$ = new BehaviorSubject<string | null>(null)
 
   get loading$(): Observable<boolean> {
     return this.loader$.asObservable()
@@ -50,7 +50,7 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
               if (this.router.url.includes(mainPageRouter)) {
                 return this.authService.refreshToken().pipe(map(res => !!res))
               } else {
-                this.errorMessage = 'Auth failed'
+                this.errorMessage$.next('Auth failed')
                 return of(false)
               }
             }),
@@ -58,7 +58,7 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
               if (!value) {
                 this.router.navigate([loginRouter])
               } else {
-                this.errorMessage = null
+                this.errorMessage$.next(null)
               }
             }),
             finalize(() => this.loader$.next(false))

@@ -4,11 +4,14 @@ import { Observable } from 'rxjs';
 import { authInjector } from '@services/auth/auth-injector'
 import { AuthService } from '@services/auth/auth.service'
 import { catchError, switchMap } from 'rxjs/operators'
+import { Router } from '@angular/router'
+import { loginRouter } from '@app/app.constants'
 
 @Injectable()
 export class AddInterceptor implements HttpInterceptor {
 
-  constructor(@Inject(authInjector) private authService: AuthService) {}
+  constructor(@Inject(authInjector) private authService: AuthService,
+              private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
@@ -28,6 +31,10 @@ export class AddInterceptor implements HttpInterceptor {
           return next.handle(request)
         }
         throw error
+      }),
+      catchError(e => {
+        this.router.navigate([loginRouter])
+        throw e
       })
     )
   }

@@ -9,5 +9,6 @@ export const authConfig: AuthConfig = {
   clientId: env?.clientId,
   responseType: 'code',
   strictDiscoveryDocumentValidation: false,
-  scope: `api://${env?.clientId}/app`
+  scope: `api://${env?.clientId}/app`,
+  tokenEndpoint: `https://login.microsoftonline.com/${env?.tenantId}/oauth2/v2.0/token`
 }

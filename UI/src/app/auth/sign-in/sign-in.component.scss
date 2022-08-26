@@ -5,17 +5,18 @@
   &__form {
     width: 354px;
     height: 338px;
+    position: relative;
+
 
     &.add {
       height: 195px;
     }
-  }
-}
 
-.auth-error {
-  padding-top: 2px;
-  font-size: 10px;
-  color: #FF4646;
-  text-align: center;
-  height: 0;
+    &__error {
+      position: absolute;
+      width: 278px;
+      display: flex;
+      justify-content: center;
+    }
+  }
 }

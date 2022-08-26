@@ -20,8 +20,8 @@ export class SignInComponent extends AuthComponent implements OnInit {
   isAddAuth = isAddAuth
 
   constructor(@Inject(authInjector) authService: AuthService,
-              public authGuard: AuthGuard,
-              router: Router) {
+              router: Router,
+              private authGuard: AuthGuard) {
     super(authService, router)
   }
 
@@ -30,6 +30,8 @@ export class SignInComponent extends AuthComponent implements OnInit {
     if (this.isAddAuth) {
       this.submit()
     }
+
+    this.authGuard.errorMessage$.subscribe(error => this.error = error)
   }
 
   get email() {
@@ -38,6 +40,10 @@ export class SignInComponent extends AuthComponent implements OnInit {
 
   get password() {
     return this.form.get('password')
+  }
+
+  get errorTop() {
+    return isAddAuth ? '143px' : '267px'
   }
 
   submit() {
