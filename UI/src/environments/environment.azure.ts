@@ -5,5 +5,5 @@ export const environment = {
   production: true,
   serverUrl: null,
   conceptTables: CONCEPT_TABLES,
-  authStrategy: AuthStrategies.ADD
+  authStrategy: AuthStrategies.AAD
 };

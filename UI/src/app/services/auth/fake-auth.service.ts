@@ -4,9 +4,7 @@ import { User } from '@models/auth/user';
 import { AuthService, localStorageUserField } from './auth.service';
 import { catchError, delay, tap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FakeAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>
@@ -62,7 +60,7 @@ export class FakeAuthService implements AuthService {
     return of(null).pipe(delay(this.delay))
   }
 
-  reset(password: string, token: string): Observable<void> {
+  resetPassword(password: string, token: string): Observable<void> {
     return of(null).pipe(delay(this.delay))
   }
 

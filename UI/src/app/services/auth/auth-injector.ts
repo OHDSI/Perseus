@@ -1,14 +1,13 @@
 import { JwtAuthService } from './jwt-auth.service';
-import { authStrategy } from '@app/app.constants'
-import { AddAuthService } from '@services/auth/add-auth.service'
+import { AzureAuthService } from '@services/auth/azure-auth.service'
 import { AuthStrategies } from '../../../environments/auth-strategies'
 import { FakeAuthService } from '@services/auth/fake-auth.service'
 
 
-const initAuthInjector = (strategy: AuthStrategies) => {
+export const authServiceClass = (strategy: AuthStrategies) => {
   switch (strategy) {
-    case AuthStrategies.ADD:
-      return AddAuthService
+    case AuthStrategies.AAD:
+      return AzureAuthService
     case AuthStrategies.SMTP:
       return JwtAuthService
     case AuthStrategies.FAKE:
@@ -17,4 +16,5 @@ const initAuthInjector = (strategy: AuthStrategies) => {
       throw new Error('Unsupported auth strategy')
   }
 }
-export const authInjector = initAuthInjector(authStrategy)
+
+export const authInjector = 'AuthService'

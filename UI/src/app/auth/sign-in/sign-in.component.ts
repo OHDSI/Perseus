@@ -4,7 +4,7 @@ import { authInjector } from '@services/auth/auth-injector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { parseHttpError } from '@utils/error';
-import { isAddAuth, mainPageRouter } from '@app/app.constants';
+import { isAzureAuth, mainPageRouter } from '@app/app.constants';
 import { AuthComponent } from '../auth.component';
 import { AuthGuard } from '@guards/auth/auth.guard'
 
@@ -17,7 +17,7 @@ import { AuthGuard } from '@guards/auth/auth.guard'
   ]
 })
 export class SignInComponent extends AuthComponent implements OnInit {
-  isAddAuth = isAddAuth
+  isAddAuth = isAzureAuth
 
   constructor(@Inject(authInjector) authService: AuthService,
               router: Router,
@@ -27,7 +27,7 @@ export class SignInComponent extends AuthComponent implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
-    if (this.isAddAuth) {
+    if (this.isAddAuth && this.authService.firstLogin) {
       this.submit()
     }
 
@@ -43,7 +43,7 @@ export class SignInComponent extends AuthComponent implements OnInit {
   }
 
   get errorTop() {
-    return isAddAuth ? '143px' : '267px'
+    return isAzureAuth ? '143px' : '267px'
   }
 
   submit() {
