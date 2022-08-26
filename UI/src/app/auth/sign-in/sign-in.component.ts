@@ -7,6 +7,7 @@ import { parseHttpError } from '@utils/error';
 import { isAzureAuth, mainPageRouter } from '@app/app.constants';
 import { AuthComponent } from '../auth.component';
 import { AuthGuard } from '@guards/auth/auth.guard'
+import { takeUntil } from 'rxjs/operators'
 
 @Component({
   selector: 'app-sign-in',
@@ -17,7 +18,7 @@ import { AuthGuard } from '@guards/auth/auth.guard'
   ]
 })
 export class SignInComponent extends AuthComponent implements OnInit {
-  isAddAuth = isAzureAuth
+  isAzureAuth = isAzureAuth
 
   constructor(@Inject(authInjector) authService: AuthService,
               router: Router,
@@ -27,11 +28,15 @@ export class SignInComponent extends AuthComponent implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
-    if (this.isAddAuth && this.authService.firstLogin) {
+    if (this.isAzureAuth && this.authService.firstLogin) {
       this.submit()
     }
 
-    this.authGuard.errorMessage$.subscribe(error => this.error = error)
+    this.authGuard.errorMessage$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(error => this.error = error)
   }
 
   get email() {
@@ -43,7 +48,7 @@ export class SignInComponent extends AuthComponent implements OnInit {
   }
 
   get errorTop() {
-    return isAzureAuth ? '143px' : '267px'
+    return this.isAzureAuth ? '143px' : '267px'
   }
 
   submit() {
@@ -56,7 +61,7 @@ export class SignInComponent extends AuthComponent implements OnInit {
   }
 
   protected initForm() {
-    if (this.isAddAuth) {
+    if (this.isAzureAuth) {
       this.form = new FormGroup({});
     } else {
       this.form = new FormGroup({
