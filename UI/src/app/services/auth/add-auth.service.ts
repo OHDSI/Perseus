@@ -4,7 +4,7 @@ import { User } from '@models/auth/user'
 import { Observable, of } from 'rxjs'
 import { HttpClient } from '@angular/common/http'
 import { authApiUrl } from '@app/app.constants'
-import { catchError, map, tap } from 'rxjs/operators'
+import { map, tap } from 'rxjs/operators'
 import { OAuthService } from 'angular-oauth2-oidc'
 import { authConfig } from '@app/auth.config'
 import { fromPromise } from 'rxjs/internal-compatibility'
@@ -35,7 +35,6 @@ export class AddAuthService implements AuthService {
     return request$
       .pipe(
         map(() => true),
-        catchError(() => of(false))
       )
   }
 
@@ -47,15 +46,18 @@ export class AddAuthService implements AuthService {
     this.oauthService.logOut()
     this.user = null
     this.isUserLoggedIn = false
-    return of()
+    return of(null)
   }
 
   recoverPassword(email: string): Observable<void> {
     throw new Error('Not supported')
   }
 
-  refreshToken(email, token): Observable<User> {
-    throw new Error('Not supported')
+  refreshToken(email, token): Observable<boolean> {
+    return fromPromise(this.oauthService.refreshToken())
+      .pipe(
+        map(() => true)
+      )
   }
 
   register(user: User): Observable<void> {

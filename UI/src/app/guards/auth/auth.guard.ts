@@ -11,26 +11,24 @@ import {
 } from '@angular/router';
 import { AuthService } from '@services/auth/auth.service';
 import { authInjector } from '@services/auth/auth-injector';
-import { loginRouter } from '@app/app.constants';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, tap } from 'rxjs/operators';
+import { loginRouter, mainPageRouter } from '@app/app.constants';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
+  private loader$ = new BehaviorSubject<boolean>(false);
 
-  private loader$ = new Subject<boolean>();
-  loading = false
+  errorMessage$ = new BehaviorSubject<string | null>(null)
+
+  get loading$(): Observable<boolean> {
+    return this.loader$.asObservable()
+  }
 
   constructor(private router: Router,
-              @Inject(authInjector) private authService: AuthService) {
-    this.loader$
-      .pipe(
-        debounceTime(300)
-      )
-      .subscribe(value => this.loading = value)
-  }
+              @Inject(authInjector) private authService: AuthService) {}
 
   canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | boolean {
     return this.canLoadOrActivate()
@@ -47,10 +45,24 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
   private canLoadOrActivate(): Observable<boolean> {
     this.loader$.next(true)
     return this.authService.isUserLoggedIn$
-      .pipe(
-        tap(() => this.loader$.next(false)),
-        tap(value => !value && this.router.navigate([loginRouter]))
-      )
+        .pipe(
+            catchError(() => {
+              if (this.router.url.includes(mainPageRouter)) {
+                return this.authService.refreshToken().pipe(map(res => !!res))
+              } else {
+                this.errorMessage$.next('Auth failed')
+                return of(false)
+              }
+            }),
+            tap(value => {
+              if (!value) {
+                this.router.navigate([loginRouter])
+              } else {
+                this.errorMessage$.next(null)
+              }
+            }),
+            finalize(() => this.loader$.next(false))
+        )
   }
 }
 

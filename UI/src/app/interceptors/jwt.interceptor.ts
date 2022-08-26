@@ -7,6 +7,7 @@ import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
 import { isDev, loginRouter } from '../app.constants';
 import { Router } from '@angular/router';
 import { notExternalUrl } from '@utils/auth-util'
+import { User } from '@models/auth/user'
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -63,7 +64,7 @@ export class JwtInterceptor implements HttpInterceptor {
             this.router.navigateByUrl(loginRouter)
             throw error
           }),
-          switchMap(user => {
+          switchMap((user: User) => {
             this.refreshToken$.next(user.refresh_token)
             return next.handle(this.cloneWithAuthorizationHeader(request))
           }),

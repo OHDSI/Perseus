@@ -19,7 +19,7 @@ export interface AuthService {
 
   reset(password: string, token: string): Observable<void>
 
-  refreshToken(email, token): Observable<User>
+  refreshToken(email?: string, token?: string): Observable<boolean | User>
 }
 
 export const localStorageUserField = 'currentUser'
