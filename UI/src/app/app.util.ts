@@ -2,7 +2,7 @@ import { authStrategy, isAzureAuth, isDev, serverUrl } from '@app/app.constants'
 import { OAuthModule } from 'angular-oauth2-oidc'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
 import { UsernameInterceptor } from '@interceptors/username.interceptor'
-import { JwtInterceptor } from '@interceptors/jwt.interceptor'
+import { SmtpInterceptor } from '@interceptors/smtp-interceptor.service'
 import { AuthStrategies } from '../environments/auth-strategies'
 import { AzureInterceptor } from '@interceptors/azure-interceptor.service'
 
@@ -25,7 +25,7 @@ export function getAuthInterceptors(): any[] {
       ]
     case AuthStrategies.SMTP:
       return [
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+        { provide: HTTP_INTERCEPTORS, useClass: SmtpInterceptor, multi: true }
       ]
     case AuthStrategies.FAKE:
       return [
