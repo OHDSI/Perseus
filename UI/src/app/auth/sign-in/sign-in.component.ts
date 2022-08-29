@@ -56,7 +56,7 @@ export class SignInComponent extends AuthComponent implements OnInit {
     this.sendRequestAndShowLoading(this.authService.login(email, password))
       .subscribe(
         result => result && this.router.navigate([mainPageRouter]),
-        error => this.error = parseHttpError(error) ?? 'Incorrect login or password'
+        error => this.error = parseHttpError(error) ?? 'Auth failed'
       )
   }
 
