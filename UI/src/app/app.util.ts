@@ -25,7 +25,7 @@ export function getAuthInterceptors(): any[] {
       ]
     case AuthStrategies.SMTP:
       return [
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
       ]
     case AuthStrategies.FAKE:
       return [
@@ -40,7 +40,6 @@ export function getAddAllowedUrls(): string[] {
   const result = [serverUrl]
   if (isDev) {
     result.push('http://localhost')
-    result.push('http://localhost:4200')
   }
   return result;
 }

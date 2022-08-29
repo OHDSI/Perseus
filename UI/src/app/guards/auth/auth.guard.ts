@@ -14,6 +14,7 @@ import { authInjector } from '@services/auth/auth-injector';
 import { loginRouter } from '@app/app.constants';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
+import { parseHttpError } from '@utils/error'
 
 @Injectable({
   providedIn: 'root'
@@ -43,17 +44,22 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
   }
 
   private canLoadOrActivate(): Observable<boolean> {
-    this.errorMessage$.next(null)
     this.loader$.next(true)
     return this.authService.isUserLoggedIn$
         .pipe(
-            catchError(() => {
+            catchError(error => {
               if (this.router.url.includes(loginRouter)) {
-                this.errorMessage$.next('Auth failed')
+                this.errorMessage$.next(parseHttpError(error) ?? 'Auth failed')
               }
               return of(false)
             }),
-            tap(result => !result && this.router.navigateByUrl(loginRouter)),
+            tap(result => {
+              if (result) {
+                this.errorMessage$.next(null)
+              } else {
+                this.router.navigateByUrl(loginRouter)
+              }
+            }),
             finalize(() => this.loader$.next(false))
         )
   }
