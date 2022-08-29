@@ -10,7 +10,7 @@ import { notExternalUrl } from '@utils/auth-util'
 import { User } from '@models/auth/user'
 
 @Injectable()
-export class JwtInterceptor implements HttpInterceptor {
+export class SmtpInterceptor implements HttpInterceptor {
 
   private isRefreshing = false;
 

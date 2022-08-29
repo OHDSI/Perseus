@@ -7,7 +7,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core'
 
 @Injectable()
-export class JwtAuthService implements AuthService {
+export class SmtpAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>;
 

@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import { authInjector } from '@services/auth/auth-injector'
 import { AuthService } from '@services/auth/auth.service'
 import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators'
 import { Router } from '@angular/router'
 import { loginRouter } from '@app/app.constants'
-import { notExternalUrl } from '@utils/auth-util'
+import { OAuthModuleConfig, OAuthStorage } from 'angular-oauth2-oidc'
 
 enum RefreshStatus {
   IN_PROGRESS,
@@ -18,24 +18,31 @@ enum RefreshStatus {
 export class AzureInterceptor implements HttpInterceptor {
 
   private isRefreshing = false;
-
   private refreshToken$ = new ReplaySubject<RefreshStatus>(1);
 
   constructor(@Inject(authInjector) private authService: AuthService,
-              private router: Router) {}
+              private router: Router,
+              private authStorage: OAuthStorage,
+              @Optional() private moduleConfig: OAuthModuleConfig) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (!this.needIntercept(request.url)) {
+      return next.handle(request);
+    }
+
     return next.handle(request).pipe(
       catchError(error => {
-        if (error.status === 401 && this.authService.isUserLoggedIn && notExternalUrl(request.url)) {
-          return this.handle401Error(request, next)
+        if (error.status === 401 && this.authService.isUserLoggedIn) {
+          return this.handle401Error(request, next, error)
         }
         throw error
       })
     )
   }
 
-  private handle401Error(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<any>> {
+  private handle401Error(request: HttpRequest<unknown>,
+                         next: HttpHandler,
+                         error401: HttpResponse<unknown>): Observable<HttpEvent<unknown>> {
     if (this.isRefreshing) {
       return this.refreshToken$
         .pipe(
@@ -43,9 +50,9 @@ export class AzureInterceptor implements HttpInterceptor {
           take(1),
           switchMap(status => {
             if (status === RefreshStatus.COMPLETED) {
-              return next.handle(request)
+              return next.handle(this.cloneWithAuthorizationHeader(request))
             } else {
-              throw new Error('Auth failed')
+              throw error401
             }
           })
         )
@@ -61,10 +68,31 @@ export class AzureInterceptor implements HttpInterceptor {
           }),
           switchMap(() => {
             this.refreshToken$.next(RefreshStatus.COMPLETED)
-            return next.handle(request)
+            return next.handle(this.cloneWithAuthorizationHeader(request))
           }),
           finalize(() => this.isRefreshing = false)
         )
     }
+  }
+
+  private cloneWithAuthorizationHeader(request: HttpRequest<unknown>): HttpRequest<unknown> {
+    const token = this.authStorage.getItem('access_token');
+    const header = 'Bearer ' + token;
+    const headers = request.headers.set('Authorization', header);
+
+    return request.clone({ headers });
+  }
+
+  private needIntercept(reqUrl: string): boolean {
+    if (!this.moduleConfig?.resourceServer?.sendAccessToken) {
+      return false
+    }
+    if (this.moduleConfig.resourceServer.allowedUrls) {
+      return !!this.moduleConfig.resourceServer.allowedUrls
+        .find(url =>
+          reqUrl.toLowerCase().startsWith(url.toLowerCase())
+        )
+    }
+    return true
   }
 }

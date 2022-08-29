@@ -1,4 +1,4 @@
-import { JwtAuthService } from './jwt-auth.service';
+import { SmtpAuthService } from './smtp-auth.service';
 import { AzureAuthService } from '@services/auth/azure-auth.service'
 import { AuthStrategies } from '../../../environments/auth-strategies'
 import { FakeAuthService } from '@services/auth/fake-auth.service'
@@ -9,7 +9,7 @@ export const authServiceClass = (strategy: AuthStrategies) => {
     case AuthStrategies.AAD:
       return AzureAuthService
     case AuthStrategies.SMTP:
-      return JwtAuthService
+      return SmtpAuthService
     case AuthStrategies.FAKE:
       return FakeAuthService
     default:
