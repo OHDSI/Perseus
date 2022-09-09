@@ -68,12 +68,12 @@ def unique(sequence):
 
 def prepare_sql(current_user, mapping_items, source_table, views, target_tables):
     """prepare sql from mapping json"""
+    required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id']
 
     def get_sql_data_items(mapping_items_, source_table_):
         """return unique all required fields to prepare sql"""
         all_fields = []
         mapping_items_for_table = mapping_items_[mapping_items_.source_table == source_table_]
-        required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id']
         mapping_data = mapping_items_for_table.get('mapping', pd.Series())
         condition_data = mapping_items_for_table.get('condition', pd.Series())
         lookup = mapping_items_for_table.get('lookup', pd.Series())
@@ -98,14 +98,14 @@ def prepare_sql(current_user, mapping_items, source_table, views, target_tables)
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
-    fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(
-        by=['targetCloneName', 'concept_id'])
+    fields = data_.loc[:, required_fields].sort_values(by=['targetCloneName', 'concept_id'])
     sql = 'SELECT '
     mapped_to_person_id_field = ''
     target_clone_name = ""
     for _, row in fields.iterrows():
         source_field = row['sql_field']
         target_field = row['sql_alias']
+        sql_transformation: str = row.get("sqlTransformation")
         if target_clone_name != row['targetCloneName']:
             target_clone_name = row['targetCloneName']
         if not row['targetCloneName']:
@@ -113,7 +113,8 @@ def prepare_sql(current_user, mapping_items, source_table, views, target_tables)
         else:
             clone = f"{row['targetCloneName']}_"
         if target_field == 'person_id':
-            mapped_to_person_id_field = source_field
+            mapped_to_person_id_field = source_field if not sql_transformation \
+                else sql_transformation.replace(f' as {target_field}', "")
         if not source_field:
             sql += f"{row['source_field']},\n"
         else:
