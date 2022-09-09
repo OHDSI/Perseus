@@ -68,7 +68,7 @@ def unique(sequence):
 
 def prepare_sql(current_user, mapping_items, source_table, views, target_tables):
     """prepare sql from mapping json"""
-    required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id']
+    required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id', 'sqlTransformation']
 
     def get_sql_data_items(mapping_items_, source_table_):
         """return unique all required fields to prepare sql"""
@@ -151,7 +151,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, target_tables)
     else:
         sql += 'FROM {sc}.' + source_table
     if not check_lookup_tables(target_tables):
-        sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0}'
+        sql += '\n JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0}'
         if mapped_to_person_id_field:
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
