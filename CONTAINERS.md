@@ -43,18 +43,18 @@
     docker build -t frontend --build-arg env='prod' .
     docker run --name frontend -d -p 4200:4200 --network=perseus-net frontend
 
-#### Frontend Azure
-    
-    docker build -t frontend --build-arg env='azure' 
-    docker run --name frontend -d -p 4200:4200 --env-file frontend-envs.txt --network=perseus-net frontend
-
-### Frontend (If npm error)
+#### Frontend (If npm error)
 
     npm run build:prod
     docker build -t frontend -f Dockerfile_no-npm .
     docker run --name frontend -d -p 4200:4200 --network=perseus-net frontend
 
-#### Or (Azure and npm error)
+#### Frontend Azure
+    
+    docker build -t frontend --build-arg env='azure' 
+    docker run --name frontend -d -p 4200:4200 --env-file frontend-envs.txt --network=perseus-net frontend
+
+#### Azure and npm error
     
     npm run build:azure
     docker build -t frontend -f Dockerfile_no-npm .
@@ -75,12 +75,17 @@
 ### Vocabulary db
 
     cd vocabulary-db
+
+Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
+
+Install vocabulary archive and extract to `vocabulary` directory. Full path `vocabulary-db/vocabulary`.
+
     docker build -t vocabularydb .
     docker run --name vocabularydb -d -p 5431:5432 --network=perseus-net vocabularydb
 
 ### CDM Builder
     
-    cd ../ETL-CDMBuilder/source
+    cd ../ETL-CDMBuilder
     docker build -t cdm-builder .
     docker run --name cdm-builder -d -p 9000:9000 -e ASPNETCORE_ENVIRONMENT='Docker' --network=perseus-net cdm-builder
 
@@ -93,6 +98,8 @@
     docker run --name r-serve -d -p 6311:6311 --network=perseus-net r-serve
 
 ### Data Quality Dashboard
+
+Make sure R Server container is run.
     
     cd ../DataQualityDashboard
     docker build -t data-quality-dashboard .
@@ -104,14 +111,29 @@
     docker build -t solr .
     docker run --name solr -d -p 8983:8983 --network=perseus-net solr
 
+[Solr admin page link](http://localhost/solr).
+
 ### Athena
+
+Make sure Solr container is run.
 
     cd athena-api
     docker build -t athena .
     docker run --name athena -d -p 5002:5002 -e ATHENA_ENV='Docker' --network=perseus-net athena
 
+To initialize Athena data run this query:
+
+http://localhost/solr/athena/dataimport?command=full-import&jdbcurl=jdbc:postgresql://vocabularydb:5432/vocabulary&jdbcuser=perseus&jdbcpassword=password
+
 ### Usagi
+
+Make sure Solr container is run.
+
     cd usagi-api
     docker build -t usagi .
     docker run --name usagi -d -p 5003:5003 -e USAGI_ENV='Docker' --network=perseus-net usagi
+
+To initialize Usagi data run this query:
+
+http://localhost/solr/usagi/dataimport?command=full-import&jdbcurl=jdbc:postgresql://vocabularydb:5432/vocabulary&jdbcuser=perseus&jdbcpassword=password
     
