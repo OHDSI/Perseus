@@ -112,7 +112,7 @@ Open [localhost](http://localhost) in your browser, preferably Google Chrome.
 
 ## Starting each container separately
 
-https://github.com/SoftwareCountry/Perseus/blob/master/CONTAINERS.md
+[Containers](CONTAINERS.md)
 
 ## Apache Solr initialization **(Optional)**
 
