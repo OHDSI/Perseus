@@ -32,9 +32,7 @@ export class CodeMappingDialogComponent extends ConversionDialog implements OnIn
     this.usagiService.calculateScore()
       .pipe(withLoading(this))
       .subscribe(
-        conversion => {
-          this.usagiService.setConversionId(conversion.id)
-          this.conversion = conversion},
+        conversion => this.conversion = conversion,
         error => openErrorDialog(this.dialogService, 'Code mapping error', parseHttpError(error))
       )
   }

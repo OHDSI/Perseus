@@ -8,6 +8,10 @@ class CodeMappingSnapshot(UsagiBaseModel):
     id = AutoField(),
     name = CharField()
     username = CharField()
-    time = DateTimeField(default=datetime.now)
+    created_at = DateTimeField(default=datetime.now)
+    updated_at = DateTimeField(default=datetime.now)
     snapshot = TextField()
     conversion = ForeignKeyField(CodeMappingConversion, backref='snapshot')
+
+    class Meta:
+        db_table = 'code_mapping_snapshot'

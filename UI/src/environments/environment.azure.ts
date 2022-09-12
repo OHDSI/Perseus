@@ -3,7 +3,7 @@ import { AuthStrategies } from './auth-strategies'
 
 export const environment = {
   production: true,
-  server: null,
+  serverUrl: null,
   conceptTables: CONCEPT_TABLES,
-  authStrategy: AuthStrategies.ADD
+  authStrategy: AuthStrategies.AAD
 };

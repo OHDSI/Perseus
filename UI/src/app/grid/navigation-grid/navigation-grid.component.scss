@@ -42,6 +42,21 @@
         line-height: 15px;
         color: #404040;
       }
+
+      mat-form-field {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        
+        margin-top: 7px;
+        height: 24px;
+        width: 50px;
+        outline: none;
+        border: none;
+        font-size: 14px;
+        line-height: 15px;
+        color: #404040;
+      }
     }
 
     .total {

@@ -418,6 +418,7 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
   border: 2px solid #ffffff;
   border-top-color: #000000;
   animation: spinner .8s linear infinite;
+  z-index: 1001;
 }
 
 // Mat dropdown

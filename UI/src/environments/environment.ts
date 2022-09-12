@@ -7,7 +7,7 @@ import { AuthStrategies } from './auth-strategies'
 
 export const environment = {
   production: false,
-  server: null,
+  serverUrl: null,
   conceptTables: CONCEPT_TABLES,
   authStrategy: AuthStrategies.FAKE
 };

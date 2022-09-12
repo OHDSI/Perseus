@@ -1,6 +1,7 @@
 PORT = 5002
 APP_PREFIX = '/athena'
 VERSION = 0.4
+IMPORT_DATA_TO_SOLR = False
 
 
 class LocalConfig:

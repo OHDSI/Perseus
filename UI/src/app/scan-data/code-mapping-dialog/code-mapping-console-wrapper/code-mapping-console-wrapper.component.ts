@@ -35,6 +35,7 @@ export class CodeMappingConsoleWrapperComponent extends ProgressConsoleWrapperCo
 
   onAbortAndCancel() {
     return this.usagiService.cancelCalculateScoresByCsvCodes()
+      .subscribe(() => this.onClose())
   }
 
   onNext() {

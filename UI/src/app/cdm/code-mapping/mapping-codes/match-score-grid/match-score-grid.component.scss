@@ -16,7 +16,7 @@
     }
 
     .source-grid-wrapper {
-      width: calc(40% - 100px); // 100px - match score grid width (91px) + margin (9px)
+      width: calc(40% - 114px); // 105px - match score grid width (91px) + margin (9px)
       overflow-x: overlay;
       @include grid-scroll();
     }
@@ -29,7 +29,7 @@
     }
 
     .match-score-grid-wrapper {
-      width: 91px;
+      width: 105px;
     }
 
     .target-grid-wrapper {
@@ -41,6 +41,32 @@
     .match-score-grid,
     .target-grid {
       width: 100%;
+    }
+
+    .match-score-column {
+      padding: 4px 4px;
+
+      svg {
+        cursor: pointer;
+
+        path {
+          opacity: .4;
+        }
+      }
+
+      &.sorted {
+        svg {
+          path {
+            opacity: .8;
+          }
+        }
+
+        &.desc {
+          svg {
+            transform: scale(1, -1);
+          }
+        }
+      }
     }
 
     .match-score-column,

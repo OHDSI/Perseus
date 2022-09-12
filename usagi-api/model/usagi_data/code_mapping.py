@@ -75,7 +75,8 @@ class MappingTarget:
 
 
 class CodeMapping:
-    def __init__(self, source_code = None,
+    def __init__(self,
+                 source_code = None,
                  matchScore = 0,
                  mappingStatus = MappingStatus.UNCHECKED,
                  equivalence = Equivalence.UNREVIEWED,

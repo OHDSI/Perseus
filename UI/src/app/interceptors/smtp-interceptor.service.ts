@@ -7,13 +7,14 @@ import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
 import { isDev, loginRouter } from '../app.constants';
 import { Router } from '@angular/router';
 import { notExternalUrl } from '@utils/auth-util'
+import { User } from '@models/auth/user'
 
 @Injectable()
-export class JwtInterceptor implements HttpInterceptor {
+export class SmtpInterceptor implements HttpInterceptor {
 
   private isRefreshing = false;
 
-  private refreshToken$ = new BehaviorSubject<string>(null);
+  private refreshToken$ = new BehaviorSubject<string | null>(null);
 
   constructor(@Inject(authInjector) private authService: AuthService,
               private router: Router) {}
@@ -26,7 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if (error.status === 401 && this.authService.isUserLoggedIn) {
+          if (error.status === 401 && this.authService.isUserLoggedIn && notExternalUrl(request.url)) {
             return this.handle401Error(request, next)
           }
 
@@ -63,7 +64,7 @@ export class JwtInterceptor implements HttpInterceptor {
             this.router.navigateByUrl(loginRouter)
             throw error
           }),
-          switchMap(user => {
+          switchMap((user: User) => {
             this.refreshToken$.next(user.refresh_token)
             return next.handle(this.cloneWithAuthorizationHeader(request))
           }),

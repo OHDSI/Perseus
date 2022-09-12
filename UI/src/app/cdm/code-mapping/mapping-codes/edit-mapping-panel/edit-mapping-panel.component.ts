@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ScoredConcept } from '@models/code-mapping/scored-concept';
 import { ImportCodesService } from '@services/usagi/import-codes.service';
-import { catchError, filter, map, pairwise, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, delay, filter, map, pairwise, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { Observable, Observer, of, ReplaySubject, Subscription } from 'rxjs';
 import { parseHttpError } from '@utils/error';
@@ -115,13 +115,15 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   onSearchModeChange(value: SearchMode, resetSearchString = true) {
     this.searchMode = value
     const searchString = this.form.get('searchString')
+    this.needUpdate = true
     if (this.searchInputDisabled) {
       if (resetSearchString) {
-        searchString.setValue(null)
+        searchString.setValue(null, {emitEvent: false})
       }
-      searchString.disable({emitEvent: false})
+      searchString.disable()
     } else {
-      searchString.enable({emitEvent: false})
+      searchString.setValue('', {emitEvent: false})
+      searchString.enable()
     }
   }
 
@@ -187,6 +189,7 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
       )
       .subscribe(scoredConcepts => {
         this.scoredConcepts = scoredConcepts
+        this.error = null
         this.loading = false
         this.loaded = true
         this.cdr.detectChanges()
@@ -194,14 +197,20 @@ export class EditMappingPanelComponent extends BaseComponent implements OnInit {
   }
 
   private searchByTerm(filters): Observable<ScoredConcept[]> {
+    this.cancelCurrentRequest()
     const {term, sourceAutoAssignedConceptIds} = this.searchByTermParams
+    const request$ = this.importCodesService.getSearchResultByTerm(term, filters, sourceAutoAssignedConceptIds)
+      .pipe(
+        catchError(error => {
+          this.error = parseHttpError(error)
+          return of([])
+        })
+      )
     return new Observable<ScoredConcept[]>(subscriber => {
-      const subscription = this.importCodesService.getSearchResultByTerm(term, filters, sourceAutoAssignedConceptIds)
+      const subscription = of(null)
         .pipe(
-          catchError(error => {
-            this.error = parseHttpError(error)
-            return of([])
-          })
+          delay(400),
+          switchMap(() => request$)
         )
         .subscribe(
           res => subscriber.next(res),

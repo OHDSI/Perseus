@@ -12,3 +12,6 @@ class CodeMappingConversionLog(UsagiBaseModel):
     status_name = CharField(max_length=25)
     percent = IntegerField(null=False)
     conversion = ForeignKeyField(CodeMappingConversion, backref='logs')
+
+    class Meta:
+        db_table = 'code_mapping_conversion_log'

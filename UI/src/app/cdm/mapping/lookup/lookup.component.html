@@ -1,13 +1,17 @@
-<div class="lookup">
+<div class="lookup" [class.spinner]="loading">
   <div class="stage">
     <div class="stage-header">
       <div class="stage-number">1</div>
       <span class="stage-title">Select Lookup</span>
     </div>
-    <div class="stage-body" [class.invalid-with-border]="!originText && lookup?.name">
+    <div class="stage-body"
+         [class.invalid-with-border]="!originText && lookup?.name">
       <mat-form-field class="select-lookup" appearance="fill">
         <mat-label>Select Lookup</mat-label>
-        <mat-select (selectionChange)="selectLookup($event)" [(value)]="selected" [compareWith]="compareSelectedItems">
+        <mat-select (selectionChange)="selectLookup($event)"
+                    [(value)]="selected"
+                    [compareWith]="compareSelectedItems"
+                    [disabled]="loading">
           <mat-option *ngFor="let item of items" [value]="item">
             {{item.name}}
             <ng-container *ngIf="isUserDefined(item)">
@@ -22,12 +26,14 @@
         <ng-container *ngIf="isConceptTableField">
           <mat-radio-button [checked]="lookupType === 'source_to_standard'"
                             (change)="lookupTypeChanged($event.value)"
-                            [value]="lookupType">Source to Standard</mat-radio-button>
+                            [value]="lookupType"
+                            [disabled]="loading">Source to Standard</mat-radio-button>
           <mat-radio-button [checked]="lookupType === 'source_to_source'"
                             (change)="lookupTypeChanged($event.value)"
-                            [value]="lookupType">Source to Source</mat-radio-button>
+                            [value]="lookupType"
+                            [disabled]="loading">Source to Source</mat-radio-button>
           <mat-checkbox [checked]="lookup?.sourceToSourceIncluded"
-                        [disabled]="!withSourceToSource"
+                        [disabled]="!withSourceToSource || loading"
                         (change)="includeSourceToStandardChanged()">Include Source to Source</mat-checkbox>
         </ng-container>
       </div>
@@ -42,7 +48,7 @@
         </mat-expansion-panel-header>
         <textarea #disabledEditor disabled></textarea>
       </mat-expansion-panel>
-      <textarea #editor class="ened"></textarea>
+      <textarea #editor></textarea>
     </div>
   </div>
   <div class="stage stage-2" *ngIf="editMode">

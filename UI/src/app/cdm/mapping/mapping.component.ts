@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { saveAs } from 'file-saver';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { cloneDeep, uniq } from 'src/app/infrastructure/utility';
+import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
 import { BridgeService } from 'src/app/services/bridge.service';
@@ -25,15 +24,12 @@ import {
   similarTableName
 } from '@app/app.constants';
 import { SelectTableDropdownComponent } from '@popups/select-table-dropdown/select-table-dropdown.component';
-import { FakeDataDialogComponent } from '@scan-data/fake-data-dialog/fake-data-dialog.component';
-import { CdmDialogComponent } from '@scan-data/cdm-dialog/cdm-dialog.component';
 import { PerseusLookupService } from '@services/perseus/perseus-lookup.service';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
-import { ReportGenerationEvent, ReportGenerationService, ReportType } from '@services/report/report-generation.service';
+import { ReportGenerationService } from '@services/report/report-generation.service';
 import { PanelComponent } from './panel/panel.component';
-import { EMPTY, Observable, of } from 'rxjs';
-import { PersonMappingWarningDialogComponent } from './person-mapping-warning-dialog/person-mapping-warning-dialog.component';
+import { EMPTY } from 'rxjs';
 import { PerseusXmlService } from '@services/perseus/perseus-xml.service'
 import {
   handleLookupTransformationResult,
@@ -45,6 +41,8 @@ import {
 } from '@utils/transformtaion-dialog-util'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { CommonUtilsService } from '@services/common-utils.service'
+import { FilteredFields } from '@models/filtered-fields'
 
 @Component({
   selector: 'app-mapping',
@@ -52,8 +50,8 @@ import { openErrorDialog, parseHttpError } from '@utils/error'
   styleUrls: ['./mapping.component.scss']
 })
 export class MappingComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-  source: ITable[];
-  target: ITable[];
+  source: ITable[]; // Mapped source
+  target: ITable[]; // Mapped target
   sourceTablesWithoutSimilar: ITable[];
   selectedSourceTable: ITable;
   selectedTargetTable: ITable;
@@ -67,10 +65,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   sourceRows: IRow[] = [];
   targetRows: IRow[] = [];
 
-  mappingConfig = [];
+  mappingConfig: string[][] = [];
 
   similarTableName = similarTableName;
-  filteredFields;
+  filteredFields: FilteredFields;
 
   numberOfPanels: number;
 
@@ -81,10 +79,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   similarSourceTable: ITable
 
   similarTargetTable: ITable
-
-  get hint(): string {
-    return 'no hint';
-  }
 
   get isSourceSimilar() {
     return this.similarSourceTable && this.sourceTabIndex === 0
@@ -102,7 +96,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return this.isTargetSimilar ? this.similarTargetTable : this.selectedTargetTable;
   }
 
-  get targetPanelComponet(): PanelComponent {
+  get targetPanelComponent(): PanelComponent {
     return this.isTargetSimilar ? this.targetPanelSimilar : this.targetPanel
   }
 
@@ -114,6 +108,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   @ViewChild('targetPanelSimilar') targetPanelSimilar: PanelComponent;
 
   constructor(
+    public commonUtilService: CommonUtilsService,
     private storeService: StoreService,
     private dataService: DataService,
     private perseusXmlService: PerseusXmlService,
@@ -142,10 +137,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
     this.subscribeOnVocabularyOpening()
 
-    this.subscribeOnPrepareReportGenerationConfig()
-
-    this.storeService.add('isMappingPage', true)
-
     this.subscribeOnUpdateMapping()
   }
 
@@ -166,14 +157,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   ngOnDestroy() {
     super.ngOnDestroy();
-
     this.clickArrowSubscriptions.forEach(subscription => {
       subscription.unsubscribe();
     });
-
-    this.saveMappingStatus();
-
-    this.storeService.add('isMappingPage', false)
   }
 
   startMarkerClick(offset: number, currentTarget: any) {
@@ -205,7 +191,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
       if (offset >= upperLimit && offset <= lowerLimit) {
         const htmlElementId = arrow.target.name;
-        const htmlElement = this.targetPanelComponet.nativeElement.querySelector(`#target-${htmlElementId}`)
+        const htmlElement = this.targetPanelComponent.nativeElement.querySelector(`#target-${htmlElementId}`)
 
         if (isNoConceptColumn(arrow.target.tableName, htmlElementId)) {
           openChooseTransformationTypePopup(this.overlayService, arrow, htmlElement).afterClosed$
@@ -243,34 +229,26 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     return {upperLimit, lowerLimit};
   }
 
-  prepareTables(data, area) {
-    const rowsKey = `${area}Rows`;
-    this[area] = this.bridgeService.prepareTables(data, area, this[rowsKey]);
-  }
+  private prepareMappedTables() {
+    this.mappingConfig = this.storeService.mappingConfig();
 
-  prepareMappedTables(mappingConfig) {
-    this.mappingConfig = mappingConfig;
+    const lastSourceTableIndex = this.source.length - 1
+    if (this.source[lastSourceTableIndex].name === this.similarTableName) {
+      this.sourceSimilar(this.source[lastSourceTableIndex].rows)
+    }
 
-    this.addSimilar(Area.Source);
-    this.addSimilar(Area.Target);
-  }
-
-  addSimilar(area: Area) {
-    const lastIndex = this[area].length - 1;
-    const lastTableName = this[area][lastIndex].name;
-    if (lastTableName === this.similarTableName) {
-      this[`${area}Similar`](this[area][lastIndex].rows);
+    const lastTargetTableIndex = this.target.length - 1
+    if (this.target[lastTargetTableIndex].name === this.similarTableName) {
+      this.targetSimilar(this.target[lastTargetTableIndex].rows)
     }
   }
 
-  // Used in addSimilar function
-  sourceSimilar(rows) {
+  private sourceSimilar(rows: IRow[]) {
     rows.forEach(row => {
       this.sourceRows.forEach(sourceRow => {
         if (sourceRow.name !== row.name) {
           return;
         }
-
         this.mappingConfig.forEach(item => {
           if (item.includes(sourceRow.tableName) && !item.includes(this.similarTableName)) {
             item.push(this.similarTableName);
@@ -280,24 +258,20 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
-  // Used in addSimilar function
-  targetSimilar(rows) {
+  private targetSimilar(rows: IRow[]) {
     const newItem = [];
     rows.forEach(row => {
       this.targetRows.forEach(targetRow => {
         if (targetRow.name !== row.name) {
           return;
         }
-
         this.mappingConfig.forEach(item => {
           if (!item.includes(targetRow.tableName)) {
             return;
           }
-
           if (!newItem.length) {
             newItem.push(this.similarTableName);
           }
-
           newItem.push.apply(newItem, item.slice(1));
         });
       });
@@ -305,26 +279,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mappingConfig.push(uniq(newItem));
   }
 
-  moveSimilarTables() {
+  private moveSimilarTables() {
     this.moveSimilar(Area.Source);
     this.moveSimilar(Area.Target);
   }
 
-  moveSimilar(area) {
+  private moveSimilar(area) {
     if (this[area][this[area].length - 1].name === this.similarTableName) {
       this[area].unshift(this[area].pop());
     }
-  }
-
-  getMappingConfig() {
-    const mappingConfig = [];
-    Object.keys(this.storeService.state.targetConfig).forEach(key => {
-      const item = this.storeService.state.targetConfig[key].data;
-      if (item.length > 1) {
-        mappingConfig.push(cloneDeep(item));
-      }
-    });
-    return mappingConfig;
   }
 
   getEnabledTargetTables() {
@@ -434,16 +397,13 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   previewMapping() {
-    const source = this.currentSourceTable;
-    const target = this.currentTargetTable;
-    const mapping = this.bridgeService.generateMappingModelForZipXml(source.name, target.name);
-
-    addViewsToMapping(mapping, source);
-    addGroupMappings(mapping, source);
-
+    const mapping = this.bridgeService
+      .generateMappingModelForZipXml(this.currentSourceTable.name, this.currentTargetTable.name);
     if (!mapping?.mapping_items?.length) {
       return
     }
+    addViewsToMapping(mapping, this.currentSourceTable);
+    addGroupMappings(mapping, this.currentSourceTable);
 
     this.perseusXmlService.getXmlPreview(mapping)
       .subscribe(json => {
@@ -455,15 +415,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       }, error =>
         openErrorDialog(this.matDialog, 'Failed to generate XML preview', parseHttpError(error))
       );
-  }
-
-  generateZipXml() {
-    const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(this.source);
-
-    this.dataService
-      .getZippedXml(mappingJSON)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(file => saveAs(file));
   }
 
   openFilter(target) {
@@ -569,14 +520,8 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   isSimilarTabs() {
-    if (!this.source && !this.target) {
-      return false;
-    }
-
-    return (
-      this.currentSourceTable.name === this.similarTableName ||
+    return this.currentSourceTable.name === this.similarTableName ||
       this.currentTargetTable.name === this.similarTableName
-    );
   }
 
   isTooltipDisabled() {
@@ -590,13 +535,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  isMappingEmpty() {
-    return Object.keys(this.bridgeService.arrowsCache).length === 0;
-  }
-
   isTableMappingEmpty() {
     return Object.values(this.bridgeService.arrowsCache)
-      .filter(item => item.source.tableName === this.currentSourceTable.name && item.target.tableName === this.currentTargetTable.name).length === 0;
+      .filter(item => item.source.tableName === this.currentSourceTable.name && item.target.tableName === this.currentTargetTable.name)
+      .length === 0;
   }
 
   deleteLinks() {
@@ -606,8 +548,10 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       panelClass: 'warning-dialog',
       data: {
         title: 'Links',
-        message: 'You want to delete all links'
-      }
+        message: 'You want to delete all links for current source table'
+      },
+      width: '286px',
+      height: '238px'
     });
 
     dialog.afterClosed().subscribe(res => {
@@ -616,39 +560,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         this.bridgeService.refreshAll();
       }
     });
-  }
-
-  generateReport() {
-    this.reportGenerationService
-      .setSource(this.source)
-      .setMappingConfig(this.mappingConfig)
-      .setSimilarTableName(this.similarTableName)
-      .generateReport(ReportType.WORD)
-  }
-
-  generateFakeData() {
-    this.matDialog.open(FakeDataDialogComponent, {
-      width: '253',
-      height: '270',
-      disableClose: true,
-      panelClass: 'scan-data-dialog'
-    });
-  }
-
-  convertToCdm() {
-    this.addMappedSourceToStore();
-
-    this.checkIsPersonMapped()
-      .subscribe(result => {
-        if (result) {
-          this.matDialog.open(CdmDialogComponent, {
-            width: '700',
-            height: '674',
-            disableClose: true,
-            panelClass: 'scan-data-dialog'
-          });
-        }
-      })
   }
 
   showVocabulary() {
@@ -669,20 +580,12 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     this.mainHeight = `calc(100% - ${sub}px)`;
   }
 
-  private addMappedSourceToStore() {
-    this.storeService.add('mappedSource', this.source);
-  }
-
-  private saveMappingStatus() {
-    this.storeService.add('mappingEmpty', this.isMappingEmpty());
-  }
-
   private loadMapping() {
     const {source, target} = this.storeService.getMappedTables();
 
-    this.prepareTables(source, Area.Source);
-    this.prepareTables(target, Area.Target);
-    this.prepareMappedTables(this.getMappingConfig());
+    this.source = this.bridgeService.prepareTables(source, Area.Source, this.sourceRows)
+    this.target = this.bridgeService.prepareTables(target, Area.Target, this.targetRows)
+    this.prepareMappedTables();
     this.moveSimilarTables();
     if (!this.storeService.state.recalculateSimilar) {
       if (this.similarSourceTable) {
@@ -724,42 +627,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.isVocabularyVisible = visible;
       this.setMainHeight();
     })
-  }
-
-  private subscribeOnPrepareReportGenerationConfig() {
-    this.reportGenerationService.reportConfigPrepare$
-      .pipe(
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(() => this.reportGenerationService
-        .setSource(this.source)
-        .setMappingConfig(this.mappingConfig)
-        .setSimilarTableName(this.similarTableName)
-        .emit(ReportGenerationEvent.READY)
-      )
-  }
-
-  private checkIsPersonMapped(): Observable<boolean> {
-    const mapping = this.bridgeService.generateMappingModelForZipXml();
-    const mandatoryPersonFields = [
-      'person_id',
-      'person_source_value'
-    ]
-    const personMapped = mapping.mapping_items
-      .find(mappingPair =>
-        mappingPair.target_table.toLowerCase() === 'person' && mandatoryPersonFields
-          .every(field => mappingPair.mapping
-            .find(mappingNode => mappingNode.target_field.toLowerCase() === field)
-          )
-      )
-    if (personMapped) {
-      return of(true)
-    } else {
-      const dialogRef = this.matDialog.open(PersonMappingWarningDialogComponent, {
-        panelClass: 'perseus-dialog'
-      })
-      return dialogRef.afterClosed()
-    }
   }
 
   /**

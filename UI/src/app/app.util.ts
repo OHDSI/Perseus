@@ -1,30 +1,31 @@
-import { authStrategy, isAddAuth, isDev, serverUrl } from '@app/app.constants'
+import { authStrategy, isAzureAuth, isDev, serverUrl } from '@app/app.constants'
 import { OAuthModule } from 'angular-oauth2-oidc'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
 import { UsernameInterceptor } from '@interceptors/username.interceptor'
-import { JwtInterceptor } from '@interceptors/jwt.interceptor'
+import { SmtpInterceptor } from '@interceptors/smtp-interceptor.service'
 import { AuthStrategies } from '../environments/auth-strategies'
+import { AzureInterceptor } from '@interceptors/azure-interceptor.service'
 
 export function getAuthModules(): any[] {
-  return isAddAuth ? [
+  return isAzureAuth ? [
     OAuthModule.forRoot({
       resourceServer: {
         allowedUrls: getAddAllowedUrls(),
         sendAccessToken: true
       }
-    }),
+    })
   ] : []
 }
 
 export function getAuthInterceptors(): any[] {
   switch (authStrategy) {
-    case AuthStrategies.ADD:
-      return isDev ? [
-        {provide: HTTP_INTERCEPTORS, useClass: UsernameInterceptor, multi: true}
-      ] : []
+    case AuthStrategies.AAD:
+      return [
+        {provide: HTTP_INTERCEPTORS, useClass: AzureInterceptor, multi: true}
+      ]
     case AuthStrategies.SMTP:
       return [
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: SmtpInterceptor, multi: true }
       ]
     case AuthStrategies.FAKE:
       return [

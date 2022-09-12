@@ -7,7 +7,6 @@ import { SearchByTermParams } from '@models/code-mapping/search-by-term-params';
 import { termFromTargetConcept } from '@models/code-mapping/target-concept';
 
 const baseFields = [
-  'searchString',
   'filterByUserSelectedConceptsAtcCode',
   'filterStandardConcepts',
   'includeSourceTerms'
@@ -37,6 +36,10 @@ export function isFormChanged(prev: SearchConceptFilters, curr: SearchConceptFil
     if (prev[field] !== curr[field]) {
       return true
     }
+  }
+
+  if ((prev.searchString ?? '').trim() !== (curr.searchString ?? '').trim()) {
+    return true
   }
 
   for (const fields of advancedFields) {

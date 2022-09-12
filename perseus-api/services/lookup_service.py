@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from typing import List
-
 from model.user_defined_lookup import UserDefinedLookup as Lookup
 from services.request.lookup_request import LookupRequest
 from services.response.lookup_list_item_response import LookupListItemResponse
@@ -22,7 +21,7 @@ def get_lookups(lookup_type: str, username: str) -> List[LookupListItemResponse]
             )
 
     def extract_lookups_from_database():
-        select_query = Lookup.select().where(username == username)
+        select_query = Lookup.select().where(Lookup.username == username)
         lookups_names_list.extend(
             [LookupListItemResponse(id=lookup.id, name=lookup.name) for lookup in select_query]
         )
@@ -55,12 +54,10 @@ def get_lookup_sql(id: int, name: str, lookup_type: str) -> str:
         else:
             path = os.path.join(PREDEFINED_LOOKUPS_PATH, lookup_type, f"{name}.txt")
         if os.path.isfile(path):
-            lookup_value = ''
             with open(path, mode='r') as f:
-                lookup_value = f.readlines()
-            return ''.join(lookup_value)
+                return f.read()
         else:
-            raise InvalidUsage(f'Lookup not found by name {name} and type {type}', 404)
+            raise InvalidUsage(f'Lookup not found by name {name} and type {lookup_type}', 404)
 
 
 def create_lookup(username: str, lookup_request: LookupRequest) -> Lookup:

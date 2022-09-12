@@ -5,7 +5,13 @@
     <div class="toolbar__navigation" (click)="handleNavigation($event)">
       <div class="show-by">
         <label for="show-by">Show by</label>
-        <input id="show-by" type="number" max="500" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+        <mat-form-field>
+          <mat-select floatLabel="never" appearance="none" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <mat-option *ngFor="let option of showByValues" [value]="option.value">
+              {{option.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
 
       <div class="total">

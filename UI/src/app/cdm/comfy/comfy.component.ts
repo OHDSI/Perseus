@@ -15,8 +15,8 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { merge, Observable, Subscription } from 'rxjs';
-import { finalize, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { merge, Subscription } from 'rxjs';
+import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Command } from 'src/app/infrastructure/command';
 import { uniq, uniqBy } from 'src/app/infrastructure/utility';
 import { IRow } from 'src/app/models/row';
@@ -34,17 +34,19 @@ import { CdmFilterComponent } from '@popups/cdm-filter/cdm-filter.component';
 import { SqlEditorComponent } from '@app/shared/sql-editor/sql-editor.component';
 import { DataService } from 'src/app/services/data.service';
 import * as cdmTypes from '../../popups/cdm-filter/CdmByTypes.json';
-import { ScanDataDialogComponent } from '@scan-data/scan-data-dialog/scan-data-dialog.component';
 import { BaseComponent } from '@shared/base/base.component';
 import { VocabularyObserverService } from '@services/athena/vocabulary-observer.service';
 import { mainPageRouter } from '@app/app.constants';
-import { ErrorPopupComponent } from '@popups/error-popup/error-popup.component';
 import { CdkDragDrop } from '@angular/cdk/drag-drop/drag-events';
 import { State } from '@models/state';
 import { asc } from '@utils/sort';
-import { canOpenMappingPage } from '@utils/mapping-util';
+import { isTablesMapped, isTablesMappedOrViewCreated } from '@utils/mapping-util';
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { PerseusApiService } from '@services/perseus/perseus-api.service'
+import { SqlEditorData } from '@shared/sql-editor/sql-editor.data'
+import { ITable } from '@models/table'
+import { DeleteWarningComponent } from '@popups/delete-warning/delete-warning.component'
+import { TargetConfig } from '@models/target-config'
 
 @Component({
   selector: 'app-comfy',
@@ -69,14 +71,22 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     return this.data.source?.length > 0 && this.data.target?.length > 0
   }
 
+  get resetMappingDisabled(): boolean {
+    return !isTablesMappedOrViewCreated(this.targetConfig, this.data.source)
+  }
+
+  get gotToLinkFieldsDisabled(): boolean {
+    return !isTablesMapped(this.targetConfig)
+  }
+
   constructor(
+    public commonUtilsService: CommonUtilsService,
+    public bridgeService: BridgeService,
+    public uploadService: UploadService,
     private vocabulariesService: VocabulariesService,
     private storeService: StoreService,
-    private commonUtilsService: CommonUtilsService,
-    private bridgeService: BridgeService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private uploadService: UploadService,
     private overlayService: OverlayService,
     private dataService: DataService,
     private matDialog: MatDialog,
@@ -94,18 +104,14 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   highlightedTables: string[] = [];
 
   source: string[] = [];
-
-  target = [];
-  targetConfig = {};
+  target: ITable[] = [];
+  targetConfig: TargetConfig = {};
   sourceConnectedTo = [];
   allSourceRows: IRow[] = [];
   uniqSourceRows: IRow[] = [];
   sourceFocusedElement;
   speed = 5;
   subs = new Subscription();
-
-  reportLoading$: Observable<boolean>;
-  mappingLoading$: Observable<boolean>;
 
   vocabularies: IVocabulary[] = [];
   data: State = {
@@ -160,7 +166,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
         // When user map source to target, map only new table
         // First element - target table name excluded
         copyArrayItem(previousContainer.data, data, previousIndex, data.length);
-        this.storeService.add('targetConfig', this.targetConfig);
+        this.storeService.add('targetConfig', {...this.targetConfig});
         this.storeService.state.recalculateSimilar = true;
       }
     }
@@ -195,44 +201,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe(res => {
-        if (res) {
-          this.data = res;
-          this.initializeData();
-        }
-      });
-
-    this.bridgeService.applyConfiguration$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        finalize(() => this.uploadService.mappingLoading = false)
-      )
-      .subscribe(
-        () => this.snackBar.open('Source schema has been loaded to database', ' DISMISS '),
-        () => this.snackBar.open('ERROR: Source schema has not been loaded to database!', ' DISMISS ')
-      );
-
-    this.bridgeService.resetAllMappings$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(_ => {
-        Object.values(this.targetConfig).forEach((item: any) => {
-          item.data = [item.first];
-        });
-        this.initializeData();
-
-        this.snackBar.open('Reset all mappings success', ' DISMISS ');
-      });
-
-    this.bridgeService.saveAndLoadSchema$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(_ => {
-        this.bridgeService.reportLoaded();
-        this.initializeData();
-        this.snackBar.open('New source schema loaded', ' DISMISS ');
-      });
-
-    this.reportLoading$ = this.bridgeService.reportLoading$;
-    this.mappingLoading$ = this.uploadService.mappingLoading$;
+      .subscribe(state => this.initializeData(state))
 
     this.subscribeOnVocabularyOpening();
   }
@@ -266,7 +235,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   dragMoved(event) {
     const e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
-    const container = e.classList.contains('vertical-list-item') ? e : e.closest('.vertical-list-item');
+    const container = e?.classList.contains('vertical-list-item') ? e : e?.closest('.vertical-list-item');
     this.dropTargetId = container ? container.getAttribute('data-id') : undefined;
   }
 
@@ -309,7 +278,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     }
   }
 
-  initializeSourceData() {
+  private initializeSourceData() {
     this.source = [];
     this.source = uniq(
       this.data.source
@@ -318,11 +287,10 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.filterAtInitialization('source', this.data.linkTablesSearch.source);
   }
 
-  initializeTargetData() {
+  private initializeTargetData() {
     this.target = this.data.target;
     this.targetConfig = this.data.targetConfig;
     this.targetTableNames = this.data.target.map(table => table.name);
-
     this.sourceConnectedTo = this.data.target.map(table => `target-${table.name}`);
 
     if (this.data.filteredTables) {
@@ -331,7 +299,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.filterAtInitialization('target', this.data.linkTablesSearch.target);
   }
 
-  initializeSourceColumns() {
+  private initializeSourceColumns() {
     if (!this.data.source.length) {
       return;
     }
@@ -350,14 +318,15 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.filterAtInitialization('source-column', this.data.linkTablesSearch.sourceColumns);
   }
 
-  initializeData() {
+  private initializeData(state: State) {
+    this.data = state;
     this.initializeSourceData();
     this.initializeTargetData();
     this.initializeSourceColumns();
   }
 
   openCdmVersion(version: string) {
-    return this.dataService.getTargetData(version)
+    return this.dataService.setCdmVersionAndGetTargetData(version)
       .subscribe(
         () => this.snackBar.open('Target schema loaded', ' DISMISS '),
         error => openErrorDialog(this.matDialog, 'Can not load target schema', parseHttpError(error))
@@ -413,21 +382,23 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       event.stopPropagation();
     }
 
-    const table = this.targetConfig[targetTableName];
-    const {data} = table;
-
-    const index = data.findIndex(tablename => tablename === sourceTableName);
-
+    const mappedSourceTables = this.targetConfig[targetTableName].data;
+    const index = mappedSourceTables.findIndex(tablename => tablename === sourceTableName);
     if (index > -1) {
-      data.splice(index, 1);
+      mappedSourceTables.splice(index, 1);
+      this.storeService.add('targetConfig', {...this.targetConfig})
     }
 
-    if (this.storeService.state.targetClones[targetTableName]) {
-      delete this.storeService.state.targetClones[targetTableName];
+    const targetClones = this.storeService.state.targetClones
+    if (targetClones[targetTableName]) {
+      delete targetClones[targetTableName];
+      this.storeService.add('targetClones', {...targetClones})
     }
 
-    if (this.storeService.state.concepts[`${targetTableName}|${sourceTableName}`]) {
-      delete this.storeService.state.concepts[`${targetTableName}|${sourceTableName}`];
+    const concepts = this.storeService.state.concepts
+    if (concepts[`${targetTableName}|${sourceTableName}`]) {
+      delete concepts[`${targetTableName}|${sourceTableName}`];
+      this.storeService.add('concepts', {...concepts})
     }
 
     this.bridgeService.deleteArrowsForMapping(
@@ -506,32 +477,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     }
   }
 
-  loadNewReport() {
-    this.uploadService.onFileInputClick(this.fileInput);
-  }
-
-  openSetCDMDialog() {
-    this.commonUtilsService.openSetCDMDialog();
-  }
-
-  onScanReportUpload(event) {
-    const filesCount = event?.target?.files?.length ?? 0
-    if (filesCount < 1) {
-      return
-    }
-    this.uploadService.uploadScanReport(event.target.files[0])
-      .subscribe(
-        () => {},
-        error => this.matDialog.open(ErrorPopupComponent, {
-          data: {
-            title: 'Failed to load new report',
-            message: parseHttpError(error)
-          },
-          panelClass: 'perseus-dialog'
-        })
-      );
-  }
-
   openFilter(target) {
     const types = this.data.filteredTables ? this.data.filteredTables.types : [];
     const checkedTypes = this.data.filteredTables ? this.data.filteredTables.checkedTypes : [];
@@ -550,15 +495,7 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
     this.overlayService.open(dialogOptions, target, CdmFilterComponent);
   }
 
-  resetMapping() {
-    this.commonUtilsService.resetMappingsWithWarning();
-  }
-
-  checkExistingMappings(): boolean {
-    return canOpenMappingPage(this.targetTableNames, this.targetConfig)
-  }
-
-  openSqlDialog(data) {
+  openSqlDialog(data: SqlEditorData) {
     return this.matDialog.open(SqlEditorComponent, {
       closeOnNavigation: false,
       disableClose: false,
@@ -590,7 +527,17 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
   }
 
   openDeleteViewDialog(tableName) {
-    const dialogRef = this.commonUtilsService.deleteTableWithWarning();
+    const dialogRef = this.matDialog.open(DeleteWarningComponent, {
+      closeOnNavigation: false,
+      disableClose: false,
+      panelClass: 'warning-dialog',
+      data: {
+        title: 'View',
+        message: 'You want to delete the view'
+      },
+      width: '270px',
+      height: '235px'
+    })
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         const table = this.findSourceTableByName(tableName);
@@ -607,11 +554,11 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
 
   isEditable(tableName: string): boolean {
     const table = this.findSourceTableByName(tableName);
-    return table && table.sql;
+    return !!table?.sql;
   }
 
-  findSourceTableByName(name) {
-    return this.commonUtilsService.findTableByKeyValue(this.data.source, 'name', name);
+  findSourceTableByName(name: string): ITable | undefined {
+    return this.data.source.find(table => table.name === name)
   }
 
   unsetSourceFocus() {
@@ -635,37 +582,6 @@ export class ComfyComponent extends BaseComponent implements OnInit, AfterViewIn
       this.sourceFocusedElement = target;
       this.sourceFocusedElement.classList.add('source-focus');
     }
-  }
-
-  scanData() {
-    this.matDialog.open(ScanDataDialogComponent, {
-      width: '700',
-      height: '674',
-      disableClose: true,
-      panelClass: 'scan-data-dialog'
-    });
-  }
-
-  openMapping() {
-    this.uploadService.onFileInputClick(this.mappingInput);
-  }
-
-  onMappingUpload(event) {
-    const filesCount = event?.target?.files?.length ?? 0
-    if (filesCount < 1) {
-      return
-    }
-    this.uploadService.uploadEtlMapping(event.target.files[0])
-      .subscribe(
-        () => {},
-        error => this.matDialog.open(ErrorPopupComponent, {
-          data: {
-            title: 'Failed to open mapping',
-            message: parseHttpError(error)
-          },
-          panelClass: 'perseus-dialog'
-        })
-      )
   }
 
   showVocabulary() {

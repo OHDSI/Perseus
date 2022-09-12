@@ -5,7 +5,7 @@
             [matMenuTriggerFor]="mainMenu"></mat-icon>
 
   <mat-icon class="toolbar__logo" svgIcon="logo_white"
-            [ngClass]="{pointer: isNotComfyPage}"
+            [ngClass]="{pointer: !(isComfyPage$ | async)}"
             (click)="goToComfy()"></mat-icon>
 
   <app-breadcrumb></app-breadcrumb>
@@ -38,13 +38,14 @@
            hidden />
 
     <button mat-menu-item
-            (click)="openLoadMappingDialog()">
+            (click)="commonUtilsService.openMapping()">
       <mat-icon svgIcon="mapping"></mat-icon>
       <span>Open Mapping</span>
     </button>
 
     <button mat-menu-item
-            (click)="openSaveMappingDialog()">
+            [disabled]="!(tablesMapped$ | async)"
+            (click)="commonUtilsService.saveMapping()">
       <mat-icon svgIcon="save"></mat-icon>
       <span>Save Mapping</span>
     </button>
@@ -67,32 +68,37 @@
     </button>
 
     <button mat-menu-item
-            (click)="resetAllMappings()">
+            [disabled]="!(tablesMapped$ | async)"
+            (click)="commonUtilsService.resetMapping()">
       <mat-icon svgIcon="reset"></mat-icon>
-      <span>Delete All Mappings</span>
+      <span>Reset Mapping</span>
+    </button>
+
+    <button *ngIf="isDev" mat-menu-item
+            (click)="consoleLogStore()">
+      <span>Console log store</span>
     </button>
   </mat-menu>
 
   <mat-menu #createMapping="matMenu">
     <button mat-menu-item
-            [disabled]="IsCreateNewMappingDisabled()"
-            (click)="resetSourceAndTarget()">
-      <mat-icon [ngClass]="{'new-mapping': IsCreateNewMappingDisabled()}"
-                svgIcon="new_mapping"></mat-icon>
+            [disabled]="!(tablesMapped$ | async)"
+            (click)="commonUtilsService.createNewMapping()">
+      <mat-icon class="new-mapping" svgIcon="new_mapping"></mat-icon>
       <span>Create New Mapping</span>
     </button>
     <button mat-menu-item
-            (click)="scanData()">
+            (click)="commonUtilsService.scanData()">
       <mat-icon svgIcon="scan_data"></mat-icon>
       <span>Scan Data</span>
     </button>
     <button mat-menu-item
-            (click)="onOpenSourceClick()">
+            (click)="commonUtilsService.uploadScanDataReport()">
       <mat-icon svgIcon="folder"></mat-icon>
       <span>Load New Report</span>
     </button>
     <button mat-menu-item
-            (click)="openSetCDMDialog()">
+            (click)="commonUtilsService.setCdmVersion()">
       <mat-icon svgIcon="CDM_version"></mat-icon>
       <span>Set CDM Version</span>
     </button>
@@ -100,18 +106,20 @@
 
   <mat-menu #convertData="matMenu">
     <button mat-menu-item
-            [disabled]="convertToCdmDisabled$ | async"
-            (click)="convertToCdm()">
+            [disabled]="commonUtilsService.fieldsNotMapped()"
+            (click)="commonUtilsService.convertToCdm()">
       <mat-icon svgIcon="convert_data"></mat-icon>
       <span>Convert to CDM</span>
     </button>
     <button mat-menu-item
-            (click)="generateAndSave()">
+            [disabled]="commonUtilsService.fieldsNotMapped()"
+            (click)="commonUtilsService.generateAndSaveFiles()">
       <mat-icon svgIcon="generate_and_save"></mat-icon>
       <span>Generate & Save Files</span>
     </button>
     <button mat-menu-item
-            (click)="generateFakeData()">
+            [disabled]="!(projectInitialized$ | async)"
+            (click)="commonUtilsService.generateFakeData()">
       <mat-icon svgIcon="generate_fake"></mat-icon>
       <span>Generate Fake Data</span>
     </button>
@@ -121,8 +129,8 @@
       <span>Data Quality Check</span>
     </button>
     <button mat-menu-item
-            [disabled]="reportGenerationDisabled$ | async"
-            (click)="generateReport()">
+            [disabled]="commonUtilsService.fieldsNotMapped()"
+            (click)="commonUtilsService.generateReportFile()">
       <mat-icon svgIcon="generate_report"></mat-icon>
       <span>Report</span>
     </button>

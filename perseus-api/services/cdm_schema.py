@@ -36,8 +36,3 @@ def get_schema(cdm_version):
             table_.column_list.append(column)
         schema.append(table_)
     return schema
-
-
-if __name__ == '__main__':
-    for table in get_schema('5.0.1'):
-        print(table.to_json())

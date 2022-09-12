@@ -13,6 +13,7 @@ import { removeExtension } from '@utils/file';
 import { authInjector } from '../auth/auth-injector';
 import { AuthService } from '../auth/auth.service';
 import { Conversion } from '@models/conversion/conversion'
+import { Area } from '@models/area'
 
 @Injectable()
 export class CdmBuilderService {
@@ -40,8 +41,9 @@ export class CdmBuilderService {
   }
 
   addMapping(): Observable<Conversion> {
-    const source = this.storeService.state.mappedSource;
-    const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(source);
+    const {source} = this.storeService.getMappedTables()
+    const mappedSource = this.bridgeService.prepareTables(source, Area.Source, [])
+    const mappingJSON = this.bridgeService.generateMappingWithViewsAndGroups(mappedSource)
     const mappingName = this.getMappingName();
 
     return this.dataService.getZippedXml(mappingJSON)

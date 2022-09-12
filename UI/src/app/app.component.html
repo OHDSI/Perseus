@@ -2,4 +2,4 @@
   <router-outlet></router-outlet>
 </ng-container>
 
-<div class="spinner" *ngIf="authGuard.loading"></div>
+<div class="spinner" *ngIf="authGuard.loading$ | async"></div>

@@ -3,7 +3,7 @@ import { Column } from '@models/grid/grid';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { CodeMapping } from '@models/code-mapping/code-mapping';
+import { CodeMapping, withoutTargetConcepts } from '@models/code-mapping/code-mapping';
 import { CodeMappingParams } from '@models/code-mapping/code-mapping-params';
 import { Code } from '@models/code-mapping/code';
 import { ScoredConcept } from '@models/code-mapping/scored-concept';
@@ -97,14 +97,11 @@ export class ImportCodesService implements StateService {
     formData.append('file', csv)
     formData.append('delimiter', delimiter)
 
-    return this.httpClient.post<Code[]>(`${usagiUrl}/load_codes_to_server`, formData)
+    return this.httpClient.post<Code[]>(`${usagiUrl}/code-mapping/load-csv`, formData)
       .pipe(
-        tap(codes => {
-          if (codes.length === 0) {
-            throw new Error('Empty csv file')
-          }
-          this.state.codes = codes
-          this.state.columns = columnsFromSourceCode(codes[0])
+        tap(sourceCodes => {
+          this.state.codes = sourceCodes
+          this.state.columns = columnsFromSourceCode(sourceCodes[0])
         })
       )
   }
@@ -115,20 +112,23 @@ export class ImportCodesService implements StateService {
       codes: this.codes,
       filters: this.filters
     }
-    return this.httpClient.post<Conversion>(`${usagiUrl}/import_source_codes`, body)
-  }
-
-  setConversionId(conversionId: number): void {
-    this.state.conversionId = conversionId
+    const url = `${usagiUrl}/code-mapping/launch?conversionId=${this.conversionId}`
+    return this.httpClient.post<Conversion>(url, body)
+      .pipe(
+        tap(conversion => this.state.conversionId = conversion.id)
+      )
   }
 
   calculatingScoresInfoWithLogs(conversionId: number): Observable<Conversion> {
-    return this.httpClient.get<Conversion>(`${usagiUrl}/import_source_codes_status?conversionId=${conversionId}`)
+    return this.httpClient.get<Conversion>(`${usagiUrl}/code-mapping/status?conversionId=${conversionId}`)
   }
 
   getCodesMappings(): Observable<CodeMapping[]> {
-    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/get_import_source_codes_results`)
+    return this.httpClient.get<CodeMapping[]>(`${usagiUrl}/code-mapping/result?conversionId=${this.conversionId}`)
       .pipe(
+        map(codeMappings => codeMappings.map(codeMapping =>
+          codeMapping.targetConcepts?.length ? codeMapping : withoutTargetConcepts(codeMapping)
+        )),
         tap(codeMappings => this.state.codeMappings = codeMappings)
       )
   }
@@ -141,7 +141,7 @@ export class ImportCodesService implements StateService {
    */
   getSearchResultByTerm(term: string, filters: SearchConceptFilters, sourceAutoAssignedConceptIds: number[]): Observable<ScoredConcept[]> {
     const body = {term, sourceAutoAssignedConceptIds, filters}
-    return this.httpClient.post<ScoredConcept[]>(`${usagiUrl}/get_term_search_results`, body)
+    return this.httpClient.post<ScoredConcept[]>(`${usagiUrl}/code-mapping/search-by-term`, body)
   }
 
   saveCodes(name): Observable<void> {
@@ -153,14 +153,14 @@ export class ImportCodesService implements StateService {
       filters: this.filters,
       conversionId: this.conversionId
     }
-    return this.httpClient.post<void>(`${usagiUrl}/save_mapped_codes`, body)
+    return this.httpClient.post<void>(`${usagiUrl}/code-mapping/save?conversionId=${this.conversionId}`, body)
   }
 
   /**
    * Concepts classes, Vocabularies, Domains filters
    */
   fetchFilters(): Observable<{[key: string]: FilterValue[]}> {
-    return this.httpClient.get<{[key: string]: string[]}>(`${usagiUrl}/get_filters`)
+    return this.httpClient.get<{[key: string]: string[]}>(`${usagiUrl}/filters`)
       .pipe(
         map(res => {
           const parsed: {[key: string]: FilterValue[]} = {}
@@ -179,6 +179,6 @@ export class ImportCodesService implements StateService {
   }
 
   cancelCalculateScoresByCsvCodes(): Observable<void> {
-    return this.httpClient.get<void>(`${usagiUrl}/cancel_concept_mapping_task`)
+    return this.httpClient.get<void>(`${usagiUrl}/code-mapping/abort?conversionId=${this.conversionId}`)
   }
 }
