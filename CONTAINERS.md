@@ -43,19 +43,22 @@
     docker build -t frontend --build-arg env='prod' .
     docker run --name frontend -d -p 4200:4200 --network=perseus-net frontend
 
-#### Frontend (If npm error)
+#### Frontend if npm error (Optional)
 
+    cd UI
     npm run build:prod
     docker build -t frontend -f Dockerfile_no-npm .
     docker run --name frontend -d -p 4200:4200 --network=perseus-net frontend
 
-#### Frontend Azure
+#### Frontend Azure (Optional)
     
+    cd UI
     docker build -t frontend --build-arg env='azure' 
     docker run --name frontend -d -p 4200:4200 --env-file frontend-envs.txt --network=perseus-net frontend
 
-#### Azure and npm error
+#### Azure and npm error (Optional)
     
+    cd UI
     npm run build:azure
     docker build -t frontend -f Dockerfile_no-npm .
     docker run --name frontend -d -p 4200:4200 --env-file frontend-envs.txt --network=perseus-net frontend
