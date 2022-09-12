@@ -104,7 +104,7 @@ To start all containers at once using docker-compose please:
 - install vocabulary, see [Vocabulary](#vocabulary) section,
 - configure SMTP server as it described in [SMTP](#smtp-server-optional) section **(Optional)**.
 
-    
+
     docker compose up -d
 
 Open [localhost](http://localhost) in your browser, preferably Google Chrome.
