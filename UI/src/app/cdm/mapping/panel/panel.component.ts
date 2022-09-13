@@ -14,25 +14,28 @@ import { OverlayService } from '@services/overlay/overlay.service';
 import { getConstantId } from '@utils/constant';
 import { DEFAULT_CLONE } from '@models/clones'
 import { openErrorDialog } from '@utils/error'
+import { FilteredField } from '@models/filtered-fields'
+import { takeUntil } from 'rxjs/operators'
+import { BaseComponent } from '@shared/base/base.component'
 
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
   styleUrls: [ './panel.component.scss' ]
 })
-export class PanelComponent implements OnInit, AfterViewInit {
+export class PanelComponent extends BaseComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
   @Input() tables: ITable[];
-  @Input() oppositeTableId: any;
-  @Input() filteredFields: any;
-  @Input() mappingConfig: any;
+  @Input() oppositeTableId: number;
+  @Input() filteredFields: FilteredField;
+  @Input() mappingConfig: string[][];
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
-  @Output() changeClone = new EventEmitter<any>();
+  @Output() changeClone = new EventEmitter<ITable>();
 
   @ViewChild('panel') panel: PanelTableComponent;
 
@@ -64,8 +67,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   initializing: boolean;
-  filtered;
-  linkFieldsSearch = {};
+  filtered: string[];
+  linkFieldsSearch: { [key: string]: string } = {};
   linkFieldsSearchKey = '';
   searchCriteria: string;
 
@@ -83,6 +86,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private overlayService: OverlayService,
     private elementRef: ElementRef<HTMLElement>
   ) {
+    super();
     this.initializing = true;
     this.subscribeOnSelectedTablesChange()
   }
@@ -142,14 +146,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.filtered = this.table.rows.map(item => item.name).filter(filterByName);
     this.linkFieldsSearch[ this.linkFieldsSearchKey ] = byName.criteria;
     this.searchCriteria = byName.criteria;
-    this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
+    this.storeService.add('linkFieldsSearch', {...this.linkFieldsSearch});
   }
 
-  filterByNameReset(byName: Criteria): void {
+  filterByNameReset(): void {
     this.filtered = undefined;
     this.linkFieldsSearch[ this.linkFieldsSearchKey ] = '';
     this.searchCriteria = '';
-    this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
+    this.storeService.add('linkFieldsSearch', {...this.linkFieldsSearch});
   }
 
   openConditionDialog() {
@@ -357,7 +361,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setCloneTable(table) {
+  setCloneTable(table: ITable) {
     this.table = table;
     this.changeClone.emit(table);
   }
@@ -370,9 +374,15 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.targetSimilarTableId = targetSimilarTableId
 
     this.storeService.on('selectedSourceTableId')
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(value => this.selectedSourceTableId = value)
 
     this.storeService.on('selectedTargetTableId')
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(value => this.selectedTargetTableId = value)
   }
 }

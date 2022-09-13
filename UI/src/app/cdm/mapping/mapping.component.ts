@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { uniq } from 'src/app/infrastructure/utility';
 import { ITable } from 'src/app/models/table';
 import { IRow } from 'src/app/models/row';
@@ -59,7 +59,6 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   sourceTabIndex = 0;
   targetTabIndex = 0;
 
-  clickArrowSubscriptions = [];
   panelsViewInitialized = new Set();
 
   sourceRows: IRow[] = [];
@@ -77,8 +76,9 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   mainHeight = '';
 
   similarSourceTable: ITable
-
   similarTargetTable: ITable
+
+  mouseupListener: Function
 
   get isSourceSimilar() {
     return this.similarSourceTable && this.sourceTabIndex === 0
@@ -141,7 +141,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   ngAfterViewInit() {
-    this.svgCanvas.nativeElement.addEventListener('mouseup', (event: any) => {
+    this.mouseupListener = event => {
       const markerWidth = 16;
       const {offsetX, offsetY, currentTarget} = event;
 
@@ -152,14 +152,15 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
         event.stopPropagation();
         this.endMarkerClick(offsetY, currentTarget); // Open Transformation dialog
       }
-    });
+    }
+    this.svgCanvas.nativeElement.addEventListener('mouseup', this.mouseupListener);
   }
 
   ngOnDestroy() {
     super.ngOnDestroy();
-    this.clickArrowSubscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-    });
+    if (this.mouseupListener) {
+      this.svgCanvas.nativeElement.removeEventListener('mouseup', this.mouseupListener)
+    }
   }
 
   startMarkerClick(offset: number, currentTarget: any) {
@@ -329,7 +330,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
     }
   }
 
-  refreshTargetPanel(data: any) {
+  refreshTargetPanel(data: ITable) {
     this.selectedTargetTable = data;
     this.targetPanel.panel.table = data;
     this.sourcePanel.panel.refreshPanel();
@@ -384,7 +385,7 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
       this.getEnabledTargetTables()[newIndex];
   }
 
-  changeTargetClone(table: any) {
+  changeTargetClone(table: ITable) {
     this.bridgeService.hideAllArrows();
     this.refreshTargetPanel(table);
   }
@@ -664,12 +665,21 @@ export class MappingComponent extends BaseComponent implements OnInit, OnDestroy
 
   private init() {
     this.storeService.on('filteredFields')
-      .subscribe(res => {
-        if (res) {
-          this.filteredFields = res
-          this.bridgeService.refreshAll();
-        }
-      });
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        filter(res => !!res),
+        tap(res => this.filteredFields = res),
+        switchMap(() => this.bridgeService.refreshAllAsObservable())
+      )
+      .subscribe();
+
+    this.storeService.on('linkFieldsSearch')
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        debounceTime(300),
+        switchMap(() => this.bridgeService.refreshAllAsObservable())
+      )
+      .subscribe();
 
     // On open concrete table mapping
     this.activatedRoute.queryParams.subscribe(data => {

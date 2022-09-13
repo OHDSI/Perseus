@@ -114,7 +114,7 @@ export class StoreService implements StateService {
         map(state => state[key]),
         startWith<State[K], State[K]>(null),
         pairwise(),
-        filter(([prev, curr]) => prev !== curr),
+        filter(([prev, curr]) => !equal(prev, curr)),
         map(([, curr]) => curr)
       )
   }
