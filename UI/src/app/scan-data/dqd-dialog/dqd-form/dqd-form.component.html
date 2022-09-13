@@ -53,7 +53,9 @@
 
     <app-test-connection (testConnection)="onTestConnection()"
                          [connectionResult]="connectionResult"
-                         [disabled]="isCheckAndTestButtonDisabled"></app-test-connection>
+                         [disabled]="isCheckAndTestButtonDisabled"
+                         [tryConnect]="tryConnect"
+                         (cancel)="onCancelTestConnection()"></app-test-connection>
   </div>
   <div class="dqd-connection__bottom-border"></div>
 

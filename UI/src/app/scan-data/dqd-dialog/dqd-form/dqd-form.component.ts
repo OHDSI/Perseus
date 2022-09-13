@@ -8,6 +8,7 @@ import { DataQualityCheckStateService } from '@services/data-quality-check/data-
 import { AbstractResourceFormComponent } from '../../auxiliary/resource-form/abstract-resource-form.component';
 import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service'
 import { parseHttpError } from '@utils/error'
+import { Subscription } from 'rxjs'
 
 @Component({
   selector: 'app-dqd-form',
@@ -32,6 +33,8 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
   @Output()
   cancel = new EventEmitter<void>();
 
+  testConnectionSub: Subscription;
+
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
               private dqdService: DataQualityCheckService,
@@ -40,7 +43,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
   }
 
   get isCheckAndTestButtonDisabled() {
-    return !this.form.valid;
+    return this.tryConnect || !this.form.valid;
   }
 
   ngOnInit() {
@@ -62,12 +65,15 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
 
   onTestConnection(): void {
     this.tryConnect = true;
-
     const dbSettings = this.form.value as DbSettings;
+    this.form.disable();
 
-    this.dqdService.testConnection(dbSettings)
+    this.testConnectionSub = this.dqdService.testConnection(dbSettings)
       .pipe(
-        finalize(() => this.tryConnect = false)
+        finalize(() => {
+          this.tryConnect = false;
+          this.form.enable({emitEvent: false});
+        })
       )
       .subscribe(
         result => {
@@ -86,6 +92,10 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
           this.showErrorPopup(this.connectionResult.message);
         }
       );
+  }
+
+  onCancelTestConnection(): void {
+    this.testConnectionSub.unsubscribe()
   }
 
   onCheck(): void {
