@@ -17,6 +17,11 @@
   &__clear-all {
     width: 72px;
     padding: 0 10px;
+
+    &.try-connect {
+      opacity: 0.4;
+      cursor: default;
+    }
   }
 
   &__test-connection {

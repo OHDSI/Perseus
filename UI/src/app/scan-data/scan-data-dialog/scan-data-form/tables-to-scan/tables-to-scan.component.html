@@ -1,6 +1,6 @@
 <div class="scan-tables">
   <div class="scan-tables__header scan-step-header">
-    <div class="scan-tables__header-number scan-step" [ngClass]="{'disconnected': !connectionResult || !connectionResult.canConnect}">
+    <div class="scan-tables__header-number scan-step" [ngClass]="{'disconnected': !connected}">
       <h5 class="scan-step__number">2</h5>
     </div>
 
@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="scan-tables-content" *ngIf="connectionResult && connectionResult.canConnect; else disconnectBlock">
+  <div class="scan-tables-content" *ngIf="connected; else disconnectBlock">
     <label class="scan-tables-content__search-input">
       <mat-icon>search</mat-icon>
       <input type="text" placeholder="Search by Tables"
