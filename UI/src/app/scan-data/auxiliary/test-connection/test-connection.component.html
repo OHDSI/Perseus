@@ -1,8 +1,17 @@
 <div class="test-connection">
-  <button class="test-connection-submit-button" type="submit" (click)="testConnection.emit()"
+  <button *ngIf="showTestConnection else cancelBlock"
+          class="test-connection-submit-button"
+          type="submit"
+          (click)="testConnection.emit()"
           [disabled]="disabled">
     Test Connection
   </button>
+
+  <ng-template #cancelBlock>
+    <button class="test-connection-submit-button" type="submit" (click)="cancel.emit()">
+      Cancel
+    </button>
+  </ng-template>
 
   <div class="test-connection-result" [hidden]="!connectionResult">
     <div class="test-connection-result-success" *ngIf="connectionResult && connectionResult.canConnect; else errorBlock">
