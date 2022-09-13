@@ -6,11 +6,12 @@ import { cdmBuilderDatabaseTypes, fakeData } from '../../../scan-data.constants'
 import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { adaptDbSettingsForSource } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { hasLimits } from '@utils/scan-data-util';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
+import { parseHttpError } from '@utils/error'
+import { Subscription } from 'rxjs'
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -39,6 +40,8 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     fakeData,
     ...cdmBuilderDatabaseTypes
   ];
+
+  private testConnectionSub: Subscription
 
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
@@ -74,20 +77,15 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
   }
 
   onTestConnection(): void {
-    const errorParser = error => {
-      if (typeof error.error === 'string') {
-        return error.error;
-      } else if (error.message) {
-        return error.message;
-      } else {
-        return 'Can not connect to database server';
-      }
-    };
-
+    const cdmSettings = adaptDbSettingsForSource({dbType: this.dataType, ...this.form.value});
+    this.form.disable();
     this.tryConnect = true;
-    this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
+    this.testConnectionSub =  this.cdmBuilderService.testSourceConnection(cdmSettings)
       .pipe(
-        finalize(() => this.tryConnect = false)
+        finalize(() => {
+          this.tryConnect = false;
+          this.form.enable({emitEvent: false});
+        })
       )
       .subscribe(
         result => {
@@ -97,11 +95,15 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
         error => {
           this.connectionResult = {
             canConnect: false,
-            message: errorParser(error),
+            message: parseHttpError(error),
           };
           this.showErrorPopup(this.connectionResult.message);
         }
       );
+  }
+
+  cancelTestConnection(): void {
+    this.testConnectionSub.unsubscribe();
   }
 
   isDbTypeDisable(dataType: string): boolean {

@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes } from '../../../scan-data.constants';
 import { adaptDbSettingsForDestination } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
+import { Subscription } from 'rxjs'
 
 @Component({
   selector: 'app-cdm-destination-form',
@@ -26,6 +26,8 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
 
   dataTypes = cdmBuilderDatabaseTypes;
 
+  private testConnectionSub: Subscription
+
   constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
     super(formBuilder, matDialog);
   }
@@ -43,10 +45,15 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
   }
 
   onTestConnection() {
+    const cdmSettings = this.settings
+    this.form.disable();
     this.tryConnect = true;
-    this.cdmBuilderService.testDestinationConnection(this.settings as CdmSettings)
+    this.testConnectionSub = this.cdmBuilderService.testDestinationConnection(cdmSettings)
       .pipe(
-        finalize(() => this.tryConnect = false)
+        finalize(() => {
+          this.tryConnect = false;
+          this.form.enable({emitEvent: false});
+        })
       )
       .subscribe(
         result => {
@@ -61,5 +68,9 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
           this.showErrorPopup(this.connectionResult.message);
         }
       );
+  }
+
+  cancelTestConnection() {
+    this.testConnectionSub.unsubscribe()
   }
 }

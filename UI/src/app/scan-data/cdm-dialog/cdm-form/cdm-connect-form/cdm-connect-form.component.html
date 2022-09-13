@@ -29,5 +29,5 @@
     <input [id]="id('schema')" type="text" formControlName="schema" trim="blur">
   </div>
 
-  <a class="source-form__clear-all" (click)="resetForm()">Clear all</a>
+  <a class="cdm-form__clear-all" [class.try-connect]="tryConnect" (click)="resetForm()">Clear all</a>
 </form>
