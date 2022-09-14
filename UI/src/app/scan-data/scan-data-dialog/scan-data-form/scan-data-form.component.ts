@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { TableToScan } from '@models/white-rabbit/table-to-scan';
 import { DbSettings, DbSettingsBuilder } from '@models/white-rabbit/db-settings';
@@ -36,6 +36,9 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   filesToScan: File[];
 
   connectionResult: ConnectionResult;
+
+  @Input()
+  scanning: boolean;
 
   @Output()
   cancel = new EventEmitter<void>();

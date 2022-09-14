@@ -421,6 +421,26 @@ div[id="cdk-overlay-1"], div[id="cdk-overlay-2"], div[id="cdk-overlay-3"] {
   z-index: 1001;
 }
 
+.btn-spinner {
+  position: relative;
+
+  &:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    margin-left: -8px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-top-color: #000;
+    animation: spinner .8s linear infinite;
+  }
+}
+
 // Mat dropdown
 .select-lookup {
 

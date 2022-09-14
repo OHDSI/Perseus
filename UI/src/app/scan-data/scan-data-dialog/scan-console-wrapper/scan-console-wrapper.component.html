@@ -7,9 +7,16 @@
     </ng-template>
 
     <ng-template ngSwitchCase="2">
-      <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
-      <button class="console-wrapper__action-save confirm" (click)="onSaveReport()">Save report</button>
-      <button class="console-wrapper__action-link confirm" (click)="onUploadReport()">Link tables</button>
+      <button class="console-wrapper__action-back cancel"
+              (click)="onBack()">Back</button>
+      <button class="console-wrapper__action-save confirm"
+              [disabled]="savingReport"
+              [class.btn-spinner]="savingReport"
+              (click)="onSaveReport()">Save report</button>
+      <button class="console-wrapper__action-link confirm"
+              [disabled]="linkingTables"
+              [class.btn-spinner]="linkingTables"
+              (click)="onUploadReport()">Link tables</button>
     </ng-template>
 
     <ng-template ngSwitchDefault>
