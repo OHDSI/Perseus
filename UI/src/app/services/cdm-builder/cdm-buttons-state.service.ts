@@ -8,4 +8,5 @@ export class CdmButtonsStateService {
   testTargetConnection = false
   converting = false
   generatingFakeData = false
+  dqdRunning = false
 }

@@ -9,7 +9,10 @@
     <ng-template ngSwitchCase="2">
       <button class="console-wrapper__action-back cancel" (click)="onBack()">Back</button>
       <button class="console-wrapper__action-back confirm" (click)="onClose()">Close</button>
-      <button class="console-wrapper__action-dqd confirm" (click)="onDataQualityCheck()">Data Quality Check</button>
+      <button class="console-wrapper__action-dqd confirm"
+              [disabled]="cdmButtonsService.dqdRunning"
+              [class.btn-spinner]="cdmButtonsService.dqdRunning"
+              (click)="onDataQualityCheck()">Data Quality Check</button>
     </ng-template>
 
     <ng-template ngSwitchDefault>

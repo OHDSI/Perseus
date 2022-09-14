@@ -111,6 +111,9 @@ export class CdmDialogComponent extends ConversionDialog {
     this.savedCdmBuilderConversion = this.conversion
     const dbSettings = adaptDestinationCdmSettings(this.cdmSettings)
     this.dataQualityCheckService.dataQualityCheck(dbSettings)
+      .pipe(
+        withLoadingField(this.cdmButtonsService, 'dqdRunning')
+      )
       .subscribe(conversion => {
         this.conversion = conversion
         this.project = conversion.project

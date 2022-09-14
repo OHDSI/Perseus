@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { dqdDatabaseTypes } from '../../scan-data.constants';
@@ -27,6 +27,9 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
 
   dataTypes = dqdDatabaseTypes;
 
+  @Input()
+  loading: boolean
+
   @Output()
   check = new EventEmitter<DbSettings>();
 
@@ -43,7 +46,7 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
   }
 
   get isCheckAndTestButtonDisabled() {
-    return this.tryConnect || !this.form.valid;
+    return this.tryConnect || !this.form.valid || this.loading;
   }
 
   ngOnInit() {

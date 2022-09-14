@@ -6,6 +6,7 @@ import { Observable } from 'rxjs'
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service'
 import { MatDialog } from '@angular/material/dialog'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
 
 @Component({
   selector: 'app-cdm-console-wrapper',
@@ -27,7 +28,8 @@ export class CdmConsoleWrapperComponent extends ProgressConsoleWrapperComponent 
   dataQualityCheck = new EventEmitter<void>()
 
   constructor(private cdbBuilderService: CdmBuilderService,
-              private dialogService: MatDialog) {
+              private dialogService: MatDialog,
+              public cdmButtonsService: CdmButtonsStateService) {
     super()
   }
 

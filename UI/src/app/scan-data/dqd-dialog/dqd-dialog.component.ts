@@ -7,6 +7,7 @@ import { DataQualityCheckService } from '@services/data-quality-check/data-quali
 import { Conversion } from '@models/conversion/conversion'
 import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { withLoading } from '@utils/loading'
 
 @Component({
   selector: 'app-dqd-dialog',
@@ -25,6 +26,8 @@ export class DqdDialogComponent extends ConversionDialog {
   conversion: Conversion | null
   project: string
 
+  loading = false
+
   constructor(dialogRef: MatDialogRef<DqdDialogComponent>,
               private dataQualityCheckService: DataQualityCheckService,
               private dialogService: MatDialog) {
@@ -33,6 +36,9 @@ export class DqdDialogComponent extends ConversionDialog {
 
   onDataQualityCheck(dbSettings: DbSettings): void {
     this.dataQualityCheckService.dataQualityCheck(dbSettings)
+      .pipe(
+        withLoading(this)
+      )
       .subscribe(conversion => {
         this.conversion = conversion
         this.project = conversion.project

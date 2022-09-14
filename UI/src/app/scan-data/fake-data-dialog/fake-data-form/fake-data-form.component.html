@@ -14,6 +14,9 @@
 
   <div class="fake-data-form__action">
     <button class="fake-data-form__action-cancel cancel" (click)="cancel.emit()">Cancel</button>
-    <button class="fake-data-form__action-confirm confirm" [disabled]="form.invalid" (click)="onGenerate()">Generate</button>
+    <button class="fake-data-form__action-confirm confirm"
+            [disabled]="form.invalid || loading"
+            [class.btn-spinner]="loading"
+            (click)="onGenerate()">Generate</button>
   </div>
 </div>

@@ -64,6 +64,7 @@
             (click)="onCancel()">Cancel</button>
     <button class="dqd-connection__action-convert confirm"
             (click)="onCheck()"
+            [class.btn-spinner]="loading"
             [disabled]="isCheckAndTestButtonDisabled">Check</button>
   </div>
 </div>
