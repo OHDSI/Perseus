@@ -21,10 +21,9 @@ export class DraggableDirective implements OnInit {
   @Input() area: Area;
   @Input() table: ITable;
   @Input() row: IRow;
-  @Output() refreshPanel: EventEmitter<any> = new EventEmitter();
-  @Output() addToGroup: EventEmitter<any> = new EventEmitter();
-  @Output() reorderRows: EventEmitter<any> = new EventEmitter();
-  @Input() mappingConfig: any;
+  @Output() addToGroup: EventEmitter<[IRow, IRow]> = new EventEmitter();
+  @Output() reorderRows: EventEmitter<IRow> = new EventEmitter();
+  @Input() mappingConfig: string[][];
   @Input() group: IRow;
 
   constructor(

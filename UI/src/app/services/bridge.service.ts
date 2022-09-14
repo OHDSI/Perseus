@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { IRow, Row } from 'src/app/models/row';
 import { DrawService } from 'src/app/services/draw.service';
 import { Command } from '../infrastructure/command';
@@ -353,7 +353,20 @@ export class BridgeService implements StateService {
     });
   }
 
-  refreshAll() {
+  refreshAllAsObservable(): Observable<void> {
+    return new Observable<void>(subscriber => {
+      this.hideAllArrows();
+      setTimeout(() => {
+        Object.values(this.arrowsCache).forEach(arrow => {
+          this.refreshConnector(arrow);
+        });
+        subscriber.next()
+        subscriber.complete()
+      }, 300);
+    })
+  }
+
+  refreshAll(): void {
     this.hideAllArrows();
 
     setTimeout(() => {
