@@ -46,10 +46,12 @@ export class ProgressConsoleComponent extends BaseComponent {
   }
 
   private scrollToConsoleBottom() {
-    const console = this.console.nativeElement;
-    // delayed scroll, after render new message
-    setTimeout(() =>
-      console.scrollTop = console.scrollHeight - console.clientHeight
-    );
+    const console = this.console?.nativeElement;
+    if (console) {
+      // delayed scroll, after render new message
+      setTimeout(() =>
+        console.scrollTop = console.scrollHeight - console.clientHeight
+      );
+    }
   }
 }

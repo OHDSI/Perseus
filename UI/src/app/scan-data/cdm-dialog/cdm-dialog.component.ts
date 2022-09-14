@@ -10,12 +10,15 @@ import { ConversionDialog } from '@scan-data/conversion-dialog'
 import { Conversion } from '@models/conversion/conversion'
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service'
 import { AdditionalStatusesForCdmBuilderDialog, ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
-import { switchMap, tap } from 'rxjs/operators'
+import { filter, switchMap, tap } from 'rxjs/operators'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings'
 import { UserSchemaService } from '@services/perseus/user-schema.service'
 import { FakeDataService } from '@services/white-rabbit/fake-data.service'
 import { DataQualityCheckService } from '@services/data-quality-check/data-quality-check.service'
+import { withLoadingField } from '@utils/loading'
+import { CdmFormComponent } from '@scan-data/cdm-dialog/cdm-form/cdm-form.component'
+import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
 
 @Component({
   selector: 'app-cdm-dialog',
@@ -23,6 +26,9 @@ import { DataQualityCheckService } from '@services/data-quality-check/data-quali
   styleUrls: ['./cdm-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
 })
 export class CdmDialogComponent extends ConversionDialog {
+
+  @ViewChild(CdmFormComponent)
+  cdmFormComponent: CdmFormComponent
 
   @ViewChild(CdmConsoleWrapperComponent)
   consoleWrapperComponent: CdmConsoleWrapperComponent
@@ -40,7 +46,8 @@ export class CdmDialogComponent extends ConversionDialog {
               private dialogService: MatDialog,
               private schemaService: UserSchemaService,
               private fakeDataService: FakeDataService,
-              private dataQualityCheckService: DataQualityCheckService) {
+              private dataQualityCheckService: DataQualityCheckService,
+              private cdmButtonsService: CdmButtonsStateService) {
     super(dialogRef);
   }
 
@@ -68,8 +75,11 @@ export class CdmDialogComponent extends ConversionDialog {
   }
 
   onConvert(cdmSettings: CdmSettings): void {
-    this.cdmBuilderService.addMapping()
+    this.cdmFormComponent.checkDestinationDatabase(cdmSettings)
       .pipe(
+        withLoadingField(this.cdmButtonsService, 'converting'),
+        filter(isOk => isOk),
+        switchMap(() => this.cdmBuilderService.addMapping()),
         switchMap(conversion => {
           this.conversion = conversion
           this.cdmSettings = {...cdmSettings, conversionId: this.conversion.id}
@@ -85,6 +95,7 @@ export class CdmDialogComponent extends ConversionDialog {
   onGenerateFakeData(fakeDataSettings: FakeDataSettings) {
     this.schemaService.getUserSchema()
       .pipe(
+        withLoadingField(this.cdmButtonsService, 'generatingFakeData'),
         tap(schema => fakeDataSettings.userSchema = schema),
         switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings))
       )

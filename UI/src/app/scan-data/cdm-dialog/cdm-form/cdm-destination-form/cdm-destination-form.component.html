@@ -1,5 +1,5 @@
 <div class="cdm-form__content-item">
-  <div class="connect-progress-bar" *ngIf="tryConnect">
+  <div class="connect-progress-bar" *ngIf="cdmButtonsService.testTargetConnection">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </div>
 
@@ -13,7 +13,7 @@
   <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
     <mat-select [ngModel]="dataType"
-                [disabled]="tryConnect"
+                [disabled]="cdmButtonsService.testTargetConnection"
                 (ngModelChange)="onDataTypeChange($event)">
       <mat-option *ngFor="let type of dataTypes" [value]="type">
         {{type}}
@@ -24,12 +24,12 @@
   <app-cdm-connect-form prefix="destination"
                         [requireSchema]="requireSchema"
                         [form]="form"
-                        [tryConnect]="tryConnect"></app-cdm-connect-form>
+                        [tryConnect]="cdmButtonsService.testTargetConnection"></app-cdm-connect-form>
 
   <app-test-connection class="cdm-form__content-item__apply"
                        (testConnection)="onTestConnection()"
                        (cancel)="cancelTestConnection()"
                        [connectionResult]="connectionResult"
-                       [disabled]="isNotValid"
-                       [tryConnect]="tryConnect"></app-test-connection>
+                       [disabled]="testTargetConnDisabled"
+                       [tryConnect]="cdmButtonsService.testTargetConnection"></app-test-connection>
 </div>

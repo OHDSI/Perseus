@@ -12,6 +12,8 @@ import { hasLimits } from '@utils/scan-data-util';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 import { parseHttpError } from '@utils/error'
 import { Subscription } from 'rxjs'
+import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
+import { withLoadingField } from '@utils/loading'
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -46,7 +48,8 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
               private cdmBuilderService: CdmBuilderService,
-              private cdmStateService: CdmStateService) {
+              private cdmStateService: CdmStateService,
+              public cdmButtonsService: CdmButtonsStateService) {
     super(formBuilder, matDialog);
   }
 
@@ -64,8 +67,17 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     if (!this.dbSettings) {
       return true;
     }
-
     return this.dataType !== fakeData;
+  }
+
+  get testSourceConnDisabled(): boolean {
+    return this.isNotValid || this.cdmButtonsService.converting
+  }
+
+  get fakeDataDisabled(): boolean {
+    return this.cdmButtonsService.generatingFakeData ||
+      this.cdmButtonsService.converting ||
+      this.cdmButtonsService.testTargetConnection
   }
 
   ngOnInit() {
@@ -79,13 +91,10 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
   onTestConnection(): void {
     const cdmSettings = adaptDbSettingsForSource({dbType: this.dataType, ...this.form.value});
     this.form.disable();
-    this.tryConnect = true;
     this.testConnectionSub =  this.cdmBuilderService.testSourceConnection(cdmSettings)
       .pipe(
-        finalize(() => {
-          this.tryConnect = false;
-          this.form.enable({emitEvent: false});
-        })
+        withLoadingField(this.cdmButtonsService, 'testSourceConnection'),
+        finalize(() => this.form.enable({emitEvent: false}))
       )
       .subscribe(
         result => {
@@ -127,8 +136,11 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     this.cdmStateService.sourceDataType = value;
   }
 
+  onGenerateFakeData() {
+    this.generateFakeData.emit(this.fakeDataForm.value)
+  }
+
   private initFakeDataForm() {
-    this.fakeDataForm = createFakeDataForm();
-    this.fakeDataForm.patchValue(this.fakeDataParams);
+    this.fakeDataForm = createFakeDataForm(this.fakeDataParams);
   }
 }

@@ -15,6 +15,7 @@ import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { DataBaseExistWarningPopupComponent } from '../../auxiliary/data-base-exist-warning-popup/data-base-exist-warning-popup.component';
+import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
 
 @Component({
   selector: 'app-cdm-form',
@@ -37,7 +38,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   fakeDataParams: FakeDataSettings;
 
-  isConvertButtonDisabled = true;
+  formsInvalid = true;
 
   @Output()
   convert = new EventEmitter<CdmSettings>();
@@ -59,8 +60,15 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
               private fakeDataStateService: FakeDataStateService,
               private storeService: StoreService,
               private cdmBuilderService: CdmBuilderService,
-              private matDialog: MatDialog) {
+              private matDialog: MatDialog,
+              public cdmButtonsService: CdmButtonsStateService) {
     super();
+  }
+
+  get convertBtnDisabled(): boolean {
+    return this.formsInvalid ||
+      this.cdmButtonsService.converting ||
+      this.cdmButtonsService.generatingFakeData
   }
 
   ngOnInit(): void {
@@ -70,7 +78,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
   ngAfterViewChecked(): void {
     // After checked child forms
     setTimeout(() => {
-      this.isConvertButtonDisabled = this.sourceFormComponent.isNotValid || this.destinationFormComponent.isNotValid;
+      this.formsInvalid = this.sourceFormComponent.isNotValid || this.destinationFormComponent.isNotValid;
     });
   }
 
@@ -81,13 +89,21 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
 
   onConvert() {
     const settings = this.createCdmBuilderSettings();
+    this.convert.emit(settings);
+  }
 
-    this.checkDestinationDatabase(settings)
-      .subscribe(result => {
-        if (result) {
-          this.convert.emit(settings);
-        }
-      });
+  checkDestinationDatabase(settings: CdmSettings): Observable<boolean> {
+    return this.cdmBuilderService.testDestinationConnection(settings)
+      .pipe(
+        switchMap(connectionResult => {
+          if (connectionResult.canConnect) {
+            return this.showDestinationDbExistWarningPopup();
+          } else {
+            return of(true);
+          }
+        }),
+        catchError(() => of(true))
+      );
   }
 
   private loadState() {
@@ -111,6 +127,7 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
         ...this.destinationFormComponent.form.value
       }
     };
+    this.fakeDataStateService.state = this.sourceFormComponent.fakeDataForm.value
   }
 
   private createCdmBuilderSettings(): CdmSettings {
@@ -123,21 +140,6 @@ export class CdmFormComponent extends BaseComponent implements OnInit, AfterView
       mappingsName,
       cdmVersion
     };
-  }
-
-  // If destination db exist show warning popup
-  private checkDestinationDatabase(settings: CdmSettings): Observable<boolean> {
-    return this.cdmBuilderService.testDestinationConnection(settings)
-      .pipe(
-        switchMap(connectionResult => {
-          if (connectionResult.canConnect) {
-            return this.showDestinationDbExistWarningPopup();
-          } else {
-            return of(true);
-          }
-        }),
-        catchError(() => of(true))
-      );
   }
 
   private showDestinationDbExistWarningPopup(): Observable<boolean> {
