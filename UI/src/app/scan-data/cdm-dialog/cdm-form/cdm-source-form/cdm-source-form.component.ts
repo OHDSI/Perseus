@@ -6,11 +6,14 @@ import { cdmBuilderDatabaseTypes, fakeData } from '../../../scan-data.constants'
 import { FakeDataSettings } from '@models/white-rabbit/fake-data-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { adaptDbSettingsForSource } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { hasLimits } from '@utils/scan-data-util';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
+import { parseHttpError } from '@utils/error'
+import { Subscription } from 'rxjs'
+import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
+import { withLoadingField } from '@utils/loading'
 
 @Component({
   selector: 'app-cdm-source-form',
@@ -40,10 +43,13 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     ...cdmBuilderDatabaseTypes
   ];
 
+  private testConnectionSub: Subscription
+
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
               private cdmBuilderService: CdmBuilderService,
-              private cdmStateService: CdmStateService) {
+              private cdmStateService: CdmStateService,
+              public cdmButtonsService: CdmButtonsStateService) {
     super(formBuilder, matDialog);
   }
 
@@ -61,8 +67,17 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     if (!this.dbSettings) {
       return true;
     }
-
     return this.dataType !== fakeData;
+  }
+
+  get testSourceConnDisabled(): boolean {
+    return this.isNotValid || this.cdmButtonsService.converting
+  }
+
+  get fakeDataDisabled(): boolean {
+    return this.cdmButtonsService.generatingFakeData ||
+      this.cdmButtonsService.converting ||
+      this.cdmButtonsService.testTargetConnection
   }
 
   ngOnInit() {
@@ -74,20 +89,12 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
   }
 
   onTestConnection(): void {
-    const errorParser = error => {
-      if (typeof error.error === 'string') {
-        return error.error;
-      } else if (error.message) {
-        return error.message;
-      } else {
-        return 'Can not connect to database server';
-      }
-    };
-
-    this.tryConnect = true;
-    this.cdmBuilderService.testSourceConnection(this.settings as CdmSettings)
+    const cdmSettings = adaptDbSettingsForSource({dbType: this.dataType, ...this.form.value});
+    this.form.disable();
+    this.testConnectionSub =  this.cdmBuilderService.testSourceConnection(cdmSettings)
       .pipe(
-        finalize(() => this.tryConnect = false)
+        withLoadingField(this.cdmButtonsService, 'testSourceConnection'),
+        finalize(() => this.form.enable({emitEvent: false}))
       )
       .subscribe(
         result => {
@@ -97,11 +104,15 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
         error => {
           this.connectionResult = {
             canConnect: false,
-            message: errorParser(error),
+            message: parseHttpError(error),
           };
           this.showErrorPopup(this.connectionResult.message);
         }
       );
+  }
+
+  cancelTestConnection(): void {
+    this.testConnectionSub.unsubscribe();
   }
 
   isDbTypeDisable(dataType: string): boolean {
@@ -125,8 +136,11 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
     this.cdmStateService.sourceDataType = value;
   }
 
+  onGenerateFakeData() {
+    this.generateFakeData.emit(this.fakeDataForm.value)
+  }
+
   private initFakeDataForm() {
-    this.fakeDataForm = createFakeDataForm();
-    this.fakeDataForm.patchValue(this.fakeDataParams);
+    this.fakeDataForm = createFakeDataForm(this.fakeDataParams);
   }
 }

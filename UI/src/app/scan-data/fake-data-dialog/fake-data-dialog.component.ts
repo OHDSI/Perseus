@@ -10,6 +10,7 @@ import { UserSchemaService } from '@services/perseus/user-schema.service'
 import { switchMap, tap } from 'rxjs/operators'
 import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { withLoading } from '@utils/loading'
 
 @Component({
   selector: 'app-fake-data-dialog',
@@ -23,6 +24,8 @@ export class FakeDataDialogComponent extends ConversionDialog {
 
   conversion: Conversion | null = null;
 
+  loading = false;
+
   constructor(dialogRef: MatDialogRef<FakeDataDialogComponent>,
               private fakeDataService: FakeDataService,
               private storeService: StoreService,
@@ -34,6 +37,7 @@ export class FakeDataDialogComponent extends ConversionDialog {
   generateFakeData(fakeDataSettings: FakeDataSettings) {
     this.schemaService.getUserSchema()
       .pipe(
+        withLoading(this),
         tap(schema => fakeDataSettings.userSchema = schema),
         switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings))
       )

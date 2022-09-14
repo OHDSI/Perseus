@@ -6,6 +6,7 @@
 
   <div class="scan-dialog__content" [ngSwitch]="index">
     <app-dqd-form *ngSwitchCase="0" style="width: 100%"
+                  [loading]="loading"
                   (check)="onDataQualityCheck($event)"
                   (cancel)="onClose()"></app-dqd-form>
 

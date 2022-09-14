@@ -21,11 +21,16 @@ export class CdmConnectFormComponent {
   @Input()
   requireSchema: boolean;
 
+  @Input()
+  tryConnect: boolean;
+
   id(name: string): string {
     return `${this.prefix}-${name}`;
   }
 
   resetForm() {
-    this.form.reset();
+    if (!this.tryConnect) {
+      this.form.reset();
+    }
   }
 }

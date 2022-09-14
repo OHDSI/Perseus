@@ -4,10 +4,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { createDbConnectionForm } from '@utils/form';
 import { cdmBuilderDatabaseTypes } from '../../../scan-data.constants';
 import { adaptDbSettingsForDestination } from '@utils/cdm-adapter';
-import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { CdmBuilderService } from '@services/cdm-builder/cdm-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
+import { Subscription } from 'rxjs'
+import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
+import { withLoadingField } from '@utils/loading'
 
 @Component({
   selector: 'app-cdm-destination-form',
@@ -26,7 +28,12 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
 
   dataTypes = cdmBuilderDatabaseTypes;
 
-  constructor(formBuilder: FormBuilder, matDialog: MatDialog, private cdmBuilderService: CdmBuilderService) {
+  private testConnectionSub: Subscription
+
+  constructor(formBuilder: FormBuilder,
+              matDialog: MatDialog,
+              private cdmBuilderService: CdmBuilderService,
+              public cdmButtonsService: CdmButtonsStateService) {
     super(formBuilder, matDialog);
   }
 
@@ -38,15 +45,23 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
     return !this.form.valid;
   }
 
+  get testTargetConnDisabled(): boolean {
+    return this.isNotValid ||
+      this.cdmButtonsService.converting ||
+      this.cdmButtonsService.generatingFakeData
+  }
+
   createForm(disabled: boolean): FormGroup {
     return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
   }
 
   onTestConnection() {
-    this.tryConnect = true;
-    this.cdmBuilderService.testDestinationConnection(this.settings as CdmSettings)
+    const cdmSettings = this.settings
+    this.form.disable();
+    this.testConnectionSub = this.cdmBuilderService.testDestinationConnection(cdmSettings)
       .pipe(
-        finalize(() => this.tryConnect = false)
+        withLoadingField(this.cdmButtonsService, 'testTargetConnection'),
+        finalize(() => this.form.enable({emitEvent: false}))
       )
       .subscribe(
         result => {
@@ -61,5 +76,9 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
           this.showErrorPopup(this.connectionResult.message);
         }
       );
+  }
+
+  cancelTestConnection() {
+    this.testConnectionSub.unsubscribe()
   }
 }

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs'
 import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
 import { MatDialog } from '@angular/material/dialog'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { withLoadingField } from '@utils/loading'
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -27,6 +28,9 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   @ViewChild(ProgressConsoleComponent)
   consoleComponent: ProgressConsoleComponent
+
+  savingReport = false;
+  linkingTables = false;
 
   constructor(private whiteRabbitService: ScanDataService,
               private scanDataUploadService: ScanDataUploadService,
@@ -49,6 +53,9 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   onSaveReport(): void {
     this.whiteRabbitService.downloadScanReport(this.conversion.id)
+      .pipe(
+        withLoadingField(this, 'savingReport')
+      )
       .subscribe(
         file => saveAs(file, this.scanReportFileName)
       )
@@ -56,6 +63,9 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   onUploadReport(): void {
     this.scanDataUploadService.uploadScanReport(this.conversion.id)
+      .pipe(
+        withLoadingField(this, 'linkingTables')
+      )
       .subscribe(
         () => this.close.emit(this.conversion),
         error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))

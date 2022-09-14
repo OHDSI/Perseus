@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ITable, Table } from '@models/table';
 import { cloneDeep, uniq } from '../infrastructure/utility';
-import { removeExtension } from '@utils/file';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
 import { StateService } from '@services/state/state.service';
@@ -150,6 +149,6 @@ export class StoreService implements StateService {
 export function etlMappingToProjectInfo(etlMapping?: EtlMapping): { cdmVersion: string, reportName: string } {
   return {
     cdmVersion: etlMapping?.cdm_version ? `CDM v${etlMapping.cdm_version}` : 'CDM version',
-    reportName: etlMapping?.source_schema_name ? removeExtension(etlMapping.source_schema_name) : 'Report name'
+    reportName: etlMapping?.source_schema_name ? etlMapping.source_schema_name : 'Report name'
   };
 }

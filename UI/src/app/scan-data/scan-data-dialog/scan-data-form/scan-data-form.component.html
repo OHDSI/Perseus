@@ -18,8 +18,8 @@
 
   <div class="scan-data-form__action">
     <button class="scan-data-form__action-cancel cancel" (click)="cancel.emit()">Cancel</button>
-    <button class="scan-data-form__action-scan confirm"
-            [disabled]="scanTablesDisabled()"
+    <button class="scan-data-form__action-scan confirm" [class.btn-spinner]="scanning"
+            [disabled]="scanTablesDisabled() || scanning"
             (click)="onScanTables()">Scan Tables</button>
   </div>
 </div>

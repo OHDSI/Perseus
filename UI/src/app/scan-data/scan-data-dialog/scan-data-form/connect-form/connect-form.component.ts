@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { merge, Subject } from 'rxjs';
+import { merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { DbSettings } from '@models/white-rabbit/db-settings';
 import { FilesSettings } from '@models/white-rabbit/files-settings';
 import { finalize, map, takeUntil } from 'rxjs/operators';
@@ -14,11 +14,12 @@ import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/
 import { MatDialog } from '@angular/material/dialog';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { TableToScan } from '@models/white-rabbit/table-to-scan';
-import { ConnectionResult } from '@models/white-rabbit/connection-result';
+import { ConnectionResult, WrConnectionResult } from '@models/white-rabbit/connection-result';
 import { createDbConnectionForm } from '@utils/form';
 import { DataTypeGroup } from '@models/white-rabbit/data-type-group';
 import { hasLimits } from '@utils/scan-data-util';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
+import { parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-connect-form',
@@ -71,51 +72,32 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   private filesChange$ = new Subject<File[]>();
 
-  private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => void } = {
-    dbSettings: (settings: ScanSettings) => {
-      const dbSettings = settings as DbSettings;
-      dbSettings.dbType = this.dataType;
+  private testConnectionSub: Subscription;
 
-      this.tryConnect = true;
-
-      this.whiteRabbitService.testConnection(dbSettings)
+  private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => Observable<WrConnectionResult> } = {
+    dbSettings: (dbSettings: DbSettings) => {
+      return this.whiteRabbitService.testConnection({...dbSettings, dbType: this.dataType})
         .pipe(
-          map(connectionResult => {
-            this.connectionResult = connectionResult;
-            this.connectionResultChange.emit(connectionResult);
-            if (connectionResult.canConnect && connectionResult.tableNames?.length) {
-              this.subscribeFormChange();
-              return connectionResult.tableNames.map(tableName => ({
-                tableName,
-                selected: true
-              }))
-            } else {
-              throw new Error(connectionResult.message)
-            }
-          }),
-          finalize(() => this.tryConnect = false),
+          map(connectionResult => ({
+            ...connectionResult,
+            tablesToScan: connectionResult.canConnect ? connectionResult.tableNames.map(tableName => ({
+              tableName,
+              selected: true
+            })) : []
+          }))
         )
-        .subscribe((tablesToScan: TableToScan[]) => {
-            this.tablesToScanChange.emit(tablesToScan);
-          }, error => {
-            this.connectionResult = {canConnect: false, message: error.message};
-            this.tablesToScanChange.emit([]);
-            this.connectionResultChange.emit(this.connectionResult);
-            this.showErrorPopup(this.connectionResult.message);
-          }
-        );
     },
-
-    fileSettings: (settings: ScanSettings) => {
-      this.connectionResult = {canConnect: true, message: ''};
-      this.subscribeFormChange();
-      const tables = this.filesToScan
+    fileSettings: () => {
+      const tablesToScan = this.filesToScan
         .map(file => ({
           tableName: file.name,
           selected: true
-        }));
-      this.connectionResultChange.emit(this.connectionResult);
-      this.tablesToScanChange.emit(tables);
+        }))
+      if (tablesToScan.length) {
+        return of({canConnect: true, tablesToScan})
+      } else {
+        return of({canConnect: false, message: 'No files', tablesToScan})
+      }
     }
   };
 
@@ -144,8 +126,9 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   }
 
   get testConnectionDisabled() {
-    return this.isDbSettings ? !this.form.valid :
-      !this.fileSettingsForm.valid;
+    return this.tryConnect || (
+      this.isDbSettings ? !this.form.valid : !this.fileSettingsForm.valid
+    )
   }
 
   ngOnInit(): void {
@@ -158,10 +141,45 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     }
   }
 
-  onTestConnection() {
-    const scanSettings = this.isDbSettings ? this.form.value : this.fileSettingsForm.value;
-    const strategy = this.getTestConnectionStrategy();
-    strategy(scanSettings);
+  onTestConnection(): void {
+    let form: FormGroup;
+    let scanSettings: ScanSettings;
+    if (this.isDbSettings) {
+      form = this.form
+      scanSettings = {...form.value, dbType: this.dataType};
+    } else {
+      form = this.fileSettingsForm
+      scanSettings = form.value
+    }
+
+    this.tryConnect = true;
+    form.disable()
+    this.testConnectionSub = this.getTestConnectionStrategy()(scanSettings)
+      .pipe(
+        finalize(() => {
+          this.tryConnect = false
+          form.enable({emitEvent: false})
+        })
+      )
+      .subscribe(connectionResult => {
+        this.connectionResult = connectionResult;
+        this.connectionResultChange.emit(connectionResult);
+        this.tablesToScanChange.emit(connectionResult.tablesToScan);
+        if (connectionResult.canConnect) {
+          this.subscribeFormChange();
+        } else {
+          this.showErrorPopup(connectionResult.message);
+        }
+      }, error => {
+        this.connectionResult = {canConnect: false}
+        this.connectionResultChange.emit(this.connectionResult)
+        this.tablesToScanChange.emit([])
+        this.showErrorPopup(parseHttpError(error))
+      });
+  }
+
+  onCancelTestConnection(): void {
+    this.testConnectionSub.unsubscribe();
   }
 
   onFileToScanChanged(files: File[]) {
@@ -220,7 +238,9 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   }
 
   resetForm() {
-    this.isDbSettings ? this.form.reset() : this.resetFileSettingsForm();
+    if (!this.tryConnect) {
+      this.isDbSettings ? this.form.reset() : this.resetFileSettingsForm();
+    }
   }
 
   private resetFileSettingsForm() {
