@@ -8,6 +8,8 @@ Additionally, Perseus has embedded tools for search in the standardized vocabula
 
 [**Getting started**](#getting-started)
 
+#### Contact Us: perseus.support@softwarecountry.com
+
 Features
 ========
 - Map source data to tables and columns to CDM
