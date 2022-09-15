@@ -8,6 +8,8 @@ Additionally, Perseus has embedded tools for search in the standardized vocabula
 
 [**Getting started**](#getting-started)
 
+#### Contact Us: perseus.support@softwarecountry.com
+
 Features
 ========
 - Map source data to tables and columns to CDM
@@ -49,7 +51,7 @@ Deployment server requirements
 
  - Unix / Windows OS, Docker,
  - 4GB RAM, 
- - ~20 GB HDD (Depend on [Vocabulary](#vocabulary) size),
+ - ~10 GB HDD (Depend on [Vocabulary](#vocabulary) size),
  - Open ports: 443, 80.
 
 Getting Started
@@ -67,8 +69,10 @@ Database deployment can take a long time if the dictionary size is large enough.
 
 To [Docker Compose](#starting-with-docker-compose).
 
-## SMTP server (Optional)
+## SMTP server
 **Multi-user**
+
+**(Optional)**
 
     cd user
 
@@ -79,8 +83,7 @@ SMTP_PORT=`<your SMTP port>`\
 SMTP_EMAIL=`<email from which registration links will be sent to users>`\
 SMTP_USER=`<SMTP login>`\
 SMTP_PWD=`<SMPT password>`\
-TOKEN_SECRET_KEY=`<token encoding key>`\
-SERVER_ADDRESS=`<yor server address e.x. http://localhost>`
+TOKEN_SECRET_KEY=`<token encoding key>`
 
 to [Docker Compose](#starting-with-docker-compose)
 
@@ -99,40 +102,23 @@ Password:
 
 ## Starting with Docker Compose
 
-To start all containers at once using docker-compose please:
-- make sure docker-compose is installed,
-- install vocabulary, see [Vocabulary](#vocabulary) section,
-- configure SMTP server as it described in [SMTP](#smtp-server-optional) section **(Optional)**.
+To start all containers at once using docker-compose please
+- make sure docker-compose is installed
+- set vocabulary link, see [Vocabulary](#vocabulary) section
+- configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
 
-```
-docker compose up -d
-```
+    
+    docker compose up -d
 
-Open [localhost](http://localhost) in your browser, preferably Google Chrome.
+Open `localhost:80` in your browser, preferably Google Chrome
 
 ## Starting each container separately
 
-[Containers](CONTAINERS.md)
-
-## Apache Solr initialization **(Optional)**
-
-To work with Athena and Usagi you should initialize Solr data.
-
-To initialize Athena data run this query:
-
-http://localhost/solr/athena/dataimport?command=full-import&jdbcurl=jdbc:postgresql://vocabularydb:5432/vocabulary&jdbcuser=perseus&jdbcpassword=password
-
-To initialize Usagi data:
-
-http://localhost/solr/usagi/dataimport?command=full-import&jdbcurl=jdbc:postgresql://vocabularydb:5432/vocabulary&jdbcuser=perseus&jdbcpassword=password
-
-Go to solr admin page and check import status [solr admin page](http://localhost/solr).
-
-## Other repositories
+https://github.com/SoftwareCountry/Perseus/blob/master/CONTAINERS.md
 
 Perseus uses auxiliary services to scan, convert and validate data.
 
-Below are links to services, which can be included in the app build.
+Below are links to these services, which should be included in the app build. 
 
 ### White-rabbit service
 
@@ -146,9 +132,9 @@ https://github.com/SoftwareCountry/ETL-CDMBuilder
 
 https://github.com/SoftwareCountry/DataQualityDashboard
 
-## Finally
+### Finally
 
-Open [localhost](http://localhost) in your browser, preferably Google Chrome.
+Open `localhost:80` in your browser, preferably Google Chrome.
 
 ## Getting Involved
 
