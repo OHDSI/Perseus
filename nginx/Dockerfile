@@ -9,10 +9,10 @@ COPY sshd_config /etc/ssh/
 ENV NGINX_ENV='docker'
 
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
-COPY server.azure.conf /etc/nginx/server.azure.conf
-COPY server.azure-ad.conf /etc/nginx/server.azure-ad.conf
+COPY server.azure-test.conf /etc/nginx/server.azure-test.conf
+COPY server.azure-dev.conf /etc/nginx/server.azure-dev.conf
+COPY server.azure-prod.conf /etc/nginx/server.azure-prod.conf
 COPY server.docker.conf /etc/nginx/server.docker.conf
-COPY server.docker-ad.conf /etc/nginx/server.docker-ad.conf
 COPY docker-entrypoint.sh /
 
 EXPOSE 80 2222
