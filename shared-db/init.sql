@@ -47,13 +47,10 @@ GRANT ALL PRIVILEGES ON SCHEMA perseus TO perseus;
 
 
 --- Usagi
-CREATE SCHEMA "usagi_data";
 CREATE SCHEMA "usagi";
 CREATE USER usagi WITH PASSWORD 'password';
 
-GRANT USAGE ON SCHEMA usagi_data TO usagi;
 GRANT USAGE ON SCHEMA usagi TO usagi;
-GRANT ALL PRIVILEGES ON SCHEMA usagi_data TO usagi;
 GRANT ALL PRIVILEGES ON SCHEMA usagi TO usagi;
 
 
