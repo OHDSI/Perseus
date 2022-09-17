@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ReportCreator } from './report-creator';
 import { WordReportCreator } from './word-report-creator';
-import { stateToInfo, StoreService } from '../store.service';
+import { etlMappingToProjectInfo, StoreService } from '../store.service';
 import { MappingPair } from '@models/etl-mapping-for-zip-xml-generation';
 import { Packer } from 'docx';
 import { BridgeService } from '../bridge.service';
 import { PerseusLookupService } from '../perseus/perseus-lookup.service';
 import { saveAs } from 'file-saver';
 import { ITable } from '@models/table';
-import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { LookupType } from '@models/perseus/lookup-type'
+import { similarTableName } from '@app/app.constants'
 
 export enum ReportType {
   WORD,
@@ -18,21 +17,8 @@ export enum ReportType {
   MD
 }
 
-export enum ReportGenerationEvent {
-  PREPARE,
-  READY
-}
-
 @Injectable()
 export class ReportGenerationService {
-
-  private source: ITable[]
-
-  private mappingConfig
-
-  private similarTableName: string
-
-  private reportConfig$ = new Subject<ReportGenerationEvent>()
 
   private getReportCreator = (reportType: ReportType) => new WordReportCreator()
 
@@ -41,49 +27,15 @@ export class ReportGenerationService {
               private lookupService: PerseusLookupService) {
   }
 
-  get reportConfigReady$() {
-    return this.reportConfig$.asObservable()
-      .pipe(
-        filter(event => event === ReportGenerationEvent.READY)
-      )
-  }
-
-  get reportConfigPrepare$() {
-    return this.reportConfig$.asObservable()
-      .pipe(
-        filter(event => event === ReportGenerationEvent.PREPARE)
-      )
-  }
-
-  setSource(source: ITable[]) {
-    this.source = source
-    return this
-  }
-
-  setMappingConfig(mappingConfig) {
-    this.mappingConfig = mappingConfig
-    return this
-  }
-
-  setSimilarTableName(similarTableName) {
-    this.similarTableName = similarTableName
-    return this
-  }
-
-  emit(event: ReportGenerationEvent) {
-    this.reportConfig$.next(event)
-    return this
-  }
-
-  async generateReport(reportType: ReportType) {
+  async generateReport(mappedSource: ITable[], mappingConfig: string[][], reportType = ReportType.WORD): Promise<void> {
     const reportCreator: ReportCreator = this.getReportCreator(reportType)
-    const info = stateToInfo(this.storeService.state);
+    const info = etlMappingToProjectInfo(this.storeService.state.etlMapping);
     const mappingHeader = {source: info.reportName, target: info.cdmVersion};
-    const mapping = this.bridgeService.generateMappingWithViewsAndGroupsAndClones(this.source);
+    const mapping = this.bridgeService.generateMappingWithViewsAndGroupsAndClones(mappedSource);
 
     reportCreator
       .createHeader1(`${info.reportName.toUpperCase()} Data Mapping Approach to ${info.cdmVersion}`)
-      .createTablesMappingImage(mappingHeader, this.mappingConfig);
+      .createTablesMappingImage(mappingHeader, mappingConfig);
 
     const lookupTypesSet = new Set<LookupType>(); // Lookups for appendix
     const sortAscByTargetFunc = (a: MappingPair, b: MappingPair) =>
@@ -158,8 +110,8 @@ export class ReportGenerationService {
 
     reportCreator.createHeader2('Source tables', viewKeys.length > 0);
 
-    this.source
-      .filter(table => table.name !== this.similarTableName)
+    mappedSource
+      .filter(table => table.name !== similarTableName)
       .forEach((table, index) => reportCreator
         .createHeader3(`Table: ${table.name}`, index !== 0)
         .createSourceInformationTable(table.rows)

@@ -60,7 +60,7 @@ export class ResetPasswordComponent extends AuthComponent implements OnInit, OnD
 
   submit(): void {
     const {password} = this.form.value
-    this.sendRequestAndShowLoading(this.authService.reset(password, this.authStateService.state))
+    this.sendRequestAndShowLoading(this.authService.resetPassword(password, this.authStateService.state))
       .subscribe(
         () => this.reset = true,
         error => this.error = parseHttpError(error) ?? 'Could not reset password'

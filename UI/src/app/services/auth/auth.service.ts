@@ -1,7 +1,9 @@
 import { User } from '@models/auth/user';
 import { Observable } from 'rxjs';
+import { TokenResponse } from 'angular-oauth2-oidc/types'
 
 export interface AuthService {
+  firstLogin?: boolean
 
   user: User
 
@@ -17,9 +19,9 @@ export interface AuthService {
 
   recoverPassword(email: string): Observable<void>
 
-  reset(password: string, token: string): Observable<void>
+  resetPassword(password: string, token: string): Observable<void>
 
-  refreshToken(email, token): Observable<User>
+  refreshToken(email?: string, token?: string): Observable<User | TokenResponse>
 }
 
 export const localStorageUserField = 'currentUser'

@@ -21,6 +21,7 @@ import { TextWidthDirective } from './text-width/text-width.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SqlEditorComponent } from '@shared/sql-editor/sql-editor.component';
 import { WarningHintComponent } from '@shared/hint/warning-hint/warning-hint.component';
+import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warning-dialog/person-mapping-warning-dialog.component'
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { WarningHintComponent } from '@shared/hint/warning-hint/warning-hint.com
     FilterColorPointComponent,
     TextWidthDirective,
     SqlEditorComponent,
-    WarningHintComponent
+    WarningHintComponent,
+    PersonMappingWarningDialogComponent
   ],
   exports: [
     CommonModule,
@@ -59,7 +61,8 @@ import { WarningHintComponent } from '@shared/hint/warning-hint/warning-hint.com
     FormsModule,
     ReactiveFormsModule,
     SqlEditorComponent,
-    WarningHintComponent
+    WarningHintComponent,
+    PersonMappingWarningDialogComponent
   ],
   imports: [
     CommonModule,

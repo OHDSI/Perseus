@@ -4,8 +4,10 @@ import { authInjector } from '@services/auth/auth-injector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { parseHttpError } from '@utils/error';
-import { isAddAuth, mainPageRouter } from '@app/app.constants';
+import { isAzureAuth, mainPageRouter } from '@app/app.constants';
 import { AuthComponent } from '../auth.component';
+import { AuthGuard } from '@guards/auth/auth.guard'
+import { takeUntil } from 'rxjs/operators'
 
 @Component({
   selector: 'app-sign-in',
@@ -16,18 +18,25 @@ import { AuthComponent } from '../auth.component';
   ]
 })
 export class SignInComponent extends AuthComponent implements OnInit {
-  isAddAuth = isAddAuth
+  isAzureAuth = isAzureAuth
 
   constructor(@Inject(authInjector) authService: AuthService,
-              router: Router) {
+              router: Router,
+              private authGuard: AuthGuard) {
     super(authService, router)
   }
 
   ngOnInit() {
     super.ngOnInit();
-    if (this.isAddAuth) {
+    if (this.isAzureAuth && this.authService.firstLogin) {
       this.submit()
     }
+
+    this.authGuard.errorMessage$
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(error => this.error = error)
   }
 
   get email() {
@@ -38,17 +47,21 @@ export class SignInComponent extends AuthComponent implements OnInit {
     return this.form.get('password')
   }
 
+  get errorTop() {
+    return this.isAzureAuth ? '143px' : '267px'
+  }
+
   submit() {
     const {email, password} = this.form.value
     this.sendRequestAndShowLoading(this.authService.login(email, password))
       .subscribe(
         result => result && this.router.navigate([mainPageRouter]),
-        error => this.error = parseHttpError(error) ?? 'Incorrect login or password'
+        error => this.error = parseHttpError(error) ?? 'Auth failed'
       )
   }
 
   protected initForm() {
-    if (this.isAddAuth) {
+    if (this.isAzureAuth) {
       this.form = new FormGroup({});
     } else {
       this.form = new FormGroup({

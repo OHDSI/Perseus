@@ -10,7 +10,7 @@ class EmailUtilTest {
         String email = "matvey.chudakov@softwarecountry.com";
         String username = EmailUtil.emailToUsername(email);
 
-        assertEquals("matvey_chudakovatsoftwarecount", username);
+        assertEquals("matvey_chudakov_at_softwarecountry_com", username);
     }
 
     @Test
@@ -18,6 +18,6 @@ class EmailUtilTest {
         String email = "matvey.chudakov@test.com";
         String username = EmailUtil.emailToUsername(email);
 
-        assertEquals("matvey_chudakovattest_com", username);
+        assertEquals("matvey_chudakov_at_test_com", username);
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ITable, Table } from '@models/table';
-import { uniq } from '../infrastructure/utility';
+import { cloneDeep, uniq } from '../infrastructure/utility';
 import { removeExtension } from '@utils/file';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
@@ -9,19 +9,16 @@ import { StateService } from '@services/state/state.service';
 import { Area } from '@models/area'
 import { EtlMapping } from '@models/perseus/etl-mapping'
 
-const initialState: State = {
+export const initialState: State = {
   target: [],
   targetConfig: {},
   source: [],
-  mappedSource: [],
   linkTablesSearch: {},
   linkFieldsSearch: {},
   cdmVersions: [],
   targetClones: {},
-  mappingEmpty: true,
   recalculateSimilar: true,
-  concepts: {},
-  isMappingPage: false
+  concepts: {}
 }
 
 type StoreTablesKey = { [K in keyof State]: State[K] extends ITable[] ? K : never }[keyof State]
@@ -81,7 +78,7 @@ export class StoreService implements StateService {
     }
   }
 
-  getMappedTables() {
+  getMappedTables(): {source: ITable[], target: ITable[]} {
     let sourceNames = [];
     const targetNames = Object.keys(this.state.targetConfig).filter(key => {
       const data = this.state.targetConfig[ key ].data;
@@ -99,7 +96,7 @@ export class StoreService implements StateService {
     };
   }
 
-  resetAllData() {
+  reset() {
     const cdmVersions = this.state.cdmVersions;
     this.storeState.next({
       ...initialState,
@@ -112,19 +109,14 @@ export class StoreService implements StateService {
    * @param equal - function used for compare new value with previous
    */
   on<K extends keyof State>(key: K, equal: (a: State[K], b: State[K]) => boolean = (a, b) => a === b): Observable<State[K]> {
-    const prevState = this.state[key]
     return this.storeState.asObservable()
       .pipe(
         map(state => state[key]),
-        startWith<State[K], State[K]>(prevState),
+        startWith<State[K], State[K]>(null),
         pairwise(),
         filter(([prev, curr]) => prev !== curr),
         map(([, curr]) => curr)
       )
-  }
-
-  reset(): void {
-    this.storeState.next({...initialState});
   }
 
   addEtlMapping(etlMapping: EtlMapping): void {
@@ -141,11 +133,23 @@ export class StoreService implements StateService {
       cdm_version: version
     })
   }
+
+  mappingConfig(): string[][] {
+    const mappingConfig = [];
+    const state = this.state
+    Object.keys(state.targetConfig).forEach(targetTableName => {
+      const items = state.targetConfig[targetTableName].data;
+      if (items.length > 1) {
+        mappingConfig.push(cloneDeep(items));
+      }
+    });
+    return mappingConfig;
+  }
 }
 
-export function stateToInfo(state: any): { cdmVersion: string, reportName: string } {
+export function etlMappingToProjectInfo(etlMapping?: EtlMapping): { cdmVersion: string, reportName: string } {
   return {
-    cdmVersion: state.etlMapping?.cdm_version ? `CDM v${state.etlMapping.cdm_version}` : 'CDM version',
-    reportName: state.etlMapping?.source_schema_name ? removeExtension(state.etlMapping.source_schema_name) : 'Report name'
+    cdmVersion: etlMapping?.cdm_version ? `CDM v${etlMapping.cdm_version}` : 'CDM version',
+    reportName: etlMapping?.source_schema_name ? removeExtension(etlMapping.source_schema_name) : 'Report name'
   };
 }

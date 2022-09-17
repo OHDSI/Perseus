@@ -1,15 +1,13 @@
-import { Injectable } from '@angular/core';
 import { AuthService, localStorageUserField } from './auth.service';
 import { User } from '@models/auth/user';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { authApiUrl } from '@app/app.constants';
 import { catchError, map, tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class JwtAuthService implements AuthService {
+@Injectable()
+export class SmtpAuthService implements AuthService {
 
   private currentUser$: BehaviorSubject<User>;
 
@@ -63,7 +61,7 @@ export class JwtAuthService implements AuthService {
     return this.httpClient.post<void>(`${authApiUrl}/recover-password`, {email})
   }
 
-  reset(password: string, token: string): Observable<void> {
+  resetPassword(password: string, token: string): Observable<void> {
     return this.httpClient.post<void>(`${authApiUrl}/reset-password`, {password, token})
   }
 
@@ -97,7 +95,10 @@ export class JwtAuthService implements AuthService {
   private isTokenValid(): Observable<boolean> {
     return this.httpClient.get<boolean>(`${authApiUrl}/is_token_valid`)
       .pipe(
-        map(() => true),
+        map(() => {
+          this.tokenValid = true
+          return true
+        }),
         catchError(() => {
           this.resetCurrentUser()
           return of(false)

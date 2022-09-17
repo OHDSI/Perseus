@@ -5,6 +5,7 @@ import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 const dbTypeIdentifiers = {
   Postgre: 'PostgreSQL',
   MSSQL: 'SQL Server',
+  Azure: 'Azure',
   Mysql: 'MySQL'
 };
 

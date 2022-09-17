@@ -48,7 +48,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.importVocabulariesService.all()
+    this.importVocabulariesService.nameList()
       .subscribe(
         vocabularies => this.vocabularies = [...vocabularies],
         error => {
@@ -69,6 +69,13 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onFileUpload(event: Event) {
     const csv = (event.target as HTMLInputElement).files[0]
+
+    const ext = csv.name.split('.').pop().toLowerCase();
+
+    if (ext !== 'csv' && ext !== 'txt') {
+      openErrorDialog(this.dialogService, 'Failed to load CSV', 'File format not supported. Only .CSV or .TXT can be uploaded.')
+      return EMPTY
+    }
 
     if (csv) {
       this.dialogService.open(SetDelimiterDialogComponent, {
@@ -101,10 +108,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
 
   onEdit(index: number) {
     const vocabularyName = this.vocabularies[index]
-    this.importVocabulariesService.prepareVocabulary(vocabularyName)
-      .pipe(
-        switchMap(() => this.importVocabulariesService.getVocabulary())
-      )
+    this.importVocabulariesService.loadByName(vocabularyName)
       .subscribe(
         state => {
           this.importCodesService.reset({
@@ -128,7 +132,7 @@ export class ImportVocabularyComponent extends BaseComponent implements OnInit {
     }).afterClosed()
       .pipe(
         switchMap(result => result
-          ? this.importVocabulariesService.remove(vocabulary).pipe(withLoading(this))
+          ? this.importVocabulariesService.removeByName(vocabulary).pipe(withLoading(this))
           : EMPTY
         )
       )

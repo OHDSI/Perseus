@@ -1,8 +1,8 @@
-<svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1.5 7L3 10H2H0L1.5 7Z" fill="black"/>
-<path d="M13 0H3C1.89543 0 1 0.89543 1 2V4H2V2C2 1.44772 2.44772 1 3 1H13C13.5523 1 14 1.44772 14 2V3H15V2C15 0.895431 14.1046 0 13 0Z" fill="black"/>
-<path d="M3 14H13C14.1046 14 15 13.1046 15 12V11H14V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V10H1V12C1 13.1046 1.89543 14 3 14Z" fill="black"/>
-<path d="M4 4H11.6V5H4V4Z" fill="black"/>
-<path d="M4 6H16V7H4V6Z" fill="black"/>
-<path d="M4 8H16V9H4V8Z" fill="black"/>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.5 12L7 15H6H4L5.5 12Z" fill="black"/>
+<path d="M17 5H7C5.89543 5 5 5.89543 5 7V9H6V7C6 6.44772 6.44772 6 7 6H17C17.5523 6 18 6.44772 18 7V8H19V7C19 5.89543 18.1046 5 17 5Z" fill="black"/>
+<path d="M7 19H17C18.1046 19 19 18.1046 19 17V16H18V17C18 17.5523 17.5523 18 17 18H7C6.44772 18 6 17.5523 6 17V15H5V17C5 18.1046 5.89543 19 7 19Z" fill="black"/>
+<path d="M8 9H15.6V10H8V9Z" fill="black"/>
+<path d="M8 11H20V12H8V11Z" fill="black"/>
+<path d="M8 13H20V14H8V13Z" fill="black"/>
 </svg>

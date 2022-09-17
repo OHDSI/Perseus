@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http'
 import { blobToObj } from './blob-util';
 
-export function parseHttpError(error) {
+export function parseHttpError(error): string | null {
   if (typeof error === 'string') {
     return error;
   } else if (error.error?.message) {
@@ -21,7 +21,17 @@ export function parseHttpError(error) {
   }
 }
 
-export function openErrorDialog(dialogService: MatDialog, title: string, message: string, panelClass = 'perseus-dialog') {
+export function openHttpErrorDialog(dialogService: MatDialog,
+                                    title: string,
+                                    error: any,
+                                    panelClass = 'perseus-dialog') {
+  return openErrorDialog(dialogService, title, parseHttpError(error), panelClass)
+}
+
+export function openErrorDialog(dialogService: MatDialog,
+                                title: string,
+                                message: string,
+                                panelClass = 'perseus-dialog') {
   dialogService.open(ErrorPopupComponent, {
     panelClass,
     data: {

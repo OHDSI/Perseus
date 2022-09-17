@@ -15,7 +15,13 @@ import { ImportCodesService } from '@services/usagi/import-codes.service';
 import { Column, columnToField } from '@models/grid/grid';
 import { targetColumns } from './match-score-grid.columns';
 import { Concept } from '@models/code-mapping/concept';
-import { defaultRowHeight, getRowIndexByDataAttribute, getSelectionTopAndHeight, } from './match-score-grid';
+import {
+  defaultRowHeight,
+  getRowIndexByDataAttribute,
+  getSelectionTopAndHeight,
+  MatchScoreSort,
+  sourceColumnKeyToName
+} from './match-score-grid';
 import { termFromTargetConcept } from '@models/code-mapping/target-concept';
 
 @Component({
@@ -60,6 +66,8 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
 
   editingMappingIndex = 0
 
+  matchScoreSort: MatchScoreSort = {enabled: false}
+
   private gridTop: number
 
   private gridHeight = 0
@@ -70,7 +78,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   }
 
   get sourceData(): CodeMapping[] {
-    return this.data
+    return [...this.data]
   }
 
   get matchScoreData(): number[] {
@@ -94,7 +102,7 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
   ngOnInit() {
     this.initColumns()
 
-    this.data = this.importCodesService.codeMappings
+    this.data = [...this.importCodesService.codeMappings]
   }
 
   ngAfterViewInit() {
@@ -175,8 +183,28 @@ export class MatchScoreGridComponent extends SelectableGridComponent<CodeMapping
     return isLast ? '1px solid #E6E6E6' : 'none';
   }
 
+  onSortByMatchScore() {
+    if (!this.matchScoreSort.enabled) {
+      this.matchScoreSort = {enabled: true, order: 'asc'}
+      this.data = this.data.sort((c1, c2) => c2.matchScore - c1.matchScore)
+    } else if (this.matchScoreSort.order === 'asc') {
+      this.matchScoreSort = {enabled: true, order: 'desc'}
+      this.data = this.data.reverse()
+    } else {
+      this.matchScoreSort = {enabled: false}
+      this.data = [...this.importCodesService.codeMappings]
+    }
+  }
+
   private initColumns() {
-    this.sourceColumns = this.importCodesService.columns
+    const fieldMapping = {...this.importCodesService.mappingParams}
+    for (const key in fieldMapping) {
+      if (!fieldMapping[key]) {
+        delete fieldMapping[key]
+      }
+    }
+    this.sourceColumns = Object.keys(fieldMapping)
+      .map(key => ({name: sourceColumnKeyToName(key), field: fieldMapping[key]}))
     this.targetColumns = targetColumns
 
     this.sourceDisplayedColumns = ['__select__', ...this.sourceColumns.map(columnToField)]

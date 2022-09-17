@@ -1,7 +1,11 @@
 from azure.identity import ManagedIdentityCredential
 from azure.keyvault.secrets import SecretClient
 
-
+"""
+For local development use DefaultAzureCredential(exclude_interactive_browser_credential=False) 
+insteadof ManagedIdentityCredential.
+See more: https://docs.microsoft.com/en-us/python/api/overview/azure/identity-readme?view=azure-python
+"""
 def get_secrets() -> dict:
     print('Fetch variables from Azure Key Vault')
     kv_endpoint = 'https://kv-perseus.vault.azure.net/'

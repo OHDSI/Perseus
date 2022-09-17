@@ -1,30 +1,27 @@
-import sys
-from os.path import dirname
 from pathlib import Path
-
-ROOT_DIR = Path(dirname(sys.modules['__main__'].__file__))
 
 CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', '6', ]
 
 CDM_SCHEMA_PATH = Path('model/sources/CDM/')
 PREDEFINED_LOOKUPS_PATH = Path('model/lookups')
 
-generate_folder = 'cache/generate'
-GENERATE_ETL_XML_PATH = Path(f'{generate_folder}/xml-definitions')
-GENERATE_LOOKUP_SQL_PATH = Path(f'{generate_folder}/lookups')
-GENERATE_BATCH_SQL_PATH = Path(f'{generate_folder}/batch')
-
-GENERATE_CDM_XML_ARCHIVE_PATH = Path(f'{generate_folder}/zip_xml')  # todo clear folder job
-GENERATE_ETL_ARCHIVE_PATH = Path(f'{generate_folder}/zip_etl') # todo clear folder job
+generate_folder = Path('cache/generate')
+GENERATE_ETL_XML_PATH = Path(generate_folder, 'xml-definitions')
+GENERATE_LOOKUP_SQL_PATH = Path(generate_folder, 'lookups')
+GENERATE_BATCH_SQL_PATH = Path(generate_folder, 'batch')
+GENERATE_CDM_XML_ARCHIVE_PATH = Path(generate_folder, 'zip_xml')
+GENERATE_ETL_ARCHIVE_PATH = Path(generate_folder, 'zip_etl')
 
 GENERATE_CDM_XML_ARCHIVE_FILENAME = 'etl_xml'
 CDM_XML_ARCHIVE_FORMAT = 'zip'
 ETL_MAPPING_ARCHIVE_FORMAT = 'zip'
 
-upload_folder = 'cache/upload'
-UPLOAD_SCAN_REPORT_FOLDER = Path(f'{upload_folder}/scan-reports')
-UPLOAD_ETL_FOLDER = Path(f'{upload_folder}/etl')
-INCOME_LOOKUPS_PATH = Path(f'{upload_folder}/user_defined_lookups')
+upload_folder = Path('cache/upload')
+UPLOAD_SCAN_REPORT_FOLDER = Path(upload_folder, 'scan-reports')
+UPLOAD_ETL_FOLDER = Path(upload_folder, 'etl')
+INCOME_LOOKUPS_PATH = Path(upload_folder, 'user_defined_lookups')
+
+LOOKUP_MAX_LENGTH = 10000
 
 COLUMN_TYPES_MAPPING = {
     16: 'bool',

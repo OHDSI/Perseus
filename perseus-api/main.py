@@ -6,9 +6,7 @@ from create_tables import create_tables
 from db import app_logic_db, user_schema_db
 from perseus_api import perseus
 from services.clear_cache_job import create_clear_cache_job
-from utils import UPLOAD_SCAN_REPORT_FOLDER
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_SCAN_REPORT_FOLDER
 app.register_blueprint(perseus)
 
 

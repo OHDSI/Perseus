@@ -1,11 +1,13 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { BridgeService } from '@services/bridge.service';
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { Router } from '@angular/router';
-import { mainPageRouter } from '../app.constants';
+import { isAzureAuth, mainPageRouter } from '../app.constants';
 import { StoreService } from '@services/store.service'
+import { authInjector } from '@services/auth/auth-injector'
+import { AuthService } from '@services/auth/auth.service'
 
 @Component({
   selector: 'app-cdm',
@@ -18,7 +20,8 @@ export class CdmComponent extends BaseComponent implements OnInit {
 
   constructor(private bridgeService: BridgeService,
               private router: Router,
-              private storeService: StoreService) {
+              private storeService: StoreService,
+              @Inject(authInjector) private authService: AuthService) {
     super()
   }
 
@@ -26,6 +29,10 @@ export class CdmComponent extends BaseComponent implements OnInit {
     this.subscribeOnResize();
 
     this.subscribeOnUrlChange();
+
+    if (isAzureAuth) {
+      this.authService.firstLogin = false
+    }
   }
 
   @HostListener('window:beforeunload')

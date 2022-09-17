@@ -1,22 +1,5 @@
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="16" height="16" fill="#E5E5E5"/>
-<rect width="705" height="742" transform="translate(-489 -593)" fill="white"/>
-<g filter="url(#filter0_d)">
-<path d="M-26.0004 -58.8286C-26.0004 -60.0278 -25.1095 -61 -24.0106 -61H184C185.099 -61 185.99 -60.0278 185.99 -58.8286L186 79.8286C186 81.0278 185.109 82 184.01 82H-24.0005C-25.0994 82 -25.9903 81.0278 -25.9903 79.8286L-26.0004 -58.8286Z" fill="white"/>
-<path d="M-35 -30.9009L-26.0004 -39.9009V-21.9009L-35 -30.9009Z" fill="white"/>
-</g>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M1 0C0.447715 0 0 0.447715 0 1V15C0 15.5523 0.447715 16 1 16H15C15.5523 16 16 15.5523 16 15V1C16 0.447715 15.5523 0 15 0H1ZM14.5 1H1.5C1.22386 1 1 1.22386 1 1.5V14.5C1 14.7761 1.22386 15 1.5 15H14.5C14.7761 15 15 14.7761 15 14.5V1.5C15 1.22386 14.7761 1 14.5 1Z" fill="black"/>
-<path d="M6.70178 9.36V10.99L3 8.73V7.22L6.69384 5V6.55L4.1995 7.92L6.70178 9.36Z" fill="black"/>
-<path d="M13 8.78L9.30616 11V9.44L11.8005 8.07L9.30616 6.63V5L13 7.26V8.78Z" fill="black"/>
-<defs>
-<filter id="filter0_d" x="-41" y="-67" width="233" height="155" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
-<feOffset/>
-<feGaussianBlur stdDeviation="3"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
-</filter>
-</defs>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 4C4.44772 4 4 4.44772 4 5V19C4 19.5523 4.44772 20 5 20H19C19.5523 20 20 19.5523 20 19V5C20 4.44772 19.5523 4 19 4H5ZM18.5 5H5.5C5.22386 5 5 5.22386 5 5.5V18.5C5 18.7761 5.22386 19 5.5 19H18.5C18.7761 19 19 18.7761 19 18.5V5.5C19 5.22386 18.7761 5 18.5 5Z" fill="black"/>
+<path d="M10.7018 13.36V14.99L7 12.73V11.22L10.6938 9V10.55L8.1995 11.92L10.7018 13.36Z" fill="black"/>
+<path d="M17 12.78L13.3062 15V13.44L15.8005 12.07L13.3062 10.63V9L17 11.26V12.78Z" fill="black"/>
 </svg>

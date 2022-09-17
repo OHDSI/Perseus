@@ -6,7 +6,7 @@ import zipfile
 
 from itertools import groupby
 from shutil import rmtree
-
+from pathlib import Path
 from db import user_schema_db
 from services import lookup_service
 from utils import InvalidUsage
@@ -19,8 +19,7 @@ from utils.constants import GENERATE_ETL_XML_PATH,\
                             GENERATE_LOOKUP_SQL_PATH,\
                             PREDEFINED_LOOKUPS_PATH,\
                             INCOME_LOOKUPS_PATH,\
-                            GENERATE_BATCH_SQL_PATH,\
-                            ROOT_DIR
+                            GENERATE_BATCH_SQL_PATH
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 from xml.dom import minidom
 
@@ -62,19 +61,19 @@ def check_lookup_tables(tables):
 def unique(sequence):
     seen = []
     for item in sequence:
-        if not item in seen:
+        if item not in seen:
             seen.append(item)
     return seen
 
 
-def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables):
+def prepare_sql(current_user, mapping_items, source_table, views, target_tables):
     """prepare sql from mapping json"""
+    required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id', 'sqlTransformation']
 
     def get_sql_data_items(mapping_items_, source_table_):
         """return unique all required fields to prepare sql"""
         all_fields = []
         mapping_items_for_table = mapping_items_[mapping_items_.source_table == source_table_]
-        required_fields = ['source_field', 'sql_field', 'sql_alias', 'targetCloneName', 'concept_id']
         mapping_data = mapping_items_for_table.get('mapping', pd.Series())
         condition_data = mapping_items_for_table.get('condition', pd.Series())
         lookup = mapping_items_for_table.get('lookup', pd.Series())
@@ -99,14 +98,14 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         return pd.DataFrame(all_fields_unique)
 
     data_ = get_sql_data_items(mapping_items, source_table)
-    fields = data_.loc[:, ['concept_id', 'source_field', 'sql_field', 'sql_alias', 'targetCloneName']].sort_values(
-        by=['targetCloneName', 'concept_id'])
+    fields = data_.loc[:, required_fields].sort_values(by=['targetCloneName', 'concept_id'])
     sql = 'SELECT '
     mapped_to_person_id_field = ''
     target_clone_name = ""
     for _, row in fields.iterrows():
         source_field = row['sql_field']
         target_field = row['sql_alias']
+        sql_transformation: str = row.get("sqlTransformation")
         if target_clone_name != row['targetCloneName']:
             target_clone_name = row['targetCloneName']
         if not row['targetCloneName']:
@@ -114,7 +113,8 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         else:
             clone = f"{row['targetCloneName']}_"
         if target_field == 'person_id':
-            mapped_to_person_id_field = source_field
+            mapped_to_person_id_field = source_field if not sql_transformation \
+                else sql_transformation.replace(f' as {target_field}', "")
         if not source_field:
             sql += f"{row['source_field']},\n"
         else:
@@ -150,8 +150,8 @@ def prepare_sql(current_user, mapping_items, source_table, views, tagret_tables)
         sql = f'WITH {source_table} AS (\n{view})\n{sql}FROM {source_table}'
     else:
         sql += 'FROM {sc}.' + source_table
-    if not check_lookup_tables(tagret_tables):
-        sql += ' JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0}'
+    if not check_lookup_tables(target_tables):
+        sql += '\n JOIN {sc}._CHUNKS CH ON CH.CHUNKID = {0}'
         if mapped_to_person_id_field:
             sql += f' AND {mapped_to_person_id_field} = CH.PERSON_ID'
     return sql
@@ -177,12 +177,10 @@ def add_schema_names(sql, view_sql):
     return view_sql
 
 
-def create_user_directory(path, current_user):
-    try:
-        os.makedirs(f"{path}/{current_user}")
-        print(f'Directory {path}/{current_user} created')
-    except FileExistsError:
-        print(f'Directory {path}/{current_user} already exist')
+def create_user_directory(path, username):
+    directory = Path(path, username)
+    if not directory.is_dir():
+        directory.mkdir(exist_ok=True, parents=True)
 
 
 def is_concept_id(field: str):
@@ -269,7 +267,7 @@ def get_mapping_source_values(mapping):
 
 def generate_bath_sql_file(current_user, mapping, source_table, views):
     view = ''
-    sql = 'SELECT DISTINCT {person_id} AS person_id, {person_source} AS person_source FROM '
+    sql = 'SELECT DISTINCT {person_id} as person_id, {person_source} as person_source FROM '
     if views:
         view = views.get(source_table, None)
 
@@ -285,17 +283,29 @@ def generate_bath_sql_file(current_user, mapping, source_table, views):
         target_field = row['target_field']
         if target_field == 'person_id':
             sql = sql.replace('{person_id}', source_field)
+            transformation = row.get('sqlTransformation')
+            if transformation:
+                sql = apply_sql_transformation_to_text(transformation, source_field, target_field, '', sql)
         if target_field == 'person_source_value':
             sql = sql.replace('{person_source}', source_field)
+            transformation = row.get('sqlTransformation')
+            if transformation:
+                sql = apply_sql_transformation_to_text(transformation, source_field, target_field, '', sql)
     create_user_directory(GENERATE_BATCH_SQL_PATH, current_user)
-    with open(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", mode='w') as f:
+    with open(Path(GENERATE_BATCH_SQL_PATH, current_user, 'Batch.sql'), mode='w') as f:
         f.write(sql)
 
 
-def clear(current_user):
-    delete_generated_xml(current_user)
-    delete_generated_lookup_sql(current_user)
-    delete_generated_batch_sql(current_user)
+def clear(username: str):
+    xml = Path(GENERATE_ETL_XML_PATH, username)
+    lookup = Path(GENERATE_LOOKUP_SQL_PATH, username)
+    batch_sql = Path(GENERATE_BATCH_SQL_PATH, username)
+    if xml.is_dir():
+        rmtree(xml)
+    if lookup.is_dir():
+        rmtree(lookup)
+    if batch_sql.is_dir():
+        rmtree(batch_sql)
 
 
 def get_xml(current_user, json_):
@@ -445,8 +455,13 @@ def get_xml(current_user, json_):
                             v.text = f'{clone_key}{sql_alias}' if sql_alias else source_field
 
                             definitions.append(target_field)
-                            apply_sql_transformation(sql_transformation, source_field, target_field, clone_key,
-                                                     query_tag)
+                            apply_sql_transformation_to_xml_tag_if_needed(
+                                sql_transformation,
+                                source_field,
+                                target_field,
+                                clone_key,
+                                query_tag
+                            )
 
                 previous_target_table = target_table
                 previous_source_table = source_table
@@ -472,9 +487,13 @@ def add_concept_field(attrib, attrib_key_name, concept_tag_key, field_type, grou
         if field_type == 'concept_id' and concept_id_source_field['lookup_name']:
             attrib_key_name = 'key'
         attrib[attrib_key_name] = f"{clone_key}{concept_tag_key}_{field_type}{counter}"
-        apply_sql_transformation(concept_id_source_field['sql'],
-                                 concept_id_source_field['source'],
-                                 f"{concept_tag_key}_{field_type}", clone_key, query_tag)
+        apply_sql_transformation_to_xml_tag_if_needed(
+            concept_id_source_field['sql'],
+            concept_id_source_field['source'],
+            f"{concept_tag_key}_{field_type}",
+            clone_key,
+            query_tag
+        )
         return concept_id_source_field['source']
     else:
         return ''
@@ -515,17 +534,38 @@ def get_source_concept_id_field_name(source_concept_id_field):
     return source_concept_id_field_name
 
 
-def apply_sql_transformation(sql_transformation, source_field, target_field, clone_key, query_tag):
+def apply_sql_transformation_to_xml_tag_if_needed(sql_transformation: str or None,
+                                                  source_field: str,
+                                                  target_field: str,
+                                                  clone_key: str,
+                                                  query_tag: Element):
     if sql_transformation:
-        match_item = f"{source_field} as {clone_key}{target_field}"
-        if sql_transformation not in query_tag.text:
-            query_tag.text = query_tag.text.replace(
-                match_item,
-                sql_transformation,
-            )
-        else:
-            query_tag.text = query_tag.text.replace(f',\n{match_item},\n', ' ')
-            query_tag.text = query_tag.text.replace(f',\n{match_item}\n', ' ')
+        sql = query_tag.text
+        query_tag.text = apply_sql_transformation_to_text(
+            sql_transformation,
+            source_field,
+            target_field,
+            clone_key,
+            sql
+        )
+
+
+def apply_sql_transformation_to_text(sql_transformation: str,
+                                     source_field: str,
+                                     target_field: str,
+                                     clone_key: str,
+                                     query: str) -> str:
+    match_item = f"{source_field} as {clone_key}{target_field}"
+    if sql_transformation not in query:
+        query = query.replace(
+            match_item,
+            sql_transformation,
+        )
+    else:
+        query = query.replace(f',\n{match_item},\n', ' ')
+        query = query.replace(f',\n{match_item}\n', ' ')
+
+    return query
 
 
 def write_xml(current_user, tag, filename, result):
@@ -535,42 +575,19 @@ def write_xml(current_user, tag, filename, result):
     result.update({filename: _prettify(tag)})
 
 
-def add_files_to_zip(zip_file, path, directory):
+def add_files_to_zip(zip_file, path: Path, directory: str):
     for root, _, files in os.walk(path):
         for file in files:
             zip_file.write(os.path.join(root, file), arcname=os.path.join(directory, file))
 
 
-def zip_xml(current_user):
+def zip_xml(username: str, filename: str):
     """add mapping XMLs and lookup sql's to archive"""
-    create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, current_user)
+    create_user_directory(GENERATE_CDM_XML_ARCHIVE_PATH, username)
+    with zipfile.ZipFile(GENERATE_CDM_XML_ARCHIVE_PATH / username / filename, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        add_files_to_zip(zip_file, Path(GENERATE_ETL_XML_PATH, username), "definitions")
+        add_files_to_zip(zip_file, Path(GENERATE_LOOKUP_SQL_PATH, username), "lookups")
 
-    zip_file = zipfile.ZipFile(
-        GENERATE_CDM_XML_ARCHIVE_PATH / current_user / '.'.join(
-            (GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT)), 'w', zipfile.ZIP_DEFLATED)
-
-    add_files_to_zip(zip_file, f"{GENERATE_ETL_XML_PATH}/{current_user}", "definitions")
-    add_files_to_zip(zip_file, f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}", "lookups")
-
-    if os.path.isfile(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql"):
-        zip_file.write(f"{GENERATE_BATCH_SQL_PATH}/{current_user}/Batch.sql", arcname='Batch.sql')
-    zip_file.close()
-
-
-def delete_generated(path):
-    try:
-        rmtree(path)
-    except Exception:
-        print(f'Directory {path} does not exist')
-
-
-def delete_generated_xml(current_user):
-    delete_generated(f"{GENERATE_ETL_XML_PATH}/{current_user}")
-
-
-def delete_generated_lookup_sql(current_user):
-    delete_generated(f"{GENERATE_LOOKUP_SQL_PATH}/{current_user}")
-
-
-def delete_generated_batch_sql(current_user):
-    delete_generated(f"{GENERATE_BATCH_SQL_PATH}/{current_user}")
+        batch_sql = Path(GENERATE_BATCH_SQL_PATH, username, 'Batch.sql')
+        if os.path.isfile(batch_sql):
+            zip_file.write(batch_sql, arcname='Batch.sql')

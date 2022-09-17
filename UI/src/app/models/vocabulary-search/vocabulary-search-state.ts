@@ -1,6 +1,7 @@
 import { VocabSearchMode, VocabSearchReqParams } from './vocabulray-search';
 import { Concept } from './concept';
 import { Filter, FilterValue } from '../filter/filter';
+import { Sort } from '@models/grid/grid'
 
 export interface VocabSearchState {
   requestParams: VocabSearchReqParams;
@@ -12,6 +13,6 @@ export interface VocabSearchState {
   pageSize: number;
   filters: Filter[];
   movableIndexes: {second: number; third: number};
-  sort: { field: string; order: string };
+  sort: Sort;
   total: number
 }

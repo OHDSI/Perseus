@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Row, RowOptions } from 'src/app/models/row';
-import { ITableOptions, Table } from 'src/app/models/table';
+import { ITable, ITableOptions, Table } from 'src/app/models/table';
 import { EtlMappingForZipXmlGeneration } from '@models/etl-mapping-for-zip-xml-generation';
 import { PerseusApiService } from './perseus/perseus-api.service';
 import { StoreService } from './store.service';
@@ -24,55 +24,58 @@ export class DataService {
               private perseusXmlService: PerseusXmlService,
               private dialogService: MatDialog) {}
 
-  _normalize(data: TableInfoResponse[], area: Area) {
+  private _normalize(data: TableInfoResponse[], area: Area): ITable[] {
     const tables = [];
     const uniqueIdentifierFields = [];
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      const id = i;
-      const name = item.table_name.toLowerCase();
+
+    for (let tableId = 0; tableId < data.length; tableId++) {
+      const tableInfo = data[tableId];
+      const tableName = tableInfo.table_name;
       const rows = [];
 
-      for (let j = 0; j < item.column_list.length; j++) {
-        let unique;
+      for (let rowId = 0; rowId < tableInfo.column_list.length; rowId++) {
+        const rowInfo = tableInfo.column_list[rowId]
+        let unique: boolean;
+
         if (area === 'target') {
-          const upperCaseColumnName = item.column_list[j].column_name.toUpperCase();
-          unique = upperCaseColumnName.indexOf('_ID') !== -1 && upperCaseColumnName.replace('_ID', '') === item.table_name.toUpperCase();
+          const upperCaseColumnName = rowInfo.column_name.toUpperCase();
+          const upperCaseTableName = tableInfo.table_name.toUpperCase()
+          unique = upperCaseColumnName.indexOf('_ID') !== -1 &&
+            upperCaseColumnName.replace('_ID', '') === upperCaseTableName;
           if (unique) {
             uniqueIdentifierFields.push(upperCaseColumnName);
           }
         }
+
         const rowOptions: RowOptions = {
-          id: j,
-          tableId: i,
-          tableName: item.table_name.toLowerCase(),
-          name: item.column_list[j].column_name,
-          type: item.column_list[j].column_type,
-          isNullable: item.column_list[j].is_column_nullable ?
-            item.column_list[j].is_column_nullable.toUpperCase() === 'YES' : true,
+          id: rowId,
+          tableId,
+          tableName,
+          name: rowInfo.column_name,
+          type: rowInfo.column_type,
+          isNullable: rowInfo.is_column_nullable ? rowInfo.is_column_nullable.toUpperCase() === 'YES' : true,
           comments: [],
           uniqueIdentifier: unique,
           area
         };
 
-        const row = new Row(rowOptions);
-
-        rows.push(row);
+        rows.push(new Row(rowOptions));
       }
 
       const tableOptions: ITableOptions = {
-        id,
+        id: tableId,
         area,
-        name,
+        name: tableName,
         rows
       };
-
       tables.push(new Table(tableOptions));
     }
 
     if (area === 'target') {
-      const IsUniqueIdentifierRow = (row) => uniqueIdentifierFields.includes(row.name.toUpperCase());
-      this.bridgeService.updateRowsProperties(tables, IsUniqueIdentifierRow, (row: any) => { row.uniqueIdentifier = true; });
+      this.bridgeService.updateRowsProperties(tables,
+        (row) => uniqueIdentifierFields.includes(row.name.toUpperCase()),
+        (row: any) => { row.uniqueIdentifier = true; }
+      );
     }
 
     return tables;
@@ -90,16 +93,19 @@ export class DataService {
       )
   }
 
-  getTargetData(version: string) {
-    return this.perseusService.getTargetData(version).pipe(
+  setCdmVersionAndGetTargetData(version: string): Observable<ITable[]> {
+    const etlMappingId = this.storeService.state.etlMapping?.id
+    this.storeService.addCdmVersion(version)
+    const preRequest$ = etlMappingId ? this.perseusService.setCdmVersionToEtlMapping(etlMappingId, version) : of(null)
+    return preRequest$.pipe(
+      switchMap(() => this.perseusService.getTargetData(version)),
       map(data => {
         const filteredData = data.filter(it => !COLUMNS_TO_EXCLUDE_FROM_TARGET.includes(it.table_name.toUpperCase()));
         const tables = this.prepareTables(filteredData, Area.Target);
-        this.storeService.addCdmVersion(version)
         this.prepareTargetConfig(filteredData);
         return tables;
       })
-    );
+    )
   }
 
   getColumnInfo(etlMappingId: number, tableName: string, columnName: string): Observable<ColumnInfo> {
@@ -125,7 +131,7 @@ export class DataService {
       );
   }
 
-  prepareTargetConfig(data) {
+  prepareTargetConfig(data): void {
     const targetConfig = {};
     data.map(table => {
       const tableName = table.table_name.toLowerCase();
@@ -139,7 +145,7 @@ export class DataService {
     this.storeService.add('targetConfig', targetConfig);
   }
 
-  prepareTables(data: TableInfoResponse[], key: Area) {
+  prepareTables(data: TableInfoResponse[], key: Area): ITable[] {
     const tables = this._normalize(data, key);
     this.storeService.add(key, tables);
     return tables;

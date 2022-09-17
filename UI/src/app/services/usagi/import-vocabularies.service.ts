@@ -9,19 +9,15 @@ export class ImportVocabulariesService {
 
   constructor(private httpClient: HttpClient) { }
 
-  all(): Observable<string[]> {
-    return this.httpClient.get<string[]>(`${usagiUrl}/get_vocabulary_list`)
+  nameList(): Observable<string[]> {
+    return this.httpClient.get<string[]>(`${usagiUrl}/snapshot/names`)
   }
 
-  prepareVocabulary(name: string): Observable<void> {
-    return this.httpClient.get<void>(`${usagiUrl}/get_vocabulary?name=${name}`)
+  loadByName(name: string): Observable<ImportCodesState> {
+    return this.httpClient.get<ImportCodesState>(`${usagiUrl}/snapshot?name=${name}`)
   }
 
-  getVocabulary(): Observable<ImportCodesState> {
-    return this.httpClient.get<ImportCodesState>(`${usagiUrl}/get_vocabulary_data`)
-  }
-
-  remove(name: string): Observable<void> {
-    return this.httpClient.get<void>(`${usagiUrl}/delete_vocabulary?name=${name}`)
+  removeByName(name: string): Observable<void> {
+    return this.httpClient.delete<void>(`${usagiUrl}/snapshot?name=${name}`)
   }
 }

@@ -4,8 +4,6 @@ import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { DbSettings } from '@models/white-rabbit/db-settings';
 import { HttpClient } from '@angular/common/http';
 import { whiteRabbitApiUrl } from '@app/app.constants';
-import { TableToScan } from '@models/white-rabbit/table-to-scan';
-import { map } from 'rxjs/operators';
 import { FilesSettings } from '@models/white-rabbit/files-settings';
 import { Conversion } from '@models/conversion/conversion'
 import { ScanReportRequest } from '@models/perseus/scan-report-request'
@@ -18,16 +16,6 @@ export class ScanDataService {
 
   testConnection(dbSettings: DbSettings): Observable<ConnectionResult> {
     return this.http.post<ConnectionResult>(`${whiteRabbitApiUrl}/test-connection`, dbSettings);
-  }
-
-  tablesInfo(dbSettings: DbSettings): Observable<TableToScan[]> {
-    return this.http.post<{tableNames: string[]}>(`${whiteRabbitApiUrl}/tables-info`, dbSettings)
-      .pipe(
-        map(tablesInfo => tablesInfo.tableNames.map(tableName => ({
-          tableName,
-          selected: true
-        })))
-      );
   }
 
   generateScanReportByDb(dbSettings: DbSettings): Observable<Conversion> {

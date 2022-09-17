@@ -12,6 +12,7 @@ import { IConstantCache } from '@models/constant-cache';
 import { LookupForEtlConfiguration } from '@models/perseus/lookup'
 import { LookupType } from '@models/perseus/lookup-type'
 import { IConceptTables } from '@models/perseus/concept-tables'
+import { IClones } from '@models/clones'
 
 export class ZipXmlMappingModelService {
   connections: Array<IConnection>;
@@ -22,9 +23,16 @@ export class ZipXmlMappingModelService {
   concepts: {
     [key: string]: IConceptTables
   };
-  clones: any;
+  clones: IClones;
+  sourceTablesNames: string[]
 
-  constructor(arrowCache: IArrowCache, constants: IConstantCache, sourceTableName: string, targetTableName: string, concepts: { [key: string]: IConceptTables }, clones: any) {
+  constructor(arrowCache: IArrowCache,
+              constants: IConstantCache,
+              sourceTableName: string,
+              targetTableName: string,
+              concepts: { [key: string]: IConceptTables },
+              clones: IClones,
+              sourceTablesNames: string[]) {
     if (!arrowCache) {
       throw new Error('data should be not empty');
     }
@@ -34,6 +42,7 @@ export class ZipXmlMappingModelService {
     this.targetTableName = targetTableName;
     this.concepts = concepts;
     this.clones = clones;
+    this.sourceTablesNames = sourceTablesNames;
   }
 
   generate(): EtlMappingForZipXmlGeneration {
@@ -132,7 +141,9 @@ export class ZipXmlMappingModelService {
       const conceptTargetTable = tableNames[ 0 ];
       const conceptSourceTable = tableNames[ 1 ];
 
-      if (!this.sourceTableName || this.sourceTableName === conceptSourceTable && this.targetTableName === conceptTargetTable) {
+      if (!this.sourceTableName && this.sourceTablesNames.includes(conceptSourceTable) ||
+        this.sourceTableName === conceptSourceTable && this.targetTableName === conceptTargetTable
+      ) {
         let cloneExists = false;
         if (this.clones[ conceptTargetTable ] && this.clones[ conceptTargetTable ].length) {
           const existingClones = this.clones[ conceptTargetTable ].filter(item => item.cloneConnectedToSourceName === conceptSourceTable);

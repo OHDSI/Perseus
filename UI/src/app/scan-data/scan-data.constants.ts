@@ -36,7 +36,8 @@ export const whiteRabbitDatabaseTypes: string[] = [
 export const dbTypesRequireSchema: string[] = [
   DbTypes.ORACLE,
   DbTypes.POSTGRESQL,
-  DbTypes.SQL_SERVER
+  DbTypes.SQL_SERVER,
+  DbTypes.AZURE
 ];
 
 export const delimitedFiles: string[] = [
@@ -46,7 +47,8 @@ export const delimitedFiles: string[] = [
 export const cdmBuilderDatabaseTypes: string[] = [
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
-  DbTypes.MYSQL
+  DbTypes.MYSQL,
+  DbTypes.AZURE
 ];
 
 export const fakeData = 'Fake Data';
@@ -57,12 +59,13 @@ export const dqdDatabaseTypes = [
   DbTypes.SQL_SERVER,
   DbTypes.POSTGRESQL,
   DbTypes.ORACLE,
-  DbTypes.REDSHIFT,
+  DbTypes.REDSHIFT
 ];
 
 export const defaultPorts = {
   [DbTypes.POSTGRESQL]: 5432,
   [DbTypes.SQL_SERVER]: 1433,
+  [DbTypes.AZURE]: 1433,
   [DbTypes.ORACLE]: 1521,
   [DbTypes.MYSQL]: 3306,
   [DbTypes.PDW]: 17001,
@@ -73,13 +76,13 @@ export const defaultPorts = {
 export const fullySupportedDatabases: string[] = [
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
+  DbTypes.AZURE,
   DbTypes.MYSQL
 ]
 
 export const supportedWithLimitationsDatabases: string[] = [
   DbTypes.ORACLE,
   DbTypes.REDSHIFT,
-  DbTypes.AZURE,
   DbTypes.MS_ACCESS,
   DbTypes.TERADATA,
   DbTypes.BIGQUERY

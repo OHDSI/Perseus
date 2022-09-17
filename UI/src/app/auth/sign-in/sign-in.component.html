@@ -1,10 +1,10 @@
 <app-auth-background class="sign-in">
-  <form class="sign-in__form" [formGroup]="form" (ngSubmit)="submit()" [class.add]="isAddAuth">
+  <form class="sign-in__form" [formGroup]="form" (ngSubmit)="submit()" [class.add]="isAzureAuth">
     <div class="sign-in__form__header">
       <app-auth-logo></app-auth-logo>
     </div>
 
-    <ng-container *ngIf="!isAddAuth">
+    <ng-container *ngIf="!isAzureAuth">
       <div class="sign-in__form__control">
         <label for="email">
           E-mail
@@ -18,17 +18,18 @@
       <div class="sign-in__form__control sign-in__form__password-wrapper">
         <label>Password</label>
         <app-auth-password-input formControlName="password"></app-auth-password-input>
-
-        <app-auth-error-message *ngIf="error" class="sign-in__form__password-wrapper__error"
-                                [message]="error"></app-auth-error-message>
       </div>
     </ng-container>
+
+    <app-auth-error-message *ngIf="error" class="sign-in__form__error"
+                            [style.top]="errorTop"
+                            [message]="error"></app-auth-error-message>
 
     <div class="sign-in__form__submit">
       <button type="submit" [disabled]="form.invalid || loading" [class.spinner]="loading">Login</button>
     </div>
 
-    <div *ngIf="!isAddAuth" class="sign-in__form__redirect">
+    <div *ngIf="!isAzureAuth" class="sign-in__form__redirect">
       <a [routerLink]="['/sign-out']">Register</a>
       <span>|</span>
       <a [routerLink]="['/recover-password']">Forgot Password ?</a>
