@@ -1,6 +1,6 @@
 FROM postgres
 
-ARG INIT_ENV=init
+ARG INIT_ENV=full
 
 COPY vocabulary tmp/vocabulary
 COPY ${INIT_ENV}.sql /docker-entrypoint-initdb.d/

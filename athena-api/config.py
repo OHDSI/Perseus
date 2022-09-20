@@ -8,7 +8,7 @@ class LocalConfig:
     AZURE_KEY_VAULT = False
     SOLR_URL = 'http://localhost:8983'
     VOCABULARY_DB_NAME = 'vocabulary'
-    VOCABULARY_DB_USER = 'perseus'
+    VOCABULARY_DB_USER = 'vocabulary'
     VOCABULARY_DB_PASSWORD = 'password'
     VOCABULARY_DB_HOST = 'vocabularydb'
     VOCABULARY_DB_PORT = 5432
@@ -18,7 +18,7 @@ class DockerConfig:
     AZURE_KEY_VAULT = False
     SOLR_URL = 'http://solr:8983'
     VOCABULARY_DB_NAME = 'vocabulary'
-    VOCABULARY_DB_USER = 'perseus'
+    VOCABULARY_DB_USER = 'vocabulary'
     VOCABULARY_DB_PASSWORD = 'password'
     VOCABULARY_DB_HOST = 'vocabularydb'
     VOCABULARY_DB_PORT = 5432
