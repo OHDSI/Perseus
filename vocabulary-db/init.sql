@@ -1,6 +1,5 @@
 --- schema ---
 CREATE SCHEMA "vocabulary";
-CREATE SCHEMA "usagi_data";
 
 --- tables ---
 --- concept
@@ -231,5 +230,3 @@ GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO vocabulary;
 GRANT INSERT on "vocabulary"."source_to_concept_map" to vocabulary;
 GRANT DELETE on "vocabulary"."source_to_concept_map" to vocabulary;
 GRANT UPDATE on "vocabulary"."source_to_concept_map_id_seq" to vocabulary;
-GRANT ALL PRIVILEGES ON SCHEMA usagi_data TO vocabulary;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA usagi_data TO vocabulary;
