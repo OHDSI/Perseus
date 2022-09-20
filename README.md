@@ -114,7 +114,7 @@ Open `localhost:80` in your browser, preferably Google Chrome
 
 ## Starting each container separately
 
-https://github.com/SoftwareCountry/Perseus/blob/master/CONTAINERS.md
+[CONTAINERS](CONTAINERS.md)
 
 Perseus uses auxiliary services to scan, convert and validate data.
 
