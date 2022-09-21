@@ -10,5 +10,3 @@ Werkzeug==2.0.2
 itsdangerous==2.0.1
 py-postgresql==1.2.2
 psycopg2-binary==2.9.3
-azure-identity==1.10.0
-azure-keyvault-secrets==4.4.0
