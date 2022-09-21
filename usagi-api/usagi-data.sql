@@ -1,4 +1,4 @@
---- ! Connect via Usagi user
+--- ! Connect via vocabulary user to vocabulary database
 
 
 --- create tables for usagi search

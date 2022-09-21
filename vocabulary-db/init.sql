@@ -1,6 +1,5 @@
 --- schema ---
-create schema "vocabulary";
-
+CREATE SCHEMA "vocabulary";
 
 --- tables ---
 --- concept
@@ -221,13 +220,13 @@ VACUUM FULL "vocabulary"."vocabulary";
 
 
 --- user ---
-CREATE USER perseus WITH ENCRYPTED PASSWORD 'password';
+CREATE USER vocabulary WITH ENCRYPTED PASSWORD 'password';
 
 
 --- permissions
-GRANT CREATE on database vocabulary TO perseus;
-GRANT USAGE ON SCHEMA vocabulary TO perseus;
-GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO perseus;
-GRANT INSERT on "vocabulary"."source_to_concept_map" to perseus;
-GRANT DELETE on "vocabulary"."source_to_concept_map" to perseus;
-GRANT UPDATE on "vocabulary"."source_to_concept_map_id_seq" to perseus;
+GRANT CREATE on database vocabulary TO vocabulary;
+GRANT USAGE ON SCHEMA vocabulary TO vocabulary;
+GRANT SELECT ON ALL TABLES IN SCHEMA vocabulary TO vocabulary;
+GRANT INSERT on "vocabulary"."source_to_concept_map" to vocabulary;
+GRANT DELETE on "vocabulary"."source_to_concept_map" to vocabulary;
+GRANT UPDATE on "vocabulary"."source_to_concept_map_id_seq" to vocabulary;
