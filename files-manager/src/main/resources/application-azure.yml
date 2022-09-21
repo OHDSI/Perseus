@@ -29,6 +29,6 @@ spring:
             -
               credential:
                 client-id: ${AZURE_CLIENT_ID}
-              endpoint: https://kv-perseus.vault.azure.net/
+              endpoint: ${AZURE_KEY_VAULT_ENDPOINT}
               profile:
                 tenant-id: ${AZURE_TENANT_ID}

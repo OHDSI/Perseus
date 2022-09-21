@@ -1,3 +1,5 @@
+import os
+
 from azure.identity import ManagedIdentityCredential
 from azure.keyvault.secrets import SecretClient
 
@@ -8,7 +10,7 @@ See more: https://docs.microsoft.com/en-us/python/api/overview/azure/identity-re
 """
 def get_secrets() -> dict:
     print('Fetch variables from Azure Key Vault')
-    kv_endpoint = 'https://kv-perseus.vault.azure.net/'
+    kv_endpoint = os.getenv('AZURE_KEY_VAULT_ENDPOINT')
 
     credential = ManagedIdentityCredential()
     client = SecretClient(vault_url=kv_endpoint, credential=credential)
