@@ -3,6 +3,7 @@ export interface Column {
   name: string;
   width?: string;
   className?: string;
+  sortable?: boolean
 }
 
 export interface Sort {

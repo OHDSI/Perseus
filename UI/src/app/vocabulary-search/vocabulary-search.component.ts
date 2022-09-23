@@ -26,6 +26,7 @@ import {
   VocabSearchResult
 } from '@models/vocabulary-search/vocabulray-search';
 import { Filter, FilterValue } from '@models/filter/filter';
+import { parseHttpError } from '@utils/error'
 
 @Component({
   selector: 'app-vocabulary-search',
@@ -42,17 +43,17 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   requestInProgress = false
 
-  disableAll = false // When Athena API return error
+  disableAll = false
 
   columns: Column[] = [
     {field: 'id', name: 'ID', className: 'id'},
     {field: 'code', name: 'Code', className: 'code'},
-    {field: 'name', name: 'Name', className: 'name'},
-    {field: 'className', name: 'Class', className: 'class'},
-    {field: 'standardConcept', name: 'Concept', className: 'concept'},
-    {field: 'invalidReason', name: 'Validity', className: 'validity'},
-    {field: 'domain', name: 'Domain', className: 'domain'},
-    {field: 'vocabulary', name: 'Vocab', className: 'vocab'}
+    {field: 'name', name: 'Name', className: 'name', sortable: true},
+    {field: 'className', name: 'Class', className: 'class', sortable: true},
+    {field: 'standardConcept', name: 'Concept', className: 'concept', sortable: true},
+    {field: 'invalidReason', name: 'Validity', className: 'validity', sortable: true},
+    {field: 'domain', name: 'Domain', className: 'domain', sortable: true},
+    {field: 'vocabulary', name: 'Vocab', className: 'vocab', sortable: true}
   ]
 
   @ViewChild(SearchInputComponent)
@@ -82,6 +83,8 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   @Output()
   close = new EventEmitter<void>()
+
+  error: string | null = null
 
   private filtersRecognizer = {
     domain_id: {name: 'Domain', priority: 1, color: '#761C1C'},
@@ -139,10 +142,6 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
 
   @HostListener('document:keyup.enter')
   onEnterOrApply() {
-    if (this.disableAll) {
-      return
-    }
-
     const changes = this.findChanges();
     const filtersChanged = this.isFilterChanged();
 
@@ -215,6 +214,7 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
   }
 
   private makeRequest(params: VocabSearchReqParams) {
+    this.error = null;
     if (!this.requestInProgress) {
       this.requestInProgress = true;
     }
@@ -225,8 +225,9 @@ export class VocabularySearchComponent extends BaseComponent implements OnInit, 
     const searchRequest = (params: VocabSearchReqParams) =>
       this.searchService.search(params, this.mode)
         .pipe(
-          catchError(() => {
+          catchError(error => {
             this.disableAll = true
+            this.error = parseHttpError(error)
             return of({
               content: [],
               totalPages: 1,
