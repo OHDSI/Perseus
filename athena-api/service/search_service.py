@@ -1,8 +1,8 @@
 import math
-import re
 import pysolr
 
 from utils.constants import VOCABULARY_FILTERS, SOLR_CONN_STRING
+from utils.search_util import parse_search_query
 
 
 def count():
@@ -15,8 +15,7 @@ def search_athena(page_size, page, query, sort, order, filters, update_filters):
     result_concepts = []
     solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
     filter_queries = create_athena_filter_queries(filters)
-    final_query = f"concept_name:{'+'.join(re.split(' ', query))} OR concept_code:{'+'.join(re.split(' ', query))} OR concept_id:{'+'.join(re.split(' ', query))}" \
-        if query else '*:*'
+    final_query = parse_search_query(query)
     start_record = (int(page) - 1)*int(page_size)
     facet_fields = VOCABULARY_FILTERS.keys()
     params = {
