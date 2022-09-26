@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { Filter, FilterValue } from '@models/filter/filter';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { filterValues, findFilterValue } from '@shared/filters/filter-dropdown/filter-dropdown'
 
 const VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -50,8 +51,8 @@ export class FilterDropdownComponent implements ControlValueAccessor {
   }
 
   onCheck(filterValue: FilterValue) {
-    if (this.state.find(filter => filter.name === filterValue.name)) {
-      this.state = this.state.filter(filter => filter.name !== filterValue.name)
+    if (this.state.find(findFilterValue(filterValue))) {
+      this.state = this.state.filter(filterValues(filterValue))
     } else {
       this.state = [...this.state, filterValue]
     }

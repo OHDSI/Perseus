@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FilterValue } from '@models/filter/filter';
+import { findFilterValue } from '@shared/filters/filter-dropdown/filter-dropdown'
 
 @Component({
   selector: 'app-filter-list',
@@ -32,7 +33,7 @@ export class FilterListComponent {
 
   onCheck(index: number) {
     let value = this.filteredValues[index]
-    value = this.selectedValues.find(v => v.name === value.name) || value
+    value = this.selectedValues.find(findFilterValue(value)) || value
     this.check.emit({...value, checked: !value.checked});
   }
 
@@ -49,7 +50,6 @@ export class FilterListComponent {
   }
 
   isChecked(curr: FilterValue): boolean {
-    return !!this.selectedValues
-      .find(elem => elem.name === curr.name && elem.filterIndex === curr.filterIndex)
+    return !!this.selectedValues.find(findFilterValue(curr))
   }
 }
