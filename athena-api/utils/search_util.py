@@ -19,7 +19,11 @@ def parse_search_query(query: str or None) -> str:
             parsed_query = f'"{parsed_query}"'
         else:
             parsed_query = f"'{parsed_query}'"
-    elif re.search(r"\s", parsed_query):
+    elif has_space(parsed_query):
         parsed_query = f'({parsed_query})'
 
     return f"concept_name:{parsed_query} OR concept_code:{parsed_query} OR concept_id:{parsed_query}"
+
+
+def has_space(value: str):
+    return re.search(r"\s", value)
