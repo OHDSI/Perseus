@@ -48,7 +48,8 @@ export class FilterListComponent {
     return count !== null && count !== undefined ? `(${count})` : ''
   }
 
-  isChecked(value: string): boolean {
-    return !!this.selectedValues.find(filter => filter.name === value)
+  isChecked(curr: FilterValue): boolean {
+    return !!this.selectedValues
+      .find(elem => elem.name === curr.name && elem.filterIndex === curr.filterIndex)
   }
 }
