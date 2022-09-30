@@ -12,6 +12,8 @@ class LocalConfig:
     VOCABULARY_DB_PASSWORD = 'password'
     VOCABULARY_DB_HOST = 'vocabularydb'
     VOCABULARY_DB_PORT = 5432
+    SOLR_USER = 'solr'
+    SOLR_PASSWORD = 'SolrRocks'
 
 
 class DockerConfig:
@@ -22,6 +24,8 @@ class DockerConfig:
     VOCABULARY_DB_PASSWORD = 'password'
     VOCABULARY_DB_HOST = 'vocabularydb'
     VOCABULARY_DB_PORT = 5432
+    SOLR_USER = 'solr'
+    SOLR_PASSWORD = 'SolrRocks'
 
 
 class AzureConfig:

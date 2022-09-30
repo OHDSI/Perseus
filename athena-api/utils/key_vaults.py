@@ -21,6 +21,8 @@ def get_secrets() -> dict:
         'VOCABULARY_DB_PASSWORD': client.get_secret('VocabularyDbPass').value,
         'VOCABULARY_DB_HOST': client.get_secret('VocabularyDbHost').value,
         'VOCABULARY_DB_PORT': client.get_secret('VocabularyDbPort').value,
+        'SOLR_USER': client.get_secret('SolrUser').value,
+        'SOLR_PASSWORD': client.get_secret('SolrPassword').value,
     }
     client.close()
 

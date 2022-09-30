@@ -2,20 +2,20 @@ import math
 from typing import List
 
 import pysolr
-
+from utils.basic_auth_util import create_auth
 from utils.constants import VOCABULARY_FILTERS, SOLR_CONN_STRING
 from utils.search_util import parse_search_query, has_space
 
 
 def count():
-    solr = pysolr.Solr(SOLR_CONN_STRING)
+    solr = pysolr.Solr(SOLR_CONN_STRING, auth=create_auth())
     results = solr.search('*:*', rows=0)
     return results.hits
 
 
 def search_athena(page_size: str, page: str, query: str, sort, order, filters: dict, update_filters):
     result_concepts = []
-    solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
+    solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True, auth=create_auth())
     filter_queries = create_athena_filter_queries(filters)
     final_query = parse_search_query(query)
     start_record = (int(page) - 1)*int(page_size)

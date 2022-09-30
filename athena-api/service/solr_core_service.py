@@ -1,3 +1,4 @@
+import base64
 import json
 import urllib
 from urllib.request import urlopen
@@ -8,7 +9,11 @@ from service import search_service
 
 
 def run_solr_command(command, current_user = ''):
-    resource = urllib.request.urlopen(f"{app.config['SOLR_URL']}/{command}{current_user}")
+    request = urllib.request.Request(f"{app.config['SOLR_URL']}/{command}{current_user}")
+    to_decode = f"{app.config['SOLR_USER']}:{app.config['SOLR_PASSWORD']}"
+    base64string = base64.b64encode(to_decode.encode())
+    request.add_header("Authorization", "Basic %s" % base64string.decode())
+    resource = urllib.request.urlopen(request)
     content = resource.read().decode(resource.headers.get_content_charset())
     return content
 
