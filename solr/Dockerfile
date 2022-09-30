@@ -5,6 +5,7 @@ USER root
 COPY athena /opt/solr/server/solr/configsets/athena
 COPY usagi /opt/solr/server/solr/configsets/usagi
 COPY postgresql-42.2.19.jar /opt/solr/dist/postgresql-42.2.19.jar
+COPY security.json /var/solr/data/security.json
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openssh-server \
