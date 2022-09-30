@@ -4,6 +4,7 @@ from model.usagi_data.code_mapping import ScoredConcept, TargetConcept
 from model.usagi_data.concept import Concept
 from service.similarity_score_service import get_terms_vectors, cosine_sim_vectors
 from util.array_util import remove_duplicates
+from util.basic_auth_util import create_auth
 from util.constants import SOLR_CONN_STRING
 from util.searh_util import search_term_to_query
 from util.target_concept_util import create_target_concept
@@ -14,7 +15,7 @@ SEARCH_RESULT_SIZE = 100
 
 
 def count():
-    solr = pysolr.Solr(SOLR_CONN_STRING)
+    solr = pysolr.Solr(SOLR_CONN_STRING, auth=create_auth())
     results = solr.search('*:*', rows=0)
     return results.hits
 
@@ -22,7 +23,7 @@ def count():
 def search_usagi(filters, search_term: str, source_auto_assigned_concept_ids):
     if search_term is None:
         search_term = ''
-    solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
+    solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True, auth=create_auth())
     scored_concepts = []
     filter_queries = create_usagi_filter_queries(filters, source_auto_assigned_concept_ids) if filters else None
     search_query = search_term_to_query(search_term)
