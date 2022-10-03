@@ -141,7 +141,7 @@ Open `localhost:80` in your browser, preferably Google Chrome.
 ## Getting Involved
 
 * User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
-* We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues)
+* We use the: [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues)
 * Contact us: [Email](mailto:perseus.support@softwarecountry.com)
 
 License
