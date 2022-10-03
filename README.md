@@ -31,11 +31,13 @@ Features
 
 Screenshots
 ===========
-<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/start.PNG" alt="Start page" title="Start page" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/start1.PNG" alt="Start page" title="Start page" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/link_tables2.PNG" alt="Link tables" title="Link tables" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/link_fields.PNG" alt="Link fields" title="Link fields" />
-<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/concept.PNG" alt="Concept configuration" title="Concept configuration" />
-<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/lookup.PNG" alt="Lookup configuration" title="Lookup configuration" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/concept1.PNG" alt="Concept configuration" title="Concept configuration" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/lookup1.PNG" alt="Lookup configuration" title="Lookup configuration" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/usagi.PNG" alt="Code mappings - Import" title="Code mappings - Import" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/usagi1.PNG" alt="Code mappings" title="Code mappings" />
 
 Technology
 ============
