@@ -1,5 +1,5 @@
 import { DbSettings } from '@models/white-rabbit/db-settings';
-import { CdmSettings } from '@models/cdm-builder/cdm-settings';
+import { CdmSettings, SourceCdmSettings, TargetCdmSettings } from '@models/cdm-builder/cdm-settings';
 
 /* Adapt white-rabbit dbSettings to CDM-builder settings */
 const dbTypeIdentifiers = {
@@ -20,7 +20,7 @@ export function adaptDbType(dbType) {
     .find(key => dbTypeIdentifiers[key] === dbType);
 }
 
-export function adaptDbSettingsForSource(dbSettings: DbSettings) {
+export function adaptDbSettingsForSource(dbSettings: DbSettings): SourceCdmSettings {
   const sourceEngine = adaptDbType(dbSettings.dbType);
 
   return {
@@ -34,7 +34,7 @@ export function adaptDbSettingsForSource(dbSettings: DbSettings) {
   };
 }
 
-export function adaptDbSettingsForDestination(dbSettings: DbSettings) {
+export function adaptDbSettingsForDestination(dbSettings: DbSettings): TargetCdmSettings {
   const destinationEngine = adaptDbType(dbSettings.dbType);
 
   return {

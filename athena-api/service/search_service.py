@@ -1,8 +1,10 @@
 import math
-import re
+from typing import List
+
 import pysolr
 
 from utils.constants import VOCABULARY_FILTERS, SOLR_CONN_STRING
+from utils.search_util import parse_search_query, has_space
 
 
 def count():
@@ -11,12 +13,11 @@ def count():
     return results.hits
 
 
-def search_athena(page_size, page, query, sort, order, filters, update_filters):
+def search_athena(page_size: str, page: str, query: str, sort, order, filters: dict, update_filters):
     result_concepts = []
     solr = pysolr.Solr(SOLR_CONN_STRING, always_commit=True)
     filter_queries = create_athena_filter_queries(filters)
-    final_query = f"concept_name:{'+'.join(re.split(' ', query))} OR concept_code:{'+'.join(re.split(' ', query))} OR concept_id:{'+'.join(re.split(' ', query))}" \
-        if query else '*:*'
+    final_query = parse_search_query(query)
     start_record = (int(page) - 1)*int(page_size)
     facet_fields = VOCABULARY_FILTERS.keys()
     params = {
@@ -95,7 +96,7 @@ def make_dicts_from_facets(facets):
     return facet_dict
 
 
-def create_athena_filter_queries(filters):
+def create_athena_filter_queries(filters: dict):
     queries = []
     for key in VOCABULARY_FILTERS:
         if filters[key]:
@@ -104,7 +105,7 @@ def create_athena_filter_queries(filters):
             elif key == 'standard_concept':
                 apply_standard_concept_filter(queries, filters[key].split(","), key)
             else:
-                create_or_string(queries, filters[key].split(","), key)
+                apply_filter(queries, filters[key].split(","), key)
     return queries
 
 
@@ -122,27 +123,29 @@ def apply_standard_concept_filter(queries, filter_values, key):
             if 'Non-standard' in filter_values:
                 return queries
             else:
-                create_or_string(queries, ['C', 'S'], key)
+                apply_filter(queries, ['C', 'S'], key)
         else:
             if 'Non-standard' in filter_values:
                 queries.append('-standard_concept:C')
             else:
-                create_or_string(queries, ['S'], key)
+                apply_filter(queries, ['S'], key)
     else:
         if 'Classification' in filter_values:
             if 'Non-standard' in filter_values:
                 queries.append('-standard_concept:S')
             else:
-                create_or_string(queries, ['C'], key)
+                apply_filter(queries, ['C'], key)
         else:
             if 'Non-standard' in filter_values:
                 queries.append('-standard_concept:*')
     return queries
 
 
-def create_or_string(queries, values, field_name):
+def apply_filter(queries: List[str], values: List[str], field_name: str):
     def add_field_name(item, field_name):
-        return f"{field_name}:{item}"
+        parsed_item = f'"{item}"' if has_space(item) else item
+        return f"{field_name}:{parsed_item}"
+
     values_with_field_name = [add_field_name(item, field_name) for item in values]
     query = " OR ".join(values_with_field_name)
     if query:

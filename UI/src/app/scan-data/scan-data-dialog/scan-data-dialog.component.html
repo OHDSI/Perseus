@@ -12,6 +12,7 @@
 
   <div class="scan-dialog__content">
     <app-scan-data-form *ngIf="isSetParametersMode; else scanProgressBlock" style="width: 100%"
+                        [scanning]="loading"
                         (scanTables)="onScanTables($event)"
                         (cancel)="onClose()"></app-scan-data-form>
 

@@ -34,6 +34,7 @@ import { ConceptTransformationComponent } from '@mapping/concept-transformation/
 import { getConceptFieldType, toNoConceptRows } from '@utils/concept-util';
 import { getConstantId } from '@utils/constant';
 import { IConnection } from '@models/connection';
+import { FilteredField } from '@models/filtered-fields'
 
 @Component({
   selector: 'app-panel-table',
@@ -50,12 +51,12 @@ import { IConnection } from '@models/connection';
 export class PanelTableComponent extends BaseComponent implements OnInit {
   @Input() tables: ITable[];
   @Input() table: ITable;
-  @Input() tabIndex: any;
-  @Input() oppositeTableId: any;
-  @Input() oppositeTableName: any;
-  @Input() filtered: any;
-  @Input() filteredFields: any;
-  @Input() mappingConfig: any;
+  @Input() tabIndex: number;
+  @Input() oppositeTableId: number;
+  @Input() oppositeTableName: string;
+  @Input() filtered: string[];
+  @Input() filteredFields: FilteredField;
+  @Input() mappingConfig: string[][];
   @Input() createGroupElementId: string;
 
   @ViewChild('htmlElement', { read: ElementRef }) element: HTMLElement;
@@ -121,7 +122,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
 
     this.storeService.state$.subscribe(res => {
       if (res) {
-        this.filteredFields = res.filteredFields ? res.filteredFields[ this.table.name ] : res.filteredFields;
+        this.filteredFields = res.filteredFields ? res.filteredFields[ this.table.name ] : null;
       }
     });
   }
@@ -257,53 +258,36 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
     });
   }
 
-  validateGroupFields(groupType?: string) {
+  private validateGroupFields(groupType?: string): boolean {
     const linkedTargetTables = uniq(this.checkLinks());
     if (linkedTargetTables.length) {
-      const dialog = this.matDialog.open(ErrorPopupComponent, {
-        closeOnNavigation: false,
-        disableClose: false,
+      this.matDialog.open(ErrorPopupComponent, {
         data: {
           title: 'Grouping error',
           message: `You cannot add linked fields to Group. There are links in the following tables: ${linkedTargetTables.join(',').toUpperCase()}`
-        }
-      });
-
-      dialog.afterClosed().subscribe(res => {
-        return false;
+        },
+        panelClass: 'perseus-dialog'
       });
     } else if (this.checkGrouppedFields()) {
-
-      const dialog = this.matDialog.open(ErrorPopupComponent, {
-        closeOnNavigation: false,
-        disableClose: false,
+      this.matDialog.open(ErrorPopupComponent, {
         data: {
           title: 'Grouping error',
-          message: 'You cannot add groupped field to Group.'
-        }
+          message: 'You cannot add grouped field to Group.'
+        },
+        panelClass: 'perseus-dialog'
       });
-
-      dialog.afterClosed().subscribe(res => {
-        return false;
-      });
-
     } else if (this.checkDifferentTypes(groupType)) {
-
-      const dialog = this.matDialog.open(ErrorPopupComponent, {
-        closeOnNavigation: false,
-        disableClose: false,
+      this.matDialog.open(ErrorPopupComponent, {
         data: {
           title: 'Grouping error',
           message: 'You cannot add fields of different types to Group. Types should be similar.'
-        }
-      });
-
-      dialog.afterClosed().subscribe(res => {
-        return false;
+        },
+        panelClass: 'perseus-dialog'
       });
     } else {
       return true;
     }
+    return false;
   }
 
   checkLinks() {
@@ -484,7 +468,7 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
   }
 
   openConceptDialog(row: IRow) {
-    const transformDialogRef = this.matDialog.open(ConceptTransformationComponent, {
+    this.matDialog.open(ConceptTransformationComponent, {
       closeOnNavigation: false,
       disableClose: true,
       panelClass: 'perseus-dialog',
@@ -603,7 +587,9 @@ export class PanelTableComponent extends BaseComponent implements OnInit {
 
   rowClick($event: MouseEvent) {
     $event.stopPropagation();
-    this.setRowFocus($event.currentTarget, $event.ctrlKey);
+    // Windows and Linux - ctrl, Mac - command
+    const ctrlOrCommandKeyClicked = $event.ctrlKey || $event.metaKey
+    this.setRowFocus($event.currentTarget, ctrlOrCommandKeyClicked);
   }
 
   setRowFocus(target, ctrlKey) {

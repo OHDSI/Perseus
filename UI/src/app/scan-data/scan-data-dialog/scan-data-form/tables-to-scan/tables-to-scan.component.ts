@@ -63,6 +63,10 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
     super();
   }
 
+  get connected(): boolean {
+    return this.connectionResult?.canConnect
+  }
+
   ngOnInit(): void {
     this.initScanParamsForm();
   }

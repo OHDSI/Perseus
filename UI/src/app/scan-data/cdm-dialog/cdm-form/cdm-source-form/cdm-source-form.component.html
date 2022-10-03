@@ -1,5 +1,5 @@
 <div class="cdm-form__content-item">
-  <div class="connect-progress-bar" *ngIf="tryConnect">
+  <div class="connect-progress-bar" *ngIf="cdmButtonsService.testSourceConnection">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </div>
 
@@ -12,7 +12,9 @@
 
   <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
-    <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
+    <mat-select [ngModel]="dataType"
+                [disabled]="cdmButtonsService.testSourceConnection"
+                (ngModelChange)="onDataTypeChange($event)">
       <mat-option *ngFor="let type of dataTypes" [value]="type" [disabled]="isDbTypeDisable(type)" >
         {{type}}
         <span *ngIf="hasLimits(type) as limit" style="color: rgba(64, 64, 64, 0.7);">({{limit}})</span>
@@ -25,18 +27,24 @@
   <ng-template #db>
     <app-cdm-connect-form prefix="source"
                           [requireSchema]="requireSchema"
-                          [form]="form"></app-cdm-connect-form>
+                          [form]="form"
+                          [tryConnect]="cdmButtonsService.testSourceConnection"></app-cdm-connect-form>
     <app-test-connection class="cdm-form__content-item__apply"
                          (testConnection)="onTestConnection()"
                          [connectionResult]="connectionResult"
-                         [disabled]="isNotValid"></app-test-connection>
+                         [disabled]="testSourceConnDisabled"
+                         [tryConnect]="cdmButtonsService.testSourceConnection"
+                         (cancel)="cancelTestConnection()">
+    </app-test-connection>
   </ng-template>
 
   <ng-template #fakeData>
     <app-cdm-fake-data-form [form]="fakeDataForm"></app-cdm-fake-data-form>
 
     <div class="cdm-form__content-item__apply fake-data">
-      <button (click)="generateFakeData.emit(this.fakeDataForm.value)">Generate</button>
+      <button [disabled]="fakeDataDisabled"
+              [class.btn-spinner]="cdmButtonsService.generatingFakeData"
+              (click)="onGenerateFakeData()">Generate</button>
     </div>
   </ng-template>
 </div>

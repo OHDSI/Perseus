@@ -14,25 +14,29 @@ import { OverlayService } from '@services/overlay/overlay.service';
 import { getConstantId } from '@utils/constant';
 import { DEFAULT_CLONE } from '@models/clones'
 import { openErrorDialog } from '@utils/error'
+import { FilteredField } from '@models/filtered-fields'
+import { filter, takeUntil } from 'rxjs/operators'
+import { BaseComponent } from '@shared/base/base.component'
+import { CommonUtilsService } from '@services/common-utils.service'
 
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
   styleUrls: [ './panel.component.scss' ]
 })
-export class PanelComponent implements OnInit, AfterViewInit {
+export class PanelComponent extends BaseComponent implements OnInit, AfterViewInit {
   @Input() table: ITable;
   @Input() tabIndex: number;
   @Input() tables: ITable[];
-  @Input() oppositeTableId: any;
-  @Input() filteredFields: any;
-  @Input() mappingConfig: any;
+  @Input() oppositeTableId: number;
+  @Input() filteredFields: FilteredField;
+  @Input() mappingConfig: string[][];
 
   @Output() open = new EventEmitter();
   @Output() close = new EventEmitter();
   @Output() initialized = new EventEmitter();
   @Output() openTransform = new EventEmitter();
-  @Output() changeClone = new EventEmitter<any>();
+  @Output() changeClone = new EventEmitter<ITable>();
 
   @ViewChild('panel') panel: PanelTableComponent;
 
@@ -64,8 +68,8 @@ export class PanelComponent implements OnInit, AfterViewInit {
   }
 
   initializing: boolean;
-  filtered;
-  linkFieldsSearch = {};
+  filtered: string[];
+  linkFieldsSearch: { [key: string]: string } = {};
   linkFieldsSearchKey = '';
   searchCriteria: string;
 
@@ -81,8 +85,10 @@ export class PanelComponent implements OnInit, AfterViewInit {
     private storeService: StoreService,
     private matDialog: MatDialog,
     private overlayService: OverlayService,
-    private elementRef: ElementRef<HTMLElement>
+    private elementRef: ElementRef<HTMLElement>,
+    private commonUtilService: CommonUtilsService
   ) {
+    super();
     this.initializing = true;
     this.subscribeOnSelectedTablesChange()
   }
@@ -142,14 +148,14 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.filtered = this.table.rows.map(item => item.name).filter(filterByName);
     this.linkFieldsSearch[ this.linkFieldsSearchKey ] = byName.criteria;
     this.searchCriteria = byName.criteria;
-    this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
+    this.storeService.add('linkFieldsSearch', {...this.linkFieldsSearch});
   }
 
-  filterByNameReset(byName: Criteria): void {
+  filterByNameReset(): void {
     this.filtered = undefined;
     this.linkFieldsSearch[ this.linkFieldsSearchKey ] = '';
     this.searchCriteria = '';
-    this.storeService.add('linkFieldsSearch', this.linkFieldsSearch);
+    this.storeService.add('linkFieldsSearch', {...this.linkFieldsSearch});
   }
 
   openConditionDialog() {
@@ -264,7 +270,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   createClonedTable(table: ITable, cloneName: string, cloneId: number, cloneConnectedToSourceName: string, cloneFromTableName: string): ITable {
     const cloneTargetTable = cloneDeep(table) as ITable;
     cloneTargetTable.cloneName = cloneName;
@@ -310,7 +315,6 @@ export class PanelComponent implements OnInit, AfterViewInit {
       remove: true,
       itemNotToRemove: 'Default'
     };
-
     const dialogOptions: OverlayConfigOptions = {
       hasBackdrop: true,
       backdropClass: 'custom-backdrop',
@@ -318,37 +322,21 @@ export class PanelComponent implements OnInit, AfterViewInit {
       positionStrategyFor: 'table-dropdown',
       payload: data
     };
-    const overlayRef = this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent);
-
-    overlayRef.afterClosed$.subscribe(tbl => {
-      if (tbl) {
-        if (tbl instanceof Table) {
-          const table = tbl as Table;
-          this.removeCloneConcepts(table);
-          this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ]
-            .filter(item => item.id !== table.id);
-          const arrowsToDelete = Object.values(this.bridgeService.arrowsCache)
-            .filter(item => item.target.tableId === table.id);
-          arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
-          if (!this.storeService.state.targetClones[ table.name ].length) {
-            delete this.storeService.state.targetClones[ table.name ];
-            const test = Object.values(this.bridgeService.arrowsCache).
-              filter(it => it.target.tableName === table.name && it.source.tableId === this.oppositeTableId);
-            test.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
-          } else {
-            this.setCloneTable(this.storeService.state.targetClones[ table.name ][ 0 ]);
+    this.overlayService.open(dialogOptions, target, SelectTableDropdownComponent)
+      .afterClosed$
+      .subscribe(tbl => {
+        if (tbl) {
+          if (tbl instanceof Table) {
+            this.removeClone(tbl)
           }
+        } else {
+          this.setCloneTable(data.selected);
         }
-      } else {
-        this.setCloneTable(data.selected);
-      }
-    });
-
+      })
   }
 
-  removeCloneConcepts(table: any) {
+  removeCloneConcepts(table: ITable) {
     const tableConcepts = this.storeService.state.concepts[`${this.table.name}|${this.oppositeTableName}`];
-
     if (tableConcepts) {
       tableConcepts.conceptsList = tableConcepts.conceptsList.filter(it => it.fields['concept_id'].targetCloneName !== table.cloneName);
       tableConcepts.conceptsList.forEach((it, index) => {
@@ -357,7 +345,7 @@ export class PanelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setCloneTable(table) {
+  setCloneTable(table: ITable) {
     this.table = table;
     this.changeClone.emit(table);
   }
@@ -370,9 +358,44 @@ export class PanelComponent implements OnInit, AfterViewInit {
     this.targetSimilarTableId = targetSimilarTableId
 
     this.storeService.on('selectedSourceTableId')
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(value => this.selectedSourceTableId = value)
 
     this.storeService.on('selectedTargetTableId')
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe(value => this.selectedTargetTableId = value)
+  }
+
+  private removeClone(table: Table): void {
+    const settings = {
+      warning: 'You want to delete clone. This action cannot be undone.',
+      header: 'Delete clone',
+      okButton: 'Cancel',
+      deleteButton: 'Delete',
+    };
+    this.commonUtilService.openWarningDialog(settings, {width: '285px', height: '235px'})
+      .pipe(
+        filter(result => result === settings.deleteButton)
+      )
+      .subscribe(() => {
+        this.removeCloneConcepts(table);
+        this.storeService.state.targetClones[ table.name ] = this.storeService.state.targetClones[ table.name ]
+          .filter(item => item.id !== table.id);
+        const arrowsToDelete = Object.values(this.bridgeService.arrowsCache)
+          .filter(item => item.target.tableId === table.id);
+        arrowsToDelete.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        if (!this.storeService.state.targetClones[ table.name ].length) {
+          delete this.storeService.state.targetClones[ table.name ];
+          const test = Object.values(this.bridgeService.arrowsCache)
+            .filter(it => it.target.tableName === table.name && it.source.tableId === this.oppositeTableId);
+          test.forEach(arrow => this.bridgeService.deleteArrow(arrow.connector.id, true));
+        } else {
+          this.setCloneTable(this.storeService.state.targetClones[ table.name ][ 0 ]);
+        }
+      })
   }
 }

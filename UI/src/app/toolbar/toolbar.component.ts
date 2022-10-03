@@ -170,17 +170,21 @@ export class ToolbarComponent extends BaseComponent implements OnInit, OnDestroy
 
   private initStreamsOfDisabledButtons() {
     this.projectInitialized$ = this.storeService.on('etlMapping').pipe(
+      takeUntil(this.ngUnsubscribe),
       map(etlMapping => !!etlMapping?.id)
     )
 
     this.sourceUploaded$ = this.storeService.on('source').pipe(
+      takeUntil(this.ngUnsubscribe),
       map(source => isSourceUploaded(source))
     )
 
     const tablesMapped$ = this.storeService.on('targetConfig').pipe(
+      takeUntil(this.ngUnsubscribe),
       map(targetConfig => isTablesMapped(targetConfig))
     )
     const viewCreated$ = this.storeService.on('source').pipe(
+      takeUntil(this.ngUnsubscribe),
       map(source => isViewCreated(source))
     )
 

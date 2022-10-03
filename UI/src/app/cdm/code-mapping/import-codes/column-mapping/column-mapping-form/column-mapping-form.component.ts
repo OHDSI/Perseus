@@ -17,6 +17,10 @@ export class ColumnMappingFormComponent implements OnInit {
 
   columnTypes: Column[] = [
     {
+      field: null,
+      name: ''
+    },
+    {
       field: 'autoConceptId',
       name: 'Auto concept ID column'
     },

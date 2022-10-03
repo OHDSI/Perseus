@@ -4,7 +4,7 @@
          (ngModelChange)="onFilter($event)">
 
   <div *ngFor="let value of filteredValues; let i = index" class="filters-list__item">
-    <input (click)="onCheck(i)" type="checkbox" [disabled]="value.disabled" [checked]="isChecked(value.name)">
+    <input (click)="onCheck(i)" type="checkbox" [disabled]="value.disabled" [checked]="isChecked(value)">
     {{value.name}} {{toValueCount(value.count)}}
   </div>
 </div>

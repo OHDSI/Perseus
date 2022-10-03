@@ -53,7 +53,9 @@
 
     <app-test-connection (testConnection)="onTestConnection()"
                          [connectionResult]="connectionResult"
-                         [disabled]="isCheckAndTestButtonDisabled"></app-test-connection>
+                         [disabled]="isCheckAndTestButtonDisabled"
+                         [tryConnect]="tryConnect"
+                         (cancel)="onCancelTestConnection()"></app-test-connection>
   </div>
   <div class="dqd-connection__bottom-border"></div>
 
@@ -62,6 +64,7 @@
             (click)="onCancel()">Cancel</button>
     <button class="dqd-connection__action-convert confirm"
             (click)="onCheck()"
+            [class.btn-spinner]="loading"
             [disabled]="isCheckAndTestButtonDisabled">Check</button>
   </div>
 </div>

@@ -11,13 +11,13 @@
 
 	<groupId>com.softwarecountry.perseus</groupId>
 	<artifactId>auth</artifactId>
-	<version>0.0.4</version>
+	<version>0.4.0</version>
 	<name>auth</name>
 	<description>Azure Active Directory auth</description>
 
 	<properties>
 		<java.version>17</java.version>
-		<spring-cloud-azure.version>4.2.0</spring-cloud-azure.version>
+		<version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
 	</properties>
 
 	<dependencies>
@@ -37,7 +37,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -55,7 +54,7 @@
 			<dependency>
 				<groupId>com.azure.spring</groupId>
 				<artifactId>spring-cloud-azure-dependencies</artifactId>
-				<version>${spring-cloud-azure.version}</version>
+				<version>${version.spring.cloud.azure}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

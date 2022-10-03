@@ -12,6 +12,7 @@ import { DbSettings } from '@models/white-rabbit/db-settings'
 import { FilesSettings } from '@models/white-rabbit/files-settings'
 import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
 import { openErrorDialog, parseHttpError } from '@utils/error'
+import { withLoading } from '@utils/loading'
 
 @Component({
   selector: 'app-scan-data-dialog',
@@ -25,6 +26,7 @@ export class ScanDataDialogComponent extends ConversionDialog {
 
   conversion: Conversion | null = null
   project: string
+  loading = false
 
   constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>,
               private scanDataService: ScanDataService,
@@ -46,7 +48,7 @@ export class ScanDataDialogComponent extends ConversionDialog {
     const request$ = type === ScanSettingsType.DB ?
       this.scanDataService.generateScanReportByDb(settings as DbSettings) :
       this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
-    request$.subscribe(conversion => {
+    request$.pipe(withLoading(this)).subscribe(conversion => {
       this.conversion = conversion
       this.project = conversion.project
       this.index = ConversionDialogStatus.CONVERSION

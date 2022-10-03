@@ -1,7 +1,7 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { BridgeService } from '@services/bridge.service';
 import { fromEvent, Observable } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '@shared/base/base.component';
 import { Router } from '@angular/router';
 import { isAzureAuth, mainPageRouter } from '../app.constants';
@@ -44,11 +44,10 @@ export class CdmComponent extends BaseComponent implements OnInit {
     fromEvent(window, 'resize')
       .pipe(
         takeUntil(this.ngUnsubscribe),
-        debounceTime(50)
+        debounceTime(300),
+        switchMap(() => this.bridgeService.refreshAllAsObservable())
       )
-      .subscribe(() => {
-        this.bridgeService.refreshAll();
-      });
+      .subscribe();
   }
 
   private subscribeOnUrlChange() {

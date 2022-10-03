@@ -136,7 +136,7 @@ export class ReportGenerationService {
     const report = reportCreator.generateReport();
 
     Packer.toBlob(report).then(blob => {
-      saveAs(blob, 'Report.docx');
+      saveAs(blob, `${mappingHeader.source}-${mappingHeader.target}`);
     });
   }
 }

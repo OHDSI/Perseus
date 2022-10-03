@@ -31,11 +31,13 @@ Features
 
 Screenshots
 ===========
-<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/start.PNG" alt="Start page" title="Start page" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/start1.PNG" alt="Start page" title="Start page" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/link_tables2.PNG" alt="Link tables" title="Link tables" />
 <img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/link_fields.PNG" alt="Link fields" title="Link fields" />
-<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/concept.PNG" alt="Concept configuration" title="Concept configuration" />
-<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/lookup.PNG" alt="Lookup configuration" title="Lookup configuration" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/concept1.PNG" alt="Concept configuration" title="Concept configuration" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/lookup1.PNG" alt="Lookup configuration" title="Lookup configuration" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/usagi.PNG" alt="Code mappings - Import" title="Code mappings - Import" />
+<img src="https://github.com/SoftwareCountry/CDMSouffleur/blob/master/images/usagi1.PNG" alt="Code mappings" title="Code mappings" />
 
 Technology
 ============
@@ -114,7 +116,7 @@ Open `localhost:80` in your browser, preferably Google Chrome
 
 ## Starting each container separately
 
-https://github.com/SoftwareCountry/Perseus/blob/master/CONTAINERS.md
+[CONTAINERS](CONTAINERS.md)
 
 Perseus uses auxiliary services to scan, convert and validate data.
 
@@ -139,7 +141,8 @@ Open `localhost:80` in your browser, preferably Google Chrome.
 ## Getting Involved
 
 * User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
-* We use the [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues) 
+* We use the: [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues)
+* Contact us: [Email](mailto:perseus.support@softwarecountry.com)
 
 License
 =======

@@ -12,7 +12,9 @@
 
   <mat-form-field class="scan-data-connect-form-control scan-data-form-control" floatLabel="never" appearance="none">
     <label>Data type</label>
-    <mat-select [ngModel]="dataType" (ngModelChange)="onDataTypeChange($event)">
+    <mat-select [ngModel]="dataType"
+                [disabled]="tryConnect"
+                (ngModelChange)="onDataTypeChange($event)">
       <mat-option *ngFor="let type of fileTypes" [value]="type">
         {{type}}
       </mat-option>
@@ -36,11 +38,13 @@
                             (fileToScanChanged)="onFileToScanChanged($event)"></app-file-settings-form>
   </ng-template>
 
-  <a class="source-form__clear-all" (click)="resetForm()">Clear all</a>
+  <a class="source-form__clear-all" [class.try-connect]="tryConnect" (click)="resetForm()">Clear all</a>
 
   <app-test-connection class="source-form__test-connection"
-    [connectionResult]="connectionResult"
-    [disabled]="testConnectionDisabled"
-                       (testConnection)="onTestConnection()">
+                       [connectionResult]="connectionResult"
+                       [disabled]="testConnectionDisabled"
+                       [tryConnect]="tryConnect"
+                       (testConnection)="onTestConnection()"
+                       (cancel)="onCancelTestConnection()">
   </app-test-connection>
 </div>

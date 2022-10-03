@@ -2,7 +2,7 @@
                     placeholder="Search by {{area}} fields"
                     [criteria]="searchCriteria"
                     (complete)="filterByName($event)"
-                    (reset)="filterByNameReset($event)">
+                    (reset)="filterByNameReset()">
 </app-search-by-name>
 
 <div *ngIf="area === 'source'" class="panel-options min-height-25">

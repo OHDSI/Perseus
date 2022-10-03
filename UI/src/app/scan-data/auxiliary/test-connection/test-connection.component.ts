@@ -14,6 +14,16 @@ export class TestConnectionComponent {
   @Input()
   disabled: boolean;
 
+  @Input()
+  tryConnect = false;
+
   @Output()
   testConnection = new EventEmitter<void>();
+
+  @Output()
+  cancel = new EventEmitter<void>();
+
+  get showTestConnection(): boolean {
+    return !this.tryConnect;
+  }
 }

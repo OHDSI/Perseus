@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CdmBuilderStatus } from '@models/cdm-builder/cdm-builder-status';
 import { cdmBuilderApiUrl } from '@app/app.constants';
-import { CdmSettings } from '@models/cdm-builder/cdm-settings';
+import { CdmSettings, SourceCdmSettings, TargetCdmSettings } from '@models/cdm-builder/cdm-settings';
 import { map, switchMap } from 'rxjs/operators';
 import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { DataService } from '../data.service';
@@ -32,11 +32,11 @@ export class CdmBuilderService {
       );
   }
 
-  testSourceConnection(settings: CdmSettings): Observable<ConnectionResult> {
+  testSourceConnection(settings: SourceCdmSettings): Observable<ConnectionResult> {
     return this.testConnection(settings, `${cdmBuilderApiUrl}/checksourceconnection`);
   }
 
-  testDestinationConnection(settings: CdmSettings): Observable<ConnectionResult> {
+  testDestinationConnection(settings: TargetCdmSettings): Observable<ConnectionResult> {
     return this.testConnection(settings, `${cdmBuilderApiUrl}/checkdestinationconnection`);
   }
 
@@ -79,7 +79,7 @@ export class CdmBuilderService {
     return `${reportName}_${email}`
   }
 
-  private testConnection(settings: CdmSettings, url: string): Observable<ConnectionResult> {
+  private testConnection(settings: SourceCdmSettings | TargetCdmSettings, url: string): Observable<ConnectionResult> {
     return this.httpClient.post<ConnectionResult>(url, settings, {observe: 'response'})
       .pipe(
         map((response: HttpResponse<any>) => response.status === 200 ? {
