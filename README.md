@@ -65,7 +65,9 @@ Get the link to the vocabulary from [Athena](http://athena.ohdsi.org).
 
     cd vocabulary-db
 
-Install vocabulary archive and extract to `vocabulary` directory. Full path `vocabulary-db/vocabulary`.
+Install vocabulary archive and extract to `vocabulary` directory. Full path `vocabulary-db/vocabulary`. For example:
+
+    unzip <downloaded archive> -d vocabulary
 
 Database deployment can take a long time if the dictionary size is large enough.
 
@@ -109,8 +111,13 @@ To start all containers at once using docker-compose please
 - set vocabulary link, see [Vocabulary](#vocabulary) section
 - configure SMTP server as it described in [SMTP](#smtp-server) section **(Optional)**
 
-    
-    docker compose up -d
+Unix:
+
+    ./startup.sh
+
+Windows:
+
+    startup.cmd
 
 Open `localhost:80` in your browser, preferably Google Chrome
 
