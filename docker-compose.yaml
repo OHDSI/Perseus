@@ -1,6 +1,8 @@
 services:
   web:
     build: ./nginx
+    image:
+      perseushub.arcadialab.ru/web:latest
     container_name:
       web
     ports:
@@ -8,6 +10,8 @@ services:
     restart: always
   shareddb:
     build: ./shared-db
+    image:
+      perseushub.arcadialab.ru/shareddb:latest
     container_name: shareddb
     volumes:
       - shareddb:/data/postgres
@@ -15,6 +19,8 @@ services:
       - "5432:5432"
   files-manager:
     build: ./files-manager
+    image:
+      perseushub.arcadialab.ru/files-manager:latest
     container_name: files-manager
     ports:
       - "10500:10500"
@@ -24,6 +30,8 @@ services:
       - shareddb
   user:
     build: ./user
+    image:
+      perseushub.arcadialab.ru/user:latest
     container_name: user
     environment:
       USER_ENV: Docker
@@ -35,6 +43,8 @@ services:
       - shareddb
   backend:
     build: ./perseus-api
+    image:
+      perseushub.arcadialab.ru/backend:latest
     container_name: backend
     environment:
       PERSEUS_ENV: Docker
@@ -48,12 +58,16 @@ services:
       context: ./UI
       args:
         env: prod
+    image:
+      perseushub.arcadialab.ru/frontend:latest
     container_name:
       frontend
     ports:
       - "4200:4200"
   white-rabbit:
     build: ../WhiteRabbit
+    image:
+      perseushub.arcadialab.ru/white-rabbit:latest
     container_name:
       white-rabbit
     ports:
@@ -65,6 +79,8 @@ services:
       - files-manager
   vocabularydb:
     build: ./vocabulary-db
+    image:
+      perseushub.arcadialab.ru/vocabularydb:latest
     container_name: vocabularydb
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
@@ -77,6 +93,8 @@ services:
       - "5431:5432"
   cdm-builder:
     build: ../ETL-CDMBuilder
+    image:
+      perseushub.arcadialab.ru/cdm-builder:latest
     container_name:
       cdm-builder
     ports:
@@ -89,6 +107,8 @@ services:
       - vocabularydb
   solr:
     build: ./solr
+    image:
+      perseushub.arcadialab.ru/solr:latest
     container_name: solr
     ports:
       - "8983:8983"
@@ -98,6 +118,8 @@ services:
       - vocabularydb
   athena:
     build: ./athena-api
+    image:
+      perseushub.arcadialab.ru/athena:latest
     container_name: athena
     environment:
       ATHENA_ENV: Docker
@@ -107,6 +129,8 @@ services:
       - solr
   usagi:
     build: ./usagi-api
+    image:
+      perseushub.arcadialab.ru/usagi:latest
     command: python /app/main.py
     container_name: usagi
     environment:
@@ -121,6 +145,8 @@ services:
       context: ../DataQualityDashboard/R
       args:
         prop: docker
+    image:
+      perseushub.arcadialab.ru/r-serve:latest
     container_name:
       r-serve
     ports:
@@ -130,6 +156,8 @@ services:
   data-quality-dashboard:
     build:
       context: ../DataQualityDashboard
+    image:
+      perseushub.arcadialab.ru/data-quality-dashboard:latest
     container_name:
       data-quality-dashboard
     ports:
