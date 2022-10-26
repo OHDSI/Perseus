@@ -67,7 +67,7 @@ services:
     build: ./vocabulary-db
     container_name: vocabularydb
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "admin" ]
       timeout: 60s
       interval: 30s
       retries: 10
