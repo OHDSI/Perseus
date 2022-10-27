@@ -143,13 +143,5 @@ http://localhost/solr/usagi/dataimport?command=full-import&jdbcurl=jdbc:postgres
 ### Swagger UI
 
     cd swagger-ui
-    docker pull swaggerapi/swagger-ui
-    docker run --name swagger-ui -d -p 8080:8080 \
-            -e BASE_URL=/swagger \
-            -e URLS_PRIMARY_NAME=White-Rabbi \
-            -e URLS="[ \
-            { url: 'docs/white-rabbit.yml', name: 'White-Rabbit' } \
-            , { url: 'docs/data-quality-dashboard.yml', name: 'Data-Quality-Dashboard' } \
-            ]" \
-            -v `pwd`:/usr/share/nginx/html/docs/ \
-            swaggerapi/swagger-ui
+    docker build -t swagger .
+    docker run --name swagger -d -p 8080:8080 swagger

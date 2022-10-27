@@ -140,20 +140,10 @@ services:
       - shareddb
       - files-manager
       - r-serve
-  swagger-ui:
-    image: swaggerapi/swagger-ui
+  swagger:
+    build: ./swagger-ui
     ports:
       - 8080:8080
-    environment:
-      URLS_PRIMARY_NAME: White-Rabbit
-      URLS: "[
-        { url: 'docs/white-rabbit.yml', name: 'White-Rabbit' },
-        { url: 'docs/data-quality-dashboard.yml', name: 'Data-Quality-Dashboard' }
-      ]"
-      BASE_URL: /swagger
-    volumes:
-      - ./swagger-ui:/usr/share/nginx/html/docs/
-
 volumes:
   shareddb:
   vocabularydb:
