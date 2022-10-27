@@ -1,0 +1,264 @@
+openapi: 3.0.3
+info:
+  title: Data Quality Dashboard
+  version: 0.4.0
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8001/data-quality-dashboard/api
+tags:
+  - name: info
+    description: Info
+  - name: test-connection
+    description: Test connection
+  - name: data-quality-check
+    description: Data Quality Check
+  - name: jdbc-driver
+    description: JDBC Drivers
+paths:
+  /info:
+    get:
+      summary: Get service info
+      tags:
+        - info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+  /test-connection:
+    post:
+      summary: Test database connection
+      tags:
+        - test-connection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DbSettings'
+      responses:
+        '200':
+          description: 'Test connection result'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResult'
+              examples:
+                true:
+                  value:
+                    canConnect: true
+                    message: "Successfully connected to source database on server test"
+                false:
+                  value:
+                    canConnect: false
+                    message: "Could not connect to database: test"
+  /scan:
+    post:
+      summary: Run data quality check process
+      tags:
+        - data-quality-check
+      parameters:
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DbSettings'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataQualityScan'
+  /abort/{scanId}:
+    get:
+      tags:
+        - data-quality-check
+      summary: Abort data quality check process
+      parameters:
+        - in: path
+          name: scanId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+  /scan/{scanId}:
+    get:
+      tags:
+        - data-quality-check
+      summary: Scan data status and logs
+      parameters:
+        - in: path
+          name: scanId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanWithLogsResponse'
+  /result/{scanId}:
+    get:
+      tags:
+        - data-quality-check
+      summary: Scan data result
+      parameters:
+        - in: path
+          name: scanId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/x-xls:
+              schema:
+                type: string
+                format: binary
+  /drivers:
+    get:
+      tags:
+        - jdbc-driver
+      summary: Load JDBC driver to Rserv
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    InfoResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: number
+          format: double
+    TestConnectionResult:
+      type: object
+      required:
+        - canConnect
+      properties:
+        canConnect:
+          type: boolean
+        message:
+          type: string
+    DbSettings:
+      type: object
+      required:
+        - database
+        - dbType
+        - password
+        - port
+        - server
+        - user
+      properties:
+        database:
+          type: string
+        dbType:
+          type: string
+        password:
+          type: string
+        port:
+          type: integer
+          format: int32
+        schema:
+          type: string
+        server:
+          type: string
+        tablesToScan:
+          type: string
+        user:
+          type: string
+    DataQualityScan:
+      type: object
+      required:
+        - id
+        - project
+        - statusCode
+        - statusName
+        - username
+      properties:
+        id:
+          type: integer
+          format: int64
+        project:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+        username:
+          type: string
+    ScanWithLogsResponse:
+      type: object
+      required:
+        - id
+        - statusCode
+        - statusName
+        - logs
+      properties:
+        id:
+          type: integer
+          format: int64
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogResponse'
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+    LogResponse:
+      type: object
+      required:
+        - message
+        - statusCode
+        - statusName
+        - percent
+      properties:
+        message:
+          type: string
+        percent:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
