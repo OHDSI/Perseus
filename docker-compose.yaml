@@ -140,7 +140,7 @@ services:
       - shareddb
       - files-manager
       - r-serve
-  swagger-ui:
+  swagger:
     build: ./swagger-ui
     ports:
       - 8080:8080
