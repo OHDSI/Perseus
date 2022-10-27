@@ -1,0 +1,502 @@
+openapi: 3.0.3
+info:
+  title: White Rabbit
+  version: 0.4.0
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8000/white-rabbit/api
+tags:
+  - name: info
+    description: Info
+  - name: test-connection
+    description: Test connection
+  - name: scan-data
+    description: Scan Source Data
+  - name: fake-data
+    description: Generate Fake Data
+paths:
+  /info:
+    get:
+      summary: Get service info
+      tags:
+        - info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+  /test-connection:
+    post:
+      summary: Test database connection
+      tags:
+        - test-connection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestConnectionRequest'
+              
+      responses:
+        '200':
+          description: 'Test connection result'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResult'
+              examples:
+                true:
+                  value:
+                    canConnect: true
+                    message: "Successfully connected to source database on server test"
+                    tableNames: ["patients", "medical", "product"]
+                false:
+                  value:
+                    canConnect: false
+                    message: "Could not connect to database: test"
+  /scan-report/db:
+    post:
+      summary: Run scan data process
+      tags:
+        - scan-data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanDbSettings'
+      parameters:
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanDataConversion'
+  /scan-report/files:
+    post:
+      summary: Run scan data process
+      tags:
+        - scan-data
+      parameters:
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                settings:
+                  # ScanFilesSettings
+                  type: string
+                  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanDataConversion'
+  /scan-report/abort/{conversionId}:
+    get:
+      tags:
+        - scan-data
+      summary: Abort scan data process
+      parameters:
+        - in: path
+          name: conversionId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+  /scan-report/conversion/{conversionId}:
+    get:
+      tags:
+        - scan-data
+      summary: Conversion status and logs
+      parameters:
+        - in: path
+          name: conversionId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionWithLogsResponse'
+  /scan-report/result/{conversionId}:
+    get:
+      tags:
+        - scan-data
+      summary: Conversion result
+      parameters:
+        - in: path
+          name: conversionId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanReportResponse'
+  /scan-report/result-as-resource/{conversionId}:
+    get:
+      tags:
+        - scan-data
+      summary: Download scan report
+      parameters:
+        - in: path
+          name: conversionId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/x-xls:
+              schema:
+                type: string
+                format: binary
+  /fake-data/generate:
+    post:
+      tags:
+        - fake-data
+      summary: Run fake data generation process
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FakeDataRequest'
+      parameters:
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FakeDataConversion'
+  /fake-data/abort/{conversionId}:
+    get:
+      tags:
+        - fake-data
+      summary: Abort fake data generation process
+      parameters:
+        - in: path
+          name: conversionId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+  /fake-data/conversion/{conversionId}:
+    get:
+      tags:
+        - fake-data
+      summary: Fake data generation process status and logs
+      parameters:
+        - in: path
+          name: conversionId
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionWithLogsResponse'
+components:
+  schemas:
+    InfoResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: number
+          format: double
+    TestConnectionRequest:
+      type: object
+      required:
+        - database
+        - dbType
+        - password
+        - port
+        - server
+        - user
+      properties:
+        database:
+          type: string
+        dbType:
+          type: string
+        password:
+          type: string
+        port:
+          type: integer
+          format: int32
+        server:
+          type: string
+        user:
+          type: string
+        schema:
+          type: string
+    TestConnectionResult:
+      type: object
+      required:
+        - canConnect
+      properties:
+        canConnect:
+          type: boolean
+        message:
+          type: string
+        tableNames:
+          type: array
+          items:
+            type: string
+    ScanDbSettings:
+      type: object
+      required:
+        - database
+        - dbType
+        - password
+        - port
+        - server
+        - user
+      properties:
+        database:
+          type: string
+        dbType:
+          type: string
+        password:
+          type: string
+        port:
+          type: integer
+          format: int32
+        schema:
+          type: string
+        server:
+          type: string
+        tablesToScan:
+          type: string
+        user:
+          type: string
+        scanDataParams:
+          $ref: '#/components/schemas/ScanDataParams'
+    ScanFilesSettings:
+      type: object
+      required:
+        - fileType
+        - delimiter
+        - scanDataParams
+      properties: 
+        fileType:
+          type: string
+        delimiter:
+          type: string
+        scanDataParams:
+          $ref: '#/components/schemas/ScanDataParams'
+    ScanDataParams:
+      type: object
+      required:
+        - calculateNumericStats
+        - scanValues
+      properties:
+        calculateNumericStats:
+          type: boolean
+        maxValues:
+          type: integer
+          format: int32
+        minCellCount:
+          type: integer
+          format: int32
+        numericStatsSamplerSize:
+          type: integer
+          format: int32
+        sampleSize:
+          type: integer
+          format: int32
+        scanValues:
+          type: boolean
+    ScanDataConversion:
+      type: object
+      required:
+        - id
+        - project
+        - statusCode
+        - statusName
+        - username
+      properties:
+        id:
+          type: integer
+          format: int64
+        project:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+        username:
+          type: string
+    ConversionWithLogsResponse:
+      type: object
+      required:
+        - id
+        - statusCode
+        - statusName
+        - logs
+      properties:
+        id:
+          type: integer
+          format: int64
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogResponse'
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+      title: ConversionWithLogsResponse
+    LogResponse:
+      type: object
+      required:
+        - message
+        - statusCode
+        - statusName
+        - percent
+      properties:
+        message:
+          type: string
+        percent:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+    ScanReportResponse:
+      type: object
+      properties:
+        dataId:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+    FakeDataConversion:
+      type: object
+      required:
+        - id
+        - project
+        - statusCode
+        - statusName
+        - username
+      properties:
+        id:
+          type: integer
+          format: int64
+        project:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+        username:
+          type: string
+    FakeDataRequest:
+      type: object
+      required:
+        - scanReportInfo
+        - settings
+      properties:
+        scanReportInfo:
+          $ref: '#/components/schemas/ScanReportResponse'
+        settings:
+          $ref: '#/components/schemas/FakeDataSettings'
+    FakeDataSettings:
+      type: object
+      required:
+        - doUniformSampling
+        - maxRowCount
+        - userSchema
+      properties:
+        doUniformSampling:
+          type: boolean
+        maxRowCount:
+          type: integer
+          format: int32
+        userSchema:
+          type: string
+            
+        
