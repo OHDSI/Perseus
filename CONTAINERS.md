@@ -143,5 +143,5 @@ http://localhost/solr/usagi/dataimport?command=full-import&jdbcurl=jdbc:postgres
 ### Swagger UI
 
     cd swagger-ui
-    docker pull swaggerapi/swagger-ui
-    docker run --name swagger-ui -d -p 8080:8080
+    docker build -t swagger-ui .
+    docker run --name swagger-ui -d -p 8080:8080 swagger-ui
