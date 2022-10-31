@@ -67,7 +67,7 @@ services:
     build: ./vocabulary-db
     container_name: vocabularydb
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "perseus" ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "vocabulary", "-U", "admin" ]
       timeout: 60s
       interval: 30s
       retries: 10
@@ -140,7 +140,10 @@ services:
       - shareddb
       - files-manager
       - r-serve
-
+  swagger:
+    build: ./swagger-ui
+    ports:
+      - 8080:8080
 volumes:
   shareddb:
   vocabularydb:

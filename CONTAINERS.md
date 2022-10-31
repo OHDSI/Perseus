@@ -139,4 +139,9 @@ Make sure Solr container is run.
 To initialize Usagi data run this query:
 
 http://localhost/solr/usagi/dataimport?command=full-import&jdbcurl=jdbc:postgresql://vocabularydb:5432/vocabulary&jdbcuser=perseus&jdbcpassword=password
-    
+
+### Swagger UI
+
+    cd swagger-ui
+    docker build -t swagger .
+    docker run --name swagger -d -p 8080:8080 swagger
