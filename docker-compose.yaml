@@ -35,6 +35,7 @@ services:
     depends_on:
       - shareddb
   backend:
+    platform: linux/amd64
     build: ./perseus-api
     container_name: backend
     environment:
