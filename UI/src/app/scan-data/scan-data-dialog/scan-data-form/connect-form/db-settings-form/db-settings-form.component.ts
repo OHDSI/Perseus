@@ -17,4 +17,5 @@ export class DbSettingsFormComponent {
 
   @Input()
   requireSchema: boolean;
+
 }

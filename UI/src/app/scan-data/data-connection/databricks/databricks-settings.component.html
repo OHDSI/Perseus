@@ -1,0 +1,27 @@
+<form [formGroup]="form" style="height: 100%;">
+  <div class="scan-data-connect-form-control scan-data-form-control">
+    <label for="server">Server hostname</label>
+    <input id="server" type="text" formControlName="server" trim="blur">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control">
+    <label for="port">Port</label>
+    <input id="port" type="number" formControlName="port">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control">
+    <label for="protocol">Protocol</label>
+    <input id="protocol" type="text" formControlName="protocol" trim="blur">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control">
+    <label for="path">HTTP path</label>
+    <input id="path" type="text" formControlName="path">
+  </div>
+
+  <div class="scan-data-connect-form-control scan-data-form-control">
+    <label for="token">Access Token</label>
+    <input id="token" type="password" formControlName="token">
+  </div>
+
+</form>

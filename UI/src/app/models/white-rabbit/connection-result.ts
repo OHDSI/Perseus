@@ -5,7 +5,7 @@ export interface ConnectionResult {
   message?: string
 }
 
-export interface WrConnectionResult extends ConnectionResult {
+export interface ConnectionResultWithTables extends ConnectionResult {
   canConnect: boolean
   message?: string
   tableNames?: string[]

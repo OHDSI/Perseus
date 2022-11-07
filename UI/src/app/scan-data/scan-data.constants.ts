@@ -1,3 +1,5 @@
+import { DataConnection } from "./data-connection/data-connection";
+
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
   MYSQL = 'MySQL',
@@ -14,6 +16,7 @@ export enum DbTypes {
   IMPALA = 'Impala',
   SQLITE = 'SQLite',
   HIVE = 'Hive',
+  DATABRICKS = 'Databricks',
 }
 
 /* Name uses in UI and White Rabbit */
@@ -74,6 +77,7 @@ export const defaultPorts = {
 };
 
 export const fullySupportedDatabases: string[] = [
+  DbTypes.DATABRICKS,
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
   DbTypes.AZURE,

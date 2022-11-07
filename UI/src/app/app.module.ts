@@ -8,6 +8,7 @@ import { ServerErrorInterceptor } from '@interceptors/server-error.interceptor';
 import { getAuthInterceptors, getAuthModules } from '@app/app.util'
 import { authInjector, authServiceClass } from '@services/auth/auth-injector'
 import { authStrategy } from '@app/app.constants'
+import { DataConnectionService } from './scan-data/data-connection/data-connection.service';
 
 export const authModules = getAuthModules()
 export const authInterceptors = getAuthInterceptors()
@@ -26,7 +27,8 @@ export const authInterceptors = getAuthInterceptors()
   providers: [
     ...authInterceptors,
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
-    { provide: authInjector, useClass: authServiceClass(authStrategy)}
+    { provide: authInjector, useClass: authServiceClass(authStrategy)},
+    DataConnectionService,
   ],
   bootstrap: [ AppComponent ]
 })
