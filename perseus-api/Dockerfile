@@ -15,6 +15,6 @@ COPY sshd_config /etc/ssh/
 COPY entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
-EXPOSE 5000 2222
+EXPOSE 5004 2222
 
 ENTRYPOINT ["./entrypoint.sh"]

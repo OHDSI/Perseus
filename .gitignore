@@ -2,3 +2,4 @@
 .idea
 .first_run
 vocabulary-db/vocabulary
+.vscode/launch.json
