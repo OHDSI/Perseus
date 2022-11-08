@@ -14,6 +14,7 @@ services:
     ports:
       - "5432:5432"
   files-manager:
+    platform: linux/amd64
     build: ./files-manager
     container_name: files-manager
     ports:
@@ -34,12 +35,13 @@ services:
     depends_on:
       - shareddb
   backend:
+    platform: linux/amd64
     build: ./perseus-api
     container_name: backend
     environment:
       PERSEUS_ENV: Docker
     ports:
-      - "5000:5000"
+      - "5004:5004"
     depends_on:
       - shareddb
       - files-manager

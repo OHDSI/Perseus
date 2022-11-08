@@ -1,5 +1,5 @@
 **.iml
 .idea
 .first_run
-launch.json
 vocabulary-db/vocabulary
+.vscode/launch.json
