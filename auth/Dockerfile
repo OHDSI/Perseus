@@ -10,7 +10,7 @@ RUN tr -d '\015' <./mvnw >./mvnw.sh && mv ./mvnw.sh ./mvnw && chmod 770 mvnw
 
 RUN ./mvnw package
 
-FROM openjdk:17
+FROM --platform=linux/amd64 openjdk:17
 
 VOLUME /tmp
 

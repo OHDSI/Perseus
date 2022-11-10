@@ -121,6 +121,12 @@ Windows:
 
 Open `localhost:80` in your browser, preferably Google Chrome
 
+## Podman usage
+
+Podman doesn't search dockerhub for base images. To fix it - update registries.conf
+
+`echo "unqualified-search-registries = ["docker.io"]" >> /etc/containers/registries.conf`
+
 ## Starting each container separately
 
 [CONTAINERS](CONTAINERS.md)
