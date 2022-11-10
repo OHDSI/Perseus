@@ -9,6 +9,7 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
 import { MatDialog } from '@angular/material/dialog'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { withLoadingField } from '@utils/loading'
+import { DataConnectionService } from '@app/scan-data/data-connection/data-connection.service';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -34,7 +35,8 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   constructor(private whiteRabbitService: ScanDataService,
               private scanDataUploadService: ScanDataUploadService,
-              private dialogService: MatDialog) {
+              private dialogService: MatDialog,
+              private dataConnectionService: DataConnectionService,) {
     super()
   }
 
@@ -43,7 +45,11 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   conversionInfoRequest(): Observable<Conversion> {
-    return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
+    if (this.conversion.dataConnection !== undefined) {
+      return this.dataConnectionService.getDataConnection(this.conversion.dataConnection).conversionInfoWithLogs(this.conversion.id)
+    } else {
+      return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
+    }
   }
 
   onAbortAndCancel(): void {
@@ -62,13 +68,13 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   onUploadReport(): void {
-    this.scanDataUploadService.uploadScanReport(this.conversion.id)
-      .pipe(
-        withLoadingField(this, 'linkingTables')
-      )
-      .subscribe(
-        () => this.close.emit(this.conversion),
-        error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))
-      )
+    this.scanDataUploadService.uploadScanReport(this.conversion.id, this.conversion.dataConnection)
+    .pipe(
+      withLoadingField(this, 'linkingTables')
+    )
+    .subscribe(
+      () => this.close.emit(this.conversion),
+      error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))
+    )
   }
 }

@@ -17,6 +17,7 @@ from services.response import lookup_list_item_response
 from services.response.etl_mapping_response import to_etl_mapping_response
 from services.response.upload_scan_report_response import to_upload_scan_report_response
 from services import xml_writer
+from services.data_connection import databricks
 from utils.constants import GENERATE_CDM_XML_ARCHIVE_PATH, \
     GENERATE_CDM_XML_ARCHIVE_FILENAME, CDM_XML_ARCHIVE_FORMAT
 from utils.exceptions import InvalidUsage
@@ -275,6 +276,15 @@ def get_field_type_call():
     type = request.args['type']
     result_type = source_schema_service.get_field_type(type)
     return jsonify(result_type)
+
+@perseus.route('/api/data-connection/databricks/test-connection', methods=['POST'])
+def data_connection_databricks_test_connection():
+    results = databricks.test_connection(
+        server_hostname=request.json['server'],
+        http_path=request.json['path'],
+        access_token=request.json.get('token', None),
+    )
+    return jsonify(results)
 
 
 @app.errorhandler(InvalidUsage)

@@ -125,21 +125,34 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createSettings(): {type: ScanSettingsType, settings: ScanSettings} {
-    const type = this.connectFormComponent.isDbSettings ? ScanSettingsType.DB : ScanSettingsType.FILES
-    const settings = type === ScanSettingsType.DB ?
-      new DbSettingsBuilder()
+    let type: ScanSettingsType
+    let settings: ScanSettings
+    if (this.connectFormComponent.isDataConnection) {
+      type = ScanSettingsType.DATA_CONNECTION
+      settings = {
+        ...this.connectFormComponent.form.value,
+        dbType: this.connectFormComponent.dataType,
+        scanDataParams: {...this.tablesToScanComponent.scanParams},
+        tablesToScan: this.tablesToScanComponent.filteredTablesToScan.map(table => table.tableName)
+      }
+    } else if (this.connectFormComponent.isDbSettings) {
+      type = ScanSettingsType.DB
+      settings = new DbSettingsBuilder()
         .setDbType(this.connectFormComponent.dataType)
         .setDbSettings(this.connectFormComponent.form.value)
         .setScanParams(this.tablesToScanComponent.scanParams)
         .setTablesToScan(this.tablesToScanComponent.filteredTablesToScan)
-        .build() :
-      new DelimitedTextFileSettingsBuilder()
+        .build()
+    } else {
+      type = ScanSettingsType.FILES
+      settings = new DelimitedTextFileSettingsBuilder()
         .setFileType(this.connectFormComponent.dataType)
         .setFileSettings(this.connectFormComponent.fileSettingsForm.value)
         .setScanParams(this.tablesToScanComponent.scanParams)
         .setTableToScan(this.tablesToScanComponent.filteredTablesToScan)
         .setFilesToScan(this.connectFormComponent.filesToScan)
-        .build();
+        .build()
+    }
     return {type, settings}
   }
 

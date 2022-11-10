@@ -6,4 +6,5 @@ export interface Conversion {
   statusCode: number,
   statusName: string
   logs: ProgressLog[]
+  dataConnection?: string
 }

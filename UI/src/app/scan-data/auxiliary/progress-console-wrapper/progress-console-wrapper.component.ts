@@ -42,6 +42,7 @@ export abstract class ProgressConsoleWrapperComponent extends BaseComponent impl
         exhaustMap(() => this.conversionInfoRequest())
       )
       .subscribe(conversion => {
+        conversion.dataConnection = this.conversion.dataConnection
         this.conversion = conversion
         if (this.conversion.statusCode !== ConversionStatus.IN_PROGRESS) {
           this.conversionSub.unsubscribe()

@@ -11,6 +11,8 @@ import { UploadService } from '@services/upload.service'
 import { isSourceUploaded, isTablesMappedOrViewCreated } from '@utils/mapping-util'
 import { CommonUtilsService } from '@services/common-utils.service'
 import { ScanDataService } from '@services/white-rabbit/scan-data.service'
+import { DataConnectionService } from '@app/scan-data/data-connection/data-connection.service';
+import { ScanReportRequest } from '@app/models/perseus/scan-report-request';
 
 @Injectable()
 export class ScanDataUploadService {
@@ -20,10 +22,11 @@ export class ScanDataUploadService {
               private storeService: StoreService,
               private uploadService: UploadService,
               private commonUtilsService: CommonUtilsService,
-              private whiteRabbitService: ScanDataService) {
+              private whiteRabbitService: ScanDataService,
+              private dataConnectionService: DataConnectionService) {
   }
 
-  uploadScanReport(conversionId: number): Observable<UploadScanReportResponse> {
+  uploadScanReport(conversionId: number, dataConnection?: string): Observable<UploadScanReportResponse> {
     const state = this.storeService.state
     let before$: Observable<any>
     if (isSourceUploaded(state.source) && isTablesMappedOrViewCreated(state.targetConfig, state.source)) {
@@ -42,7 +45,7 @@ export class ScanDataUploadService {
     }
 
     return before$.pipe(
-      switchMap(() => this.loadScanData(conversionId, state.etlMapping?.cdm_version)),
+      switchMap(() => this.loadScanData(conversionId, state.etlMapping?.cdm_version, dataConnection)),
       tap(res => {
         this.commonUtilsService.resetMappingDataAndReturnToComfy()
         this.storeService.addEtlMapping(res.etl_mapping)
@@ -51,13 +54,19 @@ export class ScanDataUploadService {
     )
   }
 
-  private loadScanData(conversionId: number, cdmVersion?: string): Observable<UploadScanReportResponse> {
+  private loadScanData(conversionId: number, cdmVersion?: string, dataConnection?: string): Observable<UploadScanReportResponse> {
     this.uploadService.reportLoading = true
-    return this.whiteRabbitService.result(conversionId).pipe(
-      switchMap(scanReportReq =>
-        this.perseusApiService.createSourceSchemaByScanReport({...scanReportReq, cdmVersion})
-      ),
-      finalize(() => this.uploadService.reportLoading = false)
-    )
+    if (dataConnection !== null) {
+      return this.dataConnectionService.getDataConnection(dataConnection).createSourceSchemaByScanReport({dataId: conversionId})
+        .pipe(finalize(() => this.uploadService.reportLoading = false))
+    } else {
+      return this.whiteRabbitService.result(conversionId)
+      .pipe(
+        switchMap(scanReportReq =>
+          this.perseusApiService.createSourceSchemaByScanReport({...scanReportReq, cdmVersion})
+        ),
+        finalize(() => this.uploadService.reportLoading = false)
+      )
+    }
   }
 }
