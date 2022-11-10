@@ -1,4 +1,4 @@
-FROM swaggerapi/swagger-ui
+FROM --platform=linux/amd64 swaggerapi/swagger-ui
 
 ENV BASE_URL=/swagger
 ENV URLS_PRIMARY_NAME=White-Rabbit

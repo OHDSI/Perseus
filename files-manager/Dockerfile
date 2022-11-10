@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine as build
+FROM --platform=linux/amd64 openjdk:17-alpine as build
 WORKDIR /workspace/app
 COPY src src
 COPY pom.xml .
@@ -8,7 +8,7 @@ COPY .mvn .mvn
 RUN tr -d '\015' <./mvnw >./mvnw.sh && mv ./mvnw.sh ./mvnw && chmod 700 mvnw
 RUN ./mvnw package
 
-FROM openjdk:17-alpine
+FROM --platform=linux/amd64 openjdk:17-alpine
 
 RUN apk update \
     && apk add --no-cache openssh-server \

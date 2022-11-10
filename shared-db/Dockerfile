@@ -1,4 +1,4 @@
-FROM postgres
+FROM --platform=linux/amd64 postgres
 
 COPY init.sql /docker-entrypoint-initdb.d/
 

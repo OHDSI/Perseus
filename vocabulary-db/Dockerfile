@@ -1,4 +1,4 @@
-FROM postgres
+FROM --platform=linux/amd64 postgres
 
 ARG INIT_ENV=full
 

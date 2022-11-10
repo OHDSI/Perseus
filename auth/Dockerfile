@@ -1,4 +1,4 @@
-FROM openjdk:17 as build
+FROM --platform=linux/amd64 openjdk:17 as build
 WORKDIR /workspace/app
 
 COPY src src
