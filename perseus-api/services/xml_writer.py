@@ -91,7 +91,7 @@ def prepare_sql(current_user, mapping_items, source_table, views, target_tables)
         result_data = pd.concat([mapping_data, condition_data, lookup_data]).fillna('')
 
         for _, row_ in result_data.iteritems():
-            all_fields += [{k: dic[k] for k in required_fields} for dic in row_]
+            all_fields += [{k: dic.get(k) for k in required_fields} for dic in row_]
 
         all_fields_unique = unique(all_fields)
 
