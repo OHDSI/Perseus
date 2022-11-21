@@ -8,7 +8,7 @@ VOCABULARY_PASS="password"
 SOLR_HOST="$1"
 SOLR_PORT="8983"
 DB_HOST="$1"
-DB_PORT="5432"
+DB_PORT="5431"
 
 
 # -----------------------------------------
