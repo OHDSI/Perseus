@@ -11,8 +11,7 @@ import { UploadService } from '@services/upload.service'
 import { isSourceUploaded, isTablesMappedOrViewCreated } from '@utils/mapping-util'
 import { CommonUtilsService } from '@services/common-utils.service'
 import { ScanDataService } from '@services/white-rabbit/scan-data.service'
-import { DataConnectionService } from '@app/scan-data/data-connection/data-connection.service';
-import { ScanReportRequest } from '@app/models/perseus/scan-report-request';
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
 
 @Injectable()
 export class ScanDataUploadService {

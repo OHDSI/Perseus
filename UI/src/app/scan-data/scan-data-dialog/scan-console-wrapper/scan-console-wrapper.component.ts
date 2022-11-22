@@ -9,7 +9,7 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
 import { MatDialog } from '@angular/material/dialog'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { withLoadingField } from '@utils/loading'
-import { DataConnectionService } from '@app/scan-data/data-connection/data-connection.service';
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',

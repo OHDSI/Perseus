@@ -5,9 +5,9 @@ import { DataConnectionSettingsComponent } from '../data-connection-settings.com
 @Component({
   templateUrl: './databricks-settings.component.html',
   styleUrls: [
-    '../../../scan-data/scan-data-dialog/scan-data-form/connect-form/connect-form.component.scss',
-    '../../styles/scan-data-form.scss',
-    '../../styles/scan-data-connect-form.scss'
+    '../../scan-data/scan-data-dialog/scan-data-form/connect-form/connect-form.component.scss',
+    '../../scan-data/styles/scan-data-form.scss',
+    '../../scan-data/styles/scan-data-connect-form.scss'
   ]
 })
 export class DatabricksSettingsComponent implements DataConnectionSettingsComponent {
@@ -16,10 +16,10 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
 
   public constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
-      server: [{value: null, disabled: false}, [Validators.required]],
+      serverHostname: [{value: null, disabled: false}, [Validators.required]],
       port: [{value: 443, disabled: false}, [Validators.required]],
       protocol: [{value: 'https', disabled: false}, [Validators.required]],
-      path: [{value: null, disabled: false}, [Validators.required]],
+      httpPath: [{value: null, disabled: false}, [Validators.required]],
       token: [{value: null, disabled: false}, []],
     });
   }

@@ -20,9 +20,9 @@ import { DataTypeGroup } from '@models/white-rabbit/data-type-group';
 import { hasLimits } from '@utils/scan-data-util';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 import { parseHttpError } from '@utils/error'
-import { DataConnectionService } from '@app/scan-data/data-connection/data-connection.service';
-import { DataConnectionSettingsComponent } from '@app/scan-data/data-connection/data-connection-settings.component';
-import { DataConnectionSettingsDirective } from '@app/scan-data/data-connection/data-connection-settings.directive';
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
+import { DataConnectionSettingsComponent } from '@app/data-connection/data-connection-settings.component';
+import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
 
 @Component({
   selector: 'app-connect-form',

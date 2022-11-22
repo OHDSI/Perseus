@@ -13,7 +13,7 @@ import { FilesSettings } from '@models/white-rabbit/files-settings'
 import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { withLoading } from '@utils/loading'
-import { DataConnectionService } from '../data-connection/data-connection.service';
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
 import { map } from 'rxjs/operators';
 
 @Component({

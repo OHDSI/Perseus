@@ -1,5 +1,3 @@
-import { DataConnection } from "./data-connection/data-connection";
-
 /* Name uses in UI and White Rabbit */
 export enum DbTypes {
   MYSQL = 'MySQL',

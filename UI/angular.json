@@ -79,6 +79,7 @@
             "namedChunks": true
           },
           "configurations": {
+            "dev": { "sourceMap": true, "optimization":false},
             "production": {
               "fileReplacements": [
                 {
@@ -132,17 +133,12 @@
               ]
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "dev"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "UI:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "UI:build:production"
-            }
           }
         },
         "extract-i18n": {

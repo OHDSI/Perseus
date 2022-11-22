@@ -29,8 +29,8 @@ import { SharedModule } from '@shared/shared.module';
 import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
 import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console-wrapper.component';
 import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
-import { DatabricksSettingsComponent } from './data-connection/databricks/databricks-settings.component';
-import { DataConnectionSettingsDirective } from './data-connection/data-connection-settings.directive';
+import { DatabricksSettingsComponent } from '@app/data-connection/databricks/databricks-settings.component';
+import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
 
 @NgModule({
   declarations: [

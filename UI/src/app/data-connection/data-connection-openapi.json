@@ -1,0 +1,721 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "data-connection",
+    "version": "0.0.1",
+    "description": "Back end implementation of the data connection api",
+    "contact": {
+      "name": "Nate Buesgens",
+      "email": "nathan@natb1.com"
+    }
+  },
+  "paths": {
+    "/ping": {
+      "get": {
+        "x-controller-name": "PingController",
+        "x-operation-name": "ping",
+        "tags": [
+          "PingController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ping Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PingResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "PingController.ping"
+      }
+    },
+    "/scan-requests/count": {
+      "get": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "count",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "ScanRequest.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<ScanRequest>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ScanRequestController.count"
+      }
+    },
+    "/scan-requests/{id}": {
+      "put": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ScanRequest PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequest"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ScanRequestController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ScanRequest PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequestPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ScanRequestController.updateById"
+      },
+      "get": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "findById",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRequestWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRequest.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ScanRequestController.findById"
+      },
+      "delete": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ScanRequest DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ScanRequestController.deleteById"
+      }
+    },
+    "/scan-requests": {
+      "post": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "create",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRequest"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewScanRequest"
+              }
+            }
+          }
+        },
+        "operationId": "ScanRequestController.create"
+      },
+      "patch": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "ScanRequest.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<ScanRequest>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequestPartial"
+              }
+            }
+          }
+        },
+        "operationId": "ScanRequestController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "ScanRequestController",
+        "x-operation-name": "find",
+        "tags": [
+          "ScanRequestController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of ScanRequest model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScanRequestWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRequest.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ScanRequestController.find"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5005"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "ScanRequest": {
+        "title": "ScanRequest",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "dataSourceConfig": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "DatabricksConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "enum": [
+                      "databricks",
+                      "postgresql"
+                    ]
+                  },
+                  "token": {
+                    "type": "string"
+                  },
+                  "serverHostname": {
+                    "type": "string"
+                  },
+                  "httpPath": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "connector",
+                  "token",
+                  "serverHostname",
+                  "httpPath"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "scanParameters": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "dataSourceConfig"
+        ],
+        "additionalProperties": false
+      },
+      "NewScanRequest": {
+        "title": "NewScanRequest",
+        "type": "object",
+        "description": "(tsType: Omit<ScanRequest, 'id'>, schemaOptions: { title: 'NewScanRequest', exclude: [ 'id' ] })",
+        "properties": {
+          "dataSourceConfig": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "DatabricksConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "enum": [
+                      "databricks",
+                      "postgresql"
+                    ]
+                  },
+                  "token": {
+                    "type": "string"
+                  },
+                  "serverHostname": {
+                    "type": "string"
+                  },
+                  "httpPath": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "connector",
+                  "token",
+                  "serverHostname",
+                  "httpPath"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "scanParameters": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "dataSourceConfig"
+        ],
+        "additionalProperties": false,
+        "x-typescript-type": "Omit<ScanRequest, 'id'>"
+      },
+      "ScanRequestWithRelations": {
+        "title": "ScanRequestWithRelations",
+        "type": "object",
+        "description": "(tsType: ScanRequestWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "dataSourceConfig": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "DatabricksConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "enum": [
+                      "databricks",
+                      "postgresql"
+                    ]
+                  },
+                  "token": {
+                    "type": "string"
+                  },
+                  "serverHostname": {
+                    "type": "string"
+                  },
+                  "httpPath": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "connector",
+                  "token",
+                  "serverHostname",
+                  "httpPath"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "scanParameters": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "dataSourceConfig"
+        ],
+        "additionalProperties": false,
+        "x-typescript-type": "ScanRequestWithRelations"
+      },
+      "ScanRequestPartial": {
+        "title": "ScanRequestPartial",
+        "type": "object",
+        "description": "(tsType: Partial<ScanRequest>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "dataSourceConfig": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "DatabricksConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "enum": [
+                      "databricks",
+                      "postgresql"
+                    ]
+                  },
+                  "token": {
+                    "type": "string"
+                  },
+                  "serverHostname": {
+                    "type": "string"
+                  },
+                  "httpPath": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "connector",
+                  "token",
+                  "serverHostname",
+                  "httpPath"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "scanParameters": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "Partial<ScanRequest>"
+      },
+      "PingResponse": {
+        "type": "object",
+        "title": "PingResponse",
+        "properties": {
+          "greeting": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "headers": {
+            "type": "object",
+            "properties": {
+              "Content-Type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "loopback.Count": {
+        "type": "object",
+        "title": "loopback.Count",
+        "x-typescript-type": "@loopback/repository#Count",
+        "properties": {
+          "count": {
+            "type": "number"
+          }
+        }
+      },
+      "ScanRequest.Filter": {
+        "type": "object",
+        "title": "ScanRequest.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "dataSourceConfig": {
+                    "type": "boolean"
+                  },
+                  "scanParameters": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "id",
+                    "dataSourceConfig",
+                    "scanParameters"
+                  ],
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "ScanRequest.Fields"
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<ScanRequest>"
+      },
+      "ScanRequest.Filter1": {
+        "type": "object",
+        "title": "ScanRequest.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "ScanRequest.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "dataSourceConfig": {
+                    "type": "boolean"
+                  },
+                  "scanParameters": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "id",
+                    "dataSourceConfig",
+                    "scanParameters"
+                  ],
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "ScanRequest.Fields"
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<ScanRequest>"
+      }
+    }
+  }
+}
