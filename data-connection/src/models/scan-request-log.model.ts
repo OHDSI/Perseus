@@ -32,6 +32,62 @@ export class ScanRequestLog extends Entity {
 
   @property({
     type: 'object',
+    jsonSchema: {
+      properties: {
+        name: {
+          type: 'string'
+        },
+        properties: {
+          type: 'object',
+          additionalProperties: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+              },
+              databricks: {
+                type: 'object',
+                properties: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  col_name: {
+                    type: 'string',
+                  },
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  data_type: {
+                    type: 'string',
+                  },
+                  comment: {
+                    type: 'string'
+                  }
+                }
+              }
+            }
+          }
+        },
+        settings: {
+          type: 'object',
+          properties: {
+            databricks: {
+              type: 'object',
+              properties: {
+                catalog: {
+                  type: 'string',
+                },
+                database: {
+                  type: 'string',
+                },
+                tableName: {
+                  type: 'string',
+                },
+                isTemporary: {
+                  type: 'boolean'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   })
   modelDefinition?: ModelDefinitionSyntax;
 

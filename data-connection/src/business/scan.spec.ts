@@ -17,7 +17,7 @@ describe("Typescript usage suite", () => {
     assert.strictEqual(true, true);
   });
 
-  it("should return a scan request id", () => {
+  it("should log models for a scan request", () => {
     scan(
       new ScanRequest({
         dataSourceConfig: new DatabricksConfig({
