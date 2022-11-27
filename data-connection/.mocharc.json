@@ -1,0 +1,8 @@
+{
+  "exit": true,
+  "recursive": true,
+  // "require": "source-map-support/register",
+  "require": "ts-node/register",
+  "spec": "src/**/*.spec.ts",
+  "extension": ["ts"]
+}

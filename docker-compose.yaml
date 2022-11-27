@@ -48,8 +48,14 @@ services:
     depends_on:
       - shareddb
       - files-manager
+  data-connection:
+    platform: linux/amd64
+    build: ./data-connection
+    container_name: data-connection
+    ports:
+      - "5005:5005"
     volumes:
-      - ./perseus-api:/app
+    - ./data-connection:/home/node/app
   frontend:
     platform: linux/amd64
     build:
@@ -130,18 +136,18 @@ services:
     depends_on:
       - shareddb
       - solr
-  # r-serve:
-  #   platform: linux/amd64
-  #   build:
-  #     context: ../DataQualityDashboard/R
-  #     args:
-  #       prop: docker
-  #   container_name:
-  #     r-serve
-  #   ports:
-  #     - "6311:6311"
-  #   depends_on:
-  #     - shareddb
+  r-serve:
+    platform: linux/amd64
+    build:
+      context: ../DataQualityDashboard/R
+      args:
+        prop: docker
+    container_name:
+      r-serve
+    ports:
+      - "6311:6311"
+    depends_on:
+      - shareddb
   data-quality-dashboard:
     platform: linux/amd64
     build:
@@ -155,7 +161,7 @@ services:
     depends_on:
       - shareddb
       - files-manager
-      # - r-serve
+      - r-serve
   swagger:
     platform: linux/amd64
     build: ./swagger-ui
