@@ -11,7 +11,6 @@ interface DataConnectionIndex {
 export class DataConnectionService {
 
   dataConnectionIndex: DataConnectionIndex
-  scanConnection: DataConnection
 
   constructor() {
     this.dataConnectionIndex = {
