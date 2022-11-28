@@ -7,7 +7,7 @@
 export interface NewScanRequest {
   dataSourceConfig: {
 'connector': 'databricks' | 'postgresql';
-'token': string;
+'token'?: string;
 'host': string;
 'path': string;
 };

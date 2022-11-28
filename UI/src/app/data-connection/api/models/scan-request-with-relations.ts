@@ -8,7 +8,7 @@ import { ScanRequestLogWithRelations } from './scan-request-log-with-relations';
 export interface ScanRequestWithRelations {
   dataSourceConfig: {
 'connector': 'databricks' | 'postgresql';
-'token': string;
+'token'?: string;
 'host': string;
 'path': string;
 };

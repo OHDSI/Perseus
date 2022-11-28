@@ -7,7 +7,7 @@ import { AuthStrategies } from './auth-strategies'
 
 export const environment = {
   production: false,
-  serverUrl: null,
+  serverUrl: 'http://localhost:80',
   conceptTables: CONCEPT_TABLES,
   authStrategy: AuthStrategies.FAKE,
   dataConnectionRootUrl: 'http://localhost:3000/data-connection',

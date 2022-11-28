@@ -49,13 +49,16 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
   }
 
   testConnection(): Observable<ConnectionResultWithTables> {
+    const dataSourceConfig: NewScanRequest['dataSourceConfig'] = {
+      connector: this.connector,
+      host: this.form.value.host,
+      path: this.form.value.path,
+    }
+    if (this.form.value.token) {
+      dataSourceConfig.token = this.form.value.token
+    }
     const pages = this.scanRequestControllerService.create({body: {
-      dataSourceConfig: {
-        connector: this.connector,
-        host: this.form.value.host,
-        path: this.form.value.path,
-        token: this.form.value.token,
-      }
+      dataSourceConfig
     }})
     .pipe(
       switchMap((s: ScanRequest) => {
@@ -150,7 +153,6 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
   }
 
   createSourceSchemaByScanReport(): Observable<UploadScanReportResponse> {
-    // const source_tables = 
     return of({
       etl_mapping: {
         id: 0,

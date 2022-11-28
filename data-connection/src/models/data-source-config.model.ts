@@ -32,9 +32,8 @@ export type DataSourceConfigWithRelations = DataSourceConfig & DataSourceConfigR
 export class DatabricksConfig extends DataSourceConfig {
   @property({
     type: 'string',
-    required: true,
   })
-  token: string;
+  token?: string;
 
   @property({
     type: 'string',

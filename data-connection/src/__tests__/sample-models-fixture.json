@@ -58,7 +58,8 @@
         "tableName": "trips",
         "isTemporary": false
       }
-    }
+    },
+    "relations": {}
   },
   {
     "name": "customer",
@@ -135,7 +136,8 @@
         "tableName": "customer",
         "isTemporary": false
       }
-    }
+    },
+    "relations": {}
   },
   {
     "name": "lineitem",
@@ -220,6 +222,216 @@
           "comment": null
         }
       },
+      "l_shipdate": {
+        "type": "Date",
+        "databricks": {
+          "col_name": "l_shipdate",
+          "data_type": "date",
+          "comment": null
+        }
+      },
+      "l_commitdate": {
+        "type": "Date",
+        "databricks": {
+          "col_name": "l_commitdate",
+          "data_type": "date",
+          "comment": null
+        }
+      },
+      "l_receiptdate": {
+        "type": "Date",
+        "databricks": {
+          "col_name": "l_receiptdate",
+          "data_type": "date",
+          "comment": null
+        }
+      },
+      "l_shipinstruct": {
+        "type": "String",
+        "databricks": {
+          "col_name": "l_shipinstruct",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "l_shipmode": {
+        "type": "String",
+        "databricks": {
+          "col_name": "l_shipmode",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "l_comment": {
+        "type": "String",
+        "databricks": {
+          "col_name": "l_comment",
+          "data_type": "string",
+          "comment": null
+        }
+      }
+    },
+    "settings": {
+      "databricks": {
+        "catalog": "samples",
+        "database": "tpch",
+        "tableName": "lineitem",
+        "isTemporary": false
+      }
+    },
+    "relations": {}
+  },
+  {
+    "name": "nation",
+    "properties": {
+      "n_nationkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "n_nationkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "n_name": {
+        "type": "String",
+        "databricks": {
+          "col_name": "n_name",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "n_regionkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "n_regionkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "n_comment": {
+        "type": "String",
+        "databricks": {
+          "col_name": "n_comment",
+          "data_type": "string",
+          "comment": null
+        }
+      }
+    },
+    "settings": {
+      "databricks": {
+        "catalog": "samples",
+        "database": "tpch",
+        "tableName": "nation",
+        "isTemporary": false
+      }
+    },
+    "relations": {}
+  },
+  {
+    "name": "orders",
+    "properties": {
+      "o_orderkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "o_orderkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "o_custkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "o_custkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "o_orderstatus": {
+        "type": "String",
+        "databricks": {
+          "col_name": "o_orderstatus",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "o_totalprice": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "o_totalprice",
+          "data_type": "decimal(18,2)",
+          "comment": null
+        }
+      },
+      "o_orderdate": {
+        "type": "Date",
+        "databricks": {
+          "col_name": "o_orderdate",
+          "data_type": "date",
+          "comment": null
+        }
+      },
+      "o_orderpriority": {
+        "type": "String",
+        "databricks": {
+          "col_name": "o_orderpriority",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "o_clerk": {
+        "type": "String",
+        "databricks": {
+          "col_name": "o_clerk",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "o_shippriority": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "o_shippriority",
+          "data_type": "int",
+          "comment": null
+        }
+      },
+      "o_comment": {
+        "type": "String",
+        "databricks": {
+          "col_name": "o_comment",
+          "data_type": "string",
+          "comment": null
+        }
+      }
+    },
+    "settings": {
+      "databricks": {
+        "catalog": "samples",
+        "database": "tpch",
+        "tableName": "orders",
+        "isTemporary": false
+      }
+    },
+    "relations": {}
+  },
+  {
+    "name": "part",
+    "properties": {
+      "p_partkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "p_partkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "p_name": {
+        "type": "String",
+        "databricks": {
+          "col_name": "p_name",
+          "data_type": "string",
+          "comment": null
+        }
+      },
       "p_mfgr": {
         "type": "String",
         "databricks": {
@@ -284,7 +496,8 @@
         "tableName": "part",
         "isTemporary": false
       }
-    }
+    },
+    "relations": {}
   },
   {
     "name": "partsupp",
@@ -337,7 +550,8 @@
         "tableName": "partsupp",
         "isTemporary": false
       }
-    }
+    },
+    "relations": {}
   },
   {
     "name": "region",
@@ -374,7 +588,8 @@
         "tableName": "region",
         "isTemporary": false
       }
-    }
+    },
+    "relations": {}
   },
   {
     "name": "supplier",
@@ -443,6 +658,7 @@
         "tableName": "supplier",
         "isTemporary": false
       }
-    }
+    },
+    "relations": {}
   }
 ]
