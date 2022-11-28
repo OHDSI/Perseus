@@ -6,6 +6,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { PingControllerService } from './services/ping-controller.service';
 import { ScanRequestControllerService } from './services/scan-request-controller.service';
+import { ScanRequestLogControllerService } from './services/scan-request-log-controller.service';
 
 /**
  * Module that provides all services and configuration.
@@ -17,6 +18,7 @@ import { ScanRequestControllerService } from './services/scan-request-controller
   providers: [
     PingControllerService,
     ScanRequestControllerService,
+    ScanRequestLogControllerService,
     ApiConfiguration
   ],
 })

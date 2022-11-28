@@ -70,6 +70,191 @@
         "operationId": "ScanRequestController.count"
       }
     },
+    "/scan-requests/{id}/scan-request-logs": {
+      "post": {
+        "x-controller-name": "ScanRequestLogController",
+        "x-operation-name": "create",
+        "tags": [
+          "ScanRequestLogController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRequestLog"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewScanRequestLogInScanRequest"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ScanRequestLogController.create"
+      },
+      "patch": {
+        "x-controller-name": "ScanRequestLogController",
+        "x-operation-name": "patch",
+        "tags": [
+          "ScanRequestLogController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest.ScanRequestLog PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "ScanRequestLog.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<ScanRequestLog>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequestLogPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ScanRequestLogController.patch"
+      },
+      "get": {
+        "x-controller-name": "ScanRequestLogController",
+        "x-operation-name": "find",
+        "tags": [
+          "ScanRequestLogController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of ScanRequest has many ScanRequestLog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScanRequestLog"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ScanRequestLogController.find"
+      },
+      "delete": {
+        "x-controller-name": "ScanRequestLogController",
+        "x-operation-name": "delete",
+        "tags": [
+          "ScanRequestLogController"
+        ],
+        "responses": {
+          "200": {
+            "description": "ScanRequest.ScanRequestLog DELETE success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "ScanRequestLog.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<ScanRequestLog>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ScanRequestLogController.delete"
+      }
+    },
     "/scan-requests/{id}": {
       "put": {
         "x-controller-name": "ScanRequestController",
@@ -338,11 +523,244 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5005"
+      "url": "http://localhost:3000"
     }
   ],
   "components": {
     "schemas": {
+      "ScanRequestLog": {
+        "title": "ScanRequestLog",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "scanRequestId": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "in progress"
+            ]
+          },
+          "modelDefinition": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "databricks": {
+                      "type": "object",
+                      "properties": {
+                        "col_name": {
+                          "type": "string"
+                        },
+                        "data_type": {
+                          "type": "string"
+                        },
+                        "comment": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "scanRequestId",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "NewScanRequestLogInScanRequest": {
+        "title": "NewScanRequestLogInScanRequest",
+        "type": "object",
+        "description": "(tsType: @loopback/repository-json-schema#Optional<Omit<ScanRequestLog, 'id'>, 'scanRequestId'>, schemaOptions: { title: 'NewScanRequestLogInScanRequest', exclude: [ 'id' ], optional: [ 'scanRequestId' ] })",
+        "properties": {
+          "scanRequestId": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "in progress"
+            ]
+          },
+          "modelDefinition": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "databricks": {
+                      "type": "object",
+                      "properties": {
+                        "col_name": {
+                          "type": "string"
+                        },
+                        "data_type": {
+                          "type": "string"
+                        },
+                        "comment": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository-json-schema#Optional<Omit<ScanRequestLog, 'id'>, 'scanRequestId'>"
+      },
+      "ScanRequestLogPartial": {
+        "title": "ScanRequestLogPartial",
+        "type": "object",
+        "description": "(tsType: Partial<ScanRequestLog>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "scanRequestId": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "in progress"
+            ]
+          },
+          "modelDefinition": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "databricks": {
+                      "type": "object",
+                      "properties": {
+                        "col_name": {
+                          "type": "string"
+                        },
+                        "data_type": {
+                          "type": "string"
+                        },
+                        "comment": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "Partial<ScanRequestLog>"
+      },
       "ScanRequest": {
         "title": "ScanRequest",
         "type": "object",
@@ -367,18 +785,18 @@
                   "token": {
                     "type": "string"
                   },
-                  "serverHostname": {
+                  "host": {
                     "type": "string"
                   },
-                  "httpPath": {
+                  "path": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "connector",
                   "token",
-                  "serverHostname",
-                  "httpPath"
+                  "host",
+                  "path"
                 ],
                 "additionalProperties": false
               }
@@ -415,18 +833,18 @@
                   "token": {
                     "type": "string"
                   },
-                  "serverHostname": {
+                  "host": {
                     "type": "string"
                   },
-                  "httpPath": {
+                  "path": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "connector",
                   "token",
-                  "serverHostname",
-                  "httpPath"
+                  "host",
+                  "path"
                 ],
                 "additionalProperties": false
               }
@@ -441,6 +859,87 @@
         ],
         "additionalProperties": false,
         "x-typescript-type": "Omit<ScanRequest, 'id'>"
+      },
+      "ScanRequestLogWithRelations": {
+        "title": "ScanRequestLogWithRelations",
+        "type": "object",
+        "description": "(tsType: ScanRequestLogWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "scanRequestId": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "in progress"
+            ]
+          },
+          "modelDefinition": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "databricks": {
+                      "type": "object",
+                      "properties": {
+                        "col_name": {
+                          "type": "string"
+                        },
+                        "data_type": {
+                          "type": "string"
+                        },
+                        "comment": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "scanRequestId",
+          "status"
+        ],
+        "additionalProperties": false,
+        "x-typescript-type": "ScanRequestLogWithRelations"
       },
       "ScanRequestWithRelations": {
         "title": "ScanRequestWithRelations",
@@ -467,18 +966,18 @@
                   "token": {
                     "type": "string"
                   },
-                  "serverHostname": {
+                  "host": {
                     "type": "string"
                   },
-                  "httpPath": {
+                  "path": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "connector",
                   "token",
-                  "serverHostname",
-                  "httpPath"
+                  "host",
+                  "path"
                 ],
                 "additionalProperties": false
               }
@@ -486,6 +985,12 @@
           },
           "scanParameters": {
             "type": "object"
+          },
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScanRequestLogWithRelations"
+            }
           }
         },
         "required": [
@@ -519,18 +1024,18 @@
                   "token": {
                     "type": "string"
                   },
-                  "serverHostname": {
+                  "host": {
                     "type": "string"
                   },
-                  "httpPath": {
+                  "path": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "connector",
                   "token",
-                  "serverHostname",
-                  "httpPath"
+                  "host",
+                  "path"
                 ],
                 "additionalProperties": false
               }
@@ -574,6 +1079,79 @@
         "properties": {
           "count": {
             "type": "number"
+          }
+        }
+      },
+      "ScanRequest.ScopeFilter": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "title": "ScanRequest.ScopeFilter"
+      },
+      "ScanRequest.IncludeFilter.Items": {
+        "title": "ScanRequest.IncludeFilter.Items",
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/ScanRequest.ScopeFilter"
           }
         }
       },
@@ -639,6 +1217,20 @@
               }
             ],
             "title": "ScanRequest.Fields"
+          },
+          "include": {
+            "title": "ScanRequest.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ScanRequest.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
           }
         },
         "additionalProperties": false,
@@ -711,6 +1303,20 @@
               }
             ],
             "title": "ScanRequest.Fields"
+          },
+          "include": {
+            "title": "ScanRequest.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ScanRequest.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
           }
         },
         "additionalProperties": false,

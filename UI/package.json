@@ -12,7 +12,8 @@
     "test": "ng test",
     "test:ci": "ng test --karma-config src/karma.conf.ci.js UI",
     "lint": "tslint \"src/**/*.ts\"",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "ng-openapi-gen": "ng-openapi-gen --input src/app/data-connection/openapi.json --output src/app/data-connection/api"
   },
   "private": true,
   "dependencies": {

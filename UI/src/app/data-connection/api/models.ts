@@ -1,5 +1,9 @@
+export { ScanRequestLog } from './models/scan-request-log';
+export { NewScanRequestLogInScanRequest } from './models/new-scan-request-log-in-scan-request';
+export { ScanRequestLogPartial } from './models/scan-request-log-partial';
 export { ScanRequest } from './models/scan-request';
 export { NewScanRequest } from './models/new-scan-request';
+export { ScanRequestLogWithRelations } from './models/scan-request-log-with-relations';
 export { ScanRequestWithRelations } from './models/scan-request-with-relations';
 export { ScanRequestPartial } from './models/scan-request-partial';
 export { PingResponse } from './models/ping-response';

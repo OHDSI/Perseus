@@ -9,7 +9,6 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
 import { MatDialog } from '@angular/material/dialog'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { withLoadingField } from '@utils/loading'
-import { DataConnectionService } from '@app/data-connection/data-connection.service';
 
 @Component({
   selector: 'app-scan-data-console-wrapper',
@@ -35,8 +34,7 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   constructor(private whiteRabbitService: ScanDataService,
               private scanDataUploadService: ScanDataUploadService,
-              private dialogService: MatDialog,
-              private dataConnectionService: DataConnectionService,) {
+              private dialogService: MatDialog) {
     super()
   }
 
@@ -46,7 +44,7 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
 
   conversionInfoRequest(): Observable<Conversion> {
     if (this.conversion.dataConnection !== undefined) {
-      return this.dataConnectionService.getDataConnection(this.conversion.dataConnection).conversionInfoWithLogs(this.conversion.id)
+      return this.conversion.dataConnection.conversionInfoWithLogs()
     } else {
       return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
     }

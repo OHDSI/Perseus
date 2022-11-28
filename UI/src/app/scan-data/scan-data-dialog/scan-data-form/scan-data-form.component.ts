@@ -130,10 +130,10 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.connectFormComponent.isDataConnection) {
       type = ScanSettingsType.DATA_CONNECTION
       settings = {
-        ...this.connectFormComponent.form.value,
-        dbType: this.connectFormComponent.dataType,
-        scanDataParams: {...this.tablesToScanComponent.scanParams},
-        tablesToScan: this.tablesToScanComponent.filteredTablesToScan.map(table => table.tableName)
+        dataConnectionComponent: this.connectFormComponent.dataConnectionComponent
+        // dbType: this.connectFormComponent.dataType,
+        // scanDataParams: {...this.tablesToScanComponent.scanParams},
+        // tablesToScan: this.tablesToScanComponent.filteredTablesToScan.map(table => table.tableName)
       }
     } else if (this.connectFormComponent.isDbSettings) {
       type = ScanSettingsType.DB

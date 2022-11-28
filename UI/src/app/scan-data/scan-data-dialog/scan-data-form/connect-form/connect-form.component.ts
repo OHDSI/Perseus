@@ -42,7 +42,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   fileSettingsForm: FormGroup;
 
-  dataConnectionForm: FormGroup;
+  dataConnectionComponent: DataConnectionSettingsComponent
 
   @Input()
   fileSettings: FilesSettings;
@@ -82,9 +82,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   private testConnectionSub: Subscription;
 
   private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => Observable<ConnectionResultWithTables> } = {
-    dataConnection: (connectionSettings: ScanSettings) => {
-      const dataConnection = this.dataConnectionService.getDataConnection(this.dataType)
-      return dataConnection.testConnection(connectionSettings)
+    dataConnection: () => {
+      return this.dataConnectionComponent.testConnection()
     },
     dbSettings: (dbSettings: DbSettings) => {
       return this.whiteRabbitService.testConnection({...dbSettings, dbType: this.dataType})
@@ -139,14 +138,14 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   }
 
   get isDataConnection() {
-    return this.dataConnectionService.getDataConnection(this.dataType) !== undefined
+    return this.dataConnectionService.dataConnectionIndex[this.dataType] !== undefined
   }
 
   loadDataConnectionSettingsComponent() {
     const viewContainerRef = this.dataConnectionSettings.viewContainerRef;
     viewContainerRef.clear()
 
-    const dataConnection = this.dataConnectionService.getDataConnection(this.dataType)
+    const dataConnection = this.dataConnectionService.dataConnectionIndex[this.dataType]
     if (dataConnection === undefined) {
       // dataType does not use the dataConnection interface.
       return
@@ -155,7 +154,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(dataConnection.settingsComponent);
 
     const componentRef = viewContainerRef.createComponent<DataConnectionSettingsComponent>(componentFactory)
-    this.dataConnectionForm = componentRef.instance.form
+    this.dataConnectionComponent = componentRef.instance
     this.subscribeFormChange()
   }
 
@@ -164,7 +163,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
       return true
     }
     if (this.isDataConnection) {
-      return !this.dataConnectionForm.valid
+      return !this.dataConnectionComponent.form.valid
     } else if (this.isDbSettings) {
       return !this.form.valid
     } else {
@@ -186,7 +185,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     let form: FormGroup;
     let scanSettings: ScanSettings;
     if (this.isDataConnection) {
-      form = this.dataConnectionForm
+      form = this.dataConnectionComponent.form
       scanSettings = form.value
     } else if (this.isDbSettings) {
       form = this.form
@@ -234,7 +233,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   subscribeFormChange(): void {
     let formStreams$ 
     if (this.isDataConnection) {
-      formStreams$ = [this.dataConnectionForm.valueChanges]
+      formStreams$ = [this.dataConnectionComponent.form.valueChanges]
     } else if (this.isDbSettings) {
       formStreams$ = [this.form.valueChanges]
     } else {
@@ -292,8 +291,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   resetForm() {
     if (!this.tryConnect) {
-      if (this.dataConnectionForm) {
-        this.dataConnectionForm.reset()
+      if (this.dataConnectionComponent.form) {
+        this.dataConnectionComponent.form.reset()
       } else if (this.isDbSettings) {
         this.form.reset()
       } else {

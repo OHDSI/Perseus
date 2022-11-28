@@ -11,7 +11,7 @@ import { UploadService } from '@services/upload.service'
 import { isSourceUploaded, isTablesMappedOrViewCreated } from '@utils/mapping-util'
 import { CommonUtilsService } from '@services/common-utils.service'
 import { ScanDataService } from '@services/white-rabbit/scan-data.service'
-import { DataConnectionService } from '@app/data-connection/data-connection.service';
+import { DataConnectionSettingsComponent } from '@app/data-connection/data-connection-settings.component';
 
 @Injectable()
 export class ScanDataUploadService {
@@ -21,11 +21,10 @@ export class ScanDataUploadService {
               private storeService: StoreService,
               private uploadService: UploadService,
               private commonUtilsService: CommonUtilsService,
-              private whiteRabbitService: ScanDataService,
-              private dataConnectionService: DataConnectionService) {
+              private whiteRabbitService: ScanDataService) {
   }
 
-  uploadScanReport(conversionId: number, dataConnection?: string): Observable<UploadScanReportResponse> {
+  uploadScanReport(conversionId: number, dataConnection?:  DataConnectionSettingsComponent): Observable<UploadScanReportResponse> {
     const state = this.storeService.state
     let before$: Observable<any>
     if (isSourceUploaded(state.source) && isTablesMappedOrViewCreated(state.targetConfig, state.source)) {
@@ -53,10 +52,10 @@ export class ScanDataUploadService {
     )
   }
 
-  private loadScanData(conversionId: number, cdmVersion?: string, dataConnection?: string): Observable<UploadScanReportResponse> {
+  private loadScanData(conversionId: number, cdmVersion?: string, dataConnection?: DataConnectionSettingsComponent): Observable<UploadScanReportResponse> {
     this.uploadService.reportLoading = true
     if (dataConnection !== null) {
-      return this.dataConnectionService.getDataConnection(dataConnection).createSourceSchemaByScanReport({dataId: conversionId})
+      return dataConnection.createSourceSchemaByScanReport()
         .pipe(finalize(() => this.uploadService.reportLoading = false))
     } else {
       return this.whiteRabbitService.result(conversionId)

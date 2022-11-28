@@ -3,7 +3,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration } from './api-configuration';
-import { serverUrl } from '@app/app.constants';
 
 /**
  * Base class for services
@@ -16,8 +15,7 @@ export class BaseService {
   ) {
   }
 
-  // private _rootUrl: string = serverUrl;
-  private _rootUrl: string = 'http://localhost:5005'
+  private _rootUrl: string = '';
 
   /**
    * Returns the root url for all operations in this service. If not set directly in this

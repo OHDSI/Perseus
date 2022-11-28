@@ -4,8 +4,8 @@ export interface ScanRequest {
   dataSourceConfig: {
 'connector': 'databricks' | 'postgresql';
 'token': string;
-'serverHostname': string;
-'httpPath': string;
+'host': string;
+'path': string;
 };
   id?: number;
   scanParameters?: {

@@ -5,12 +5,19 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm start",
+      "name": "Run npm start",
+      "request": "launch",
+      "type": "node-terminal",
+      "envFile": "${workspaceFolder}/.env",
+    },
+    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:4200",
       
       "webRoot": "${workspaceFolder}"
-    }
+    },
   ]
 }

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DbTypes } from '@app/scan-data/scan-data.constants';
-import { ScanRequestControllerService } from './api/services/scan-request-controller.service';
 import { DataConnection } from './data-connection';
 import { DatabricksSettingsComponent } from './databricks/databricks-settings.component';
-import { Loopback } from './loopback';
 
 interface DataConnectionIndex {
   [key: string]: DataConnection
@@ -13,18 +11,14 @@ interface DataConnectionIndex {
 export class DataConnectionService {
 
   dataConnectionIndex: DataConnectionIndex
+  scanConnection: DataConnection
 
-  constructor(scanRequestControllerService: ScanRequestControllerService) {
+  constructor() {
     this.dataConnectionIndex = {
-      [DbTypes.DATABRICKS]: new Loopback(
-        'databricks',
-        DatabricksSettingsComponent,
-        scanRequestControllerService
-      ),
+      [DbTypes.DATABRICKS]: {
+        settingsComponent: DatabricksSettingsComponent,
+      },
     };
   }
 
-  getDataConnection(dbType: string): DataConnection {
-    return this.dataConnectionIndex[dbType]
-  }
 }

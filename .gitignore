@@ -3,3 +3,4 @@
 .first_run
 vocabulary-db/vocabulary
 .vscode/launch.json
+UI/.env

@@ -9,7 +9,8 @@ export const environment = {
   production: false,
   serverUrl: null,
   conceptTables: CONCEPT_TABLES,
-  authStrategy: AuthStrategies.FAKE
+  authStrategy: AuthStrategies.FAKE,
+  dataConnectionRootUrl: 'http://localhost:3000/data-connection',
 };
 
 /*

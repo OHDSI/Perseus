@@ -30,8 +30,8 @@ if (require.main === module) {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
         endpointMapping: {
-          '/data-connection/openapi.json': {version: '3.0.0', format: 'json'},
-          '/data-connection/openapi.yaml': {version: '3.0.0', format: 'yaml'},
+          '/openapi.json': {version: '3.0.0', format: 'json'},
+          '/openapi.yaml': {version: '3.0.0', format: 'yaml'},
         }
       },
     },

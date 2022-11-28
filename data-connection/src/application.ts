@@ -20,13 +20,14 @@ export class DataConnectionApplication extends BootMixin(
 
     // Set up the custom sequence
     this.sequence(MySequence);
+    this.basePath('/data-connection')
 
     // Set up default home page
-    this.static('/data-connection', path.join(__dirname, '../public'));
+    this.static('/', path.join(__dirname, '../public'));
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/data-connection/explorer',
+      path: '/explorer',
     });
     this.component(RestExplorerComponent);
 

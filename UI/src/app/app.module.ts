@@ -9,6 +9,8 @@ import { getAuthInterceptors, getAuthModules } from '@app/app.util'
 import { authInjector, authServiceClass } from '@services/auth/auth-injector'
 import { authStrategy } from '@app/app.constants'
 import { DataConnectionService } from '@app/data-connection/data-connection.service';
+import { ApiModule } from './data-connection/api/api.module';
+import { environment } from 'src/environments/environment';
 
 export const authModules = getAuthModules()
 export const authInterceptors = getAuthInterceptors()
@@ -21,6 +23,7 @@ export const authInterceptors = getAuthInterceptors()
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ApiModule.forRoot({ rootUrl: environment.dataConnectionRootUrl }),
     AppRoutingModule,
     ...authModules
   ],
