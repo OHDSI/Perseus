@@ -11,6 +11,7 @@ import { ScanSettings } from '@models/white-rabbit/scan-settings';
 import { cdmBuilderDatabaseTypes } from '../../scan-data.constants';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 import { ScanSettingsType } from '@models/white-rabbit/scan-settings-type'
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
 
 @Component({
   selector: 'app-scan-data-form',
@@ -55,7 +56,8 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   scanTablesDisabled = () => true
 
   constructor(private stateService: ScanDataStateService,
-              private cdmStateService: CdmStateService) {
+              private cdmStateService: CdmStateService,
+              private dataConnectionService: DataConnectionService) {
   }
 
   ngOnInit(): void {
@@ -63,9 +65,13 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.scanTablesDisabled = () =>
-      this.tablesToScanComponent.tablesToScan.filter(t => t.selected).length === 0
-    )
+    setTimeout(() => this.scanTablesDisabled = () => {
+      if (this.dataConnectionService.sourceConnection) {
+        return !this.dataConnectionService.validProfileRequest
+      } else {
+        return this.tablesToScanComponent.tablesToScan.filter(t => t.selected).length === 0
+      }
+    })
   }
 
   ngOnDestroy(): void {

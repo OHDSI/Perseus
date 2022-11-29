@@ -19,23 +19,28 @@
     </div>
   </div>
 
+  <ng-template dataConnectionTablesToScan>
+  </ng-template>
+  
   <div class="scan-tables-content" *ngIf="connected; else disconnectBlock">
-    <label class="scan-tables-content__search-input">
-      <mat-icon>search</mat-icon>
-      <input type="text" placeholder="Search by Tables"
-             [ngModel]="searchTableName"
-             (ngModelChange)="onSearchByTableName($event)">
-    </label>
-
-    <div class="scan-tables-content__select-values-buttons">
-      <button (click)="onSelectAll()">Select All</button>
-      <button (click)="onDeselectAll()">Deselect All</button>
-    </div>
-
-    <div class="scan-tables-content__list">
-      <app-table-to-scan *ngFor="let table of filteredTablesToScan"
-                         [table]="table"
-                         (checkTable)="onCheckTable($event)"></app-table-to-scan>
+    <div *ngIf="!isDataConnection">
+      <label class="scan-tables-content__search-input">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Search by Tables"
+               [ngModel]="searchTableName"
+               (ngModelChange)="onSearchByTableName($event)">
+      </label>
+  
+      <div class="scan-tables-content__select-values-buttons">
+        <button (click)="onSelectAll()">Select All</button>
+        <button (click)="onDeselectAll()">Deselect All</button>
+      </div>
+  
+      <div class="scan-tables-content__list">
+        <app-table-to-scan *ngFor="let table of filteredTablesToScan"
+                           [table]="table"
+                           (checkTable)="onCheckTable($event)"></app-table-to-scan>
+      </div>
     </div>
   </div>
 

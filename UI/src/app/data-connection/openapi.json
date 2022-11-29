@@ -568,9 +568,7 @@
                         "data_type": {
                           "type": "string"
                         },
-                        "comment": {
-                          "type": "string"
-                        }
+                        "comment": {}
                       }
                     }
                   }
@@ -645,9 +643,7 @@
                         "data_type": {
                           "type": "string"
                         },
-                        "comment": {
-                          "type": "string"
-                        }
+                        "comment": {}
                       }
                     }
                   }
@@ -725,9 +721,7 @@
                         "data_type": {
                           "type": "string"
                         },
-                        "comment": {
-                          "type": "string"
-                        }
+                        "comment": {}
                       }
                     }
                   }
@@ -790,6 +784,15 @@
                   },
                   "path": {
                     "type": "string"
+                  },
+                  "port": {
+                    "type": "number"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "profileNotebook": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -802,7 +805,73 @@
             ]
           },
           "scanParameters": {
-            "type": "object"
+            "type": "object",
+            "title": "ScanParameters",
+            "properties": {
+              "profile": {
+                "type": "boolean"
+              },
+              "modelDefinitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "databricks": {
+                            "type": "object",
+                            "properties": {
+                              "col_name": {
+                                "type": "string"
+                              },
+                              "data_type": {
+                                "type": "string"
+                              },
+                              "comment": {}
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "databricks": {
+                          "type": "object",
+                          "properties": {
+                            "catalog": {
+                              "type": "string"
+                            },
+                            "database": {
+                              "type": "string"
+                            },
+                            "tableName": {
+                              "type": "string"
+                            },
+                            "isTemporary": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "profile"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -837,6 +906,15 @@
                   },
                   "path": {
                     "type": "string"
+                  },
+                  "port": {
+                    "type": "number"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "profileNotebook": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -849,7 +927,73 @@
             ]
           },
           "scanParameters": {
-            "type": "object"
+            "type": "object",
+            "title": "ScanParameters",
+            "properties": {
+              "profile": {
+                "type": "boolean"
+              },
+              "modelDefinitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "databricks": {
+                            "type": "object",
+                            "properties": {
+                              "col_name": {
+                                "type": "string"
+                              },
+                              "data_type": {
+                                "type": "string"
+                              },
+                              "comment": {}
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "databricks": {
+                          "type": "object",
+                          "properties": {
+                            "catalog": {
+                              "type": "string"
+                            },
+                            "database": {
+                              "type": "string"
+                            },
+                            "tableName": {
+                              "type": "string"
+                            },
+                            "isTemporary": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "profile"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -899,9 +1043,7 @@
                         "data_type": {
                           "type": "string"
                         },
-                        "comment": {
-                          "type": "string"
-                        }
+                        "comment": {}
                       }
                     }
                   }
@@ -969,6 +1111,15 @@
                   },
                   "path": {
                     "type": "string"
+                  },
+                  "port": {
+                    "type": "number"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "profileNotebook": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -981,7 +1132,73 @@
             ]
           },
           "scanParameters": {
-            "type": "object"
+            "type": "object",
+            "title": "ScanParameters",
+            "properties": {
+              "profile": {
+                "type": "boolean"
+              },
+              "modelDefinitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "databricks": {
+                            "type": "object",
+                            "properties": {
+                              "col_name": {
+                                "type": "string"
+                              },
+                              "data_type": {
+                                "type": "string"
+                              },
+                              "comment": {}
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "databricks": {
+                          "type": "object",
+                          "properties": {
+                            "catalog": {
+                              "type": "string"
+                            },
+                            "database": {
+                              "type": "string"
+                            },
+                            "tableName": {
+                              "type": "string"
+                            },
+                            "isTemporary": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "profile"
+            ],
+            "additionalProperties": false
           },
           "logs": {
             "type": "array",
@@ -1026,6 +1243,15 @@
                   },
                   "path": {
                     "type": "string"
+                  },
+                  "port": {
+                    "type": "number"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "profileNotebook": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -1038,7 +1264,73 @@
             ]
           },
           "scanParameters": {
-            "type": "object"
+            "type": "object",
+            "title": "ScanParameters",
+            "properties": {
+              "profile": {
+                "type": "boolean"
+              },
+              "modelDefinitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "databricks": {
+                            "type": "object",
+                            "properties": {
+                              "col_name": {
+                                "type": "string"
+                              },
+                              "data_type": {
+                                "type": "string"
+                              },
+                              "comment": {}
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "databricks": {
+                          "type": "object",
+                          "properties": {
+                            "catalog": {
+                              "type": "string"
+                            },
+                            "database": {
+                              "type": "string"
+                            },
+                            "tableName": {
+                              "type": "string"
+                            },
+                            "isTemporary": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "profile"
+            ],
+            "additionalProperties": false
           }
         },
         "additionalProperties": false,

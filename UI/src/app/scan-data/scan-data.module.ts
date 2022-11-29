@@ -31,6 +31,9 @@ import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-m
 import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
 import { DatabricksSettingsComponent } from '@app/data-connection/databricks/databricks-settings.component';
 import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
+import { DatabricksTablesToScanComponent } from '@app/data-connection/databricks/databricks-tables-to-scan.component';
+import { DataConnectionTablesToScanDirective } from '@app/data-connection/data-connection-tables-to-scan.directive';
+import {MatTreeModule} from '@angular/material/tree';
 
 @NgModule({
   declarations: [
@@ -63,15 +66,19 @@ import { DataConnectionSettingsDirective } from '@app/data-connection/data-conne
     CodeMappingConsoleWrapperComponent,
     ProgressConsoleComponent,
     DataConnectionSettingsDirective,
+    DataConnectionTablesToScanDirective,
     DatabricksSettingsComponent,
+    DatabricksTablesToScanComponent,
   ],
   entryComponents: [
     DatabricksSettingsComponent,
+    DatabricksTablesToScanComponent,
   ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    MatTreeModule,
   ],
   exports: [
     ScanDataDialogComponent,

@@ -1,6 +1,7 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
 import {getJsonSchema} from '@loopback/rest';
 import {DatabricksConfig, DataSourceConfig} from './data-source-config.model';
+import {ScanParameters} from './scan-parameters.model';
 import {ScanRequestLog} from './scan-request-log.model';
 
 @model()
@@ -24,8 +25,10 @@ export class ScanRequest extends Entity {
 
   @property({
     type: 'object',
+    default: { profile: false },
+    jsonSchema: getJsonSchema(ScanParameters)
   })
-  scanParameters?: object;
+  scanParameters?: ScanParameters;
 
   @hasMany(() => ScanRequestLog)
   logs: ScanRequestLog[];

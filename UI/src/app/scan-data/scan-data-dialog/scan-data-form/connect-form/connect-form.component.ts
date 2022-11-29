@@ -148,8 +148,10 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     const dataConnection = this.dataConnectionService.dataConnectionIndex[this.dataType]
     if (dataConnection === undefined) {
       // dataType does not use the dataConnection interface.
+      this.dataConnectionService.sourceConnection = null
       return
     }
+    this.dataConnectionService.sourceConnection = dataConnection
 
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(dataConnection.settingsComponent);
 

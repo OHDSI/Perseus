@@ -25,7 +25,7 @@ export const authInterceptors = getAuthInterceptors()
     HttpClientModule,
     ApiModule.forRoot({ rootUrl: environment.dataConnectionRootUrl }),
     AppRoutingModule,
-    ...authModules
+    ...authModules,
   ],
   providers: [
     ...authInterceptors,

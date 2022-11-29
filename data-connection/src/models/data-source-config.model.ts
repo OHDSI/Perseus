@@ -47,19 +47,22 @@ export class DatabricksConfig extends DataSourceConfig {
   })
   path: string;
 
-  // @property({
-  //   type: 'number',
-  //   required: true,
-  //   default: 443
-  // })
-  // port = 443;
+  @property({
+    type: 'number',
+    default: 443
+  })
+  port = 443;
 
-  // @property({
-  //   type: 'string',
-  //   required: true,
-  //   default: 'https'
-  // })
-  // protocol = 'https';
+  @property({
+    type: 'string',
+    default: 'https'
+  })
+  protocol = 'https';
+
+  @property({
+    type: 'string',
+  })
+  profileNotebook?: string;
 
   constructor(data?: Partial<DatabricksConfig>) {
     if (data) {

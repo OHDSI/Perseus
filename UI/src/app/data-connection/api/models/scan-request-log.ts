@@ -10,7 +10,7 @@ export interface ScanRequestLog {
 'databricks'?: {
 'col_name'?: string;
 'data_type'?: string;
-'comment'?: string;
+'comment'?: any;
 };
 };
 };
