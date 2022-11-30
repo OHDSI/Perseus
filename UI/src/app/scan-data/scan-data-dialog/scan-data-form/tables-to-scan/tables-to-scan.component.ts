@@ -17,7 +17,6 @@ import { ConnectionResult } from '@models/white-rabbit/connection-result';
 import { takeUntil } from 'rxjs/operators';
 import { ScanDataParams } from '@models/white-rabbit/scan-data-params';
 import { BaseComponent } from '@shared/base/base.component';
-import { ScanParamsComponent } from './scan-params/scan-params.component';
 import { DataConnectionTablesToScanDirective } from '@app/data-connection/data-connection-tables-to-scan.directive';
 import { DataConnectionService } from '@app/data-connection/data-connection.service';
 import { DataConnectionTablesToScanComponent } from '@app/data-connection/data-connection-tables-to-scan.component';
@@ -56,7 +55,6 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   @Input()
   searchTableName: string;
 
-  // @ViewChild(ScanParamsComponent, {read: ElementRef})
   @ViewChild('scanParamsPopup', {read: ElementRef})
   scanParamsPopup: ElementRef;
 

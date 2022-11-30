@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DataConnectionScanParamsComponent } from '../data-connection-scan-params.component';
 
@@ -12,6 +12,7 @@ import { DataConnectionScanParamsComponent } from '../data-connection-scan-param
 export class DatabricksScanParamsComponent implements DataConnectionScanParamsComponent, OnInit {
 
   scanParamsForm: FormGroup;
+  @ViewChild('notebookPath', {read: ElementRef}) notebookPath: ElementRef;
 
   constructor(
     private formBuilder: FormBuilder
@@ -23,54 +24,11 @@ export class DatabricksScanParamsComponent implements DataConnectionScanParamsCo
       runAsJob: new FormControl(false),
       notebookPath: {}
     });
+    this.scanParamsForm.get('notebookPath').value
   }
 
-  maxDistinctValues = [
-    {
-      value: 100,
-      viewValue: '100'
-    },
-    {
-      value: 1e3,
-      viewValue: '1,000'
-    },
-    {
-      value: 10e3,
-      viewValue: '10,000'
-    }
-  ];
+  focusOnNotebookPath()  {
+    setTimeout(() => {this.notebookPath.nativeElement.focus()})
+  }
 
-  rowsPerTableValues = [
-    {
-      value: 100e3,
-      viewValue: '100,000'
-    },
-    {
-      value: 500e3,
-      viewValue: '500,000'
-    },
-    {
-      value: 1e6,
-      viewValue: '1 million'
-    },
-    {
-      value: -1,
-      viewValue: 'All'
-    }
-  ];
-
-  numericStatsReservoirSize = [
-    {
-      value: 100e3,
-      viewValue: '100,000'
-    },
-    {
-      value: 500e3,
-      viewValue: '500,000'
-    },
-    {
-      value: 1e6,
-      viewValue: '1 million'
-    }
-  ];
 }
