@@ -5,3 +5,4 @@ vocabulary-db/vocabulary
 .vscode/launch.json
 UI/.env
 .DS_Store
+buildlog.txt

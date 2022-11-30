@@ -1,70 +1,0 @@
-Sending build context to Docker daemon  524.4kBSending build context to Docker daemon  1.573MBSending build context to Docker daemon  2.622MBSending build context to Docker daemon  3.671MBSending build context to Docker daemon   4.72MBSending build context to Docker daemon  5.768MBSending build context to Docker daemon  6.817MBSending build context to Docker daemon  7.866MBSending build context to Docker daemon  8.915MBSending build context to Docker daemon  9.964MBSending build context to Docker daemon  11.01MBSending build context to Docker daemon  12.06MBSending build context to Docker daemon  13.11MBSending build context to Docker daemon  13.63MBSending build context to Docker daemon  14.68MBSending build context to Docker daemon  15.21MBSending build context to Docker daemon  15.73MBSending build context to Docker daemon  16.26MBSending build context to Docker daemon  17.31MBSending build context to Docker daemon  18.35MBSending build context to Docker daemon   19.4MBSending build context to Docker daemon  20.45MBSending build context to Docker daemon   21.5MBSending build context to Docker daemon  22.55MBSending build context to Docker daemon   23.6MBSending build context to Docker daemon  24.65MBSending build context to Docker daemon   25.7MBSending build context to Docker daemon  26.74MBSending build context to Docker daemon  27.79MBSending build context to Docker daemon  28.84MBSending build context to Docker daemon  29.89MBSending build context to Docker daemon  30.94MBSending build context to Docker daemon  31.99MBSending build context to Docker daemon  33.04MBSending build context to Docker daemon  34.09MBSending build context to Docker daemon  35.13MBSending build context to Docker daemon  36.18MBSending build context to Docker daemon  36.71MBSending build context to Docker daemon  37.23MBSending build context to Docker daemon  38.28MBSending build context to Docker daemon  38.81MBSending build context to Docker daemon  39.33MBSending build context to Docker daemon  39.85MBSending build context to Docker daemon  40.38MBSending build context to Docker daemon   40.9MBSending build context to Docker daemon  41.43MBSending build context to Docker daemon  41.95MBSending build context to Docker daemon  42.48MBSending build context to Docker daemon     43MBSending build context to Docker daemon  43.53MBSending build context to Docker daemon  44.57MBSending build context to Docker daemon   45.1MBSending build context to Docker daemon  46.15MBSending build context to Docker daemon   47.2MBSending build context to Docker daemon  48.24MBSending build context to Docker daemon  48.77MBSending build context to Docker daemon  49.82MBSending build context to Docker daemon  50.34MBSending build context to Docker daemon  51.39MBSending build context to Docker daemon  52.44MBSending build context to Docker daemon  53.49MBSending build context to Docker daemon  54.54MBSending build context to Docker daemon  55.59MBSending build context to Docker daemon  56.64MBSending build context to Docker daemon  57.68MBSending build context to Docker daemon  58.73MBSending build context to Docker daemon  59.78MBSending build context to Docker daemon  60.83MBSending build context to Docker daemon  61.88MBSending build context to Docker daemon  62.93MBSending build context to Docker daemon  63.98MBSending build context to Docker daemon  65.03MBSending build context to Docker daemon  66.07MBSending build context to Docker daemon  67.12MBSending build context to Docker daemon  68.17MBSending build context to Docker daemon  69.22MBSending build context to Docker daemon  70.27MBSending build context to Docker daemon  70.79MBSending build context to Docker daemon  71.84MBSending build context to Docker daemon  72.89MBSending build context to Docker daemon  73.42MBSending build context to Docker daemon  73.94MBSending build context to Docker daemon  74.99MBSending build context to Docker daemon  76.04MBSending build context to Docker daemon  76.56MBSending build context to Docker daemon  77.09MBSending build context to Docker daemon  78.14MBSending build context to Docker daemon  79.18MBSending build context to Docker daemon  79.71MBSending build context to Docker daemon  80.76MBSending build context to Docker daemon  81.81MBSending build context to Docker daemon  82.86MBSending build context to Docker daemon   83.9MBSending build context to Docker daemon  84.95MBSending build context to Docker daemon     86MBSending build context to Docker daemon  87.05MBSending build context to Docker daemon   88.1MBSending build context to Docker daemon  89.15MBSending build context to Docker daemon   90.2MBSending build context to Docker daemon  91.25MBSending build context to Docker daemon  92.29MBSending build context to Docker daemon  93.34MBSending build context to Docker daemon  94.39MBSending build context to Docker daemon  95.44MBSending build context to Docker daemon  95.97MBSending build context to Docker daemon  97.01MBSending build context to Docker daemon  98.06MBSending build context to Docker daemon  99.11MBSending build context to Docker daemon  100.2MBSending build context to Docker daemon  101.2MBSending build context to Docker daemon  101.7MBSending build context to Docker daemon  102.8MBSending build context to Docker daemon  103.8MBSending build context to Docker daemon  104.9MBSending build context to Docker daemon  105.9MBSending build context to Docker daemon    107MBSending build context to Docker daemon    108MBSending build context to Docker daemon  109.1MBSending build context to Docker daemon  110.1MBSending build context to Docker daemon  111.2MBSending build context to Docker daemon  112.2MBSending build context to Docker daemon  113.3MBSending build context to Docker daemon  114.3MBSending build context to Docker daemon  115.4MBSending build context to Docker daemon  116.4MBSending build context to Docker daemon  117.5MBSending build context to Docker daemon  118.1MB
-Step 1/20 : FROM node:14.15.0 AS build-step
-14.15.0: Pulling from library/node
-Digest: sha256:b8abfe5f5d3becb03ce1c157488dd487f82d895091aeabf2f8267a87778f848b
-Status: Downloaded newer image for node:14.15.0
- ---> 81f8cf372c1f
-Step 2/20 : ARG env=prod
- ---> Using cache
- ---> 4ab97bea50fc
-Step 3/20 : WORKDIR /usr/src/app
- ---> Using cache
- ---> 38edd0dd531d
-Step 4/20 : COPY package.json .
- ---> Using cache
- ---> 2bf4d5740bc3
-Step 5/20 : RUN npm install
- ---> Using cache
- ---> c75c26d212b5
-Step 6/20 : COPY . .
- ---> Using cache
- ---> 61f1c703fd19
-Step 7/20 : RUN npm run build:${env}
- ---> Using cache
- ---> ce4eee81671a
-Step 8/20 : FROM nginx
-latest: Pulling from library/nginx
-Digest: sha256:e209ac2f37c70c1e0e9873a5f7231e91dcd83fdf1178d8ed36c2ec09974210ba
-Status: Downloaded newer image for nginx:latest
- ---> 6b3e1257976b
-Step 9/20 : RUN apt-get update     && apt-get install -y --no-install-recommends openssh-server     && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
- ---> Using cache
- ---> ef20c4a90acc
-Step 10/20 : COPY nginx.conf /etc/nginx/nginx.conf
- ---> ae1f780d3d2e
-Step 11/20 : COPY --from=build-step /usr/src/app/dist /usr/share/nginx/html
- ---> 75675c4855fd
-Step 12/20 : COPY sshd_config /etc/ssh/
- ---> 1abc0c3af450
-Step 13/20 : COPY entrypoint.sh entrypoint.sh
- ---> 22ebaa46ab8d
-Step 14/20 : RUN chmod +x entrypoint.sh
- ---> Running in e79bfc4ce92e
-Removing intermediate container e79bfc4ce92e
- ---> bfbdeda566cf
-Step 15/20 : EXPOSE 4200 2222
- ---> Running in 3d9ccdb66c3b
-Removing intermediate container 3d9ccdb66c3b
- ---> d68d7e5eeff0
-Step 16/20 : CMD ["./entrypoint.sh"]
- ---> Running in 96af7bbd0807
-Removing intermediate container 96af7bbd0807
- ---> c3d8c3a60791
-Step 17/20 : LABEL com.docker.compose.image.builder=classic
- ---> Running in 4c6b18653a4d
-Removing intermediate container 4c6b18653a4d
- ---> abd972d71b38
-Step 18/20 : LABEL com.docker.compose.project=perseus
- ---> Running in 61ab1a208542
-Removing intermediate container 61ab1a208542
- ---> ef9d855b828b
-Step 19/20 : LABEL com.docker.compose.service=frontend
- ---> Running in a67a8b4a2e7b
-Removing intermediate container a67a8b4a2e7b
- ---> efdcb7ba9de9
-Step 20/20 : LABEL com.docker.compose.version=2.12.1
- ---> Running in 1f5f726af40d
-Removing intermediate container 1f5f726af40d
- ---> 1c36c430740b
-Successfully built 1c36c430740b
-Successfully tagged perseus-frontend:latest
