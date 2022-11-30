@@ -9,6 +9,7 @@ import { getAuthInterceptors, getAuthModules } from '@app/app.util'
 import { authInjector, authServiceClass } from '@services/auth/auth-injector'
 import { authStrategy } from '@app/app.constants'
 import { DataConnectionService } from '@app/data-connection/data-connection.service';
+import { DatabricksService } from '@app/data-connection/databricks/databricks.service';
 import { ApiModule } from './data-connection/api/api.module';
 import { environment } from 'src/environments/environment';
 
@@ -32,6 +33,7 @@ export const authInterceptors = getAuthInterceptors()
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
     { provide: authInjector, useClass: authServiceClass(authStrategy)},
     DataConnectionService,
+    DatabricksService,
   ],
   bootstrap: [ AppComponent ]
 })

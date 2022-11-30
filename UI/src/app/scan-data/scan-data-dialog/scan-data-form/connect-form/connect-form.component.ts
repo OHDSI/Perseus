@@ -23,6 +23,7 @@ import { parseHttpError } from '@utils/error'
 import { DataConnectionService } from '@app/data-connection/data-connection.service';
 import { DataConnectionSettingsComponent } from '@app/data-connection/data-connection-settings.component';
 import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
+import { DatabricksService } from '@app/data-connection/databricks/databricks.service';
 
 @Component({
   selector: 'app-connect-form',
@@ -116,6 +117,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
               private whiteRabbitService: ScanDataService,
               private scanDataStateService: ScanDataStateService,
               private dataConnectionService: DataConnectionService,
+              private databricksService: DatabricksService,
               private componentFactoryResolver: ComponentFactoryResolver) {
     super(formBuilder, matDialog);
   }

@@ -11,6 +11,7 @@ import { NewScanRequest, ScanRequest, ScanRequestLog } from '../api/models';
 import { ScanRequestControllerService, ScanRequestLogControllerService } from '../api/services';
 import { DataConnectionSettingsComponent } from '../data-connection-settings.component';
 import { DataConnectionService } from '../data-connection.service';
+import { DatabricksService } from './databricks.service';
 
 @Component({
   templateUrl: './databricks-settings.component.html',
@@ -32,6 +33,7 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
   public constructor(
     private formBuilder: FormBuilder,
     dataConnectionService: DataConnectionService,
+    private databricksService: DatabricksService,
     scanRequestControllerService: ScanRequestControllerService,
     scanRequestLogControllerService: ScanRequestLogControllerService,
   ) {
@@ -82,18 +84,18 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
     // return legacy object for backwards compatability.
     pages.subscribe({
       next: ([s, l]: [ScanRequest, ScanRequestLog[]]) => {
-        if (this.dataConnectionService.scanLogs[s.id]) {
-          this.dataConnectionService.scanLogs[s.id].logs.push(...l)
+        if (this.databricksService.scanLogs[s.id]) {
+          this.databricksService.scanLogs[s.id].logs.push(...l)
         } else { // first page
-          this.dataConnectionService.lastModelDefRequest = s
-          this.dataConnectionService.scanLogs[s.id] = {
+          this.databricksService.lastModelDefRequest = s
+          this.databricksService.scanLogs[s.id] = {
             scanRequest: s,
             logs: l
           }
           // Deep copy of completed modelDef request to initialize profile request.
-          this.dataConnectionService.currentProfileRequest = JSON.parse(JSON.stringify(s))
-          delete this.dataConnectionService.currentProfileRequest['id']
-          this.dataConnectionService.currentProfileRequest.scanParameters.profile = true
+          this.databricksService.currentProfileRequest = JSON.parse(JSON.stringify(s))
+          delete this.databricksService.currentProfileRequest['id']
+          this.databricksService.currentProfileRequest.scanParameters.profile = true
         }
       }
     })
@@ -119,7 +121,7 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
   // Called after selecting tables to profile
   // to initialize the scan.
   generateScanReport(): Observable<Conversion> {
-    this.profilePages = this.scanRequestControllerService.create({body: this.dataConnectionService.currentProfileRequest})
+    this.profilePages = this.scanRequestControllerService.create({body: this.databricksService.currentProfileRequest})
       .pipe(
         switchMap((s: ScanRequest) => {
           return this.scanRequestLogControllerService.find({
@@ -155,11 +157,11 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
     // Logs are stored in the service for out purposes.
     this.profilePages.subscribe({
       next: ([s, l]: [ScanRequest, ScanRequestLog[]]) => {
-        if (this.dataConnectionService.scanLogs[s.id]) {
-          this.dataConnectionService.scanLogs[s.id].logs.push(...l)
+        if (this.databricksService.scanLogs[s.id]) {
+          this.databricksService.scanLogs[s.id].logs.push(...l)
         } else { // first page
-          this.dataConnectionService.lastProfileRequest = s
-          this.dataConnectionService.scanLogs[s.id] = {
+          this.databricksService.lastProfileRequest = s
+          this.databricksService.scanLogs[s.id] = {
             scanRequest: s,
             logs: l
           }
@@ -206,12 +208,12 @@ export class DatabricksSettingsComponent implements DataConnectionSettingsCompon
       etl_mapping: {
         id: 0,
         username: 'username',
-        source_schema_name: this.dataConnectionService.lastModelDefRequest.dataSourceConfig.host,
+        source_schema_name: this.databricksService.lastModelDefRequest.dataSourceConfig.host,
         cdm_version: 'cdm_version',
         scan_report_name: 'scan_report_name',
         scan_report_id: 0,
       },
-      source_tables: this.dataConnectionService.logsForLastProfileRequest
+      source_tables: this.databricksService.logsForLastProfileRequest
         .filter(l => l.modelDefinition)
         .map(l => ({
           table_name: l.modelDefinition.settings.databricks.tableName,
