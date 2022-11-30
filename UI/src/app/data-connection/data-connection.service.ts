@@ -4,6 +4,7 @@ import { ScanRequest, ScanRequestLog } from './api/models';
 import { DataConnection } from './data-connection';
 import { DatabricksSettingsComponent } from './databricks/databricks-settings.component';
 import { DatabricksTablesToScanComponent } from './databricks/databricks-tables-to-scan.component';
+import { DatabricksScanParamsComponent } from './databricks/databricks-scan-params.component'
 
 interface DataConnectionIndex {
   [key: string]: DataConnection
@@ -16,6 +17,7 @@ export class DataConnectionService {
     [DbTypes.DATABRICKS]: {
       settingsComponent: DatabricksSettingsComponent,
       tablesToScanComponent: DatabricksTablesToScanComponent,
+      scanParamsComponent: DatabricksScanParamsComponent,
     },
   }
 

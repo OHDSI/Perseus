@@ -21,6 +21,8 @@ import { ScanParamsComponent } from './scan-params/scan-params.component';
 import { DataConnectionTablesToScanDirective } from '@app/data-connection/data-connection-tables-to-scan.directive';
 import { DataConnectionService } from '@app/data-connection/data-connection.service';
 import { DataConnectionTablesToScanComponent } from '@app/data-connection/data-connection-tables-to-scan.component';
+import { DataConnectionScanParamsDirective } from '@app/data-connection/data-connection-scan-params.directive';
+import { DataConnectionScanParamsComponent } from '@app/data-connection/data-connection-scan-params.component';
 
 @Component({
   selector: 'app-tables-to-scan',
@@ -54,13 +56,15 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   @Input()
   searchTableName: string;
 
-  @ViewChild(ScanParamsComponent, {read: ElementRef})
+  // @ViewChild(ScanParamsComponent, {read: ElementRef})
+  @ViewChild('scanParamsPopup', {read: ElementRef})
   scanParamsPopup: ElementRef;
 
   @ViewChild('scanParamsButton')
   scanParamsButton: ElementRef;
 
   @ViewChild(DataConnectionTablesToScanDirective, {static: false}) dataConnectionTablesToScan!: DataConnectionTablesToScanDirective;
+  @ViewChild(DataConnectionScanParamsDirective, {static: false}) dataConnectionScanParams!: DataConnectionScanParamsDirective;
 
 
   private clickOutsideScanParamsUnsub: () => void;
@@ -82,7 +86,7 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
   }
 
   ngOnChanges() {
-    this.loadDataConnectionTablesToScanComponent()
+    this.loadDataConnectionComponents()
   }
 
   ngOnDestroy(): void {
@@ -96,23 +100,27 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
     return true
   }
 
-  loadDataConnectionTablesToScanComponent() {
+  loadDataConnectionComponents() {
     if (!this.dataConnectionTablesToScan) {
       //template hasn't loaded yet
       return
     }
-    const viewContainerRef = this.dataConnectionTablesToScan.viewContainerRef;
-    viewContainerRef.clear()
+    const tablesToScanViewContainerRef = this.dataConnectionTablesToScan.viewContainerRef;
+    tablesToScanViewContainerRef.clear()
+    const scanParamsViewContainerRef = this.dataConnectionScanParams.viewContainerRef;
+    scanParamsViewContainerRef.clear()
 
     const dataConnection = this.dataConnectionService.sourceConnection
-    if (dataConnection === undefined) {
+    if (!dataConnection) {
       // data source not use the dataConnection interface.
       return
     }
 
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(dataConnection.tablesToScanComponent);
+    const tablesToScanComponentFactory = this.componentFactoryResolver.resolveComponentFactory(dataConnection.tablesToScanComponent);
+    const scanParamsComponentFactory = this.componentFactoryResolver.resolveComponentFactory(dataConnection.scanParamsComponent);
 
-    const componentRef = viewContainerRef.createComponent<DataConnectionTablesToScanComponent>(componentFactory)
+    const tablesToScanComponentRef = tablesToScanViewContainerRef.createComponent<DataConnectionTablesToScanComponent>(tablesToScanComponentFactory)
+    const scanParamsComponentRef = scanParamsViewContainerRef.createComponent<DataConnectionScanParamsComponent>(scanParamsComponentFactory)
     // componentRef.instance.connectionResult = this.connectionResult
     // this.dataConnectionComponent = componentRef.instance
     // this.subscribeFormChange()
@@ -155,6 +163,7 @@ export class TablesToScanComponent extends BaseComponent implements OnInit, OnDe
     } else {
       this.showScanParamsPopup = true;
       this.clickOutsideScanParamsUnsub = this.renderer.listen('document', 'click', event => {
+        // const popup = this.dataConnectionScanParams.viewContainerRef.element || this.scanParamsPopup
         const notClickedInside = !this.scanParamsPopup.nativeElement.contains(event.target);
         const notClickedScanParamsButton = !this.scanParamsButton.nativeElement.contains(event.target);
         const dropdown = document.querySelector('.mat-select-panel');

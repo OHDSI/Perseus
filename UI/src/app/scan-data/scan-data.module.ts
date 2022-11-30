@@ -34,6 +34,8 @@ import { DataConnectionSettingsDirective } from '@app/data-connection/data-conne
 import { DatabricksTablesToScanComponent } from '@app/data-connection/databricks/databricks-tables-to-scan.component';
 import { DataConnectionTablesToScanDirective } from '@app/data-connection/data-connection-tables-to-scan.directive';
 import {MatTreeModule} from '@angular/material/tree';
+import { DataConnectionScanParamsDirective } from '@app/data-connection/data-connection-scan-params.directive';
+import { DatabricksScanParamsComponent } from '@app/data-connection/databricks/databricks-scan-params.component';
 
 @NgModule({
   declarations: [
@@ -67,12 +69,15 @@ import {MatTreeModule} from '@angular/material/tree';
     ProgressConsoleComponent,
     DataConnectionSettingsDirective,
     DataConnectionTablesToScanDirective,
+    DataConnectionScanParamsDirective,
     DatabricksSettingsComponent,
     DatabricksTablesToScanComponent,
+    DatabricksScanParamsComponent,
   ],
   entryComponents: [
-    DatabricksSettingsComponent,
-    DatabricksTablesToScanComponent,
+    // DatabricksSettingsComponent,
+    // DatabricksTablesToScanComponent,
+    // DatabricksScanParamsComponent,
   ],
   imports: [
     FormsModule,

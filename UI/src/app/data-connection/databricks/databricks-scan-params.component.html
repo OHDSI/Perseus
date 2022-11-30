@@ -1,0 +1,10 @@
+<form class="scan-params" [formGroup]="scanParamsForm">
+  <section class="example-section">
+    <mat-checkbox class="example-margin" formControlName="runAsJob">Run profiler as Databricks job.</mat-checkbox>
+  </section>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Profiler Notebook Path</mat-label>
+    <input matInput placeholder="/Shared/Perseus Profiler" [disabled]="!scanParamsForm.value.runAsJob">
+  </mat-form-field>
+</form>
+

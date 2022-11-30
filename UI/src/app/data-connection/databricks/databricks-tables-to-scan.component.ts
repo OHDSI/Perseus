@@ -62,7 +62,6 @@ export class DatabricksTablesToScanComponent implements DataConnectionTablesToSc
             scanParameters.modelDefinitions.splice(scanParameters.modelDefinitions.indexOf(n.modelDefinition), 1)
           })
         }
-        console.log(this.dataConnectionService.currentProfileRequest.scanParameters)
       }
     })
   }
