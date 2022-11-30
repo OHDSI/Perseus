@@ -13,4 +13,3 @@ requests
 APScheduler==3.9.1
 azure-identity==1.10.0
 azure-keyvault-secrets==4.4.0
-databricks-sql-connector==2.1.0
