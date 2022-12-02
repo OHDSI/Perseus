@@ -1,0 +1,110 @@
+{
+  "name": "drug_strength",
+  "properties": {
+    "drug_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "ingredient_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "ingredient_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "amount_value": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "amount_value",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "amount_unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "amount_unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "numerator_value": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "numerator_value",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "numerator_unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "numerator_unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "denominator_value": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "denominator_value",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "denominator_unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "denominator_unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "box_size": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "box_size",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "valid_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "valid_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "invalid_reason": {
+      "type": "String",
+      "databricks": {
+        "col_name": "invalid_reason",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "drug_strength",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

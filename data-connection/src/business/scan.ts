@@ -8,7 +8,7 @@ import {ScanRequest, ScanRequestLog, Status} from '../models';
 
 export function scan(
   scanRequest: Omit<ScanRequest, 'id'>,
-  app: DataConnectionApplication,
+  app?: DataConnectionApplication,
   iDataSource = juggler.DataSource
 ): Observable<ScanRequestLog> {
   return new Observable((subscriber) => {
@@ -21,17 +21,19 @@ export function scan(
       ...dataSourceConfig
     })
     ds.connect().then(() => {
-      app.dataSource(ds, connector)
+      if (app) {app.dataSource(ds, connector)}
       from(ds.discoverModelDefinitions()).pipe(concatAll()).subscribe({
         next: d => {
           const m = defineModelClass(Entity, new ModelDefinition(d as ModelDefinitionSyntax))
           const r = defineCrudRepositoryClass(m)
           inject(`datasources.${ds.name}`)(r, undefined, 0)
-          const b = app.repository(r)
           const basePath = '/' + d.name;
           const c = defineCrudRestController(m, {basePath});
-          inject(b.key)(c, undefined, 0);
-          app.controller(c);
+          if (app) {
+            const b = app.repository(r)
+            inject(b.key)(c, undefined, 0);
+            app.controller(c);
+          }
           subscriber.next(new ScanRequestLog({
             scanRequestId: scanRequest.getId(),
             status: Status.IN_PROGRESS,

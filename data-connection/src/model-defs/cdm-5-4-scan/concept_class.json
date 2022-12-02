@@ -1,0 +1,38 @@
+{
+  "name": "concept_class",
+  "properties": {
+    "concept_class_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "concept_class_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "concept_class_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "concept_class_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "concept_class_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "concept_class_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "concept_class",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

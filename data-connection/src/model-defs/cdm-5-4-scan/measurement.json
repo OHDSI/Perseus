@@ -1,0 +1,198 @@
+{
+  "name": "measurement",
+  "properties": {
+    "measurement_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "measurement_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "measurement_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "measurement_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "measurement_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "measurement_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "measurement_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "measurement_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "measurement_time": {
+      "type": "String",
+      "databricks": {
+        "col_name": "measurement_time",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "measurement_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "measurement_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "operator_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "operator_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "value_as_number": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "value_as_number",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "value_as_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "value_as_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "range_low": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "range_low",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "range_high": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "range_high",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "measurement_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "measurement_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "measurement_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "measurement_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "unit_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "unit_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "value_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "value_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "measurement_event_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "measurement_event_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "meas_event_field_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "meas_event_field_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "measurement",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

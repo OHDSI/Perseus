@@ -1,0 +1,38 @@
+{
+  "name": "episode_event",
+  "properties": {
+    "episode_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "event_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "event_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_event_field_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_event_field_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "episode_event",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

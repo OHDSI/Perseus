@@ -1,0 +1,70 @@
+{
+  "name": "dose_era",
+  "properties": {
+    "dose_era_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "dose_era_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drug_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "dose_value": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "dose_value",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "dose_era_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "dose_era_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "dose_era_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "dose_era_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "dose_era",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

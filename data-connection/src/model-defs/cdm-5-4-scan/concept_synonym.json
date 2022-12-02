@@ -1,0 +1,38 @@
+{
+  "name": "concept_synonym",
+  "properties": {
+    "concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "concept_synonym_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "concept_synonym_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "language_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "language_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "concept_synonym",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

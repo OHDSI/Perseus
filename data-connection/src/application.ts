@@ -1,12 +1,14 @@
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
-import {RepositoryMixin} from '@loopback/repository';
+import {ApplicationConfig, inject} from '@loopback/core';
+import {defineCrudRepositoryClass, defineModelClass, Entity, ModelDefinition, RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
+import {defineCrudRestController} from '@loopback/rest-crud';
 import {
   RestExplorerBindings,
   RestExplorerComponent
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
+import {readdir, readFile} from 'fs/promises';
 import path from 'path';
 import {MySequence} from './sequence';
 
@@ -40,6 +42,27 @@ export class DataConnectionApplication extends BootMixin(
         extensions: ['.controller.js'],
         nested: true,
       },
+      models: {
+        nested: true,
+      }
     };
+  }
+
+  async bindModelDefs(dataSourceName: string) {
+    const scans = await readdir('./src/model-defs')
+    for (const s of scans) {
+      const modelDefs = await readdir(`./src/model-defs/${s}`)
+      for (const f of modelDefs) {
+        const fd = await readFile(`./src/model-defs/${s}/${f}`)
+        const m = defineModelClass(Entity, new ModelDefinition(JSON.parse(fd.toString())))
+        const r = defineCrudRepositoryClass(m)
+        inject(`datasources.${dataSourceName}`)(r, undefined, 0)
+        const basePath = '/' + m.name;
+        const c = defineCrudRestController(m, {basePath});
+        const b = this.repository(r)
+        inject(b.key)(c, undefined, 0);
+        this.controller(c);
+      }
+    }
   }
 }

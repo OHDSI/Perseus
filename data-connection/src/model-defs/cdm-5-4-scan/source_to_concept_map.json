@@ -1,0 +1,86 @@
+{
+  "name": "source_to_concept_map",
+  "properties": {
+    "source_code": {
+      "type": "String",
+      "databricks": {
+        "col_name": "source_code",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "source_vocabulary_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "source_vocabulary_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "source_code_description": {
+      "type": "String",
+      "databricks": {
+        "col_name": "source_code_description",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "target_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "target_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "target_vocabulary_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "target_vocabulary_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "valid_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "valid_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "invalid_reason": {
+      "type": "String",
+      "databricks": {
+        "col_name": "invalid_reason",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "source_to_concept_map",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -36,7 +36,8 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "npm run clean && npm run build",
-    "nodemon": "npm run build:watch & DEBUG=* nodemon ./dist/index.js"
+    "nodemon": "npm run build:watch & DEBUG=* nodemon ./dist/index.js",
+    "scan-cdm-5-4": "ts-node src/bin/scan-cdm-5-4.ts"
   },
   "repository": {
     "type": "git",
@@ -58,7 +59,7 @@
     "@loopback/rest-crud": "^0.15.4",
     "@loopback/rest-explorer": "^5.0.4",
     "@loopback/service-proxy": "^5.0.4",
-    "loopback-connector-databricks": "^1.0.2",
+    "loopback-connector-databricks": "^1.0.3",
     "rxjs": "^7.5.7",
     "tslib": "^2.0.0"
   },

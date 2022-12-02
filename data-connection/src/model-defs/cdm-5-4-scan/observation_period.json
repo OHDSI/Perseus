@@ -1,0 +1,54 @@
+{
+  "name": "observation_period",
+  "properties": {
+    "observation_period_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "observation_period_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "observation_period_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "observation_period_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "observation_period_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "observation_period_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "period_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "period_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "observation_period",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}
