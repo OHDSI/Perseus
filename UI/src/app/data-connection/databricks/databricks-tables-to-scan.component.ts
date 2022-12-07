@@ -5,7 +5,7 @@ import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { ScanRequestLog } from "../api/models";
 import { DataConnectionTablesToScanComponent } from '../data-connection-tables-to-scan.component';
 import { DataConnectionService } from "../data-connection.service";
-import { DatabricksService } from "./databricks.service";
+import { Loopback } from "../loopback";
 
 interface ModelDefinitionNode {
   catalog?: string,
@@ -33,7 +33,6 @@ export class DatabricksTablesToScanComponent implements DataConnectionTablesToSc
 
   constructor(
     private dataConnectionService: DataConnectionService,
-    private databricksService: DatabricksService,
   ) {
   }
 
@@ -41,7 +40,7 @@ export class DatabricksTablesToScanComponent implements DataConnectionTablesToSc
     this.treeControl = new NestedTreeControl<ModelDefinitionNode>(node => Object.values(node.children || {}));
     this.dataSource = new MatTreeNestedDataSource<ModelDefinitionNode>()
     this.dataSource.data = this.modelDefinitionTree(
-      this.databricksService.logsForLastModelDefRequest
+      (this.dataConnectionService.sourceConnection as unknown as Loopback).logsForLastModelDefRequest
         .filter(l => l.modelDefinition)
         .map(l => l.modelDefinition)
     )
@@ -50,7 +49,7 @@ export class DatabricksTablesToScanComponent implements DataConnectionTablesToSc
     this.modelDefinitionSelection = new SelectionModel<ModelDefinitionNode>(true)
     this.modelDefinitionSelection.changed.subscribe({
       next: (s: SelectionChange<ModelDefinitionNode>) => {
-        const scanParameters = this.databricksService.currentProfileRequest.scanParameters
+        const scanParameters = (this.dataConnectionService.sourceConnection as unknown as Loopback).currentProfileRequest.scanParameters
         if (s.added) {
           if (!scanParameters.modelDefinitions) {
             scanParameters.modelDefinitions = []
@@ -80,7 +79,7 @@ export class DatabricksTablesToScanComponent implements DataConnectionTablesToSc
   onSearchByTableName(query: string) {
     const lower = query.toLowerCase()
     this.dataSource.data = this.modelDefinitionTree(
-      this.databricksService.logsForLastModelDefRequest
+      (this.dataConnectionService.sourceConnection as unknown as Loopback).logsForLastModelDefRequest
         .filter(l => l.modelDefinition)
         .map(l => l.modelDefinition)
         .filter(m => m.settings.databricks.tableName.toLowerCase().includes(lower))

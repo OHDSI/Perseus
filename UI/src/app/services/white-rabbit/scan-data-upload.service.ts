@@ -11,7 +11,7 @@ import { UploadService } from '@services/upload.service'
 import { isSourceUploaded, isTablesMappedOrViewCreated } from '@utils/mapping-util'
 import { CommonUtilsService } from '@services/common-utils.service'
 import { ScanDataService } from '@services/white-rabbit/scan-data.service'
-import { DataConnectionSettingsComponent } from '@app/data-connection/data-connection-settings.component';
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
 
 @Injectable()
 export class ScanDataUploadService {
@@ -24,7 +24,7 @@ export class ScanDataUploadService {
               private whiteRabbitService: ScanDataService) {
   }
 
-  uploadScanReport(conversionId: number, dataConnection?:  DataConnectionSettingsComponent): Observable<UploadScanReportResponse> {
+  uploadScanReport(conversionId: number, dataConnectionService?:  DataConnectionService): Observable<UploadScanReportResponse> {
     const state = this.storeService.state
     let before$: Observable<any>
     if (isSourceUploaded(state.source) && isTablesMappedOrViewCreated(state.targetConfig, state.source)) {
@@ -43,7 +43,7 @@ export class ScanDataUploadService {
     }
 
     return before$.pipe(
-      switchMap(() => this.loadScanData(conversionId, state.etlMapping?.cdm_version, dataConnection)),
+      switchMap(() => this.loadScanData(conversionId, state.etlMapping?.cdm_version, dataConnectionService)),
       tap(res => {
         this.commonUtilsService.resetMappingDataAndReturnToComfy()
         this.storeService.addEtlMapping(res.etl_mapping)
@@ -52,10 +52,10 @@ export class ScanDataUploadService {
     )
   }
 
-  private loadScanData(conversionId: number, cdmVersion?: string, dataConnection?: DataConnectionSettingsComponent): Observable<UploadScanReportResponse> {
+  private loadScanData(conversionId: number, cdmVersion?: string, dataConnectionService?: DataConnectionService): Observable<UploadScanReportResponse> {
     this.uploadService.reportLoading = true
-    if (dataConnection !== null) {
-      return dataConnection.createSourceSchemaByScanReport()
+    if (dataConnectionService !== null) {
+      return dataConnectionService.sourceConnection.createSourceSchemaByScanReport()
         .pipe(finalize(() => this.uploadService.reportLoading = false))
     } else {
       return this.whiteRabbitService.result(conversionId)

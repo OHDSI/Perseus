@@ -49,8 +49,8 @@ export class ScanDataDialogComponent extends ConversionDialog {
     const {type, settings} = data;
     let request$
     if (type === ScanSettingsType.DATA_CONNECTION) {
-      request$ = settings.dataConnectionComponent.generateScanReport().pipe(map((conversion) => {
-        conversion.dataConnection = settings.dataConnectionComponent
+      request$ = settings.dataConnectionService.sourceConnection.generateScanReport().pipe(map((conversion) => {
+        conversion.dataConnectionService = settings.dataConnectionService
         return conversion
       }))
     } else if (type === ScanSettingsType.DB) {
@@ -59,7 +59,7 @@ export class ScanDataDialogComponent extends ConversionDialog {
       request$ = this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
     }
     request$.pipe(withLoading(this)).subscribe(conversion => {
-      conversion.dataConnection = settings.dataConnectionComponent
+      conversion.dataConnection = settings.dataConnectionService
       this.conversion = conversion
       this.project = conversion.project
       this.index = ConversionDialogStatus.CONVERSION

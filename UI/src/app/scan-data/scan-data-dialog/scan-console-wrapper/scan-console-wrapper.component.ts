@@ -43,8 +43,8 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   conversionInfoRequest(): Observable<Conversion> {
-    if (this.conversion.dataConnection !== undefined) {
-      return this.conversion.dataConnection.conversionInfoWithLogs()
+    if (this.conversion.dataConnectionService !== undefined) {
+      return this.conversion.dataConnectionService.sourceConnection.conversionInfoWithLogs()
     } else {
       return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
     }
@@ -66,7 +66,7 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   onUploadReport(): void {
-    this.scanDataUploadService.uploadScanReport(this.conversion.id, this.conversion.dataConnection)
+    this.scanDataUploadService.uploadScanReport(this.conversion.id, this.conversion.dataConnectionService)
     .pipe(
       withLoadingField(this, 'linkingTables')
     )

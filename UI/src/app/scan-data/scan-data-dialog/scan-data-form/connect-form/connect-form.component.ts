@@ -23,7 +23,6 @@ import { parseHttpError } from '@utils/error'
 import { DataConnectionService } from '@app/data-connection/data-connection.service';
 import { DataConnectionSettingsComponent } from '@app/data-connection/data-connection-settings.component';
 import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
-import { DatabricksService } from '@app/data-connection/databricks/databricks.service';
 
 @Component({
   selector: 'app-connect-form',
@@ -84,7 +83,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => Observable<ConnectionResultWithTables> } = {
     dataConnection: () => {
-      return this.dataConnectionComponent.testConnection()
+      return this.dataConnectionService.sourceConnection.testConnection(this.dataConnectionComponent.submit())
     },
     dbSettings: (dbSettings: DbSettings) => {
       return this.whiteRabbitService.testConnection({...dbSettings, dbType: this.dataType})
@@ -117,7 +116,6 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
               private whiteRabbitService: ScanDataService,
               private scanDataStateService: ScanDataStateService,
               private dataConnectionService: DataConnectionService,
-              private databricksService: DatabricksService,
               private componentFactoryResolver: ComponentFactoryResolver) {
     super(formBuilder, matDialog);
   }
@@ -167,7 +165,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
       return true
     }
     if (this.isDataConnection) {
-      return !this.dataConnectionComponent.form.valid
+      return !this.dataConnectionComponent.valid
     } else if (this.isDbSettings) {
       return !this.form.valid
     } else {
@@ -189,8 +187,9 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     let form: FormGroup;
     let scanSettings: ScanSettings;
     if (this.isDataConnection) {
-      form = this.dataConnectionComponent.form
-      scanSettings = form.value
+      // Stubbed for backwards compatability.
+      // Components manage their own data.
+      scanSettings = {}
     } else if (this.isDbSettings) {
       form = this.form
       scanSettings = {...form.value, dbType: this.dataType};
@@ -200,12 +199,21 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     }
 
     this.tryConnect = true;
-    form.disable()
+    if (this.isDataConnection) {
+      this.dataConnectionComponent.disable()
+    } else {
+      form.disable()
+    }
+    
     this.testConnectionSub = this.getTestConnectionStrategy()(scanSettings)
       .pipe(
         finalize(() => {
           this.tryConnect = false
-          form.enable({emitEvent: false})
+          if (this.isDataConnection) {
+            this.dataConnectionComponent.enable()
+          } else {
+            form.enable({emitEvent: false})
+          }
         })
       )
       .subscribe(connectionResult => {
@@ -237,7 +245,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   subscribeFormChange(): void {
     let formStreams$ 
     if (this.isDataConnection) {
-      formStreams$ = [this.dataConnectionComponent.form.valueChanges]
+      formStreams$ = [this.dataConnectionComponent.valueChanges]
     } else if (this.isDbSettings) {
       formStreams$ = [this.form.valueChanges]
     } else {
@@ -295,8 +303,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   resetForm() {
     if (!this.tryConnect) {
-      if (this.dataConnectionComponent.form) {
-        this.dataConnectionComponent.form.reset()
+      if (this.dataConnectionService.sourceConnection) {
+        this.dataConnectionComponent.reset()
       } else if (this.isDbSettings) {
         this.form.reset()
       } else {
