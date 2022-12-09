@@ -1,5 +1,6 @@
 import { Type } from '@angular/core';
 import { Conversion } from '@app/models/conversion/conversion';
+import { ColumnInfo } from '@app/models/perseus/column-info';
 import { UploadScanReportResponse } from '@app/models/perseus/upload-scan-report-response';
 import { ConnectionResultWithTables } from '@app/models/white-rabbit/connection-result';
 import { Observable } from 'rxjs';
@@ -34,4 +35,8 @@ export interface DataConnection {
   // API Adapter for backwards compatability.
   // Called to get the profile results.
   createSourceSchemaByScanReport(): Observable<UploadScanReportResponse>
+
+  // API Adapter for backwards compatability.
+  // Called to visualize columns stats in the "link tables" visualization.
+  getColumnInfo(tableName: string, columnName: string): ColumnInfo
 }

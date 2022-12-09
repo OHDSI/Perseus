@@ -11,7 +11,10 @@ import { DataConnectionScanParamsComponent } from '../data-connection-scan-param
 })
 export class DatabricksScanParamsComponent implements DataConnectionScanParamsComponent, OnInit {
 
+  @Input() maxWidth?: number = 430;
+
   scanParamsForm: FormGroup;
+  deployNotebookJob = new FormControl(true);
   @ViewChild('notebookPath', {read: ElementRef}) notebookPath: ElementRef;
 
   constructor(
@@ -22,6 +25,7 @@ export class DatabricksScanParamsComponent implements DataConnectionScanParamsCo
   ngOnInit() {
     this.scanParamsForm = this.formBuilder.group({
       runAsJob: new FormControl(false),
+      deployNotebookJob: this.deployNotebookJob,
       notebookPath: {}
     });
     this.scanParamsForm.get('notebookPath').value
@@ -29,6 +33,15 @@ export class DatabricksScanParamsComponent implements DataConnectionScanParamsCo
 
   focusOnNotebookPath()  {
     setTimeout(() => {this.notebookPath.nativeElement.focus()})
+  }
+
+  setFormStyle() {
+    const s = {}
+    if (true) {
+      s['max-width'] = `${this.maxWidth}px`
+    }
+    console.log(s)
+    return s
   }
 
 }

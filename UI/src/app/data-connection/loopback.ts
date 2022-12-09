@@ -1,6 +1,7 @@
 import { Type } from "@angular/core"
 import { Conversion } from "@app/models/conversion/conversion"
 import { ConversionStatus } from "@app/models/conversion/conversion-status"
+import { ColumnInfo } from "@app/models/perseus/column-info"
 import { UploadScanReportResponse } from "@app/models/perseus/upload-scan-report-response"
 import { ProgressLogStatus } from "@app/models/progress-console/progress-log-status"
 import { ConnectionResultWithTables } from "@app/models/white-rabbit/connection-result"
@@ -206,5 +207,24 @@ export class Loopback implements DataConnection {
           }))
         }))
     })
+  }
+
+  getColumnInfo(tableName: string, columnName: string): ColumnInfo {
+    return {
+      topValues: [
+        {
+          frequency: '10',
+          value: 'foo',
+          percentage: '25'
+        },
+        {
+          frequency: '20',
+          value: 'bar',
+          percentage: '50'
+        },
+      ],
+      type: "string",
+      uniqueValues: '3'
+    }
   }
 }

@@ -1,5 +1,7 @@
 import {Entity, model, ModelDefinitionSyntax, property} from '@loopback/repository';
+import {getJsonSchema} from '@loopback/rest';
 import {modelDefinitionJsonSchema} from './model-definition';
+import {ModelProfile} from './model-profile.model';
 
 export enum Status {
   COMPLETE = 'complete',
@@ -36,6 +38,12 @@ export class ScanRequestLog extends Entity {
     jsonSchema: modelDefinitionJsonSchema,
   })
   modelDefinition?: ModelDefinitionSyntax;
+
+  @property({
+    type: 'object',
+    jsonSchema: getJsonSchema(ModelProfile)
+  })
+  modelProfile?: ModelProfile
 
   constructor(data?: Partial<ScanRequestLog>) {
     super(data);
