@@ -165,7 +165,7 @@ export class Loopback implements DataConnection {
                 percent: 100,
               }
             } else {
-              const databricks = t.modelDefinition.settings.databricks
+              const databricks = t.modelProfile.settings.databricks
               return {
                 message: `Completed profile of ${databricks.catalog}.${databricks.database}.${databricks.tableName}`,
                 statusCode: ProgressLogStatus.INFO,
@@ -191,12 +191,12 @@ export class Loopback implements DataConnection {
       etl_mapping: {
         id: 0,
         username: 'username',
-        source_schema_name: this.lastModelDefRequest.dataSourceConfig.host,
+        source_schema_name: this.lastModelDefRequest.dataSourceConfig.connector,
         cdm_version: 'cdm_version',
         scan_report_name: 'scan_report_name',
         scan_report_id: 0,
       },
-      source_tables: this.logsForLastProfileRequest
+      source_tables: this.logsForLastModelDefRequest
         .filter(l => l.modelDefinition)
         .map(l => ({
           table_name: l.modelDefinition.settings.databricks.tableName,
@@ -211,17 +211,21 @@ export class Loopback implements DataConnection {
 
   getColumnInfo(tableName: string, columnName: string): ColumnInfo {
     const modelProfile = this.scanLogs[this.lastProfileRequest.id].logs
-      .filter(l => l.modelDefinition?.settings.databricks.tableName === tableName)
+      .filter(l => l.modelProfile?.settings.databricks.tableName === tableName)
       .map(l => l.modelProfile)[0]
-    const propertyProfile = modelProfile.PropertyProfiles.filter(p => p.databricks.col_name === columnName)[0]
-    const topValues = Object.keys(propertyProfile.frequencyDistribution).map((value: string) => ({
-      value,
-      frequency: `${propertyProfile[value].bucketCount}`,
-      percentage: `${propertyProfile[value].bucketCount / modelProfile.rowCount}`
+    const modelDefinition = this.scanLogs[this.lastModelDefRequest.id].logs
+      .filter(l => l.modelDefinition?.settings.databricks.tableName === tableName)
+      .map(l => l.modelDefinition)[0]
+    const propertyProfile = modelProfile.propertyProfiles.filter(p => p.databricks.col_name === columnName)[0]
+    const propertyDefinition = modelDefinition.properties[columnName]
+    const topValues = propertyProfile.frequencyDistribution.map((bucket) => ({
+      value: bucket.bucketName,
+      frequency: `${bucket.bucketCount}`,
+      percentage: `${bucket.bucketCount / modelProfile.rowCount}`
     }))
     return {
       topValues,
-      type: propertyProfile.databricks.data_type,
+      type: propertyDefinition.databricks.data_type,
       uniqueValues: `${propertyProfile.distinctValues}`
     }
   }

@@ -5,15 +5,17 @@
  * (tsType: Omit<ScanRequest, 'id'>, schemaOptions: { title: 'NewScanRequest', exclude: [ 'id' ] })
  */
 export interface NewScanRequest {
-  dataSourceConfig: {
-'connector': 'databricks' | 'postgresql';
+  dataSourceConfig: ({
+'connector': string;
 'token'?: string;
 'host': string;
 'path': string;
 'port'?: number;
 'protocol'?: string;
 'profileNotebook'?: string;
-};
+} | {
+'connector': string;
+});
   scanParameters?: {
 'profile': boolean;
 'modelDefinitions'?: Array<{

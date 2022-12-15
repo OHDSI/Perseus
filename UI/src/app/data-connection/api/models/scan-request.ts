@@ -1,15 +1,17 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface ScanRequest {
-  dataSourceConfig: {
-'connector': 'databricks' | 'postgresql';
+  dataSourceConfig: ({
+'connector': string;
 'token'?: string;
 'host': string;
 'path': string;
 'port'?: number;
 'protocol'?: string;
 'profileNotebook'?: string;
-};
+} | {
+'connector': string;
+});
   id?: number;
   scanParameters?: {
 'profile': boolean;

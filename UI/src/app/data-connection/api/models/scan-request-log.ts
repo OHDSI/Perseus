@@ -25,18 +25,24 @@ export interface ScanRequestLog {
 };
   modelProfile?: {
 'rowCount': number;
-'PropertyProfiles'?: Array<{
-'frequencyDistribution': {
+'propertyProfiles'?: Array<{
+'frequencyDistribution': Array<{
 'bucketName': string;
 'bucketCount': number;
-};
+}>;
 'distinctValues': number;
 'databricks'?: {
 'col_name'?: string;
-'data_type'?: string;
-'comment'?: any;
 };
 }>;
+'settings': {
+'databricks'?: {
+'catalog'?: string;
+'database'?: string;
+'tableName'?: string;
+'isTemporary'?: boolean;
+};
+};
 };
   scanRequestId: number;
   status: 'complete' | 'in progress';

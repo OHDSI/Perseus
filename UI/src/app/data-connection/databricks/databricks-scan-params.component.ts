@@ -40,7 +40,6 @@ export class DatabricksScanParamsComponent implements DataConnectionScanParamsCo
     if (true) {
       s['max-width'] = `${this.maxWidth}px`
     }
-    console.log(s)
     return s
   }
 

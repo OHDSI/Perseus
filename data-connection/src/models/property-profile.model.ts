@@ -6,6 +6,7 @@ import {FrequencyDistribution} from './frequency-distribution.model';
 export class PropertyProfile extends Model {
   @property({
     type: 'array',
+    itemType: 'object',
     required: true,
     jsonSchema: getJsonSchema(FrequencyDistribution),
   })

@@ -31,7 +31,7 @@ export class ModelProfileRepository implements Repository<ModelProfile> {
           databricks: {
             catalog: r.catalog,
             database: r.database,
-            table: r.table,
+            tableName: r.table,
           }
         },
         rowCount: r.rows,

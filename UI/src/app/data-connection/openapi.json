@@ -11885,28 +11885,31 @@
               "rowCount": {
                 "type": "number"
               },
-              "PropertyProfiles": {
+              "propertyProfiles": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "title": "PropertyProfile",
                   "properties": {
                     "frequencyDistribution": {
-                      "type": "object",
-                      "title": "FrequencyDistribution",
-                      "properties": {
-                        "bucketName": {
-                          "type": "string"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "FrequencyDistribution",
+                        "properties": {
+                          "bucketName": {
+                            "type": "string"
+                          },
+                          "bucketCount": {
+                            "type": "number"
+                          }
                         },
-                        "bucketCount": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "bucketName",
-                        "bucketCount"
-                      ],
-                      "additionalProperties": false
+                        "required": [
+                          "bucketName",
+                          "bucketCount"
+                        ],
+                        "additionalProperties": false
+                      }
                     },
                     "distinctValues": {
                       "type": "number"
@@ -11916,11 +11919,7 @@
                       "properties": {
                         "col_name": {
                           "type": "string"
-                        },
-                        "data_type": {
-                          "type": "string"
-                        },
-                        "comment": {}
+                        }
                       }
                     }
                   },
@@ -11930,10 +11929,33 @@
                   ],
                   "additionalProperties": false
                 }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
               }
             },
             "required": [
-              "rowCount"
+              "rowCount",
+              "settings"
             ],
             "additionalProperties": false
           }
@@ -12019,28 +12041,31 @@
               "rowCount": {
                 "type": "number"
               },
-              "PropertyProfiles": {
+              "propertyProfiles": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "title": "PropertyProfile",
                   "properties": {
                     "frequencyDistribution": {
-                      "type": "object",
-                      "title": "FrequencyDistribution",
-                      "properties": {
-                        "bucketName": {
-                          "type": "string"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "FrequencyDistribution",
+                        "properties": {
+                          "bucketName": {
+                            "type": "string"
+                          },
+                          "bucketCount": {
+                            "type": "number"
+                          }
                         },
-                        "bucketCount": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "bucketName",
-                        "bucketCount"
-                      ],
-                      "additionalProperties": false
+                        "required": [
+                          "bucketName",
+                          "bucketCount"
+                        ],
+                        "additionalProperties": false
+                      }
                     },
                     "distinctValues": {
                       "type": "number"
@@ -12050,11 +12075,7 @@
                       "properties": {
                         "col_name": {
                           "type": "string"
-                        },
-                        "data_type": {
-                          "type": "string"
-                        },
-                        "comment": {}
+                        }
                       }
                     }
                   },
@@ -12064,10 +12085,33 @@
                   ],
                   "additionalProperties": false
                 }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
               }
             },
             "required": [
-              "rowCount"
+              "rowCount",
+              "settings"
             ],
             "additionalProperties": false
           }
@@ -12156,28 +12200,31 @@
               "rowCount": {
                 "type": "number"
               },
-              "PropertyProfiles": {
+              "propertyProfiles": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "title": "PropertyProfile",
                   "properties": {
                     "frequencyDistribution": {
-                      "type": "object",
-                      "title": "FrequencyDistribution",
-                      "properties": {
-                        "bucketName": {
-                          "type": "string"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "FrequencyDistribution",
+                        "properties": {
+                          "bucketName": {
+                            "type": "string"
+                          },
+                          "bucketCount": {
+                            "type": "number"
+                          }
                         },
-                        "bucketCount": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "bucketName",
-                        "bucketCount"
-                      ],
-                      "additionalProperties": false
+                        "required": [
+                          "bucketName",
+                          "bucketCount"
+                        ],
+                        "additionalProperties": false
+                      }
                     },
                     "distinctValues": {
                       "type": "number"
@@ -12187,11 +12234,7 @@
                       "properties": {
                         "col_name": {
                           "type": "string"
-                        },
-                        "data_type": {
-                          "type": "string"
-                        },
-                        "comment": {}
+                        }
                       }
                     }
                   },
@@ -12201,10 +12244,33 @@
                   ],
                   "additionalProperties": false
                 }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
               }
             },
             "required": [
-              "rowCount"
+              "rowCount",
+              "settings"
             ],
             "additionalProperties": false
           }
@@ -12228,10 +12294,7 @@
                 "properties": {
                   "connector": {
                     "type": "string",
-                    "enum": [
-                      "databricks",
-                      "postgresql"
-                    ]
+                    "const": "databricks"
                   },
                   "token": {
                     "type": "string"
@@ -12256,6 +12319,20 @@
                   "connector",
                   "host",
                   "path"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "title": "MockConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "const": "mock"
+                  }
+                },
+                "required": [
+                  "connector"
                 ],
                 "additionalProperties": false
               }
@@ -12350,10 +12427,7 @@
                 "properties": {
                   "connector": {
                     "type": "string",
-                    "enum": [
-                      "databricks",
-                      "postgresql"
-                    ]
+                    "const": "databricks"
                   },
                   "token": {
                     "type": "string"
@@ -12378,6 +12452,20 @@
                   "connector",
                   "host",
                   "path"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "title": "MockConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "const": "mock"
+                  }
+                },
+                "required": [
+                  "connector"
                 ],
                 "additionalProperties": false
               }
@@ -12537,28 +12625,31 @@
               "rowCount": {
                 "type": "number"
               },
-              "PropertyProfiles": {
+              "propertyProfiles": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "title": "PropertyProfile",
                   "properties": {
                     "frequencyDistribution": {
-                      "type": "object",
-                      "title": "FrequencyDistribution",
-                      "properties": {
-                        "bucketName": {
-                          "type": "string"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "FrequencyDistribution",
+                        "properties": {
+                          "bucketName": {
+                            "type": "string"
+                          },
+                          "bucketCount": {
+                            "type": "number"
+                          }
                         },
-                        "bucketCount": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "bucketName",
-                        "bucketCount"
-                      ],
-                      "additionalProperties": false
+                        "required": [
+                          "bucketName",
+                          "bucketCount"
+                        ],
+                        "additionalProperties": false
+                      }
                     },
                     "distinctValues": {
                       "type": "number"
@@ -12568,11 +12659,7 @@
                       "properties": {
                         "col_name": {
                           "type": "string"
-                        },
-                        "data_type": {
-                          "type": "string"
-                        },
-                        "comment": {}
+                        }
                       }
                     }
                   },
@@ -12582,10 +12669,33 @@
                   ],
                   "additionalProperties": false
                 }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "databricks": {
+                    "type": "object",
+                    "properties": {
+                      "catalog": {
+                        "type": "string"
+                      },
+                      "database": {
+                        "type": "string"
+                      },
+                      "tableName": {
+                        "type": "string"
+                      },
+                      "isTemporary": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
               }
             },
             "required": [
-              "rowCount"
+              "rowCount",
+              "settings"
             ],
             "additionalProperties": false
           }
@@ -12614,10 +12724,7 @@
                 "properties": {
                   "connector": {
                     "type": "string",
-                    "enum": [
-                      "databricks",
-                      "postgresql"
-                    ]
+                    "const": "databricks"
                   },
                   "token": {
                     "type": "string"
@@ -12642,6 +12749,20 @@
                   "connector",
                   "host",
                   "path"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "title": "MockConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "const": "mock"
+                  }
+                },
+                "required": [
+                  "connector"
                 ],
                 "additionalProperties": false
               }
@@ -12746,10 +12867,7 @@
                 "properties": {
                   "connector": {
                     "type": "string",
-                    "enum": [
-                      "databricks",
-                      "postgresql"
-                    ]
+                    "const": "databricks"
                   },
                   "token": {
                     "type": "string"
@@ -12774,6 +12892,20 @@
                   "connector",
                   "host",
                   "path"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "title": "MockConfig",
+                "type": "object",
+                "properties": {
+                  "connector": {
+                    "type": "string",
+                    "const": "mock"
+                  }
+                },
+                "required": [
+                  "connector"
                 ],
                 "additionalProperties": false
               }

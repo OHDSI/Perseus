@@ -6,15 +6,17 @@ import { ScanRequestLogWithRelations } from './scan-request-log-with-relations';
  * (tsType: ScanRequestWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface ScanRequestWithRelations {
-  dataSourceConfig: {
-'connector': 'databricks' | 'postgresql';
+  dataSourceConfig: ({
+'connector': string;
 'token'?: string;
 'host': string;
 'path': string;
 'port'?: number;
 'protocol'?: string;
 'profileNotebook'?: string;
-};
+} | {
+'connector': string;
+});
   id?: number;
   logs?: Array<ScanRequestLogWithRelations>;
   scanParameters?: {
