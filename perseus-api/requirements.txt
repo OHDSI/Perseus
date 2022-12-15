@@ -3,7 +3,7 @@ Flask_Cors==3.0.10
 pandas==0.23.4
 pandasql==0.7.3
 peewee
-waitress==2.1.1
+waitress==2.1.2
 Werkzeug
 xlrd==1.2.0
 itsdangerous
