@@ -18,6 +18,7 @@
       "request": "launch",
       "name": "Run Mocha tests",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "preLaunchTask": "tsc: build - tsconfig.json",
       "runtimeArgs": [
         // "--preserve-symlinks",
         // "-r",
@@ -29,8 +30,8 @@
         "--config",
         "${workspaceRoot}/.mocharc.json",
         // "${workspaceRoot}/dist/__tests__/**/*.js",
-        "-t",
-        "0"
+        // "-t",
+        // "0"
       ],
       "envFile": "${workspaceFolder}/.env",
     },

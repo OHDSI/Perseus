@@ -14,13 +14,6 @@ export class FrequencyDistribution extends Model {
   })
   bucketCount: number;
 
-  @property({
-    type: 'number',
-    required: true,
-  })
-  percentage: number;
-
-
   constructor(data?: Partial<FrequencyDistribution>) {
     super(data);
   }
@@ -30,4 +23,5 @@ export interface FrequencyDistributionRelations {
   // describe navigational properties here
 }
 
-export type FrequencyDistributionWithRelations = FrequencyDistribution & FrequencyDistributionRelations;
+export type FrequencyDistributionWithRelations = FrequencyDistribution &
+  FrequencyDistributionRelations;

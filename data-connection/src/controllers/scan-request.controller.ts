@@ -5,31 +5,44 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
 import {
-  del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
-  response
+  del,
+  get,
+  getModelSchemaRef,
+  param,
+  patch,
+  post,
+  put,
+  requestBody,
+  response,
 } from '@loopback/rest';
+import debugFactory from 'debug';
+import {concatAll, from, map, Observable, tap} from 'rxjs';
 import {DataConnectionApplication} from '../application';
-import {scan} from '../business/scan';
-import {ScanRequest, ScanRequestLog, Status} from '../models';
+import {getOrBindDataSource} from '../business/bind-data-source';
+import {
+  bindModelDefinitions,
+  discoverModelDefinitions,
+} from '../business/bind-model-definitions';
+import {getOrBindProfileRepository} from '../business/bind-profile';
+import {ModelProfile, ScanRequest, ScanRequestLog, Status} from '../models';
 import {ScanRequestRepository} from '../repositories';
 import {LogRepository} from '../repositories/log.repository';
 import {ScanRequestLogRepository} from '../repositories/scan-request-log.repository';
-import {MockDataSource} from '../__tests__/mock-data-source';
 
+const debug = debugFactory('data-connection');
 export class ScanRequestController {
   constructor(
     @inject(CoreBindings.APPLICATION_INSTANCE)
     private app: DataConnectionApplication,
     @repository(ScanRequestRepository)
-    public scanRequestRepository : ScanRequestRepository,
+    public scanRequestRepository: ScanRequestRepository,
     @repository(ScanRequestLogRepository)
-    public scanRequestLogRepository : ScanRequestLogRepository,
+    public scanRequestLogRepository: ScanRequestLogRepository,
     @repository(LogRepository)
-    public logRepository : LogRepository,
+    public logRepository: LogRepository,
   ) {}
 
   @post('/scan-requests')
@@ -50,24 +63,82 @@ export class ScanRequestController {
     })
     scanRequest: Omit<ScanRequest, 'id'>,
   ): Promise<ScanRequest> {
-    const persisted = await this.scanRequestRepository.create(scanRequest);
-    scan(persisted, this.app, MockDataSource).subscribe({
-      next: log => {
-        this.scanRequestLogRepository.create(log).catch((reason) =>
-          console.log(reason)
-        )
-      },
-      complete: () => {
-        const log = new ScanRequestLog({
-          scanRequestId: persisted.getId(),
-          status: Status.COMPLETE
-        })
-        this.scanRequestLogRepository.create(log).catch((reason) =>
-          console.log(reason)
-        )
-      }
-    })
-    return persisted
+    const scanRequestEntity = await this.scanRequestRepository.create(
+      scanRequest,
+    );
+
+    const logPromise = scanRequestEntity.scanParameters?.profile
+      ? this.scanProfile(scanRequestEntity)
+      : // else
+        this.scanModelDefinitions(scanRequestEntity);
+    // endif
+    logPromise
+      .then(logs =>
+        logs.subscribe({
+          next: log => {
+            this.scanRequestLogRepository.create(log).catch(debug);
+          },
+          complete: () => {
+            const log = new ScanRequestLog({
+              scanRequestId: scanRequest.getId(),
+              status: Status.COMPLETE,
+            });
+            this.scanRequestLogRepository.create(log).catch(debug);
+          },
+        }),
+      )
+      .catch(debug);
+
+    return scanRequestEntity;
+  }
+
+  async scanModelDefinitions(
+    scanRequest: ScanRequest,
+  ): Promise<Observable<ScanRequestLog>> {
+    const discoveryDsKey = scanRequest.dataSourceConfig.connector;
+    const discoveryDs = await getOrBindDataSource(
+      discoveryDsKey,
+      scanRequest.dataSourceConfig,
+      this.app,
+    );
+
+    return discoverModelDefinitions(discoveryDs).pipe(
+      tap(d => bindModelDefinitions(d, discoveryDsKey, this.app)),
+      map(d => {
+        return new ScanRequestLog({
+          scanRequestId: scanRequest.getId(),
+          status: Status.IN_PROGRESS,
+          modelDefinition: d,
+        });
+      }),
+    );
+  }
+
+  async scanProfile(
+    scanRequest: ScanRequest,
+  ): Promise<Observable<ScanRequestLog>> {
+    const profileDsKey = scanRequest.dataSourceConfig.connector;
+    await getOrBindDataSource(
+      profileDsKey,
+      scanRequest.dataSourceConfig,
+      this.app,
+    );
+    const profileRepositoryKey = `profile-${profileDsKey}`;
+    const r = await getOrBindProfileRepository(
+      profileRepositoryKey,
+      profileDsKey,
+      this.app,
+    );
+    return from(r.findLatest()).pipe(
+      concatAll(),
+      map(p => {
+        return new ScanRequestLog({
+          scanRequestId: scanRequest.getId(),
+          status: Status.IN_PROGRESS,
+          modelProfile: p as ModelProfile,
+        });
+      }),
+    );
   }
 
   @get('/scan-requests/count')
@@ -129,7 +200,8 @@ export class ScanRequestController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(ScanRequest, {exclude: 'where'}) filter?: FilterExcludingWhere<ScanRequest>
+    @param.filter(ScanRequest, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ScanRequest>,
   ): Promise<ScanRequest> {
     return this.scanRequestRepository.findById(id, filter);
   }

@@ -3,7 +3,7 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
 import {
   del,
@@ -13,18 +13,16 @@ import {
   param,
   patch,
   post,
-  requestBody
+  requestBody,
 } from '@loopback/rest';
-import {
-  ScanRequest,
-  ScanRequestLog
-} from '../models';
+import {ScanRequest, ScanRequestLog} from '../models';
 import {ScanRequestRepository} from '../repositories';
 
 export class ScanRequestLogController {
   constructor(
-    @repository(ScanRequestRepository) protected scanRequestRepository: ScanRequestRepository,
-  ) { }
+    @repository(ScanRequestRepository)
+    protected scanRequestRepository: ScanRequestRepository,
+  ) {}
 
   @get('/scan-requests/{id}/scan-request-logs', {
     responses: {
@@ -49,7 +47,9 @@ export class ScanRequestLogController {
     responses: {
       '200': {
         description: 'ScanRequest model instance',
-        content: {'application/json': {schema: getModelSchemaRef(ScanRequestLog)}},
+        content: {
+          'application/json': {schema: getModelSchemaRef(ScanRequestLog)},
+        },
       },
     },
   })
@@ -61,11 +61,12 @@ export class ScanRequestLogController {
           schema: getModelSchemaRef(ScanRequestLog, {
             title: 'NewScanRequestLogInScanRequest',
             exclude: ['id'],
-            optional: ['scanRequestId']
+            optional: ['scanRequestId'],
           }),
         },
       },
-    }) scanRequestLog: Omit<ScanRequestLog, 'id'>,
+    })
+    scanRequestLog: Omit<ScanRequestLog, 'id'>,
   ): Promise<ScanRequestLog> {
     return this.scanRequestRepository.logs(id).create(scanRequestLog);
   }
@@ -88,7 +89,8 @@ export class ScanRequestLogController {
       },
     })
     scanRequestLog: Partial<ScanRequestLog>,
-    @param.query.object('where', getWhereSchemaFor(ScanRequestLog)) where?: Where<ScanRequestLog>,
+    @param.query.object('where', getWhereSchemaFor(ScanRequestLog))
+    where?: Where<ScanRequestLog>,
   ): Promise<Count> {
     return this.scanRequestRepository.logs(id).patch(scanRequestLog, where);
   }
@@ -103,7 +105,8 @@ export class ScanRequestLogController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(ScanRequestLog)) where?: Where<ScanRequestLog>,
+    @param.query.object('where', getWhereSchemaFor(ScanRequestLog))
+    where?: Where<ScanRequestLog>,
   ): Promise<Count> {
     return this.scanRequestRepository.logs(id).delete(where);
   }

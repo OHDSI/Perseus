@@ -8,9 +8,7 @@ export class ScanRequestLogRepository extends DefaultCrudRepository<
   typeof ScanRequestLog.prototype.id,
   ScanRequestLogRelations
 > {
-  constructor(
-    @inject('datasources.memory') dataSource: MemoryDataSource,
-  ) {
+  constructor(@inject('datasources.memory') dataSource: MemoryDataSource) {
     super(ScanRequestLog, dataSource);
   }
 }

@@ -8,9 +8,7 @@ export class LogRepository extends DefaultCrudRepository<
   typeof Log.prototype.id,
   LogRelations
 > {
-  constructor(
-    @inject('datasources.memory') dataSource: MemoryDataSource,
-  ) {
+  constructor(@inject('datasources.memory') dataSource: MemoryDataSource) {
     super(Log, dataSource);
   }
 }

@@ -3,7 +3,7 @@ import {JsonSchemaWithExtensions} from '@loopback/repository';
 export const modelDefinitionJsonSchema: JsonSchemaWithExtensions = {
   properties: {
     name: {
-      type: 'string'
+      type: 'string',
     },
     properties: {
       type: 'object',
@@ -29,11 +29,11 @@ export const modelDefinitionJsonSchema: JsonSchemaWithExtensions = {
                 // first option ('string') is used. To workaround
                 // we don't specify the type.
                 // type: ['string', 'null'],
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     },
     settings: {
       type: 'object',
@@ -51,11 +51,11 @@ export const modelDefinitionJsonSchema: JsonSchemaWithExtensions = {
               type: 'string',
             },
             isTemporary: {
-              type: 'boolean'
-            }
-          }
-        }
-      }
-    }
-  }
-}
+              type: 'boolean',
+            },
+          },
+        },
+      },
+    },
+  },
+};

@@ -2,7 +2,10 @@
   "exit": true,
   "recursive": true,
   // "require": "source-map-support/register",
-  "require": "ts-node/register",
-  "spec": "src/**/*.spec.ts",
-  "extension": ["ts"]
+  // "require": "ts-node/register",
+  // "spec": "src/**/*.spec.ts",
+  // "extension": ["ts"],
+  "spec": "dist/**/*.spec.js",
+  "extension": ["js"],
+  "timeout": 0
 }

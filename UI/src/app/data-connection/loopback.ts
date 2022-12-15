@@ -210,21 +210,19 @@ export class Loopback implements DataConnection {
   }
 
   getColumnInfo(tableName: string, columnName: string): ColumnInfo {
+    const modelProfile = this.scanLogs[this.lastProfileRequest.id].logs
+      .filter(l => l.modelDefinition?.settings.databricks.tableName === tableName)
+      .map(l => l.modelProfile)[0]
+    const propertyProfile = modelProfile.PropertyProfiles.filter(p => p.databricks.col_name === columnName)[0]
+    const topValues = Object.keys(propertyProfile.frequencyDistribution).map((value: string) => ({
+      value,
+      frequency: `${propertyProfile[value].bucketCount}`,
+      percentage: `${propertyProfile[value].bucketCount / modelProfile.rowCount}`
+    }))
     return {
-      topValues: [
-        {
-          frequency: '10',
-          value: 'foo',
-          percentage: '25'
-        },
-        {
-          frequency: '20',
-          value: 'bar',
-          percentage: '50'
-        },
-      ],
-      type: "string",
-      uniqueValues: '3'
+      topValues,
+      type: propertyProfile.databricks.data_type,
+      uniqueValues: `${propertyProfile.distinctValues}`
     }
   }
 }

@@ -1,4 +1,9 @@
-import {Model, model, ModelDefinitionSyntax, property} from '@loopback/repository';
+import {
+  Model,
+  model,
+  ModelDefinitionSyntax,
+  property,
+} from '@loopback/repository';
 import {modelDefinitionJsonSchema} from './model-definition';
 
 @model()
@@ -26,4 +31,5 @@ export interface ScanParametersRelations {
   // describe navigational properties here
 }
 
-export type ScanParametersWithRelations = ScanParameters & ScanParametersRelations;
+export type ScanParametersWithRelations = ScanParameters &
+  ScanParametersRelations;

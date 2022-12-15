@@ -12,8 +12,8 @@ export class DataSourceConfig extends Model {
     type: 'string',
     required: true,
     jsonSchema: {
-      enum: Object.values(Connector)
-    }
+      enum: Object.values(Connector),
+    },
   })
   connector: string;
 
@@ -26,7 +26,8 @@ export interface DataSourceConfigRelations {
   // describe navigational properties here
 }
 
-export type DataSourceConfigWithRelations = DataSourceConfig & DataSourceConfigRelations;
+export type DataSourceConfigWithRelations = DataSourceConfig &
+  DataSourceConfigRelations;
 
 @model()
 export class DatabricksConfig extends DataSourceConfig {
@@ -49,13 +50,13 @@ export class DatabricksConfig extends DataSourceConfig {
 
   @property({
     type: 'number',
-    default: 443
+    default: 443,
   })
   port = 443;
 
   @property({
     type: 'string',
-    default: 'https'
+    default: 'https',
   })
   protocol = 'https';
 
@@ -66,7 +67,7 @@ export class DatabricksConfig extends DataSourceConfig {
 
   constructor(data?: Partial<DatabricksConfig>) {
     if (data) {
-      assert(data?.connector === Connector.DATABRICKS)
+      assert(data?.connector === Connector.DATABRICKS);
     }
     super(data);
   }

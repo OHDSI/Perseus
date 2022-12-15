@@ -6,7 +6,6 @@ import {ScanRequestLog} from './scan-request-log.model';
 
 @model()
 export class ScanRequest extends Entity {
-
   @property({
     type: 'number',
     id: true,
@@ -18,15 +17,15 @@ export class ScanRequest extends Entity {
     type: 'object',
     required: true,
     jsonSchema: {
-      anyOf: [getJsonSchema(DatabricksConfig)]
-    }
+      anyOf: [getJsonSchema(DatabricksConfig)],
+    },
   })
   dataSourceConfig: DataSourceConfig;
 
   @property({
     type: 'object',
-    default: { profile: false },
-    jsonSchema: getJsonSchema(ScanParameters)
+    default: {profile: false},
+    jsonSchema: getJsonSchema(ScanParameters),
   })
   scanParameters?: ScanParameters;
 

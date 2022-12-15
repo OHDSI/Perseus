@@ -33,7 +33,7 @@ if (require.main === module) {
         endpointMapping: {
           '/openapi.json': {version: '3.0.0', format: 'json'},
           '/openapi.yaml': {version: '3.0.0', format: 'yaml'},
-        }
+        },
       },
     },
   };

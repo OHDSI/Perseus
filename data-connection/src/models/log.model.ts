@@ -2,7 +2,6 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model()
 export class Log extends Entity {
-
   @property({
     type: 'number',
     id: true,
@@ -14,7 +13,6 @@ export class Log extends Entity {
     type: 'object',
   })
   error?: object;
-
 
   constructor(data?: Partial<Log>) {
     super(data);

@@ -4,7 +4,6 @@ import {PropertyProfile} from './property-profile.model';
 
 @model()
 export class ModelProfile extends Model {
-
   @property({
     type: 'number',
     required: true,
@@ -14,10 +13,9 @@ export class ModelProfile extends Model {
   @property({
     type: 'array',
     itemType: 'object',
-    jsonSchema: getJsonSchema(PropertyProfile)
+    jsonSchema: getJsonSchema(PropertyProfile),
   })
   PropertyProfiles?: PropertyProfile[];
-
 
   constructor(data?: Partial<ModelProfile>) {
     super(data);

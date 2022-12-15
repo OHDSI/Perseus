@@ -1,0 +1,62 @@
+{
+  "name": "trips",
+  "properties": {
+    "tpep_pickup_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "tpep_pickup_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "tpep_dropoff_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "tpep_dropoff_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "trip_distance": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "trip_distance",
+        "data_type": "double",
+        "comment": null
+      }
+    },
+    "fare_amount": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "fare_amount",
+        "data_type": "double",
+        "comment": null
+      }
+    },
+    "pickup_zip": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "pickup_zip",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "dropoff_zip": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "dropoff_zip",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "samples",
+      "database": "nyctaxi",
+      "tableName": "trips",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

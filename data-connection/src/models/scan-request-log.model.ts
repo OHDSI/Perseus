@@ -1,16 +1,20 @@
-import {Entity, model, ModelDefinitionSyntax, property} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  ModelDefinitionSyntax,
+  property,
+} from '@loopback/repository';
 import {getJsonSchema} from '@loopback/rest';
 import {modelDefinitionJsonSchema} from './model-definition';
 import {ModelProfile} from './model-profile.model';
 
 export enum Status {
   COMPLETE = 'complete',
-  IN_PROGRESS = 'in progress'
+  IN_PROGRESS = 'in progress',
 }
 
 @model()
 export class ScanRequestLog extends Entity {
-
   @property({
     type: 'number',
     id: true,
@@ -28,8 +32,8 @@ export class ScanRequestLog extends Entity {
     type: 'string',
     required: true,
     jsonSchema: {
-      enum: Object.values(Status)
-    }
+      enum: Object.values(Status),
+    },
   })
   status: string;
 
@@ -41,9 +45,9 @@ export class ScanRequestLog extends Entity {
 
   @property({
     type: 'object',
-    jsonSchema: getJsonSchema(ModelProfile)
+    jsonSchema: getJsonSchema(ModelProfile),
   })
-  modelProfile?: ModelProfile
+  modelProfile?: ModelProfile;
 
   constructor(data?: Partial<ScanRequestLog>) {
     super(data);
@@ -54,4 +58,5 @@ export interface ScanRequestLogRelations {
   // describe navigational properties here
 }
 
-export type ScanRequestLogWithRelations = ScanRequestLog & ScanRequestLogRelations;
+export type ScanRequestLogWithRelations = ScanRequestLog &
+  ScanRequestLogRelations;

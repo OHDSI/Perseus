@@ -23,6 +23,21 @@ export interface ScanRequestLog {
 };
 };
 };
+  modelProfile?: {
+'rowCount': number;
+'PropertyProfiles'?: Array<{
+'frequencyDistribution': {
+'bucketName': string;
+'bucketCount': number;
+};
+'distinctValues': number;
+'databricks'?: {
+'col_name'?: string;
+'data_type'?: string;
+'comment'?: any;
+};
+}>;
+};
   scanRequestId: number;
   status: 'complete' | 'in progress';
 }
