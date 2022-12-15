@@ -1,36 +1,36 @@
 import {Model, model, property} from '@loopback/repository';
-import {assert} from 'console';
 
-enum Connector {
-  DATABRICKS = 'databricks',
-  POSTGRESQL = 'postgresql',
-}
+export type DataSourceConfig = MockConfig | DatabricksConfig
 
 @model()
-export class DataSourceConfig extends Model {
+export class MockConfig extends Model {
+
   @property({
     type: 'string',
     required: true,
     jsonSchema: {
-      enum: Object.values(Connector),
+      const: 'mock',
     },
   })
   connector: string;
 
-  constructor(data?: Partial<DataSourceConfig>) {
+  constructor(data?: Partial<MockConfig>) {
     super(data);
   }
 }
 
-export interface DataSourceConfigRelations {
-  // describe navigational properties here
-}
-
-export type DataSourceConfigWithRelations = DataSourceConfig &
-  DataSourceConfigRelations;
-
 @model()
-export class DatabricksConfig extends DataSourceConfig {
+export class DatabricksConfig extends Model {
+
+  @property({
+    type: 'string',
+    required: true,
+    jsonSchema: {
+      const: 'databricks',
+    },
+  })
+  connector: string;
+
   @property({
     type: 'string',
   })
@@ -66,9 +66,6 @@ export class DatabricksConfig extends DataSourceConfig {
   profileNotebook?: string;
 
   constructor(data?: Partial<DatabricksConfig>) {
-    if (data) {
-      assert(data?.connector === Connector.DATABRICKS);
-    }
     super(data);
   }
 }

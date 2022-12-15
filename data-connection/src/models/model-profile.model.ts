@@ -15,7 +15,35 @@ export class ModelProfile extends Model {
     itemType: 'object',
     jsonSchema: getJsonSchema(PropertyProfile),
   })
-  PropertyProfiles?: PropertyProfile[];
+  propertyProfiles?: PropertyProfile[];
+
+  @property({
+    type: 'object',
+    required: true,
+    jsonSchema: {
+      type: 'object',
+      properties: {
+        databricks: {
+          type: 'object',
+          properties: {
+            catalog: {
+              type: 'string',
+            },
+            database: {
+              type: 'string',
+            },
+            tableName: {
+              type: 'string',
+            },
+            isTemporary: {
+              type: 'boolean',
+            },
+          },
+        },
+      },
+    }
+  })
+  settings: object
 
   constructor(data?: Partial<ModelProfile>) {
     super(data);

@@ -5,6 +5,7 @@ export class MockDataSource extends juggler.DataSource {
   constructor(
     private options: {
       modelDefinitions?: object[];
+      executeResults?: object[];
     },
   ) {
     super();
@@ -16,5 +17,9 @@ export class MockDataSource extends juggler.DataSource {
     return this.options.modelDefinitions!.map(
       m => m as unknown as ModelDefinition,
     );
+  }
+
+  async execute(): Promise<object[]> {
+    return this.options.executeResults!
   }
 }

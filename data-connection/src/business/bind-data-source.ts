@@ -3,6 +3,7 @@ import {DataConnectionApplication} from '../application';
 import {DataSourceConfig} from '../models';
 import {MockDataSource} from '../test/mock-data-source';
 import sampleModelDefinitions from '../test/sample-models-fixture.json';
+import sampleProfiles from '../test/sample-profiles-fixture.json';
 
 export const getOrBindDataSource = async (
   key: string,
@@ -30,6 +31,7 @@ export const bindDataSource = (
   // })
   const ds = new MockDataSource({
     modelDefinitions: sampleModelDefinitions,
+    executeResults: sampleProfiles,
   });
   app.dataSource(ds, key);
   return ds;

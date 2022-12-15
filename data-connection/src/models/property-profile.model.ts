@@ -27,16 +27,6 @@ export class PropertyProfile extends Model {
         col_name: {
           type: 'string',
         },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        data_type: {
-          type: 'string',
-        },
-        comment: {
-          // There appears to be a bug so that only the
-          // first option ('string') is used. To workaround
-          // we don't specify the type.
-          // type: ['string', 'null'],
-        },
       },
     },
   })

@@ -5,7 +5,7 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -16,7 +16,7 @@ import {
   post,
   put,
   requestBody,
-  response,
+  response
 } from '@loopback/rest';
 import debugFactory from 'debug';
 import {concatAll, from, map, Observable, tap} from 'rxjs';
@@ -24,7 +24,7 @@ import {DataConnectionApplication} from '../application';
 import {getOrBindDataSource} from '../business/bind-data-source';
 import {
   bindModelDefinitions,
-  discoverModelDefinitions,
+  discoverModelDefinitions
 } from '../business/bind-model-definitions';
 import {getOrBindProfileRepository} from '../business/bind-profile';
 import {ModelProfile, ScanRequest, ScanRequestLog, Status} from '../models';
@@ -80,7 +80,7 @@ export class ScanRequestController {
           },
           complete: () => {
             const log = new ScanRequestLog({
-              scanRequestId: scanRequest.getId(),
+              scanRequestId: scanRequestEntity.id,
               status: Status.COMPLETE,
             });
             this.scanRequestLogRepository.create(log).catch(debug);

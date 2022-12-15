@@ -1,6 +1,6 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
 import {getJsonSchema} from '@loopback/rest';
-import {DatabricksConfig, DataSourceConfig} from './data-source-config.model';
+import {DatabricksConfig, DataSourceConfig, MockConfig} from './data-source-config.model';
 import {ScanParameters} from './scan-parameters.model';
 import {ScanRequestLog} from './scan-request-log.model';
 
@@ -17,7 +17,10 @@ export class ScanRequest extends Entity {
     type: 'object',
     required: true,
     jsonSchema: {
-      anyOf: [getJsonSchema(DatabricksConfig)],
+      anyOf: [
+        getJsonSchema(DatabricksConfig),
+        getJsonSchema(MockConfig),
+      ],
     },
   })
   dataSourceConfig: DataSourceConfig;
