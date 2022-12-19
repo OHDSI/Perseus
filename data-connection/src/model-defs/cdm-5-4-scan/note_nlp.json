@@ -1,0 +1,126 @@
+{
+  "name": "note_nlp",
+  "properties": {
+    "note_nlp_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_nlp_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "section_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "section_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "snippet": {
+      "type": "String",
+      "databricks": {
+        "col_name": "snippet",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "offset": {
+      "type": "String",
+      "databricks": {
+        "col_name": "offset",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "lexical_variant": {
+      "type": "String",
+      "databricks": {
+        "col_name": "lexical_variant",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "note_nlp_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_nlp_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_nlp_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_nlp_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "nlp_system": {
+      "type": "String",
+      "databricks": {
+        "col_name": "nlp_system",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "nlp_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "nlp_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "nlp_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "nlp_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "term_exists": {
+      "type": "String",
+      "databricks": {
+        "col_name": "term_exists",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "term_temporal": {
+      "type": "String",
+      "databricks": {
+        "col_name": "term_temporal",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "term_modifiers": {
+      "type": "String",
+      "databricks": {
+        "col_name": "term_modifiers",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "note_nlp",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

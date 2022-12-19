@@ -1,0 +1,46 @@
+{
+  "name": "cohort",
+  "properties": {
+    "cohort_definition_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "cohort_definition_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "subject_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "subject_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "cohort_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "cohort_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "cohort_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "cohort_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "cohort",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -2,6 +2,6 @@ APScheduler==3.9.1
 Flask==2.0.3
 Flask_Cors==3.0.10
 pysolr==3.9.0
-waitress==2.1.1
+waitress==2.1.2
 azure-identity==1.10.0
 azure-keyvault-secrets==4.4.0

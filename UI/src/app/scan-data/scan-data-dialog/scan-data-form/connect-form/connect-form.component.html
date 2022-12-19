@@ -28,14 +28,17 @@
     </mat-select>
   </mat-form-field>
 
-  <app-db-settings-form *ngIf="isDbSettings; else delimitedFileBlock"
+  <app-db-settings-form *ngIf="isDbSettings && !isDataConnection"
                         [form]="form"
-                        [requireSchema]="requireSchema"></app-db-settings-form>
+                        [requireSchema]="requireSchema">
+  </app-db-settings-form>
 
-  <ng-template #delimitedFileBlock>
-    <app-file-settings-form [form]="fileSettingsForm"
-                            [fileInputText]="fileInputText"
-                            (fileToScanChanged)="onFileToScanChanged($event)"></app-file-settings-form>
+  <app-file-settings-form *ngIf="!isDbSettings && !isDataConnection"
+                          [form]="fileSettingsForm"
+                          [fileInputText]="fileInputText"
+                          (fileToScanChanged)="onFileToScanChanged($event)"></app-file-settings-form>
+
+  <ng-template dataConnectionSettings>
   </ng-template>
 
   <a class="source-form__clear-all" [class.try-connect]="tryConnect" (click)="resetForm()">Clear all</a>

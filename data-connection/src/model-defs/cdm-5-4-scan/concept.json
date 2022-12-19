@@ -1,0 +1,94 @@
+{
+  "name": "concept",
+  "properties": {
+    "concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "concept_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "concept_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "domain_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "domain_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "vocabulary_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "vocabulary_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "concept_class_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "concept_class_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "standard_concept": {
+      "type": "String",
+      "databricks": {
+        "col_name": "standard_concept",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "concept_code": {
+      "type": "String",
+      "databricks": {
+        "col_name": "concept_code",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "valid_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "valid_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "invalid_reason": {
+      "type": "String",
+      "databricks": {
+        "col_name": "invalid_reason",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "concept",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

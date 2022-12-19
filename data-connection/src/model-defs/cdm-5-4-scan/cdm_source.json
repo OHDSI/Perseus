@@ -1,0 +1,102 @@
+{
+  "name": "cdm_source",
+  "properties": {
+    "cdm_source_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cdm_source_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "cdm_source_abbreviation": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cdm_source_abbreviation",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "cdm_holder": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cdm_holder",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "source_description": {
+      "type": "String",
+      "databricks": {
+        "col_name": "source_description",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "source_documentation_reference": {
+      "type": "String",
+      "databricks": {
+        "col_name": "source_documentation_reference",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "cdm_etl_reference": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cdm_etl_reference",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "source_release_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "source_release_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "cdm_release_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "cdm_release_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "cdm_version": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cdm_version",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "cdm_version_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "cdm_version_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "vocabulary_version": {
+      "type": "String",
+      "databricks": {
+        "col_name": "vocabulary_version",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "cdm_source",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

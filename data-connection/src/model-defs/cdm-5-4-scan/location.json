@@ -1,0 +1,110 @@
+{
+  "name": "location",
+  "properties": {
+    "location_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "location_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "address_1": {
+      "type": "String",
+      "databricks": {
+        "col_name": "address_1",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "address_2": {
+      "type": "String",
+      "databricks": {
+        "col_name": "address_2",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "city": {
+      "type": "String",
+      "databricks": {
+        "col_name": "city",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "state": {
+      "type": "String",
+      "databricks": {
+        "col_name": "state",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "zip": {
+      "type": "String",
+      "databricks": {
+        "col_name": "zip",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "county": {
+      "type": "String",
+      "databricks": {
+        "col_name": "county",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "location_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "location_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "country_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "country_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "country_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "country_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "latitude": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "latitude",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "longitude": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "longitude",
+        "data_type": "float",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "location",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -22,7 +22,7 @@
 
     cd perseus-api
     docker build -t backend .
-    docker run --name backend -d -p 5000:5000 -e PERSEUS_ENV='Docker' --network=perseus-net backend
+    docker run --name backend -d -p 5004:5004 -e PERSEUS_ENV='Docker' --network=perseus-net backend
 
 ### User (SMTP server auth)
 

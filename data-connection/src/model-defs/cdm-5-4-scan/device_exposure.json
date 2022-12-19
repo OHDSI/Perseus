@@ -1,0 +1,166 @@
+{
+  "name": "device_exposure",
+  "properties": {
+    "device_exposure_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "device_exposure_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "device_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "device_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "device_exposure_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "device_exposure_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "device_exposure_start_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "device_exposure_start_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "device_exposure_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "device_exposure_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "device_exposure_end_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "device_exposure_end_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "device_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "device_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unique_device_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "unique_device_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "production_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "production_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "quantity": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "quantity",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "device_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "device_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "device_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "device_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "unit_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "unit_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "device_exposure",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

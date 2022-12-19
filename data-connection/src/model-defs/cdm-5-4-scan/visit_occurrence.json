@@ -1,0 +1,150 @@
+{
+  "name": "visit_occurrence",
+  "properties": {
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "visit_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "visit_start_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "visit_start_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "visit_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "visit_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "visit_end_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "visit_end_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "visit_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "care_site_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "care_site_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "visit_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "visit_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "admitted_from_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "admitted_from_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "admitted_from_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "admitted_from_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "discharged_to_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "discharged_to_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "discharged_to_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "discharged_to_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "preceding_visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "preceding_visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "visit_occurrence",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -29,6 +29,13 @@ import { SharedModule } from '@shared/shared.module';
 import { CodeMappingDialogComponent } from './code-mapping-dialog/code-mapping-dialog.component';
 import { CodeMappingConsoleWrapperComponent } from './code-mapping-dialog/code-mapping-console-wrapper/code-mapping-console-wrapper.component';
 import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/progress-console.component'
+import { DatabricksSettingsComponent } from '@app/data-connection/databricks/databricks-settings.component';
+import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
+import { DatabricksTablesToScanComponent } from '@app/data-connection/databricks/databricks-tables-to-scan.component';
+import { DataConnectionTablesToScanDirective } from '@app/data-connection/data-connection-tables-to-scan.directive';
+import {MatTreeModule} from '@angular/material/tree';
+import { DataConnectionScanParamsDirective } from '@app/data-connection/data-connection-scan-params.directive';
+import { DatabricksScanParamsComponent } from '@app/data-connection/databricks/databricks-scan-params.component';
 
 @NgModule({
   declarations: [
@@ -59,12 +66,24 @@ import { ProgressConsoleComponent } from '@scan-data/auxiliary/progress-console/
     DqdFormComponent,
     CodeMappingDialogComponent,
     CodeMappingConsoleWrapperComponent,
-    ProgressConsoleComponent
+    ProgressConsoleComponent,
+    DataConnectionSettingsDirective,
+    DataConnectionTablesToScanDirective,
+    DataConnectionScanParamsDirective,
+    DatabricksSettingsComponent,
+    DatabricksTablesToScanComponent,
+    DatabricksScanParamsComponent,
+  ],
+  entryComponents: [
+    // DatabricksSettingsComponent,
+    // DatabricksTablesToScanComponent,
+    // DatabricksScanParamsComponent,
   ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    MatTreeModule,
   ],
   exports: [
     ScanDataDialogComponent,

@@ -1,0 +1,54 @@
+{
+  "name": "fact_relationship",
+  "properties": {
+    "domain_concept_id_1": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "domain_concept_id_1",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "fact_id_1": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "fact_id_1",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "domain_concept_id_2": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "domain_concept_id_2",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "fact_id_2": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "fact_id_2",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "relationship_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "relationship_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "fact_relationship",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

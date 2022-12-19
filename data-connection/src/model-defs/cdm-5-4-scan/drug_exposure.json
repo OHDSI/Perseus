@@ -1,0 +1,198 @@
+{
+  "name": "drug_exposure",
+  "properties": {
+    "drug_exposure_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_exposure_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drug_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drug_exposure_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "drug_exposure_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "drug_exposure_start_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "drug_exposure_start_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "drug_exposure_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "drug_exposure_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "drug_exposure_end_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "drug_exposure_end_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "verbatim_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "verbatim_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "drug_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "stop_reason": {
+      "type": "String",
+      "databricks": {
+        "col_name": "stop_reason",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "refills": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "refills",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "quantity": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "quantity",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "days_supply": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "days_supply",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "sig": {
+      "type": "String",
+      "databricks": {
+        "col_name": "sig",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "route_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "route_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "lot_number": {
+      "type": "String",
+      "databricks": {
+        "col_name": "lot_number",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drug_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "drug_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "drug_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "route_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "route_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "dose_unit_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "dose_unit_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "drug_exposure",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

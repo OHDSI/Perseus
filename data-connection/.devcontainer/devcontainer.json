@@ -1,0 +1,43 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/docker-existing-dockerfile
+{
+	"name": "Docker",
+
+	"dockerFile": "../Dockerfile",
+	"context": "..",
+	// "dockerComposeFile": ["../../docker-compose.yaml"],
+	// "service": "data-connection",
+	// "runServices": ["data-connection"],
+	// "workspaceFolder":"/home/node/app",
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode"
+			]
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": ["3000:5005"],
+
+	// Uncomment the next line to run commands after the container is created - for example installing curl.
+	"remoteUser": "root",
+	"postCreateCommand": "npm i -g @loopback/cli nodemon",
+
+	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	"runArgs": [
+    "--network=perseus_default"
+	]
+
+	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
+	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+
+	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode"
+}

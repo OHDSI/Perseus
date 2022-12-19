@@ -1,0 +1,62 @@
+{
+  "name": "care_site",
+  "properties": {
+    "care_site_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "care_site_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "care_site_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "care_site_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "place_of_service_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "place_of_service_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "location_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "location_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "care_site_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "care_site_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "place_of_service_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "place_of_service_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "care_site",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

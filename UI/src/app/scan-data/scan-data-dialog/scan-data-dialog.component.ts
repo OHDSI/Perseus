@@ -13,6 +13,7 @@ import { FilesSettings } from '@models/white-rabbit/files-settings'
 import { ConversionDialogStatus } from '@scan-data/conversion-dialog-status'
 import { openErrorDialog, parseHttpError } from '@utils/error'
 import { withLoading } from '@utils/loading'
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-scan-data-dialog',
@@ -31,7 +32,8 @@ export class ScanDataDialogComponent extends ConversionDialog {
   constructor(dialogRef: MatDialogRef<ScanDataDialogComponent>,
               private scanDataService: ScanDataService,
               private scanDataStateService: ScanDataStateService,
-              private dialogService: MatDialog) {
+              private dialogService: MatDialog,
+  ) {
     super(dialogRef);
   }
 
@@ -45,10 +47,19 @@ export class ScanDataDialogComponent extends ConversionDialog {
 
   onScanTables(data: {type: ScanSettingsType, settings: ScanSettings}): void {
     const {type, settings} = data;
-    const request$ = type === ScanSettingsType.DB ?
-      this.scanDataService.generateScanReportByDb(settings as DbSettings) :
-      this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
+    let request$
+    if (type === ScanSettingsType.DATA_CONNECTION) {
+      request$ = settings.dataConnectionService.sourceConnection.generateScanReport().pipe(map((conversion) => {
+        conversion.dataConnectionService = settings.dataConnectionService
+        return conversion
+      }))
+    } else if (type === ScanSettingsType.DB) {
+      request$ = this.scanDataService.generateScanReportByDb(settings as DbSettings)
+    } else {
+      request$ = this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
+    }
     request$.pipe(withLoading(this)).subscribe(conversion => {
+      conversion.dataConnection = settings.dataConnectionService
       this.conversion = conversion
       this.project = conversion.project
       this.index = ConversionDialogStatus.CONVERSION

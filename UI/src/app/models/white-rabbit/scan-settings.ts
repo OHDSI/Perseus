@@ -1,5 +1,8 @@
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
 import { ScanDataParams } from './scan-data-params';
 
 export interface ScanSettings {
-  scanDataParams?: ScanDataParams;
+  dbType?: string
+  scanDataParams?: ScanDataParams
+  dataConnectionService? : DataConnectionService
 }

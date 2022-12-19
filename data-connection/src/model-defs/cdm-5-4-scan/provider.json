@@ -1,0 +1,118 @@
+{
+  "name": "provider",
+  "properties": {
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "provider_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "npi": {
+      "type": "String",
+      "databricks": {
+        "col_name": "npi",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "dea": {
+      "type": "String",
+      "databricks": {
+        "col_name": "dea",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "specialty_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "specialty_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "care_site_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "care_site_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "year_of_birth": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "year_of_birth",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "gender_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "gender_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "provider_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "specialty_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "specialty_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "specialty_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "specialty_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "gender_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "gender_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "gender_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "gender_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "provider",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -1,0 +1,150 @@
+{
+  "name": "payer_plan_period",
+  "properties": {
+    "payer_plan_period_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "payer_plan_period_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "payer_plan_period_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "payer_plan_period_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "payer_plan_period_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "payer_plan_period_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "payer_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "payer_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "payer_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "payer_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "payer_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "payer_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "plan_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "plan_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "plan_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "plan_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "plan_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "plan_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "sponsor_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "sponsor_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "sponsor_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "sponsor_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "sponsor_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "sponsor_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "family_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "family_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "stop_reason_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "stop_reason_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "stop_reason_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "stop_reason_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "stop_reason_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "stop_reason_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "payer_plan_period",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { WrConnectionResult } from '@models/white-rabbit/connection-result';
+import { ConnectionResultWithTables } from '@models/white-rabbit/connection-result';
 import { DbSettings } from '@models/white-rabbit/db-settings';
 import { HttpClient } from '@angular/common/http';
 import { whiteRabbitApiUrl } from '@app/app.constants';
@@ -14,8 +14,8 @@ export class ScanDataService {
   constructor(private http: HttpClient) {
   }
 
-  testConnection(dbSettings: DbSettings): Observable<WrConnectionResult> {
-    return this.http.post<WrConnectionResult>(`${whiteRabbitApiUrl}/test-connection`, dbSettings);
+  testConnection(dbSettings: DbSettings): Observable<ConnectionResultWithTables> {
+    return this.http.post<ConnectionResultWithTables>(`${whiteRabbitApiUrl}/test-connection`, dbSettings);
   }
 
   generateScanReportByDb(dbSettings: DbSettings): Observable<Conversion> {

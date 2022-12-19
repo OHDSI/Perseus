@@ -1,0 +1,46 @@
+{
+  "name": "concept_ancestor",
+  "properties": {
+    "ancestor_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "ancestor_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "descendant_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "descendant_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "min_levels_of_separation": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "min_levels_of_separation",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "max_levels_of_separation": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "max_levels_of_separation",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "concept_ancestor",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}
