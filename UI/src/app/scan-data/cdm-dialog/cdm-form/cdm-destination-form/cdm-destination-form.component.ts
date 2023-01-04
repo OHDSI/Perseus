@@ -52,7 +52,7 @@ export class CdmDestinationFormComponent extends AbstractResourceFormComponent i
   }
 
   createForm(disabled: boolean): FormGroup {
-    return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
+    return createDbConnectionForm(disabled, this.requireDb, this.requireSchema, this.requireHTTPPath, this.requireUser, this.formBuilder);
   }
 
   onTestConnection() {

@@ -17,4 +17,13 @@ export class DbSettingsFormComponent {
 
   @Input()
   requireSchema: boolean;
+
+  @Input()
+  requireDb: boolean;
+
+  @Input()
+  requireHTTPPath: boolean;
+
+  @Input()
+  requireUser: boolean;
 }

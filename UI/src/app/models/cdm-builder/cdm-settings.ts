@@ -5,6 +5,7 @@ export interface CdmSettings {
   sourceDatabase?: string;
   sourceSchema?: string;
   sourceUser?: string;
+  sourceHttppath?: string;
   sourcePassword?: string;
 
   destinationEngine: string;
@@ -13,6 +14,7 @@ export interface CdmSettings {
   destinationDatabase: string;
   destinationSchema: string;
   destinationUser: string;
+  destinationHttppath?: string;
   destinationPassword: string;
 
   mappingsName: string;
@@ -28,6 +30,7 @@ export interface SourceCdmSettings {
   sourceDatabase?: string;
   sourceSchema?: string;
   sourceUser?: string;
+  sourceHttppath?: string;
   sourcePassword?: string;
 }
 
@@ -38,5 +41,6 @@ export interface TargetCdmSettings {
   destinationDatabase: string;
   destinationSchema: string;
   destinationUser: string;
+  destinationHttppath?: string;
   destinationPassword: string;
 }

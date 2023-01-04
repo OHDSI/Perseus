@@ -30,6 +30,7 @@
 
   <app-db-settings-form *ngIf="isDbSettings; else delimitedFileBlock"
                         [form]="form"
+                        [requireDb]="requireDb"
                         [requireSchema]="requireSchema"></app-db-settings-form>
 
   <ng-template #delimitedFileBlock>

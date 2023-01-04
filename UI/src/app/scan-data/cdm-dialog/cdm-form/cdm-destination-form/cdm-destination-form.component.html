@@ -22,7 +22,10 @@
   </mat-form-field>
 
   <app-cdm-connect-form prefix="destination"
+                        [requireDb]="requireDb"
                         [requireSchema]="requireSchema"
+                        [requireHTTPPath]="requireHTTPPath"
+                        [requireUser]="requireUser"
                         [form]="form"
                         [tryConnect]="cdmButtonsService.testTargetConnection"></app-cdm-connect-form>
 

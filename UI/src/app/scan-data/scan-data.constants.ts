@@ -14,6 +14,7 @@ export enum DbTypes {
   IMPALA = 'Impala',
   SQLITE = 'SQLite',
   HIVE = 'Hive',
+  DATABRICKS = 'Databricks',
 }
 
 /* Name uses in UI and White Rabbit */
@@ -33,11 +34,40 @@ export const whiteRabbitDatabaseTypes: string[] = [
   DbTypes.BIGQUERY
 ];
 
+export const dbTypesRequireDb: string[] = [
+  DbTypes.MYSQL,
+  DbTypes.SQL_SERVER,
+  DbTypes.POSTGRESQL,
+  DbTypes.ORACLE,
+  DbTypes.REDSHIFT,
+  DbTypes.AZURE,
+  DbTypes.MS_ACCESS,
+  DbTypes.TERADATA,
+  DbTypes.BIGQUERY
+];
+
+export const dbTypesRequireUser: string[] = [
+  DbTypes.MYSQL,
+  DbTypes.SQL_SERVER,
+  DbTypes.POSTGRESQL,
+  DbTypes.ORACLE,
+  DbTypes.REDSHIFT,
+  DbTypes.AZURE,
+  DbTypes.MS_ACCESS,
+  DbTypes.TERADATA,
+  DbTypes.BIGQUERY
+];
+
 export const dbTypesRequireSchema: string[] = [
   DbTypes.ORACLE,
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
-  DbTypes.AZURE
+  DbTypes.AZURE,
+  DbTypes.DATABRICKS
+];
+
+export const dbTypesRequireHTTPPath: string[] = [
+  DbTypes.DATABRICKS
 ];
 
 export const delimitedFiles: string[] = [
@@ -48,7 +78,8 @@ export const cdmBuilderDatabaseTypes: string[] = [
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
   DbTypes.MYSQL,
-  DbTypes.AZURE
+  DbTypes.AZURE,
+  DbTypes.DATABRICKS
 ];
 
 export const fakeData = 'Fake Data';
@@ -70,7 +101,8 @@ export const defaultPorts = {
   [DbTypes.MYSQL]: 3306,
   [DbTypes.PDW]: 17001,
   [DbTypes.REDSHIFT]: 5439,
-  [DbTypes.NETEZZA]: 5480
+  [DbTypes.NETEZZA]: 5480,
+  [DbTypes.DATABRICKS]: 443
 };
 
 export const fullySupportedDatabases: string[] = [

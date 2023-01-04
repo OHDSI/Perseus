@@ -26,7 +26,10 @@
 
   <ng-template #db>
     <app-cdm-connect-form prefix="source"
+                          [requireDb]="requireDb"
                           [requireSchema]="requireSchema"
+                          [requireHTTPPath]="requireHTTPPath"
+                          [requireUser]="requireUser"
                           [form]="form"
                           [tryConnect]="cdmButtonsService.testSourceConnection"></app-cdm-connect-form>
     <app-test-connection class="cdm-form__content-item__apply"
