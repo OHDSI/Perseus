@@ -1,0 +1,70 @@
+{
+  "name": "cohort_definition",
+  "properties": {
+    "cohort_definition_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "cohort_definition_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "cohort_definition_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cohort_definition_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "cohort_definition_description": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cohort_definition_description",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "definition_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "definition_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "cohort_definition_syntax": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cohort_definition_syntax",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "subject_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "subject_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "cohort_initiation_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "cohort_initiation_date",
+        "data_type": "date",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "cohort_definition",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

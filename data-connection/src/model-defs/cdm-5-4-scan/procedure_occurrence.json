@@ -1,0 +1,142 @@
+{
+  "name": "procedure_occurrence",
+  "properties": {
+    "procedure_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "procedure_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "procedure_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "procedure_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "procedure_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "procedure_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "procedure_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "procedure_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "procedure_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "procedure_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "procedure_end_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "procedure_end_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "procedure_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "procedure_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "modifier_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "modifier_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "quantity": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "quantity",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "procedure_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "procedure_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "procedure_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "procedure_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "modifier_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "modifier_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "procedure_occurrence",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

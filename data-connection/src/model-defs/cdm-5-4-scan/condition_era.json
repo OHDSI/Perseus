@@ -1,0 +1,62 @@
+{
+  "name": "condition_era",
+  "properties": {
+    "condition_era_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_era_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_era_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "condition_era_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "condition_era_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "condition_era_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "condition_occurrence_count": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_occurrence_count",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "condition_era",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

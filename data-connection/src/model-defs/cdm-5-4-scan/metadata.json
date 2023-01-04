@@ -1,0 +1,86 @@
+{
+  "name": "metadata",
+  "properties": {
+    "metadata_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "metadata_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "metadata_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "metadata_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "metadata_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "metadata_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "value_as_string": {
+      "type": "String",
+      "databricks": {
+        "col_name": "value_as_string",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "value_as_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "value_as_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "value_as_number": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "value_as_number",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "metadata_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "metadata_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "metadata_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "metadata_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "metadata",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

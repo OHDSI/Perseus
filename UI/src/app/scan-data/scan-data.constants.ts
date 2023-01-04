@@ -106,6 +106,7 @@ export const defaultPorts = {
 };
 
 export const fullySupportedDatabases: string[] = [
+  DbTypes.DATABRICKS,
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
   DbTypes.AZURE,

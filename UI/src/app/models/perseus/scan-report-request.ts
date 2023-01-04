@@ -1,5 +1,5 @@
 export interface ScanReportRequest {
   dataId: number
-  fileName: string
+  fileName?: string
   cdmVersion?: string
 }

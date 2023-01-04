@@ -1,0 +1,54 @@
+{
+  "name": "vocabulary",
+  "properties": {
+    "vocabulary_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "vocabulary_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "vocabulary_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "vocabulary_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "vocabulary_reference": {
+      "type": "String",
+      "databricks": {
+        "col_name": "vocabulary_reference",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "vocabulary_version": {
+      "type": "String",
+      "databricks": {
+        "col_name": "vocabulary_version",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "vocabulary_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "vocabulary_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "vocabulary",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

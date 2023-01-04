@@ -1,0 +1,142 @@
+{
+  "name": "note",
+  "properties": {
+    "note_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "note_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "note_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "note_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "note_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_class_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_class_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_title": {
+      "type": "String",
+      "databricks": {
+        "col_name": "note_title",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "note_text": {
+      "type": "String",
+      "databricks": {
+        "col_name": "note_text",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "encoding_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "encoding_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "language_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "language_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "note_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "note_event_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_event_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "note_event_field_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "note_event_field_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "note",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

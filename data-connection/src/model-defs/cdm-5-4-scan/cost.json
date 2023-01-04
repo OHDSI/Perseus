@@ -1,0 +1,190 @@
+{
+  "name": "cost",
+  "properties": {
+    "cost_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "cost_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "cost_event_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "cost_event_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "cost_domain_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "cost_domain_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "cost_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "cost_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "currency_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "currency_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "total_charge": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "total_charge",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "total_cost": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "total_cost",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "total_paid": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "total_paid",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_by_payer": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_by_payer",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_by_patient": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_by_patient",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_patient_copay": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_patient_copay",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_patient_coinsurance": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_patient_coinsurance",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_patient_deductible": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_patient_deductible",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_by_primary": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_by_primary",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_ingredient_cost": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_ingredient_cost",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "paid_dispensing_fee": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "paid_dispensing_fee",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "payer_plan_period_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "payer_plan_period_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "amount_allowed": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "amount_allowed",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "revenue_code_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "revenue_code_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "revenue_code_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "revenue_code_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "drg_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drg_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drg_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "drg_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "cost",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -1,0 +1,62 @@
+{
+  "name": "relationship",
+  "properties": {
+    "relationship_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "relationship_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "relationship_name": {
+      "type": "String",
+      "databricks": {
+        "col_name": "relationship_name",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "is_hierarchical": {
+      "type": "String",
+      "databricks": {
+        "col_name": "is_hierarchical",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "defines_ancestry": {
+      "type": "String",
+      "databricks": {
+        "col_name": "defines_ancestry",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "reverse_relationship_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "reverse_relationship_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "relationship_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "relationship_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "relationship",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

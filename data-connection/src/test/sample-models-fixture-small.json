@@ -1,0 +1,142 @@
+[
+  {
+    "name": "trips",
+    "properties": {
+      "tpep_pickup_datetime": {
+        "type": "Date",
+        "databricks": {
+          "col_name": "tpep_pickup_datetime",
+          "data_type": "timestamp",
+          "comment": null
+        }
+      },
+      "tpep_dropoff_datetime": {
+        "type": "Date",
+        "databricks": {
+          "col_name": "tpep_dropoff_datetime",
+          "data_type": "timestamp",
+          "comment": null
+        }
+      },
+      "trip_distance": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "trip_distance",
+          "data_type": "double",
+          "comment": null
+        }
+      },
+      "fare_amount": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "fare_amount",
+          "data_type": "double",
+          "comment": null
+        }
+      },
+      "pickup_zip": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "pickup_zip",
+          "data_type": "int",
+          "comment": null
+        }
+      },
+      "dropoff_zip": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "dropoff_zip",
+          "data_type": "int",
+          "comment": null
+        }
+      }
+    },
+    "settings": {
+      "databricks": {
+        "catalog": "samples",
+        "database": "nyctaxi",
+        "tableName": "trips",
+        "isTemporary": false
+      }
+    },
+    "relations": {}
+  },
+  {
+    "name": "customer",
+    "properties": {
+      "c_custkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "c_custkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "c_name": {
+        "type": "String",
+        "databricks": {
+          "col_name": "c_name",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "c_address": {
+        "type": "String",
+        "databricks": {
+          "col_name": "c_address",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "c_nationkey": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "c_nationkey",
+          "data_type": "bigint",
+          "comment": null
+        }
+      },
+      "c_phone": {
+        "type": "String",
+        "databricks": {
+          "col_name": "c_phone",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "c_acctbal": {
+        "type": "Number",
+        "databricks": {
+          "col_name": "c_acctbal",
+          "data_type": "decimal(18,2)",
+          "comment": null
+        }
+      },
+      "c_mktsegment": {
+        "type": "String",
+        "databricks": {
+          "col_name": "c_mktsegment",
+          "data_type": "string",
+          "comment": null
+        }
+      },
+      "c_comment": {
+        "type": "String",
+        "databricks": {
+          "col_name": "c_comment",
+          "data_type": "string",
+          "comment": null
+        }
+      }
+    },
+    "settings": {
+      "databricks": {
+        "catalog": "samples",
+        "database": "tpch",
+        "tableName": "customer",
+        "isTemporary": false
+      }
+    },
+    "relations": {}
+  }
+]

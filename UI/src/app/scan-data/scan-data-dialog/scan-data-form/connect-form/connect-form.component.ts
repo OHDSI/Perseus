@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { DbSettings } from '@models/white-rabbit/db-settings';
@@ -14,12 +14,15 @@ import { AbstractResourceFormComponent } from '../../../auxiliary/resource-form/
 import { MatDialog } from '@angular/material/dialog';
 import { ScanDataService } from '@services/white-rabbit/scan-data.service';
 import { TableToScan } from '@models/white-rabbit/table-to-scan';
-import { ConnectionResult, WrConnectionResult } from '@models/white-rabbit/connection-result';
+import { ConnectionResult, ConnectionResultWithTables } from '@models/white-rabbit/connection-result';
 import { createDbConnectionForm } from '@utils/form';
 import { DataTypeGroup } from '@models/white-rabbit/data-type-group';
 import { hasLimits } from '@utils/scan-data-util';
 import { ScanDataStateService } from '@services/white-rabbit/scan-data-state.service';
 import { parseHttpError } from '@utils/error'
+import { DataConnectionService } from '@app/data-connection/data-connection.service';
+import { DataConnectionSettingsComponent } from '@app/data-connection/data-connection-settings.component';
+import { DataConnectionSettingsDirective } from '@app/data-connection/data-connection-settings.directive';
 
 @Component({
   selector: 'app-connect-form',
@@ -39,6 +42,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   fileSettingsForm: FormGroup;
 
+  dataConnectionComponent: DataConnectionSettingsComponent
+
   @Input()
   fileSettings: FilesSettings;
 
@@ -57,6 +62,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   @Output()
   connectionResultChange = new EventEmitter<ConnectionResult>();
 
+  @ViewChild(DataConnectionSettingsDirective, {static: false}) dataConnectionSettings!: DataConnectionSettingsDirective;
+
   fileTypes = delimitedFiles;
 
   dataTypesGroups: DataTypeGroup[] = [
@@ -74,7 +81,10 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   private testConnectionSub: Subscription;
 
-  private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => Observable<WrConnectionResult> } = {
+  private testConnectionStrategies: { [key: string]: (settings: ScanSettings) => Observable<ConnectionResultWithTables> } = {
+    dataConnection: () => {
+      return this.dataConnectionService.sourceConnection.testConnection(this.dataConnectionComponent.submit())
+    },
     dbSettings: (dbSettings: DbSettings) => {
       return this.whiteRabbitService.testConnection({...dbSettings, dbType: this.dataType})
         .pipe(
@@ -104,7 +114,9 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   constructor(formBuilder: FormBuilder,
               matDialog: MatDialog,
               private whiteRabbitService: ScanDataService,
-              private scanDataStateService: ScanDataStateService) {
+              private scanDataStateService: ScanDataStateService,
+              private dataConnectionService: DataConnectionService,
+              private componentFactoryResolver: ComponentFactoryResolver) {
     super(formBuilder, matDialog);
   }
 
@@ -125,10 +137,40 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     return delimitedFiles.every(dataType => dataType !== this.dataType);
   }
 
+  get isDataConnection() {
+    return this.dataConnectionService.dataConnectionIndex[this.dataType] !== undefined
+  }
+
+  loadDataConnectionSettingsComponent() {
+    const viewContainerRef = this.dataConnectionSettings.viewContainerRef;
+    viewContainerRef.clear()
+
+    const dataConnection = this.dataConnectionService.dataConnectionIndex[this.dataType]
+    if (dataConnection === undefined) {
+      // dataType does not use the dataConnection interface.
+      this.dataConnectionService.sourceConnection = null
+      return
+    }
+    this.dataConnectionService.sourceConnection = dataConnection
+
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(dataConnection.settingsComponent);
+
+    const componentRef = viewContainerRef.createComponent<DataConnectionSettingsComponent>(componentFactory)
+    this.dataConnectionComponent = componentRef.instance
+    this.subscribeFormChange()
+  }
+
   get testConnectionDisabled() {
-    return this.tryConnect || (
-      this.isDbSettings ? !this.form.valid : !this.fileSettingsForm.valid
-    )
+    if (this.tryConnect) {
+      return true
+    }
+    if (this.isDataConnection) {
+      return !this.dataConnectionComponent.valid
+    } else if (this.isDbSettings) {
+      return !this.form.valid
+    } else {
+      return !this.fileSettingsForm.valid
+    }
   }
 
   ngOnInit(): void {
@@ -144,7 +186,11 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   onTestConnection(): void {
     let form: FormGroup;
     let scanSettings: ScanSettings;
-    if (this.isDbSettings) {
+    if (this.isDataConnection) {
+      // Stubbed for backwards compatability.
+      // Components manage their own data.
+      scanSettings = {}
+    } else if (this.isDbSettings) {
       form = this.form
       scanSettings = {...form.value, dbType: this.dataType};
     } else {
@@ -153,12 +199,21 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
     }
 
     this.tryConnect = true;
-    form.disable()
+    if (this.isDataConnection) {
+      this.dataConnectionComponent.disable()
+    } else {
+      form.disable()
+    }
+    
     this.testConnectionSub = this.getTestConnectionStrategy()(scanSettings)
       .pipe(
         finalize(() => {
           this.tryConnect = false
-          form.enable({emitEvent: false})
+          if (this.isDataConnection) {
+            this.dataConnectionComponent.enable()
+          } else {
+            form.enable({emitEvent: false})
+          }
         })
       )
       .subscribe(connectionResult => {
@@ -188,8 +243,14 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   }
 
   subscribeFormChange(): void {
-    const formStreams$ = this.isDbSettings ? [this.form.valueChanges]
-      : [this.fileSettingsForm.valueChanges, this.filesChange$];
+    let formStreams$ 
+    if (this.isDataConnection) {
+      formStreams$ = [this.dataConnectionComponent.valueChanges]
+    } else if (this.isDbSettings) {
+      formStreams$ = [this.form.valueChanges]
+    } else {
+      formStreams$ = [this.fileSettingsForm.valueChanges, this.filesChange$]
+    }
 
     const subscription = merge(...formStreams$, this.dataTypeChange$)
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -211,6 +272,7 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   onDataTypeChange(value: string) {
     super.onDataTypeChange(value);
     this.scanDataStateService.dataType = value
+    this.loadDataConnectionSettingsComponent()
   }
 
   private initDelimitedFilesSettingsForm(): void {
@@ -230,7 +292,9 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   }
 
   private getTestConnectionStrategy() {
-    if (this.isDbSettings) {
+    if (this.isDataConnection) {
+      return this.testConnectionStrategies['dataConnection']
+    } else if (this.isDbSettings) {
       return this.testConnectionStrategies['dbSettings'];
     } else {
       return this.testConnectionStrategies['fileSettings'];
@@ -239,7 +303,13 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
 
   resetForm() {
     if (!this.tryConnect) {
-      this.isDbSettings ? this.form.reset() : this.resetFileSettingsForm();
+      if (this.dataConnectionService.sourceConnection) {
+        this.dataConnectionComponent.reset()
+      } else if (this.isDbSettings) {
+        this.form.reset()
+      } else {
+        this.resetFileSettingsForm();
+      }
     }
   }
 

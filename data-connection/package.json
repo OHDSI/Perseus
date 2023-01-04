@@ -1,0 +1,78 @@
+{
+  "name": "data-connection",
+  "version": "0.0.1",
+  "description": "Back end implementation of the data connection api",
+  "keywords": [
+    "loopback-application",
+    "loopback"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": "14 || 16 || 17 || 18"
+  },
+  "scripts": {
+    "build": "lb-tsc",
+    "build:watch": "lb-tsc --watch",
+    "lint": "npm run eslint && npm run prettier:check",
+    "lint:fix": "npm run eslint:fix && npm run prettier:fix",
+    "prettier:cli": "lb-prettier \"**/*.ts\" \"**/*.js\"",
+    "prettier:check": "npm run prettier:cli -- -l",
+    "prettier:fix": "npm run prettier:cli -- --write",
+    "eslint": "lb-eslint --report-unused-disable-directives .",
+    "eslint:fix": "npm run eslint -- --fix",
+    "pretest": "npm run rebuild",
+    "test-lb": "lb-mocha --allow-console-logs \"dist/__tests__\"",
+    "test": "mocha",
+    "posttest": "npm run lint",
+    "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
+    "docker:build": "docker build -t data-connection .",
+    "docker:run": "docker run -p 3000:3000 -d data-connection",
+    "premigrate": "npm run build",
+    "migrate": "node ./dist/migrate",
+    "preopenapi-spec": "npm run build",
+    "openapi-spec": "node ./dist/openapi-spec",
+    "prestart": "npm run rebuild",
+    "start": "node -r source-map-support/register .",
+    "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
+    "rebuild": "npm run clean && npm run build",
+    "nodemon": "npm run build:watch & DEBUG=* nodemon ./dist/index.js",
+    "scan-cdm-5-4": "ts-node src/bin/scan-cdm-5-4.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Nate Buesgens <nathan@natb1.com>",
+  "license": "",
+  "files": [
+    "README.md",
+    "dist",
+    "src",
+    "!*/__tests__"
+  ],
+  "dependencies": {
+    "@loopback/boot": "^5.0.4",
+    "@loopback/core": "^4.0.4",
+    "@loopback/repository": "^5.0.4",
+    "@loopback/rest": "^12.0.4",
+    "@loopback/rest-crud": "^0.15.4",
+    "@loopback/rest-explorer": "^5.0.4",
+    "@loopback/service-proxy": "^5.0.4",
+    "loopback-connector-databricks": "^1.0.3",
+    "rxjs": "^7.5.7",
+    "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@loopback/build": "^9.0.4",
+    "@loopback/eslint-config": "^13.0.4",
+    "@loopback/testlab": "^5.0.4",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^14.18.32",
+    "eslint": "^8.25.0",
+    "mocha": "^10.1.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.8.4"
+  }
+}

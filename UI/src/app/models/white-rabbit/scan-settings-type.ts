@@ -1,4 +1,5 @@
 export enum ScanSettingsType {
   DB,
-  FILES
+  FILES,
+  DATA_CONNECTION
 }
