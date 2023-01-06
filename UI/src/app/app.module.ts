@@ -23,7 +23,7 @@ export const authInterceptors = getAuthInterceptors()
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    ApiModule.forRoot({ rootUrl: environment.dataConnectionRootUrl }),
+    // ApiModule.forRoot({ rootUrl: environment.dataConnectionRootUrl }),
     AppRoutingModule,
     ...authModules,
   ],

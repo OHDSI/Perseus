@@ -3,7 +3,7 @@ FROM node:14.15.0 AS build-step
 ARG env=prod
 WORKDIR /usr/src/app
 COPY package.json .
-RUN npm run install:${env}
+RUN npm install
 COPY . .
 RUN npm run build:${env}
 
