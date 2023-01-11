@@ -84,33 +84,25 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
         const httpControl = this.form.get('httppath');
         const userControl = this.form.get('user');
 
-        if (requireSchema) {
-          schemaControl.setValidators([ Validators.required ]);
-        } else {
-          schemaControl.setValidators([]);
+        if (schemaControl) {
+          schemaControl.setValidators(requireSchema ? [ Validators.required ] : []);
+          schemaControl.updateValueAndValidity();
         }
-        schemaControl.updateValueAndValidity();
 
-        if (requireDb) {
-          dbControl.setValidators([ Validators.required ]);
-        } else {
-          dbControl.setValidators([]);
+        if (dbControl) {
+          dbControl.setValidators(requireDb ? [ Validators.required ] : []);
+          dbControl.updateValueAndValidity();
         }
-        dbControl.updateValueAndValidity();
 
-        if (requireHTTPPath) {
-          httpControl.setValidators([ Validators.required ]);
-        } else {
-          httpControl.setValidators([]);
+        if (httpControl) {
+          httpControl.setValidators(requireHTTPPath ? [ Validators.required ] : []);
+          httpControl.updateValueAndValidity();
         }
-        httpControl.updateValueAndValidity();
 
-        if (requireUser) {
-          userControl.setValidators([ Validators.required ]);
-        } else {
-          userControl.setValidators([]);
+        if (userControl) {
+          userControl.setValidators(requireUser ? [ Validators.required ] : []);
+          userControl.updateValueAndValidity();
         }
-        userControl.updateValueAndValidity();
 
         // After checked child forms
         setTimeout(() => {
