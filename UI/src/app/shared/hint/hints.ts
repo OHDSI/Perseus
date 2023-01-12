@@ -63,6 +63,6 @@ export const hints: {[key: string]: Hint} = {
   eraTable: {
     text: 'Setting for era tables available on conversion to CDM step.',
     width: '220px',
-    link: 'https://github.com/SoftwareCountry/Perseus/wiki',
+    link: 'https://github.com/SoftwareCountry/Perseus/wiki', // TODO: need to create wiki page for that
   }
 }

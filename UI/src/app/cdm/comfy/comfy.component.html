@@ -162,8 +162,7 @@
                        [cdkDropListConnectedTo]="targetTableNames">
                     <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
                          class="vertical-box"
-                         [class.non-linkable-box]="tableName.toLowerCase().includes('_era')"
-                         [class.linkable-box]="!tableName.toLowerCase().includes('_era')"
+                         [ngClass]="addLinkableClass(tableName)"
                          [class.inserted-box]="i > 0"
                          [id]="tableName"
                          cdkDrag
