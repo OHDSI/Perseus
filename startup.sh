@@ -63,7 +63,7 @@ function check_dirs {
 }
 
 function clean_launch {
-	docker-compose down;
+	docker compose down;
 	docker volume rm -f perseus_perseusdb;
 	rm -rf ../WhiteRabbit ../DataQualityDashboard ../ETL-CDMBuilder;
 }
