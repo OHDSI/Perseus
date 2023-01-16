@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { DbTypes } from '../scan-data.constants';
-import { StoreService } from '@services/store.service';
 import { adaptDestinationCdmSettings } from '@utils/cdm-adapter';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 import { ConversionDialog } from '@scan-data/conversion-dialog'
@@ -39,8 +38,9 @@ export class CdmDialogComponent extends ConversionDialog {
   private cdmSettings: CdmSettings
   private savedCdmBuilderConversion: Conversion | null = null
 
+  public showSettings = false;
+
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>,
-              private storeService: StoreService,
               private cdmStateService: CdmStateService,
               private cdmBuilderService: CdmBuilderService,
               private dialogService: MatDialog,
@@ -128,4 +128,10 @@ export class CdmDialogComponent extends ConversionDialog {
     this.savedCdmBuilderConversion = null
     this.index = ConversionDialogStatus.CONVERSION
   }
+
+  toggleSettings() {
+    this.showSettings = !this.showSettings;
+  }
+
+
 }
