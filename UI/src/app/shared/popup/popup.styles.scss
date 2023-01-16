@@ -1,0 +1,25 @@
+.popup-dialog {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 28px 20px 20px;
+    width: 100%;
+    max-width: 260px;
+    height: 100%;
+    position: absolute;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+    right: -6px;
+
+    &::before {
+        content: "";
+        display: block;
+        width: 12px;
+        position: absolute;
+        height: 12px;
+        background: white;
+        top: -6px;
+        right: 14px;
+        rotate: 45deg;
+    }
+}

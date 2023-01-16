@@ -22,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SqlEditorComponent } from '@shared/sql-editor/sql-editor.component';
 import { WarningHintComponent } from '@shared/hint/warning-hint/warning-hint.component';
 import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warning-dialog/person-mapping-warning-dialog.component'
+import { PopupComponent } from './popup/popup.component'
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warn
     TextWidthDirective,
     SqlEditorComponent,
     WarningHintComponent,
-    PersonMappingWarningDialogComponent
+    PersonMappingWarningDialogComponent,
+    PopupComponent,
   ],
   exports: [
     CommonModule,
@@ -62,7 +64,8 @@ import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warn
     ReactiveFormsModule,
     SqlEditorComponent,
     WarningHintComponent,
-    PersonMappingWarningDialogComponent
+    PersonMappingWarningDialogComponent,
+    PopupComponent,
   ],
   imports: [
     CommonModule,

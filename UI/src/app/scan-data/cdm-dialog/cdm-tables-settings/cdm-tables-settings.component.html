@@ -6,5 +6,7 @@
         svgIcon="settings">
     </mat-icon>
 
-    <div *ngIf="showSettings" class="settings-dialog">popup</div>
+    <app-popup *ngIf="showSettings">
+        <div>popup</div>
+    </app-popup>
 </div>
