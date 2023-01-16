@@ -15,9 +15,10 @@ import {
 })
 export class CdmTablesSettingsComponent extends BaseComponent implements OnInit, OnDestroy {
     @ViewChild('settings', {static: true}) settingsEl: ElementRef;
+    @ViewChild('settingsBtn', {static: true,  read: ElementRef}) settingsBtn: ElementRef;
 
     private handleClickPopup: () => void;
-    
+
     public showSettings = false;
 
     constructor(private renderer: Renderer2) {
@@ -32,8 +33,10 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
                 this.showSettings = false;
                 return;
             }
+
+            const clickedBtn = this.settingsBtn.nativeElement.contains(event.target);
+            this.showSettings = clickedBtn ? !this.showSettings : this.showSettings;
             
-            this.showSettings = true;
         });
     }
 
