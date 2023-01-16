@@ -1,8 +1,9 @@
 <div class="scan-dialog">
   <div class="scan-dialog__header">
-    <h4>
-      {{header}}
+    <h4 class="scan-dialog__title">
+      <span>{{header}}</span>
       <app-warning-hint *ngIf="showMySqlWarning" key="mySqlCdmLimit"></app-warning-hint>
+      <mat-icon class="settings-icon" svgIcon="settings"></mat-icon>
     </h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
   </div>

@@ -4,4 +4,15 @@
   &__header {
     margin-bottom: 21px;
   }
+
+  &__title {
+    width: 100%;
+  }
+
+  .settings-icon {
+    &:hover {
+      color: #066BBB;
+      cursor: pointer;
+    }
+  }
 }
