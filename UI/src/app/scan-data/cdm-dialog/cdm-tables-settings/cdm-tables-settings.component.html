@@ -1,1 +1,9 @@
-<div class="settings-dialog">popup</div>
+<div #settings class="scan-dialog__header-settings">
+    <mat-icon
+        class="scan-dialog__header-settings-icon"
+        [ngClass]="{'scan-dialog__header-settings-icon--active': showSettings}"
+        svgIcon="settings">
+    </mat-icon>
+
+    <div *ngIf="showSettings" class="settings-dialog">popup</div>
+</div>

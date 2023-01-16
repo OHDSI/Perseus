@@ -38,8 +38,6 @@ export class CdmDialogComponent extends ConversionDialog {
   private cdmSettings: CdmSettings
   private savedCdmBuilderConversion: Conversion | null = null
 
-  public showSettings = false;
-
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>,
               private cdmStateService: CdmStateService,
               private cdmBuilderService: CdmBuilderService,
@@ -128,10 +126,5 @@ export class CdmDialogComponent extends ConversionDialog {
     this.savedCdmBuilderConversion = null
     this.index = ConversionDialogStatus.CONVERSION
   }
-
-  toggleSettings() {
-    this.showSettings = !this.showSettings;
-  }
-
 
 }

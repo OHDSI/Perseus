@@ -3,17 +3,7 @@
     <h4 class="scan-dialog__title">
       <span>{{header}}</span>
       <app-warning-hint *ngIf="showMySqlWarning" key="mySqlCdmLimit"></app-warning-hint>
-
-      <div class="scan-dialog__header-settings">
-        <mat-icon 
-          class="scan-dialog__header-settings-icon"
-          [ngClass]="{'scan-dialog__header-settings-icon--active': showSettings}"
-          svgIcon="settings"
-          (click)="toggleSettings()">
-        </mat-icon>
-        <app-cdm-tables-settings *ngIf="showSettings"></app-cdm-tables-settings>
-      </div>
-
+      <app-cdm-tables-settings></app-cdm-tables-settings>
     </h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
   </div>

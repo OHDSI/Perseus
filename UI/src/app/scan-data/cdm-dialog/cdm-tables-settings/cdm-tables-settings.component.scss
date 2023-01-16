@@ -1,3 +1,12 @@
+.scan-dialog__header {
+    &-settings-icon {
+        &--active, &:hover {
+          color: #066BBB;
+          cursor: pointer;
+        }
+      }
+}
+
 .settings-dialog {
     display: flex;
     flex-direction: column;
