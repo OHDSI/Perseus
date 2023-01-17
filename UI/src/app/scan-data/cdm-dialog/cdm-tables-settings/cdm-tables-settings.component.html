@@ -7,6 +7,20 @@
     </mat-icon>
 
     <app-popup *ngIf="showSettings">
-        <div>popup</div>
+        <div>
+            <h4>{{popupTitle}}</h4>
+            <app-search-by-name
+                placeholder={{searchPlaceholder}}
+                [criteria]="query"
+                (complete)="filterByName($event)"
+                (reset)="resetFilter()"
+                >
+            </app-search-by-name>
+            <ul *ngIf="filteredTables.length > 0">
+                <li *ngFor="let table of filteredTables">
+                    {{table.name}}
+                </li>
+            </ul>
+        </div>
     </app-popup>
 </div>
