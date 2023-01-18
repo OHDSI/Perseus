@@ -13,12 +13,19 @@
                 placeholder={{searchPlaceholder}}
                 [criteria]="query"
                 (complete)="filterByName($event)"
-                (reset)="resetFilter()"
-                >
+                (reset)="resetFilter()">
             </app-search-by-name>
-            <ul *ngIf="filteredTables.length > 0">
-                <li *ngFor="let table of filteredTables">
+            <ul *ngIf="filteredTables.length > 0" class="settings-list">
+                <li *ngFor="let table of filteredTables" class="settings-list__item">
                     {{table.name}}
+                    <span 
+                        class="settings-list__item-arrow"
+                        *ngIf="table.settings"
+                        (click)="showSettingsDetailsOf({table: table, event: $event})">
+                        <app-popup *ngIf="table.settings.shown" externalCssClasses="settings-list__item-popup">
+                            <div class="settings-list__item-details">Table settings details</div>
+                        </app-popup>
+                    </span>
                 </li>
             </ul>
         </div>

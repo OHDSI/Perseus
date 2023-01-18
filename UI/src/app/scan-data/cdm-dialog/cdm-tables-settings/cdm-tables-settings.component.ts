@@ -28,8 +28,8 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
     public query: string = '';
     
     private initTables: ITable[] = [];
-    public filteredTables: ITable[] = [];    
-
+    public filteredTables: ITable[] = [];
+    
     constructor(private renderer: Renderer2, private storeService: StoreService) {
         super();
     }
@@ -44,6 +44,20 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
         this.filteredTables = [...this.initTables];
     }
 
+    public showSettingsDetailsOf(options: {table: ITable, event: Event}): void {
+        const { table, event } = options;
+        const targetTable: ITable = this.filteredTables.find(t => t.name === table.name);
+        if (targetTable?.settings?.shown === undefined) {
+            return;
+        }
+        const settingsAlreadyShown = targetTable?.settings?.shown === true;
+        if (settingsAlreadyShown && this.listItemDetailsClicked(event)) {
+            return;
+        }
+
+        targetTable.settings.shown = !targetTable.settings.shown;
+    }
+
 
     ngOnInit(): void {
         this.initializeTablesData();
@@ -52,7 +66,7 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
         this.handleClickPopup = this.renderer.listen('document', 'click', event => {
             const clickedPopup = this.settingsEl.nativeElement.contains(event.target);
             const resetSearch = event.target.classList.contains('mat-icon');
-            const clickedInside = clickedPopup || resetSearch;
+            const clickedInside = clickedPopup || resetSearch || this.listItemDetailsClicked(event);
             if (!clickedInside) {
                 this.showSettings = false;
                 return;
@@ -63,9 +77,21 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
         });
     }
 
+    private listItemDetailsClicked(event: Event): boolean {
+        const target = (event.target as Element);
+        const popupClicked = target.classList.contains('settings-list__item-popup');
+        const detailsClicked = target.classList.contains('settings-list__item-details');
+        return popupClicked || detailsClicked;
+    }
+
+    
+
     private initializeTablesData(): void {
         const { target } = this.storeService.state;
         this.initTables = [...target];
+        // SCAFFOLDING BLOCK OF CODE. DELETE AFTER SETTINGS PROPERTY IN TABLE WILL BE IMPLEMENTED
+        this.initTables.forEach(table => table.settings = {shown: false})
+        // SCAFFOLDING BLOCK OF CODE. DELETE AFTER SETTINGS PROPERTY IN TABLE WILL BE IMPLEMENTED
         this.filteredTables = [...this.initTables]; 
     }
 

@@ -12,6 +12,7 @@ export interface ITable {
   cloneName: string;
   condition: string;
   cloneConnectedToSourceName: string;
+  settings?: any; // SCAFFOLDING. DELETE AFTER PROP WILL BE IMPLEMENTED ON BACK-END
 }
 
 

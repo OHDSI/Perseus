@@ -4,6 +4,36 @@
           color: #066BBB;
           cursor: pointer;
         }
+    }
+}
+
+.settings-list {
+  font-size: 12px;
+  color: #404040;
+  list-style: none;
+  padding: 0;
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(6, 107, 187, 0.1);
+    position: relative;
+
+    &-arrow {
+      color: #066BBB;
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid;
+      margin: 0 4px;
+
+      &:hover {
+        cursor: pointer;
       }
+    }
+  }
 }
 
