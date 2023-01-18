@@ -17,15 +17,38 @@
             </app-search-by-name>
             <ul *ngIf="filteredTables.length > 0" class="settings-list">
                 <li *ngFor="let table of filteredTables" class="settings-list__item">
-                    {{table.name}}
-                    <span 
-                        class="settings-list__item-arrow"
-                        *ngIf="table.settings"
-                        (click)="showSettingsDetailsOf({table: table, event: $event})">
-                        <app-popup *ngIf="table.settings.shown" externalCssClasses="settings-list__item-popup">
-                            <div class="settings-list__item-details">Table settings details</div>
-                        </app-popup>
-                    </span>
+                    <div class="settings-list__item-title">
+                        <span>{{table.name}}</span>
+                        <span 
+                            class="settings-list__item-arrow"
+                            [ngClass]="{'settings-list__item-arrow--active': table.settings.shown}"
+                            *ngIf="table.settings"
+                            (click)="showSettingsDetailsOf(table.name)">
+                        </span>
+                    </div>
+                    <ul *ngIf="table.settings?.shown" class="settings-list">
+                       <h5>{{table.name}}</h5>
+                       <li *ngFor="let setting of table.settings | keyvalue">
+                            <mat-slide-toggle
+                                *ngIf="(setting.value | typeofPipe) === 'boolean' && setting.key !== 'shown'"
+                                [disabled]="settings.value"
+                                >{{setting.key | capitalizePipe}}
+                            </mat-slide-toggle>
+                            <div *ngIf="(setting.value | typeofPipe) === 'Date'">
+                                <h5>{{setting.key | capitalizePipe}}</h5>
+                                <div class="settings-list__date-wrapper scan-data-form-control">
+                                    <div class="settings-list__date">
+                                        <label class="settings-list__date-label">Before Year</label>
+                                        <input class="settings-list__date-input" type="number" value="{{setting.value | formatDatePipe:'YYYY'}}">
+                                    </div>
+                                    <div class="settings-list__date">
+                                        <label class="settings-list__date-label">After Year</label>
+                                        <input class="settings-list__date-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+                       </li>
+                    </ul>
                 </li>
             </ul>
         </div>

@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { PrettyNamePipe } from './pipes/pretty-name.pipe';
 import { TypeToIconPipe } from './pipes/type-to-icon.pipe';
+import { TypeofPipe } from './pipes/typeof.pipe';
+import { FormatDatePipe } from './pipes/format-date.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { SearchByNameComponent } from './search-by-name/search-by-name.component';
 import { CdmCustomMaterialModule } from '../material/cdm-custom-material.module';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
@@ -28,6 +31,9 @@ import { PopupComponent } from './popup/popup.component'
   declarations: [
     PrettyNamePipe,
     TypeToIconPipe,
+    TypeofPipe,
+    FormatDatePipe,
+    CapitalizePipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
@@ -51,6 +57,9 @@ import { PopupComponent } from './popup/popup.component'
     NgxTrimDirectiveModule,
     PrettyNamePipe,
     TypeToIconPipe,
+    TypeofPipe,
+    FormatDatePipe,
+    CapitalizePipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
