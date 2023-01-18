@@ -6,7 +6,7 @@
         svgIcon="settings">
     </mat-icon>
 
-    <app-popup *ngIf="showSettings">
+    <app-popup *ngIf="showSettings" externalCssClasses="table-settings">
         <div>
             <h4>{{popupTitle}}</h4>
             <app-search-by-name
@@ -15,35 +15,48 @@
                 (complete)="filterByName($event)"
                 (reset)="resetFilter()">
             </app-search-by-name>
-            <ul *ngIf="filteredTables.length > 0" class="settings-list">
+            <ul *ngIf="filteredTables.length > 0" class="settings-list scrolled-items" cdkScrollable>
                 <li *ngFor="let table of filteredTables" class="settings-list__item">
-                    <div class="settings-list__item-title">
+                    <div
+                        class="settings-list__item-title"
+                        [ngClass]="{'settings-list__item-title--active': table.settings && table.settings.shown}">
                         <span>{{table.name}}</span>
                         <span 
                             class="settings-list__item-arrow"
-                            [ngClass]="{'settings-list__item-arrow--active': table.settings.shown}"
+                            [ngClass]="{'settings-list__item-arrow--active': table.settings && table.settings.shown}"
                             *ngIf="table.settings"
                             (click)="showSettingsDetailsOf(table.name)">
                         </span>
                     </div>
-                    <ul *ngIf="table.settings?.shown" class="settings-list">
-                       <h5>{{table.name}}</h5>
-                       <li *ngFor="let setting of table.settings | keyvalue">
+                    <ul *ngIf="table.settings?.shown" class="settings-list settings-details">
+                       <li 
+                            *ngFor="let setting of table.settings | keyvalue"
+                            class="settings-details__item">
                             <mat-slide-toggle
                                 *ngIf="(setting.value | typeofPipe) === 'boolean' && setting.key !== 'shown'"
                                 [disabled]="settings.value"
-                                >{{setting.key | capitalizePipe}}
+                                >{{setting.key | capitalizePipe | splitCapitalizedPipe}}
                             </mat-slide-toggle>
+                            
+                            <ng-container *ngIf="(setting.value | typeofPipe) === 'number'" >
+                                <div class="settings-list__number">
+                                    <label class="settings-list__number-label">
+                                        {{setting.key | capitalizePipe | splitCapitalizedPipe}}
+                                    </label>
+                                    <input class="settings-list__number-input" type="number" value="{{setting.value}}">
+                                </div>
+                            </ng-container>
+
                             <div *ngIf="(setting.value | typeofPipe) === 'Date'">
-                                <h5>{{setting.key | capitalizePipe}}</h5>
+                                <h5>{{setting.key | capitalizePipe | splitCapitalizedPipe}}</h5>
                                 <div class="settings-list__date-wrapper scan-data-form-control">
-                                    <div class="settings-list__date">
-                                        <label class="settings-list__date-label">Before Year</label>
-                                        <input class="settings-list__date-input" type="number" value="{{setting.value | formatDatePipe:'YYYY'}}">
+                                    <div class="settings-list__number settings-list__number--date">
+                                        <label class="settings-list__number-label">Before Year</label>
+                                        <input class="settings-list__number-input" type="number" value="{{setting.value | formatDatePipe:'YYYY'}}">
                                     </div>
-                                    <div class="settings-list__date">
-                                        <label class="settings-list__date-label">After Year</label>
-                                        <input class="settings-list__date-input" type="number">
+                                    <div class="settings-list__number settings-list__number--date">
+                                        <label class="settings-list__number-label">After Year</label>
+                                        <input class="settings-list__number-input" type="number">
                                     </div>
                                 </div>
                             </div>

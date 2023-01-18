@@ -6,6 +6,7 @@ import { TypeToIconPipe } from './pipes/type-to-icon.pipe';
 import { TypeofPipe } from './pipes/typeof.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { SplitCapitalizedPipe } from './pipes/split-capitalized.pipe';
 import { SearchByNameComponent } from './search-by-name/search-by-name.component';
 import { CdmCustomMaterialModule } from '../material/cdm-custom-material.module';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
@@ -34,6 +35,7 @@ import { PopupComponent } from './popup/popup.component'
     TypeofPipe,
     FormatDatePipe,
     CapitalizePipe,
+    SplitCapitalizedPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
@@ -60,6 +62,7 @@ import { PopupComponent } from './popup/popup.component'
     TypeofPipe,
     FormatDatePipe,
     CapitalizePipe,
+    SplitCapitalizedPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
