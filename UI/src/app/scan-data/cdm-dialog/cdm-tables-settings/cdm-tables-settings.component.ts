@@ -73,48 +73,17 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     private initializeTablesData(): void {
         const { target } = this.storeService.state;
+        this.collapseByDefaultAllTableSettings(this.initTables);
         this.initTables = [...target];
-        // SCAFFOLDING BLOCK OF CODE. DELETE AFTER SETTINGS PROPERTY IN TABLE WILL BE IMPLEMENTED
-        this.initTables.forEach((table, index) => {
-            if (index === 0) {
-                // Person
-                table.settings = {
-                    shown: false,
-                    allowUnknownGender: false,
-                    allowGenderChanges: false,
-                    allowMultipleYearOfBirth: false,
-                    allowInvalidObservationTime: false,
-                    allowUnknownYearOfBirth: false,
-                    implausibleYearOfBirth: new Date(),
-                }
-            }
-            else if (index === 1) {
-                // Era
-                table.settings = {
-                    shown: false,
-                    gapWindow: 30,
-                    withinObservationPeriod: false,
-                    conceptId: 38000182, 
-                }
-            }
-            else if (index === 2) {
-                // Visit occurrence
-                table.settings = {
-                    shown: false,
-                    useVisitConceptRollupLogic: false,
-                    withinObservationPeriod: false,
-                }
-            }
-            else if (index === 3) {
-                // Observation period
-                table.settings = {
-                    shown: false,
-                    gapWindow: 32,
-                }
+        this.filteredTables = [...this.initTables];
+    }
+
+    private collapseByDefaultAllTableSettings(tables: ITable[]): void {
+        tables.forEach(table => {
+            if (table.settings) {
+                table.settings.shown = false;
             }
         });
-        // SCAFFOLDING BLOCK OF CODE. DELETE AFTER SETTINGS PROPERTY IN TABLE WILL BE IMPLEMENTED
-        this.filteredTables = [...this.initTables];
     }
 
     ngOnDestroy(): void {
