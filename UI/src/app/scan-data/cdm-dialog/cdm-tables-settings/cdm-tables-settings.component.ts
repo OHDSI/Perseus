@@ -5,8 +5,9 @@ import {
     OnDestroy, 
     ElementRef,
     ViewChild, 
-    Renderer2
-} from "@angular/core";
+    Renderer2,
+} from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { StoreService } from '@app/services/store.service';
 import { ITable } from '@app/models/table';
 import { Criteria } from '@shared/search-by-name/search-by-name.component';
@@ -52,6 +53,22 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
         targetTable.settings.shown = !targetTable.settings.shown;
     }
 
+    public updateTableSettings(table: ITable, settingsName: string) {
+        const updatedTableName = table.name;
+        for (let table of this.initTables) {
+            if (table.name !== updatedTableName) {
+                continue;
+            }
+            table.settings[settingsName] = table.settingsForm.value[settingsName];
+        }
+        for (let table of this.filteredTables) {
+            if (table.name !== updatedTableName) {
+                continue;
+            }
+            table.settings[settingsName] = table.settingsForm.value[settingsName];
+        }
+    }
+
 
     ngOnInit(): void {
         this.initializeTablesData();
@@ -60,7 +77,8 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
         this.handleClickPopup = this.renderer.listen('document', 'click', event => {
             const clickedPopup = this.settingsEl.nativeElement.contains(event.target);
             const resetSearch = event.target.classList.contains('mat-icon');
-            const clickedInside = clickedPopup || resetSearch;
+            const sliderToggle = event.target.classList.contains('mat-slide-toggle-bar');
+            const clickedInside = clickedPopup || resetSearch || sliderToggle;
             if (!clickedInside) {
                 this.showSettings = false;
                 return;
@@ -73,17 +91,30 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     private initializeTablesData(): void {
         const { target } = this.storeService.state;
-        this.collapseByDefaultAllTableSettings(this.initTables);
         this.initTables = [...target];
+        this.initTablesWithSettings(this.initTables);
         this.filteredTables = [...this.initTables];
     }
 
-    private collapseByDefaultAllTableSettings(tables: ITable[]): void {
-        tables.forEach(table => {
+    private initTablesWithSettings(tables: ITable[]): void {
+        tables.forEach((table: ITable) => {
             if (table.settings) {
-                table.settings.shown = false;
+                this.setupTableFormGroup(table);
+                this.collapseTableByDefault(table);
             }
         });
+    }
+
+    private setupTableFormGroup(table: ITable): void {
+        const formGroupConfig = {};
+        for (let key in table.settings) {
+            formGroupConfig[key] = new FormControl(table.settings[key]);
+        }
+        table.settingsForm = new FormGroup(formGroupConfig);
+    }
+
+    private collapseTableByDefault(table: ITable): void {
+        table.settings.shown = false;
     }
 
     ngOnDestroy(): void {

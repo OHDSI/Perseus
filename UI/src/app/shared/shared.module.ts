@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { PrettyNamePipe } from './pipes/pretty-name.pipe';
 import { TypeToIconPipe } from './pipes/type-to-icon.pipe';
 import { TypeofPipe } from './pipes/typeof.pipe';
-import { FormatDatePipe } from './pipes/format-date.pipe';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { SplitCapitalizedPipe } from './pipes/split-capitalized.pipe';
 import { SearchByNameComponent } from './search-by-name/search-by-name.component';
@@ -33,7 +32,6 @@ import { PopupComponent } from './popup/popup.component'
     PrettyNamePipe,
     TypeToIconPipe,
     TypeofPipe,
-    FormatDatePipe,
     CapitalizePipe,
     SplitCapitalizedPipe,
     SearchByNameComponent,
@@ -60,7 +58,6 @@ import { PopupComponent } from './popup/popup.component'
     PrettyNamePipe,
     TypeToIconPipe,
     TypeofPipe,
-    FormatDatePipe,
     CapitalizePipe,
     SplitCapitalizedPipe,
     SearchByNameComponent,

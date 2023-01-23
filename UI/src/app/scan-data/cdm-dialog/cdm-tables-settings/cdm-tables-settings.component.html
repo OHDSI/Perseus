@@ -32,34 +32,53 @@
                        <li 
                             *ngFor="let setting of table.settings | keyvalue"
                             class="settings-details__item">
-                            <mat-slide-toggle
-                                *ngIf="(setting.value | typeofPipe) === 'boolean' && setting.key !== 'shown'"
-                                [disabled]="settings.value"
-                                >{{setting.key | capitalizePipe | splitCapitalizedPipe}}
-                            </mat-slide-toggle>
-                            
-                            <ng-container *ngIf="(setting.value | typeofPipe) === 'number'" >
-                                <div class="settings-list__number">
-                                    <label class="settings-list__number-label">
-                                        {{setting.key | capitalizePipe | splitCapitalizedPipe}}
-                                    </label>
-                                    <input class="settings-list__number-input" type="number" value="{{setting.value}}">
-                                </div>
-                            </ng-container>
+                            <form [formGroup]="table.settingsForm">
+                                <mat-slide-toggle
+                                    *ngIf="(setting.value | typeofPipe) === 'boolean' && setting.key !== 'shown'"
+                                    [checked]="setting.value"
+                                    formControlName="{{setting.key}}"
+                                    (change)="updateTableSettings(table, setting.key)"
+                                    >{{setting.key | capitalizePipe | splitCapitalizedPipe}}
+                                </mat-slide-toggle>
 
-                            <div *ngIf="(setting.value | typeofPipe) === 'Date'">
-                                <h5>{{setting.key | capitalizePipe | splitCapitalizedPipe}}</h5>
-                                <div class="settings-list__date-wrapper scan-data-form-control">
-                                    <div class="settings-list__number settings-list__number--date">
-                                        <label class="settings-list__number-label">Before Year</label>
-                                        <input class="settings-list__number-input" type="number" value="{{setting.value | formatDatePipe:'YYYY'}}">
+                                <ng-container *ngIf="(setting.value | typeofPipe) === 'number' && setting.key !== 'implausibleYearOfBirth'" >
+                                    <div class="settings-list__number">
+                                        <label class="settings-list__number-label">
+                                            {{setting.key | capitalizePipe | splitCapitalizedPipe}}
+                                        </label>
+                                        <input 
+                                            class="settings-list__number-input" 
+                                            type="number" 
+                                            value="{{setting.value}}"
+                                            formControlName="{{setting.key}}"
+                                            (change)="updateTableSettings(table, setting.key)">
                                     </div>
-                                    <div class="settings-list__number settings-list__number--date">
-                                        <label class="settings-list__number-label">After Year</label>
-                                        <input class="settings-list__number-input" type="number">
+                                </ng-container>
+
+                                <ng-container *ngIf="setting.key === 'implausibleYearOfBirth'">
+                                    <h5>{{setting.key | capitalizePipe | splitCapitalizedPipe}}</h5>
+                                    <div class="settings-list__date-wrapper scan-data-form-control">
+                                        <div class="settings-list__number settings-list__number--date">
+                                            <label class="settings-list__number-label">Before Year</label>
+                                            <input 
+                                                class="settings-list__number-input" 
+                                                type="number" 
+                                                value="{{setting.value}}"
+                                                formControlName="{{setting.key}}"
+                                                (change)="updateTableSettings(table, setting.key)">
+                                        </div>
+                                        <div class="settings-list__number settings-list__number--date">
+                                            <label class="settings-list__number-label">After Year</label>
+                                            <input 
+                                                class="settings-list__number-input" 
+                                                type="number" 
+                                                value="{{setting.value}}"
+                                                formControlName="{{setting.key}}"
+                                                (change)="updateTableSettings(table, setting.key)">
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                </ng-container>
+                            </form>
                        </li>
                     </ul>
                 </li>

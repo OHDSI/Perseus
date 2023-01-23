@@ -84,7 +84,7 @@ def add_table_settings(table):
         'allowGenderChanges': True,
         'allowMultipleYearsOfBirth': True,
         'allowUnknownYearOfBirth': False,
-        'implausibleYearOfBirth': date.fromisoformat('2023-01-01'),  # TODO: find out how to get real date
+        'implausibleYearOfBirth': 2023,  # TODO: find out how to get real date
         'allowInvalidObservationTime': True,
     }
 

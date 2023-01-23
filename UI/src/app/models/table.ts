@@ -1,6 +1,7 @@
 import { IRow, Row } from 'src/app/models/row';
 import { Area } from './area';
 import { Type } from 'class-transformer';
+import { FormGroup } from '@angular/forms';
 
 export interface ITable {
   id: number;
@@ -13,6 +14,7 @@ export interface ITable {
   condition: string;
   cloneConnectedToSourceName: string;
   settings?: TableSettings;
+  settingsForm?: FormGroup;
 }
 
 export type TableSettings = PersonSettings | EraSettings | ObservationPeriodSettings | VisitOccurrenceSettings;
@@ -31,7 +33,7 @@ export interface IPersonSettings {
   allowMultipleYearOfBirth: boolean;
   allowUnknownYearOfBirth: boolean;
   allowInvalidObservationTime: boolean;
-  implausibleYearOfBirth: Date;
+  implausibleYearOfBirth: number;
 }
 
 interface IConceptId {
