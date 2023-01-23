@@ -2,8 +2,10 @@
   <div class="scan-dialog__header">
     <h4 class="scan-dialog__title">
       <span>{{header}}</span>
-      <app-warning-hint *ngIf="showMySqlWarning" key="mySqlCdmLimit"></app-warning-hint>
-      <app-cdm-tables-settings></app-cdm-tables-settings>
+      <div class="scan-dialog__icon-wrapper">
+        <app-warning-hint *ngIf="showMySqlWarning" key="mySqlCdmLimit" class="scan-dialog__icon"></app-warning-hint>
+        <app-cdm-tables-settings class="scan-dialog__icon"></app-cdm-tables-settings>
+      </div>
     </h4>
     <app-close-dialog-button class="scan-dialog__header-close" (click)="onClose()"></app-close-dialog-button>
   </div>
