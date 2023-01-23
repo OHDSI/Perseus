@@ -80,12 +80,12 @@ def add_table_settings(table):
         'condition_era': False,
     }
     default_person_values = {
-        'unknownGender': False,
-        'genderChanges': True,
-        'multipleYearsOfBirth': True,
-        'unknownYearOfBirth': False,
+        'allowUnknownGender': False,
+        'allowGenderChanges': True,
+        'allowMultipleYearsOfBirth': True,
+        'allowUnknownYearOfBirth': False,
         'implausibleYearOfBirth': date.fromisoformat('2023-01-01'),  # TODO: find out how to get real date
-        'invalidObservationTime': True,
+        'allowInvalidObservationTime': True,
     }
 
     curr_table_name = table.get('name')
