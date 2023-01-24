@@ -6,8 +6,8 @@
         svgIcon="settings">
     </mat-icon>
 
-    <app-popup *ngIf="showSettings" externalCssClasses="table-settings">
-        <div>
+    <app-popup *ngIf="showSettings" externalCssClasses="table-settings-wrapper">
+        <div class="table-settings">
             <h4>{{popupTitle}}</h4>
             <app-search-by-name
                 placeholder={{searchPlaceholder}}
