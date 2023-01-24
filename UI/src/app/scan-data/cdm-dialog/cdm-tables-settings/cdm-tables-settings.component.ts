@@ -10,6 +10,8 @@ import {
 import { FormGroup, FormControl } from '@angular/forms';
 import { StoreService } from '@app/services/store.service';
 import { ITable } from '@app/models/table';
+import { Area } from '@app/models/area';
+import { cloneDeep } from '@app/infrastructure/utility';
 import { Criteria } from '@shared/search-by-name/search-by-name.component';
 
 @Component({
@@ -61,12 +63,13 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
             }
             table.settings[settingsName] = table.settingsForm.value[settingsName];
         }
-        for (let table of this.filteredTables) {
-            if (table.name !== updatedTableName) {
-                continue;
-            }
-            table.settings[settingsName] = table.settingsForm.value[settingsName];
-        }
+        this.updateOriginalTable(table);
+    }
+
+    private updateOriginalTable(table: ITable): void {
+        const newSettings = {...table.settings};
+        delete newSettings.shown; // remove UI-retaled field
+        this.storeService.updateTableSettings(Area.Target, table.name, newSettings);
     }
 
 
@@ -90,10 +93,10 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
     }
 
     private initializeTablesData(): void {
-        const { target } = this.storeService.state;
-        this.initTables = [...target];
+        const { target: originalTables } = this.storeService.state;
+        this.initTables = cloneDeep(originalTables);
         this.initTablesWithSettings(this.initTables);
-        this.filteredTables = [...this.initTables];
+        this.filteredTables = [...this.initTables]; // array of links to initTables
     }
 
     private initTablesWithSettings(tables: ITable[]): void {
