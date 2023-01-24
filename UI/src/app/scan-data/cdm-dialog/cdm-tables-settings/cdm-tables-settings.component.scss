@@ -1,10 +1,16 @@
+@import "../../../styles/variables";
+
 .scan-dialog__header {
     &-settings-icon {
         &--active, &:hover {
-          color: #066BBB;
+          color: $blue;
           cursor: pointer;
         }
     }
+}
+
+.search {
+  font-size: 14px;
 }
 
 .table-settings {
@@ -30,7 +36,7 @@
 
 .settings-list {
   font-size: 12px;
-  color: #404040;
+  color: $cdm-grey-dark;
   list-style: none;
   padding: 0;
 
@@ -45,7 +51,7 @@
     flex-direction: column;
 
     &-label {
-      color: #808080;
+      color: $grey;
       font-size: 12px;
       font-weight: 100;
     }
@@ -80,7 +86,7 @@
     }
 
     &-arrow {
-      color: #066BBB;
+      color: $blue;
       display: block;
       width: 0;
       height: 0;
@@ -116,7 +122,7 @@
     }
 
     &-thumb {
-      background-color: #FFFFFF !important;
+      background-color: $white !important;
       width: 18px;
       height: 18px;
     }
@@ -130,7 +136,7 @@
 ::ng-deep .mat-slide-toggle.mat-checked {
   .mat-slide-toggle {
     &-bar {
-      background-color: #066BBB;
+      background-color: $blue;
     }
 
     &-thumb-container {

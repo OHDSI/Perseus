@@ -10,6 +10,7 @@
         <div class="table-settings">
             <h4>{{popupTitle}}</h4>
             <app-search-by-name
+                class="search"
                 placeholder={{searchPlaceholder}}
                 [criteria]="query"
                 (complete)="filterByName($event)"
