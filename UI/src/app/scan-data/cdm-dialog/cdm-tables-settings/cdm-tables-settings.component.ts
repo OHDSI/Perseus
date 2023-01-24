@@ -5,7 +5,7 @@ import {
     OnDestroy, 
     ElementRef,
     ViewChild, 
-    Renderer2,
+    HostListener,
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { StoreService } from '@app/services/store.service';
@@ -23,8 +23,6 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
     @ViewChild('settings', {static: true}) settingsEl: ElementRef;
     @ViewChild('settingsBtn', {static: true,  read: ElementRef}) settingsBtn: ElementRef;
 
-    private handleClickPopup: () => void;
-
     public showSettings = false;
     public readonly popupTitle = 'Settings for Tables';
     public readonly searchPlaceholder = 'Search Tables';
@@ -33,7 +31,7 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
     private initTables: ITable[] = [];
     public filteredTables: ITable[] = [];
     
-    constructor(private renderer: Renderer2, private storeService: StoreService) {
+    constructor(private storeService: StoreService) {
         super();
     }
 
@@ -75,21 +73,21 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     ngOnInit(): void {
         this.initializeTablesData();
-        
-        // TODO: possibly refactor with host listener ?
-        this.handleClickPopup = this.renderer.listen('document', 'click', event => {
-            const clickedPopup = this.settingsEl.nativeElement.contains(event.target);
-            const resetSearch = event.target.classList.contains('mat-icon');
-            const sliderToggle = event.target.classList.contains('mat-slide-toggle-bar');
-            const clickedInside = clickedPopup || resetSearch || sliderToggle;
-            if (!clickedInside) {
-                this.showSettings = false;
-                return;
-            }
+    }
 
-            const clickedBtn = this.settingsBtn.nativeElement.contains(event.target);
-            this.showSettings = clickedBtn ? !this.showSettings : this.showSettings;
-        });
+    @HostListener('document:click', ['$event'])
+    handleClickPopup(event: Event) {
+        const clickedPopup = this.settingsEl.nativeElement.contains(event.target);
+        const resetSearch = (event.target as HTMLElement).classList.contains('mat-icon');
+        const sliderToggle = (event.target as HTMLElement).classList.contains('mat-slide-toggle-bar');
+        const clickedInside = clickedPopup || resetSearch || sliderToggle;
+        if (!clickedInside) {
+            this.showSettings = false;
+            return;
+        }
+
+        const clickedBtn = this.settingsBtn.nativeElement.contains(event.target);
+        this.showSettings = clickedBtn ? !this.showSettings : this.showSettings;
     }
 
     private initializeTablesData(): void {
@@ -101,10 +99,11 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     private initTablesWithSettings(tables: ITable[]): void {
         tables.forEach((table: ITable) => {
-            if (table.settings) {
-                this.setupTableFormGroup(table);
-                this.collapseTableByDefault(table);
+            if (!table.settings) {
+                return;
             }
+            this.setupTableFormGroup(table);
+            this.collapseTableByDefault(table);
         });
     }
 
@@ -122,9 +121,6 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        if (this.handleClickPopup) {
-            this.handleClickPopup();
-        }
     }
 
 }
