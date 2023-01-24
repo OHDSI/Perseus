@@ -24,87 +24,37 @@ from utils.constants import UPLOAD_ETL_FOLDER,\
                             UPLOAD_SCAN_REPORT_FOLDER,\
                             GENERATE_ETL_ARCHIVE_PATH,\
                             ETL_MAPPING_ARCHIVE_FORMAT
+from utils.cdm_tables_settings import WITHIN_OBSERVATION_PERIOD_TYPES_TABLES, \
+                                      GAP_WINDOW_TABLES, \
+                                      USE_VISIT_CONCEPT_ROLLUP_LOGIC_TABLES, \
+                                      CONCEPT_ID_TABLES, \
+                                      USE_VISIT_CONCEPT_ROLLUP_LOGIC_DEFAULT_VALUE, \
+                                      GAP_WINDOW_DEFAULT_VALUES, \
+                                      CONCEPT_ID_DEFAULT_VALUES, \
+                                      WITHIN_OBSERVATION_DEFAULT_VALUES, \
+                                      DEFAULT_PERSON_VALUES
 from utils.directory_util import get_filenames_in_directory
 from utils.exceptions import InvalidUsage
 
 def add_table_settings(table):
-    within_observation_period_types_tables = [
-        'condition_occurrence',
-        'device_exposure',
-        'drug_exposure',
-        'measurement',
-        'note',
-        'note_nlp',
-        'observation',
-        'procedure_occurrence',
-        'specimen',
-        'survey_conduct',
-        'visit_detail',
-        'visit_occurrence',
-        'payer_plan_period',
-        'drug_era',
-        'dose_era',
-        'condition_era',
-    ]
-    gap_window_tables = [ 'observation_period', 'drug_era', 'dose_era', 'condition_era']
-    use_visit_concept_rollup_logic_tables = ['visit_occurrence']
-    concept_id_tables = [ 'drug_era', 'dose_era', 'condition_era']
-    use_visit_concept_rollup_logic_default_value = False
-    gap_window_default_values = {
-        'observation_period': 32,
-        'drug_era': 30,
-        'dose_era': 30,
-        'condition_era': 30,
-    }
-    concept_id_default_values = {
-        'dose_era': 0,
-        'drug_era': 38000182,
-        'condition_era': 38000247,
-    }
-    within_observation_default_values = {
-        'condition_occurrence': False,
-        'device_exposure': False,
-        'drug_exposure': False,
-        'measurement': False,
-        'note': False,
-        'note_nlp': False,
-        'observation': False,
-        'procedure_occurrence': False,
-        'specimen': False,
-        'survey_conduct': False,
-        'visit_detail': False,
-        'visit_occurrence': False,
-        'payer_plan_period': False,
-        'drug_era': False,
-        'dose_era': False,
-        'condition_era': False,
-    }
-    default_person_values = {
-        'allowUnknownGender': False,
-        'allowGenderChanges': True,
-        'allowMultipleYearsOfBirth': True,
-        'allowUnknownYearOfBirth': False,
-        'implausibleYearOfBirth': 2023,  # TODO: find out how to get real date
-        'allowInvalidObservationTime': True,
-    }
-
     curr_table_name = table.get('name')
-    if curr_table_name:
-        curr_table_name.lower()
-    else:
+
+    if not curr_table_name:
         return table
-    # TODO: refactor if curr_table_name is not None and ... ?
+
+    curr_table_name.lower()
+
     settings = {}
-    if curr_table_name and curr_table_name in within_observation_period_types_tables:
-        settings['withinTheObservationPeriod'] = within_observation_default_values[curr_table_name]
-    if curr_table_name and curr_table_name in gap_window_tables:
-        settings['gapWindow'] = gap_window_default_values[curr_table_name]
-    if curr_table_name and curr_table_name in use_visit_concept_rollup_logic_tables:
-        settings['useVisitConceptRollupLogic'] = use_visit_concept_rollup_logic_default_value
-    if curr_table_name and curr_table_name in concept_id_tables:
-        settings['conceptId'] = concept_id_default_values[curr_table_name]
+    if curr_table_name and curr_table_name in WITHIN_OBSERVATION_PERIOD_TYPES_TABLES:
+        settings['withinTheObservationPeriod'] = WITHIN_OBSERVATION_DEFAULT_VALUES[curr_table_name]
+    if curr_table_name and curr_table_name in GAP_WINDOW_TABLES:
+        settings['gapWindow'] = GAP_WINDOW_DEFAULT_VALUES[curr_table_name]
+    if curr_table_name and curr_table_name in USE_VISIT_CONCEPT_ROLLUP_LOGIC_TABLES:
+        settings['useVisitConceptRollupLogic'] = USE_VISIT_CONCEPT_ROLLUP_LOGIC_DEFAULT_VALUE
+    if curr_table_name and curr_table_name in CONCEPT_ID_TABLES:
+        settings['conceptId'] = CONCEPT_ID_DEFAULT_VALUES[curr_table_name]
     if curr_table_name and curr_table_name == 'person':
-        settings = default_person_values
+        settings = DEFAULT_PERSON_VALUES
 
     if settings:
         table['settings'] = settings
