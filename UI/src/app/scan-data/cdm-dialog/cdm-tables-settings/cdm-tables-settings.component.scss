@@ -112,8 +112,9 @@
 
   .mat-slide-toggle {
     &-bar {
-      padding-top: 22px;
+      padding-top: 12px;
       border-radius: 25px;
+      width: 24px;
     }
 
     &-thumb-container {
@@ -123,8 +124,8 @@
 
     &-thumb {
       background-color: $white !important;
-      width: 18px;
-      height: 18px;
+      width: 10px;
+      height: 10px;
     }
 
     &-ripple {
@@ -140,7 +141,7 @@
     }
 
     &-thumb-container {
-      left: 0px;
+      left: -4px;
     }
   }
 }
