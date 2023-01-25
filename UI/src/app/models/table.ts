@@ -33,7 +33,10 @@ export interface IPersonSettings {
   allowMultipleYearOfBirth: boolean;
   allowUnknownYearOfBirth: boolean;
   allowInvalidObservationTime: boolean;
-  implausibleYearOfBirth: number;
+  implausibleYearOfBirth: {
+    beforeYear: number;
+    afterYear: number;
+  }
 }
 
 interface IConceptId {

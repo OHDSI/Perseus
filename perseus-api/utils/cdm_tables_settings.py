@@ -58,6 +58,9 @@ DEFAULT_PERSON_VALUES = {
     'allowGenderChanges': True,
     'allowMultipleYearsOfBirth': True,
     'allowUnknownYearOfBirth': False,
-    'implausibleYearOfBirth': 2023,
+    'implausibleYearOfBirth': {
+        'beforeYear': 2023,
+        'afterYear': 0,
+    },
     'allowInvalidObservationTime': True,
 }

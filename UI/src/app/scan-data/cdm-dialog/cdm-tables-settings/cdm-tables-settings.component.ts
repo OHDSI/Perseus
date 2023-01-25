@@ -7,7 +7,7 @@ import {
     ViewChild, 
     HostListener,
 } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { StoreService } from '@app/services/store.service';
 import { ITable } from '@app/models/table';
 import { Area } from '@app/models/area';
@@ -31,7 +31,10 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
     private initTables: ITable[] = [];
     public filteredTables: ITable[] = [];
     
-    constructor(private storeService: StoreService) {
+    constructor(
+        private storeService: StoreService,
+        private formBuilder: FormBuilder,
+    ) {
         super();
     }
 
@@ -109,10 +112,15 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     private setupTableFormGroup(table: ITable): void {
         const formGroupConfig = {};
-        for (let key in table.settings) {
-            formGroupConfig[key] = new FormControl(table.settings[key]);
+        for (let settingName in table.settings) {
+            const isGroupOfSettings = typeof table.settings[settingName] === 'object' && table.settings[settingName] !== null;
+            if (isGroupOfSettings) {
+                formGroupConfig[settingName] = this.formBuilder.group(table.settings[settingName]);
+                continue;
+            }
+            formGroupConfig[settingName] = this.formBuilder.control(table.settings[settingName]);
         }
-        table.settingsForm = new FormGroup(formGroupConfig);
+        table.settingsForm = this.formBuilder.group(formGroupConfig);
     }
 
     private collapseTableByDefault(table: ITable): void {
