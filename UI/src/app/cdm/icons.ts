@@ -27,5 +27,6 @@ export const ICON_NAMES = [
   'three_dot_menu',
   'error',
   'hint',
-  'warning'
+  'warning',
+  'settings',
 ];

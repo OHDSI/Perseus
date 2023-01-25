@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { PrettyNamePipe } from './pipes/pretty-name.pipe';
 import { TypeToIconPipe } from './pipes/type-to-icon.pipe';
+import { TypeofPipe } from './pipes/typeof.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { SplitCapitalizedPipe } from './pipes/split-capitalized.pipe';
 import { SearchByNameComponent } from './search-by-name/search-by-name.component';
 import { CdmCustomMaterialModule } from '../material/cdm-custom-material.module';
 import { CloseDialogButtonComponent } from './close-dialog-button/close-dialog-button.component';
@@ -22,11 +25,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SqlEditorComponent } from '@shared/sql-editor/sql-editor.component';
 import { WarningHintComponent } from '@shared/hint/warning-hint/warning-hint.component';
 import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warning-dialog/person-mapping-warning-dialog.component'
+import { PopupComponent } from './popup/popup.component'
 
 @NgModule({
   declarations: [
     PrettyNamePipe,
     TypeToIconPipe,
+    TypeofPipe,
+    CapitalizePipe,
+    SplitCapitalizedPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
@@ -41,7 +48,8 @@ import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warn
     TextWidthDirective,
     SqlEditorComponent,
     WarningHintComponent,
-    PersonMappingWarningDialogComponent
+    PersonMappingWarningDialogComponent,
+    PopupComponent,
   ],
   exports: [
     CommonModule,
@@ -49,6 +57,9 @@ import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warn
     NgxTrimDirectiveModule,
     PrettyNamePipe,
     TypeToIconPipe,
+    TypeofPipe,
+    CapitalizePipe,
+    SplitCapitalizedPipe,
     SearchByNameComponent,
     CloseDialogButtonComponent,
     HintComponent,
@@ -62,7 +73,8 @@ import { PersonMappingWarningDialogComponent } from '@shared/person-mapping-warn
     ReactiveFormsModule,
     SqlEditorComponent,
     WarningHintComponent,
-    PersonMappingWarningDialogComponent
+    PersonMappingWarningDialogComponent,
+    PopupComponent,
   ],
   imports: [
     CommonModule,

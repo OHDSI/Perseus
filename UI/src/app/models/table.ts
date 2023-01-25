@@ -1,6 +1,7 @@
 import { IRow, Row } from 'src/app/models/row';
 import { Area } from './area';
 import { Type } from 'class-transformer';
+import { FormGroup } from '@angular/forms';
 
 export interface ITable {
   id: number;
@@ -12,6 +13,50 @@ export interface ITable {
   cloneName: string;
   condition: string;
   cloneConnectedToSourceName: string;
+  settings?: TableSettings;
+  settingsForm?: FormGroup;
+}
+
+export type TableSettings = PersonSettings | EraSettings | ObservationPeriodSettings | VisitOccurrenceSettings;
+
+type PersonSettings = IPersonSettings & IShownable;
+
+type EraSettings = IConceptId & IGapWindow & IObservationPeriod & IShownable;
+
+type VisitOccurrenceSettings = IVisitConceptRollupLogic & IObservationPeriod & IShownable;
+
+type ObservationPeriodSettings = IGapWindow & IShownable;
+
+export interface IPersonSettings {
+  allowUnknownGender: boolean;
+  allowGenderChanges: boolean;
+  allowMultipleYearOfBirth: boolean;
+  allowUnknownYearOfBirth: boolean;
+  allowInvalidObservationTime: boolean;
+  implausibleYearOfBirth: {
+    beforeYear: number;
+    afterYear: number;
+  }
+}
+
+interface IConceptId {
+  conceptId: number;
+}
+
+interface IGapWindow {
+  gapWindow: number;
+}
+
+interface IObservationPeriod {
+  withinObservationPeriod: boolean;
+}
+
+interface IVisitConceptRollupLogic {
+  useVisitConceptRollupLogic: boolean; 
+}
+
+interface IShownable {
+  shown: boolean;
 }
 
 
