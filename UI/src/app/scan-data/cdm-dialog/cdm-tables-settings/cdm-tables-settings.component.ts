@@ -76,7 +76,7 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
     }
 
     @HostListener('document:click', ['$event'])
-    handleClickPopup(event: Event) {
+    private handleClickPopup(event: Event) {
         const clickedPopup = this.settingsEl.nativeElement.contains(event.target);
         const resetSearch = (event.target as HTMLElement).classList.contains('mat-icon');
         const sliderToggle = (event.target as HTMLElement).classList.contains('mat-slide-toggle-bar');
