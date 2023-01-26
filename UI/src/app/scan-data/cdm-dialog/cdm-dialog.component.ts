@@ -20,6 +20,7 @@ import { CdmFormComponent } from '@scan-data/cdm-dialog/cdm-form/cdm-form.compon
 import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
 import { StoreService } from '@app/services/store.service'
 import { ITableSettingsCdm } from '@app/models/cdm-builder/cdm-settings'
+import { cloneDeep } from '@app/infrastructure/utility'
 
 @Component({
   selector: 'app-cdm-dialog',
@@ -107,7 +108,7 @@ export class CdmDialogComponent extends ConversionDialog {
       }
       tableSettingsForCdm.push({
         tableName: table.name,
-        settings: table.settings,
+        settings: cloneDeep(table.settings),
       });
     }
     cdmSettings.tableSettings = tableSettingsForCdm;
