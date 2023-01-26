@@ -1,3 +1,5 @@
+import { TableSettings } from "../table";
+
 export interface CdmSettings {
   sourceEngine?: string;
   sourceServer?: string;
@@ -20,7 +22,13 @@ export interface CdmSettings {
   mappingsName: string;
   cdmVersion: string;
 
-  conversionId?: number
+  conversionId?: number;
+  tableSettings?: ITableSettingsCdm[];
+}
+
+export interface ITableSettingsCdm {
+  tableName: string;
+  settings: TableSettings;
 }
 
 export interface SourceCdmSettings {
