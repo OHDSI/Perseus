@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs'
 })
 export class DqdFormComponent extends AbstractResourceFormComponent implements OnInit, OnDestroy {
 
-  formControlNames = ['server', 'port', 'user', 'password', 'database', 'schema'];
+  formControlNames = ['server', 'port', 'user', 'password', 'database', 'schema', 'httppath'];
 
   dataTypes = dqdDatabaseTypes;
 
@@ -111,14 +111,18 @@ export class DqdFormComponent extends AbstractResourceFormComponent implements O
 
   createForm(disabled): FormGroup {
     const schemaValidators = this.requireSchema ? [Validators.required] : [];
-
+    const dbValidators = this.requireDb ? [Validators.required] : [];
+    const httppathValidators = this.requireHTTPPath ? [Validators.required] : [];
+    const userValidators = this.requireUser ? [Validators.required] : [];
+    
     return  this.formBuilder.group({
       dbType: [null, [Validators.required]],
-      port: [{value: null, disabled}],
       server: [{value: null, disabled}, [Validators.required]],
-      user: [{value: null, disabled}, [Validators.required]],
+      port: [{value: null, disabled}, [Validators.required]],
+      user: [{value: null, disabled}, userValidators],
+      httppath: [{value: null, disabled}, httppathValidators],
       password: [{value: null, disabled}, [Validators.required]],
-      database: [{value: null, disabled}, [Validators.required]],
+      database: [{value: null, disabled}, dbValidators],
       schema: [{value: null, disabled}, schemaValidators]
     });
   }

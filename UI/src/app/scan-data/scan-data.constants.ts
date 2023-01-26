@@ -63,7 +63,8 @@ export const dbTypesRequireSchema: string[] = [
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
   DbTypes.AZURE,
-  DbTypes.DATABRICKS
+  DbTypes.DATABRICKS,
+  DbTypes.REDSHIFT
 ];
 
 export const dbTypesRequireHTTPPath: string[] = [
@@ -90,7 +91,8 @@ export const dqdDatabaseTypes = [
   DbTypes.SQL_SERVER,
   DbTypes.POSTGRESQL,
   DbTypes.ORACLE,
-  DbTypes.REDSHIFT
+  DbTypes.REDSHIFT,
+  DbTypes.DATABRICKS
 ];
 
 export const defaultPorts = {
@@ -110,7 +112,8 @@ export const fullySupportedDatabases: string[] = [
   DbTypes.POSTGRESQL,
   DbTypes.SQL_SERVER,
   DbTypes.AZURE,
-  DbTypes.MYSQL
+  DbTypes.MYSQL,
+  DbTypes.DATABRICKS
 ]
 
 export const supportedWithLimitationsDatabases: string[] = [
