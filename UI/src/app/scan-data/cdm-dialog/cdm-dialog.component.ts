@@ -18,6 +18,9 @@ import { DataQualityCheckService } from '@services/data-quality-check/data-quali
 import { withLoadingField } from '@utils/loading'
 import { CdmFormComponent } from '@scan-data/cdm-dialog/cdm-form/cdm-form.component'
 import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
+import { StoreService } from '@app/services/store.service'
+import { ITableSettingsCdm } from '@app/models/cdm-builder/cdm-settings'
+import { cloneDeep } from '@app/infrastructure/utility'
 
 @Component({
   selector: 'app-cdm-dialog',
@@ -45,7 +48,8 @@ export class CdmDialogComponent extends ConversionDialog {
               private schemaService: UserSchemaService,
               private fakeDataService: FakeDataService,
               private dataQualityCheckService: DataQualityCheckService,
-              private cdmButtonsService: CdmButtonsStateService) {
+              private cdmButtonsService: CdmButtonsStateService,
+              private storeService: StoreService) {
     super(dialogRef);
   }
 
@@ -73,6 +77,7 @@ export class CdmDialogComponent extends ConversionDialog {
   }
 
   onConvert(cdmSettings: CdmSettings): void {
+    this.addTableSettingsTo(cdmSettings);
     this.cdmFormComponent.checkDestinationDatabase(cdmSettings)
       .pipe(
         withLoadingField(this.cdmButtonsService, 'converting'),
@@ -88,6 +93,25 @@ export class CdmDialogComponent extends ConversionDialog {
         () => this.index = ConversionDialogStatus.CONVERSION,
         error => openErrorDialog(this.dialogService, 'Failed to convert data', parseHttpError(error))
       )
+  }
+
+  private addTableSettingsTo(cdmSettings: CdmSettings): void {
+    const { target: targetTables } = this.storeService.state;
+    if (!targetTables) {
+      return;
+    }
+    
+    const tableSettingsForCdm: ITableSettingsCdm[] = [];
+    for (const table of targetTables) {
+      if (table.settings === undefined) {
+        continue;
+      }
+      tableSettingsForCdm.push({
+        tableName: table.name,
+        settings: cloneDeep(table.settings),
+      });
+    }
+    cdmSettings.tableSettings = tableSettingsForCdm;
   }
 
   onGenerateFakeData(fakeDataSettings: FakeDataSettings) {
