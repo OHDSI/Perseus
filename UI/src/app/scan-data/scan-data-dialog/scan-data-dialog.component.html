@@ -1,6 +1,6 @@
 <div class="scan-dialog">
   <div class="scan-dialog__header">
-    <h4>
+    <h4 class="scan-dialog__title">
       Scan Data
       <app-warning-hint *ngIf="showMySqlHint else defaultHintBlock" key="mySqlScanDataLimit"></app-warning-hint>
       <ng-template #defaultHintBlock>
