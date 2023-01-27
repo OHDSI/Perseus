@@ -95,16 +95,14 @@ export class CdmTablesSettingsComponent extends BaseComponent implements OnInit,
 
     private initializeTablesData(): void {
         const { target: originalTables } = this.storeService.state;
-        this.initTables = cloneDeep(originalTables);
+        const tablesWithSettings: ITable[] = originalTables.filter(table => table.settings !== undefined);
+        this.initTables = cloneDeep(tablesWithSettings);
         this.initTablesWithSettings(this.initTables);
         this.filteredTables = [...this.initTables]; // array of links to initTables
     }
 
     private initTablesWithSettings(tables: ITable[]): void {
         tables.forEach((table: ITable) => {
-            if (!table.settings) {
-                return;
-            }
             this.setupTableFormGroup(table);
             this.collapseTableByDefault(table);
         });
