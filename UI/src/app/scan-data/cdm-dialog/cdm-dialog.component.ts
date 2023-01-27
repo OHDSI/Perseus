@@ -28,6 +28,7 @@ import { cloneDeep } from '@app/infrastructure/utility'
   styleUrls: ['./cdm-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
 })
 export class CdmDialogComponent extends ConversionDialog {
+  showTableSettings = true;
 
   @ViewChild(CdmFormComponent)
   cdmFormComponent: CdmFormComponent
@@ -84,6 +85,7 @@ export class CdmDialogComponent extends ConversionDialog {
         filter(isOk => isOk),
         switchMap(() => this.cdmBuilderService.addMapping()),
         switchMap(conversion => {
+          this.showTableSettings = false;
           this.conversion = conversion
           this.cdmSettings = {...cdmSettings, conversionId: this.conversion.id}
           return this.cdmBuilderService.convert(this.cdmSettings)
@@ -122,6 +124,7 @@ export class CdmDialogComponent extends ConversionDialog {
         switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings))
       )
       .subscribe(conversion => {
+        this.showTableSettings = false;
         this.conversion = conversion
         this.index = AdditionalStatusesForCdmBuilderDialog.FAKE_DATA_GENERATION;
       }, error => {
@@ -151,4 +154,8 @@ export class CdmDialogComponent extends ConversionDialog {
     this.index = ConversionDialogStatus.CONVERSION
   }
 
+  onCancel() {
+    super.onCancel();
+    this.showTableSettings = true;
+  }
 }
