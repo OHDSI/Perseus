@@ -14,6 +14,7 @@ import { FakeConsoleWrapperComponent } from './fake-data-dialog/fake-console-wra
 import { FakeDataFormComponent } from './fake-data-dialog/fake-data-form/fake-data-form.component';
 import { ScanConsoleWrapperComponent } from './scan-data-dialog/scan-console-wrapper/scan-console-wrapper.component';
 import { CdmDialogComponent } from './cdm-dialog/cdm-dialog.component';
+import { CdmTablesSettingsComponent } from './cdm-dialog/cdm-tables-settings/cdm-tables-settings.component';
 import { CdmFormComponent } from './cdm-dialog/cdm-form/cdm-form.component';
 import { CdmConnectFormComponent } from './cdm-dialog/cdm-form/cdm-connect-form/cdm-connect-form.component';
 import { CdmFakeDataFormComponent } from './cdm-dialog/cdm-form/cdm-fake-data-form/cdm-fake-data-form.component';
@@ -53,6 +54,7 @@ import { DatabricksScanParamsComponent } from '@app/data-connection/databricks/d
     FakeDataFormComponent,
     ScanConsoleWrapperComponent,
     CdmDialogComponent,
+    CdmTablesSettingsComponent,
     CdmFormComponent,
     CdmConnectFormComponent,
     CdmFakeDataFormComponent,

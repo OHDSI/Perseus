@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CdmConsoleWrapperComponent } from './cdm-console-wrapper/cdm-console-wrapper.component';
 import { CdmSettings } from '@models/cdm-builder/cdm-settings';
 import { DbTypes } from '../scan-data.constants';
-import { StoreService } from '@services/store.service';
 import { adaptDestinationCdmSettings } from '@utils/cdm-adapter';
 import { CdmStateService } from '@services/cdm-builder/cdm-state.service';
 import { ConversionDialog } from '@scan-data/conversion-dialog'
@@ -19,6 +18,9 @@ import { DataQualityCheckService } from '@services/data-quality-check/data-quali
 import { withLoadingField } from '@utils/loading'
 import { CdmFormComponent } from '@scan-data/cdm-dialog/cdm-form/cdm-form.component'
 import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.service'
+import { StoreService } from '@app/services/store.service'
+import { ITableSettingsCdm } from '@app/models/cdm-builder/cdm-settings'
+import { cloneDeep } from '@app/infrastructure/utility'
 
 @Component({
   selector: 'app-cdm-dialog',
@@ -26,6 +28,7 @@ import { CdmButtonsStateService } from '@services/cdm-builder/cdm-buttons-state.
   styleUrls: ['./cdm-dialog.component.scss', '../styles/scan-dialog.scss', '../styles/scan-data-normalize.scss']
 })
 export class CdmDialogComponent extends ConversionDialog {
+  showTableSettings = true;
 
   @ViewChild(CdmFormComponent)
   cdmFormComponent: CdmFormComponent
@@ -40,14 +43,14 @@ export class CdmDialogComponent extends ConversionDialog {
   private savedCdmBuilderConversion: Conversion | null = null
 
   constructor(dialogRef: MatDialogRef<CdmDialogComponent>,
-              private storeService: StoreService,
               private cdmStateService: CdmStateService,
               private cdmBuilderService: CdmBuilderService,
               private dialogService: MatDialog,
               private schemaService: UserSchemaService,
               private fakeDataService: FakeDataService,
               private dataQualityCheckService: DataQualityCheckService,
-              private cdmButtonsService: CdmButtonsStateService) {
+              private cdmButtonsService: CdmButtonsStateService,
+              private storeService: StoreService) {
     super(dialogRef);
   }
 
@@ -75,12 +78,14 @@ export class CdmDialogComponent extends ConversionDialog {
   }
 
   onConvert(cdmSettings: CdmSettings): void {
+    this.addTableSettingsTo(cdmSettings);
     this.cdmFormComponent.checkDestinationDatabase(cdmSettings)
       .pipe(
         withLoadingField(this.cdmButtonsService, 'converting'),
         filter(isOk => isOk),
         switchMap(() => this.cdmBuilderService.addMapping()),
         switchMap(conversion => {
+          this.showTableSettings = false;
           this.conversion = conversion
           this.cdmSettings = {...cdmSettings, conversionId: this.conversion.id}
           return this.cdmBuilderService.convert(this.cdmSettings)
@@ -92,6 +97,25 @@ export class CdmDialogComponent extends ConversionDialog {
       )
   }
 
+  private addTableSettingsTo(cdmSettings: CdmSettings): void {
+    const { target: targetTables } = this.storeService.state;
+    if (!targetTables) {
+      return;
+    }
+    
+    const tableSettingsForCdm: ITableSettingsCdm[] = [];
+    for (const table of targetTables) {
+      if (table.settings === undefined) {
+        continue;
+      }
+      tableSettingsForCdm.push({
+        tableName: table.name,
+        settings: cloneDeep(table.settings),
+      });
+    }
+    cdmSettings.tableSettings = tableSettingsForCdm;
+  }
+
   onGenerateFakeData(fakeDataSettings: FakeDataSettings) {
     this.schemaService.getUserSchema()
       .pipe(
@@ -100,6 +124,7 @@ export class CdmDialogComponent extends ConversionDialog {
         switchMap(() => this.fakeDataService.generateFakeData(fakeDataSettings))
       )
       .subscribe(conversion => {
+        this.showTableSettings = false;
         this.conversion = conversion
         this.index = AdditionalStatusesForCdmBuilderDialog.FAKE_DATA_GENERATION;
       }, error => {
@@ -127,5 +152,10 @@ export class CdmDialogComponent extends ConversionDialog {
     this.conversion = this.savedCdmBuilderConversion
     this.savedCdmBuilderConversion = null
     this.index = ConversionDialogStatus.CONVERSION
+  }
+
+  onCancel() {
+    super.onCancel();
+    this.showTableSettings = true;
   }
 }

@@ -4,6 +4,7 @@ import os
 import shutil
 import zipfile
 from pathlib import Path
+from datetime import date
 
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
@@ -23,8 +24,41 @@ from utils.constants import UPLOAD_ETL_FOLDER,\
                             UPLOAD_SCAN_REPORT_FOLDER,\
                             GENERATE_ETL_ARCHIVE_PATH,\
                             ETL_MAPPING_ARCHIVE_FORMAT
+from utils.cdm_tables_settings import WITHIN_OBSERVATION_PERIOD_TYPES_TABLES, \
+                                      GAP_WINDOW_TABLES, \
+                                      USE_VISIT_CONCEPT_ROLLUP_LOGIC_TABLES, \
+                                      CONCEPT_ID_TABLES, \
+                                      USE_VISIT_CONCEPT_ROLLUP_LOGIC_DEFAULT_VALUE, \
+                                      GAP_WINDOW_DEFAULT_VALUES, \
+                                      CONCEPT_ID_DEFAULT_VALUES, \
+                                      WITHIN_OBSERVATION_DEFAULT_VALUES, \
+                                      DEFAULT_PERSON_VALUES
 from utils.directory_util import get_filenames_in_directory
 from utils.exceptions import InvalidUsage
+
+def add_table_settings(table):
+    curr_table_name = table.get('name')
+
+    if not curr_table_name:
+        return table
+
+    curr_table_name.lower()
+
+    settings = {}
+    if curr_table_name and curr_table_name in WITHIN_OBSERVATION_PERIOD_TYPES_TABLES:
+        settings['withinTheObservationPeriod'] = WITHIN_OBSERVATION_DEFAULT_VALUES[curr_table_name]
+    if curr_table_name and curr_table_name in GAP_WINDOW_TABLES:
+        settings['gapWindow'] = GAP_WINDOW_DEFAULT_VALUES[curr_table_name]
+    if curr_table_name and curr_table_name in USE_VISIT_CONCEPT_ROLLUP_LOGIC_TABLES:
+        settings['useVisitConceptRollupLogic'] = USE_VISIT_CONCEPT_ROLLUP_LOGIC_DEFAULT_VALUE
+    if curr_table_name and curr_table_name in CONCEPT_ID_TABLES:
+        settings['conceptId'] = CONCEPT_ID_DEFAULT_VALUES[curr_table_name]
+    if curr_table_name and curr_table_name == 'person':
+        settings = DEFAULT_PERSON_VALUES
+
+    if settings:
+        table['settings'] = settings
+    return table
 
 
 def upload_etl_archive(etl_archive: FileStorage, username: str):
@@ -48,7 +82,7 @@ def upload_etl_archive(etl_archive: FileStorage, username: str):
         etl_archive_content = _to_etl_archive_content(filenames)
 
         with open(Path(archive_path, etl_archive_content.mapping_json_file_name)) as mapping_json_file:
-            mapping_json = json.load(mapping_json_file)
+            mapping_json = json.load(mapping_json_file, object_hook=add_table_settings)
 
         source_tables = mapping_json['source']
         create_source_schema_by_tables(username, source_tables)

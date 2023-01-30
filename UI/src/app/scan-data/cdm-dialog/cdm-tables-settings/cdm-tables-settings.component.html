@@ -1,0 +1,86 @@
+<div #settings class="scan-dialog__header-settings">
+    <mat-icon
+        #settingsBtn
+        class="scan-dialog__header-settings-icon"
+        [ngClass]="{'scan-dialog__header-settings-icon--active': showSettings}"
+        svgIcon="settings">
+    </mat-icon>
+
+    <app-popup *ngIf="showSettings" externalCssClasses="table-settings-wrapper">
+        <div class="table-settings">
+            <h4>{{popupTitle}}</h4>
+            <app-search-by-name
+                class="search"
+                placeholder={{searchPlaceholder}}
+                [criteria]="query"
+                (complete)="filterByName($event)"
+                (reset)="resetFilter()">
+            </app-search-by-name>
+            <ul *ngIf="filteredTables.length > 0" class="settings-list scrolled-items" cdkScrollable>
+                <li *ngFor="let table of filteredTables" class="settings-list__item">
+                    <div
+                        class="settings-list__item-title"
+                        [ngClass]="{'settings-list__item-title--active': table.settings && table.settings.shown}">
+                        <span>{{table.name}}</span>
+                        <span 
+                            class="settings-list__item-arrow"
+                            [ngClass]="{'settings-list__item-arrow--active': table.settings && table.settings.shown}"
+                            *ngIf="table.settings"
+                            (click)="showSettingsDetailsOf(table.name)">
+                        </span>
+                    </div>
+                    <ul *ngIf="table.settings?.shown" class="settings-list settings-details">
+                       <li 
+                            *ngFor="let setting of table.settings | keyvalue"
+                            class="settings-details__item">
+                            <form [formGroup]="table.settingsForm">
+                                <mat-slide-toggle
+                                    *ngIf="(setting.value | typeofPipe) === 'boolean' && setting.key !== 'shown'"
+                                    [checked]="setting.value"
+                                    formControlName="{{setting.key}}"
+                                    (change)="updateTableSettings(table, setting.key)"
+                                    >{{setting.key | capitalizePipe | splitCapitalizedPipe}}
+                                </mat-slide-toggle>
+
+                                <ng-container *ngIf="(setting.value | typeofPipe) === 'number' && setting.key !== 'implausibleYearOfBirth'" >
+                                    <div class="settings-list__number">
+                                        <label class="settings-list__number-label">
+                                            {{setting.key | capitalizePipe | splitCapitalizedPipe}}
+                                        </label>
+                                        <input 
+                                            class="settings-list__number-input" 
+                                            type="number" 
+                                            value="{{setting.value}}"
+                                            formControlName="{{setting.key}}"
+                                            (change)="updateTableSettings(table, setting.key)">
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngIf="setting.key === 'implausibleYearOfBirth'">
+                                    <form formGroupName={{setting.key}}>
+                                        <h5>{{setting.key | capitalizePipe | splitCapitalizedPipe}}</h5>
+                                        <div class="settings-list__date-wrapper scan-data-form-control">
+                                            <div 
+                                                class="settings-list__number settings-list__number--date"
+                                                *ngFor="let key of setting.value | keyvalue">
+                                                <label class="settings-list__number-label">
+                                                    {{key.key | capitalizePipe | splitCapitalizedPipe}}
+                                                </label>
+                                                <input
+                                                    class="settings-list__number-input" 
+                                                    type="number" 
+                                                    value="{{key.value}}"
+                                                    formControlName="{{key.key}}"
+                                                    (change)="updateTableSettings(table, setting.key)">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </ng-container>
+                            </form>
+                       </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </app-popup>
+</div>

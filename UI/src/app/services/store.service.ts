@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ITable, Table } from '@models/table';
+import { ITable, Table, TableSettings } from '@models/table';
 import { cloneDeep, uniq } from '../infrastructure/utility';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { State } from '@models/state';
@@ -74,6 +74,18 @@ export class StoreService implements StateService {
     if (tables && tables.length && table) {
       const updatedTables = tables.map(it => it.name === table.name ? new Table({ ...it, ...updates }) : new Table(it));
       this.state = { ...this.state, [ storeKey ]: updatedTables };
+    }
+  }
+
+  updateTableSettings(storeKey: StoreTablesKey, tableName: string, newSettings: TableSettings): void {
+    const tables = this.state[storeKey];
+    if (!tables || tables.length === 0) {
+      return;
+    }
+    
+    const modifiedTable = tables.find(table => table.settings && table.name == tableName);
+    if (modifiedTable) {
+      modifiedTable.settings = {...newSettings};
     }
   }
 

@@ -63,7 +63,7 @@ function check_dirs {
 }
 
 function clean_launch {
-	docker-compose down;
+	docker compose down;
 	docker volume rm -f perseus_perseusdb;
 	rm -rf ../WhiteRabbit ../DataQualityDashboard ../ETL-CDMBuilder;
 }
@@ -78,7 +78,7 @@ if [[ "$1" == "--clean" ]]; then
 fi
 
 check_dirs;
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 
 exit 0
