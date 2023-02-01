@@ -92,11 +92,7 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
         if (dbControl) {
           if(this.dataType == 'Databricks') {
             dbControl.setValue('default');
-          }
-          else {
-            dbControl.setValue('');
-          }
-
+          }          
           dbControl.setValidators(requireDb ? [ Validators.required ] : []);
           dbControl.updateValueAndValidity();
         }
@@ -110,10 +106,6 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
           if(this.dataType == 'Databricks') {
             userControl.setValue('token');
           }
-          else {
-            userControl.setValue('');
-          }
-
           userControl.setValidators(requireUser ? [ Validators.required ] : []);
           userControl.updateValueAndValidity();
         }
