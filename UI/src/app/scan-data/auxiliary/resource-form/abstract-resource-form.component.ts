@@ -91,7 +91,7 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
 
         if (dbControl) {
           if(this.dataType == 'Databricks') {
-            dbControl.setValue('default');
+            dbControl.setValue('hive_metastore');
           }          
           dbControl.setValidators(requireDb ? [ Validators.required ] : []);
           dbControl.updateValueAndValidity();
