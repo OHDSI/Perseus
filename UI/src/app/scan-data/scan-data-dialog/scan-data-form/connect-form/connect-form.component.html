@@ -31,7 +31,9 @@
   <app-db-settings-form *ngIf="isDbSettings; else delimitedFileBlock"
                         [form]="form"
                         [requireDb]="requireDb"
-                        [requireSchema]="requireSchema"></app-db-settings-form>
+                        [requireSchema]="requireSchema"
+                        [requireHTTPPath]="requireHTTPPath"
+                        [requireUser]="requireUser"></app-db-settings-form>
 
   <ng-template #delimitedFileBlock>
     <app-file-settings-form [form]="fileSettingsForm"
