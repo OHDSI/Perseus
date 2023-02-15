@@ -22,7 +22,6 @@ a {
   display: block;
   justify-content: flex-end;
   background: white;
-  overflow: hidden;
   margin-bottom: 8px;
   margin-right: 0;
   margin-left: auto;
@@ -35,7 +34,6 @@ a {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: $cdm-blue-lightest;
   width: 400px;
   padding: 10px 15px 7px 38px;
   font-size: 14px;
@@ -43,12 +41,27 @@ a {
   border-radius: 2px;
   @include mat.elevation-transition;
   @include mat.elevation(1, $cdm-grey, 0.8);
-
-  &:first-of-type {
-    background-color: $cdm-blue-light;
-    position: relative;
-    @include mat.elevation(2, $cdm-grey, 0.8);
+  position: relative;
+  
+  &-hint {
+    position: absolute;
+    left: -10px;
   }
+}
+
+.non-linkable-box {
+  background-color: #E8E8E8;
+  position: relative;
+}
+
+.linkable-box {
+  background-color: $cdm-blue-light;
+}
+
+.inserted-box {
+  background-color: $cdm-blue-lightest;
+  position: relative;
+  @include mat.elevation(2, $cdm-grey, 0.8);
 }
 
 .vertical-placeholder {

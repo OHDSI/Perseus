@@ -5,6 +5,7 @@ import { ScanSettings } from './scan-settings';
 export interface DbSettings extends ScanSettings {
   dbType?: string;
   user: string;
+  httppath?: string;
   password: string;
   database: string;
   server: string;

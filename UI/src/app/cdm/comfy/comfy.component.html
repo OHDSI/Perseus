@@ -162,10 +162,15 @@
                        [cdkDropListConnectedTo]="targetTableNames">
                     <div *ngFor="let tableName of targetConfig[targetName].data; let i = index"
                          class="vertical-box"
+                         [ngClass]="addLinkableClass(tableName)"
+                         [class.inserted-box]="i > 0"
                          [id]="tableName"
                          cdkDrag
                          (cdkDragMoved)="dragMoved($event)"
                          (dblclick)="afterOpenMapping({targetTable:targetConfig[targetName].data[0], sourceTable: tableName, index:i})">
+                      <div class="vertical-box-hint" *ngIf="tableName.toLowerCase().includes('_era')">
+                          <app-hint key="eraTable"></app-hint>
+                      </div>
                       <div class="table-description target caption">
                         <span class="target-label">{{ tableName }}</span>
                         <span class="divider"></span>

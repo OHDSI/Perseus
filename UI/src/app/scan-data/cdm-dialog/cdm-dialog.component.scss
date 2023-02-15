@@ -4,4 +4,17 @@
   &__header {
     margin-bottom: 21px;
   }
+
+  &__title {
+    width: 100%;
+    position: relative;
+  }
+
+  &__icon-wrapper {
+    display: flex;
+  }
+  
+  &__icon {
+    margin-left: 5px;
+  }
 }

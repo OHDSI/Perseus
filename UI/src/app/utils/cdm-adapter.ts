@@ -6,7 +6,8 @@ const dbTypeIdentifiers = {
   Postgre: 'PostgreSQL',
   MSSQL: 'SQL Server',
   Azure: 'Azure',
-  Mysql: 'MySQL'
+  Mysql: 'MySQL',
+  Databricks: 'Databricks'
 };
 
 /* Adapt cdm version*/
@@ -30,7 +31,8 @@ export function adaptDbSettingsForSource(dbSettings: DbSettings): SourceCdmSetti
     sourceSchema: dbSettings.schema,
     sourceDatabase: dbSettings.database,
     sourceUser: dbSettings.user,
-    sourcePassword: dbSettings.password
+    sourcePassword: dbSettings.password,
+    sourceHttppath: dbSettings.httppath
   };
 }
 
@@ -44,7 +46,8 @@ export function adaptDbSettingsForDestination(dbSettings: DbSettings): TargetCdm
     destinationSchema: dbSettings.schema,
     destinationDatabase: dbSettings.database,
     destinationUser: dbSettings.user,
-    destinationPassword: dbSettings.password
+    destinationPassword: dbSettings.password,
+    destinationHttppath: dbSettings.httppath
   };
 }
 
@@ -65,7 +68,8 @@ export function adaptDestinationCdmSettings(cdmSettings: CdmSettings): DbSetting
     database: cdmSettings.destinationDatabase,
     schema: cdmSettings.destinationSchema,
     user: cdmSettings.destinationUser,
-    password: cdmSettings.destinationPassword
+    password: cdmSettings.destinationPassword,
+    httppath: cdmSettings.destinationHttppath
   };
 }
 

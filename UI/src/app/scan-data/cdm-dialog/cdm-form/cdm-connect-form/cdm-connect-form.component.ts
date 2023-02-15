@@ -19,8 +19,17 @@ export class CdmConnectFormComponent {
   form: FormGroup;
 
   @Input()
+  requireDb: boolean;
+
+  @Input()
   requireSchema: boolean;
 
+  @Input()
+  requireHTTPPath: boolean;
+
+  @Input()
+  requireUser: boolean;
+    
   @Input()
   tryConnect: boolean;
 

@@ -13,18 +13,16 @@
       bottom: 18px;
       left: 7px;
     }
+  }
 
-    h4 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      color: #404040;
-
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 23px;
-    }
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #404040;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 23px;
   }
 
   &__content {

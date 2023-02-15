@@ -1,3 +1,5 @@
+import { TableSettings } from "../table";
+
 export interface CdmSettings {
   sourceEngine?: string;
   sourceServer?: string;
@@ -5,6 +7,7 @@ export interface CdmSettings {
   sourceDatabase?: string;
   sourceSchema?: string;
   sourceUser?: string;
+  sourceHttppath?: string;
   sourcePassword?: string;
 
   destinationEngine: string;
@@ -13,12 +16,19 @@ export interface CdmSettings {
   destinationDatabase: string;
   destinationSchema: string;
   destinationUser: string;
+  destinationHttppath?: string;
   destinationPassword: string;
 
   mappingsName: string;
   cdmVersion: string;
 
-  conversionId?: number
+  conversionId?: number;
+  tableSettings?: ITableSettingsCdm[];
+}
+
+export interface ITableSettingsCdm {
+  tableName: string;
+  settings: TableSettings;
 }
 
 export interface SourceCdmSettings {
@@ -28,6 +38,7 @@ export interface SourceCdmSettings {
   sourceDatabase?: string;
   sourceSchema?: string;
   sourceUser?: string;
+  sourceHttppath?: string;
   sourcePassword?: string;
 }
 
@@ -38,5 +49,6 @@ export interface TargetCdmSettings {
   destinationDatabase: string;
   destinationSchema: string;
   destinationUser: string;
+  destinationHttppath?: string;
   destinationPassword: string;
 }

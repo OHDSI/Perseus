@@ -10,15 +10,19 @@ export function createFakeDataForm(value =
   );
 }
 
-export function createDbConnectionForm(disabled: boolean, requireSchema: boolean, formBuilder: FormBuilder): FormGroup {
+export function createDbConnectionForm(disabled: boolean, requireDb: boolean, requireSchema: boolean, requireHTTPPath: boolean, requireUser: boolean, formBuilder: FormBuilder): FormGroup {
   const schemaValidators = requireSchema ? [Validators.required] : [];
-
+  const dbValidators = requireDb ? [Validators.required] : [];
+  const httppathValidators = requireHTTPPath ? [Validators.required] : [];
+  const userValidators = requireUser ? [Validators.required] : [];
+  
   return formBuilder.group({
     server: [{value: null, disabled}, [Validators.required]],
     port: [{value: null, disabled}, [Validators.required]],
-    user: [{value: null, disabled}, [Validators.required]],
+    user: [{value: null, disabled}, userValidators],
+    httppath: [{value: null, disabled}, httppathValidators],
     password: [{value: null, disabled}, [Validators.required]],
-    database: [{value: null, disabled}, [Validators.required]],
+    database: [{value: null, disabled}, dbValidators],
     schema: [{value: null, disabled}, schemaValidators]
   });
 }

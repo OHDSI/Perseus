@@ -1,0 +1,147 @@
+@import "../../../styles/variables";
+
+.scan-dialog__header {
+    &-settings-icon {
+        &--active, &:hover {
+          color: $blue;
+          cursor: pointer;
+        }
+    }
+}
+
+.search {
+  font-size: 14px;
+}
+
+.table-settings {
+  overflow-y: hidden;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.scrolled-items {
+  height: calc(77vh - 260px);
+  overflow-y: scroll;
+  padding-left: 0;
+  padding-right: 8px;
+}
+
+.settings-details {
+  &__item {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+}
+
+.settings-list {
+  font-size: 12px;
+  color: $cdm-grey-dark;
+  list-style: none;
+  padding: 0;
+
+  &__date-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__number {
+    display: flex;
+    flex-direction: column;
+
+    &-label {
+      color: $grey;
+      font-size: 12px;
+      font-weight: 100;
+    }
+
+    &-input {
+      border: 0;
+      border-bottom: 1px solid #2C2C2C;
+      outline: none;
+    }
+
+    &--date {
+      width: 45%;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #066bbb1a;
+
+    &-title {
+      font-weight: normal;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+
+      &--active {
+        font-weight: bold;
+      }
+    }
+
+    &-arrow {
+      color: $blue;
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid;
+      margin: 0 4px;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &--active {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+
+::ng-deep .mat-slide-toggle, 
+::ng-deep .mat-checked {
+
+  .mat-slide-toggle {
+    &-bar {
+      padding-top: 12px;
+      border-radius: 25px;
+      width: 24px;
+    }
+
+    &-thumb-container {
+      top: 2px;
+      left: 2px;
+    }
+
+    &-thumb {
+      background-color: $white !important;
+      width: 10px;
+      height: 10px;
+    }
+
+    &-ripple {
+      display: none;
+    }
+  }
+}
+
+::ng-deep .mat-slide-toggle.mat-checked {
+  .mat-slide-toggle {
+    &-bar {
+      background-color: $blue;
+    }
+
+    &-thumb-container {
+      left: -4px;
+    }
+  }
+}

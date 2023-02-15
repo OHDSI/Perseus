@@ -124,7 +124,7 @@ export class CdmSourceFormComponent extends AbstractResourceFormComponent implem
   }
 
   createForm(disabled: boolean): FormGroup {
-    return createDbConnectionForm(disabled, this.requireSchema, this.formBuilder);
+    return createDbConnectionForm(disabled, this.requireDb, this.requireSchema, this.requireHTTPPath, this.requireUser, this.formBuilder);
   }
 
   hasLimits(type: string): string | null {
