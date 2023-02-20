@@ -50,7 +50,7 @@ def _create_source_schema_by_scan_report(username: str, etl_mapping_id: int, sca
         overview = pd.read_excel(book, dtype=str, na_filter=False, engine='xlrd')
 
         tables_pd = sqldf(
-            """select `table`, group_concat(field || ':' || type || ':' || "Max length", ',') as fields
+            """select `table`, group_concat(field || ':' || type || ':' || "Max length", ';') as fields
              from overview group by `table`;""")
         tables_pd = tables_pd[tables_pd.Table != '']
         if tables_pd.shape[0] > MAX_TABLES:
@@ -60,7 +60,7 @@ def _create_source_schema_by_scan_report(username: str, etl_mapping_id: int, sca
         for _, row in tables_pd.iterrows():
             create_table_sql = ''
             table_name = row['Table']
-            fields = row['fields'].split(',')
+            fields = row['fields'].split(';')
             table_ = Table(table_name)
             create_table_sql += 'CREATE TABLE {0}."{1}" ('.format(username, table_name)
             for field in fields:
