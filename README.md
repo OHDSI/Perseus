@@ -4,7 +4,7 @@ Perseus combines intuitive and easy to use Web-based UI for design and  implemen
 
 Additionally, Perseus has embedded tools for search in the standardized vocabularies, generates documentation for the ETL process, create the code mappings and data quality check.
 
-[**Wiki**](https://github.com/SoftwareCountry/Perseus/wiki)
+[**Wiki**](https://github.com/OHDSI/Perseus/wiki)
 
 [**Getting started**](#getting-started)
 
@@ -147,8 +147,8 @@ Open `localhost:80` in your browser, preferably Google Chrome.
 
 ## Getting Involved
 
-* User guide and Help: [Perseus documentation](https://github.com/SoftwareCountry/Perseus/wiki)
-* We use the: [GitHub issue tracker](https://github.com/SoftwareCountry/Perseus/issues)
+* User guide and Help: [Perseus documentation](https://github.com/OHDSI/Perseus/wiki)
+* We use the: [GitHub issue tracker](https://github.com/OHDSI/Perseus/issues)
 * Contact us: [Email](mailto:perseus.support@softwarecountry.com)
 
 License
