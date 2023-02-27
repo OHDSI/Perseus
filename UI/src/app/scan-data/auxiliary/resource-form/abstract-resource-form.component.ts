@@ -82,7 +82,7 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
         const schemaControl = this.form.get('schema');
         const dbControl = this.form.get('database');
         const httpControl = this.form.get('httppath');
-        const userControl = this.form.get('user');
+        const userControl = this.form.get('user'); 
 
         if (schemaControl) {
           schemaControl.setValidators(requireSchema ? [ Validators.required ] : []);
@@ -90,6 +90,9 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
         }
 
         if (dbControl) {
+          if(this.dataType == 'Databricks') {
+            dbControl.setValue('hive_metastore');
+          }          
           dbControl.setValidators(requireDb ? [ Validators.required ] : []);
           dbControl.updateValueAndValidity();
         }
@@ -100,6 +103,9 @@ export abstract class AbstractResourceFormComponent extends BaseComponent implem
         }
 
         if (userControl) {
+          if(this.dataType == 'Databricks') {
+            userControl.setValue('token');
+          }
           userControl.setValidators(requireUser ? [ Validators.required ] : []);
           userControl.updateValueAndValidity();
         }
