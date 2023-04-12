@@ -1,5 +1,6 @@
 services:
   web:
+    image: perseushub/web:latest
     build: ./nginx
     container_name:
       web
@@ -7,6 +8,7 @@ services:
       - "80:80"
     restart: always
   shareddb:
+    image: perseushub/shareddb:latest
     build: ./shared-db
     container_name: shareddb
     volumes:
@@ -14,6 +16,7 @@ services:
     ports:
       - "5432:5432"
   files-manager:
+    image: perseushub/files-manager:latest
     build: ./files-manager
     container_name: files-manager
     ports:
@@ -23,6 +26,7 @@ services:
     depends_on:
       - shareddb
   user:
+    image: perseushub/user:latest
     build: ./user
     container_name: user
     environment:
@@ -34,6 +38,7 @@ services:
     depends_on:
       - shareddb
   backend:
+    image: perseushub/backend:latest
     build: ./perseus-api
     container_name: backend
     environment:
@@ -44,6 +49,7 @@ services:
       - shareddb
       - files-manager
   frontend:
+    image: perseushub/frontend:latest
     build:
       context: ./UI
       args:
@@ -53,6 +59,7 @@ services:
     ports:
       - "4200:4200"
   white-rabbit:
+    image: perseushub/white-rabbit:latest
     build: ../WhiteRabbit
     container_name:
       white-rabbit
@@ -64,6 +71,7 @@ services:
       - shareddb
       - files-manager
   vocabularydb:
+    image: perseushub/vocabularydb:latest
     build: ./vocabulary-db
     container_name: vocabularydb
     healthcheck:
@@ -76,6 +84,7 @@ services:
     ports:
       - "5431:5432"
   cdm-builder:
+    image: perseushub/cdm-builder:latest
     build: ../ETL-CDMBuilder
     container_name:
       cdm-builder
@@ -88,6 +97,7 @@ services:
       - files-manager
       - vocabularydb
   solr:
+    image: perseushub/solr:latest
     build: ./solr
     container_name: solr
     ports:
@@ -97,6 +107,7 @@ services:
     depends_on:
       - vocabularydb
   athena:
+    image: perseushub/athena:latest
     build: ./athena-api
     container_name: athena
     environment:
@@ -106,6 +117,7 @@ services:
     depends_on:
       - solr
   usagi:
+    image: perseushub/usagi:latest
     build: ./usagi-api
     command: python /app/main.py
     container_name: usagi
@@ -117,6 +129,7 @@ services:
       - shareddb
       - solr
   r-serve:
+    image: perseushub/r-serve:latest
     build:
       context: ../DataQualityDashboard/R
       args:
@@ -128,6 +141,7 @@ services:
     depends_on:
       - shareddb
   data-quality-dashboard:
+    image: perseushub/data-quality-dashboard:latest
     build:
       context: ../DataQualityDashboard
     container_name:
@@ -141,7 +155,9 @@ services:
       - files-manager
       - r-serve
   swagger:
+    image: perseushub/swagger:latest
     build: ./swagger-ui
+    container_name: swagger
     ports:
       - 8080:8080
 volumes:

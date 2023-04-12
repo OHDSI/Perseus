@@ -78,7 +78,9 @@ if [[ "$1" == "--clean" ]]; then
 fi
 
 check_dirs;
-docker compose build
+# Uncomment if you want to build images instead of pulliing them from docker hub
+# docker compose build
+docker compose pull
 docker compose up -d
 
 exit 0
