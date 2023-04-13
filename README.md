@@ -61,23 +61,24 @@ Getting Started
 
 ## Docker Compose and Podman
 
-* Install docker compose as a plagin *
+**Install docker compose as a plugin**
 
-apt install docker-compose-plugin
+    apt install docker-compose-plugin
 
-* You can use Podman instead of Docker *
+**You can use Podman instead of Docker**
 
-apt install python3-pip
-pip install podman-compose
+    apt install python3-pip
+    pip install podman-compose
 
 If you have an issue with downloading from Docker Hub check configuration file:
-/etc/containers/registries.conf
 
-It need to contain the following string:
-unqualified-search-registries = ["docker.io"]
+    /etc/containers/registries.conf
 
-podman-compose pull
-podman-compose up -d
+It need to contain the following string: 
+ unqualified-search-registries = ["docker.io"]
+    
+    podman-compose pull
+    podman-compose up -d
 
 
 ## Vocabulary
