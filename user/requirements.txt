@@ -1,12 +1,12 @@
 APScheduler==3.9.1
-cryptography==39.0.1
+cryptography==3.4.8
 Flask==2.0.3
 Flask_Bcrypt==0.7.1
 Flask_Cors==3.0.10
 peewee==3.14.10
-PyJWT==2.4.0
-waitress==2.1.2
-Werkzeug==2.2.3
+PyJWT==2.3.0
+waitress==2.1.1
+Werkzeug==2.0.2
 itsdangerous==2.0.1
 py-postgresql==1.2.2
 psycopg2-binary==2.9.3
