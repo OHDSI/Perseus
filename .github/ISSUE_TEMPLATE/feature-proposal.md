@@ -20,7 +20,7 @@ proposal is ready to be considered for implementation by the OHDSI community.
 - [ ] Describe a strategy for acceptance testing of the proposal.
 - [ ] Is the proposal supported by the current (non-functional) design? 
       If not, also draft a design proposal for review. List the relevant design proposals and
-      how they are related to this release proposal.
+      how they are related to this feature proposal.
 - [ ] Draft the development tasks that would be required to implement the proposal.
       Estimate the level of effort for each task in person days. No task should take more
       than 5 person days.
