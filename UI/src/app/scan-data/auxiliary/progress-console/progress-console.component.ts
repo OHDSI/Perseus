@@ -1,8 +1,8 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
-import {ThemePalette} from '@angular/material/core'
-import {ProgressLog} from '@models/progress-console/progress-log'
-import {BaseComponent} from '@shared/base/base.component'
-import {ProgressLogStatus} from '@models/progress-console/progress-log-status'
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ThemePalette } from '@angular/material/core'
+import { ProgressLog } from '@models/progress-console/progress-log'
+import { BaseComponent } from '@shared/base/base.component'
+import { ProgressLogStatus } from '@models/progress-console/progress-log-status'
 
 @Component({
   selector: 'progress-console',
@@ -17,11 +17,6 @@ export class ProgressConsoleComponent extends BaseComponent {
   @ViewChild('console')
   private console: ElementRef;
 
-  constructor() {
-    super();
-    this.simulateProgress();
-  }
-
   get logs(): ProgressLog[] {
     return this.progressLogs
   }
@@ -29,7 +24,6 @@ export class ProgressConsoleComponent extends BaseComponent {
   @Input()
   set logs(logs: ProgressLog[]) {
     if (logs.length > 0) {
-      console.log(logs);
       const lastLog = logs[logs.length - 1]
       this.progressLogs = logs
       this.progressValuePercent = lastLog.percent
@@ -59,20 +53,5 @@ export class ProgressConsoleComponent extends BaseComponent {
         console.scrollTop = console.scrollHeight - console.clientHeight
       );
     }
-  }
-
-  simulateProgress(): void {
-    let elapsedSeconds = 10;
-
-    const intervalId = setInterval(() => {
-      elapsedSeconds++;
-      if (this.progressValuePercent >= 100) {
-        clearInterval(intervalId);
-      } else {
-        const percent = this.progressValuePercent + Math.min(5, 50 / elapsedSeconds);
-        this.progressValuePercent = Math.min(90, percent);
-      }
-
-    }, 1000);
   }
 }
