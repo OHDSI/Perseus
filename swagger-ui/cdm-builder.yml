@@ -1,0 +1,639 @@
+openapi: 3.0.1
+info:
+  title: CDM Builder
+  version: v1
+paths:
+  "/cdm-builder/api":
+    get:
+      tags:
+      - CdmBuilder
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+    post:
+      tags:
+      - CdmBuilder
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/HttpResponseMessage"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HttpResponseMessage"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/HttpResponseMessage"
+  "/cdm-builder/api/log":
+    get:
+      tags:
+      - CdmBuilder
+      parameters:
+      - name: conversionId
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: logId
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ConversionLogMessage"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ConversionLogMessage"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ConversionLogMessage"
+  "/cdm-builder/api/abort":
+    get:
+      tags:
+      - CdmBuilder
+      parameters:
+      - name: conversionId
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+  "/cdm-builder/api/checksourceconnection":
+    post:
+      tags:
+      - CdmBuilder
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+      responses:
+        '200':
+          description: Success
+  "/cdm-builder/api/checkdestinationconnection":
+    post:
+      tags:
+      - CdmBuilder
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+      responses:
+        '200':
+          description: Success
+  "/cdm-builder/api/checkvocabularyconnection":
+    post:
+      tags:
+      - CdmBuilder
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+      responses:
+        '200':
+          description: Success
+  "/cdm-builder/api/vocabularyversion":
+    post:
+      tags:
+      - CdmBuilder
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/ConversionSettings"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+  "/cdm-builder/api/addmappings":
+    post:
+      tags:
+      - CdmBuilder
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
+                File:
+                  type: string
+                  format: binary
+            encoding:
+              Name:
+                style: form
+              File:
+                style: form
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ConversionLogMessage"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ConversionLogMessage"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ConversionLogMessage"
+components:
+  schemas:
+    BuildSettings:
+      type: object
+      properties:
+        allowUnknownGender:
+          type: boolean
+        allowGenderChanges:
+          type: boolean
+        allowMultipleYearsOfBirth:
+          type: boolean
+        allowUnknownYearOfBirth:
+          type: boolean
+        allowInvalidObservationTime:
+          type: boolean
+        implausibleYearOfBirthBefore:
+          type: integer
+          format: int32
+        implausibleYearOfBirthAfter:
+          type: integer
+          format: int32
+        useVisitRollupLogic:
+          type: boolean
+        eras:
+          type: array
+          items:
+            "$ref": "#/components/schemas/EraSetting"
+          nullable: true
+        tables:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TableSetting"
+          nullable: true
+      additionalProperties: false
+    ConversionLogMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+          nullable: true
+        logs:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Message"
+          nullable: true
+      additionalProperties: false
+    ConversionSettings:
+      type: object
+      properties:
+        conversionId:
+          nullable: true
+        contentKey:
+          type: string
+          nullable: true
+        sourceEngine:
+          type: string
+          nullable: true
+        destinationEngine:
+          type: string
+          nullable: true
+        vocabularyEngine:
+          type: string
+          nullable: true
+        sourceServer:
+          type: string
+          nullable: true
+        destinationServer:
+          type: string
+          nullable: true
+        vocabularyServer:
+          type: string
+          nullable: true
+        sourceSchema:
+          type: string
+          nullable: true
+        destinationSchema:
+          type: string
+          nullable: true
+        vocabularySchema:
+          type: string
+          nullable: true
+        sourceDatabase:
+          type: string
+          nullable: true
+        destinationDatabase:
+          type: string
+          nullable: true
+        vocabularyDatabase:
+          type: string
+          nullable: true
+        sourceUser:
+          type: string
+          nullable: true
+        destinationUser:
+          type: string
+          nullable: true
+        vocabularyUser:
+          type: string
+          nullable: true
+        sourcePassword:
+          type: string
+          nullable: true
+        destinationPassword:
+          type: string
+          nullable: true
+        vocabularyPassword:
+          type: string
+          nullable: true
+        sourcePort:
+          nullable: true
+        destinationPort:
+          nullable: true
+        vocabularyPort:
+          nullable: true
+        sourceHttppath:
+          type: string
+          nullable: true
+        destinationHttppath:
+          type: string
+          nullable: true
+        mappingsName:
+          type: string
+          nullable: true
+        cdmVersion:
+          type: string
+          nullable: true
+        buildSettings:
+          "$ref": "#/components/schemas/BuildSettings"
+        tableSettings:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TableConfig"
+          nullable: true
+      additionalProperties: false
+    EntityType:
+      enum:
+      - Entity
+      - ConditionOccurrence
+      - Cohort
+      - CohortDefinition
+      - Death
+      - DeviceExposure
+      - DrugExposure
+      - Measurement
+      - Observation
+      - PayerPlanPeriod
+      - Person
+      - ProcedureOccurrence
+      - VisitOccurrence
+      - VisitDetail
+      - Cost
+      - ObservationPeriod
+      - ConditionEra
+      - DrugEra
+      - Note
+      - FactRelationship
+      - Specimen
+      - SurveyConduct
+      - Episode
+      type: string
+    EraSetting:
+      type: object
+      properties:
+        table:
+          "$ref": "#/components/schemas/EntityType"
+        gapWindow:
+          type: integer
+          format: int32
+        conceptId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    HttpContent:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            "$ref": "#/components/schemas/StringStringIEnumerableKeyValuePair"
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+    HttpMethod:
+      type: object
+      properties:
+        method:
+          type: string
+          nullable: true
+      additionalProperties: false
+    HttpRequestMessage:
+      type: object
+      properties:
+        version:
+          type: string
+          nullable: true
+        content:
+          "$ref": "#/components/schemas/HttpContent"
+        method:
+          "$ref": "#/components/schemas/HttpMethod"
+        requestUri:
+          type: string
+          format: uri
+          nullable: true
+        headers:
+          type: array
+          items:
+            "$ref": "#/components/schemas/StringStringIEnumerableKeyValuePair"
+          nullable: true
+          readOnly: true
+        properties:
+          type: object
+          additionalProperties: {}
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+    HttpResponseMessage:
+      type: object
+      properties:
+        version:
+          type: string
+          nullable: true
+        content:
+          "$ref": "#/components/schemas/HttpContent"
+        statusCode:
+          "$ref": "#/components/schemas/HttpStatusCode"
+        reasonPhrase:
+          type: string
+          nullable: true
+        headers:
+          type: array
+          items:
+            "$ref": "#/components/schemas/StringStringIEnumerableKeyValuePair"
+          nullable: true
+          readOnly: true
+        trailingHeaders:
+          type: array
+          items:
+            "$ref": "#/components/schemas/StringStringIEnumerableKeyValuePair"
+          nullable: true
+          readOnly: true
+        requestMessage:
+          "$ref": "#/components/schemas/HttpRequestMessage"
+        isSuccessStatusCode:
+          type: boolean
+          readOnly: true
+      additionalProperties: false
+    HttpStatusCode:
+      enum:
+      - Continue
+      - SwitchingProtocols
+      - Processing
+      - EarlyHints
+      - OK
+      - Created
+      - Accepted
+      - NonAuthoritativeInformation
+      - NoContent
+      - ResetContent
+      - PartialContent
+      - MultiStatus
+      - AlreadyReported
+      - IMUsed
+      - Ambiguous
+      - Moved
+      - Redirect
+      - RedirectMethod
+      - NotModified
+      - UseProxy
+      - Unused
+      - TemporaryRedirect
+      - PermanentRedirect
+      - BadRequest
+      - Unauthorized
+      - PaymentRequired
+      - Forbidden
+      - NotFound
+      - MethodNotAllowed
+      - NotAcceptable
+      - ProxyAuthenticationRequired
+      - RequestTimeout
+      - Conflict
+      - Gone
+      - LengthRequired
+      - PreconditionFailed
+      - RequestEntityTooLarge
+      - RequestUriTooLong
+      - UnsupportedMediaType
+      - RequestedRangeNotSatisfiable
+      - ExpectationFailed
+      - MisdirectedRequest
+      - UnprocessableEntity
+      - Locked
+      - FailedDependency
+      - UpgradeRequired
+      - PreconditionRequired
+      - TooManyRequests
+      - RequestHeaderFieldsTooLarge
+      - UnavailableForLegalReasons
+      - InternalServerError
+      - NotImplemented
+      - BadGateway
+      - ServiceUnavailable
+      - GatewayTimeout
+      - HttpVersionNotSupported
+      - VariantAlsoNegotiates
+      - InsufficientStorage
+      - LoopDetected
+      - NotExtended
+      - NetworkAuthenticationRequired
+      type: string
+    ImplausibleYearOfBirth:
+      type: object
+      properties:
+        afterYear:
+          type: integer
+          format: int32
+        beforeYear:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        message:
+          type: string
+          nullable: true
+        time:
+          type: string
+          format: date-time
+        statusCode:
+          type: integer
+          format: int32
+        statusName:
+          type: string
+          nullable: true
+        percent:
+          type: integer
+          format: int32
+      additionalProperties: false
+    StringStringIEnumerableKeyValuePair:
+      type: object
+      properties:
+        key:
+          type: string
+          nullable: true
+        value:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    TableConfig:
+      type: object
+      properties:
+        tableName:
+          type: string
+          nullable: true
+        settings:
+          "$ref": "#/components/schemas/TransformationConfig"
+      additionalProperties: false
+    TableSetting:
+      type: object
+      properties:
+        table:
+          "$ref": "#/components/schemas/EntityType"
+        withinTheObservationPeriod:
+          type: boolean
+      additionalProperties: false
+    TransformationConfig:
+      type: object
+      properties:
+        conceptId:
+          type: integer
+          format: int32
+        gapWindow:
+          type: integer
+          format: int32
+        withinTheObservationPeriod:
+          type: boolean
+        allowGenderChanges:
+          type: boolean
+          nullable: true
+        allowInvalidObservationTime:
+          type: boolean
+          nullable: true
+        allowMultipleYearsOfBirth:
+          type: boolean
+          nullable: true
+        allowUnknownGender:
+          type: boolean
+          nullable: true
+        allowUnknownYearOfBirth:
+          type: boolean
+          nullable: true
+        implausibleYearOfBirth:
+          "$ref": "#/components/schemas/ImplausibleYearOfBirth"
+        useVisitConceptRollupLogic:
+          type: boolean
+          nullable: true
+      additionalProperties: false
