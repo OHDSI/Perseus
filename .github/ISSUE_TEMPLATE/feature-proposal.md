@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Perseus release proposals use the following checklist to track when a 
+Perseus feature proposals use the following checklist to track when a 
 proposal is ready to be considered for implementation by the OHDSI community.
 
 - [ ] Include a one paragraph brief summarizing the scope of the proposal.
