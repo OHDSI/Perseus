@@ -71,9 +71,9 @@ def _create_source_schema_by_scan_report(username: str, etl_mapping_id: int, sca
                     if column_type == 'TIMESTAMP(P) WITH TIME ZONE':
                         column_type = column_type.replace('(P)', f'({column_description[2]})')
                     elif column_type == 'TEXT':
-                        column_type = '{0}'.format(column_description[1])
+                        column_type = '{0}'.format(column_type)
                     else:
-                        column_type = '{0}({1})'.format(column_description[1], column_description[2])
+                        column_type = '{0}({1})'.format(column_type, column_description[2])
                 column = Column(column_name, column_type)
                 table_.column_list.append(column)
                 create_column_sql = '"{0}" {1},'.format(column_name, column_type)

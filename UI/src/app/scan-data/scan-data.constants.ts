@@ -89,6 +89,7 @@ export const uniformSamplingTooltipText = 'For all fields, choose every possible
 
 export const dqdDatabaseTypes = [
   DbTypes.SQL_SERVER,
+  DbTypes.AZURE,
   DbTypes.POSTGRESQL,
   DbTypes.ORACLE,
   DbTypes.REDSHIFT,

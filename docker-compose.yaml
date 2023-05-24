@@ -1,6 +1,6 @@
 services:
   web:
-    platform: linux/amd64
+    image: perseushub/web:latest
     build: ./nginx
     container_name:
       web
@@ -8,7 +8,7 @@ services:
       - "80:80"
     restart: always
   shareddb:
-    platform: linux/amd64
+    image: perseushub/shareddb:latest
     build: ./shared-db
     container_name: shareddb
     volumes:
@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
   files-manager:
-    platform: linux/amd64
+    image: perseushub/files-manager:latest
     build: ./files-manager
     container_name: files-manager
     ports:
@@ -26,7 +26,7 @@ services:
     depends_on:
       - shareddb
   user:
-    platform: linux/amd64
+    image: perseushub/user:latest
     build: ./user
     container_name: user
     environment:
@@ -38,26 +38,18 @@ services:
     depends_on:
       - shareddb
   backend:
-    platform: linux/amd64
+    image: perseushub/backend:latest
     build: ./perseus-api
     container_name: backend
     environment:
       PERSEUS_ENV: Docker
     ports:
-      - "5004:5004"
+      - "5000:5000"
     depends_on:
       - shareddb
       - files-manager
-  data-connection:
-    platform: linux/amd64
-    build: ./data-connection
-    container_name: data-connection
-    ports:
-      - "5005:5005"
-    volumes:
-    - ./data-connection:/home/node/app
   frontend:
-    platform: linux/amd64
+    image: perseushub/frontend:latest
     build:
       context: ./UI
       args:
@@ -67,7 +59,7 @@ services:
     ports:
       - "4200:4200"
   white-rabbit:
-    platform: linux/amd64
+    image: perseushub/white-rabbit:latest
     build: ../WhiteRabbit
     container_name:
       white-rabbit
@@ -79,7 +71,7 @@ services:
       - shareddb
       - files-manager
   vocabularydb:
-    platform: linux/amd64
+    image: perseushub/vocabularydb:latest
     build: ./vocabulary-db
     container_name: vocabularydb
     healthcheck:
@@ -92,7 +84,7 @@ services:
     ports:
       - "5431:5432"
   cdm-builder:
-    platform: linux/amd64
+    image: perseushub/cdm-builder:latest
     build: ../ETL-CDMBuilder
     container_name:
       cdm-builder
@@ -105,7 +97,7 @@ services:
       - files-manager
       - vocabularydb
   solr:
-    platform: linux/amd64
+    image: perseushub/solr:latest
     build: ./solr
     container_name: solr
     ports:
@@ -115,7 +107,7 @@ services:
     depends_on:
       - vocabularydb
   athena:
-    platform: linux/amd64
+    image: perseushub/athena:latest
     build: ./athena-api
     container_name: athena
     environment:
@@ -125,7 +117,7 @@ services:
     depends_on:
       - solr
   usagi:
-    platform: linux/amd64
+    image: perseushub/usagi:latest
     build: ./usagi-api
     command: python /app/main.py
     container_name: usagi
@@ -137,7 +129,7 @@ services:
       - shareddb
       - solr
   r-serve:
-    platform: linux/amd64
+    image: perseushub/r-serve:latest
     build:
       context: ../DataQualityDashboard/R
       args:
@@ -149,7 +141,7 @@ services:
     depends_on:
       - shareddb
   data-quality-dashboard:
-    platform: linux/amd64
+    image: perseushub/data-quality-dashboard:latest
     build:
       context: ../DataQualityDashboard
     container_name:
@@ -163,8 +155,9 @@ services:
       - files-manager
       - r-serve
   swagger:
-    platform: linux/amd64
+    image: perseushub/swagger:latest
     build: ./swagger-ui
+    container_name: swagger
     ports:
       - 8080:8080
 volumes:
