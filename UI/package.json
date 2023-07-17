@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
+    "build:broadsea": "ng build --base-href=/perseus/ --configuration broadsea",
     "build:azure": "ng build --configuration azure",
     "build:stats": "ng build --stats-json --configuration production",
     "analyze": "webpack-bundle-analyzer dist/stats.json",
