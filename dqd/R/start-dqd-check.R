@@ -1,0 +1,21 @@
+source("~/R/data-quality-check.R")
+source("~/R/log-appender.R")
+source("~/R/test-connection.R")
+source("~/R/getCheckId.R")
+source("~/R/recordResult.R")
+source("~/R/processCheck.R")
+source("~/R/executeDqChecks.R")
+source("~/R/runCheck.R")
+source("~/R/evaluateThresholds.R")
+source("~/R/summarizeResults.R")
+source("~/R/writeJsonResultsTo.R")
+source("~/R/writeResultsTo.R")
+source("~/R/readThresholdFile.R")
+source("~/R/constants.R")
+
+library('stringr')
+library('readr')
+
+args <- commandArgs(trailingOnly = TRUE)
+
+dataQualityCheck(cdm_dataType = args[1], cdm_server = args[2], cdm_port = as.numeric(args[3]), cdm_dataBaseSchema = args[4], cdm_user = args[5], cdm_password = args[6], scanId = as.numeric(args[7]), threadCount = as.numeric(args[8]), cdmSourceName = args[9], dqd_dataType = args[10], dqd_server = args[11], dqd_port = as.numeric(args[12]), dqd_dataBaseSchema = args[13], dqd_user = args[14], dqd_password = args[15], username = args[16], httppath = args[17])
