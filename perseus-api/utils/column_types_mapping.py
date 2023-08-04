@@ -23,6 +23,7 @@ postgres_types_mapping = {
      'BIT': 'BOOLEAN',
      'VARCHAR(MAX)': 'TEXT',
      'STRING': 'TEXT',
+     'EMPTY': 'TEXT',
      'VARBINARY': 'BYTEA',
      'NVARCHAR': 'VARCHAR',
      'NTEXT': 'TEXT',
