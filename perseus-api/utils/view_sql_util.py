@@ -25,6 +25,9 @@ def contains_schema_names(sql: str, schemas: List[str]) -> bool:
 def add_schema_names(username: str, view_sql: str, user_schema_tables: List[str]) -> str:
     for table_name in user_schema_tables:
         if hasCapitalLetter(table_name):
+            if '"{table_name}"' not in view_sql:
+                view_sql = view_sql.replace(table_name, f'"{table_name}"')
+                            
             view_sql = re.sub(f'(?i)join( |\n)+"{table_name}"', f'join {username}."{table_name}"', view_sql)
             view_sql = re.sub(f'(?i)from( |\n)+"{table_name}"', f'from {username}."{table_name}"', view_sql)
         else:
