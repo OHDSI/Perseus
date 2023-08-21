@@ -1,0 +1,62 @@
+{
+  "name": "concept_relationship",
+  "properties": {
+    "concept_id_1": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "concept_id_1",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "concept_id_2": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "concept_id_2",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "relationship_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "relationship_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "valid_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "valid_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "valid_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "invalid_reason": {
+      "type": "String",
+      "databricks": {
+        "col_name": "invalid_reason",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "concept_relationship",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

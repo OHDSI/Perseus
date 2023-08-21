@@ -26,4 +26,5 @@ export class DbSettingsFormComponent {
 
   @Input()
   requireUser: boolean;
+
 }

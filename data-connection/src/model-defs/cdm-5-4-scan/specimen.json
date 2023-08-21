@@ -1,0 +1,134 @@
+{
+  "name": "specimen",
+  "properties": {
+    "specimen_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "specimen_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "specimen_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "specimen_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "specimen_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "specimen_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "specimen_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "specimen_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "specimen_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "specimen_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "quantity": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "quantity",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "anatomic_site_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "anatomic_site_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "disease_status_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "disease_status_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "specimen_source_id": {
+      "type": "String",
+      "databricks": {
+        "col_name": "specimen_source_id",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "specimen_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "specimen_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "unit_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "unit_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "anatomic_site_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "anatomic_site_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "disease_status_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "disease_status_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "specimen",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

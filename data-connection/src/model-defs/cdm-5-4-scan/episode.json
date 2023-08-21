@@ -1,0 +1,118 @@
+{
+  "name": "episode",
+  "properties": {
+    "episode_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "episode_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "episode_start_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "episode_start_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "episode_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "episode_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "episode_end_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "episode_end_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "episode_parent_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_parent_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_number": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_number",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_object_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_object_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "episode_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "episode_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "episode_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "episode_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "episode",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

@@ -1,0 +1,142 @@
+{
+  "name": "condition_occurrence",
+  "properties": {
+    "condition_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "condition_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "condition_start_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "condition_start_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "condition_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "condition_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "condition_end_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "condition_end_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "condition_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_status_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_status_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "stop_reason": {
+      "type": "String",
+      "databricks": {
+        "col_name": "stop_reason",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "condition_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "condition_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "condition_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "condition_status_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "condition_status_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "condition_occurrence",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

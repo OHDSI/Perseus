@@ -1,0 +1,182 @@
+{
+  "name": "observation",
+  "properties": {
+    "observation_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "observation_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "observation_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "observation_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "observation_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "observation_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "observation_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "observation_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "observation_type_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "observation_type_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "value_as_number": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "value_as_number",
+        "data_type": "float",
+        "comment": null
+      }
+    },
+    "value_as_string": {
+      "type": "String",
+      "databricks": {
+        "col_name": "value_as_string",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "value_as_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "value_as_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "qualifier_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "qualifier_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "unit_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_occurrence_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_occurrence_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "visit_detail_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "visit_detail_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "observation_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "observation_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "observation_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "observation_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "unit_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "unit_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "qualifier_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "qualifier_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "value_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "value_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "observation_event_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "observation_event_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "obs_event_field_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "obs_event_field_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "observation",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

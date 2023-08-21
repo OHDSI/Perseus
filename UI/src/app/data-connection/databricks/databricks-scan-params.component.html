@@ -1,0 +1,24 @@
+<form class="scan-params" [formGroup]="scanParamsForm" [ngStyle]="setFormStyle()">
+  <section class="example-section">
+    <mat-checkbox class="example-margin" formControlName="runAsJob" (click)="focusOnNotebookPath()">Run profiler as Databricks job.</mat-checkbox>
+  </section>
+  <label [class.disabled]="!scanParamsForm.value.runAsJob">Profile Job Output</label>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Catalog</mat-label>
+    <input matInput placeholder="spark_catalog" [disabled]="!scanParamsForm.value.runAsJob">
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Schema</mat-label>
+    <input matInput placeholder="default" [disabled]="!scanParamsForm.value.runAsJob">
+  </mat-form-field>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Table</mat-label>
+    <input matInput placeholder="ModelProfile" [disabled]="!scanParamsForm.value.runAsJob">
+  </mat-form-field>
+  <mat-checkbox [formControl]="deployNotebookJob" [disabled]="!scanParamsForm.value.runAsJob">Deploy (Modifiable) Notebook Job</mat-checkbox>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Profiler Notebook Path</mat-label>
+    <input #notebookPath matInput placeholder="/Shared/Perseus Profiler" [disabled]="!scanParamsForm.value.runAsJob">
+  </mat-form-field>
+</form>
+

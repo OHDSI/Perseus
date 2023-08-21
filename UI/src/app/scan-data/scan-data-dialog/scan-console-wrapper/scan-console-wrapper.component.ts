@@ -43,7 +43,11 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   conversionInfoRequest(): Observable<Conversion> {
-    return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
+    if (this.conversion.dataConnectionService !== undefined) {
+      return this.conversion.dataConnectionService.sourceConnection.conversionInfoWithLogs()
+    } else {
+      return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
+    }
   }
 
   onAbortAndCancel(): void {
@@ -62,13 +66,13 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   onUploadReport(): void {
-    this.scanDataUploadService.uploadScanReport(this.conversion.id)
-      .pipe(
-        withLoadingField(this, 'linkingTables')
-      )
-      .subscribe(
-        () => this.close.emit(this.conversion),
-        error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))
-      )
+    this.scanDataUploadService.uploadScanReport(this.conversion.id, this.conversion.dataConnectionService)
+    .pipe(
+      withLoadingField(this, 'linkingTables')
+    )
+    .subscribe(
+      () => this.close.emit(this.conversion),
+      error => openErrorDialog(this.dialogService, 'Cannot link tables', parseHttpError(error))
+    )
   }
 }

@@ -1,0 +1,158 @@
+{
+  "name": "person",
+  "properties": {
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "gender_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "gender_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "year_of_birth": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "year_of_birth",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "month_of_birth": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "month_of_birth",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "day_of_birth": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "day_of_birth",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "birth_datetime": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "birth_datetime",
+        "data_type": "timestamp",
+        "comment": null
+      }
+    },
+    "race_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "race_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "ethnicity_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "ethnicity_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "location_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "location_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "provider_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "provider_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "care_site_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "care_site_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "person_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "gender_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "gender_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "gender_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "gender_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "race_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "race_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "race_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "race_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "ethnicity_source_value": {
+      "type": "String",
+      "databricks": {
+        "col_name": "ethnicity_source_value",
+        "data_type": "string",
+        "comment": null
+      }
+    },
+    "ethnicity_source_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "ethnicity_source_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "person",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

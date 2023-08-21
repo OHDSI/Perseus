@@ -1,0 +1,70 @@
+{
+  "name": "drug_era",
+  "properties": {
+    "drug_era_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_era_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "person_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "person_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drug_concept_id": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_concept_id",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "drug_era_start_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "drug_era_start_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "drug_era_end_date": {
+      "type": "Date",
+      "databricks": {
+        "col_name": "drug_era_end_date",
+        "data_type": "date",
+        "comment": null
+      }
+    },
+    "drug_exposure_count": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "drug_exposure_count",
+        "data_type": "int",
+        "comment": null
+      }
+    },
+    "gap_days": {
+      "type": "Number",
+      "databricks": {
+        "col_name": "gap_days",
+        "data_type": "int",
+        "comment": null
+      }
+    }
+  },
+  "settings": {
+    "databricks": {
+      "catalog": "spark_catalog",
+      "database": "default",
+      "tableName": "drug_era",
+      "isTemporary": false
+    }
+  },
+  "relations": {}
+}

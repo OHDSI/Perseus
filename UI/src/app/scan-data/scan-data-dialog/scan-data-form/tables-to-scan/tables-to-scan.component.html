@@ -7,35 +7,41 @@
     <h5 class="scan-tables__header-name scan-step-header__name">Tables to Scan</h5>
 
     <div class="scan-tables__header-settings popup">
-      <div #scanParamsButton class="scan-tables__header-settings-scan-params" (click)="onShowScanParams()">
+      <div #scanParamsButton class="scan-tables__header-settings-scan-params" (click)="onShowScanParams()" >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 5.5C6.62147 5.5 5.5 6.6215 5.5 8C5.5 9.3785 6.6215 10.5 8 10.5C9.3785 10.5 10.5 9.3785 10.5 8C10.5 6.6215 9.37853 5.5 8 5.5ZM8 9.25C7.31075 9.25 6.75 8.68925 6.75 8C6.75 7.31075 7.31075 6.75 8 6.75C8.68925 6.75 9.25 7.31075 9.25 8C9.25 8.68925 8.68925 9.25 8 9.25Z" fill="#066BBB"/>
           <path d="M15.6922 9.86366L14.0738 8.62356C14.1193 8.19466 14.1165 7.77919 14.0738 7.37647L15.6922 6.13637C15.9431 5.94413 16.0109 5.59481 15.8502 5.32259L14.283 2.66703C14.1269 2.40247 13.8016 2.29059 13.5157 2.40319L11.5956 3.15944C11.2449 2.90847 10.8695 2.69581 10.4736 2.52378L10.1853 0.535344C10.1407 0.228 9.87731 0 9.56678 0H6.43228C6.12174 0 5.85831 0.228 5.81378 0.535375L5.52553 2.52381C5.12956 2.69587 4.75421 2.9085 4.40353 3.15947L2.48337 2.40322C2.19743 2.29059 1.87221 2.4025 1.71609 2.66706L0.148806 5.32259C-0.0118501 5.59481 0.0560249 5.94413 0.3069 6.13637L1.92531 7.37644C1.87981 7.80534 1.88259 8.22081 1.92531 8.62353L0.306931 9.86362C0.0560249 10.0559 -0.0118501 10.4052 0.148837 10.6774L1.71606 13.333C1.87218 13.5975 2.19743 13.7094 2.48334 13.5968L4.40353 12.8406C4.75415 13.0915 5.12953 13.3042 5.52549 13.4762L5.81374 15.4647C5.85831 15.772 6.12174 16 6.43228 16H9.56678C9.87731 16 10.1407 15.772 10.1853 15.4647L10.4736 13.4762C10.8695 13.3042 11.2449 13.0916 11.5955 12.8406L13.5157 13.5968C13.8016 13.7094 14.1269 13.5975 14.283 13.333L15.8502 10.6774C16.0109 10.4052 15.943 10.0559 15.6922 9.86366ZM13.4776 12.2383L11.7261 11.5485C11.5162 11.4659 11.2783 11.5027 11.1033 11.6447C10.6807 11.9876 10.2063 12.2558 9.69346 12.442C9.47696 12.5206 9.32128 12.7119 9.28821 12.9398L9.02584 14.75H6.97318L6.71084 12.9398C6.67778 12.7119 6.52209 12.5206 6.30559 12.442C5.79271 12.2558 5.31837 11.9876 4.89578 11.6447C4.72071 11.5027 4.48271 11.4659 4.27296 11.5485L2.52149 12.2383L1.50678 10.519L2.97428 9.39447C3.15871 9.25312 3.24956 9.02116 3.21006 8.79216C3.11806 8.25856 3.12109 7.72381 3.21006 7.20781C3.24956 6.97881 3.15871 6.74681 2.97428 6.6055L1.50678 5.481L2.52149 3.76166L4.27296 4.45144C4.48281 4.53409 4.72071 4.49728 4.89578 4.35528C5.3184 4.01241 5.79274 3.74416 6.30559 3.55797C6.52209 3.47938 6.67778 3.28809 6.71084 3.06016L6.97321 1.25H9.02587L9.28821 3.06016C9.32128 3.28809 9.47696 3.47938 9.69346 3.55797C10.2063 3.74416 10.6807 4.01241 11.1033 4.35528C11.2783 4.49731 11.5163 4.53406 11.7261 4.45144L13.4776 3.76166L14.4922 5.481L13.0247 6.6055C12.8403 6.74684 12.7495 6.97881 12.789 7.20781C12.881 7.74141 12.8779 8.27616 12.789 8.79216C12.7495 9.02116 12.8403 9.25316 13.0247 9.39447L14.4922 10.519L13.4776 12.2383Z" fill="#066BBB"/>
         </svg>
       </div>
-      <div class="popup-content" [ngClass]="{show: showScanParamsPopup}">
-        <app-scan-params [scanParamsForm]="scanParamsForm"></app-scan-params>
+      <div #scanParamsPopup class="popup-content" [ngClass]="{show: showScanParamsPopup}">
+        <ng-template dataConnectionScanParams></ng-template>
+        <app-scan-params *ngIf="!isDataConnection" [scanParamsForm]="scanParamsForm"></app-scan-params>
       </div>
     </div>
   </div>
 
+  <ng-template dataConnectionTablesToScan>
+  </ng-template>
+  
   <div class="scan-tables-content" *ngIf="connected; else disconnectBlock">
-    <label class="scan-tables-content__search-input">
-      <mat-icon>search</mat-icon>
-      <input type="text" placeholder="Search by Tables"
-             [ngModel]="searchTableName"
-             (ngModelChange)="onSearchByTableName($event)">
-    </label>
-
-    <div class="scan-tables-content__select-values-buttons">
-      <button (click)="onSelectAll()">Select All</button>
-      <button (click)="onDeselectAll()">Deselect All</button>
-    </div>
-
-    <div class="scan-tables-content__list">
-      <app-table-to-scan *ngFor="let table of filteredTablesToScan"
-                         [table]="table"
-                         (checkTable)="onCheckTable($event)"></app-table-to-scan>
+    <div *ngIf="!isDataConnection">
+      <label class="scan-tables-content__search-input">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Search by Tables"
+               [ngModel]="searchTableName"
+               (ngModelChange)="onSearchByTableName($event)">
+      </label>
+  
+      <div class="scan-tables-content__select-values-buttons">
+        <button (click)="onSelectAll()">Select All</button>
+        <button (click)="onDeselectAll()">Deselect All</button>
+      </div>
+  
+      <div class="scan-tables-content__list">
+        <app-table-to-scan *ngFor="let table of filteredTablesToScan"
+                           [table]="table"
+                           (checkTable)="onCheckTable($event)"></app-table-to-scan>
+      </div>
     </div>
   </div>
 
