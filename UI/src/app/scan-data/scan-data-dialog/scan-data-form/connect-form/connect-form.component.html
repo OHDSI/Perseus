@@ -31,6 +31,7 @@
   <app-db-settings-form *ngIf="isDbSettings && !isDataConnection"
                         [form]="form"
                         [requireDb]="requireDb"
+                        [requireUser]="requireUser"
                         [requireSchema]="requireSchema">
   </app-db-settings-form>
 

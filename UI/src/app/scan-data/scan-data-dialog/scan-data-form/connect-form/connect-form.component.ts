@@ -138,7 +138,8 @@ export class ConnectFormComponent extends AbstractResourceFormComponent implemen
   }
 
   get isDataConnection() {
-    return this.dataConnectionService.dataConnectionIndex[this.dataType] !== undefined
+    // return this.dataConnectionService.dataConnectionIndex[this.dataType] !== undefined
+    return false;
   }
 
   loadDataConnectionSettingsComponent() {
