@@ -134,12 +134,14 @@ export class ScanDataFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private createSettings(): {type: ScanSettingsType, settings: ScanSettings} {
     let type: ScanSettingsType
     let settings: ScanSettings
-    if (this.connectFormComponent.isDataConnection) {
-      type = ScanSettingsType.DATA_CONNECTION
-      settings = {
-        dataConnectionService: this.dataConnectionService
-      }
-    } else if (this.connectFormComponent.isDbSettings) {
+    // if (this.connectFormComponent.isDataConnection) {
+    //  type = ScanSettingsType.DATA_CONNECTION
+    //  settings = {
+    //    dataConnectionService: this.dataConnectionService
+    //  }
+    // } else 
+    
+    if (this.connectFormComponent.isDbSettings) {
       type = ScanSettingsType.DB
       settings = new DbSettingsBuilder()
         .setDbType(this.connectFormComponent.dataType)
