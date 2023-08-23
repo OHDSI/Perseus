@@ -1,6 +1,6 @@
 from pathlib import Path
 
-CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', '6', ]
+CDM_VERSION_LIST = ['4', '5.0.1', '5.1.0', '5.2.0', '5.3.0', '5.3.1', '5.4', '5', ]
 
 CDM_SCHEMA_PATH = Path('model/sources/CDM/')
 PREDEFINED_LOOKUPS_PATH = Path('model/lookups')
