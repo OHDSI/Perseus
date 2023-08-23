@@ -7,5 +7,5 @@ export interface Conversion {
   statusCode: number,
   statusName: string
   logs: ProgressLog[]
-  dataConnectionService?: DataConnectionService
+  // dataConnectionService?: DataConnectionService
 }
