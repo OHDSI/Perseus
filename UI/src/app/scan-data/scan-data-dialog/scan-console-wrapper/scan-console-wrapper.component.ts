@@ -43,11 +43,11 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   conversionInfoRequest(): Observable<Conversion> {
-    if (this.conversion.dataConnectionService !== undefined) {
-      return this.conversion.dataConnectionService.sourceConnection.conversionInfoWithLogs()
-    } else {
+    // if (this.conversion.dataConnectionService !== undefined) {
+    //  return this.conversion.dataConnectionService.sourceConnection.conversionInfoWithLogs()
+    //} else {
       return this.whiteRabbitService.conversionInfoWithLogs(this.conversion.id)
-    }
+    //}
   }
 
   onAbortAndCancel(): void {
@@ -66,7 +66,7 @@ export class ScanConsoleWrapperComponent extends ProgressConsoleWrapperComponent
   }
 
   onUploadReport(): void {
-    this.scanDataUploadService.uploadScanReport(this.conversion.id, this.conversion.dataConnectionService)
+    this.scanDataUploadService.uploadScanReport(this.conversion.id, null)
     .pipe(
       withLoadingField(this, 'linkingTables')
     )

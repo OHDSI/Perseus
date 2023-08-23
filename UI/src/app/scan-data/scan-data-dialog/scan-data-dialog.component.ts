@@ -48,12 +48,14 @@ export class ScanDataDialogComponent extends ConversionDialog {
   onScanTables(data: {type: ScanSettingsType, settings: ScanSettings}): void {
     const {type, settings} = data;
     let request$
-    if (type === ScanSettingsType.DATA_CONNECTION) {
-      request$ = settings.dataConnectionService.sourceConnection.generateScanReport().pipe(map((conversion) => {
-        conversion.dataConnectionService = settings.dataConnectionService
-        return conversion
-      }))
-    } else if (type === ScanSettingsType.DB) {
+    // if (type === ScanSettingsType.DATA_CONNECTION) {
+    //  request$ = settings.dataConnectionService.sourceConnection.generateScanReport().pipe(map((conversion) => {
+    //    conversion.dataConnectionService = settings.dataConnectionService
+    //    return conversion
+    //  }))
+    // } else 
+    
+    if (type === ScanSettingsType.DB) {
       request$ = this.scanDataService.generateScanReportByDb(settings as DbSettings)
     } else {
       request$ = this.scanDataService.generateScanReportByFiles(settings as FilesSettings);
