@@ -70,7 +70,7 @@ person_id,Yes,No,INTEGER,A foreign key identifier to the Person who is experienc
 condition_concept_id,Yes,No,INTEGER,A foreign key that refers to a standard Condition Concept identifier in the Standardized Vocabularies.,condition_era
 condition_era_start_date,Yes,No,DATE,The start date for the Condition Era constructed from the individual instances of Condition Occurrences. It is the start date of the very first chronologically recorded instance of the condition.,condition_era
 condition_era_end_date,Yes,No,DATE,The end date for the Condition Era constructed from the individual instances of Condition Occurrences. It is the end date of the final continuously recorded instance of the Condition.,condition_era
-condition_start_datetime,No,Yes,DATETIME,The date and time when the instance of the Condition is recorded.,condition_occurrence
+condition_start_datetime,No,Yes,TIMESTAMP,The date and time when the instance of the Condition is recorded.,condition_occurrence
 condition_end_date,No,Yes,DATE,The date when the instance of the Condition is considered to have ended.,condition_occurrence
 condition_end_datetime,No,Yes,DATE,The date when the instance of the Condition is considered to have ended.,condition_occurrence
 stop_reason,No,Yes,VARCHAR(20),"The reason that the condition was no longer present, as indicated in the source data.",condition_occurrence
@@ -108,16 +108,16 @@ cost_id,Yes,No,INTEGER,A unique identifier for each COST record.,cost
 cost_event_id,Yes,No,INTEGER,"A foreign key identifier to the event (e.g. Measurement, Procedure, Visit, Drug Exposure, etc) record for which cost data are recorded.",cost
 cost_domain_id,Yes,No,VARCHAR(20),"The concept representing the domain of the cost event, from which the corresponding table can be inferred that contains the entity for which cost information is recorded.",cost
 cost_type_concept_id,Yes,No,INTEGER,"A foreign key identifier to a concept in the CONCEPT table for the provenance or the source of the COST data: Calculated from insurance claim information, provider revenue, calculated from cost-to-charge ratio, reported from accounting database, etc.",cost
-death_datetime,No,Yes,DATETIME,"The date and time the person was deceased. If the precise date including day or month is not known or not allowed, December is used as the default month, and the last day of the month the default day.",death
+death_datetime,No,Yes,TIMESTAMP,"The date and time the person was deceased. If the precise date including day or month is not known or not allowed, December is used as the default month, and the last day of the month the default day.",death
 cause_concept_id,No,Yes,INTEGER,A foreign key referring to a standard concept identifier in the Standardized Vocabularies for conditions.,death
 cause_source_value,No,Yes,VARCHAR(50),"The source code for the cause of death as it appears in the source data. This code is mapped to a standard concept in the Standardized Vocabularies and the original code is, stored here for reference.",death
 cause_source_concept_id,No,Yes,INTEGER,"A foreign key to the concept that refers to the code used in the source. Note, this variable name is abbreviated to ensure it will be allowable across database platforms.",death
 person_id,Yes,No,INTEGER,A foreign key identifier to the deceased person. The demographic details of that person are stored in the person table.,death
 death_date,Yes,No,DATE,"The date the person was deceased. If the precise date including day or month is not known or not allowed, December is used as the default month, and the last day of the month the default day.",death
 death_type_concept_id,Yes,No,INTEGER,A foreign key referring to the predefined concept identifier in the Standardized Vocabularies reflecting how the death was represented in the source data.,death
-device_exposure_start_datetime,No,Yes,DATETIME,The date and time the Device or supply was applied or used.,device_exposure
+device_exposure_start_datetime,No,Yes,TIMESTAMP,The date and time the Device or supply was applied or used.,device_exposure
 device_exposure_end_date,No,Yes,DATE,The date the Device or supply was removed from use.,device_exposure
-device_exposure_end_datetime,No,Yes,DATETIME,The date and time the Device or supply was removed from use.,device_exposure
+device_exposure_end_datetime,No,Yes,TIMESTAMP,The date and time the Device or supply was removed from use.,device_exposure
 unique_device_id,No,Yes,VARCHAR(50),A UDI or equivalent identifying the instance of the Device used in the Person.,device_exposure
 quantity,No,Yes,INTEGER,The number of individual Devices used for the exposure.,device_exposure
 provider_id,No,Yes,INTEGER,A foreign key to the provider in the PROVIDER table who initiated of administered the Device.,device_exposure
@@ -147,8 +147,8 @@ person_id,Yes,No,INTEGER,A foreign key identifier to the Person who is subjected
 drug_concept_id,Yes,No,INTEGER,A foreign key that refers to a Standard Concept identifier in the Standardized Vocabularies for the Ingredient Concept.,drug_era
 drug_era_start_date,Yes,No,DATE,The start date for the Drug Era constructed from the individual instances of Drug Exposures. It is the start date of the very first chronologically recorded instance of conutilization of a Drug.,drug_era
 drug_era_end_date,Yes,No,DATE,The end date for the drug era constructed from the individual instance of drug exposures. It is the end date of the final continuously recorded instance of utilization of a drug.,drug_era
-drug_exposure_start_datetime,No,Yes,DATETIME,"The start date and time for the current instance of Drug utilization. Valid entries include a start date of a prescription, the date a prescription was filled, or the date on which a Drug administration procedure was recorded.",drug_exposure
-drug_exposure_end_datetime,No,Yes,DATETIME,The end date and time for the current instance of Drug utilization. It is not available from all sources.,drug_exposure
+drug_exposure_start_datetime,No,Yes,TIMESTAMP,"The start date and time for the current instance of Drug utilization. Valid entries include a start date of a prescription, the date a prescription was filled, or the date on which a Drug administration procedure was recorded.",drug_exposure
+drug_exposure_end_datetime,No,Yes,TIMESTAMP,The end date and time for the current instance of Drug utilization. It is not available from all sources.,drug_exposure
 verbatim_end_date,No,Yes,DATE,The known end date of a drug_exposure as provided by the source,drug_exposure
 stop_reason,No,Yes,VARCHAR(20),"The reason the Drug was stopped. Reasons include regimen completed, changed, removed, etc.",drug_exposure
 refills,No,Yes,INTEGER,"The number of refills after the initial prescription. The initial prescription is not counted, values start with 0.",drug_exposure
@@ -195,7 +195,7 @@ zip,No,Yes,VARCHAR(9),The zip or postal code.,location
 county,No,Yes,VARCHAR(20),The county.,location
 location_source_value,No,Yes,VARCHAR(50),The verbatim information that is used to uniquely identify the location as it appears in the source data.,location
 location_id,Yes,No,INTEGER,A unique identifier for each geographic location.,location
-measurement_datetime,No,Yes,DATETIME,"The date and time of the Measurement. Some database systems don't have a datatype of time. To accomodate all temporal analyses, datatype datetime can be used (combining measurement_date and measurement_time [forum discussion](http://forums.ohdsi.org/t/date-time-and-datetime-problem-and-the-world-of-hours-and-1day/314))",measurement
+measurement_datetime,No,Yes,TIMESTAMP,"The date and time of the Measurement. Some database systems don't have a datatype of time. To accomodate all temporal analyses, datatype datetime can be used (combining measurement_date and measurement_time [forum discussion](http://forums.ohdsi.org/t/date-time-and-datetime-problem-and-the-world-of-hours-and-1day/314))",measurement
 operator_concept_id,No,Yes,INTEGER,"A foreign key identifier to the predefined Concept in the Standardized Vocabularies reflecting the mathematical operator that is applied to the value_as_number. Operators are <, <=, =, >=, >.",measurement
 value_as_number,No,Yes,FLOAT,A Measurement result where the result is expressed as a numeric value.,measurement
 value_as_concept_id,No,Yes,INTEGER,"A foreign key to a Measurement result represented as a Concept from the Standardized Vocabularies (e.g., positive/negative, present/absent, low/high, etc.).",measurement
@@ -217,11 +217,11 @@ measurement_type_concept_id,Yes,No,INTEGER,A foreign key to the predefined Conce
 value_as_string,No,Yes,NVARCHAR,The metadata value stored as a string.,metadata
 value_as_concept_id,No,Yes,INTEGER,A foreign key to a metadata value stored as a Concept ID.,metadata
 metadata_date,No,Yes,DATE,The date associated with the metadata,metadata
-metadata_datetime,No,Yes,DATETIME,The date and time associated with the metadata,metadata
+metadata_datetime,No,Yes,TIMESTAMP,The date and time associated with the metadata,metadata
 metadata_concept_id,Yes,No,INTEGER,A foreign key that refers to a Standard Metadata Concept identifier in the Standardized Vocabularies.,metadata
 metadata_type_concept_id,Yes,No,INTEGER,A foreign key that refers to a Standard Type Concept identifier in the Standardized Vocabularies.,metadata
 name,Yes,No,VARCHAR(250),The name of the Concept stored in metadata_concept_id or a description of the data being stored.,metadata
-note_datetime,No,Yes,DATETIME,The date and time the note was recorded.,note
+note_datetime,No,Yes,TIMESTAMP,The date and time the note was recorded.,note
 note_title,No,Yes,VARCHAR(250),The title of the Note as it appears in the source.,note
 provider_id,No,Yes,INTEGER,A foreign key to the Provider in the PROVIDER table who took the Note.,note
 visit_occurrence_id,No,Yes,INTEGER,A foreign key to the Visit in the VISIT_OCCURRENCE table when the Note was taken.,note
@@ -241,7 +241,7 @@ offset,No,Yes,VARCHAR(50),Character offset of the extracted term in the input no
 note_nlp_concept_id,No,Yes,INTEGER,A foreign key to the predefined Concept in the Standardized Vocabularies reflecting the normalized concept for the extracted term. Domain of the term is represented as part of the Concept table.,note_nlp
 note_nlp_source_concept_id,No,Yes,INTEGER,A foreign key to a Concept that refers to the code in the source vocabulary used by the NLP system,note_nlp
 nlp_system,No,Yes,VARCHAR(250),Name and version of the NLP system that extracted the term.Useful for data provenance.,note_nlp
-nlp_date_time,No,Yes,DATETIME,The date and time of the note processing. Useful for data provenance.,note_nlp
+nlp_date_time,No,Yes,TIMESTAMP,The date and time of the note processing. Useful for data provenance.,note_nlp
 term_exists,No,Yes,VARCHAR(1),A summary modifier that signifies presence or absence of the term for a given patient. Useful for quick querying. *,note_nlp
 term_temporal,No,Yes,VARCHAR(50),An optional time modifier associated with the extracted term. (for now �past� or �present� only). Standardize it later.,note_nlp
 term_modifiers,No,Yes,VARCHAR(2000),"A compact description of all the modifiers of the specific term extracted by the NLP system. (e.g. �son has rash� ? �negated=no,subject=family, certainty=undef,conditional=false,general=false�).",note_nlp
@@ -249,7 +249,7 @@ note_nlp_id,Yes,No,INTEGER,A unique identifier for each term extracted from a no
 note_id,Yes,No,INTEGER,A foreign key to the Note table note the term was extracted from.,note_nlp
 lexical_variant,Yes,No,VARCHAR(250),Raw text extracted from the NLP tool.,note_nlp
 nlp_date,Yes,No,DATE,The date of the note processing.Useful for data provenance.,note_nlp
-observation_datetime,No,Yes,DATETIME,The date and time of the observation.,observation
+observation_datetime,No,Yes,TIMESTAMP,The date and time of the observation.,observation
 value_as_number,No,Yes,FLOAT,The observation result stored as a number. This is applicable to observations where the result is expressed as a numeric value.,observation
 value_as_string,No,Yes,VARCHAR(60),The observation result stored as a string. This is applicable to observations where the result is expressed as verbatim text.,observation
 value_as_concept_id,No,Yes,INTEGER,"A foreign key to an observation result stored as a Concept ID. This is applicable to observations where the result can be expressed as a Standard Concept from the Standardized Vocabularies (e.g., positive/negative, present/absent, low/high, etc.).",observation
@@ -291,7 +291,7 @@ payer_plan_period_start_date,Yes,No,DATE,The start date of the payer plan period
 payer_plan_period_end_date,Yes,No,DATE,The end date of the payer plan period.,payer_plan_period
 month_of_birth,No,Yes,INTEGER,"The month of birth of the person. For data sources that provide the precise date of birth, the month is extracted and stored in this field.",person
 day_of_birth,No,Yes,INTEGER,"The day of the month of birth of the person. For data sources that provide the precise date of birth, the day is extracted and stored in this field.",person
-birth_datetime,No,Yes,DATETIME,The date and time of birth of the person.,person
+birth_datetime,No,Yes,TIMESTAMP,The date and time of birth of the person.,person
 location_id,No,Yes,INTEGER,"A foreign key to the place of residency for the person in the location table, where the detailed address information is stored.",person
 provider_id,No,Yes,INTEGER,A foreign key to the primary care provider the person is seeing in the provider table.,person
 care_site_id,No,Yes,INTEGER,"A foreign key to the site of primary care in the care_site table, where the details of the care site are stored.",person
@@ -307,7 +307,7 @@ gender_concept_id,Yes,No,INTEGER,A foreign key that refers to an identifier in t
 year_of_birth,Yes,No,INTEGER,"The year of birth of the person. For data sources with date of birth, the year is extracted. For data sources where the year of birth is not available, the approximate year of birth is derived based on any age group categorization available.",person
 race_concept_id,Yes,No,INTEGER,A foreign key that refers to an identifier in the CONCEPT table for the unique race of the person.,person
 ethnicity_concept_id,Yes,No,INTEGER,A foreign key that refers to the standard concept identifier in the Standardized Vocabularies for the ethnicity of the person.,person
-procedure_datetime,No,Yes,DATETIME,The date and time on which the Procedure was performed.,procedure_occurrence
+procedure_datetime,No,Yes,TIMESTAMP,The date and time on which the Procedure was performed.,procedure_occurrence
 modifier_concept_id,No,Yes,INTEGER,A foreign key to a Standard Concept identifier for a modifier to the Procedure (e.g. bilateral),procedure_occurrence
 quantity,No,Yes,INTEGER,The quantity of procedures ordered or administered.,procedure_occurrence
 provider_id,No,Yes,INTEGER,A foreign key to the provider in the PROVIDER table who was responsible for carrying out the procedure.,procedure_occurrence
@@ -349,7 +349,7 @@ target_concept_id,Yes,No,INTEGER,A foreign key to the target Concept to which th
 target_vocabulary_id,Yes,No,VARCHAR(20),A foreign key to the VOCABULARY table defining the vocabulary of the target Concept.,source_to_concept_map
 valid_start_date,Yes,No,DATE,The date when the mapping instance was first recorded.,source_to_concept_map
 valid_end_date,Yes,No,DATE,The date when the mapping instance became invalid because it was deleted or superseded (updated) by a new relationship. Default value is 31-Dec-2099.,source_to_concept_map
-specimen_datetime,No,Yes,DATETIME,The date and time on the date when the Specimen was obtained from the person.,specimen
+specimen_datetime,No,Yes,TIMESTAMP,The date and time on the date when the Specimen was obtained from the person.,specimen
 quantity,No,Yes,FLOAT,The amount of specimen collection from the person during the sampling procedure.,specimen
 unit_concept_id,No,Yes,INTEGER,A foreign key to a Standard Concept identifier for the Unit associated with the numeric quantity of the Specimen collection.,specimen
 anatomic_site_concept_id,No,Yes,INTEGER,A foreign key to a Standard Concept identifier for the anatomic location of specimen collection.,specimen
@@ -369,8 +369,8 @@ discharge_to_concept_id,Integer,No,NO,A foreign key to the predefined concept in
 preceding_visit_detail_id,Integer,No,NO,A foreign key to the VISIT_DETAIL table of the visit immediately preceding this visit,visit_detail
 visit_detail_parent_id,Integer,No,NO,A foreign key to the VISIT_DETAIL table record to represent the immediate parent visit-detail record.,visit_detail
 visit_occurrence_id,Integer,No,YES,"A foreign key that refers to the record in the VISIT_OCCURRENCE table. This is a required field, because for every visit_detail is a child of visit_occurrence and cannot exist without a corresponding parent record in visit_occurrence.",visit_detail
-visit_start_datetime,No,Yes,DATETIME,The date and time of the visit started.,visit_detail
-visit_end_datetime,No,Yes,DATETIME,The date and time of the visit end.,visit_detail
+visit_start_datetime,No,Yes,TIMESTAMP,The date and time of the visit started.,visit_detail
+visit_end_datetime,No,Yes,TIMESTAMP,The date and time of the visit end.,visit_detail
 provider_id,No,Yes,INTEGER,A foreign key to the provider in the provider table who was associated with the visit.,visit_detail
 care_site_id,No,Yes,INTEGER,A foreign key to the care site in the care site table that was visited.,visit_detail
 visit_source_value,No,Yes,STRING(50),The source code for the visit as it appears in the source data.,visit_detail
@@ -386,8 +386,8 @@ visit_type_concept_id,Yes,No,INTEGER,A foreign key to the predefined Concept ide
 admitting_source_concept_id,integer,No,NO,A foreign key to the predefined concept in the Place of Service Vocabulary reflecting the admitting source for a visit.,visit_occurrence
 discharge_to_concept_id,integer,No,NO,A foreign key to the predefined concept in the Place of Service Vocabulary reflecting the discharge disposition for a visit.,visit_occurrence
 preceding_visit_occurrence_id,integer,No,NO,A foreign key to the VISIT_OCCURRENCE table of the visit immediately preceding this visit,visit_occurrence
-visit_start_datetime,No,Yes,DATETIME,The date and time of the visit started.,visit_occurrence
-visit_end_datetime,No,Yes,DATETIME,The date and time of the visit end.,visit_occurrence
+visit_start_datetime,No,Yes,TIMESTAMP,The date and time of the visit started.,visit_occurrence
+visit_end_datetime,No,Yes,TIMESTAMP,The date and time of the visit end.,visit_occurrence
 provider_id,No,Yes,INTEGER,A foreign key to the provider in the provider table who was associated with the visit.,visit_occurrence
 care_site_id,No,Yes,INTEGER,A foreign key to the care site in the care site table that was visited.,visit_occurrence
 visit_source_value,No,Yes,VARCHAR(50),The source code for the visit as it appears in the source data.,visit_occurrence
