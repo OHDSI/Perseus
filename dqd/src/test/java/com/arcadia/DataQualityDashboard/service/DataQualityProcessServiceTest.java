@@ -34,7 +34,8 @@ public class DataQualityProcessServiceTest {
         dataQualityProcessService = new DataQualityProcessServiceImpl(
                 rConnectionCreator,
                 resultService,
-                filesManagerService
+                filesManagerService,
+                null
         );
     }
 

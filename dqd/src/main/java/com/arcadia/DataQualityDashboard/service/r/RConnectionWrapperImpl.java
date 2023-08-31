@@ -5,6 +5,7 @@ import com.arcadia.DataQualityDashboard.model.DataQualityLog;
 import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.model.DbSettings;
 import com.arcadia.DataQualityDashboard.repository.DataQualityLogRepository;
+import com.arcadia.DataQualityDashboard.service.ProcessHolder;
 import com.arcadia.DataQualityDashboard.service.error.RException;
 import com.arcadia.DataQualityDashboard.service.response.TestConnectionResultResponse;
 import lombok.Getter;
@@ -38,6 +39,8 @@ public class RConnectionWrapperImpl implements RConnectionWrapper {
     private final DqdDatabaseProperties dqdDatabaseProperties;
 
     private final DataQualityLogRepository dataQualityLogRepository;
+
+    private final ProcessHolder processHolder;
 
     private final List<String> logs = List.of("CDM Tables skipped:", "Execution Complete", "] [Check: ", "Processing check description:", "Execution started");
 
@@ -104,6 +107,7 @@ public class RConnectionWrapperImpl implements RConnectionWrapper {
 
         try {
             Process process = processBuilder.start();
+            processHolder.addProcess(scan.getId(), process);
             int stepsFinished = 0;
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
