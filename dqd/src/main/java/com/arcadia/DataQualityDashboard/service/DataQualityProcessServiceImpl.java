@@ -29,6 +29,7 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
     private final RConnectionCreator rConnectionCreator;
     private final DataQualityResultService resultService;
     private final FilesManagerService filesManagerService;
+    private final ProcessHolder processHolder;
 
     @PostConstruct
     public void init() {
@@ -42,6 +43,7 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
             String jsonResult;
             try(RConnectionWrapper rConnection = rConnectionCreator.createRConnection()) {
                 jsonResult = rConnection.checkDataQuality(scan);
+                processHolder.removeProcess(scan.getId());
                 log.info("Data quality check process successfully finished. Scan id: {}, username: {}.",
                         scan.getId(),
                         scan.getUsername()

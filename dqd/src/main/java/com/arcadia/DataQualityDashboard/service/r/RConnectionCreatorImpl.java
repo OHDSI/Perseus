@@ -3,6 +3,7 @@ package com.arcadia.DataQualityDashboard.service.r;
 import com.arcadia.DataQualityDashboard.config.DqdDatabaseProperties;
 import com.arcadia.DataQualityDashboard.config.RServeProperties;
 import com.arcadia.DataQualityDashboard.repository.DataQualityLogRepository;
+import com.arcadia.DataQualityDashboard.service.ProcessHolder;
 import com.arcadia.DataQualityDashboard.service.error.RException;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -51,8 +52,10 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
 
     private final DataQualityLogRepository dataQualityLogRepository;
 
+    private final ProcessHolder processHolder;
+
     @Autowired
-    public RConnectionCreatorImpl(RServeProperties properties, DqdDatabaseProperties dqdDatabaseProperties, DataQualityLogRepository dataQualityLogRepository) {
+    public RConnectionCreatorImpl(RServeProperties properties, DqdDatabaseProperties dqdDatabaseProperties, DataQualityLogRepository dataQualityLogRepository, ProcessHolder processHolder) {
         exeFilePath = properties.getPath();
         host = properties.getHost();
         port = properties.getPort();
@@ -60,6 +63,7 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
         currentPort = new AtomicInteger(port);
         this.dqdDatabaseProperties = dqdDatabaseProperties;
         this.dataQualityLogRepository = dataQualityLogRepository;
+        this.processHolder = processHolder;
     }
 
     /* Multithreading
@@ -79,7 +83,7 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
                 connection = new RConnection(host, port);
             }
             try {
-                RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix, dqdDatabaseProperties, dataQualityLogRepository);
+                RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix, dqdDatabaseProperties, dataQualityLogRepository, processHolder);
                 if (!isUnix) {
                     connectionWrapper.loadScript(downloadJdbcDriversScript);
                 }

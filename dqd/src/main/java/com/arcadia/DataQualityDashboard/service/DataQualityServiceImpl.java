@@ -29,6 +29,7 @@ public class DataQualityServiceImpl implements DataQualityService {
     private final DataQualityScanRepository scanRepository;
     private final DataQualityLogRepository logRepository;
     private final DataQualityResultRepository resultRepository;
+    private final ProcessHolder processHolder;
 
     @Override
     public DataQualityScan findScanById(Long scanId, String username) {
@@ -75,6 +76,8 @@ public class DataQualityServiceImpl implements DataQualityService {
         DataQualityScan scan = findScanById(scanId, username);
         scan.setStatus(ABORTED);
         scanRepository.save(scan);
+        processHolder.getProcess(scanId).destroy();
+        processHolder.removeProcess(scanId);
     }
 
     @Override

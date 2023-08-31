@@ -15,7 +15,7 @@ class RConnectionCreatorTest {
     @Disabled
     @Test
     void createRConnection() throws RException {
-        RConnectionCreator creator = new RConnectionCreatorImpl(rServerProperties, dqdDatabaseProperties, null);
+        RConnectionCreator creator = new RConnectionCreatorImpl(rServerProperties, dqdDatabaseProperties, null, null);
 
         RConnectionWrapper connection = creator.createRConnection();
 
@@ -25,7 +25,7 @@ class RConnectionCreatorTest {
     @Disabled
     @Test
     void createMultipleRConnection() throws RException {
-        RConnectionCreator creator = new RConnectionCreatorImpl(rServerProperties, dqdDatabaseProperties, null);
+        RConnectionCreator creator = new RConnectionCreatorImpl(rServerProperties, dqdDatabaseProperties, null, null);
 
         RConnectionWrapper connection1 = creator.createRConnection();
         RConnectionWrapper connection2 = creator.createRConnection();

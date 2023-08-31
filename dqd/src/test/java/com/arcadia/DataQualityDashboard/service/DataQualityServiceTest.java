@@ -41,7 +41,8 @@ public class DataQualityServiceTest {
         dataQualityService = new DataQualityServiceImpl(
                 scanRepository,
                 logRepository,
-                resultRepository
+                resultRepository,
+                null
         );
     }
 
