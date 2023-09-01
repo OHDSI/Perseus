@@ -19,7 +19,6 @@ export class ProgressConsoleComponent extends BaseComponent {
 
   constructor() {
     super();
-    this.simulateProgress();
   }
 
   get logs(): ProgressLog[] {
@@ -59,20 +58,5 @@ export class ProgressConsoleComponent extends BaseComponent {
         console.scrollTop = console.scrollHeight - console.clientHeight
       );
     }
-  }
-
-  simulateProgress(): void {
-    let elapsedSeconds = 10;
-
-    const intervalId = setInterval(() => {
-      elapsedSeconds++;
-      if (this.progressValuePercent >= 100) {
-        clearInterval(intervalId);
-      } else {
-        const percent = this.progressValuePercent + Math.min(5, 50 / elapsedSeconds);
-        this.progressValuePercent = Math.min(90, percent);
-      }
-
-    }, 1000);
   }
 }
